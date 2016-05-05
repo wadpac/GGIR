@@ -146,21 +146,21 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         cat("\nEnd of file reached\n")
       }
-#     } else if (mon == 4 & dformat == 3) {
-#       try(expr={P = g.wavread(binfile=datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
-#       if (length(P) > 1) {
-#         if (nrow(P$rawxyz) < ((sf*ws*2)+1) & i == 1) {
-#           P = c() ; switchoffLD = 1 #added 30-6-2012
-#           cat("\nError: data too short for doing non-wear detection 1\n")		
-#           filetooshort = TRUE
-#         }
-#       } else {
-#         P = c()
-#         if (i == 1) {
-#           filecorrupt = TRUE
-#         }
-#         cat("\nEnd of file reached\n")
-#       }
+    } else if (mon == 4 & dformat == 3) {
+      try(expr={P = g.wavread(binfile=datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
+      if (length(P) > 1) {
+        if (nrow(P$rawxyz) < ((sf*ws*2)+1) & i == 1) {
+          P = c() ; switchoffLD = 1 #added 30-6-2012
+          cat("\nError: data too short for doing non-wear detection 1\n")		
+          filetooshort = TRUE
+        }
+      } else {
+        P = c()
+        if (i == 1) {
+          filecorrupt = TRUE
+        }
+        cat("\nEnd of file reached\n")
+      }
     } else if (mon == 2 & dformat == 1 & useRDA == FALSE) {
       if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
         #===================================================================
@@ -394,9 +394,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             lengthheader = nrow(header)
             
           } else if (dformat == 3) {
-            starttime = P$timestamp
+            # starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
+            starttime = as.character(header[which(rownames(header) == "ICMTzTime"),1])
             lengthheader = nrow(header)
-            
           } else if (mon == 2 & dformat == 1) {
             if (length(desiredtz) > 0) {
               starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)

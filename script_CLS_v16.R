@@ -5,36 +5,38 @@ require(mmap)
 library(tools)
 # require(GGIRILS)
 
-# setwd("/home/vincent/GGIR")
+setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
 
-# source("jh_forAzure.R")
 
 #==================================================================
 # INPUT NEEDED:
 # specify file number to start and end with, fill in c() if unknown
-f0 = 1  #c() #file to start with if used in serial analyses
-f1 = 10 #Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
-mode= c(1,2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
-datadir=  "/home/vincent/GGIR/mcs-acc/testdata" #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
-# IF THIS IS THE SECOND TIME THEN POINTING AT THE RData FILES IS AN OPTION:
-# datadir = "/home/vincent/output_testdata/meta/raw" #where is the raw RData?
+f0 = c() #file to start with if used in serial analyses
+f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
+mode= c(2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
+datadir=  "D:/dropbox/Dropbox/Accelerometry/DATA/Millenium dress rehearsal" #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
 
-outputdir= "/home/vincent/GGIR"   #Name directory where output needs to be stored
+# datadir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/output_Millenium dress rehearsal/meta/raw"
+
+outputdir= "D:/dropbox/Dropbox/Accelerometry/GGIR/development"   #Name directory where output needs to be stored
 studyname="dressrehearsal"  #name of study, only needed if datadir is a list of filenames
 
-# Unique input for Millenium cohort (at least for now, implement in package later on)
-selectdaysfile = "/home/vincent/GGIR/mcs-acc/input_cls/wear_codes.csv"
-# diaryfile = "/home/vincent/GGIR/mcs-acc/input_cls/tud_data.csv"
+selectdaysfile = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/input_cls/wear_codes.csv"
+
 stt <- Sys.time()
 print(paste0("Starting at: ", stt))
 
 
 #=====================================================================================
 # load functions from functions folder (replace by require(GGIR) once package is updated)
-ffnames = dir("/home/vincent/GGIR/mcs-acc/GGIR/R") # creating list of filenames of scriptfiles to load
+ffnames = dir("functions") # creating list of filenames of scriptfiles to load
 for (i in 1:length(ffnames)) {
-  source(paste("/home/vincent/GGIR/mcs-acc/GGIR/R/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
+  source(paste("functions/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
 }
+# ffnames = dir("functions_cls") # creating list of filenames of scriptfiles to load
+# for (i in 1:length(ffnames)) {
+#   source(paste("functions_cls/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
+# }
 
 
 #=====================================================================================
@@ -65,7 +67,7 @@ g.shell.GGIR(#=======================================
              do.cal=FALSE, # Apply autocalibration? (recommended)
              do.enmo = TRUE, #Needed for physical activity analysis
              do.anglez=TRUE, #Needed for sleep detection
-             chunksize=0.6, #size of data chunks to be read (value = 1 is maximum)
+             chunksize=0.8, #size of data chunks to be read (value = 1 is maximum)
              desiredtz = "Europe/London",
              printsummary=TRUE,
              minloadcrit=48,
@@ -77,7 +79,7 @@ g.shell.GGIR(#=======================================
              ndayswindow=7, #only relevant when strategy = 3
              hrs.del.start = 0, # Only relevant when strategy = 2. How many HOURS need to be ignored at the START of the measurement?
              hrs.del.end = 0, # Only relevant when strategy = 2. How many HOURS need to be ignored at the END of the measurement?
-             maxdur = 14, # How many DAYS of measurement do you maximumally expect?
+             maxdur = 3, # How many DAYS of measurement do you maximumally expect?
              includedaycrit = 16, # number of minimum valid hours in a day to attempt physical activity analysis
              L5M5window = c(0,24), #window over which to calculate L5 and M5
              M5L5res = 10, #resolution in minutes of M5 and L5 calculation
