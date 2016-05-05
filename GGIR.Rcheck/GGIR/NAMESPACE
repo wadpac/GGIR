@@ -1,8 +1,8 @@
 export(g.analyse,g.calibrate,g.getmeta,g.impute,g.inspectfile,g.binread,g.plot,
        g.part1,g.part2,g.part3,g.part4,g.shell.GGIR)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow")
-      importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
+importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
              "lines", "mtext", "text")
-      importFrom("stats", "C", "lm.wfit", "quantile", "sd")
-      importFrom("utils", "read.csv", "sessionInfo", "write.csv")
+importFrom("stats", "C", "lm.wfit", "quantile", "sd")
+importFrom("utils", "read.csv", "sessionInfo", "write.csv")

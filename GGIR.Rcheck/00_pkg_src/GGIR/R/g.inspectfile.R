@@ -17,9 +17,9 @@ g.inspectfile = function(datafile) {
       }
     } else if (tmp2[length(tmp2)] == "in") { #this is a bin file
       dformat = 1 #1 = binary
-#     } else if (tmp3[length(tmp3)] == "av") { #this is a wav file
-#       dformat = 3 #3 = wav
-#       mon = 4
+    } else if (tmp3[length(tmp3)] == "av") { #this is a wav file
+      dformat = 3 #3 = wav
+      mon = 4
     }
     if (dformat == 1) {
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
@@ -114,9 +114,9 @@ g.inspectfile = function(datafile) {
           sf = as.numeric(tmp3[1])			
         }
       }
-      #     } else if (dformat == 3) { # wav
-      #       H = readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
-      #       sf = H$sample.rate
+    } else if (dformat == 3) { # wav
+      H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
+      sf = H$sample.rate
     }
     invisible(list(dformat=dformat,mon=mon,sf=sf))
   }
@@ -147,18 +147,18 @@ g.inspectfile = function(datafile) {
       H = read.csv(datafile,nrow=9,skip=0)
     }
     
-#   } else if (dformat == 3) { #wav data
-#     header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE))
-#     H = sapply(as.character(header),function(x) {
-#       tmp = unlist(strsplit(x,": "))
-#       if (length(tmp) == 1) {
-#         tmp = c(tmp, NA)
-#       }
-#       tmp
-#     })
-#     H = as.data.frame(t(H))
-#     names(H) = c("hnames","hvalues")
-#     # H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
+  } else if (dformat == 3) { #wav data
+    header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE))
+    H = sapply(as.character(header),function(x) {
+      tmp = unlist(strsplit(x,": "))
+      if (length(tmp) == 1) {
+        tmp = c(tmp, NA)
+      }
+      tmp
+    })
+    H = as.data.frame(t(H))
+    names(H) = c("hnames","hvalues")
+    # H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
   }
   H = as.matrix(H)
   if (ncol(H) == 1 & dformat == 2) {

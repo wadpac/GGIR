@@ -40,10 +40,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
       f1 = length(datadir) #modified
     }
   }
-  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE
+  dopart1 = dopart2 = dopart3 = dopart4 = FALSE #dopart5 = FALSE
   if (length(which(mode == 0)) > 0) {
-  # if (length(mode) > 0) {
-    # dopart0 = TRUE
     dopart1 = TRUE
     dopart2 = TRUE
     dopart3 = TRUE
@@ -78,7 +76,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "storefolderstructure")) == 0)  storefolderstructure = FALSE
   if (length(which(ls() == "windowsizes")) == 0)  windowsizes = c(5,900,3600)
   if (length(which(ls() == "minloadcrit")) == 0)  minloadcrit = 72
-  if (length(which(ls() == "desiredtz")) == 0)  desiredtz = c() #"Europe/London"
+  if (length(which(ls() == "desiredtz")) == 0)  desiredtz = "Europe/London"
   if (length(which(ls() == "chunksize")) == 0)  chunksize = 1
   if (length(which(ls() == "do.enmo")) == 0)  do.enmo = TRUE
   if (length(which(ls() == "do.lfenmo")) == 0)  do.lfenmo = FALSE
@@ -126,22 +124,22 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "print.filename")) == 0)  print.filename = FALSE
   if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = c()
   
-#   # specific for part 5
-#   if (length(which(ls() == "boutcriter.in")) == 0)  boutcriter.in = 0.9
-#   if (length(which(ls() == "boutcriter.lig")) == 0)  boutcriter.lig = 0.8
-#   if (length(which(ls() == "boutcriter.mvpa")) == 0)  boutcriter.mvpa = 0.8
-#   if (length(which(ls() == "threshold.lig")) == 0)  threshold.lig = 40
-#   if (length(which(ls() == "threshold.mod")) == 0)  threshold.mod = 100
-#   if (length(which(ls() == "threshold.vig")) == 0)  threshold.vig = 400
-#   if (length(which(ls() == "timewindow")) == 0)  timewindow = c("MM","WW")
-#   if (length(which(ls() == "boutdur.mvpa")) == 0)  boutdur.mvpa = c(1,5,10)
-#   if (length(which(ls() == "boutdur.in")) == 0)  boutdur.in = c(10,20,30)
-#   if (length(which(ls() == "boutdur.lig")) == 0)  boutdur.lig = c(1,5,10)
+  # # specific for part 5
+  # if (length(which(ls() == "boutcriter.in")) == 0)  boutcriter.in = 0.9
+  # if (length(which(ls() == "boutcriter.lig")) == 0)  boutcriter.lig = 0.8
+  # if (length(which(ls() == "boutcriter.mvpa")) == 0)  boutcriter.mvpa = 0.8
+  # if (length(which(ls() == "threshold.lig")) == 0)  threshold.lig = 40
+  # if (length(which(ls() == "threshold.mod")) == 0)  threshold.mod = 100
+  # if (length(which(ls() == "threshold.vig")) == 0)  threshold.vig = 400
+  # if (length(which(ls() == "timewindow")) == 0)  timewindow = c("MM","WW")
+  # if (length(which(ls() == "boutdur.mvpa")) == 0)  boutdur.mvpa = c(1,5,10)
+  # if (length(which(ls() == "boutdur.in")) == 0)  boutdur.in = c(10,20,30)
+  # if (length(which(ls() == "boutdur.lig")) == 0)  boutdur.lig = c(1,5,10)
 
   # part 2
   if (length(which(ls() == "mvpadur")) == 0)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE # related to part 2 (functionality to anticipate part 5)
-  if (length(which(ls() == "mvpa.2014")) == 0) mvpa.2014 = FALSE
+  if (length(which(ls() == "mvpa.2014")) == 0) mvpa.2014 = TRUE
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   
@@ -201,26 +199,26 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
             storefolderstructure=storefolderstructure,overwrite=overwrite)
   }
-#   if (dopart5 == TRUE) {
-#     cat('\n')
-#     cat(paste0(rep('_',options()$width),collapse=''))
-#     cat("\nPart 5\n")
-#     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
-#     g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
-#             hrs.del.start=hrs.del.start,
-#             hrs.del.end=hrs.del.end,
-#             loglocation=loglocation,excludefirstlast=excludefirstlast,
-#             windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
-#             boutcriter.mvpa=boutcriter.mvpa,storefolderstructure=storefolderstructure,
-#             threshold.lig = threshold.lig,
-#             threshold.mod = threshold.mod,
-#             threshold.vig = threshold.vig,timewindow=timewindow,
-#             boutdur.mvpa = boutdur.mvpa,
-#             boutdur.in = boutdur.in,
-#             boutdur.lig = boutdur.lig,
-#             winhr = winhr,M5L5res = M5L5res,
-#             overwrite=overwrite,desiredtz=desiredtz)
-#   }
+  # if (dopart5 == TRUE) {
+  #   cat('\n')
+  #   cat(paste0(rep('_',options()$width),collapse=''))
+  #   cat("\nPart 5\n")
+  #   if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
+  #   g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
+  #           hrs.del.start=hrs.del.start,
+  #           hrs.del.end=hrs.del.end,
+  #           loglocation=loglocation,excludefirstlast=excludefirstlast,
+  #           windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
+  #           boutcriter.mvpa=boutcriter.mvpa,storefolderstructure=storefolderstructure,
+  #           threshold.lig = threshold.lig,
+  #           threshold.mod = threshold.mod,
+  #           threshold.vig = threshold.vig,timewindow=timewindow,
+  #           boutdur.mvpa = boutdur.mvpa,
+  #           boutdur.in = boutdur.in,
+  #           boutdur.lig = boutdur.lig,
+  #           winhr = winhr,M5L5res = M5L5res,
+  #           overwrite=overwrite,desiredtz=desiredtz)
+  # }
   
   #==========================
   # Report generation:
@@ -259,17 +257,17 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation =loglocation,f0=f0,f1=f1,
                    storefolderstructure=storefolderstructure)
   }
-#   if (length(which(do.report == 5)) > 0) {
-#     cat('\n')
-#     cat(paste0(rep('_',options()$width),collapse=''))
-#     cat("\nReport part 5\n")
-#     N.files.ms5.out = length(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
-#     if (N.files.ms5.out < f0) f0 = 1
-#     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
-#     if (f1 == 0) f1 = N.files.ms5.out
-#     g.part5.report(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
-#                    includenightcrit=includenightcrit,includedaycrit=includedaycrit)
-#   }
+  # if (length(which(do.report == 5)) > 0) {
+  #   cat('\n')
+  #   cat(paste0(rep('_',options()$width),collapse=''))
+  #   cat("\nReport part 5\n")
+  #   N.files.ms5.out = length(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
+  #   if (N.files.ms5.out < f0) f0 = 1
+  #   if (N.files.ms5.out < f1) f1 = N.files.ms5.out
+  #   if (f1 == 0) f1 = N.files.ms5.out
+  #   g.part5.report(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
+  #                  includenightcrit=includenightcrit,includedaycrit=includedaycrit)
+  # }
   if (visualreport == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))

@@ -1,8 +1,8 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 1.2-3
-Date: 2016-03-13
+Version: 1.2-4
+Date: 2016-05-05
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                   email="vincentvanhees@gmail.com"),
                   person("Zhou","Fang",role="ctb"),
@@ -11,6 +11,6 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
 Maintainer: Vincent T van Hees <vincentvanhees@gmail.com>
 Description: A tool to process and analyse data collected with wearable raw acceleration sensors. The package has been developed and tested for binary data from GENEActiv and GENEA devices and .csv-export data from  Actigraph devices. These devices are currently widely used in research on human daily physical activity.
 License: LGPL (>= 2.0, < 3)
-Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread
+Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR
 Depends: stats, utils, R (>= 2.10)
 NeedsCompilation: no
