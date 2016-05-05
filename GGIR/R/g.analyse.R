@@ -333,11 +333,15 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
             windowsummary[gikb+gik,5] = length(which(val[bbb1:bbb2] == 0))/ (3600/ws3) #hours of valid data
             windowsummary[gikb+gik,((metrici-2)*Nfeatures)+6] = mean(as.numeric(vari[bbb1:bbb2,metrici]))
             windowsummary[gikb+gik,((metrici-2)*Nfeatures)+7] = sd(as.numeric(vari[bbb1:bbb2,metrici]))
-            windowsummary[gikb+gik,((metrici-2)*Nfeatures)+8] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.05)
-            windowsummary[gikb+gik,((metrici-2)*Nfeatures)+9] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.25)
-            windowsummary[gikb+gik,((metrici-2)*Nfeatures)+10] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.5)
-            windowsummary[gikb+gik,((metrici-2)*Nfeatures)+11] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.75)
-            windowsummary[gikb+gik,((metrici-2)*Nfeatures)+12] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.95)
+            if (nrow(vari) > 10 & (bbb2 - bbb1) > 10) {
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+8] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.05)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+9] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.25)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+10] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.5)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+11] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.75)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+12] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.95)
+            } else {
+              windowsummary[gikb+gik,(((metrici-2)*Nfeatures)+8):(((metrici-2)*Nfeatures)+12)] = NA
+            }
           }
         }
         ws_names = c("id","serial number","filename",

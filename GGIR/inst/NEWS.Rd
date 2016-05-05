@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.2-4 (release date: 5-5-2016)}{
+\itemize{
+  \item Non-wear time now reported in output part 4
+  \item Added functionality to analyse 1 or 2 specific days of a measurement and export their raw data
+}
+}
 \section{Changes in version 1.2-2 (release date: 7-1-2016)}{
 \itemize{
   \item Bug fixed in the loading of data files with (very) large amounts of data
