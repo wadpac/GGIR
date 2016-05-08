@@ -1,7 +1,8 @@
 g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M5window = c(0,24),M5L5res=10,
                       includedaycrit = 16,ilevels=c(),winhr=5,idloc=1,snloc=1,
-                      mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),mvpa.2014 = FALSE,window.summary.size=10,
-                      dayborder=0) {
+                      mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
+                      window.summary.size=10,
+                      dayborder=0,mvpa.2014 = FALSE,closedbout=FALSE) {
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -454,25 +455,27 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     boutdur2 = mvpadur[1] * (60/ws3) # per minute
                     rr1 = matrix(0,length(varnum),1)
                     p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=TRUE)
+                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=closedbout)
                     mvpa[4] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 5: time spent above threshold 5 minutes
                     boutdur2 = mvpadur[2] * (60/ws3) #per five minutes
                     rr1 = matrix(0,length(varnum),1)
                     p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=TRUE)
+                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=closedbout)
                     mvpa[5] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 6: time spent above threshold 10 minutes
                     boutdur2 = mvpadur[3] * (60/ws3) # per ten minutes
                     rr1 = matrix(0,length(varnum),1)
                     p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=TRUE)
+                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=closedbout)
                     mvpa[6] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     if (length(which(varnum*1000 >= mvpathreshold[mvpai])) < 0 & length(varnum) < 100) {
                       mvpa[1:6] = 0
                     }
                     
                   } else { # updated version
+                    cat("\nWARNING: MVPA Bout defintion has been updated, please see document for more information")
+                    cat("\nincluding instructions on how to continue using the old defintion\n")
                     # METHOD 4: time spent above threshold
                     boutdur2 = 60/ws3 # per minute
                     rr1 = matrix(0,length(varnum),1)

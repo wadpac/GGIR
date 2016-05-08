@@ -5,7 +5,22 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      do.hfenplus=FALSE,do.teLindert2013=FALSE,
                      do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,do.enmoa=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
-                     outputdir=c(),outputfolder=c(),dayborder=0) {
+                     dayborder=0,...) {
+  
+  #get input variables
+  input = list(...)
+  if (length(input) > 0) {
+    for (i in 1:length(names(input))) {
+      txt = paste(names(input)[i],"=",input[i],sep="")
+      if (class(unlist(input[i])) == "character") {
+        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+      }
+      eval(parse(text=txt))
+    }
+  }
+  if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
+  if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
+  
   
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1

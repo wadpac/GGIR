@@ -62,6 +62,8 @@ If you want to use this package for a different data format (e.g. from a differe
 accelerometer brand) then please provide me with: the R-code to read the data and
 example files for testing purposes.\cr
 \cr
+Please note that there is google discussion group for this package (link below).\cr
+\cr
 You can thank me for sharing the code in this package and for developing 
 it as a generic purpose tool by citing the package name and by
 citing the supporting publications in your own scientific
@@ -71,8 +73,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.2-4\cr
-Date: \tab 2016-5-05\cr
+Version: \tab 1.2-5\cr
+Date: \tab 2016-5-08\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
