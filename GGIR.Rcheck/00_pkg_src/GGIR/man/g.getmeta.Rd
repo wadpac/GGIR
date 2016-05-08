@@ -20,9 +20,8 @@ tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
 do.lfenmo = FALSE, do.en = FALSE,
 do.hfen = FALSE, do.hfenplus = FALSE,
 do.teLindert2013=FALSE,do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
-do.enmoa = FALSE,
-lb = 0.2,hb = 15, n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
-outputdir=c(),outputfolder=c(),dayborder=0)
+do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,meantempcal=c(),chunksize=c(),
+selectdaysfile=c(),dayborder=0,...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -97,18 +96,15 @@ The default is 1 (24 hrs). For machines with less than 4Gb of RAM memory a value
 below 1 is recommended.
   }
   \item{selectdaysfile}{
-  Csv file holding the relation between device serial numbers and measurement days of interest.
-  Functionality designed for the London Centre of Longidutinal studies.
-  }
-  \item{outputdir}{
-  Please ignore, functionality designed for the London Centre of Longidutinal studies.
-  }
-  \item{outputfolder}{
-  Please ignore, functionality designed for the London Centre of Longidutinal studies.
+  see \link{g.part1}
   }
   \item{dayborder}{
-   Hour at which days start and end (default = 0), value = 4 would mean 4am
+   see \link{g.part1}
   }
+  \item{...}{
+   Please ignore. Only used by the code internally when called from within
+   g.part1 with selectdaysfile specific.
+  }  
 }
 \value{
   \item{metalong}{dataframe with long epoch meta-data: EN, non-wear score,
