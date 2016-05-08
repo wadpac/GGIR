@@ -13,7 +13,7 @@ g.getbout = function(rr,boutdur2,boutcriter=100,p,closedbout=FALSE) {
         }
         select = p[jmvpa:max(which(p < endi))]
         # jump = (max(select) - min(select)) + 1
-        jump = (max(select) - min(select)) + 1
+        jump = length(select)
         rrt[select] = 2 #remember that this was a bout
         boutcount[p[jmvpa]:p[max(which(p < endi))]] = 1
       } else {

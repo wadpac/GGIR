@@ -51,7 +51,7 @@ g.shell.GGIR(#=======================================
              studyname=studyname, #specify above
              f0=f0, #specify above
              f1=f1, #specify above
-             overwrite = FALSE, #overwrite previous milestone data?
+             overwrite = TRUE, #overwrite previous milestone data?
              csv.struc=c(), #csv.struc=c(5,6), #
              do.imp=TRUE, # Do imputation? (recommended)
              idloc=1, #id location (1 = file header, 2 = filename)

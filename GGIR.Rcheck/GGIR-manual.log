@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.10.26)  5 MAY 2016 14:23
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.10.26)  8 MAY 2016 23:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -707,47 +707,52 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 )
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--97
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 37--99
 
  []
 
 [2]
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 114.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 116.
 
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 126--130
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 128--132
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
@@ -764,23 +769,23 @@ File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 ) [5]
-Overfull \hbox (7.78088pt too wide) in paragraph at lines 270--270
+Overfull \hbox (7.78088pt too wide) in paragraph at lines 272--272
  []\T1/zi4/m/n/10 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c
 (),mvpadur=c(1,5,10),[] 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 366--367
+Underfull \hbox (badness 10000) in paragraph at lines 375--376
 
  []
 
-[7]
-Underfull \hbox (badness 10000) in paragraph at lines 443--444
+[7] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 452--453
 
  []
 
-[8]
-Overfull \hbox (2.69771pt too wide) in paragraph at lines 464--466
+
+Overfull \hbox (2.69771pt too wide) in paragraph at lines 473--475
 []\T1/zi4/m/n/10 pX_ENMO_mg_0-24h \T1/ptm/m/n/10 Per-centile in the short epoch
  dis-tri-bu-tion with in-valid data im-puted. Within
  []
@@ -788,17 +793,17 @@ Overfull \hbox (2.69771pt too wide) in paragraph at lines 464--466
 [9] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 ) [10]
-Overfull \hbox (20.60657pt too wide) in paragraph at lines 562--564
+Overfull \hbox (20.60657pt too wide) in paragraph at lines 571--573
 []\T1/ptm/m/n/10 Vincent T van Hees <vin-cent-van-hees@gmail.com> Jing Hua Zhao
  <jinghua.zhao@mrc-epid.cam.ac.uk> 
  []
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [11] [12]
+) [11]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [13] [14]
+) [12] [13] [14]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 ) [15]
@@ -807,34 +812,34 @@ File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 ) [16]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [17] [18] [19]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1135--1139
+) [17] [18]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1143--1147
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+[19] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 )
-Overfull \hbox (19.78088pt too wide) in paragraph at lines 1171--1171
+Overfull \hbox (19.78088pt too wide) in paragraph at lines 1179--1179
  []\T1/zi4/m/n/10 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 
 1, hrs.del.start = 0.5,[] 
  []
 
 
-Overfull \hbox (2.78088pt too wide) in paragraph at lines 1174--1174
+Overfull \hbox (2.78088pt too wide) in paragraph at lines 1182--1182
  []\T1/zi4/m/n/10 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,nd
 ayswindow=7,idloc=1,[] 
  []
 
 
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1184--1187
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1192--1195
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
  []
 
 [20] [21]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1317--1321
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1332--1336
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
@@ -842,12 +847,12 @@ i:10.1371/journal.pone.0061691
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 ) [22]
-Underfull \hbox (badness 10000) in paragraph at lines 1394--1397
+Underfull \hbox (badness 10000) in paragraph at lines 1409--1412
 
  []
 
 [23]
-LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 1434
+LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 1449
 .
  (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
 File: ts1zi4.fd 2013/06/07 Fontinst v1.933 font definitions for TS1/zi4.
@@ -855,23 +860,23 @@ File: ts1zi4.fd 2013/06/07 Fontinst v1.933 font definitions for TS1/zi4.
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 ) [24] [25]
-Underfull \hbox (badness 10000) in paragraph at lines 1570--1573
+Underfull \hbox (badness 10000) in paragraph at lines 1585--1588
 
  []
 
 [26]
-Underfull \hbox (badness 10000) in paragraph at lines 1630--1635
+Underfull \hbox (badness 10000) in paragraph at lines 1645--1650
 
  []
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1652--1654
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1667--1669
 []\T1/zi4/m/n/10 sleeplog_dur_WD_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
  []
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1654--1656
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1669--1671
 []\T1/zi4/m/n/10 sleeplog_dur_WE_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
  []
@@ -882,13 +887,13 @@ File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 )
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1778--1781
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1793--1796
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
  []
 
 [29]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1839--1843
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1854--1858
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
@@ -903,17 +908,17 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 55.
+(Font)              using `T1/zi4/m/n' instead on input line 56.
 
 [33
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1932.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1932.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1947.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1947.
  (./Rd2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1932.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1932.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1947.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1947.
 
 Package rerunfilecheck Info: File `Rd2.out' has not changed.
 (rerunfilecheck)             Checksum: FEF373DD73E9B73E068D4A93C32B1F24;882.
@@ -921,7 +926,7 @@ Package rerunfilecheck Info: File `Rd2.out' has not changed.
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1932.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1947.
  ) 
 Here is how much of TeX's memory you used:
  6555 strings out of 493304
@@ -940,10 +945,10 @@ type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
 mes/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (33 pages, 153586 bytes).
+Output written on Rd2.pdf (33 pages, 154267 bytes).
 PDF statistics:
- 555 PDF objects out of 1000 (max. 8388607)
- 507 compressed objects within 6 object streams
+ 561 PDF objects out of 1000 (max. 8388607)
+ 513 compressed objects within 6 object streams
  170 named destinations out of 1000 (max. 500000)
  137 words of extra memory for PDF output out of 10000 (max. 10000000)
 

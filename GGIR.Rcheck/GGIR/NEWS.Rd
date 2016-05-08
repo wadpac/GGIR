@@ -2,10 +2,17 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 1.2-4 (release date: 5-5-2016)}{
+\section{Changes in version 1.2-5 (release date: 8-5-2016)}{
 \itemize{
-  \item Non-wear time now reported in output part 4
-  \item Added functionality to analyse 1 or 2 specific days of a measurement and export their raw data
+  \item Accelerometer non-wear time is now also reported in the output of part 4
+  \item Part 1 is now able to only process specific days of a measurement via argument 
+  selectdaysfile. This is useful when measurement lasts for a week and the participant
+  is instructed to only wear the accelerometer on one or two specific days.
+  \item Argument mvpa.2014 and closedbout added to function g.analyse. The calculation of
+  MVPA (moderate and vigorous physical activity) has been available since 2014.
+  With hindsight this included a bug in the calculation which incorrectly allocated too
+  many minutes to each bout. This has now been corrected, but the user has the option
+  to continue using the old calculation.
 }
 }
 \section{Changes in version 1.2-2 (release date: 7-1-2016)}{

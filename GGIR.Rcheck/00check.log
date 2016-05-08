@@ -5,7 +5,7 @@
 * using option ‘--as-cran’
 * checking for file ‘GGIR/DESCRIPTION’ ... OK
 * checking extension type ... Package
-* this is package ‘GGIR’ version ‘1.2-4’
+* this is package ‘GGIR’ version ‘1.2-5’
 * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
 Maintainer: ‘Vincent T van Hees <vincentvanhees@gmail.com>’
 * checking package namespace information ... OK
