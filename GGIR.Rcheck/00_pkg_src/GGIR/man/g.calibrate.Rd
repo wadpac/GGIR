@@ -43,11 +43,10 @@ below 1 is recommended.
   see \link{g.getmeta}
 }
   \item{selectdaysfile}{
-  Functionality designed for the London Centre of Longidutinal studies.
-  Csv file holding the relation between device serial numbers and measurement days of interest.
+  see \link{g.part1}
   }
   \item{dayborder}{
-  Hour at which days start and end (default = 0), value = 4 would mean 4am
+  see \link{g.part1}
   }
 }
 \value{

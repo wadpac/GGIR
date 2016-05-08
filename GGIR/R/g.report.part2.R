@@ -56,19 +56,17 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
-#             SUMMARY$pdffilenumb = pdffilenumb
-#             SUMMARY$pdfpagecount = pdfpagecount
-            # SUM$summary = SUMMARY
+            SUMMARY$pdffilenumb = pdffilenumb
+            SUMMARY$pdfpagecount = pdfpagecount
+            SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
             if (length(selectdaysfile) > 0) {
               winSUMMARY = SUM$windowsummary[,which(
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
             }
           } else {
-            SUMMARY = SUM$summary
-#             SUMMARY$pdffilenumb = pdffilenumb
-#             SUMMARY$pdfpagecount = pdfpagecount
-            # SUM$summary = SUMMARY
+            SUM$summary$pdffilenumb = pdffilenumb
+            SUM$summary$pdfpagecount = pdfpagecount
             if (ncol(SUMMARY) == ncol(SUM$summary)) {
             } else {
               SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
@@ -100,7 +98,6 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
             }
             SUMMARY = rbind(SUMMARY,SUM$summary)
             daySUMMARY = rbind(daySUMMARY,SUM$daysummary)
-            
           }
         }
       }

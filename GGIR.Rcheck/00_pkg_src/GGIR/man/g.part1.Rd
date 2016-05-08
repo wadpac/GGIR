@@ -157,8 +157,12 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   It is the users responsibility to compile the csv-spreadsheet.
   }
   \item{selectdaysfile}{
-  Functionality designed for the London Centre of Longidutinal studies.
-  Csv file holding the relation between device serial numbers and measurement days of interest.
+  Optional functionality. Character pointing at a csv file holding the relationship
+  between device serial numbers (first column) and measurement dates of interest 
+  (second and third column). The date format should be dd/mm/yyyy. And the first row
+  if the csv file is assumed to have a character variable names, e.g. "serialnumber"
+  "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
+  directory in a new subfolder named 'raw'.
   }
   \item{dayborder}{
   Hour at which days start and end (default = 0), value = 4 would mean 4am
