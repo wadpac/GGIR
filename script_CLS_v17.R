@@ -15,13 +15,20 @@ f0 = c() #file to start with if used in serial analyses
 f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
 mode= c(1,2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
 #datadir=  c() #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
+dayborder = 4
+# datadir = "D:/dropbox/Dropbox/Accelerometry/DATA/Andy Bradley"
+# outputdir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development"
+# selectdaysfile = c()
+# datadir = "D:/sharedfolder/first5/output_first5/meta/raw" 
+# outputdir= "D:/sharedfolder/first5" #Name directory where output needs to be stored
+# studyname="first5"  #name of study, only needed if datadir is a list of filenames
+# selectdaysfile = "D:/sharedfolder/first5/wearcodes.csv"
 
-datadir = "D:/sharedfolder/first5/output_first5/meta/raw" #"D:/dropbox/Dropbox/Accelerometry/GGIR/development/output_Millenium dress rehearsal/meta/raw"
 
-outputdir= "D:/sharedfolder/first5" #Name directory where output needs to be stored
-studyname="first5"  #name of study, only needed if datadir is a list of filenames
-selectdaysfile = "D:/sharedfolder/first5/wearcodes.csv"
-
+datadir = "D:/dropbox/Dropbox/Accelerometry/DATA/Millenium dress rehearsal"
+outputdir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development"
+studyname = "Millenium dress rehearsal"
+selectdaysfile = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/input_cls/wear_codes.csv"
 #=====================================================================================
 # load functions from functions folder (replace by require(GGIR) once package is updated)
 
@@ -57,7 +64,7 @@ g.shell.GGIR(#=======================================
   csv.struc=c(), #csv.struc=c(5,6), #
   do.imp=TRUE, # Do imputation? (recommended)
   idloc=1, #id location (1 = file header, 2 = filename)
-  print.filename=FALSE,
+  print.filename=TRUE,
   storefolderstructure = FALSE,
   selectdaysfile=selectdaysfile,
   # diaryfile=diaryfile,
@@ -68,13 +75,20 @@ g.shell.GGIR(#=======================================
   windowsizes = c(5,900,3600), #Epoch length, non-wear detection resolution, non-wear detection evaluation window
   do.cal=TRUE, # Apply autocalibration? (recommended)
   do.enmo = TRUE, #Needed for physical activity analysis
+  do.en=TRUE,
   do.anglez=TRUE, #Needed for sleep detection
-  do.angley=TRUE, #Needed for sleep detection
-  do.anglex=TRUE, #Needed for sleep detection
+  do.angley=TRUE,
+  do.anglex=TRUE,
+  do.roll_med_acc_x=TRUE,
+  do.roll_med_acc_y=TRUE,
+  do.roll_med_acc_z=TRUE,
+  do.dev_roll_med_acc_x=TRUE,
+  do.dev_roll_med_acc_y=TRUE,
+  do.dev_roll_med_acc_z=TRUE,
   chunksize=0.8, #size of data chunks to be read (value = 1 is maximum)
   desiredtz = "Europe/London",
   printsummary=TRUE,
-  minloadcrit=48,
+  minloadcrit=46,
   epochvalues2csv = FALSE,
   #-------------------------------
   # Part 2 parameters:
@@ -94,9 +108,34 @@ g.shell.GGIR(#=======================================
   ilevels = c(),#c(seq(0,400,by=50),8000), #acceleration values (metric ENMO) from which a frequency distribution needs to be derived, set value at c() if you do not want quantiles
   mvpathreshold = c(100), #MVPA (moderate and vigorous physical activity threshold
   window.summary.size = 10,
-  dayborder = 4, # dayborder is the hour at which one day becomes the next day
+  dayborder = dayborder, # dayborder is the hour at which one day becomes the next day
   mvpa.2014 = TRUE,
   closedbout=FALSE,
+  # #-------------------------------
+  # # Part 3 parameters:
+  # #-------------------------------
+  # # Key functions: Sleep detection
+  # timethreshold= c(5), #10
+  # anglethreshold=5,
+  # ignorenonwear = TRUE, # if TRUE non-wear is not detected as sleep (if FALSE then it will work with imputed data)
+  # #-------------------------------
+  # # Part 4 parameters:
+  # #-------------------------------
+  # # Key functions: Integrating sleep log (if available) with sleep detection, storing day and person specific summaries of sleep
+  # excludefirstlast = FALSE, # Exclude first and last night for sleep analysis?
+  # includenightcrit = 16, # number of minimum valid hours in a day to attempt sleep analysis
+  # def.noc.sleep = c(),
+  # # If sleep log is available:
+  # # loglocation= "Q:/scripts/GGIR/test_version14/sleep logs/ascribe/CONVERTED_LOG_ASCRIBEstudy_v1.csv", # full directory and name of the log (if available, otherwise leave value as c() )
+  # outliers.only = TRUE,
+  # criterror = 4,
+  # relyonsleeplog = FALSE,
+  # # sleeplogidnum = TRUE, # Is the participant in the sleep log stored as a number (TRUE) or as a character (FALSE)
+  # # colid=1, #colomn in which the participant id or filename is stored
+  # # coln1=2, #column number for first day
+  # do.visual = TRUE,
+  # # nnights = 21, #number of nights in the sleep log
+  # #-------------------------------
   #-----------------------------------
   # Report generation
   #-------------------------------

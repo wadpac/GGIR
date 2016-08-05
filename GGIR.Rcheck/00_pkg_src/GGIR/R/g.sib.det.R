@@ -1,5 +1,5 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
-                       timethreshold = c(5,10)) {
+                     timethreshold = c(5,10),desiredtz="Europe/London") {
   #==============================================================
   # get variables  
   D = IMP$metashort
@@ -46,7 +46,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     rm(D)
     #==================================================================
     # sleep detection
-    
     angle[which(is.na(angle) == T)] = 0
     cnt = 1
     for (i in timethreshold) {
@@ -83,19 +82,10 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     }
     #-------------------------------------------------------------------
     # detect midnights
-    midnights = midnightsi = matrix(0,(round(ND)+3),1)
-    countmidn = 0 #change to 1 on 27/65/2014
-    for (cnt in 1:length(time)) { #need to detect all midnights because some days may be 23 or 25 hours
-      temp = unlist(strsplit(time[cnt]," "))[2]
-      temp2 = as.numeric(unlist(strsplit(temp,":"))[1])
-      temp3 = as.numeric(unlist(strsplit(temp,":"))[2])
-      temp4 = as.numeric(unlist(strsplit(temp,":"))[3])
-      if (temp2+temp3+temp4 == 0) {
-        countmidn = countmidn + 1
-        midnights[countmidn] = as.character(time[cnt])
-        midnightsi[countmidn] = cnt
-      }
-    }
+    detemout = g.detecmidnight(ND,time,desiredtz) # no use common function for midnight detection
+    midnights=detemout$midnights
+    midnightsi=detemout$midnightsi
+    countmidn = length(midnightsi)
     L5list = rep(0,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
@@ -125,8 +115,11 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
         L5list[1] = L5
       } else { #more than one midnight
-        midnights = midnights[-c(which(as.numeric(midnightsi) == 0))]
-        midnightsi = midnightsi[-c(which(as.numeric(midnightsi) == 0))]  
+        cut = which(as.numeric(midnightsi) == 0)
+        if (length(cut) > 0) {
+          midnights = midnights[-cut]
+          midnightsi = midnightsi[-cut]  
+        }
         lastmidnight = midnights[length(midnights)]
         lastmidnighti = midnightsi[length(midnights)]
         firstmidnight = midnights[1]

@@ -20,6 +20,8 @@ tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
 do.lfenmo = FALSE, do.en = FALSE,
 do.hfen = FALSE, do.hfenplus = FALSE,
 do.teLindert2013=FALSE,do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
+do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
+do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
 do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,meantempcal=c(),chunksize=c(),
 selectdaysfile=c(),dayborder=0,...)
 }
@@ -28,8 +30,14 @@ selectdaysfile=c(),dayborder=0,...)
 }
   \item{desiredtz}{desired timezone: see also http://en.wikipedia.org/wiki/Zone.tab
 }
-  \item{windowsizes}{c(Short epoch length in seconds, Long epoch length in seconds,
-  Window size for assessing non-wear time in seconds)
+  \item{windowsizes}{ Three values to indicate the lengths of the windows as in 
+  c(window1,window2,window3): window1 is the short epoch length in seconds and by
+  default 5 this is the time window over which acceleration and angle metrics
+  are calculated, window2 is the long epoch length in seconds for which non-wear and
+  signal clipping are defined, default 900. However, window3 is the window length
+  of data used for non-wear detection and by default 3600 seconds. So, when window3
+  is larger than window2 we use overlapping windows, while if window2 equals window3
+  non-wear periods are assessed by non-overlapping windows.
 }
   \item{daylimit}{number of days to limit (roughly), if set to FALSE no daylimit
   will be applied
@@ -79,6 +87,21 @@ selectdaysfile=c(),dayborder=0,...)
   }
   \item{do.enmoa}{if TRUE (default), calculate metric ENMOa which is equal to
   metric ENMO but with the absolute taken from the Euclidean norm minus one.
+  }
+  \item{do.roll_med_acc_x}{if TRUE, calculate rolling median for the x axis
+  }
+  \item{do.roll_med_acc_y}{if TRUE, calculate rolling median for the y axis
+  }
+  \item{do.roll_med_acc_z}{if TRUE, calculate rolling median for the z axis
+  }
+  \item{do.dev_roll_med_acc_x}{if TRUE, calculate deviations from rolling 
+  median for the x axis
+  }
+  \item{do.dev_roll_med_acc_y}{if TRUE, calculate deviations from rolling 
+  median for the y axis
+  }
+  \item{do.dev_roll_med_acc_z}{if TRUE, calculate deviations from rolling 
+  median for the z axis
   }
   \item{lb}{lower boundary of the frequency filter (in Hertz)
   }

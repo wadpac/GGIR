@@ -1,9 +1,9 @@
 g.getbout = function(rr,boutdur2,boutcriter=100,p,closedbout=FALSE) {
   # p are the indices for which the intensity criteria are met
-  rrt = rr # zeros as long as there are epochs in the timewindow
-  boutcount = rep(0,length(rr)) # zeros as long as there are epochs in the timewindow
-  jmvpa = 1
-  LRR = length(rr)
+  rrt = rr
+  boutcount = rep(0,length(rr)) #initialize zeros as long as there are epochs in the timewindow
+  jmvpa = 1 # index for going stepwise through vector p
+  LRR = length(rr) # LRR is length of vector rr
   while(jmvpa <= length(p)) { # go through all epochs that are possibly part of a bout
     endi = p[jmvpa]+boutdur2
     if (endi <= LRR) { #does bout fall without measurement?
@@ -12,7 +12,6 @@ g.getbout = function(rr,boutdur2,boutcriter=100,p,closedbout=FALSE) {
           endi = endi + 1
         }
         select = p[jmvpa:max(which(p < endi))]
-        # jump = (max(select) - min(select)) + 1
         jump = length(select)
         rrt[select] = 2 #remember that this was a bout
         boutcount[p[jmvpa]:p[max(which(p < endi))]] = 1

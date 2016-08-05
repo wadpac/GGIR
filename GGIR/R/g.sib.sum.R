@@ -1,19 +1,19 @@
-g.sib.sum = function(SLE,M,ignorenonwear=FALSE) {
+g.sib.sum = function(SLE,M,ignorenonwear=FALSE,desiredtz="Europe/London") {
   A = as.data.frame(SLE$output)
   invalid = A$invalid
-  
   if (ignorenonwear == TRUE) {
     if (length(which(A$invalid==1)) > 0) {
-      A[which(A$invalid==1),] = 0
-      # A = A[-c(which(A$invalid==1)),]
+      A[which(A$invalid==1),2:ncol(A)] = 0
     }
   }
-  # invalid = A$invalid
-  
-  time = as.POSIXlt(A$time,tz="UTC") # (added on 7/9/2015) needed when analysing data in different timezone?
-  # this timezone correction is my current fix to dealing with the problem of as.POSIXlt getting confused when trying t
-  # interpret a time that happened in a timezone, which does not exist in another timezone
-  
+  space = ifelse(length(unlist(strsplit(as.character(A$time[1])," "))) > 1,TRUE,FALSE)
+  temptime = as.character(unlist(A$time))
+  if (space == FALSE) {
+    time = as.POSIXlt(temptime,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
+  } else {
+    time = as.POSIXlt(temptime,tz=desiredtz)
+  }
+  # time = as.POSIXlt(A$time,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
   night = A$night
   sleep = as.data.frame(as.matrix(A[,(which(colnames(A)=="night")+1):ncol(A)]))
   colnames(sleep) = colnames(A)[(which(colnames(A)=="night")+1):ncol(A)]
@@ -96,6 +96,5 @@ g.sib.sum = function(SLE,M,ignorenonwear=FALSE) {
       }
     }
   }
-  #   invisible(list(sib.cla.sum=sib.cla.sum))
-  sib.cla.sum=sib.cla.sum
+  return(sib.cla.sum)
 }

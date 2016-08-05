@@ -5,7 +5,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    ilevels = c(0,10), mvpathreshold = c(100),
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
-                   window.summary.size=10,dayborder=0,mvpa.2014=FALSE,closedbout=FALSE) {
+                   window.summary.size=10,dayborder=0,mvpa.2014=FALSE,closedbout=FALSE,desiredtz="Europe/London") {
   # verify whether path1 is a directory or a list of files
   outputfolder = unlist(strsplit(metadatadir,"/output_"))[2]
   outputfolder = paste("/output_",outputfolder,sep="")
@@ -32,6 +32,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
     }
   }
   fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
+  
   ffdone = fnames.ms2
   #---------------------------------
   # house keeping variables
@@ -65,7 +66,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
       load(paste(path,fnames[i],sep="")) #reading RData-file
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
-                       hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow)
+                       hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz)
         if (do.imp==FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
@@ -73,12 +74,13 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
                         includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
-                        window.summary.size=window.summary.size,dayborder=dayborder,mvpa.2014=mvpa.2014,closedbout=closedbout)
+                        window.summary.size=window.summary.size,dayborder=dayborder,mvpa.2014=mvpa.2014,closedbout=closedbout,
+                        desiredtz=desiredtz)
         
         if (storefolderstructure == TRUE) {
           SUMMARY = SUM$summary
-#           SUMMARY$pdffilenumb = pdffilenumb
-#           SUMMARY$pdfpagecount = pdfpagecount
+          #           SUMMARY$pdffilenumb = pdffilenumb
+          #           SUMMARY$pdfpagecount = pdfpagecount
           SUM$summary = SUMMARY
         }
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
@@ -90,8 +92,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0 | cnt78 == 1) {
             SUMMARY = SUM$summary
-#             SUMMARY$pdffilenumb = pdffilenumb
-#             SUMMARY$pdfpagecount = pdfpagecount
+            #             SUMMARY$pdffilenumb = pdffilenumb
+            #             SUMMARY$pdfpagecount = pdfpagecount
             SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
             if (length(selectdaysfile) > 0) {
@@ -101,8 +103,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             cnt78 = 2
           } else {
             SUMMARY = SUM$summary
-#             SUMMARY$pdffilenumb = pdffilenumb
-#             SUMMARY$pdfpagecount = pdfpagecount
+            #             SUMMARY$pdffilenumb = pdffilenumb
+            #             SUMMARY$pdfpagecount = pdfpagecount
             SUM$summary = SUMMARY
             
             
@@ -134,11 +136,14 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                 names(winSUMMARY2) =   colnames(winSUMMARY)
               }
               if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
-              names(SUM$windowsummary) =   colnames(winSUMMARY2)
+                names(SUM$windowsummary) =   colnames(winSUMMARY2)
               }
             }
             
           }
+        }
+        if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
+          filename = paste0(name,".RData")
         }
         save(SUM,IMP,file=paste(metadatadir,ms2.out,"/",name,sep="")) #IMP is needed for g.plot in g.report.part2
       }

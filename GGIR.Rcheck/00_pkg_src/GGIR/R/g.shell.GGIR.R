@@ -40,7 +40,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
       f1 = length(datadir) #modified
     }
   }
-  dopart1 = dopart2 = dopart3 = dopart4 = FALSE # dopart5 = FALSE
+  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE #
   if (length(which(mode == 0)) > 0) {
     dopart1 = TRUE
     dopart2 = TRUE
@@ -55,14 +55,39 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     # if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
-  if (filelist == TRUE) {
+  
+  # test whether RData input was used and if so, use original outputfolder
+  if (length(datadir) > 0) {
+    # list of all csv and bin files
+    if (filelist == FALSE) {
+      fnames = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
+                 dir(datadir,recursive=TRUE,pattern="[.]bin"),
+                 dir(datadir,recursive=TRUE,pattern="[.]wav"))
+      fnamesRD = dir(datadir,recursive=TRUE,pattern="[.]RD")
+      if (length(fnames) == length(fnamesRD)) { #because filenames may have both .bin in the middle and .RData
+        fnames = c()
+        fnames = fnamesRD
+      }
+    } else {
+      fnames = datadir
+    }
+    # check whether these are RDA
+    if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
+      useRDA = TRUE
+    } else {
+      useRDA = FALSE
+    }
+  } else {
+    useRDA = FALSE
+  }
+  
+  if (filelist == TRUE | useRDA == TRUE) {
     metadatadir = paste(outputdir,"/output_",studyname,sep="")
   } else {
     outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
     metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
   }
   # obtain default parameter values if not provided:
-  
   if (length(which(ls() == "selectdaysfile")) == 0)  selectdaysfile = c()
   if (length(which(ls() == "diaryfile")) == 0)  diaryfile = c()
   
@@ -88,6 +113,12 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "do.anglex")) == 0)  do.anglex = FALSE
   if (length(which(ls() == "do.angley")) == 0)  do.angley = FALSE
   if (length(which(ls() == "do.anglez")) == 0)  do.anglez = FALSE
+  if (length(which(ls() == "do.roll_med_acc_x")) == 0)  do.roll_med_acc_x=FALSE
+  if (length(which(ls() == "do.roll_med_acc_y")) == 0)  do.roll_med_acc_y=FALSE
+  if (length(which(ls() == "do.roll_med_acc_z")) == 0)  do.roll_med_acc_z=FALSE
+  if (length(which(ls() == "do.dev_roll_med_acc_x")) == 0)  do.dev_roll_med_acc_x=FALSE
+  if (length(which(ls() == "do.dev_roll_med_acc_y")) == 0)  do.dev_roll_med_acc_y=FALSE
+  if (length(which(ls() == "do.dev_roll_med_acc_z")) == 0)  do.dev_roll_med_acc_z=FALSE
   if (length(which(ls() == "do.enmoa")) == 0)  do.enmoa = FALSE
   if (length(which(ls() == "printsummary")) == 0)  printsummary = FALSE
   if (length(which(ls() == "includedaycrit")) == 0)  includedaycrit = 16
@@ -108,7 +139,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "idloc")) == 0)  idloc=1
   if (length(which(ls() == "coldid")) == 0)  colid=1
   if (length(which(ls() == "coln1")) == 0)  coln1=1
-  if (length(which(ls() == "nnights")) == 0)  nnights=1
+  if (length(which(ls() == "nnights")) == 0)  nnights=c()
   if (length(which(ls() == "outliers.only")) == 0)  outliers.only=FALSE
   if (length(which(ls() == "excludefirstlast")) == 0)  excludefirstlast=FALSE
   if (length(which(ls() == "criterror")) == 0)  criterror=3
@@ -137,11 +168,11 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
 #   if (length(which(ls() == "boutdur.mvpa")) == 0)  boutdur.mvpa = c(1,5,10)
 #   if (length(which(ls() == "boutdur.in")) == 0)  boutdur.in = c(10,20,30)
 #   if (length(which(ls() == "boutdur.lig")) == 0)  boutdur.lig = c(1,5,10)
-
+  
   # part 2
   if (length(which(ls() == "mvpadur")) == 0)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE
-  if (length(which(ls() == "mvpa.2014")) == 0) mvpa.2014 = TRUE
+  # if (length(which(ls() == "mvpa.2014")) == 0) mvpa.2014 = TRUE
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   
@@ -159,6 +190,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             do.hfenplus = do.hfenplus,
             do.teLindert2013=do.teLindert2013,
             do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
+            do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
+            do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
             do.enmoa = do.enmoa,printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,selectdaysfile=selectdaysfile,dayborder=dayborder)
@@ -177,7 +210,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             boutcriter = boutcriter,ndayswindow=ndayswindow,idloc=idloc,do.imp=do.imp,
             storefolderstructure=storefolderstructure,overwrite=overwrite,epochvalues2csv=epochvalues2csv,
             mvpadur=mvpadur,selectdaysfile=selectdaysfile,mvpa.2014=mvpa.2014,window.summary.size=window.summary.size,
-            dayborder=dayborder,closedbout=closedbout)
+            dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -186,7 +219,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
     g.part3(metadatadir=metadatadir,f0=f0,
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
-            ignorenonwear=ignorenonwear,overwrite=overwrite)
+            ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz)
   }
   if (dopart4 == TRUE) {
     cat('\n')

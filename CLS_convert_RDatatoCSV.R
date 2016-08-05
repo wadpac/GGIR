@@ -2,9 +2,10 @@ rm(list=ls())
 graphics.off()
 #==================================================================
 # INPUT NEEDED:
-setwd("D:/sharedfolder/first5") #<= the folder in which there is a folder named output_...
-
-studyname = "first5"
+# setwd("D:/sharedfolder/first5") #<= the folder in which there is a folder named output_...
+setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development") #<= the folder in which there is a folder named output_...
+studyname = "Millenium dress rehearsal"
+# studyname = "first5"
 
 exportrawdata = FALSE
 
@@ -36,10 +37,11 @@ rfiles = dir(rpath)
 rfiles2 = unlist(lapply(rfiles,rm.dayfromname))
 
 print("Load and export epoch data")
-for (i in 1:length(ufn2)) {
-  fnames2_withoutday = unlist(lapply(fnames2,rm.dayfromname))
-  if (length(fnames2_withoutday) > 0) { # milestone data is already split by day because they were derived from raw RData files 
+for (i in 1:length(fnames2)) {
+  fnames2_withoutday = unlist(lapply(fnames2[1],rm.dayfromname))
+  if (length(fnames2_withoutday) > 1) { # milestone data is already split by day because they were derived from raw RData files 
     fnames2_withday = fnames2
+    fnames2_withoutday = unlist(lapply(fnames2,rm.dayfromname))
     file2read = fnames2_withday[which(fnames2_withoutday == ufn2[i])]
     if (length(file2read) > 0) {
       for (j in 1:length(file2read)) {
@@ -60,7 +62,7 @@ for (i in 1:length(ufn2)) {
       }
     }
   } else { # scenario in which the milestone data is not split by day yet
-    file2read = fnames2[which(fnames2 == ufn2[i])]
+    file2read = fnames2[i]
     if (length(file2read) > 0) {
       load(paste0(path,"/",file2read,".RData"))
       invalid = IMP$rout[,5]
