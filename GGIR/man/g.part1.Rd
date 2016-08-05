@@ -23,8 +23,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
                    do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
                    do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE,
                    do.teLindert2013=FALSE,do.anglex=FALSE,do.angley=FALSE,
-                   do.anglez=FALSE,do.enmoa=FALSE,do.cal = TRUE,
-                   lb = 0.2, hb = 15,  n = 4,
+                   do.anglez=FALSE,do.enmoa=FALSE,
+                   do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
+                   do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
+                   do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
+                   do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
                    use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
                    printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef=c(),selectdaysfile=c(),dayborder=0)
@@ -101,6 +104,19 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
     \item{do.enmoa}{if TRUE (default), calculate metric ENMOa which is equal to
   metric ENMO but with the absolute taken from the Euclidean norm minus one.
 }
+ \item{do.roll_med_acc_x}{ see \link{g.getmeta}
+  }
+  \item{do.roll_med_acc_y}{ see \link{g.getmeta}
+  }
+  \item{do.roll_med_acc_z}{ see \link{g.getmeta}
+  }
+  \item{do.dev_roll_med_acc_x}{ see \link{g.getmeta}
+  }
+  \item{do.dev_roll_med_acc_y}{ see \link{g.getmeta}
+  }
+  \item{do.dev_roll_med_acc_z}{see \link{g.getmeta}
+  }
+
    \item{do.cal}{
   Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
   recommended setting is TRUE

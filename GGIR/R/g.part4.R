@@ -194,10 +194,15 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         } 
         qq_temp = sib.cla.sum #sib.cla.sum is the output from g.part3
         # create clear overview of which nights need to be procecess
-        if (max(qq_temp$night) < nnights) {
+        
+        if (length(nnights) == 0) {
           nnightlist = 1:max(qq_temp$night)
         } else {
-          nnightlist = 1:nnights
+          if (max(qq_temp$night) < nnights) {
+            nnightlist = 1:max(qq_temp$night)
+          } else {
+            nnightlist = 1:nnights
+          }
         }
         nnights.list = nnightlist # unique(sleeplog.t$night)
         nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]

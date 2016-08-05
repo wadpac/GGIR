@@ -1,4 +1,5 @@
-g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,ndayswindow = 7) {
+g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
+                    ndayswindow = 7,desiredtz="Europe/London") {
   windowsizes = M$windowsizes #c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
@@ -35,7 +36,7 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,ndaysw
   #======================================
   # detect first and last midnight and all midnights
   tooshort = 0
-  dmidn = g.detecmidnight(ND,time)
+  dmidn = g.detecmidnight(ND,time,desiredtz)
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi

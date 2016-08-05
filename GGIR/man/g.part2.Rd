@@ -17,7 +17,7 @@ L5M5window = c(0,24), M5L5res = 10, winhr = 5, qwindow=c(0,24), qlevels = c(0.1)
 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,ndayswindow=7,idloc=1,
 do.imp=TRUE,storefolderstructure=FALSE,overwrite=FALSE,epochvalues2csv=FALSE,
 mvpadur=c(1,5,10),selectdaysfile=c(),window.summary.size=10,dayborder=0,
-mvpa.2014 = FALSE,closedbout=FALSE)
+mvpa.2014 = FALSE,closedbout=FALSE,desiredtz="Europe/London")
 }
 \arguments{
 \item{datadir}{
@@ -137,14 +137,21 @@ mvpa.2014 = FALSE,closedbout=FALSE)
   }
     \item{mvpa.2014}{
   If TRUE use the MVPA bout definition as has been available since 2014.
-  With hindsight this included a bug in the calculation which incorrectly allocated too
-  many minutes to each bout. In the revised calculation this has now been corrected.
   To use the new calculation set value to FALSE (default) and also set argument closedbout.
-  
+  The 2014 definition looked at percentage of time (boutcritir) above a
+  threshold (mvpathreshold) per standardised time duration (values of mvpadur).
+  The newer bout defintion ooks at the percentage of time above a threshold for
+  the entire bout regardless of its duration. Literature provides little guidance
+  on which implementation is better. This could be an area of future research,
+  but for the moment I implemented both approaches. I do not think either of them
+  is wrong, they just require a different interpretation and are incompatible.
   }
   \item{closedbout}{
   If TRUE then count breaks in a bout towards the bout duration. If FALSE then only count
   time spent above the threshold towards the bout duration.
+  }
+  \item{desiredtz}{
+  see \link{g.getmeta}
   }
 }
 \value{
