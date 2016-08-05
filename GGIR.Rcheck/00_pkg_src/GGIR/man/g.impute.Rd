@@ -11,7 +11,7 @@ protocol to label impute invalid time segments in the data.
 }
 \usage{
 g.impute(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxdur = 0,
-ndayswindow = 7)
+ndayswindow = 7,desiredtz="Europe/London")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -36,13 +36,16 @@ ndayswindow = 7)
     definitely end?
   }
   \item{maxdur}{
-  how many DAYS after start of experiment did experiment
+    How many DAYS after start of experiment did experiment
     definitely stop? (set to zero if unknown = default)
-}
-\item{ndayswindow}{
-  If \code{strategy} is set to 3 then this is the size of the window as a number
-  of days
-}
+  }
+  \item{ndayswindow}{
+    If \code{strategy} is set to 3 then this is the size of the window as a number
+    of days
+  }
+  \item{desiredtz}{
+  see \link{g.getmeta}
+  }
 }
 
 \value{

@@ -20,7 +20,7 @@ g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24), quantiletype = 7,
 L5M5window = c(0, 24), M5L5res = 10, includedaycrit = 16, ilevels = c(),
 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),
 selectdaysfile=c(),window.summary.size=10,dayborder=0,mvpa.2014 = FALSE,
-closedbout=FALSE)
+closedbout=FALSE,desiredtz = c())
 }
 
 \arguments{
@@ -106,13 +106,25 @@ resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
   }
   \item{mvpa.2014}{
   If TRUE use the MVPA bout definition as has been available since 2014.
-  With hindsight this included a bug in the calculation which incorrectly allocated too
-  many minutes to each bout. In the revised calculation this has now been corrected.
-  To use the new calculation set value to FALSE (default) and also set argument closedbout.
+  The algorithm looks for 10 minute windows in which more than 80 percent
+  of the epochs are above mvpathreshold, and then counts the entire window as mvpa.
+  The new bout definition (mvpa.2014 = FALSE) looks for a group or groups
+  of epochs with a value above mvpathreshold that span a time window of at
+  least mvpadur minutes in  which more than boutcriter percent of the epochs are above
+  the threshold.
+  The motivation for the old defition was: A person who spends 10 minutes in MVPA
+  with a 2 minute break in the middle is equally active as a person who spends
+  8 minutes in MVPA without taking a break. Therefore, both should be counted equal
+  and counted as 10 minute MVPA bout. The motivation for the new definition 
+  is: not counting breaks towards MVPA simplifies interpretation and still 
+  counts the two persons in the example as each others equal.
   }
   \item{closedbout}{
   If TRUE then count breaks in a bout towards the bout duration. If FALSE then only count
   time spent above the threshold towards the bout duration.
+  }
+  \item{desiredtz}{
+  see \link{g.getmeta}
   }
 
 }
