@@ -148,17 +148,32 @@ g.inspectfile = function(datafile) {
     }
     
   } else if (dformat == 3) { #wav data
-    header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE))
-    H = sapply(as.character(header),function(x) {
-      tmp = unlist(strsplit(x,": "))
+    header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="UTF-8"))
+    # print(header)
+    if (length(header) == 0) {
+      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="latin1"))
+    }
+    # print(header)
+    if (length(header) <= 5) {
+      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE))
+    }
+    H = sapply(header,function(x) {
+      tmp = as.character(unlist(strsplit(as.character(x),": ")))
       if (length(tmp) == 1) {
         tmp = c(tmp, NA)
       }
       tmp
     })
-    H = as.data.frame(t(H))
+    if (is.list(H) == TRUE) {
+      conv = c()
+      for (jj in 1:length(H)) {
+        conv = rbind(conv,H[[jj]])
+      }
+      H = as.data.frame(conv)
+    } else {
+      H = as.data.frame(t(H))
+    }
     names(H) = c("hnames","hvalues")
-    # H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
   }
   H = as.matrix(H)
   if (ncol(H) == 1 & dformat == 2) {

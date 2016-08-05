@@ -4,6 +4,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE,
                    do.teLindert2013=FALSE,do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
                    do.enmoa = FALSE,
+                   do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
+                   do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
@@ -26,8 +28,28 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   } else { #multiple files
     filelist = TRUE    
   }
+  #Extra code to handle raw accelerometer data in Raw data format:
+  # list of all csv and bin files
+  if (filelist == FALSE) {
+    fnames = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
+               dir(datadir,recursive=TRUE,pattern="[.]bin"),
+               dir(datadir,recursive=TRUE,pattern="[.]wav"))
+    fnamesRD = dir(datadir,recursive=TRUE,pattern="[.]RD")
+    if (length(fnames) == length(fnamesRD)) { #because filenames may have both .bin in the middle and .RData
+      fnames = c()
+      fnames = fnamesRD
+    }
+  } else {
+    fnames = datadir
+  }
+  # check whether these are RDA
+  if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
+    useRDA = TRUE
+  } else {
+    useRDA = FALSE
+  }
   # create output directory if it does not exist
-  if (filelist == TRUE) {
+  if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
       studyname = "mystudy"
       print("Error: studyname not specified in part1. Needed for analysing lists of files")
@@ -54,14 +76,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   daylimit = FALSE
   #=================================================================
   # Other parameters:
-  # list of all csv and bin files
-  if (filelist == FALSE) {
-    fnames = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
-               dir(datadir,recursive=TRUE,pattern="[.]bin"),
-               dir(datadir,recursive=TRUE,pattern="[.]wav"))
-  } else {
-    fnames = datadir
-  }
   #--------------------------------
   # get file path if requested:
   #   if (storefolderstructure == TRUE) {
@@ -270,6 +284,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     do.hfenplus=do.hfenplus,
                     do.teLindert2013=do.teLindert2013,
                     do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
+                    do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
+                    do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
                     do.enmoa=do.enmoa,
                     lb = lb, hb = hb,  n = n,
                     desiredtz=desiredtz,daylimit=daylimit,windowsizes=windowsizes,
@@ -289,7 +305,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         filename = fnames[j]
       }
       filename_dir=tmp5[j];filefoldername=tmp6[j]
-      save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,".RData",sep=""))
+      if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
+        filename = paste0(filename,".RData")
+      }
+      save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
       SI = sessionInfo()  
       save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
       rm(M); rm(I); rm(C)

@@ -1,5 +1,6 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0) {
+  
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.4) chunksize = 0.4

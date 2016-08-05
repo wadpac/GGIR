@@ -1,7 +1,38 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 1.2-10 (release date: 05-8-2016)}{
+\itemize{
+  \item Updated documentation for function g.analyse to clarify different
+  mvpa bout definitions
+  \item Improvements to the functionality to only process specific days from
+  a long accelerometer file using the argument selectdaysfile
+  \item Timestamps are now in ISO 8601 format. I have updated the code such that it
+  can still handle old timestamp format, but new analyses procude timestamps in
+  the ISO 8601 format. The practical difference is that it will include a timezone
+  indicator.
+  \item Bugs fixed in data selection in g.getmeta function. In the old code it tended
+  to drop the last 30-45 minutes of a 7 day measurement.
+}
+}
+\section{Changes in version 1.2-8 (release date: 24-5-2016)}{
+\itemize{
+  \item Updated documentation for function g.analyse to clarify different
+  mvpa bout definitions
+  \item mvpa.2014 = TRUE turned back on again (was disable in last version)
+}
+}
+\section{Changes in version 1.2-7 (release date: 12-5-2016)}{
+\itemize{
+  \item mvpa.2014 TRUE/FALSE was swapped, FALSE is now the default
+  \item mvpa.2014 = TRUE disabled
+}
+}
+\section{Changes in version 1.2-6 (release date: 10-5-2016)}{
+\itemize{
+  \item Modified warning message in relation to the change in MVPA bout defintion 
+}
+}
 \section{Changes in version 1.2-5 (release date: 8-5-2016)}{
 \itemize{
   \item Accelerometer non-wear time is now also reported in the output of part 4
@@ -10,9 +41,8 @@
   is instructed to only wear the accelerometer on one or two specific days.
   \item Argument mvpa.2014 and closedbout added to function g.analyse. The calculation of
   MVPA (moderate and vigorous physical activity) has been available since 2014.
-  With hindsight this included a bug in the calculation which incorrectly allocated too
-  many minutes to each bout. This has now been corrected, but the user has the option
-  to continue using the old calculation.
+  This calculation has been improved, but the user has the option to continue using 
+  the old calculation.
 }
 }
 \section{Changes in version 1.2-2 (release date: 7-1-2016)}{

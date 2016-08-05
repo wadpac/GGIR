@@ -12,7 +12,7 @@ Typical users should work with function g.shell.GGIR only.
 }
 \usage{
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
-  ignorenonwear=FALSE,overwrite=FALSE)
+  ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London")
 }
 \arguments{
   \item{metadatadir}{
@@ -46,6 +46,9 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
     Overwrite previously generated milestone data by this function for
     this particular dataset? If FALSE then it will skip the previously
     processed files (default = FALSE).
+  }
+  \item{desiredtz}{
+    See \link{g.getmeta}
   }
 }
 \value{

@@ -2,7 +2,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       includedaycrit = 16,ilevels=c(),winhr=5,idloc=1,snloc=1,
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
-                      dayborder=0,mvpa.2014 = FALSE,closedbout=FALSE) {
+                      dayborder=0,mvpa.2014 = FALSE,closedbout=FALSE,desiredtz=c()) {
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -97,7 +97,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)	
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
-  dmidn = g.detecmidnight(ND,time)
+  dmidn = g.detecmidnight(ND,time,desiredtz)
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
@@ -335,11 +335,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
             windowsummary[gikb+gik,((metrici-2)*Nfeatures)+6] = mean(as.numeric(vari[bbb1:bbb2,metrici]))
             windowsummary[gikb+gik,((metrici-2)*Nfeatures)+7] = sd(as.numeric(vari[bbb1:bbb2,metrici]))
             if (nrow(vari) > 10 & (bbb2 - bbb1) > 10) {
-              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+8] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.05)
-              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+9] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.25)
-              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+10] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.5)
-              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+11] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.75)
-              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+12] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.95)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+8] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.05,na.rm =TRUE)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+9] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.25,na.rm =TRUE)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+10] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.5,na.rm =TRUE)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+11] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.75,na.rm =TRUE)
+              windowsummary[gikb+gik,((metrici-2)*Nfeatures)+12] = quantile(as.numeric(vari[bbb1:bbb2,metrici]),probs=0.95,na.rm =TRUE)
             } else {
               windowsummary[gikb+gik,(((metrici-2)*Nfeatures)+8):(((metrici-2)*Nfeatures)+12)] = NA
             }
@@ -450,7 +450,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   select = seq(1,length(varnum2),by=300/ws3)
                   varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
                   mvpa[3] = length(which(varnum3*1000 >= mvpathreshold[mvpai])) * 5 #time spent MVPA in minutes
-                  if (mvpa.2014 == TRUE) { # MVPA bout calculation like in the 2014 papers
+                  if (mvpa.2014 == FALSE) { # MVPA bout calculation like in the 2014 papers
                     # METHOD 4: time spent above threshold
                     boutdur2 = mvpadur[1] * (60/ws3) # per minute
                     rr1 = matrix(0,length(varnum),1)
@@ -474,8 +474,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     }
                     
                   } else { # updated version
-                    cat("\nWARNING: MVPA Bout defintion has been updated, please see document for more information")
-                    cat("\nincluding instructions on how to continue using the old defintion\n")
+                    # cat("\nWARNING: MVPA Bout defintion has been updated, please see package manual for more information")
+                    # cat("\nincluding instructions on how to continue using the old defintion\n")
                     # METHOD 4: time spent above threshold
                     boutdur2 = 60/ws3 # per minute
                     rr1 = matrix(0,length(varnum),1)
@@ -500,7 +500,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       jmvpa = jmvpa + 1
                     }
                     rr1[which(rr1t == 2)] = 1
-                    mvpa4 = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                    mvpa[4] = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 5: time spent above threshold 5 minutes
                     boutdur2 = 5 * (60/ws3)
                     rr1 = matrix(0,length(varnum),1)
@@ -525,7 +525,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       jmvpa = jmvpa + 1
                     }
                     rr1[which(rr1t == 2)] = 1
-                    mvpa5 = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                    mvpa[5] = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 6: time spent above threshold 10 minutes
                     boutdur2 = 10 * (60/ws3) 
                     rr1 = matrix(0,length(varnum),1)
@@ -550,7 +550,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       jmvpa = jmvpa + 1
                     }
                     rr1[which(rr1t == 2)] = 1
-                    mvpa6 = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                    mvpa[6] = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
                   }
                   
                   

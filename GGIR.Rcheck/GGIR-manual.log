@@ -1,13 +1,13 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.10.26)  8 MAY 2016 23:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.7.29)  5 AUG 2016 13:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **\input ./Rd2.tex
 (./Rd2.tex
 (/usr/share/texlive/texmf-dist/tex/latex/base/book.cls
-Document Class: book 2007/10/19 v1.4h Standard LaTeX document class
+Document Class: book 2014/09/29 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/bk10.clo
-File: bk10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+File: bk10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@chapter=\count80
@@ -26,10 +26,10 @@ File: bk10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 Package: Rd 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
-Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty
-Package: longtable 2004/02/01 v4.11 Multi-page Table package (DPC)
+Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
 \LTleft=\skip43
 \LTright=\skip44
 \LTpre=\skip45
@@ -47,18 +47,18 @@ Package: longtable 2004/02/01 v4.11 Multi-page Table package (DPC)
 \LT@p@ftn=\toks14
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
-Package: bm 2004/02/26 v1.1c Bold Symbol Support (DPC/FMi)
+Package: bm 2014/10/28 v1.1c Bold Symbol Support (DPC/FMi)
 \symboldoperators=\mathgroup4
 \symboldletters=\mathgroup5
 \symboldsymbols=\mathgroup6
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 138.
-LaTeX Info: Redefining \bm on input line 204.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 207.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/alltt.sty
 Package: alltt 1997/06/16 v2.0g defines alltt environment
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
-Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks15
 \verbatim@line=\toks16
 \verbatim@in@stream=\read1
@@ -80,73 +80,74 @@ Package textcomp Info: Sub-encoding information:
 (textcomp)             only a restricted character set as indicated.
 (textcomp)             Family '?' is the default used for unknown fonts.
 (textcomp)             See the documentation for details.
-Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 71.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.def
 File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
 )
-LaTeX Info: Redefining \oldstylenums on input line 266.
-Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 281.
-Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 282.
-Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 283.
-Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 284.
-Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 285.
-Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 286.
-Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 287.
-Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 288.
-Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 289.
-Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 290.
-Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 291.
-Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 292.
-Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 293.
-Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 294.
-Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 295.
-Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 296.
-Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 297.
-Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 298.
-Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 299.
-Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 300.
-Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 301.
-Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 302.
-Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 303.
-Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 304.
+LaTeX Info: Redefining \oldstylenums on input line 334.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 349.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 350.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 351.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 352.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 353.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 354.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 355.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 356.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 357.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 358.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 359.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 360.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 361.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 362.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 363.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 364.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 365.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 366.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 367.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 368.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 369.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 370.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 371.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 372.
 
-Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 305.
-Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 306.
-Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 307.
-Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 308.
-Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 309.
-Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 310.
-Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 311.
-Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 312.
-Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 313.
-Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 314.
-Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 315.
-Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 316.
-Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 317.
-Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 318.
-Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 319.
-Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 320.
-Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 321.
-Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 322.
-Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 323.
-Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 324.
-Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 325.
-Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 326.
-Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 327.
-Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 328.
-Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 329.
-Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 330.
-Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 331.
-Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 332.
-Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 333.
-Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 334.
-Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 335.
-Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 336.
-Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 337.
-Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 338.
-Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 339.
-Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 340.
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 373.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 374.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 375.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 376.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 377.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 378.
+Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 379.
+Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 380.
+Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 381.
+Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 382.
+Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 383.
+Package textcomp Info: Setting lmtt sub-encoding to TS1/0 on input line 384.
+Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 385.
+Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 386.
+Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 387.
+Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 388.
+Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 389.
+Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 390.
+Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 391.
+Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 392.
+Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 393.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 394.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 395.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 396.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 397.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 398.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 399.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 400.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 401.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 402.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 403.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 404.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 405.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
 )
 \ldescriptionwidth=\skip47
 
@@ -155,27 +156,28 @@ Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.def
 File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
-LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty
 Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
 )
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/zi4.sty
-Package: zi4 2013/06/09 zi4a
+Package: zi4 2016/02/22 v1.10
 
+`inconsolata-zi4' v1.10, 2016/02/22 Text macros for Inconsolata (msharpe)
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks17
 )
 \zifour@ocount=\count93
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
-Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+Package: color 2016/01/03 v1.1b Standard LaTeX Color (DPC)
 
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
-Package color Info: Driver file: pdftex.def on input line 130.
+Package color Info: Driver file: pdftex.def on input line 143.
 
 (/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
@@ -310,25 +312,27 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 Package hyperref Info: Option `linktocpage' set `true' on input line 366.
 Package hyperref Info: Option `plainpages' set `false' on input line 366.
 ) (/usr/share/texlive/texmf-dist/tex/latex/base/makeidx.sty
-Package: makeidx 2000/03/29 v1.0m Standard LaTeX package
+Package: makeidx 2014/09/29 v1.0m Standard LaTeX package
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
-Package: inputenc 2008/03/30 v1.1d Input encoding file
+Package: inputenc 2015/03/17 v1.2c Input encoding file
 \inpenc@prehook=\toks18
 \inpenc@posthook=\toks19
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.dfu
-File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+   defining Unicode char U+00A0 (decimal 160)
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
    defining Unicode char U+00AB (decimal 171)
+   defining Unicode char U+00AD (decimal 173)
    defining Unicode char U+00BB (decimal 187)
    defining Unicode char U+00BF (decimal 191)
    defining Unicode char U+00C0 (decimal 192)
@@ -393,50 +397,94 @@ File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00FD (decimal 253)
    defining Unicode char U+00FE (decimal 254)
    defining Unicode char U+00FF (decimal 255)
+   defining Unicode char U+0100 (decimal 256)
+   defining Unicode char U+0101 (decimal 257)
    defining Unicode char U+0102 (decimal 258)
    defining Unicode char U+0103 (decimal 259)
    defining Unicode char U+0104 (decimal 260)
    defining Unicode char U+0105 (decimal 261)
    defining Unicode char U+0106 (decimal 262)
    defining Unicode char U+0107 (decimal 263)
+   defining Unicode char U+0108 (decimal 264)
+   defining Unicode char U+0109 (decimal 265)
+   defining Unicode char U+010A (decimal 266)
+   defining Unicode char U+010B (decimal 267)
    defining Unicode char U+010C (decimal 268)
    defining Unicode char U+010D (decimal 269)
    defining Unicode char U+010E (decimal 270)
    defining Unicode char U+010F (decimal 271)
    defining Unicode char U+0110 (decimal 272)
    defining Unicode char U+0111 (decimal 273)
+   defining Unicode char U+0112 (decimal 274)
+   defining Unicode char U+0113 (decimal 275)
+   defining Unicode char U+0114 (decimal 276)
+   defining Unicode char U+0115 (decimal 277)
+   defining Unicode char U+0116 (decimal 278)
+   defining Unicode char U+0117 (decimal 279)
    defining Unicode char U+0118 (decimal 280)
    defining Unicode char U+0119 (decimal 281)
    defining Unicode char U+011A (decimal 282)
    defining Unicode char U+011B (decimal 283)
+   defining Unicode char U+011C (decimal 284)
+   defining Unicode char U+011D (decimal 285)
    defining Unicode char U+011E (decimal 286)
    defining Unicode char U+011F (decimal 287)
+   defining Unicode char U+0120 (decimal 288)
+   defining Unicode char U+0121 (decimal 289)
+   defining Unicode char U+0122 (decimal 290)
+   defining Unicode char U+0123 (decimal 291)
+   defining Unicode char U+0124 (decimal 292)
+   defining Unicode char U+0125 (decimal 293)
+   defining Unicode char U+0128 (decimal 296)
+   defining Unicode char U+0129 (decimal 297)
+   defining Unicode char U+012A (decimal 298)
+   defining Unicode char U+012B (decimal 299)
+   defining Unicode char U+012C (decimal 300)
+   defining Unicode char U+012D (decimal 301)
+   defining Unicode char U+012E (decimal 302)
+   defining Unicode char U+012F (decimal 303)
    defining Unicode char U+0130 (decimal 304)
    defining Unicode char U+0131 (decimal 305)
    defining Unicode char U+0132 (decimal 306)
    defining Unicode char U+0133 (decimal 307)
+   defining Unicode char U+0134 (decimal 308)
+   defining Unicode char U+0135 (decimal 309)
+   defining Unicode char U+0136 (decimal 310)
+   defining Unicode char U+0137 (decimal 311)
    defining Unicode char U+0139 (decimal 313)
    defining Unicode char U+013A (decimal 314)
+   defining Unicode char U+013B (decimal 315)
+   defining Unicode char U+013C (decimal 316)
    defining Unicode char U+013D (decimal 317)
    defining Unicode char U+013E (decimal 318)
    defining Unicode char U+0141 (decimal 321)
    defining Unicode char U+0142 (decimal 322)
    defining Unicode char U+0143 (decimal 323)
    defining Unicode char U+0144 (decimal 324)
+   defining Unicode char U+0145 (decimal 325)
+   defining Unicode char U+0146 (decimal 326)
    defining Unicode char U+0147 (decimal 327)
    defining Unicode char U+0148 (decimal 328)
    defining Unicode char U+014A (decimal 330)
    defining Unicode char U+014B (decimal 331)
+   defining Unicode char U+014C (decimal 332)
+   defining Unicode char U+014D (decimal 333)
+   defining Unicode char U+014E (decimal 334)
+   defining Unicode char U+014F (decimal 335)
    defining Unicode char U+0150 (decimal 336)
    defining Unicode char U+0151 (decimal 337)
    defining Unicode char U+0152 (decimal 338)
    defining Unicode char U+0153 (decimal 339)
    defining Unicode char U+0154 (decimal 340)
    defining Unicode char U+0155 (decimal 341)
+   defining Unicode char U+0156 (decimal 342)
+   defining Unicode char U+0157 (decimal 343)
    defining Unicode char U+0158 (decimal 344)
    defining Unicode char U+0159 (decimal 345)
    defining Unicode char U+015A (decimal 346)
    defining Unicode char U+015B (decimal 347)
+   defining Unicode char U+015C (decimal 348)
+   defining Unicode char U+015D (decimal 349)
    defining Unicode char U+015E (decimal 350)
    defining Unicode char U+015F (decimal 351)
    defining Unicode char U+0160 (decimal 352)
@@ -445,10 +493,22 @@ File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+0163 (decimal 355)
    defining Unicode char U+0164 (decimal 356)
    defining Unicode char U+0165 (decimal 357)
+   defining Unicode char U+0168 (decimal 360)
+   defining Unicode char U+0169 (decimal 361)
+   defining Unicode char U+016A (decimal 362)
+   defining Unicode char U+016B (decimal 363)
+   defining Unicode char U+016C (decimal 364)
+   defining Unicode char U+016D (decimal 365)
    defining Unicode char U+016E (decimal 366)
    defining Unicode char U+016F (decimal 367)
    defining Unicode char U+0170 (decimal 368)
    defining Unicode char U+0171 (decimal 369)
+   defining Unicode char U+0172 (decimal 370)
+   defining Unicode char U+0173 (decimal 371)
+   defining Unicode char U+0174 (decimal 372)
+   defining Unicode char U+0175 (decimal 373)
+   defining Unicode char U+0176 (decimal 374)
+   defining Unicode char U+0177 (decimal 375)
    defining Unicode char U+0178 (decimal 376)
    defining Unicode char U+0179 (decimal 377)
    defining Unicode char U+017A (decimal 378)
@@ -456,6 +516,31 @@ File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+017C (decimal 380)
    defining Unicode char U+017D (decimal 381)
    defining Unicode char U+017E (decimal 382)
+   defining Unicode char U+01CD (decimal 461)
+   defining Unicode char U+01CE (decimal 462)
+   defining Unicode char U+01CF (decimal 463)
+   defining Unicode char U+01D0 (decimal 464)
+   defining Unicode char U+01D1 (decimal 465)
+   defining Unicode char U+01D2 (decimal 466)
+   defining Unicode char U+01D3 (decimal 467)
+   defining Unicode char U+01D4 (decimal 468)
+   defining Unicode char U+01E2 (decimal 482)
+   defining Unicode char U+01E3 (decimal 483)
+   defining Unicode char U+01E6 (decimal 486)
+   defining Unicode char U+01E7 (decimal 487)
+   defining Unicode char U+01E8 (decimal 488)
+   defining Unicode char U+01E9 (decimal 489)
+   defining Unicode char U+01EA (decimal 490)
+   defining Unicode char U+01EB (decimal 491)
+   defining Unicode char U+01F0 (decimal 496)
+   defining Unicode char U+01F4 (decimal 500)
+   defining Unicode char U+01F5 (decimal 501)
+   defining Unicode char U+0218 (decimal 536)
+   defining Unicode char U+0219 (decimal 537)
+   defining Unicode char U+021A (decimal 538)
+   defining Unicode char U+021B (decimal 539)
+   defining Unicode char U+01E02 (decimal 7682)
+   defining Unicode char U+01E03 (decimal 7683)
    defining Unicode char U+200C (decimal 8204)
    defining Unicode char U+2013 (decimal 8211)
    defining Unicode char U+2014 (decimal 8212)
@@ -475,9 +560,11 @@ Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ot1enc.dfu
-File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+File: ot1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+   defining Unicode char U+00A0 (decimal 160)
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00AD (decimal 173)
    defining Unicode char U+00B8 (decimal 184)
    defining Unicode char U+00BF (decimal 191)
    defining Unicode char U+00C5 (decimal 197)
@@ -495,6 +582,14 @@ File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+0142 (decimal 322)
    defining Unicode char U+0152 (decimal 338)
    defining Unicode char U+0153 (decimal 339)
+   defining Unicode char U+0174 (decimal 372)
+   defining Unicode char U+0175 (decimal 373)
+   defining Unicode char U+0176 (decimal 374)
+   defining Unicode char U+0177 (decimal 375)
+   defining Unicode char U+0218 (decimal 536)
+   defining Unicode char U+0219 (decimal 537)
+   defining Unicode char U+021A (decimal 538)
+   defining Unicode char U+021B (decimal 539)
    defining Unicode char U+2013 (decimal 8211)
    defining Unicode char U+2014 (decimal 8212)
    defining Unicode char U+2018 (decimal 8216)
@@ -506,7 +601,7 @@ Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omsenc.dfu
-File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+File: omsenc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00B6 (decimal 182)
    defining Unicode char U+00B7 (decimal 183)
@@ -522,7 +617,7 @@ Now handling font encoding TS1 ...
 ... processing UTF-8 mapping file for font encoding TS1
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu
-File: ts1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+File: ts1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
    defining Unicode char U+00A2 (decimal 162)
    defining Unicode char U+00A3 (decimal 163)
    defining Unicode char U+00A4 (decimal 164)
@@ -607,14 +702,14 @@ Now handling font encoding PD1 ...
    defining Unicode char U+2423 (decimal 9251)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def
-File: latin1.def 2008/03/30 v1.1d Input encoding file
+File: latin1.def 2015/03/17 v1.2c Input encoding file
 ))
 \@indexfile=\write3
 \openout3 = `Rd2.idx'.
 
 
 Writing index file Rd2.idx
-(./Rd2.aux)
+(/tmp/RtmpObLSJw/Rd2pdf2a312326be45/Rd2.aux)
 \openout1 = `Rd2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
@@ -631,8 +726,9 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
 LaTeX Font Info:    ... okay on input line 8.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 8.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 8.
- (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
-File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 8.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 8.
@@ -670,7 +766,8 @@ LaTeX Info: Redefining \ref on input line 8.
 LaTeX Info: Redefining \pageref on input line 8.
 LaTeX Info: Redefining \nameref on input line 8.
 
-(./Rd2.out) (./Rd2.out)
+(/tmp/RtmpObLSJw/Rd2pdf2a312326be45/Rd2.out)
+(/tmp/RtmpObLSJw/Rd2pdf2a312326be45/Rd2.out)
 \@outlinefile=\write4
 \openout4 = `Rd2.out'.
 
@@ -683,7 +780,7 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <20.74> not available
 LaTeX Font Info:    Try loading font information for T1+zi4 on input line 20.
 
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd
-File: t1zi4.fd 2013/06/09 T1/zi4 (Inconsolata)
+File: t1zi4.fd 2014/06/22 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 31.
@@ -691,7 +788,8 @@ LaTeX Font Info:    Try loading font information for T1+phv on input line 31.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
-) (./Rd2.toc
+)
+(/tmp/RtmpObLSJw/Rd2pdf2a312326be45/Rd2.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 1.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -703,206 +801,216 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \tf@toc=\write5
 \openout5 = `Rd2.toc'.
 
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+ (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 )
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--99
+Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
  []
 
 [2]
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 116.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 122.
 
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 128--132
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 134--138
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
 
 [3] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 ) [4]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 ) [5]
-Overfull \hbox (7.78088pt too wide) in paragraph at lines 272--272
+Overfull \hbox (7.78088pt too wide) in paragraph at lines 278--278
  []\T1/zi4/m/n/10 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c
 (),mvpadur=c(1,5,10),[] 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 375--376
+Underfull \hbox (badness 10000) in paragraph at lines 393--394
 
  []
 
 [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 452--453
+Underfull \hbox (badness 10000) in paragraph at lines 470--471
 
  []
 
 
-Overfull \hbox (2.69771pt too wide) in paragraph at lines 473--475
+Overfull \hbox (2.69771pt too wide) in paragraph at lines 491--493
 []\T1/zi4/m/n/10 pX_ENMO_mg_0-24h \T1/ptm/m/n/10 Per-centile in the short epoch
  dis-tri-bu-tion with in-valid data im-puted. Within
  []
 
 [9] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 ) [10]
-Overfull \hbox (20.60657pt too wide) in paragraph at lines 571--573
+Overfull \hbox (20.60657pt too wide) in paragraph at lines 589--591
 []\T1/ptm/m/n/10 Vincent T van Hees <vin-cent-van-hees@gmail.com> Jing Hua Zhao
  <jinghua.zhao@mrc-epid.cam.ac.uk> 
  []
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [11]
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+) [11] [12]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [12] [13] [14]
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+)
+Overfull \hbox (24.78088pt too wide) in paragraph at lines 723--723
+ []\T1/zi4/m/n/10 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.de
+v_roll_med_acc_z=FALSE,[] 
+ []
+
+
+Overfull \hbox (34.42796pt too wide) in paragraph at lines 735--743
+[]\T1/ptm/m/n/10 Three val-ues to in-di-cate the lengths of the win-dows as in 
+c(window1,window2,window3):
+ []
+
+[13] [14] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+) [15] [16]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [15]
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+) [17]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [16]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [17] [18]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1143--1147
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+) [18] [19]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1203--1207
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
 
-[19] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+[20] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 )
-Overfull \hbox (19.78088pt too wide) in paragraph at lines 1179--1179
+Overfull \hbox (19.78088pt too wide) in paragraph at lines 1239--1239
  []\T1/zi4/m/n/10 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 
 1, hrs.del.start = 0.5,[] 
  []
 
 
-Overfull \hbox (2.78088pt too wide) in paragraph at lines 1182--1182
+Overfull \hbox (2.78088pt too wide) in paragraph at lines 1242--1242
  []\T1/zi4/m/n/10 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,nd
 ayswindow=7,idloc=1,[] 
  []
 
 
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1192--1195
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1252--1255
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
  []
 
-[20] [21]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1332--1336
+[21] [22]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1399--1403
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [22]
-Underfull \hbox (badness 10000) in paragraph at lines 1409--1412
+[23] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+)
+Underfull \hbox (badness 10000) in paragraph at lines 1479--1482
 
  []
 
-[23]
-LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 1449
+[24]
+LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 1519
 .
  (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
-File: ts1zi4.fd 2013/06/07 Fontinst v1.933 font definitions for TS1/zi4.
+File: ts1zi4.fd 2014/06/22 Fontinst v1.933 font definitions for TS1/zi4.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [24] [25]
-Underfull \hbox (badness 10000) in paragraph at lines 1585--1588
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+) [25] [26]
+Underfull \hbox (badness 10000) in paragraph at lines 1655--1658
 
  []
 
-[26]
-Underfull \hbox (badness 10000) in paragraph at lines 1645--1650
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 1715--1720
 
  []
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1667--1669
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1737--1739
 []\T1/zi4/m/n/10 sleeplog_dur_WD_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
  []
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1669--1671
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1739--1741
 []\T1/zi4/m/n/10 sleeplog_dur_WE_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
  []
 
-[27] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-) [28]
+[28] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+) [29]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 )
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1793--1796
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1866--1869
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
  []
 
-[29]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1854--1858
+[30]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1927--1931
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
  []
 
-[30]
+[31]
 Underfull \vbox (badness 3803) has occurred while \output is active []
 
- [31]
-(./Rd2.ind [32]
+ [32]
+(/tmp/RtmpObLSJw/Rd2pdf2a312326be45/Rd2.ind [33]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 3.
 
@@ -910,15 +1018,15 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 56.
 
-[33
+[34
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1947.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1947.
- (./Rd2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1947.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1947.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2020.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2020.
+ (/tmp/RtmpObLSJw/Rd2pdf2a312326be45/Rd2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2020.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 2020.
 
 Package rerunfilecheck Info: File `Rd2.out' has not changed.
 (rerunfilecheck)             Checksum: FEF373DD73E9B73E068D4A93C32B1F24;882.
@@ -926,16 +1034,16 @@ Package rerunfilecheck Info: File `Rd2.out' has not changed.
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1947.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2020.
  ) 
 Here is how much of TeX's memory you used:
- 6555 strings out of 493304
- 93876 string characters out of 6139870
- 174223 words of memory out of 5000000
- 9712 multiletter control sequences out of 15000+600000
+ 6651 strings out of 493029
+ 94899 string characters out of 6136234
+ 176230 words of memory out of 5000000
+ 9883 multiletter control sequences out of 15000+600000
  41277 words of font info for 51 fonts, out of 8000000 for 9000
- 957 hyphenation exceptions out of 8191
- 38i,6n,27p,366b,594s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 1141 hyphenation exceptions out of 8191
+ 38i,6n,27p,366b,592s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/usr/s
 hare/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texlive/texmf-d
 ist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/share/texlive/texmf-dist/font
@@ -945,10 +1053,10 @@ type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
 mes/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (33 pages, 154267 bytes).
+Output written on Rd2.pdf (34 pages, 167176 bytes).
 PDF statistics:
- 561 PDF objects out of 1000 (max. 8388607)
- 513 compressed objects within 6 object streams
- 170 named destinations out of 1000 (max. 500000)
+ 576 PDF objects out of 1000 (max. 8388607)
+ 527 compressed objects within 6 object streams
+ 171 named destinations out of 1000 (max. 500000)
  137 words of extra memory for PDF output out of 10000 (max. 10000000)
 

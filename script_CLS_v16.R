@@ -1,9 +1,9 @@
 rm(list=ls())
 graphics.off()
-require(GENEAread)
-require(mmap)
+library(GENEAread)
+library(mmap)
 library(tools)
-# require(GGIRILS)
+library(GGIR)
 
 setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
 
@@ -13,9 +13,8 @@ setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
 # specify file number to start and end with, fill in c() if unknown
 f0 = c() #file to start with if used in serial analyses
 f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
-mode= c(2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
+mode= c(1,2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
 datadir=  "D:/dropbox/Dropbox/Accelerometry/DATA/Millenium dress rehearsal" #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
-
 # datadir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/output_Millenium dress rehearsal/meta/raw"
 
 outputdir= "D:/dropbox/Dropbox/Accelerometry/GGIR/development"   #Name directory where output needs to be stored
@@ -25,18 +24,6 @@ selectdaysfile = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/input_cls/we
 
 stt <- Sys.time()
 print(paste0("Starting at: ", stt))
-
-
-#=====================================================================================
-# load functions from functions folder (replace by require(GGIR) once package is updated)
-ffnames = dir("functions") # creating list of filenames of scriptfiles to load
-for (i in 1:length(ffnames)) {
-  source(paste("functions/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
-}
-# ffnames = dir("functions_cls") # creating list of filenames of scriptfiles to load
-# for (i in 1:length(ffnames)) {
-#   source(paste("functions_cls/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
-# }
 
 
 #=====================================================================================
@@ -55,10 +42,9 @@ g.shell.GGIR(#=======================================
              csv.struc=c(), #csv.struc=c(5,6), #
              do.imp=TRUE, # Do imputation? (recommended)
              idloc=1, #id location (1 = file header, 2 = filename)
-             print.filename=TRUE,
+             print.filename=FALSE,
              storefolderstructure = FALSE,
              selectdaysfile=selectdaysfile,
-             # diaryfile=diaryfile,
              #-------------------------------
              # Part 1 parameters:
              #-------------------------------
@@ -67,6 +53,8 @@ g.shell.GGIR(#=======================================
              do.cal=FALSE, # Apply autocalibration? (recommended)
              do.enmo = TRUE, #Needed for physical activity analysis
              do.anglez=TRUE, #Needed for sleep detection
+             do.angley=TRUE, #Needed for sleep detection
+             do.anglex=TRUE, #Needed for sleep detection
              chunksize=0.8, #size of data chunks to be read (value = 1 is maximum)
              desiredtz = "Europe/London",
              printsummary=TRUE,
@@ -90,13 +78,14 @@ g.shell.GGIR(#=======================================
              mvpathreshold = c(100), #MVPA (moderate and vigorous physical activity threshold
              window.summary.size = 10,
              dayborder = 4, # dayborder is the hour at which one day becomes the next day
+             mvpa.2014 = TRUE,
+             closedbout=FALSE,
              #-----------------------------------
              # Report generation
              #-------------------------------
              # Key functions: Generating reports based on meta-data
-             do.report=c(2,selectdaysfile=selectdaysfile), #for what parts does and report need to be generated?)
-             visualreport = FALSE,
-             useRDA = TRUE) 
+             do.report=c(2), #for what parts does and report need to be generated?)
+             visualreport = FALSE) 
 
 fnsh <- Sys.time()
 
