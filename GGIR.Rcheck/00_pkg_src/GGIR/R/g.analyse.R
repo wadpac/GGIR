@@ -289,11 +289,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       ds_names[fi] = "id";      fi = fi + 1
       daysummary[di,fi] = fname
       ds_names[fi] = "filename";  fi = fi + 1
-      if (length(selectdaysfile) > 0) {
-        calenderdate = unlist(strsplit(as.character(vari[min(c(10,nrow(vari))),1])," "))[1] #adjusted for millenium cohort
-      } else {
-        calenderdate = unlist(strsplit(as.character(vari[1,1])," "))[1]
-      }
+      # if (length(selectdaysfile) > 0) {
+      #   calenderdate = unlist(strsplit(as.character(vari[min(c(10,nrow(vari))),1])," "))[1] #adjusted for millenium cohort
+      #   print(calenderdate)
+      #   print(unlist(strsplit(as.character(vari[1,1])," "))[1])
+      #   # print(unlist(strsplit(as.character(vari[min(c(nrow(vari))),1])," "))[1])
+      # } else {
+      calenderdate = unlist(strsplit(as.character(vari[1,1])," "))[1]
+      # }
       daysummary[di,fi] = calenderdate               
       daysummary[di,(fi+1)] =BL
       daysummary[di,(fi+2)] = nvalidhours

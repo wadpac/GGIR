@@ -494,7 +494,7 @@ Type 'q()' to quit R.
 > ###
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  6.868 0.06 7.019 0 0 
+Time elapsed:  6.608 0.064 6.725 0 0 
 > grDevices::dev.off()
 null device 
           1 
