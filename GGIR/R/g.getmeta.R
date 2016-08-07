@@ -209,20 +209,15 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
         nextday = as.numeric(tmp2[1]) + 1
         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-        # tint[2,1] = paste0(SDF[SDFi,3],endday)
         tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # now second day also loaded from 03:55 to ensure that start is at 4:00
         tint[2,2] =paste0(nextday,endday)
         if (i == nrow(tint)) {
           #all data read now make sure that it does not try to re-read it with mmap on
           switchoffLD = 1
-          # P = c()
         } else {
-          # modified here by JH
-          #             P <- getMetaFileData(datafile, tint[i,1], tint[i,2])
-          # } else {
           try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
                                             end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-          # }	
+
           if (length(P) <= 2) {
             cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
             #try again but now with mmap.load turned on
@@ -427,15 +422,15 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             lengthheader = nrow(header)
           } else if (mon == 2 & dformat == 1) {
             if (length(desiredtz) > 0) {
-              starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
+              # starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
+              starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
+              if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
+                #needed for MaM study where first timestamp does not have clock time in it
+                starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz) 
+              }
             } else {
               starttime = P$page.timestamps[1]
             }
-            if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
-              starttime = P$page.timestamps[2] #needed for MaM study where first timestamp does not have clock time in it
-            }
-            
-            
             lengthheader = nrow(header) #length(unlist(H))
           } else if (dformat == 2 & mon == 2) {
             starttime = as.character(P[1,1])
@@ -532,8 +527,16 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           #======================================================
           #assess how much data to delete till next 15 minute period
           temp = unlist(strsplit(as.character(starttime)," "))
-          starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
-          
+          if (length(temp) > 1) {
+            starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
+          } else {
+            # first get char to POSIX
+            # temp = as.POSIXlt(starttime,format="%Y-%m-%dT%H:%M:%S%z",tz="Europe/London")
+            temp = iso8601chartime2POSIX(starttime,tz=desiredtz)
+            # temp2 = format(temp,"%H:%M:%S") # extract time
+            temp = unlist(strsplit(as.character(temp)," ")) # to keep it consistent with what we had
+            starttime2 = as.numeric(unlist(strsplit(as.character(temp[2]),":")))
+          }
           if (length(which(is.na(starttime2) ==  TRUE)) > 0 | length(starttime2) ==0) { #modified on 5may2015
             starttime2 = c(0,0,0)
           }
@@ -570,6 +573,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             print("desiredtz not specified, Europe/London used as default")
             desiredtz = "Europe/London"
           }
+
           starttime_a = as.POSIXct(starttime3,format="%d/%m/%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
           starttime_b = as.POSIXct(starttime3,format="%d-%m-%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
           starttime_c = as.POSIXct(starttime3,format="%Y/%m/%d %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
@@ -670,13 +674,16 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             # calculate extra timestamp in a more complete format
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
-            starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
+            # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
+            # print(starttime)
+            # kkk
+            
             if (mon == 2) {
               I = INFI
-              save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,starttime_aschar_tz,temperature,light,
+              save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,temperature,light,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
             } else {
-              save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,starttime_aschar_tz,
+              save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
             }
           }
