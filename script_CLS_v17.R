@@ -11,9 +11,9 @@ setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
 # INPUT NEEDED:
 
 # specify file number to start and end with, fill in c() if unknown
-f0 = 1# c() #file to start with if used in serial analyses
-f1 = 2 #Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
-mode= c(2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
+f0 = c() #file to start with if used in serial analyses
+f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
+mode= c(1,2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
 #datadir=  c() #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
 dayborder = 4
 # datadir = "D:/dropbox/Dropbox/Accelerometry/DATA/Andy Bradley"
@@ -86,7 +86,7 @@ g.shell.GGIR(#=======================================
   do.dev_roll_med_acc_x=TRUE,
   do.dev_roll_med_acc_y=TRUE,
   do.dev_roll_med_acc_z=TRUE,
-  chunksize=0.8, #size of data chunks to be read (value = 1 is maximum)
+  chunksize=1.0, #size of data chunks to be read (value = 1 is maximum)
   desiredtz = "Europe/London", #"America/Chicago",
   printsummary=TRUE,
   minloadcrit=46,
