@@ -14,7 +14,7 @@ License: LGPL (>= 2.0, < 3)
 Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR
 Depends: stats, utils, R (>= 2.10)
 NeedsCompilation: no
-Packaged: 2016-08-05 11:19:56 UTC; vincent
+Packaged: 2016-08-07 18:10:10 UTC; vincent
 Author: Vincent T van Hees [aut, cre],
   Zhou Fang [ctb],
   Jing Hua Zhao [ctb],
