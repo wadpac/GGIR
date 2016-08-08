@@ -74,7 +74,7 @@ g.shell.GGIR(#=======================================
   #-------------------------------
   # Key functions: reading file, auto-calibration, and extracting features
   windowsizes = c(5,900,3600), #Epoch length, non-wear detection resolution, non-wear detection evaluation window
-  do.cal=FALSE, # Apply autocalibration? (recommended)
+  do.cal=TRUE, # Apply autocalibration? (recommended)
   do.enmo = TRUE, #Needed for physical activity analysis
   do.en=TRUE,
   do.anglez=TRUE, #Needed for sleep detection
