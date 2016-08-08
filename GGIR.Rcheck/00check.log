@@ -51,6 +51,9 @@ Maintainer: ‘Vincent T van Hees <vincentvanhees@gmail.com>’
 * checking data for non-ASCII characters ... OK
 * checking data for ASCII and uncompressed saves ... OK
 * checking examples ... OK
+Examples with CPU or elapsed time > 5s
+             user system elapsed
+GGIR-package 5.86  0.156   6.083
 * checking PDF version of manual ... OK
 * DONE
 Status: OK
