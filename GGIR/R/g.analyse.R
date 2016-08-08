@@ -211,7 +211,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
     }
     endatmidnight = 0
-    if (lastmidnight == time[length(time)] ) {	#if measurement ends at midnight
+    if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
       ndays = ndays - 1
       endatmidnight = 1
       cat("measurement ends at midnight or there is no midnight")
