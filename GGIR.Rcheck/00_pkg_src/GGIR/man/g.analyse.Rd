@@ -19,7 +19,7 @@ combination with the epoch length as defined in g.getmeta.
 g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24), quantiletype = 7,
 L5M5window = c(0, 24), M5L5res = 10, includedaycrit = 16, ilevels = c(),
 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),
-selectdaysfile=c(),window.summary.size=10,dayborder=0,mvpa.2014 = FALSE,
+selectdaysfile=c(),window.summary.size=10,dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c())
 }
 
@@ -104,20 +104,12 @@ resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
     Functionality designed for the London Centre of Longidutinal studies.
   Size in minutes of the summary window
   }
-  \item{mvpa.2014}{
-  If TRUE use the MVPA bout definition as has been available since 2014.
-  The algorithm looks for 10 minute windows in which more than 80 percent
-  of the epochs are above mvpathreshold, and then counts the entire window as mvpa.
-  The new bout definition (mvpa.2014 = FALSE) looks for a group or groups
-  of epochs with a value above mvpathreshold that span a time window of at
-  least mvpadur minutes in  which more than boutcriter percent of the epochs are above
-  the threshold.
-  The motivation for the old defition was: A person who spends 10 minutes in MVPA
-  with a 2 minute break in the middle is equally active as a person who spends
-  8 minutes in MVPA without taking a break. Therefore, both should be counted equal
-  and counted as 10 minute MVPA bout. The motivation for the new definition 
-  is: not counting breaks towards MVPA simplifies interpretation and still 
-  counts the two persons in the example as each others equal.
+  \item{bout.metric}{
+  This argument used to be called mvpa.2014 and had TRUE or FALSE as its value.
+  However, it has now become clear that this aspect of the analyses is still very
+  much open for debate. Therefore, I have changed it into an argument where you
+  can specify a metric for bout detection based on a number. A description of these
+  bout metrics can be found in the new function \link{g.getbout}
   }
   \item{closedbout}{
   If TRUE then count breaks in a bout towards the bout duration. If FALSE then only count
