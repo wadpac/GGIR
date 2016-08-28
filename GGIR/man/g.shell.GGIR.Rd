@@ -21,8 +21,8 @@ do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...)
   that \link{g.part1} is run. Default setting, mode = c(1,2), makes
   that both part1 and part2 are ran. Note that if mode = c(1,3) then
   the code will also set do.anglez = TRUE in order to enable sleep
-  detection. If you run part 1 and 3 seperatedly then you need to think
-  about setting anglez to TRUE when running part1.
+  detection. If you run part 1 and 3 seperatedly then you need to 
+  remember to set argument do.anglez to TRUE when running part1.
   }
   \item{datadir}{
   Directory where the accelerometer files are stored or list, e.g. 
