@@ -139,7 +139,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "idloc")) == 0)  idloc=1
   if (length(which(ls() == "coldid")) == 0)  colid=1
   if (length(which(ls() == "coln1")) == 0)  coln1=1
-  if (length(which(ls() == "nnights")) == 0)  nnights=c()
+  if (length(which(ls() == "nnights")) == 0)  nnights=7
   if (length(which(ls() == "outliers.only")) == 0)  outliers.only=FALSE
   if (length(which(ls() == "excludefirstlast")) == 0)  excludefirstlast=FALSE
   if (length(which(ls() == "criterror")) == 0)  criterror=3
@@ -154,10 +154,10 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "visualreport")) == 0)  visualreport = FALSE
   if (length(which(ls() == "print.filename")) == 0)  print.filename = FALSE
   if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = c()
-  if (length(which(ls() == "mvpa.2014")) == 0)  mvpa.2014 = FALSE
+  if (length(which(ls() == "bout.metric")) == 0)  bout.metric = 1
   if (length(which(ls() == "closedbout")) == 0)  closedbout = FALSE
   
-#   # # specific for part 5
+  # # specific for part 5
 #   if (length(which(ls() == "boutcriter.in")) == 0)  boutcriter.in = 0.9
 #   if (length(which(ls() == "boutcriter.lig")) == 0)  boutcriter.lig = 0.8
 #   if (length(which(ls() == "boutcriter.mvpa")) == 0)  boutcriter.mvpa = 0.8
@@ -172,7 +172,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   # part 2
   if (length(which(ls() == "mvpadur")) == 0)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE
-  # if (length(which(ls() == "mvpa.2014")) == 0) mvpa.2014 = TRUE
+  # if (length(which(ls() == "bout.metric")) == 0) bout.metric = 1
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   
@@ -209,7 +209,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             ilevels = ilevels, mvpathreshold = mvpathreshold,
             boutcriter = boutcriter,ndayswindow=ndayswindow,idloc=idloc,do.imp=do.imp,
             storefolderstructure=storefolderstructure,overwrite=overwrite,epochvalues2csv=epochvalues2csv,
-            mvpadur=mvpadur,selectdaysfile=selectdaysfile,mvpa.2014=mvpa.2014,window.summary.size=window.summary.size,
+            mvpadur=mvpadur,selectdaysfile=selectdaysfile,bout.metric=bout.metric,window.summary.size=window.summary.size,
             dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz)
   }
   if (dopart3 == TRUE) {

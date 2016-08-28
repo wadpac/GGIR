@@ -2,7 +2,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       includedaycrit = 16,ilevels=c(),winhr=5,idloc=1,snloc=1,
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
-                      dayborder=0,mvpa.2014 = FALSE,closedbout=FALSE,desiredtz=c()) {
+                      dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c()) {
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -101,7 +101,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-  
+
   if (dayborder != 0) {
     midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + (1/(ws2/ws3)) #shift the definition of midnight if required
     # midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + 1 #shift the definition of midnight if required
@@ -145,7 +145,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   LW = length(which(as.numeric(qcheck) != 1)) / (60/ws3) #number of minutes wear time between first and last midnights
   nfulldays = (lastmidnighti - firstmidnighti) / ((3600/ws2)*24)
   ndays = length(midnights) + 1 #ceiling(nfulldays + 2) # ceiling to cope with days with 23 hours
-  
   if (ndays != round(ndays)) { #day saving time causing trouble?
     cat("One day in this measurement is longer or shorter than 24 hours (probably related to day saving time)")
   }    
@@ -211,6 +210,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
     }
     endatmidnight = 0
+  
+
     if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
       ndays = ndays - 1
       endatmidnight = 1
@@ -267,6 +268,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           qqq2 = (midnightsi[di]*(ws2/ws3))-1
         }
       }
+     
+      
+      if (qqq2 > nrow(metashort)) qqq2 = nrow(metashort)
       vari = as.matrix(metashort[qqq1:qqq2,])
       val = qcheck[qqq1:qqq2]
       #--------------------------------
@@ -453,110 +457,57 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   select = seq(1,length(varnum2),by=300/ws3)
                   varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
                   mvpa[3] = length(which(varnum3*1000 >= mvpathreshold[mvpai])) * 5 #time spent MVPA in minutes
-                  if (mvpa.2014 == FALSE) { # MVPA bout calculation like in the 2014 papers
+                  if (bout.metric == 1) { # MVPA bout calculation like in the 2014 papers
                     # METHOD 4: time spent above threshold
-                    boutdur2 = mvpadur[1] * (60/ws3) # per minute
+                    boutduration = mvpadur[1] * (60/ws3) # per minute
                     rr1 = matrix(0,length(varnum),1)
                     p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=closedbout)
+                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                           bout.metric=bout.metric,ws3=ws3)
                     mvpa[4] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 5: time spent above threshold 5 minutes
-                    boutdur2 = mvpadur[2] * (60/ws3) #per five minutes
+                    boutduration = mvpadur[2] * (60/ws3) #per five minutes
                     rr1 = matrix(0,length(varnum),1)
                     p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=closedbout)
+                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                           bout.metric=bout.metric,ws3=ws3)
                     mvpa[5] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 6: time spent above threshold 10 minutes
-                    boutdur2 = mvpadur[3] * (60/ws3) # per ten minutes
+                    boutduration = mvpadur[3] * (60/ws3) # per ten minutes
                     rr1 = matrix(0,length(varnum),1)
                     p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(rr=rr1,boutdur2=boutdur2,boutcriter=boutcriter,p=p,closedbout=closedbout)
+                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                           bout.metric=bout.metric,ws3=ws3)
                     mvpa[6] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     if (length(which(varnum*1000 >= mvpathreshold[mvpai])) < 0 & length(varnum) < 100) {
                       mvpa[1:6] = 0
                     }
                     
-                  } else { # updated version
+                  } else if (bout.metric == 2) { # updated version
                     # cat("\nWARNING: MVPA Bout defintion has been updated, please see package manual for more information")
                     # cat("\nincluding instructions on how to continue using the old defintion\n")
                     # METHOD 4: time spent above threshold
-                    boutdur2 = 60/ws3 # per minute
+                    boutduration = 60/ws3 # per minute
                     rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai])
-                    rr1[p] = 1
-                    rr1t = rr1
-                    jmvpa = 1
-                    while(jmvpa <= length(p)) {
-                      endi = p[jmvpa]+boutdur2
-                      if (endi <= length(rr1)) { #does bout fall without measurement?
-                        lengthbout = sum(rr1[p[jmvpa]:endi])
-                        if (lengthbout > (boutdur2*boutcriter)) {
-                          rr1t[p[jmvpa]:endi] = 2 #remember that this was a bout in r1t
-                        } else {
-                          rr1[p[jmvpa]] = 0
-                        }    	
-                      } else { #bout does not fall within measurement
-                        if (length(p) > 1 & jmvpa > 2) {
-                          rr1[p[jmvpa]] = rr1[p[jmvpa-1]]
-                        }				
-                      }
-                      jmvpa = jmvpa + 1
-                    }
-                    rr1[which(rr1t == 2)] = 1
-                    mvpa[4] = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                           bout.metric=bout.metric)
+                    mvpa[4] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 5: time spent above threshold 5 minutes
-                    boutdur2 = 5 * (60/ws3)
+                    boutduration = 5 * (60/ws3)
                     rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai])
-                    rr1[p] = 1
-                    rr1t = rr1
-                    jmvpa = 1
-                    while(jmvpa <= length(p)) {
-                      endi = p[jmvpa]+boutdur2
-                      if (endi <= length(rr1)) { #does bout fall without measurement?
-                        lengthbout = sum(rr1[p[jmvpa]:endi])
-                        if (lengthbout > (boutdur2*boutcriter)) { #0.9 => 90% of the bout needs to meet the criteria
-                          rr1t[p[jmvpa]:endi] = 2 #remember that this was a bout in r1t
-                        } else {
-                          rr1[p[jmvpa]] = 0
-                        }    	
-                      } else { #bout does not fall within measurement
-                        if (length(p) > 1 & jmvpa > 2) {
-                          rr1[p[jmvpa]] = rr1[p[jmvpa-1]]
-                        }				
-                      }
-                      jmvpa = jmvpa + 1
-                    }
-                    rr1[which(rr1t == 2)] = 1
-                    mvpa[5] = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                           bout.metric=bout.metric)
+                    mvpa[5] = length(which(getboutout$rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
                     # METHOD 6: time spent above threshold 10 minutes
-                    boutdur2 = 10 * (60/ws3) 
+                    boutduration = 10 * (60/ws3) 
                     rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai])
-                    rr1[p] = 1
-                    rr1t = rr1
-                    jmvpa = 1
-                    while(jmvpa <= length(p)) {
-                      endi = p[jmvpa]+boutdur2
-                      if (endi <= length(rr1)) { #does bout fall without measurement?
-                        lengthbout = sum(rr1[p[jmvpa]:endi])
-                        if (lengthbout > (boutdur2*boutcriter)) { #0.9 => 90% of the bout needs to meet the criteria
-                          rr1t[p[jmvpa]:endi] = 2 #remember that this was a bout in r1t
-                        } else {
-                          rr1[p[jmvpa]] = 0
-                        }      
-                      } else { #bout does not fall within measurement
-                        if (length(p) > 1 & jmvpa > 2) {
-                          rr1[p[jmvpa]] = rr1[p[jmvpa-1]]
-                        }				
-                      }
-                      jmvpa = jmvpa + 1
-                    }
-                    rr1[which(rr1t == 2)] = 1
-                    mvpa[6] = length(which(rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                           bout.metric=bout.metric)
+                    mvpa[6] = length(which(getboutout$rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
                   }
-                  
-                  
                   
                   
                   if (length(which(is.nan(mvpa) == TRUE)) > 0) mvpa[which(is.nan(mvpa) == TRUE)] = 0

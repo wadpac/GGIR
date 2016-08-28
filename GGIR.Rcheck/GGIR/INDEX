@@ -11,6 +11,8 @@ g.binread               function to read binary files as produced by
                         GENEAread for this)
 g.calibrate             function to estimate calibration error and make
                         recommendation for addressing it
+g.getbout               function to calculate bouts from vector of
+                        binary classes
 g.getmeta               function to extract meta-data (features) from
                         data in accelerometer file
 g.impute                function to identify invalid periods in the

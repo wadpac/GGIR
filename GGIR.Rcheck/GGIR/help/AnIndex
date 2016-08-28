@@ -5,6 +5,7 @@ data.inspectfile	data.inspectfile
 g.analyse	g.analyse
 g.binread	g.binread
 g.calibrate	g.calibrate
+g.getbout	g.getbout
 g.getmeta	g.getmeta
 g.impute	g.impute
 g.inspectfile	g.inspectfile
