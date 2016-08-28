@@ -1,18 +1,23 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.2-10 (release date: 05-8-2016)}{
+\section{Changes in version 1.2-10 (release date: 28-8-2016)}{
 \itemize{
+  \item Changed function argument 'mvpa.2014' into 'bout.metric' across
+  the package in preparation for a central defintion of bouts for future 
+  GGIR version which will not only provide bout calculations for MVPA
+  but also for inactivity. Further, I added function g.getbout to improve
+  transparency about the bout calculations
   \item Updated documentation for function g.analyse to clarify different
-  mvpa bout definitions
+  bout metric definitions
   \item Improvements to the functionality to only process specific days from
   a long accelerometer file using the argument selectdaysfile
   \item Timestamps are now in ISO 8601 format. I have updated the code such that it
-  can still handle old timestamp format, but new analyses procude timestamps in
-  the ISO 8601 format. The practical difference is that it will include a timezone
-  indicator.
+  can still handle old timestamp format, but newly processed files will produce
+  timestamps in the ISO 8601 format. The practical difference is that it will
+  include a numeric timezone indicator.
   \item Bugs fixed in data selection in g.getmeta function. In the old code it tended
-  to drop the last 30-45 minutes of a 7 day measurement.
+  to drop the last 30-45 minutes of a file.
 }
 }
 \section{Changes in version 1.2-8 (release date: 24-5-2016)}{

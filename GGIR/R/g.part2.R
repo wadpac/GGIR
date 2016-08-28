@@ -5,7 +5,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    ilevels = c(0,10), mvpathreshold = c(100),
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
-                   window.summary.size=10,dayborder=0,mvpa.2014=FALSE,closedbout=FALSE,desiredtz="Europe/London") {
+                   window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London") {
   # verify whether path1 is a directory or a list of files
   outputfolder = unlist(strsplit(metadatadir,"/output_"))[2]
   outputfolder = paste("/output_",outputfolder,sep="")
@@ -74,7 +74,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
                         includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
-                        window.summary.size=window.summary.size,dayborder=dayborder,mvpa.2014=mvpa.2014,closedbout=closedbout,
+                        window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                         desiredtz=desiredtz)
         
         if (storefolderstructure == TRUE) {

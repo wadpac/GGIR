@@ -106,81 +106,82 @@ Overfull \hbox (7.78088pt too wide) in paragraph at lines 278--278
  []\T1/zi4/m/n/10 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c
 (),mvpadur=c(1,5,10),[] 
 [5] [6]
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
+Underfull \hbox (badness 10000) in paragraph at lines 385--386
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 470--471
+Underfull \hbox (badness 10000) in paragraph at lines 462--463
 
 [8]
-Overfull \hbox (2.69771pt too wide) in paragraph at lines 491--493
+Overfull \hbox (2.69771pt too wide) in paragraph at lines 483--485
 []\T1/zi4/m/n/10 pX_ENMO_mg_0-24h \T1/ptm/m/n/10 Per-centile in the short epoch
  dis-tri-bu-tion with in-valid data im-puted. Within
 [9] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (20.60657pt too wide) in paragraph at lines 589--591
+Overfull \hbox (20.60657pt too wide) in paragraph at lines 581--583
 []\T1/ptm/m/n/10 Vincent T van Hees <vin-cent-van-hees@gmail.com> Jing Hua Zhao
  <jinghua.zhao@mrc-epid.cam.ac.uk> 
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [12]
-Overfull \hbox (24.78088pt too wide) in paragraph at lines 723--723
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [12] [13]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (24.78088pt too wide) in paragraph at lines 782--782
  []\T1/zi4/m/n/10 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.de
 v_roll_med_acc_z=FALSE,[] 
 
-Overfull \hbox (34.42796pt too wide) in paragraph at lines 735--743
+Overfull \hbox (34.42796pt too wide) in paragraph at lines 794--802
 []\T1/ptm/m/n/10 Three val-ues to in-di-cate the lengths of the win-dows as in 
 c(window1,window2,window3):
-[13] [14] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [15] [16]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [17] [18] [19]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1203--1207
+[14] [15] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [16] [17]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [19] [20]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1262--1266
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[20] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (19.78088pt too wide) in paragraph at lines 1239--1239
+[21] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (19.78088pt too wide) in paragraph at lines 1298--1298
  []\T1/zi4/m/n/10 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 
 1, hrs.del.start = 0.5,[] 
 
-Overfull \hbox (2.78088pt too wide) in paragraph at lines 1242--1242
+Overfull \hbox (2.78088pt too wide) in paragraph at lines 1301--1301
  []\T1/zi4/m/n/10 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,nd
 ayswindow=7,idloc=1,[] 
 
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1252--1255
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1311--1314
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[21] [22]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1399--1403
+[22] [23]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1453--1457
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [23]
-Underfull \hbox (badness 10000) in paragraph at lines 1479--1482
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [24]
+Underfull \hbox (badness 10000) in paragraph at lines 1533--1536
 
-[24] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [25] [26]
-Underfull \hbox (badness 10000) in paragraph at lines 1655--1658
+[25] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [26] [27]
+Underfull \hbox (badness 10000) in paragraph at lines 1709--1712
 
-[27]
-Underfull \hbox (badness 10000) in paragraph at lines 1715--1720
+[28]
+Underfull \hbox (badness 10000) in paragraph at lines 1769--1774
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1737--1739
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1791--1793
 []\T1/zi4/m/n/10 sleeplog_dur_WD_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1739--1741
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1793--1795
 []\T1/zi4/m/n/10 sleeplog_dur_WE_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
-[28] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [29]
+[29] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [30]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1866--1869
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1920--1923
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[30]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1927--1931
+[31]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1981--1985
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[31]
-Underfull \vbox (badness 3803) has occurred while \output is active [32]
+[32]
+Underfull \vbox (badness 3803) has occurred while \output is active [33]
 No file Rd2.ind.
-[33] (/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux)
+[34] (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -196,7 +197,7 @@ consolata-zi4r.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr
 are/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (33 pages, 153658 bytes).
+Output written on Rd2.pdf (34 pages, 155682 bytes).
 Transcript written on Rd2.log.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
@@ -257,18 +258,18 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu))
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def))
 Writing index file Rd2.idx
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.out)
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.out)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
 updmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
@@ -305,81 +306,82 @@ Overfull \hbox (7.78088pt too wide) in paragraph at lines 278--278
  []\T1/zi4/m/n/10 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c
 (),mvpadur=c(1,5,10),[] 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
+Underfull \hbox (badness 10000) in paragraph at lines 385--386
 
 [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 470--471
+Underfull \hbox (badness 10000) in paragraph at lines 462--463
 
 
-Overfull \hbox (2.69771pt too wide) in paragraph at lines 491--493
+Overfull \hbox (2.69771pt too wide) in paragraph at lines 483--485
 []\T1/zi4/m/n/10 pX_ENMO_mg_0-24h \T1/ptm/m/n/10 Per-centile in the short epoch
  dis-tri-bu-tion with in-valid data im-puted. Within
 [9] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (20.60657pt too wide) in paragraph at lines 589--591
+Overfull \hbox (20.60657pt too wide) in paragraph at lines 581--583
 []\T1/ptm/m/n/10 Vincent T van Hees <vin-cent-van-hees@gmail.com> Jing Hua Zhao
  <jinghua.zhao@mrc-epid.cam.ac.uk> 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11] [12]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [12] [13]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (24.78088pt too wide) in paragraph at lines 723--723
+Overfull \hbox (24.78088pt too wide) in paragraph at lines 782--782
  []\T1/zi4/m/n/10 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.de
 v_roll_med_acc_z=FALSE,[] 
 
-Overfull \hbox (34.42796pt too wide) in paragraph at lines 735--743
+Overfull \hbox (34.42796pt too wide) in paragraph at lines 794--802
 []\T1/ptm/m/n/10 Three val-ues to in-di-cate the lengths of the win-dows as in 
 c(window1,window2,window3):
-[13] [14] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [15] [16]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [17]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18] [19]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1203--1207
+[14] [15] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [16] [17]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [19] [20]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1262--1266
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[20] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (19.78088pt too wide) in paragraph at lines 1239--1239
+[21] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (19.78088pt too wide) in paragraph at lines 1298--1298
  []\T1/zi4/m/n/10 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 
 1, hrs.del.start = 0.5,[] 
 
-Overfull \hbox (2.78088pt too wide) in paragraph at lines 1242--1242
+Overfull \hbox (2.78088pt too wide) in paragraph at lines 1301--1301
  []\T1/zi4/m/n/10 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,nd
 ayswindow=7,idloc=1,[] 
 
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1252--1255
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1311--1314
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[21] [22]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1399--1403
+[22] [23]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1453--1457
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[23] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Underfull \hbox (badness 10000) in paragraph at lines 1479--1482
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [24]
+Underfull \hbox (badness 10000) in paragraph at lines 1533--1536
 
-[24] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [25] [26]
-Underfull \hbox (badness 10000) in paragraph at lines 1655--1658
+[25] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [26] [27]
+Underfull \hbox (badness 10000) in paragraph at lines 1709--1712
 
-[27]
-Underfull \hbox (badness 10000) in paragraph at lines 1715--1720
+[28]
+Underfull \hbox (badness 10000) in paragraph at lines 1769--1774
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1737--1739
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1791--1793
 []\T1/zi4/m/n/10 sleeplog_dur_WD_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1739--1741
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1793--1795
 []\T1/zi4/m/n/10 sleeplog_dur_WE_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
-[28] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [29]
+[29] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [30]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1866--1869
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1920--1923
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[30]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1927--1931
+[31]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1981--1985
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[31]
-Underfull \vbox (badness 3803) has occurred while \output is active [32]
+[32]
+Underfull \vbox (badness 3803) has occurred while \output is active [33]
 No file Rd2.ind.
-[33] (/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux) )
+[34] (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux) )
 (see the transcript file for additional information){/usr/share/texlive/texmf-d
 ist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/usr/share/texlive/texmf-dist/fonts
 /enc/dvips/base/8r.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsola
@@ -389,12 +391,12 @@ consolata-zi4r.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr
 are/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (33 pages, 155171 bytes).
+Output written on Rd2.pdf (34 pages, 157528 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (105 entries accepted, 0 rejected).
-Sorting entries....done (803 comparisons).
-Generating output file Rd2.ind....done (60 lines written, 1 warning).
+Scanning input file Rd2.idx....done (110 entries accepted, 0 rejected).
+Sorting entries....done (868 comparisons).
+Generating output file Rd2.ind....done (63 lines written, 1 warning).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
@@ -456,18 +458,18 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu))
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def))
 Writing index file Rd2.idx
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.out)
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.out)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
 updmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
@@ -504,85 +506,86 @@ Overfull \hbox (7.78088pt too wide) in paragraph at lines 278--278
  []\T1/zi4/m/n/10 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c
 (),mvpadur=c(1,5,10),[] 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
+Underfull \hbox (badness 10000) in paragraph at lines 385--386
 
 [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 470--471
+Underfull \hbox (badness 10000) in paragraph at lines 462--463
 
 
-Overfull \hbox (2.69771pt too wide) in paragraph at lines 491--493
+Overfull \hbox (2.69771pt too wide) in paragraph at lines 483--485
 []\T1/zi4/m/n/10 pX_ENMO_mg_0-24h \T1/ptm/m/n/10 Per-centile in the short epoch
  dis-tri-bu-tion with in-valid data im-puted. Within
 [9] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (20.60657pt too wide) in paragraph at lines 589--591
+Overfull \hbox (20.60657pt too wide) in paragraph at lines 581--583
 []\T1/ptm/m/n/10 Vincent T van Hees <vin-cent-van-hees@gmail.com> Jing Hua Zhao
  <jinghua.zhao@mrc-epid.cam.ac.uk> 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11] [12]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [12] [13]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (24.78088pt too wide) in paragraph at lines 723--723
+Overfull \hbox (24.78088pt too wide) in paragraph at lines 782--782
  []\T1/zi4/m/n/10 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.de
 v_roll_med_acc_z=FALSE,[] 
 
-Overfull \hbox (34.42796pt too wide) in paragraph at lines 735--743
+Overfull \hbox (34.42796pt too wide) in paragraph at lines 794--802
 []\T1/ptm/m/n/10 Three val-ues to in-di-cate the lengths of the win-dows as in 
 c(window1,window2,window3):
-[13] [14] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [15] [16]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [17]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18] [19]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1203--1207
+[14] [15] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [16] [17]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [19] [20]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1262--1266
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[20] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (19.78088pt too wide) in paragraph at lines 1239--1239
+[21] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (19.78088pt too wide) in paragraph at lines 1298--1298
  []\T1/zi4/m/n/10 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 
 1, hrs.del.start = 0.5,[] 
 
-Overfull \hbox (2.78088pt too wide) in paragraph at lines 1242--1242
+Overfull \hbox (2.78088pt too wide) in paragraph at lines 1301--1301
  []\T1/zi4/m/n/10 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,nd
 ayswindow=7,idloc=1,[] 
 
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1252--1255
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1311--1314
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[21] [22]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1399--1403
+[22] [23]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1453--1457
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[23] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Underfull \hbox (badness 10000) in paragraph at lines 1479--1482
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [24]
+Underfull \hbox (badness 10000) in paragraph at lines 1533--1536
 
-[24] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [25] [26]
-Underfull \hbox (badness 10000) in paragraph at lines 1655--1658
+[25] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [26] [27]
+Underfull \hbox (badness 10000) in paragraph at lines 1709--1712
 
-[27]
-Underfull \hbox (badness 10000) in paragraph at lines 1715--1720
+[28]
+Underfull \hbox (badness 10000) in paragraph at lines 1769--1774
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1737--1739
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1791--1793
 []\T1/zi4/m/n/10 sleeplog_dur_WD_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1739--1741
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1793--1795
 []\T1/zi4/m/n/10 sleeplog_dur_WE_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
-[28] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [29]
+[29] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [30]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1866--1869
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1920--1923
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[30]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1927--1931
+[31]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1981--1985
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[31]
-Underfull \vbox (badness 3803) has occurred while \output is active [32]
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.ind [33]
+[32]
+Underfull \vbox (badness 3803) has occurred while \output is active [33]
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.ind [34]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 56.
+(Font)              using `T1/zi4/m/n' instead on input line 59.
 
-[34]) (/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux)
+[35]) (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -602,12 +605,12 @@ m/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
 xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on Rd2.pdf (34 pages, 166341 bytes).
+Output written on Rd2.pdf (35 pages, 168214 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (105 entries accepted, 0 rejected).
-Sorting entries....done (803 comparisons).
-Generating output file Rd2.ind....done (60 lines written, 1 warning).
+Scanning input file Rd2.idx....done (110 entries accepted, 0 rejected).
+Sorting entries....done (868 comparisons).
+Generating output file Rd2.ind....done (63 lines written, 1 warning).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
@@ -669,18 +672,18 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu))
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def))
 Writing index file Rd2.idx
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.out)
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.out)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
 updmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
@@ -709,93 +712,94 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--105
 Overfull \hbox (7.75723pt too wide) in paragraph at lines 134--138
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[3] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [4]
+[3] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [4]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [5]
 Overfull \hbox (7.78088pt too wide) in paragraph at lines 278--278
  []\T1/zi4/m/n/10 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c
 (),mvpadur=c(1,5,10),[] 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
+Underfull \hbox (badness 10000) in paragraph at lines 385--386
 
 [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 470--471
+Underfull \hbox (badness 10000) in paragraph at lines 462--463
 
 
-Overfull \hbox (2.69771pt too wide) in paragraph at lines 491--493
+Overfull \hbox (2.69771pt too wide) in paragraph at lines 483--485
 []\T1/zi4/m/n/10 pX_ENMO_mg_0-24h \T1/ptm/m/n/10 Per-centile in the short epoch
  dis-tri-bu-tion with in-valid data im-puted. Within
 [9] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (20.60657pt too wide) in paragraph at lines 589--591
+Overfull \hbox (20.60657pt too wide) in paragraph at lines 581--583
 []\T1/ptm/m/n/10 Vincent T van Hees <vin-cent-van-hees@gmail.com> Jing Hua Zhao
  <jinghua.zhao@mrc-epid.cam.ac.uk> 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11] [12]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [11]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [12] [13]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (24.78088pt too wide) in paragraph at lines 723--723
+Overfull \hbox (24.78088pt too wide) in paragraph at lines 782--782
  []\T1/zi4/m/n/10 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.de
 v_roll_med_acc_z=FALSE,[] 
 
-Overfull \hbox (34.42796pt too wide) in paragraph at lines 735--743
+Overfull \hbox (34.42796pt too wide) in paragraph at lines 794--802
 []\T1/ptm/m/n/10 Three val-ues to in-di-cate the lengths of the win-dows as in 
 c(window1,window2,window3):
-[13] [14] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [15] [16]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [17]
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18] [19]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1203--1207
+[14] [15] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [16] [17]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [18]
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [19] [20]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1262--1266
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[20] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (19.78088pt too wide) in paragraph at lines 1239--1239
+[21] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (19.78088pt too wide) in paragraph at lines 1298--1298
  []\T1/zi4/m/n/10 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 
 1, hrs.del.start = 0.5,[] 
 
-Overfull \hbox (2.78088pt too wide) in paragraph at lines 1242--1242
+Overfull \hbox (2.78088pt too wide) in paragraph at lines 1301--1301
  []\T1/zi4/m/n/10 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,nd
 ayswindow=7,idloc=1,[] 
 
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1252--1255
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1311--1314
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[21] [22]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1399--1403
+[22] [23]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1453--1457
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[23] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Underfull \hbox (badness 10000) in paragraph at lines 1479--1482
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [24]
+Underfull \hbox (badness 10000) in paragraph at lines 1533--1536
 
-[24] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [25] [26]
-Underfull \hbox (badness 10000) in paragraph at lines 1655--1658
+[25] (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [26] [27]
+Underfull \hbox (badness 10000) in paragraph at lines 1709--1712
 
-[27]
-Underfull \hbox (badness 10000) in paragraph at lines 1715--1720
+[28]
+Underfull \hbox (badness 10000) in paragraph at lines 1769--1774
 
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1737--1739
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1791--1793
 []\T1/zi4/m/n/10 sleeplog_dur_WD_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
 
-Overfull \hbox (1.01826pt too wide) in paragraph at lines 1739--1741
+Overfull \hbox (1.01826pt too wide) in paragraph at lines 1793--1795
 []\T1/zi4/m/n/10 sleeplog_dur_WE_sd \T1/ptm/m/n/10 Stan-dard de-vi-a-tion of sl
 eep du-ra-tion ac-cord-ing to sleeplog ac-cros week-
-[28] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [29]
+[29] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def) [30]
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
-Overfull \hbox (64.7862pt too wide) in paragraph at lines 1866--1869
+Overfull \hbox (64.7862pt too wide) in paragraph at lines 1920--1923
 \T1/ptm/m/n/10 celerom-e-ter file-names and di-rec-to-ries, e.g. c("C:/mydata/m
 yfile1.bin","C:/mydata/myfile2.bin"). 
-[30]
-Overfull \hbox (7.75723pt too wide) in paragraph at lines 1927--1931
+[31]
+Overfull \hbox (7.75723pt too wide) in paragraph at lines 1981--1985
 \T1/ptm/m/n/10 of Hu-man Daily Phys-i-cal Ac-tiv-ity. PLoS ONE 8(4): e61691. do
 i:10.1371/journal.pone.0061691 
-[31]
-Underfull \vbox (badness 3803) has occurred while \output is active [32]
-(/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.ind [33]
+[32]
+Underfull \vbox (badness 3803) has occurred while \output is active [33]
+(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.ind [34]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 56.
+(Font)              using `T1/zi4/m/n' instead on input line 59.
 
-[34]) (/tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83/Rd2.aux)
+[35]) (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -810,8 +814,8 @@ m/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
 xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on Rd2.pdf (34 pages, 167176 bytes).
+Output written on Rd2.pdf (35 pages, 169074 bytes).
 Transcript written on Rd2.log.
 Saving output to 'GGIR-manual.pdf' ...
 Done
-You may want to clean up by 'rm -rf /tmp/RtmpDOVKzc/Rd2pdf110e4ed5de83'
+You may want to clean up by 'rm -rf /tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb'
