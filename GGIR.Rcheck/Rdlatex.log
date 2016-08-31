@@ -181,7 +181,7 @@ i:10.1371/journal.pone.0061691
 [32]
 Underfull \vbox (badness 3803) has occurred while \output is active [33]
 No file Rd2.ind.
-[34] (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
+[34] (/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -197,7 +197,7 @@ consolata-zi4r.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr
 are/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (34 pages, 155682 bytes).
+Output written on Rd2.pdf (34 pages, 155680 bytes).
 Transcript written on Rd2.log.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
@@ -258,19 +258,19 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu))
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def))
 Writing index file Rd2.idx
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux)
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.out)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.out)
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
-updmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/u
+pdmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
 
@@ -381,7 +381,7 @@ i:10.1371/journal.pone.0061691
 [32]
 Underfull \vbox (badness 3803) has occurred while \output is active [33]
 No file Rd2.ind.
-[34] (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux) )
+[34] (/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux) )
 (see the transcript file for additional information){/usr/share/texlive/texmf-d
 ist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/usr/share/texlive/texmf-dist/fonts
 /enc/dvips/base/8r.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsola
@@ -458,19 +458,19 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu))
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def))
 Writing index file Rd2.idx
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux)
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.out)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.out)
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
-updmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/u
+pdmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
 
@@ -580,12 +580,12 @@ Overfull \hbox (7.75723pt too wide) in paragraph at lines 1981--1985
 i:10.1371/journal.pone.0061691 
 [32]
 Underfull \vbox (badness 3803) has occurred while \output is active [33]
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.ind [34]
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.ind [34]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 59.
 
-[35]) (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
+[35]) (/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -605,7 +605,7 @@ m/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
 xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on Rd2.pdf (35 pages, 168214 bytes).
+Output written on Rd2.pdf (35 pages, 168211 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
 Scanning input file Rd2.idx....done (110 entries accepted, 0 rejected).
@@ -672,19 +672,19 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu))
 (/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def))
 Writing index file Rd2.idx
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux)
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.out)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.out)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.out)
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/
-updmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.toc [1{/var/lib/texmf/fonts/map/pdftex/u
+pdmap/pdftex.map}]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def)
 Underfull \hbox (badness 10000) in paragraph at lines 37--105
 
 
@@ -794,12 +794,12 @@ Overfull \hbox (7.75723pt too wide) in paragraph at lines 1981--1985
 i:10.1371/journal.pone.0061691 
 [32]
 Underfull \vbox (badness 3803) has occurred while \output is active [33]
-(/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.ind [34]
+(/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.ind [34]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 59.
 
-[35]) (/tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb/Rd2.aux)
+[35]) (/tmp/Rtmpr8Keo6/Rd2pdff2a24f50948/Rd2.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -814,8 +814,8 @@ m/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
 xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on Rd2.pdf (35 pages, 169074 bytes).
+Output written on Rd2.pdf (35 pages, 169068 bytes).
 Transcript written on Rd2.log.
 Saving output to 'GGIR-manual.pdf' ...
 Done
-You may want to clean up by 'rm -rf /tmp/RtmpOvjeuP/Rd2pdf20d437a9c1bb'
+You may want to clean up by 'rm -rf /tmp/Rtmpr8Keo6/Rd2pdff2a24f50948'
