@@ -101,7 +101,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-
+  
   if (dayborder != 0) {
     midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + (1/(ws2/ws3)) #shift the definition of midnight if required
     # midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + 1 #shift the definition of midnight if required
@@ -164,8 +164,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     ML5AD = ML5AD_names = c()
     for (quani in 1:ncol(averageday)) {
       if (colnames(M$metashort)[(quani+1)] != "anglex" &
-            colnames(M$metashort)[(quani+1)] != "angley" &
-            colnames(M$metashort)[(quani+1)] != "anglez") {
+          colnames(M$metashort)[(quani+1)] != "angley" &
+          colnames(M$metashort)[(quani+1)] != "anglez") {
         #--------------------------------------
         # quantiles
         QUANtmp =  quantile(averageday[((t_TWDI[1]*(3600/ws3))+1):(t_TWDI[2]*(3600/ws3)),quani],probs=qlevels,na.rm=T,type=quantiletype)
@@ -210,21 +210,21 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
     }
     endatmidnight = 0
-  
-
+    
+    
     if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
       ndays = ndays - 1
       endatmidnight = 1
       cat("measurement ends at midnight or there is no midnight")
     }
-#     if (lastmidnighti == firstmidnighti) { #turned off 11 may 2015, because for some projects one night may be still useful
-#       tooshort = 1
-#     }
+    #     if (lastmidnighti == firstmidnighti) { #turned off 11 may 2015, because for some projects one night may be still useful
+    #       tooshort = 1
+    #     }
     daysummary = matrix("",ceiling(ndays),nfeatures)
     ds_names = rep("",nfeatures)
     #=============================
     if (length(selectdaysfile) > 0) {   # Millenium cohort related:
-        ndays = ceiling(ndays)
+      ndays = ceiling(ndays)
       if (ndays > 2) ndays = 2 # this is now hardcoded to be a maximum of two days
       nwindows = 1440 / window.summary.size # now defining it as X windows per 24
       windowsummary = matrix("",(ndays*nwindows),(ncol(metashort)*7)+5)
@@ -268,7 +268,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           qqq2 = (midnightsi[di]*(ws2/ws3))-1
         }
       }
-     
+      
       
       if (qqq2 > nrow(metashort)) qqq2 = nrow(metashort)
       vari = as.matrix(metashort[qqq1:qqq2,])
@@ -457,59 +457,30 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   select = seq(1,length(varnum2),by=300/ws3)
                   varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
                   mvpa[3] = length(which(varnum3*1000 >= mvpathreshold[mvpai])) * 5 #time spent MVPA in minutes
-                  if (bout.metric == 1) { # MVPA bout calculation like in the 2014 papers
-                    # METHOD 4: time spent above threshold
-                    boutduration = mvpadur[1] * (60/ws3) # per minute
-                    rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
-                                           bout.metric=bout.metric,ws3=ws3)
-                    mvpa[4] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
-                    # METHOD 5: time spent above threshold 5 minutes
-                    boutduration = mvpadur[2] * (60/ws3) #per five minutes
-                    rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
-                                           bout.metric=bout.metric,ws3=ws3)
-                    mvpa[5] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
-                    # METHOD 6: time spent above threshold 10 minutes
-                    boutduration = mvpadur[3] * (60/ws3) # per ten minutes
-                    rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
-                                           bout.metric=bout.metric,ws3=ws3)
-                    mvpa[6] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
-                    if (length(which(varnum*1000 >= mvpathreshold[mvpai])) < 0 & length(varnum) < 100) {
-                      mvpa[1:6] = 0
-                    }
-                    
-                  } else if (bout.metric == 2) { # updated version
-                    # cat("\nWARNING: MVPA Bout defintion has been updated, please see package manual for more information")
-                    # cat("\nincluding instructions on how to continue using the old defintion\n")
-                    # METHOD 4: time spent above threshold
-                    boutduration = 60/ws3 # per minute
-                    rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
-                                           bout.metric=bout.metric)
-                    mvpa[4] = length(which(getboutout$rr == 1))   / (60/ws3) #time spent MVPA in minutes
-                    # METHOD 5: time spent above threshold 5 minutes
-                    boutduration = 5 * (60/ws3)
-                    rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
-                                           bout.metric=bout.metric)
-                    mvpa[5] = length(which(getboutout$rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
-                    # METHOD 6: time spent above threshold 10 minutes
-                    boutduration = 10 * (60/ws3) 
-                    rr1 = matrix(0,length(varnum),1)
-                    p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
-                    getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
-                                           bout.metric=bout.metric)
-                    mvpa[6] = length(which(getboutout$rr1 == 1))   / (60/ws3) #time spent MVPA in minutes
+                  # METHOD 4: time spent above threshold
+                  boutduration = mvpadur[1] * (60/ws3) # per minute
+                  rr1 = matrix(0,length(varnum),1)
+                  p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                  getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                         bout.metric=bout.metric,ws3=ws3)
+                  mvpa[4] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
+                  # METHOD 5: time spent above threshold 5 minutes
+                  boutduration = mvpadur[2] * (60/ws3) #per five minutes
+                  rr1 = matrix(0,length(varnum),1)
+                  p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                  getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                         bout.metric=bout.metric,ws3=ws3)
+                  mvpa[5] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
+                  # METHOD 6: time spent above threshold 10 minutes
+                  boutduration = mvpadur[3] * (60/ws3) # per ten minutes
+                  rr1 = matrix(0,length(varnum),1)
+                  p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                  getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
+                                         bout.metric=bout.metric,ws3=ws3)
+                  mvpa[6] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
+                  if (length(which(varnum*1000 >= mvpathreshold[mvpai])) < 0 & length(varnum) < 100) {
+                    mvpa[1:6] = 0
                   }
-                  
-                  
                   if (length(which(is.nan(mvpa) == TRUE)) > 0) mvpa[which(is.nan(mvpa) == TRUE)] = 0
                   mvpanames[,mvpai] = c( paste("MVPA_E",ws3,"S_T",mvpathreshold[mvpai],sep=""),
                                          paste("MVPA_E1M_T",mvpathreshold[mvpai],sep=""),
@@ -638,11 +609,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   summary[vi] = C$cal.error.end #CALIBRATE
   summary[vi+1] = C$QCmessage #CALIBRATE
   for (la in 1:length(lookat)) {
-#     if (colnames(metashort)[lookat[la]] != "angle" & colnames(metashort)[lookat[la]] != "anglez" &
-#           colnames(metashort)[lookat[la]] != "angley" & 
-#           colnames(metashort)[lookat[la]] != "anglex") {
-      MA[la] = 	MA[la] * 1000
-#     }
+    #     if (colnames(metashort)[lookat[la]] != "angle" & colnames(metashort)[lookat[la]] != "anglez" &
+    #           colnames(metashort)[lookat[la]] != "angley" & 
+    #           colnames(metashort)[lookat[la]] != "anglex") {
+    MA[la] = 	MA[la] * 1000
+    #     }
   }
   q0 = length(MA) + 1
   summary[(vi+2):(vi+q0)] = MA
@@ -698,7 +669,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
     daytoweekvar = c(indeces,
-#                      which(ds_names == "mean_ENMO_mg_1to6am"),
+                     #                      which(ds_names == "mean_ENMO_mg_1to6am"),
                      which(ds_names == "mean_ENMO_mg_24hr"),
                      which(ds_names == "mean_LFENMO_mg_24hr"),
                      which(ds_names == "mean_BFEN_mg_24hr"),
