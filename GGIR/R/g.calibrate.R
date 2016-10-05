@@ -86,39 +86,54 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile)
+        SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
         I = g.inspectfile(datafile) #, useRDA = useRDA
         hvars = g.extractheadervars(I)
         SN = hvars$SN
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
+        # change by CLS
+        SDFi = which(basename(SDF$binFile) == basename(datafile))
+        if(length(SDFi) != 1) {
+            save(tint, SDF, SDFi, file = "debuggingFile.Rda")
+            stop(paste0("CLS error: there are zero or more than one files: ",
+                        datafile, "in the wearcodes file"))
+        }
         # print(SDF[SDFi,])
         #==========================================================================
         # STEP 1: now derive table with start and end times of intervals to load
         # STEP 2: now (based on i and chunksize)  decide which section of these intervals needs to be loaded
         # STEP 3: load data
         # thoughts: maybe treat second day as continuation of first such that clock times can be continuous: 4am-4am & 4am-4am
-        tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
-        nextday = as.numeric(tmp1[1]) + 1
-        nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
-        
-        tint = matrix(0,5,2)
-        if (dayborder > 0) {
-          fivebefore = paste0(" 0",dayborder-1,":55:00")
-          endday = paste0(" 0",dayborder,":00:00")
-        } else if (dayborder < 0) {
-          fivebefore = paste0(" ",24+dayborder-1,":55:00")
-          endday = paste0(" ",24+dayborder,":00:00")
-        } else if (dayborder == 0) {
-          fivebefore = paste0(" ",24+dayborder-1,":55:00")
-          endday = paste0(" 00:00:00")
-        }
-        tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
-        tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
-        tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
-        nextday = as.numeric(tmp2[1]) + 1
-        nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-        tint[2,1] = paste0(SDF[SDFi,3],endday)
-        tint[2,2] =paste0(nextday,endday)
+        tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
+                      getStartEnd(SDF$Day2[SDFi], dayborder), stringsAsFactors = FALSE) 
+        # tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
+        # nextday = as.numeric(tmp1[1]) + 1
+        # nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
+        # 
+        # tint = matrix(0,5,2)
+        # if (dayborder > 0) {
+        #   fivebefore = paste0(" 0",dayborder-1,":55:00")
+        #   endday = paste0(" 0",dayborder,":00:00")
+        # } else if (dayborder < 0) {
+        #   fivebefore = paste0(" ",24+dayborder-1,":55:00")
+        #   endday = paste0(" ",24+dayborder,":00:00")
+        # } else if (dayborder == 0) {
+        #   fivebefore = paste0(" ",24+dayborder-1,":55:00")
+        #   endday = paste0(" 00:00:00")
+        # }
+        # tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
+        # genFormat <- "%d/%m/%Y %H:%M:%S"
+        # dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+        # dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+        # tint[1,2] <- as.character(dy2, format = genFormat)
+        # #tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
+        # tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
+        # nextday = as.numeric(tmp2[1]) + 1
+        # nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
+        # tint[2,1] = paste0(SDF[SDFi,3],endday)
+        # dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+        # dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+        # tint[2,2] <- as.character(dy2, format = genFormat)
+        # #tint[2,2] =paste0(nextday,endday)
         
         if (i == nrow(tint)) {
           #all data read now make sure that it does not try to re-read it with mmap on
@@ -129,6 +144,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           #           if(useRDA == TRUE) {
           #             P <- getCalibrateData(datafile, tint[i,1], tint[i,2])
           #           } else {
+          
           try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
                                             end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
           # }
