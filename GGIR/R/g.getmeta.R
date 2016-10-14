@@ -191,53 +191,14 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
                       getStartEnd(SDF$Day2[SDFi], dayborder),stringsAsFactors = FALSE)
-        #==========================================================================
-        # STEP 1: now derive table with start and end times of intervals to load
-        # STEP 2: now (based on i and chunksize)  decide which section of these intervals needs to be loaded
-        # STEP 3: load data
-#         tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
-#         nextday = as.numeric(tmp1[1]) + 1
-#         nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
-#         # read an entire day at a time
-#         
-#         tint = matrix(0,3,2)
-#         if (dayborder > 0) {
-#           fivebefore = paste0(" 0",dayborder-1,":55:00")
-#           endday = paste0(" 0",dayborder,":00:00")
-#         } else if (dayborder < 0) {
-#           fivebefore = paste0(" ",24+dayborder-1,":55:00")
-#           endday = paste0(" ",24+dayborder,":00:00")
-#         } else if (dayborder == 0) {
-#           fivebefore = paste0(" ",24+dayborder-1,":55:00")
-#           endday = paste0(" 00:00:00")
-#         }
-#         tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
-#         genFormat <- "%d/%m/%Y %H:%M:%S"
-#         dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
-#         dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
-#         tint[1,2] <- as.character(dy2, format = genFormat)
-#         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
-#         nextday = as.numeric(tmp2[1]) + 1
-#         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-#         tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # change by VvH 6/9/2016, was endday
-#         dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
-#         dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
-#         tint[2,2] <- as.character(dy2, format = genFormat)
-        # Old code for reference:
-#         tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
-#         tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
-#         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
-#         nextday = as.numeric(tmp2[1]) + 1
-#         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-#         tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # now second day also loaded from 03:55 to ensure that start is at 4:00
-#         tint[2,2] =paste0(nextday,endday)
         if (i == nrow(tint)) {
           #all data read now make sure that it does not try to re-read it with mmap on
           switchoffLD = 1
         } else {
           try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
                                             end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-
+          if (sf != P$freq) sf = P$freq
+          # llll
           if (length(P) <= 2) {
             cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
             #try again but now with mmap.load turned on
@@ -302,6 +263,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                                             end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
           if (length(P) != 0) {
             cat("\ndata read succesfully\n")
+            if (sf != P$freq) sf = P$freq
           } else {
             switchoffLD = 1
           }
@@ -1057,9 +1019,11 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
     # cut = (count+1):nrow(metashort) # how it was
     cut = count:nrow(metashort)
+    print(nrow(as.matrix(metashort)) / (12*60))
     if (length(cut) > 1) {
       metashort = as.matrix(metashort[-cut,])
     }
+    print(nrow(metashort) / (12*60))
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time5 = seq(starttime3,(starttime3+((nrow(metashort)-1)*ws3)),by=ws3)
