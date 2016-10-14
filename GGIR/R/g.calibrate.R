@@ -102,33 +102,35 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         # STEP 2: now (based on i and chunksize)  decide which section of these intervals needs to be loaded
         # STEP 3: load data
         # thoughts: maybe treat second day as continuation of first such that clock times can be continuous: 4am-4am & 4am-4am
-        tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
-        nextday = as.numeric(tmp1[1]) + 1
-        nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
-        
-        tint = matrix(0,5,2)
-        if (dayborder > 0) {
-          fivebefore = paste0(" 0",dayborder-1,":55:00")
-          endday = paste0(" 0",dayborder,":00:00")
-        } else if (dayborder < 0) {
-          fivebefore = paste0(" ",24+dayborder-1,":55:00")
-          endday = paste0(" ",24+dayborder,":00:00")
-        } else if (dayborder == 0) {
-          fivebefore = paste0(" ",24+dayborder-1,":55:00")
-          endday = paste0(" 00:00:00")
-        }
-        tint[1,1] = paste0(SDF[SDFi,2],fivebefore)
-        genFormat <- "%d/%m/%Y %H:%M:%S"
-        dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
-        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
-        tint[1,2] <- as.character(dy2, format = genFormat)
-        tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
-        nextday = as.numeric(tmp2[1]) + 1
-        nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-        tint[2,1] = paste0(SDF[SDFi,3],fivebefore)
-        dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
-        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
-        tint[2,2] <- as.character(dy2, format = genFormat)
+        tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
+                      getStartEnd(SDF$Day2[SDFi], dayborder), stringsAsFactors = FALSE) 
+#         tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
+#         nextday = as.numeric(tmp1[1]) + 1
+#         nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
+#         
+#         tint = matrix(0,5,2)
+#         if (dayborder > 0) {
+#           fivebefore = paste0(" 0",dayborder-1,":55:00")
+#           endday = paste0(" 0",dayborder,":00:00")
+#         } else if (dayborder < 0) {
+#           fivebefore = paste0(" ",24+dayborder-1,":55:00")
+#           endday = paste0(" ",24+dayborder,":00:00")
+#         } else if (dayborder == 0) {
+#           fivebefore = paste0(" ",24+dayborder-1,":55:00")
+#           endday = paste0(" 00:00:00")
+#         }
+#         tint[1,1] = paste0(SDF[SDFi,2],fivebefore)
+#         genFormat <- "%d/%m/%Y %H:%M:%S"
+#         dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+#         dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+#         tint[1,2] <- as.character(dy2, format = genFormat)
+#         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
+#         nextday = as.numeric(tmp2[1]) + 1
+#         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
+#         tint[2,1] = paste0(SDF[SDFi,3],fivebefore)
+#         dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+#         dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+#         tint[2,2] <- as.character(dy2, format = genFormat)
         
         if (i == nrow(tint)) {
           #all data read now make sure that it does not try to re-read it with mmap on

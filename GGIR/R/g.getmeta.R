@@ -189,38 +189,40 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           stop(paste0("CLS error: there are zero or more than one files: ",
                       datafile, "in the wearcodes file"))
         }
+        tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
+                      getStartEnd(SDF$Day2[SDFi], dayborder),stringsAsFactors = FALSE)
         #==========================================================================
         # STEP 1: now derive table with start and end times of intervals to load
         # STEP 2: now (based on i and chunksize)  decide which section of these intervals needs to be loaded
         # STEP 3: load data
-        tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
-        nextday = as.numeric(tmp1[1]) + 1
-        nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
-        # read an entire day at a time
-        
-        tint = matrix(0,3,2)
-        if (dayborder > 0) {
-          fivebefore = paste0(" 0",dayborder-1,":55:00")
-          endday = paste0(" 0",dayborder,":00:00")
-        } else if (dayborder < 0) {
-          fivebefore = paste0(" ",24+dayborder-1,":55:00")
-          endday = paste0(" ",24+dayborder,":00:00")
-        } else if (dayborder == 0) {
-          fivebefore = paste0(" ",24+dayborder-1,":55:00")
-          endday = paste0(" 00:00:00")
-        }
-        tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
-        genFormat <- "%d/%m/%Y %H:%M:%S"
-        dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
-        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
-        tint[1,2] <- as.character(dy2, format = genFormat)
-        tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
-        nextday = as.numeric(tmp2[1]) + 1
-        nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-        tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # change by VvH 6/9/2016, was endday
-        dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
-        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
-        tint[2,2] <- as.character(dy2, format = genFormat)
+#         tmp1 = unlist(strsplit(as.character(SDF[SDFi,2]),"/"))
+#         nextday = as.numeric(tmp1[1]) + 1
+#         nextday = paste0(nextday,"/",tmp1[2],"/",tmp1[3])
+#         # read an entire day at a time
+#         
+#         tint = matrix(0,3,2)
+#         if (dayborder > 0) {
+#           fivebefore = paste0(" 0",dayborder-1,":55:00")
+#           endday = paste0(" 0",dayborder,":00:00")
+#         } else if (dayborder < 0) {
+#           fivebefore = paste0(" ",24+dayborder-1,":55:00")
+#           endday = paste0(" ",24+dayborder,":00:00")
+#         } else if (dayborder == 0) {
+#           fivebefore = paste0(" ",24+dayborder-1,":55:00")
+#           endday = paste0(" 00:00:00")
+#         }
+#         tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
+#         genFormat <- "%d/%m/%Y %H:%M:%S"
+#         dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+#         dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+#         tint[1,2] <- as.character(dy2, format = genFormat)
+#         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
+#         nextday = as.numeric(tmp2[1]) + 1
+#         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
+#         tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # change by VvH 6/9/2016, was endday
+#         dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+#         dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+#         tint[2,2] <- as.character(dy2, format = genFormat)
         # Old code for reference:
 #         tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
 #         tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
