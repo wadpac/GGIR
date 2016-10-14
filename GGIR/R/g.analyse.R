@@ -203,23 +203,28 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   #--------------------------------------------------------------
   # Features per day
   if (doperday == TRUE) { # extract fe
-    startatmidnight = 0  #new 28-11-2012
-    if (firstmidnighti == 1) {  #new 28-11-2012 #if measurement starts at midnight
-      ndays = ndays - 1  #new 28-11-2012
-      startatmidnight =  1   #new 28-11-2012
-      cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
-    }
-    endatmidnight = 0
-    
-    
-    if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
-      ndays = ndays - 1
-      endatmidnight = 1
-      cat("measurement ends at midnight or there is no midnight")
+    if (length(selectdaysfile) > 0 & ndays == 2) { # added 14/9/2016
+      ndays = 1
+      startatmidnight = 1
+      endatmidnight  = 1
+    } else {
+      startatmidnight = 0  #new 28-11-2012
+      if (firstmidnighti == 1) {  #new 28-11-2012 #if measurement starts at midnight
+        ndays = ndays - 1  #new 28-11-2012
+        startatmidnight =  1   #new 28-11-2012
+        cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
+      }
+      endatmidnight = 0
+      if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
+        ndays = ndays - 1
+        endatmidnight = 1
+        cat("measurement ends at midnight or there is no midnight")
+      }
     }
     #     if (lastmidnighti == firstmidnighti) { #turned off 11 may 2015, because for some projects one night may be still useful
     #       tooshort = 1
     #     }
+   
     daysummary = matrix("",ceiling(ndays),nfeatures)
     ds_names = rep("",nfeatures)
     #=============================
@@ -237,7 +242,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     # Features per day (based on on single variables)
     for (di in 1:ndays) { #run through days
       #extract day from matrix D and qcheck
-      if (startatmidnight == 1 & endatmidnight == 1) {
+      
+      if (length(selectdaysfile) > 0 & startatmidnight == 1 & endatmidnight == 1) { #added on 14/9/2016
+        qqq1 = 1#midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
+        qqq2 = midnightsi[di]*(ws2/ws3) #(midnightsi[(di+1)]*(ws2/ws3))-1 
+      } else if (length(selectdaysfile) == 0 & startatmidnight == 1 & endatmidnight == 1) {
         qqq1 = midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
         qqq2 = (midnightsi[(di+1)]*(ws2/ws3))-1 
       } else if (startatmidnight == 1 & endatmidnight == 0) {
@@ -268,8 +277,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           qqq2 = (midnightsi[di]*(ws2/ws3))-1
         }
       }
-      
-      
       if (qqq2 > nrow(metashort)) qqq2 = nrow(metashort)
       vari = as.matrix(metashort[qqq1:qqq2,])
       val = qcheck[qqq1:qqq2]
@@ -293,6 +300,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       ds_names[fi] = "id";      fi = fi + 1
       daysummary[di,fi] = fname
       ds_names[fi] = "filename";  fi = fi + 1
+      
       # if (length(selectdaysfile) > 0) {
       #   calenderdate = unlist(strsplit(as.character(vari[min(c(10,nrow(vari))),1])," "))[1] #adjusted for millenium cohort
       #   print(calenderdate)

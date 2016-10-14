@@ -86,12 +86,17 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile)
+        SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
         I = g.inspectfile(datafile) #, useRDA = useRDA
         hvars = g.extractheadervars(I)
         SN = hvars$SN
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
-        # print(SDF[SDFi,])
+        # change by CLS
+        SDFi = which(basename(SDF$binFile) == basename(datafile))
+        if(length(SDFi) != 1) {
+          save(tint, SDF, SDFi, file = "debuggingFile.Rda")
+          stop(paste0("CLS error: there are zero or more than one files: ",
+                      datafile, "in the wearcodes file"))
+        }
         #==========================================================================
         # STEP 1: now derive table with start and end times of intervals to load
         # STEP 2: now (based on i and chunksize)  decide which section of these intervals needs to be loaded
@@ -112,13 +117,18 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           fivebefore = paste0(" ",24+dayborder-1,":55:00")
           endday = paste0(" 00:00:00")
         }
-        tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
-        tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
+        tint[1,1] = paste0(SDF[SDFi,2],fivebefore)
+        genFormat <- "%d/%m/%Y %H:%M:%S"
+        dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+        tint[1,2] <- as.character(dy2, format = genFormat)
         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
         nextday = as.numeric(tmp2[1]) + 1
         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-        tint[2,1] = paste0(SDF[SDFi,3],endday)
-        tint[2,2] =paste0(nextday,endday)
+        tint[2,1] = paste0(SDF[SDFi,3],fivebefore)
+        dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+        tint[2,2] <- as.character(dy2, format = genFormat)
         
         if (i == nrow(tint)) {
           #all data read now make sure that it does not try to re-read it with mmap on

@@ -56,7 +56,7 @@ closedbout=FALSE,desiredtz = c())
     calculated.
   }
   \item{M5L5res}{
-resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
+  resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
   }
   \item{includedaycrit}{
     minimum required number of valid hours in day specific analysis

@@ -34,7 +34,8 @@ g.getbout(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=1,ws3=5)
   towards MVPA simplifies interpretation and still counts the two persons in
   the example as each others equal. If value=3, using sliding window across the
   data to test bout criteria per window and do not allow for breaks of 1 minute or
-  longer.
+  longer. If value=4, same as 3 but also requires the first and last epoch to 
+  require the threshold criteria.
 }
   \item{ws3}{epoch length in seconds, only needed for bout.metric =3, because
   it needs to measure how many epochs equal 1 minute breaks
