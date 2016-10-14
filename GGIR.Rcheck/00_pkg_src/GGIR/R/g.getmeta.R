@@ -179,11 +179,16 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile)
+        SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
         I = g.inspectfile(datafile) ## modified by JH
         hvars = g.extractheadervars(I)
         SN = hvars$SN
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
+        SDFi = which(basename(SDF$binFile) == basename(datafile))
+        if(length(SDFi) != 1) {
+          save(SDF, SDFi, file = "debuggingFile.Rda")
+          stop(paste0("CLS error: there are zero or more than one files: ",
+                      datafile, "in the wearcodes file"))
+        }
         #==========================================================================
         # STEP 1: now derive table with start and end times of intervals to load
         # STEP 2: now (based on i and chunksize)  decide which section of these intervals needs to be loaded
@@ -205,12 +210,25 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           endday = paste0(" 00:00:00")
         }
         tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
-        tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
+        genFormat <- "%d/%m/%Y %H:%M:%S"
+        dy1 <- as.POSIXlt(tint[1,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+        tint[1,2] <- as.character(dy2, format = genFormat)
         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
         nextday = as.numeric(tmp2[1]) + 1
         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
-        tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # now second day also loaded from 03:55 to ensure that start is at 4:00
-        tint[2,2] =paste0(nextday,endday)
+        tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # change by VvH 6/9/2016, was endday
+        dy1 <- as.POSIXlt(tint[2,1], format = "%d/%m/%Y %H:%M:%S", tz = "Europe/London")
+        dy2 <- dy1 + (60*60*24) + (60*5) # one day plus five minutes
+        tint[2,2] <- as.character(dy2, format = genFormat)
+        # Old code for reference:
+#         tint[1,1] = paste0(SDF[SDFi,2],fivebefore) #" 03:55:00"
+#         tint[1,2] =paste0(nextday,endday) #" ","04:00:00"
+#         tmp2 = unlist(strsplit(as.character(SDF[SDFi,3]),"/"))
+#         nextday = as.numeric(tmp2[1]) + 1
+#         nextday = paste0(nextday,"/",tmp2[2],"/",tmp2[3])
+#         tint[2,1] = paste0(SDF[SDFi,3],fivebefore) # now second day also loaded from 03:55 to ensure that start is at 4:00
+#         tint[2,2] =paste0(nextday,endday)
         if (i == nrow(tint)) {
           #all data read now make sure that it does not try to re-read it with mmap on
           switchoffLD = 1
@@ -546,6 +564,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           secshift = 60 - start_sec #shift in seconds needed
           start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
           #-----------
+          
           minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
           minshift = minshift - 1
           #-----------
@@ -573,7 +592,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             print("desiredtz not specified, Europe/London used as default")
             desiredtz = "Europe/London"
           }
-
           starttime_a = as.POSIXct(starttime3,format="%d/%m/%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
           starttime_b = as.POSIXct(starttime3,format="%d-%m-%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
           starttime_c = as.POSIXct(starttime3,format="%Y/%m/%d %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
@@ -599,8 +617,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             starttime = as.POSIXlt(as.numeric(starttime) + (24*3600),origin="1970-01-01")
           }
         }
-        
-        
         LD = nrow(data)
         if (LD < (ws*sf)) {
           cat("\nError: data too short for doing non-wear detection 3\n")
@@ -675,9 +691,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
             # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
-            # print(starttime)
-            # kkk
-            
             if (mon == 2) {
               I = INFI
               save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,temperature,light,
