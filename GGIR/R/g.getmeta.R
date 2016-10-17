@@ -184,6 +184,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         hvars = g.extractheadervars(I)
         SN = hvars$SN
         SDFi = which(basename(SDF$binFile) == basename(datafile))
+        
         if(length(SDFi) != 1) {
           save(SDF, SDFi, file = "debuggingFile.Rda")
           stop(paste0("CLS error: there are zero or more than one files: ",
@@ -191,7 +192,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
                       getStartEnd(SDF$Day2[SDFi], dayborder),stringsAsFactors = FALSE)
-        if (i == nrow(tint)) {
+        
+        if (i == nrow(tint) | nrow(tint) == 0) {
           #all data read now make sure that it does not try to re-read it with mmap on
           switchoffLD = 1
         } else {
@@ -1019,11 +1021,11 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
     # cut = (count+1):nrow(metashort) # how it was
     cut = count:nrow(metashort)
-    print(nrow(as.matrix(metashort)) / (12*60))
+    # print(nrow(as.matrix(metashort)) / (12*60))
     if (length(cut) > 1) {
       metashort = as.matrix(metashort[-cut,])
     }
-    print(nrow(metashort) / (12*60))
+    # print(nrow(metashort) / (12*60))
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time5 = seq(starttime3,(starttime3+((nrow(metashort)-1)*ws3)),by=ws3)
