@@ -192,8 +192,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
                       getStartEnd(SDF$Day2[SDFi], dayborder),stringsAsFactors = FALSE)
-        
-        if (i == nrow(tint) | nrow(tint) == 0) {
+
+        if (i == nrow(tint)+1 | nrow(tint) == 0) {
           #all data read now make sure that it does not try to re-read it with mmap on
           switchoffLD = 1
         } else {
