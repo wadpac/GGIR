@@ -659,10 +659,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
             if (mon == 2) {
               I = INFI
-              save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,temperature,light,
+              save(I,sf,wday,wdayname,decn,Gx,Gy,Gz,starttime,temperature,light,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
             } else {
-              save(I,wday,wdayname,decn,Gx,Gy,Gz,starttime,
+              save(I,sf,wday,wdayname,decn,Gx,Gy,Gz,starttime,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
             }
           }
