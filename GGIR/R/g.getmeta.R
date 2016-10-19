@@ -197,9 +197,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           #all data read now make sure that it does not try to re-read it with mmap on
           switchoffLD = 1
         } else {
-          try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
-                                            end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-          if (sf != P$freq) sf = P$freq
+          try(expr= {
+              P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
+                                            end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)
+              if (sf != P$freq) sf = P$freq
+              },silent=TRUE)
+          
           # llll
           if (length(P) <= 2) {
             cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
