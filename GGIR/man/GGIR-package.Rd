@@ -80,7 +80,7 @@ journal/conference publications.
 Package: \tab GGIR\cr
 Type: \tab Package\cr
 Version: \tab 1.3-0\cr
-Date: \tab 2016-9-16\cr
+Date: \tab 2016-10-23\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
