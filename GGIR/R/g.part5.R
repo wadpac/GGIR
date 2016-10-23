@@ -243,9 +243,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           # because it is not used for sleep reports (first night is ignored)
           # Therefore, expand the SIB detection to include this time segment.
           # Step 1: Identify time window that needs to be processed
-          redo1 = nightsi[1] - (12*60)
+          redo1 = nightsi[1] - ((60/ws3)*60)
           if (redo1 < 1) redo1 = 1
-          redo2 = nightsi[1] + (14*12*60)
+          redo2 = nightsi[1] + (14*(60/ws3)*60)
           # specify defintion of sustained inactivity bout    
           anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
           tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
@@ -258,7 +258,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           # count posture changes that happen less than once per ten minutes
           q1 = c()
           if (length(postch) > 1) {
-            q1 = which(diff(postch) > (timethreshold*12)) #less than once per i minutes
+            q1 = which(diff(postch) > (timethreshold*(60/ws3))) #less than once per i minutes
           }
           if (length(q1) > 0) {
             for (gi in 1:length(q1)) {
@@ -322,16 +322,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               if (length(waket) > 0) {
                 if (waket != ""){
                   waket2 = as.numeric(unlist(strsplit(waket,":")))
-                  waket3 = waket2[1] * (60*12) + waket2[2] * (12) + round(waket2[3]/5)
+                  waket3 = waket2[1] * (60*(60/ws3)) + waket2[2] * ((60/ws3)) + round(waket2[3]/5)
                   waketi = nightsi[1] + waket3
                 } else {
-                  waketi = nightsi[1] + (12*8*60)
+                  waketi = nightsi[1] + ((60/ws3)*8*60)
                 }
               } else {
-                waketi = nightsi[1] + (12*8*60)
+                waketi = nightsi[1] + ((60/ws3)*8*60)
               }
             } else {
-              waketi = nightsi[1] + (12*8*60)
+              waketi = nightsi[1] + ((60/ws3)*8*60)
             }
             # now round off to nearest end of sleep detection
             found = FALSE
