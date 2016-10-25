@@ -74,10 +74,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   } else {
     load(datafile)
     INFI = I
+    INFI$sf = sf #new line
   }
   options(warn=0)
   mon = INFI$monc
   dformat = INFI$dformc
+  
   sf = INFI$sf
   if (sf == 0) sf = 80 #assume 80Hertz in the absense of any other info
   header = INFI$header
