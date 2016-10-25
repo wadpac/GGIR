@@ -166,7 +166,11 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       fnames_without2 = fnames_without
     }
     fnames_without = fnames_without2
-    filelocationkey[j,2] = fnames_without
+    withoutRD = unlist(strsplit(fnames_without,"[.]RD"))
+    if (length(withoutRD) > 1) {
+      fnames_without = withoutRD[1]
+    }
+    
     if (length(ffdone) > 0) {
       ffdone_without = 1:length(ffdone) #dummy variable
       for (index in 1:length(ffdone)) {
