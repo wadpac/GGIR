@@ -1,11 +1,12 @@
 rm(list=ls())
 graphics.off()
-require(GENEAread)
-require(mmap)
+library(GENEAread)
+library(mmap)
 library(tools)
 
 # specify working directory
-setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
+# setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
+# setwd("D:/dropbox/Dropbox/Accelerometry/GGIR/development")
 
 #==================================================================
 # INPUT NEEDED:
@@ -19,25 +20,37 @@ dayborder = 4
 # datadir = "D:/dropbox/Dropbox/Accelerometry/DATA/Andy Bradley"
 # outputdir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development"
 # selectdaysfile = c()
-# datadir = "D:/sharedfolder/first5/output_first5/meta/raw" 
+#datadir = "D:/sharedfolder/first5/output_first5/meta/raw" 
 # outputdir= "D:/sharedfolder/first5" #Name directory where output needs to be stored
 # studyname="first5"  #name of study, only needed if datadir is a list of filenames
 # selectdaysfile = "D:/sharedfolder/first5/wearcodes.csv"
 
+# cls5sep
+datadir = "/media/windows-share/cls5sep/output_cls5sep/meta/raw" # c() #"D:/sharedfolder/first5/output_first5/meta/raw" 
+outputdir= "/media/windows-share/cls5sep" #Name directory where output needs to be stored
+studyname="cls5sep"  #name of study, only needed if datadir is a list of filenames
+selectdaysfile = "dummy value" #"D:/sharedfolder/first5/wearcodes.csv"
+
+
+#dress rehearsal test
+# datadir ="/media/windows-share/dressrehearsaltest"
+# outputdir= "/media/windows-share/cls5sep" #Name directory where output needs to be stored
+# studyname = "dressrehearsaltest" #"Millenium dress rehearsal"
+# selectdaysfile = "/media/windows-share/input_cls/wear_codes.csv"
 
 # datadir = "D:/dropbox/Dropbox/Accelerometry/DATA/Millenium dress rehearsal"
-datadir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/output_Millenium dress rehearsal/meta/raw"
-outputdir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development"
-studyname = "Millenium dress rehearsal"
-selectdaysfile = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/input_cls/wear_codes.csv"
+#datadir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/output_Millenium dress rehearsal/meta/raw"
+#outputdir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development"
+#studyname = "Millenium dress rehearsal"
+#selectdaysfile = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/input_cls/wear_codes.csv"
 #=====================================================================================
 # load functions from functions folder (replace by require(GGIR) once package is updated)
 
-library(GGIR)
-# ffnames = dir("functions") # creating list of filenames of scriptfiles to load
-# for (i in 1:length(ffnames)) {
-# source(paste("functions/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
-# }
+# library(GGIR)
+ffnames = dir("/home/vincent/GGIR/mcs-acc/GGIR/R/") # creating list of filenames of scriptfiles to load
+for (i in 1:length(ffnames)) {
+source(paste("/home/vincent/GGIR/mcs-acc/GGIR/R/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
+}
 # ffnames5 = dir("functions_part5") # creating list of filenames of scriptfiles to load
 # for (i in 1:length(ffnames5)) {
 #   source(paste("functions_part5/",ffnames5[i],sep="")) #loading scripts for reading geneactiv data
@@ -61,7 +74,7 @@ g.shell.GGIR(#=======================================
   studyname=studyname, #specify above
   f0=f0, #specify above
   f1=f1, #specify above
-  overwrite = TRUE, #overwrite previous milestone data?
+  overwrite = FALSE, #overwrite previous milestone data?
   csv.struc=c(), #csv.struc=c(5,6), #
   do.imp=TRUE, # Do imputation? (recommended)
   idloc=1, #id location (1 = file header, 2 = filename)
@@ -112,31 +125,6 @@ g.shell.GGIR(#=======================================
   dayborder = dayborder, # dayborder is the hour at which one day becomes the next day
   mvpa.2014 = TRUE,
   closedbout=FALSE,
-  # #-------------------------------
-  # # Part 3 parameters:
-  # #-------------------------------
-  # # Key functions: Sleep detection
-  # timethreshold= c(5), #10
-  # anglethreshold=5,
-  # ignorenonwear = TRUE, # if TRUE non-wear is not detected as sleep (if FALSE then it will work with imputed data)
-  # #-------------------------------
-  # # Part 4 parameters:
-  # #-------------------------------
-  # # Key functions: Integrating sleep log (if available) with sleep detection, storing day and person specific summaries of sleep
-  # excludefirstlast = FALSE, # Exclude first and last night for sleep analysis?
-  # includenightcrit = 16, # number of minimum valid hours in a day to attempt sleep analysis
-  # def.noc.sleep = c(),
-  # # If sleep log is available:
-  # # loglocation= "Q:/scripts/GGIR/test_version14/sleep logs/ascribe/CONVERTED_LOG_ASCRIBEstudy_v1.csv", # full directory and name of the log (if available, otherwise leave value as c() )
-  # outliers.only = TRUE,
-  # criterror = 4,
-  # relyonsleeplog = FALSE,
-  # # sleeplogidnum = TRUE, # Is the participant in the sleep log stored as a number (TRUE) or as a character (FALSE)
-  # # colid=1, #colomn in which the participant id or filename is stored
-  # # coln1=2, #column number for first day
-  # do.visual = TRUE,
-  # # nnights = 21, #number of nights in the sleep log
-  # #-------------------------------
   #-----------------------------------
   # Report generation
   #-------------------------------
