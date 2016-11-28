@@ -1,7 +1,7 @@
 \name{g.shell.GGIR}
 \alias{g.shell.GGIR}
 \title{
-Shell function for analysing a accelerometer dataset.
+Shell function for analysing an accelerometer dataset.
 }
 \description{
 This function is designed to help users operate all steps of the

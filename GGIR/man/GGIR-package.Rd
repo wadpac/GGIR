@@ -64,6 +64,11 @@ g.part2 and most users should not really need to interact with g.part1 or g.part
 directly. More recently I expanded the package with g.part3 and g.part4 which 
 provide functionality for estimating sleep and sustained inactivity bouts.\cr
 \cr
+g.part5 finally takes the output from parts 2 and 4 to describe time spent between 
+waking up in the morning and waking up the next day subdivided by behavioural category. 
+g.part5 calculates for each of these categories the time spent, the number of bouts, 
+the average acceleration and the number of blocks.\cr
+\cr
 If you want to use this package for a different data format (e.g. from a different
 accelerometer brand) then please provide me with: the R-code to read the data and
 example files for testing purposes.\cr
@@ -79,8 +84,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.3-1\cr
-Date: \tab 2016-10-23\cr
+Version: \tab 1.3-2\cr
+Date: \tab 2016-11-28\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
