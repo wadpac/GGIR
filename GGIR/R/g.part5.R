@@ -209,19 +209,28 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             gik.ons = as.character(S2$sib.onset.time)
             gik.end = as.character(S2$sib.end.time)
             for (g in 1:nrow(S2)) { # sleep periods
+              lastpr0 = pr0
               pr1 = pr0 + ((60/ws3)*1440*6)
               if (pr1 > pr2) pr1 = pr2
               if (pr0 > pr1) pr0 = pr1
               s0 = which(time[pr0:pr1] == gik.ons[g])[1]
               s1 = which(time[pr0:pr1] == gik.end[g])[1]
-              if (is.na(s0) == TRUE) s0 = which(time[pr0:pr1] == paste(gik.ons[g]," 00:00:00",sep=""))[1]
-              if (is.na(s1) == TRUE) s1 = which(time[pr0:pr1] == paste(gik.end[g]," 00:00:00",sep=""))[1]
+              timebb = as.character(time[pr0:pr1]) 
+              if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
+                timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
+              }
+              s0 = which(timebb == gik.ons[g])[1]
+              s1 = which(timebb == gik.end[g])[1]
+              if (is.na(s0) == TRUE) s0 = which(timebb == paste(gik.ons[g]," 00:00:00",sep=""))[1]
+              if (is.na(s1) == TRUE) s1 = which(timebb == paste(gik.end[g]," 00:00:00",sep=""))[1]
               s0 = s0 + pr0 - 1
               s1 = s1 + pr0 - 1
               pr0 = s1
-              if (length(s1) != 0 & length(s0) != 0) {
+              if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
                 s0s1 = c(s0s1,s0:s1)
-              }              
+              } else {
+                pr0 = lastpr0 + ((60/ws3)*1440*6)
+              }
             }
           }
           detection[s0s1] = 1
@@ -307,9 +316,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 w1c = paste0(w1c," 00:00:00")
                 s1 = which(as.character(time) == w1c)[1]
               }
-              if (is.na(s0) == TRUE) s0 = which(as.character(time) ==paste0(w0c," 00:00:00"))[1]
-              if (is.na(s1) == TRUE) s1 = which(as.character(time) ==paste0(w1c," 00:00:00"))[1]
-              if (length(s1) != 0 & length(s0) != 0) {
+              timebb = as.character(time) 
+              
+              if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
+                timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
+              }
+                if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
+                if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
+              # }
+              if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
                 diur[s0:s1] = 1
               }
             }
@@ -604,6 +619,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # QUANTILES...
                         # sse = qqq1:qqq2
                         WLH = ((qqq2-qqq1)+1)/((60/ws3)*60) #windowlength_hours = 
+                        if (WLH <= 1) WLH = 1.001
                         dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH))
                         ds_names[fi] = paste("quantile_mostactive60min_mg",sep="");      fi = fi + 1
                         dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH))
@@ -648,6 +664,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           if (ignore == FALSE) dsummary[di,fi] = M5VALUE
                           ds_names[fi] = paste("M",wini,"VALUE",sep="");      fi = fi + 1
                           if (ignore == FALSE) {
+                            if(length(unlist(strsplit(L5HOUR,"[+]"))) > 1) { # only do this for ISO8601 format
+                              L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz="Europe/London"))
+                              M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz="Europe/London"))
+                            }
                             time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
                             if (time_num < 12) time_num = time_num + 24
                             dsummary[di,fi] = time_num
