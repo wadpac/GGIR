@@ -1,3 +1,48 @@
 g.wavread = function(binfile,start=1,end=100,units="minutes") {
-  return(NULL) 
+  if (start == 0) start = 1
+  #-----------------------------------------------------
+  # get data
+  S = tuneR::readWave(binfile, from = start, to = end, units = units)
+  B = tuneR::extractWave(S, from = start, to = length(S),xunit = c("samples", "time"))
+  S = as.data.frame(S)
+  B = as.data.frame(B)
+  #-------------------------------------------------------
+  # extract info from header: fileEncoding does not seem to be consistent, so try two variants
+  # header = rownames(read.csv(binfile,nrow=13,header=TRUE))
+  header = rownames(read.csv(binfile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="UTF-8"))
+  if (length(header) == 0) {
+    header = rownames(read.csv(binfile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="latin1"))
+  }
+  P = sapply(as.character(header),function(x) {
+    tmp = unlist(strsplit(x,": "))
+    if (length(tmp) == 1) {
+      tmp = c(tmp, NA)
+    } else {
+      tmp = c(tmp[1],tmp[length(tmp)])
+    }
+  })
+  P = as.data.frame(t(P))
+  names(P) = c("hnames","hvalues")
+  H = tuneR::readWave(binfile, from = 1, to = 3600,units = c("seconds"), header = TRUE) #get wav file header
+  #-----------------------------------------------
+  # scale acceleration
+  scale = as.numeric(as.character(P$hvalues[which(P$hnames == "Scale-1" | P$hnames == "Scale-2" | P$hnames == "Scale-3")]))
+  if (length(scale) != 3) scale = rep(scale[1],3)
+  range = 2^(H$bits -1) # should be 32768 for 16 bit
+  x = (B$C1/range) * scale[1]
+  y = (B$C2/range) * scale[2]
+  z = (B$C3/range) * scale[3]
+  rawxyz = cbind(x,y,z)
+  #---------------------------------------------
+  # get time (we only need first timestamp
+  A = scan(binfile,what="character",nlines=12,quiet=TRUE)
+  timestamp = paste0(A[which(A == "ICMTz")+1:2],collapse=" ")
+  if (length(timestamp) == 0 | timestamp == "") { #if not possible use other time in fileheader
+    timestamp = as.character(P$hvalues[which(P$hnames == "Start")]) 
+  }
+  # Note: temperature information is available in channel 4, but documentation is unclear on how to interpret this information
+  # therefore I am not using it and rely on auto-calibration as performed before .wav file is generated
+  # g = (B$C4/ range) # temperature, light and battery ?
+  invisible(list(rawxyz=rawxyz,header=P,timestamp = timestamp))
+  
 }

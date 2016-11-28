@@ -21,6 +21,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   } else { #multiple files
     filelist = TRUE
   }
+
   derivef0f1 = FALSE
   if (length(f0) == 0 | length(f1) == 0) {
     derivef0f1 = TRUE
@@ -33,7 +34,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     # What file to end with?
     if (filelist == FALSE) {
       # if (f1 != f0) {
-        f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda)")) # modified by JH
+        f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa)")) # modified by JH
         # f1 = length(c(dir(datadir,recursive=TRUE,pattern="csv"),dir(datadir,recursive=TRUE,pattern="bin"))) #10
       # }
     } else {
@@ -80,7 +81,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   } else {
     useRDA = FALSE
   }
-  
+
   if (filelist == TRUE | useRDA == TRUE) {
     metadatadir = paste(outputdir,"/output_",studyname,sep="")
   } else {
