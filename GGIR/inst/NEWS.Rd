@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.3-2 (release date:28-11-2016)}{
+\itemize{
+  \item g.part5 added. g.part5 merges the output from the first four parts
+  \item Functionality added to read Axivity wav-format files with acceleration in first
+  three channels. No documentation added yet until I have more confirmation that it works
+  well
+}
+}
 \section{Changes in version 1.2-11 (release date:31-8-2016)}{
 \itemize{
   \item Bug fixed related to MVPA variable. The bug was a result of
