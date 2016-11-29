@@ -15,9 +15,6 @@ g.part5.report = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     cat("Error: No milestone data available from part 5")
   }
   if (try.generate.report == TRUE) {
-    # ms5.out = "/meta/ms5.out"
-    # fnames.ms5 = dir(paste(metadatadir,ms5.out,sep=""))
-    
     #======================================================================
     # loop through meta-files
     fnames.ms5 = list.files(paste0(metadatadir,ms5.out),full.names=TRUE)
@@ -68,7 +65,6 @@ g.part5.report = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     uTRMi = as.character(unique(outputfinal$TRMi))
     uTRVi = as.character(unique(outputfinal$TRVi))
     uacc_def = as.character(unique(outputfinal$acc_def))
-    
     # replace NaN by empty cell value
     for (kra in 1:ncol(outputfinal)) {
       krad = which(as.character(outputfinal[,kra]) == "NaN")
@@ -276,8 +272,6 @@ g.part5.report = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3tmp = OF3[,c("filename","night number","daysleeper","cleaningcode","sleeplog_used",
                                 "acc_available","nonwear_perc_day","nonwear_perc_night","daytype","dur_day_min",
                                 "dur_night_min")]
-                
-                
                 foo34 = function(A,B,nameold,namenew,cval) {
                   # function to help with calculating additinal variables
                   df2 = function(x) df2 = length(which(x==cval))
@@ -289,13 +283,10 @@ g.part5.report = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 }
                 # calculate number of valid days (both night and day criteria met)
                 OF3tmp$validdays = 0
-                
                 OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
                 OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
                 OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
                 OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
-                
-                
                 # criteria is that nonwear percentage needs to be below threshold unless the actual time in minutes
                 # of daypart (night or day) is less than 120 minutes
                 OF3tmp$validdays[which((OF3tmp$nonwear_perc_day < maxpernwday | OF3tmp$dur_day_min < 120) &

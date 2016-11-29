@@ -19,29 +19,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     }
   }
   if (f1 == 0) print("Warning: f1 = 0 is not a meaningful value")
-  filelist = FALSE
-  #   verify whether datadir is a directory or a list of files
-  if (length(datadir) == 1) { #could be a directory or one file
-    if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
-    if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
-    if (length(unlist(strsplit(datadir,"[.]wa")))>1) filelist = TRUE
-  } else { #multiple files
-    filelist = TRUE    
-  }
+  filelist = isfilelist(datadir)
   #Extra code to handle raw accelerometer data in Raw data format:
   # list of all csv and bin files
-  if (filelist == FALSE) {
-    fnames = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
-               dir(datadir,recursive=TRUE,pattern="[.]bin"),
-               dir(datadir,recursive=TRUE,pattern="[.]wav"))
-    fnamesRD = dir(datadir,recursive=TRUE,pattern="[.]RD")
-    if (length(fnames) == length(fnamesRD)) { #because filenames may have both .bin in the middle and .RData
-      fnames = c()
-      fnames = fnamesRD
-    }
-  } else {
-    fnames = datadir
-  }
+  fnames = datadir2fnames(datadir,filelist)
   # check whether these are RDA
   if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
     useRDA = TRUE
@@ -79,13 +60,13 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   #--------------------------------
   # get file path if requested:
   #   if (storefolderstructure == TRUE) {
-  filelist = FALSE
-  if (length(datadir) == 1) { #could be a directory or one file
-    if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
-    if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
-  } else { #multiple files
-    filelist = TRUE    
-  }
+#   filelist = FALSE
+#   if (length(datadir) == 1) { #could be a directory or one file
+#     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
+#     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
+#   } else { #multiple files
+#     filelist = TRUE    
+#   }
   if (filelist == FALSE) {
     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
                    dir(datadir,recursive=TRUE,pattern="[.]bin"),
