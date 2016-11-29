@@ -32,7 +32,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
     }
   }
   fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
-  
   ffdone = fnames.ms2
   #---------------------------------
   # house keeping variables
@@ -44,7 +43,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   #--------------------------------
   # Loop through all the files
   fnames = sort(fnames)
-  
   #---------------------------------------
   cnt78 = 1
   for (i in f0:f1) {
@@ -79,8 +77,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         
         if (storefolderstructure == TRUE) {
           SUMMARY = SUM$summary
-          #           SUMMARY$pdffilenumb = pdffilenumb
-          #           SUMMARY$pdfpagecount = pdfpagecount
           SUM$summary = SUMMARY
         }
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
@@ -92,8 +88,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0 | cnt78 == 1) {
             SUMMARY = SUM$summary
-            #             SUMMARY$pdffilenumb = pdffilenumb
-            #             SUMMARY$pdfpagecount = pdfpagecount
             SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
             if (length(selectdaysfile) > 0) {
@@ -103,11 +97,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             cnt78 = 2
           } else {
             SUMMARY = SUM$summary
-            #             SUMMARY$pdffilenumb = pdffilenumb
-            #             SUMMARY$pdfpagecount = pdfpagecount
             SUM$summary = SUMMARY
-            
-            
             if (ncol(SUMMARY) == ncol(SUM$summary)) {
             } else {
               SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
