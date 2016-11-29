@@ -13,41 +13,24 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   }
   if (length(which(ls() == "timewindow")) != 0) timewindow = input$timewindow
   # verify whether datadir is a directory or a list of files
-  filelist = FALSE
-  if (length(datadir) == 1) { #could be a directory or one file
-    if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
-    if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
-    if (length(unlist(strsplit(datadir,"[.]wa")))>1) filelist = TRUE
-  } else { #multiple files
-    filelist = TRUE
-  }
-
+  filelist = isfilelist(datadir)
   derivef0f1 = FALSE
   if (length(f0) == 0 | length(f1) == 0) {
     derivef0f1 = TRUE
   } else {
     if (f0 == 0 | f1 == 0) derivef0f1 = TRUE
   }
-  # What file to start with?
-  if (derivef0f1 == TRUE) {
+  if (derivef0f1 == TRUE) { # What file to start with?
     f0 = 1
-    # What file to end with?
-    if (filelist == FALSE) {
-      # if (f1 != f0) {
-        f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa)")) # modified by JH
-        # f1 = length(c(dir(datadir,recursive=TRUE,pattern="csv"),dir(datadir,recursive=TRUE,pattern="bin"))) #10
-      # }
+    if (filelist == FALSE) {  # What file to end with?
+      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
     }
   }
-  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE #
+  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE
   if (length(which(mode == 0)) > 0) {
-    dopart1 = TRUE
-    dopart2 = TRUE
-    dopart3 = TRUE
-    dopart4 = TRUE
-    dopart5 = TRUE
+    dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE
   } else {
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
@@ -60,18 +43,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
-    if (filelist == FALSE) {
-      fnames = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
-                 dir(datadir,recursive=TRUE,pattern="[.]bin"),
-                 dir(datadir,recursive=TRUE,pattern="[.]wav"))
-      fnamesRD = dir(datadir,recursive=TRUE,pattern="[.]RD")
-      if (length(fnames) == length(fnamesRD)) { #because filenames may have both .bin in the middle and .RData
-        fnames = c()
-        fnames = fnamesRD
-      }
-    } else {
-      fnames = datadir
-    }
+    fnames = datadir2fnames(datadir,filelist)
     # check whether these are RDA
     if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
       useRDA = TRUE
