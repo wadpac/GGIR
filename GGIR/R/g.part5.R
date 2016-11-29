@@ -27,30 +27,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   SUM = nightsummary = M = sib.cla.sum= c()
   #======================================================================
   # compile lists of milestone data filenames
-  # define some functions to help extract original filename of binary file
-  cave = function(x) as.character(unlist(strsplit(x,".RDa")))[1]
-  cave2 = function(x) as.character(unlist(strsplit(x,"eta_")))[2]
-  # part 1
-  meta = paste(metadatadir,"/meta/basic",sep="")
-  fname_m = sort(dir(meta))
-  x = as.matrix(as.character(fname_m))
-  temp1 = apply(x,MARGIN = c(1),FUN=cave)
-  x = as.matrix(as.character(temp1))
-  fnamesmeta = sort(apply(x,MARGIN=c(1),FUN=cave2))
-  # part 2
-  ms2.out = "/meta/ms2.out"
-  fnames.ms2 = sort(dir(paste(metadatadir,ms2.out,sep="")))
-  # part 3
-  metasleep = paste(metadatadir,"/meta/ms3.out",sep="")
-  fname_ms = dir(metasleep)
-  x = as.matrix(as.character(fname_ms))
-  fnamesmetasleep = sort(apply(x,MARGIN=c(1),FUN=cave))
-  # part 4
-  ms4.out = "/meta/ms4.out"
-  fnames.ms4 = sort(dir(paste(metadatadir,ms4.out,sep="")))
-  # part 5
-  ms5.out = "/meta/ms5.out"
-  fnames.ms5 = sort(dir(paste(metadatadir,ms5.out,sep="")))
+  fnames.ms1 = sort(dir(paste(metadatadir,"/meta/basic",sep="")))
+  fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
+  fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
+  fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
+  fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
   # results
   results = paste(metadatadir,"/results",sep="")
   #------------------------------------------------
@@ -58,27 +39,21 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
   wdaynames = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   nfeatures = 500
-  # ffdone = c()
   ws3 = windowsizes[1]
   ds_names = rep("",nfeatures)
   di = 1
   cnt = 1
-  fname_ms = sort(fname_ms)
-  fnamesmeta= sort(fnamesmeta)
+  fnames.ms3 = sort(fnames.ms3)
+  # fnames_original= sort(fnames_original)
   if (f1 == 0) length(fnames.ms4)
   if (f1 > length(fnames.ms4)) f1 = length(fnames.ms4)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
-    filelist = FALSE
-    if (length(datadir) == 1) { #could be a directory or one file
-      if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
-      if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
-    } else { #multiple files
-      filelist = TRUE
-    }
+    filelist = isfilelist(datadir)
     if (filelist == FALSE) {
-      fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),dir(datadir,recursive=TRUE,pattern="[.]bin"))
+      # fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),dir(datadir,recursive=TRUE,pattern="[.]bin"))
+      fnamesfull = dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wav)")
     } else {
       fnamesfull = datadir
     }
@@ -94,8 +69,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     if (length(fnamesfull) > 0) {
       fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
       foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-      for (i in 1:length(fname_ms)) {
-        ff = as.character(unlist(strsplit(fname_ms[i],".RDa"))[1])
+      for (i in 1:length(fnames.ms3)) {
+        ff = as.character(unlist(strsplit(fnames.ms3[i],".RDa"))[1])
         if (length(which(fnamesshort == ff)) > 0) {
           ffd[i] = fnamesfull[which(fnamesshort == ff)]
           ffp[i] = foldername[which(fnamesshort == ff)]
@@ -109,7 +84,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   t0 = t1 = Sys.time()
   for (i in f0:f1) {
     if (length(ffdone) > 0) { #& store.ms == TRUE
-      if (length(which(ffdone == fname_ms[i])) > 0) { 
+      if (length(which(ffdone == fnames.ms3[i])) > 0) { 
         skip = 1 #skip this file because it was analysed before")
       } else {
         skip = 0 #do not skip this file
@@ -119,8 +94,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     }
     if (overwrite == TRUE) skip = 0
     # skip files from ms3 if there is no equivalent in ms4
-    selp = which(fnames.ms4 == fname_ms[i])
-    if (file.exists(paste(metadatadir,ms4.out,"/",fnames.ms4[selp],sep="")) == FALSE) {
+    selp = which(fnames.ms4 == fnames.ms3[i])
+    if (file.exists(paste(metadatadir,"/meta/ms4.out/",fnames.ms4[selp],sep="")) == FALSE) {
       skip = 1
     }
     if (skip == 0) {
@@ -128,27 +103,22 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       deltat = as.numeric(difftime(t2,t1,units="hours"))
       if (deltat > 0.5) { # every half and hour print duration of progress
         deltat0 = round(as.numeric(difftime(t2,t0,units="hours"))*10)/10
-        if (deltat0 < 2) {
-          cat(paste(" ",i," (",unlist(strsplit(as.character(t2)," "))[2],")",sep=""))
-        } else {
-          cat(paste(" ",i," (",unlist(strsplit(as.character(t2)," "))[2],")",sep=""))
-        }
+        cat(paste(" ",i," (",unlist(strsplit(as.character(t2)," "))[2],")",sep=""))
         t1 = Sys.time()
       } else {
         cat(paste(" ",i,sep=""))
       }
       # load output g.part2
-      selp = which(fnames.ms2 == fname_ms[i]) # so, fname_ms[i] is the reference point for filenames
-      
-      load(file=paste(metadatadir,ms2.out,"/",fnames.ms2[selp],sep=""))
+      selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
+      load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
       daysummary = SUM$daysummary
       summary = SUM$summary
       # load output g.part4
-      selp = which(fnames.ms4 == fname_ms[i])
-      load(file=paste(metadatadir,ms4.out,"/",fnames.ms4[selp],sep=""))
+      selp = which(fnames.ms4 == fnames.ms3[i])
+      load(file=paste(metadatadir,"/meta/ms4.out/",fnames.ms4[selp],sep=""))
       summarysleep = nightsummary
       rm(nightsummary)
-      idindex = which(summarysleep$filename == fname_ms[i])
+      idindex = which(summarysleep$filename == fnames.ms3[i])
       id = summarysleep$id[idindex[1]]
       ndays = nrow(summarysleep) #/ length(unique(summarysleep$acc_def))
       dsummary = matrix("",(40*length(unique(summarysleep$acc_def))
@@ -162,13 +132,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         summarysleep_tmp = summarysleep
         #======================================================================
         # load output g.part1
-        selp = which(fname_m == paste("meta_",fname_ms[i],sep=""))
+        selp = which(fnames.ms1 == paste("meta_",fnames.ms3[i],sep=""))
         if (length(selp) != 1) {
           cat("Error: File not processed with part1")
         }
-        load(paste(meta,"/",fname_m[selp],sep=""))
+        load(paste0(metadatadir,"/meta/basic/",fnames.ms1[selp]))
         # load output g.part3
-        load(paste(metasleep,"/",fname_ms[i],sep=""))
+        load(paste0(metadatadir,"/meta/ms3.out/",fnames.ms3[i]))
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
         IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
                        hrs.del.end=hrs.del.end,maxdur=maxdur)
@@ -495,7 +465,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # START STORING BASIC INFORMATION
                         dsummary[di,fi] = id #summarysleep_tmp2$id[1]
                         ds_names[fi] = "id";      fi = fi + 1
-                        dsummary[di,fi] = fname_ms[i]
+                        dsummary[di,fi] = fnames.ms3[i]
                         ds_names[fi] = "filename";      fi = fi + 1
                         dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi]),as.character(summarysleep_tmp2$calendardate[wi]))
                         ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
@@ -774,7 +744,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
           }
         }
-        save(output,file=paste(metadatadir,ms5.out,"/",fname_ms[i],sep=""))
+        save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
         rm(output,dsummary)
       }
     }
