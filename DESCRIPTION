@@ -11,7 +11,7 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
 Maintainer: Vincent T van Hees <vincentvanhees@gmail.com>
 Description: A tool to process and analyse data collected with wearable raw acceleration sensors. The package has been developed and tested for binary data from GENEActiv and GENEA devices and .csv-export data from  Actigraph devices. These devices are currently widely used in research on human daily physical activity.
 License: LGPL (>= 2.0, < 3) | file LICENSE
-Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR, testthat
+Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR, testthat, covr
 Imports: data.table
 Depends: stats, utils, R (>= 2.10)
 NeedsCompilation: no
