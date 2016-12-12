@@ -74,7 +74,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   } else {
     load(datafile)
     INFI = I
-    INFI$sf = sf #new line
+    sf = INFI$sf #= sf #new line
   }
   options(warn=0)
   mon = INFI$monc
