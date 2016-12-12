@@ -1,4 +1,6 @@
+.gitignore
 .Rproj.user
 .Rhistory
 .RData
 GGIR.Rcheck/
+mcs-acc.Rproj
