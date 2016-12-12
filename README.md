@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/NLeSC/GGIR.svg?branch=master)](https://travis-ci.org/NLeSC/GGIR)
+
 # mcs-acc
 Millennium Cohort Study - Accellerometry Study
 
