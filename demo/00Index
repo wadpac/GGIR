@@ -1,0 +1,3 @@
+CLS_classification_dataprep	match activity log with available accelerometer data
+CLS_convert_RDatatoCSV	example of how to convert Rda data to csv
+script_CLS	code example of how we called g.shell.GGIR
