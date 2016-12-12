@@ -5,7 +5,7 @@ Merge output from physical activity and sleep analysis into one report
 }
 \description{
 Function to merge the output from g.part2 and g.part4 into one report enhanced with
-profiling of sleep and physical activity stratified acros intensity levels and
+profiling of sleep and physical activity stratified across intensity levels and
 based on bouted periods as well as non-bouted periods.
 }
 \usage{

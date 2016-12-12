@@ -144,10 +144,25 @@ g.shell.GGIR(#-------------------------------
              coln1=2, 
              do.visual = TRUE,
              nnights = 9,
+             #-------------------------------
+             # Part 5 parameters:
+             #-------------------------------
+             # Key functions: Merging physical activity with sleep analyses
+             threshold.lig = c(30,40,50),
+             threshold.mod = c(100,120),
+             threshold.vig = c(400,500),
+             boutcriter = 0.8,
+             boutcriter.in = 0.9,
+             boutcriter.lig = 0.8,
+             boutcriter.mvpa = 0.8,
+             boutdur.in = c(10,20,30),
+             boutdur.lig = c(1,5,10),
+             boutdur.mvpa = c(1,5,10),
+             timewindow = c("WW"),
              #-----------------------------------
              # Report generation
              #-------------------------------
-             do.report=c(2,4))
+             do.report=c(2,4,5))
 }
 }
 \author{
