@@ -192,8 +192,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           stop(paste0("CLS error: there are zero or more than one files: ",
                       datafile, "in the wearcodes file"))
         }
-        tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
-                      getStartEnd(SDF$Day2[SDFi], dayborder),stringsAsFactors = FALSE)
+        hhr <- header.info(datafile)
+        tint <- rbind(getStartEnd(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
+                      getStartEnd(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
 
         if (i == nrow(tint)+1 | nrow(tint) == 0) {
           #all data read now make sure that it does not try to re-read it with mmap on
@@ -412,7 +413,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           } else if (mon == 2 & dformat == 1) {
             if (length(desiredtz) > 0) {
               # starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
-              starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
+              # starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
+              starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1), tz = desiredtz)
               if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
                 #needed for MaM study where first timestamp does not have clock time in it
                 starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz) 
