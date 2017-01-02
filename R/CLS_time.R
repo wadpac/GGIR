@@ -1,5 +1,3 @@
-
-
 getStartEnd <- function(d, startHour, inputFormat = "%d/%m/%Y", outputFormat = "%d/%m/%Y %H:%M:%S",
                         tz = "Europe/London") {
     # Args: d - date (without time) in correct format of inputFormat 
@@ -16,8 +14,6 @@ getStartEnd <- function(d, startHour, inputFormat = "%d/%m/%Y", outputFormat = "
     data.frame(start = as.character(startTimeObj - fiveMinutes, format = outputFormat),
                end = as.character(startTimeObj + oneDay, format = outputFormat), stringsAsFactors = FALSE)
 }
-
-
 
 getStartEndNumeric <- function(d, hhr, startHour = 4, inputFormat = "%d/%m/%Y") {
     # gets page numbers for the start and end of day specified in arg d
@@ -39,7 +35,7 @@ getStartEndNumeric <- function(d, hhr, startHour = 4, inputFormat = "%d/%m/%Y") 
 }
 
 getFirstTimestamp <- function(f, p1) {
-    hhr <- header.info(f)
+    hhr <- GENEAread::header.info(f)
     hcal <- attr(hhr, "calibration")
     t1 <- hcal$t1
     rate <- 1 / hcal$freq
