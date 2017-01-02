@@ -192,9 +192,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           stop(paste0("CLS error: there are zero or more than one files: ",
                       datafile, "in the wearcodes file"))
         }
-        hhr <- header.info(datafile)
-        tint <- rbind(getStartEnd(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
-                      getStartEnd(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
+        hhr <- GENEAread::header.info(datafile)
+        tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
+                      getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
 
         if (i == nrow(tint)+1 | nrow(tint) == 0) {
           #all data read now make sure that it does not try to re-read it with mmap on
