@@ -414,7 +414,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             if (length(desiredtz) > 0) {
               # starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
               # starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
-              starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1), tz = desiredtz)
+              starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1]), tz = desiredtz)
               if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
                 #needed for MaM study where first timestamp does not have clock time in it
                 starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz) 
