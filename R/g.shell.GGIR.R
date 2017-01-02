@@ -53,7 +53,6 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   } else {
     useRDA = FALSE
   }
-
   if (filelist == TRUE | useRDA == TRUE) {
     metadatadir = paste(outputdir,"/output_",studyname,sep="")
   } else {
