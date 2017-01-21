@@ -205,7 +205,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           }
           detection[s0s1] = 1
           # extract time and from that the indices for midnights
-          tempp = unclass(as.POSIXlt(time,tz=desiredtz))
+          tempp = unclass(as.POSIXlt(iso8601chartime2POSIX(time,tz=desiredtz),tz=desiredtz))
+          # tempp = unclass(as.POSIXlt(time,tz=desiredtz))
           sec = tempp$sec
           min = tempp$min
           hour = tempp$hour
@@ -336,15 +337,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
             }
             #update diur to include at least end of first night (needed to identify awakening)
-            ss0 = nightsi[1]-10
-            if (ss0 < 1) ss0 = 1 # added on 7/9/2015
+            ss0 = nightsi[1]-10 #index in data minus resolution of window
+            if (ss0 < 1) ss0 = 1 # added on 7/9/2015: if previous line results in negative index then use first index
             diur[ss0:waketi] = 1
-            if (length(which(diur == 1)) == 0) {
-              print(ss0)
-              print(waketi)
-              print(length(diur))
-              print(k)
-            }
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
@@ -449,7 +444,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
                   FM = which(diff(diur) == -1)
-                  nigthsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
+                  if (length(FM) > 0) {
+                    nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
+                  }
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in  timewindow) {
                     for (wi in 1:(nrow(summarysleep_tmp2))) { #loop through 7 windows
@@ -601,7 +598,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           endd = floor(WLH*10) /10 # rounding needed for non-integer window lengths
                           nwindow_f = (endd-wini) #number of windows for L5M5 analyses
                           ignore = FALSE
-                          if (endd < wini) ignore = TRUE # day is shorter then time window, so ignore this
+                          if (endd <= wini) ignore = TRUE # day is shorter then time window, so ignore this # modified from < to <= on 21-1-2017
                           nwindow_f = nwindow_f * (60/reso)
                           if (ignore == FALSE) {
                             ACCrunwin = matrix(0,nwindow_f,1)
@@ -637,6 +634,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             if(length(unlist(strsplit(L5HOUR,"[+]"))) > 1) { # only do this for ISO8601 format
                               L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz="Europe/London"))
                               M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz="Europe/London"))
+                              if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
+                              if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
                             time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
                             if (time_num < 12) time_num = time_num + 24
