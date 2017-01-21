@@ -537,18 +537,19 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           secshift = 60 - start_sec #shift in seconds needed
           start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
           #-----------
-          
           minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
-          minshift = minshift - 1
+          # minshift = minshift - 1 # Removed as suggested by E Mirkes
+          if (minshift == start_meas) minshift = 0; # Addition as suggested by E Mirkes: One of my files has the first record at 2016-02-11 13:14:55 but the resulting file contains data from 2016-02-11 13:30:00. It means that we lost 15 minutes.
           #-----------
           sampleshift = (minshift*60*sf) + (secshift*sf) #derive sample shift
           data = data[-c(1:floor(sampleshift)),] #delete data accordingly
           newmin = start_min+minshift #recalculate first timestamp
-          newsec = start_sec+secshift
-          if (newsec >= 60) {
-            newsec = newsec - 60
-            newmin = newmin + 1
-          }
+          newsec = 0
+          # newsec = start_sec+secshift # Removed as suggested by E Mirkes
+          # if (newsec >= 60) { # Removed as suggested by E Mirkes
+          #   newsec = newsec - 60 # Removed as suggested by E Mirkes
+          #   newmin = newmin + 1 # Removed as suggested by E Mirkes
+          # } # Removed as suggested by E Mirkes
           remem2add24 = FALSE
           if (newmin >= 60) {
             newmin = newmin - 60
