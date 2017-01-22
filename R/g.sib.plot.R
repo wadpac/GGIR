@@ -1,7 +1,5 @@
 g.sib.plot = function(SLE,M,I,plottitle,nightsperpage=7,desiredtz="Europe/London") { #IMP,
   A = SLE$output
-  
-  
   invalid = A$invalid
   night = A$night
   sleep = A[,(which(colnames(A)=="night")+1):ncol(A)]

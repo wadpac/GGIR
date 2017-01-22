@@ -117,6 +117,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \item Vincent T van Hees <vincentvanhees@gmail.com>
 \item Zhou Fang co-developed function \link{g.calibrate}
 \item Jing Hua Zhao <jinghua.zhao@mrc-epid.cam.ac.uk> co-developed function \link{g.binread}
+\item Joe Heywood helped develop the functionality to process only specific days
 \item Severine Sabia tested and provided feedback on various functions
 }
 }
