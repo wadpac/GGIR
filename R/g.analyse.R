@@ -101,17 +101,15 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-  
   if (dayborder != 0) {
     midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + (1/(ws2/ws3)) #shift the definition of midnight if required
-    # midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + 1 #shift the definition of midnight if required
   }
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
     starttimei = firstmidnighti 
     endtimei = lastmidnighti - 1
-  }    
+  } 
   # calibration error
   if (length(which(r1==1)) > 0) {
     CALIBRATE = mean(as.numeric(as.matrix(metalong[which(r1==1 & r2 != 1),which(colnames(M$metalong) == "EN")]))) #mean EN during non-wear time and non-clipping time
@@ -131,14 +129,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   HFENi = which(colnames(metashort) == "HFEN")
   HFENplusi = which(colnames(metashort) == "HFENplus")
   ENi = which(colnames(metashort) == "EN")
-  #   anglei = which(colnames(metashort) == "angle")
   if (length(ENMOi) == 0) ENMOi = -1
   if (length(LFENMOi) == 0) LFENMOi = -1
   if (length(BFENi) == 0) BFENi = -1
   if (length(HFENi) == 0) HFENi = -1
   if (length(HFENplusi) == 0) HFENplusi = -1
   if (length(ENi) == 0) ENi = -1
-  #   if (length(anglei) == 0) anglei = -1
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -147,7 +143,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ndays = length(midnights) + 1 #ceiling(nfulldays + 2) # ceiling to cope with days with 23 hours
   if (ndays != round(ndays)) { #day saving time causing trouble?
     cat("One day in this measurement is longer or shorter than 24 hours (probably related to day saving time)")
-  }    
+  }
   #--------------------------------------
   # derivation of distribution characteristics of the average day: quantiles (percentiles) and L5M5 method
   # Note that this is done here before all the other analyses because it only relies on the average day
@@ -209,23 +205,22 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       endatmidnight  = 1
     } else {
       startatmidnight = 0  #new 28-11-2012
-      if (firstmidnighti == 1) {  #new 28-11-2012 #if measurement starts at midnight
-        ndays = ndays - 1  #new 28-11-2012
-        startatmidnight =  1   #new 28-11-2012
-        cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
-      }
       endatmidnight = 0
-      if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
-        ndays = ndays - 1
-        endatmidnight = 1
-        cat("measurement ends at midnight or there is no midnight")
+      if (nfulldays >= 1) {
+        if (firstmidnighti == 1) {  #new 28-11-2012 #if measurement starts at midnight
+          ndays = ndays - 1  #new 28-11-2012
+          startatmidnight =  1   #new 28-11-2012
+          cat("measurement starts at midnight or there is no midnight")  #new 28-11-2012
+        }
+        if (lastmidnight == time[length(time)] & nrow(M$metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
+          ndays = ndays - 1
+          endatmidnight = 1
+          cat("measurement ends at midnight or there is no midnight")
+        }
       }
     }
-    #     if (lastmidnighti == firstmidnighti) { #turned off 11 may 2015, because for some projects one night may be still useful
-    #       tooshort = 1
-    #     }
-   
     daysummary = matrix("",ceiling(ndays),nfeatures)
+
     ds_names = rep("",nfeatures)
     #=============================
     if (length(selectdaysfile) > 0) {   # Millenium cohort related:
@@ -242,7 +237,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     # Features per day (based on on single variables)
     for (di in 1:ndays) { #run through days
       #extract day from matrix D and qcheck
-      
       if (length(selectdaysfile) > 0 & startatmidnight == 1 & endatmidnight == 1) { #added on 14/9/2016
         qqq1 = 1#midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
         qqq2 = midnightsi[di]*(ws2/ws3) #(midnightsi[(di+1)]*(ws2/ws3))-1 
@@ -300,15 +294,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       ds_names[fi] = "id";      fi = fi + 1
       daysummary[di,fi] = fname
       ds_names[fi] = "filename";  fi = fi + 1
-      
-      # if (length(selectdaysfile) > 0) {
-      #   calenderdate = unlist(strsplit(as.character(vari[min(c(10,nrow(vari))),1])," "))[1] #adjusted for millenium cohort
-      #   print(calenderdate)
-      #   print(unlist(strsplit(as.character(vari[1,1])," "))[1])
-      #   # print(unlist(strsplit(as.character(vari[min(c(nrow(vari))),1])," "))[1])
-      # } else {
       calenderdate = unlist(strsplit(as.character(vari[1,1])," "))[1]
-      # }
       daysummary[di,fi] = calenderdate               
       daysummary[di,(fi+1)] =BL
       daysummary[di,(fi+2)] = nvalidhours
@@ -333,8 +319,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         # Description per timewindow for millenium cohort:
         for (metrici in  2:ncol(vari)) {
           Nfeatures = 7
-          #         print("--------------------------------------")
-          #         print(paste0("metric",metrici))
           nhrs = (nrow(vari)/(3600/ws3))
           windowL = 24/nwindows
           if (ceiling(nhrs/windowL) < nwindows) nwindows = ceiling(nhrs/windowL)
