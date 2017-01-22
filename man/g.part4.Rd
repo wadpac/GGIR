@@ -110,8 +110,10 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   The time window during which sustained inactivity will be assumed
   to represent sleep, e.g. def.noc.sleep=c(21,9). This is only
   used if no sleep log entry is available. If def.noc.sleep is
-  left blank then the 12 hour window centred at the least active
-  5 hours of the 24 hour period will be used instead.
+  left blank 'def.noc.sleep=c()' then the 12 hour window centred
+  at the least active 5 hours of the 24 hour period will be used
+  instead. Here, L5 is hardcoded and will not change by changing
+  argument winhr in function \link{g.part2}
   }
   \item{storefolderstructure}{
   Store folder structure of the accelerometer data
