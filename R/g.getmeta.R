@@ -163,7 +163,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         cat("\nEnd of file reached\n")
       }
     } else if (mon == 4 & dformat == 3) {
-      try(expr={P = g.wavread(binfile=datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
+      try(expr={P = g.wavread(wavfile=datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
       if (length(P) > 1) {
         if (nrow(P$rawxyz) < ((sf*ws*2)+1) & i == 1) {
           P = c() ; switchoffLD = 1 #added 30-6-2012

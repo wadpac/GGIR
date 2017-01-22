@@ -258,7 +258,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           cat(paste0("\nCheck that filename ",fnames[j]," exists in the csv-file\n"))
         }
       }
-    
       #------------------------------------------------
       print("get meta data...")
       M = g.getmeta(datafile,                  
