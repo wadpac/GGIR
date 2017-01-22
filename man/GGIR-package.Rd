@@ -13,8 +13,8 @@ expressed in m/s2 or gravitational acceleration as opposed to the previous
 generation accelerometers which stored only processed summary measures.\cr
 \cr
 The package has been developed with and for the accelerometer brands Genea and Geneactive.
-Additionally, it should work for csv data from Geneactiv and
-Actigraph accelerometer data. Although, I have tested this less thoroughly
+Additionally, it should work for .csv data from Geneactiv, .csv data from
+Actigraph, and .wav format from Axivity. Although, I have tested this less thoroughly
 compared with the binary data formats from Genea and Geneactiv.\cr
 Note for Actigraph users: please do not
 export timestamps to the csv-file as this causes memory issues. To cope with the
@@ -49,8 +49,8 @@ One master folder with a name output_xx where xx is equal to the name of the
 original data folder. Inside the output_xx folder there will be one folder
 named meta including all the milestone and a folder results with all the results.
 Inside the meta folder the following subfolders are created:
-basic, ms2.out, ms3out, and ms4out for respectively g.part1, g.part2, g.part3,
-and g.part4 milestone data.\cr
+basic, ms2.out, ms3out, ms4out, and ms5out for respectively g.part1, g.part2, g.part3,
+g.part4, and g.part5 milestone data.\cr
 \cr
 The reason why g.part1 and g.part2 are not merged as one generic shell
 function is because g.part1 takes much longer to 
@@ -84,8 +84,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.3-3\cr
-Date: \tab 2016-12-12\cr
+Version: \tab 1.3-4\cr
+Date: \tab 2017-1-22\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }

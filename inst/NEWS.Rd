@@ -1,6 +1,19 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.3-4 (release date:22-1-2017)}{
+\itemize{
+  \item bug fixed in functionlity to process only specific days in measurement
+  (credits to J Heywood)
+  \item bug fixed in midnight recognition in g.part5
+  \item improvement to handling of measurements that start a few minutes before
+  midnight (credits to E Mirkes)
+  \item bug fixed related processing files shorter than 1 day, introduced in
+  previous version
+  \item documentationa added for Axivity wav-format data
+  \item start made with implementing code testing functionality using testthat and covr
+}
+}
 \section{Changes in version 1.3-2 (release date:28-11-2016)}{
 \itemize{
   \item g.part5 added. g.part5 merges the output from the first four parts
