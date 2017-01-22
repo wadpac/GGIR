@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.3-4 (release date:22-1-2017)}{
+\section{Changes in version 1.4 (release date:22-1-2017)}{
 \itemize{
   \item bug fixed in functionlity to process only specific days in measurement
   (credits to J Heywood)
@@ -12,6 +12,7 @@
   previous version
   \item documentationa added for Axivity wav-format data
   \item start made with implementing code testing functionality using testthat and covr
+  \item documentation improved for argument def.noc.sleep in function g.part4
 }
 }
 \section{Changes in version 1.3-2 (release date:28-11-2016)}{
