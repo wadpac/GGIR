@@ -3,4 +3,4 @@
 
 The code in this repository is the development version for the code in R-package GGIR which can be found here: https://cran.r-project.org/web/packages/GGIR/index.html.
 
-Example scripts used for the Millenium Cohort Study - Accelerometer Study are in the demo folder.
+Example scripts used for the Millenium Cohort Study - Accelerometer Study by the Centre of Longitudinal Studies are in the demo folder.
