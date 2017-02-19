@@ -211,16 +211,22 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   hour = rep(1:ceiling(N/ni),each=ni)
   if (length(hour) > N) hour = hour[1:N]
   dat = data.frame(Xi=Xi,hour=hour)
-  hh = aggregate(. ~ hour,data=dat,mean)
-  hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
-  hh$day = ceiling(hh$hour/nhr)
-  hh2 = aggregate(. ~ hour_perday,data=hh,mean)
-  Xh = hh2$Xi
-  # average acceleration per day
-  Xm = mean(Xh,na.rm = TRUE) 
-  p = length(Xh)
-  InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
-  IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
+  InterdailyStability = NA
+  IntradailyVariability = NA
+  if (nrow(dat) > 1) {
+    hh = aggregate(. ~ hour,data=dat,mean)
+    hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
+    hh$day = ceiling(hh$hour/nhr)
+    if (nrow(hh) > 1) {
+      hh2 = aggregate(. ~ hour_perday,data=hh,mean)
+      Xh = hh2$Xi
+      # average acceleration per day
+      Xm = mean(Xh,na.rm = TRUE) 
+      p = length(Xh)
+      InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
+      IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
+    }
+  }
   # x11()
   # plot(Xh,type="l")
   
