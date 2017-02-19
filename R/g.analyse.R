@@ -52,8 +52,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     mvpanames[,1:length(mvpathreshold)] = c("MVPA1","MVPA2","MVPA3","MVPA4","MVPA5","MVPA6")
   }
   # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
-  wearthreshold = 2 #needs to be 0, 1 or 2
-  # Extracting basic meta_short variables
+  wearthreshold = 2 #needs to be 0, 1 or 2 (hard coded to avoid inconsistency in literature)
+  # Extracting basic information about the file
   hvars = g.extractheadervars(I)
   id = hvars$id;              iid =hvars$iid; idd =hvars$idd
   HN = hvars$HN;              BL = hvars$BL
@@ -196,6 +196,34 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
   }
+  #============================
+  # IS and IV variables
+
+  # select data from first midnight to last midnight
+  fmn = midnightsi[1] * (ws2/ws3)
+  lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
+  Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
+  nhr = 24*4 # Number of hours in a day (modify this variable if you want to study different resolutions)
+  Nsecondsinday = 24*3600
+  ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
+  # derive average day with 1 hour resolution:
+  N = length(Xi)
+  hour = rep(1:ceiling(N/ni),each=ni)
+  if (length(hour) > N) hour = hour[1:N]
+  dat = data.frame(Xi=Xi,hour=hour)
+  hh = aggregate(. ~ hour,data=dat,mean)
+  hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
+  hh$day = ceiling(hh$hour/nhr)
+  hh2 = aggregate(. ~ hour_perday,data=hh,mean)
+  Xh = hh2$Xi
+  # average acceleration per day
+  Xm = mean(Xh,na.rm = TRUE) 
+  p = length(Xh)
+  InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
+  IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
+  # x11()
+  # plot(Xh,type="l")
+  
   #--------------------------------------------------------------
   # Features per day
   if (doperday == TRUE) { # extract fe
@@ -639,6 +667,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     if (is.na(summary[(vi+1)]) == TRUE) summary[(vi+1)] = 0
     s_names[vi:(vi+1)] = c("N valid WEdays","N valid WKdays")
     vi = vi + 2
+    summary[vi] = InterdailyStability
+    if (is.na(summary[vi]) == TRUE) summary[vi] = " "
+    summary[(vi+1)] = IntradailyVariability
+    if (is.na(summary[(vi+1)]) == TRUE) summary[(vi+1)] = " "
+    s_names[vi:(vi+1)] = c("IS_interdailystability","IV_intradailyvariability")
+    vi = vi + 2
+    
+    
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
     indeces = c()
