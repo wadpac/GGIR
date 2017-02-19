@@ -12,37 +12,17 @@ library(tools)
 # INPUT NEEDED:
 
 # specify file number to start and end with, fill in c() if unknown
-f0 = 3#c() #file to start with if used in serial analyses
-f1 = 3#Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
-mode= c(1)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
+f0 = c() #file to start with if used in serial analyses
+f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
+mode= c(1,2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
 #datadir=  c() #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
 dayborder = 4
 
-#datadir = "D:/sharedfolder/first5/output_first5/meta/raw" 
-# outputdir= "D:/sharedfolder/first5" #Name directory where output needs to be stored
-# studyname="first5"  #name of study, only needed if datadir is a list of filenames
-# selectdaysfile = "D:/sharedfolder/first5/wearcodes.csv"
+datadir = "/media/windows-share/London/data_13012017/RDAfiles"
+outputdir = "/media/windows-share/London/data_13012017/" #Name directory where output needs to be stored
+studyname = "RDAfiles"  #name of study, only needed if datadir is a list of filenames
+selectdaysfile = "/media/windows-share/London/data_13012017/RDAfiles" #"dummy value" #"D:/sharedfolder/first5/wearcodes.csv"
 
-# cls5sep
-# datadir = "/media/windows-share/London/cls5sep/output_cls5sep/meta/raw" # c() #"D:/sharedfolder/first5/output_first5/meta/raw"
-# datadir = "/media/windows-share/London/cls5sep/output_batches/meta/raw" # c() #"D:/sharedfolder/first5/output_first5/meta/raw" 
-datadir = "/home/vincent/GGIR/testdata2"
-outputdir= "/media/windows-share/London" #Name directory where output needs to be stored
-studyname="octx"  #name of study, only needed if datadir is a list of filenames
-selectdaysfile = "/media/windows-share/London/dat12Oct2016/ww2_1_15.csv" #"dummy value" #"D:/sharedfolder/first5/wearcodes.csv"
-
-
-#dress rehearsal test
-# datadir ="/media/windows-share/dressrehearsaltest"
-# outputdir= "/media/windows-share/cls5sep" #Name directory where output needs to be stored
-# studyname = "dressrehearsaltest" #"Millenium dress rehearsal"
-# selectdaysfile = "/media/windows-share/input_cls/wear_codes.csv"
-
-# datadir = "D:/dropbox/Dropbox/Accelerometry/DATA/Millenium dress rehearsal"
-#datadir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/output_Millenium dress rehearsal/meta/raw"
-#outputdir = "D:/dropbox/Dropbox/Accelerometry/GGIR/development"
-#studyname = "Millenium dress rehearsal"
-#selectdaysfile = "D:/dropbox/Dropbox/Accelerometry/GGIR/development/input_cls/wear_codes.csv"
 #=====================================================================================
 # load functions from functions folder (replace by require(GGIR) once package is updated)
 
@@ -66,7 +46,7 @@ g.shell.GGIR(#=======================================
              studyname=studyname, #specify above
              f0=f0, #specify above
              f1=f1, #specify above
-             overwrite = TRUE, #overwrite previous milestone data?
+             overwrite = FALSE, #overwrite previous milestone data?
              csv.struc=c(), #csv.struc=c(5,6), #
              do.imp=TRUE, # Do imputation? (recommended)
              idloc=1, #id location (1 = file header, 2 = filename)
@@ -79,7 +59,7 @@ g.shell.GGIR(#=======================================
              #-------------------------------
              # Key functions: reading file, auto-calibration, and extracting features
              windowsizes = c(5,900,3600), #Epoch length, non-wear detection resolution, non-wear detection evaluation window
-             do.cal=FALSE, # Apply autocalibration? (recommended)
+             do.cal=TRUE, # Apply autocalibration? (recommended)
              do.enmo = TRUE, #Needed for physical activity analysis
              do.en=TRUE,
              do.anglez=TRUE, #Needed for sleep detection
