@@ -186,7 +186,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               s0 = which(time[pr0:pr1] == gik.ons[g])[1]
               s1 = which(time[pr0:pr1] == gik.end[g])[1]
               timebb = as.character(time[pr0:pr1]) 
-              if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
+              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
                 timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
               }
               s0 = which(timebb == gik.ons[g])[1]
@@ -206,7 +206,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           detection[s0s1] = 1
           # extract time and from that the indices for midnights
           tempp = unclass(as.POSIXlt(iso8601chartime2POSIX(time,tz=desiredtz),tz=desiredtz))
-          if (is.na(tempp$sec) == TRUE) {
+          if (is.na(tempp$sec[1]) == TRUE) {
             tempp = unclass(as.POSIXlt(time,tz=desiredtz))
           }
           sec = tempp$sec
@@ -547,6 +547,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         ds_names[fi] = "dur_night_min";      fi = fi + 1
                         dsummary[di,fi] = (length(c(qqq1:qqq2)) * ws3) / 60
                         ds_names[fi] = "dur_nightandday_min";      fi = fi + 1
+                        
+                        
+                        #============================================
+                        # Number of long wake periods (defined as > 5 minutes) during the night
+                        Nawake = length(which(abs(diff(which(LEVELS[qqq1:qqq2] == 0))) > (300 / ws3))) - 2
+                        if (Nawake < 0) Nawake = 0
+                        dsummary[di,fi] = Nawake
+                        ds_names[fi] = "N_atleast5minwakenight";      fi = fi + 1
                         #============================================================
                         # percentage of available data
                         zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 0 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #day
@@ -682,7 +690,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi+(bci-1)] = paste0("Nbouts_LIGB_D",boutdur.lig[bci],"T",TRLi,"_",TRMi)
                         }
                         fi = fi + bci
-                        kkkk
                         #===============================================
                         # NUMBER OF WINDOWS
                         for (levelsc in 0:(length(Lnames)-1)) {
