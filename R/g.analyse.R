@@ -225,11 +225,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       p = length(Xh)
       InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
       IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
+      # print(paste0(InterdailyStability," ",IntradailyVariability))
     }
   }
   # x11()
   # plot(Xh,type="l")
-  
+  # kk
   #--------------------------------------------------------------
   # Features per day
   if (doperday == TRUE) { # extract fe
