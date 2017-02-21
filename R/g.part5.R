@@ -206,11 +206,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           detection[s0s1] = 1
           # extract time and from that the indices for midnights
           tempp = unclass(as.POSIXlt(iso8601chartime2POSIX(time,tz=desiredtz),tz=desiredtz))
-          # tempp = unclass(as.POSIXlt(time,tz=desiredtz))
+          if (is.na(tempp$sec) == TRUE) {
+            tempp = unclass(as.POSIXlt(time,tz=desiredtz))
+          }
           sec = tempp$sec
           min = tempp$min
           hour = tempp$hour
           nightsi = which(sec == 0 & min == 0 & hour == 0)
+          
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -679,6 +682,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi+(bci-1)] = paste0("Nbouts_LIGB_D",boutdur.lig[bci],"T",TRLi,"_",TRMi)
                         }
                         fi = fi + bci
+                        kkkk
                         #===============================================
                         # NUMBER OF WINDOWS
                         for (levelsc in 0:(length(Lnames)-1)) {
