@@ -148,6 +148,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   
+
+  
   cat("\n   g.shell.GGIR {GGIR} by Vincent van Hees\n")
   if (dopart1 == TRUE) {
     cat('\n')
