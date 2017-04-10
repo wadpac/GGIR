@@ -149,11 +149,17 @@ g.inspectfile = function(datafile) {
     
   } else if (dformat == 3) { #wav data
     header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="UTF-8"))
-    # print(header)
     if (length(header) == 0) {
       header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="latin1"))
     }
-    # print(header)
+    if (length(which(header %in% paste0(1:13,sep="") == TRUE)) == 13) { #
+      header = read.csv(datafile,skipNul=TRUE,nrow=13,skip=1,header=FALSE)
+      if (ncol(header) == 2) {
+        ii = which(is.na(header[,2]) == FALSE)
+        if (length(ii) > 0) header = header[-ii,]
+        header = header[,-2]
+      }
+    }
     if (length(header) <= 5) {
       header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE))
     }
