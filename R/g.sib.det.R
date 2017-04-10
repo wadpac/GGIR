@@ -105,14 +105,20 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         tmpENMO = ENMO[qqq1:qqq2]
         windowRL = round((3600/ws3)*5)
         if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
-        ZRM = zoo::rollmean(x=c(tmpENMO),k=windowRL,fill="extend",align="center") #
-        L5 = which(ZRM == min(ZRM))[1]
-        if (sd(ZRM) == 0) {
-          L5 = c()
+        if (length(tmpENMO) < windowRL) {  0 # added 4/4/2-17
+          cat("Warning: time window shorter than 5 hours which makes it impossible to identify L5")
+          L5 = 0
         } else {
-          L5 = (L5  / (3600/ ws3)) + 12
+          ZRM = zoo::rollmean(x=c(tmpENMO),k=windowRL,fill="extend",align="center") #
+          
+          L5 = which(ZRM == min(ZRM))[1]
+          if (sd(ZRM) == 0) {
+            L5 = c()
+          } else {
+            L5 = (L5  / (3600/ ws3)) + 12
+          }
+          if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
         }
-        if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
         L5list[1] = L5
       } else { #more than one midnight
         cut = which(as.numeric(midnightsi) == 0)
