@@ -28,7 +28,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ws3 = windowsizes[1]
   ws2 = windowsizes[2]
   vi = 1
-  
   # Time window for L5 & M5 analysis
   t0_LFMF = L5M5window[1] #start in 24 hour clock hours
   t1_LFMF = L5M5window[2]+(winhr-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
@@ -44,7 +43,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   #------------------------------------------------------
   summary = matrix(" ",1,100) #matrix to be stored with summary per participant
   s_names = rep(" ",ncol(summary))
-  nfeatures = 50+length(qlevels)+length(ilevels)    #levels changed into qlevels 
+  NVARS = (length(colnames(IMP$metashort))-1)
+  if (NVARS < 1) NVARS = 1
+  nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels 
   i = 1  
   #---------------
   if (domvpa) { #create dummy data
@@ -228,9 +229,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       # print(paste0(InterdailyStability," ",IntradailyVariability))
     }
   }
-  # x11()
-  # plot(Xh,type="l")
-  # kk
   #--------------------------------------------------------------
   # Features per day
   if (doperday == TRUE) { # extract fe
@@ -399,7 +397,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         }
         gikb = gikb + gik
       }
-      
       if (tooshort == 0) {
         #--------------------------------------      
         # extract time spent in activity levels (there are possibly many more features that can be extracted from this)
