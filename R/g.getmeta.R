@@ -2,7 +2,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
                      do.bfen=FALSE,do.enmo=TRUE,do.lfenmo=FALSE,
                      do.en=FALSE,do.hfen=FALSE,
-                     do.hfenplus=FALSE,do.teLindert2013=FALSE,
+                     do.hfenplus=FALSE,
                      do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
                      do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
@@ -21,13 +21,15 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   }
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
-  
+  metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
+                    do.hfenplus,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
+                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa)
   
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
-  if (chunksize < 0.2) chunksize = 0.2 
+  if (chunksize < 0.2) chunksize = 0.2
   nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,
-                   do.teLindert2013,do.anglex,do.angley,do.anglez,
+                   do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa))
   if (length(nmetrics) == 0) {
@@ -50,11 +52,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     cat(paste("\nshort windowsize has now been automatically adjusted to: ",ws3," seconds in order to meet this criteria.\n",sep=""))
   }
   windowsizes = c(ws3,ws2,ws)
-  start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour) 
+  start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour)
   monnames = c("genea","geneactive","actigraph","axivity") #monitor names
-  filecorrupt = FALSE
-  filetooshort = FALSE
-  filedoesnotholdday = FALSE
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE)
+  # filecorrupt = FALSE
+  # filetooshort = FALSE
+  # filedoesnotholdday = FALSE
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (15 minutes or whatever is specified above)
@@ -89,36 +92,15 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 24 hours (modify if causing memory problems)
   blocksize = round(14512 * (sf/50) * chunksize)
-  blocksizegenea = round(21467 * (sf/80)  * chunksize)
-  if (mon == 3 & dformat == 2) { #added 28/7/2014
-    blocksize = round(blocksize/5)
-  }
-  if (mon == 1) {
-    blocksize = blocksizegenea
-  }
-  if (mon == 4) {
-    blocksize = round(1440 * chunksize)
-  }
-  if (dformat == 1) {
-    if (mon == 1) { #reading the binary file
-      id = as.character(header[which(header[,1] == "Volunteer_Number"),2])
-    } else if (mon == 2) { #reading the binary file
-      id = as.character(header[which(header[,1] == "Subject_Code"),2])
-    }
-  } else if (dformat == 2) {
-    if (mon == 2) {
-      id = as.character(header[which(as.character(header[,1]) == "Subject Code"),2])
-    } else if (mon == 3) {
-      id = filename #id not stored in fileheader, but filename instead
-    }
-  } else if (dformat == 3) {
-    id = filename # for now use filename as identifier
-  }
+  if (mon == 1) blocksize = round(21467 * (sf/80)  * chunksize)
+  if (mon == 3 & dformat == 2) blocksize = round(blocksize/5)
+  if (mon == 4) blocksize = round(1440 * chunksize)
+  id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
-  # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz) 
-  NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz) 
+  # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
+  NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1+nmetrics)) #generating output matrix for acceleration signal
   if (mon == 1 | mon == 3 | mon == 4) {
     temp.available = FALSE
@@ -145,217 +127,21 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     P = c()
     cat(paste("\nLoading block: ",i,sep=""))
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
-    #when trying to read files of a different format)
-    if (mon == 1 & dformat == 1) {
-      try(expr={P = g.binread(binfile=datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
-      if (length(P) > 1) {
-        if (nrow(P$rawxyz) < ((sf*ws*2)+1) & i == 1) {
-          P = c() ; switchoffLD = 1 #added 30-6-2012
-          cat("\nError: data too short for doing non-wear detection 1\n")		
-          filetooshort = TRUE
-        }
-      } else {
-        P = c()
-        if (i == 1) {
-          filecorrupt = TRUE
-        }
-        cat("\nEnd of file reached\n")
-      }
-    } else if (mon == 4 & dformat == 3) {
-      try(expr={P = g.wavread(wavfile=datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
-      if (length(P) > 1) {
-        if (nrow(P$rawxyz) < ((sf*ws*2)+1) & i == 1) {
-          P = c() ; switchoffLD = 1 #added 30-6-2012
-          cat("\nError: data too short for doing non-wear detection 1\n")		
-          filetooshort = TRUE
-        }
-      } else {
-        P = c()
-        if (i == 1) {
-          filecorrupt = TRUE
-        }
-        cat("\nEnd of file reached\n")
-      }
-    } else if (mon == 2 & dformat == 1 & useRDA == FALSE) {
-      if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
-        #===================================================================
-        # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
-        I = g.inspectfile(datafile) ## modified by JH
-        hvars = g.extractheadervars(I)
-        SN = hvars$SN
-        SDFi = which(basename(SDF$binFile) == basename(datafile))
-        
-        if(length(SDFi) != 1) {
-          save(SDF, SDFi, file = "debuggingFile.Rda")
-          stop(paste0("CLS error: there are zero or more than one files: ",
-                      datafile, "in the wearcodes file"))
-        }
-        hhr <- GENEAread::header.info(datafile)
-        tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
-                      getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
-
-        if (i == nrow(tint)+1 | nrow(tint) == 0) {
-          #all data read now make sure that it does not try to re-read it with mmap on
-          switchoffLD = 1
-        } else {
-          try(expr= {
-              P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
-                                            end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)
-              if (sf != P$freq) sf = P$freq
-              },silent=TRUE)
-          
-          # llll
-          if (length(P) <= 2) {
-            cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
-            #try again but now with mmap.load turned on
-            if (length(P) != 0) {
-              cat("\ndata read succesfully\n")
-            } else {
-              switchoffLD = 1
-            }
-          }
-        }
-        ############################
-        if (length(P) > 0) {
-          if (length(selectdaysfile) > 0) { 
-            if (tint[i,1] == "0") {
-              print("last block")
-              switchoffLD = 1
-            }
-          } else {
-            if (nrow(P$data.out) < (blocksize*300)) { #last block
-              print("last block")
-              switchoffLD = 1
-            }
-          }
-        }
-        if (length(P) == 0) { #if first block doens't read then probably corrupt
-          if (i == 1) {
-            #try to read without specifying blocks (file too short)
-            try(expr={P = GENEAread::read.bin(binfile=datafile,start=1,end=10,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-            if (length(P) == 0) {
-              cat("\nError: file possibly corrupt\n")
-              P= c(); switchoffLD = 1
-              filecorrupt = TRUE
-            } else { #if not then P is now filled with data, but we are not interested in readin this
-              P = c() # we do not want to analyse this data, the above lines are onnly to check that file is not corrupt
-              filedoesnotholdday = TRUE
-            }
-          } else {
-            P= c() #just no data in this last block
-            cat("\nnot enough data in this block 3\n")
-          }
-        } else { #check whether there is enough data
-          if (nrow(P$data.out) < ((sf*ws*2)+1) & i == 1) {
-            P = c();  switchoffLD = 1
-            cat("\nError code 2: data too short for doing non-wear detection\n")
-            filetooshort = TRUE
-            filedoesnotholdday = TRUE
-          }
-        }
-        
-        # P = c() 
-        
-        
-        # All of the above needed for Millenium cohort
-        #======================================================================
-      } else {
-        try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),
-                                          end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-        if (length(P) <= 2) {
-          cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
-          #try again but now with mmap.load turned on
-          try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),
-                                            end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
-          if (length(P) != 0) {
-            cat("\ndata read succesfully\n")
-            if (sf != P$freq) sf = P$freq
-          } else {
-            switchoffLD = 1
-          }
-        }
-        if (length(P) > 0) {
-          if (length(selectdaysfile) > 0) { 
-            if (tint[i,1] == "0") {
-              print("last block")
-              switchoffLD = 1
-            }
-          } else {
-            if (nrow(P$data.out) < (blocksize*300)) { #last block
-              print("last block")
-              switchoffLD = 1
-            }
-          }
-        }
-        
-        #       if (length(P) > 0) {
-        #         if (nrow(P$data.out) < (blocksize*300)) { #last block
-        #           cat("\nlast block\n")
-        #           switchoffLD = 1
-        #         }
-        #       }
-        if (length(P) == 0) { #if first block doens't read then probably corrupt
-          if (i == 1) {
-            #try to read without specifying blocks (file too short)
-            try(expr={P = GENEAread::read.bin(binfile=datafile,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-            if (length(P) == 0) {
-              cat("\nError: file possibly corrupt\n")
-              P= c(); switchoffLD = 1
-              filecorrupt = TRUE
-            } #if not then P is now filled with data
-          } else {
-            P= c() #just no data in this last block
-            cat("\nnot enough data in this block 3\n")
-          }
-        }
-        if (length(P) > 0) { #check whether there is enough data
-          if (nrow(P$data.out) < ((sf*ws*2)+1) & i == 1) {
-            P = c();  switchoffLD = 1
-            cat("\nError code 2: data too short for doing non-wear detection\n")
-            filetooshort = TRUE
-          }
-        }
-      }
-      # try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),
-      # end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-      #===============
-    } else if (mon == 2 & dformat == 2) {
-      cat("\nGeneactiv in csv-format\n")
-      try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(100+(blocksize*300*(i-1))),header = FALSE,dec=decn)},silent=TRUE)
-      if (length(P) > 1) {
-        P = as.matrix(P)
-        if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
-          P = c() ; switchoffLD = 1 #added 30-6-2012
-          cat("\nError code 1: data too short for doing non-wear detection\n")		
-          filetooshort = TRUE
-        }
-      } else {
-        P = c()
-        cat("\nEnd of file reached\n")
-      }
-    } else if (mon == 3 & dformat == 2) {
-      try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(10+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
-      if (length(P) > 1) {
-        P = as.matrix(P)
-        if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
-          P = c() ; switchoffLD = 1 #added 30-6-2012
-          cat("\nError code 1: data too short for doing non-wear detection\n")
-          filetooshort = TRUE
-        }
-      } else {
-        P = c()
-        cat("\nEnd of file reached\n")
-      }
-    }
+    accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,selectdaysfile = selectdaysfile,filequality=filequality)
+    P = accread$P
+    filequality = accread$filequality
+    filetooshort = filequality$filetooshort
+    filecorrupt = filequality$filecorrupt
+    filedoesnotholdday = filequality$filedoesnotholdday
+    switchoffLD = accread$switchoffLD
     options(warn=0) #turn on warnings
     #============
     #process data as read from binary file
-    if (useRDA == TRUE) { 
+    if (useRDA == TRUE) {
       if (i == 1) {
-          P = 1 
+        P = 1
       } else {
-          P = c() 
+        P = c()
       }
     }
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -369,8 +155,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         } else if (dformat == 3) {
           data = P$rawxyz # no conversion to mg?
         }
-
-        #add left over data from last time 
+        
+        #add left over data from last time
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
@@ -386,123 +172,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         # extraction and modification of starting point of measurement
         if (i == 1 | (i != 1 & length(selectdaysfile) > 0)) { #only do this for first block of data
-          if (mon  == 1 & dformat == 1) {
-            starttime = P$timestamps2[1]
-            lengthheader = nrow(header)
-          } else if (dformat == 3) { #wav
-            starttime = c()
-            #It seems that Axivity does not store timestamp in a consistent position
-            # therefore, we need to search for it in the data:
-            starttime = as.character(header[which(rownames(header) == "ICMTzTime"),1])
-            # print(starttime)
-            rn = rownames(header)
-            vl = header$value
-            
-            if (length(starttime) == 0) {
-              if (length(which(rn == "Start")) > 0) {
-                starttime = as.character(header$value[which(rn == "Start")])
-                #in one of the files starttime is hidden in rowname
-                if (length(starttime) == 0) starttime = rownames(header)[2] 
-              }
-              # print("D")
-              # print(starttime)
-              #in one of the files start variable name is hidden in the values
-              if (length(which(vl == "Start")) > 0) {
-                starttime = header$value[2]
-              }
-              # print("C")
-              # print(starttime)
-            }
-            if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
-            if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")]) 
-            lengthheader = nrow(header)
-          } else if (mon == 2 & dformat == 1) {
-            if (length(desiredtz) > 0) {
-              # starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
-              # starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
-              starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1]), tz = desiredtz)
-              if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
-                #needed for MaM study where first timestamp does not have clock time in it
-                starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz) 
-              }
-            } else {
-              starttime = P$page.timestamps[1]
-            }
-            lengthheader = nrow(header) #length(unlist(H))
-          } else if (dformat == 2 & mon == 2) {
-            starttime = as.character(P[1,1])
-            starttime = as.POSIXlt(starttime)
-            lengthheader = 20
-          } else if (dformat == 2 & (mon == 3 | mon == 4)) {
-            if (mon == 3) {
-              tmph = read.csv(datafile,nrow=8,skip=1)
-              tmphi = 1
-              while (tmphi < 10) {
-                if (length(unlist(strsplit(as.character(tmph[tmphi,1]),"Start Time"))) > 1) {
-                  break
-                }
-                tmphi = tmphi + 1
-              }
-              starttime = unlist(strsplit(as.character(tmph[tmphi,1]),"Start Time"))[2]
-              #-------------------------------
-              tmphi = 1
-              while (tmphi < 10) {
-                if (length(unlist(strsplit(as.character(tmph[tmphi,1]),"Start Date"))) > 1) {
-                  break
-                }
-                tmphi = tmphi + 1
-              }
-              startdate = unlist(strsplit(as.character(tmph[tmphi,1]),"Start Date"))[2]
-              startdate = as.character(unlist(strsplit(as.character(startdate)," "))) 
-              starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
-            }
-           
-            
-            #-----------------------------------------
-            #remove possible spaces in date or time
-            newstarttime = starttime #20-11-2014
-            newstartdate = startdate #20-11-2014
-            if (length(startdate) > 1) {
-              for (rpsi in 1:length(startdate)) {
-                if (length(unlist(strsplit(startdate[rpsi],"")))>1) {
-                  newstartdate = startdate[rpsi]
-                }
-              }
-            }
-            if (length(starttime) > 1) {
-              for (rpsi in 1:length(starttime)) {
-                if (length(unlist(strsplit(starttime[rpsi],"")))>1) {
-                  newstarttime = starttime[rpsi]
-                }
-              }
-            }
-            starttime = newstarttime
-            startdate = newstartdate
-            #-----------------------------------------
-            # flexible four date/time formats
-            starttime = paste(startdate," ",starttime,sep="")
-            getOption("digits.secs")
-            options(digits.secs = 3)
-            if (mon == 3) {
-              options(warn=-1)
-              topline = as.matrix(colnames(as.matrix(read.csv(datafile,nrow=1,skip=0))))
-              options(warn=0)
-              B1 = length(unlist(strsplit(topline,"MM[.]dd[.]yyyy")))
-              B2 = length(unlist(strsplit(topline,"M[.]d[.]yyyy")))
-              B3 = length(unlist(strsplit(topline,"dd[.]MM[.]yyyy")))
-              B4 = length(unlist(strsplit(topline,"d[.]M[.]yyyy")))
-              if (B1 > 1) {
-                starttime = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
-              } else if (B2 > 1) {
-                starttime = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
-              } else if (B3 > 1) {
-                starttime = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
-              } else if (B4 > 1) {
-                starttime = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
-              }
-              lengthheader = 9
-            }
-          }
+          starttime = g.getstarttime(datafile=datafile,P=P,header=header,mon=mon,
+                                     dformat=dformat,desiredtz=desiredtz)
           #==================================================
           #inspection timezone
           
@@ -684,122 +355,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             }
           }
         } else {
-#           load(datafile) # turned off because datafile will already be loaded (earlier on in script)
+          #           load(datafile) # turned off because datafile will already be loaded (earlier on in script)
           data = cbind(rep(0,length(Gx)),Gx,Gy,Gz)
           LD = nrow(data)
         }
-        
-        #--------------------------------------------------
-        # BFEN = band pass filtered signals followed by Euclidean norm
-        lb = 0.2; hb = 15; n = 4; TW = 1/lb
-        if (sf <= (hb *2)) { #avoid having a higher filter boundary higher than sf/2
-          hb = round(sf/2) - 1
-        }
-        if (do.bfen == TRUE) {
-          BFEN = g.metric(Gx,Gy,Gz,n,sf=sf,ii=7,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-          #averaging per second
-          BFEN2 =cumsum(c(0,BFEN))
-          select = seq(1,length(BFEN2),by=sf)
-          BFEN3 = diff(BFEN2[round(select)]) / abs(diff(round(select)))
-          select = seq(1,length(BFEN2),by=sf*ws3)
-          BFEN3b = diff(BFEN2[round(select)]) / abs(diff(round(select)))
-        }
-        #-----------------------------------------------------
-        #deriving metric ENMO (Euclidean Norm Minus One)
-        if (do.enmo == TRUE) {
-          EN = sqrt(Gx^2 + Gy^2 + Gz^2)
-          ENMO = EN - 1
-          ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
-          #averaging per second
-          ENMO2 =cumsum(c(0,ENMO))
-          select = seq(1,length(ENMO2),by=sf)
-          ENMO3 = diff(ENMO2[round(select)]) / abs(diff(round(select)))
-          select = seq(1,length(ENMO2),by=sf*ws3)
-          ENMO3b = diff(ENMO2[round(select)]) / abs(diff(round(select)))
-        }
-        #------------------------------------------------------------
-        # space for extra metrics
-        if (do.lfenmo == TRUE) {
-          LFENMO =g.metric(Gx,Gy,Gz,n,sf=sf,ii=9,TW=TW,lb=lb,hb=3.5) #calling function metric.R to do the calculation
-          LFENMO[which(LFENMO < 0)] = 0
-          #averaging HFEN per ws3 seconds
-          LFENMO2 =cumsum(c(0,LFENMO))
-          select = seq(1,length(LFENMO2),by=sf*ws3)
-          LFENMO3b = diff(LFENMO2[round(select)]) / abs(diff(round(select)))
-        }
-        if (do.hfen == TRUE) {
-          HFEN =g.metric(Gx,Gy,Gz,n,sf=sf,ii=1,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-          #averaging HFEN per ws3 seconds
-          HFEN2 =cumsum(c(0,HFEN))
-          select = seq(1,length(HFEN2),by=sf*ws3)
-          HFEN3b = diff(HFEN2[round(select)]) / abs(diff(round(select)))
-        }
-        # do this one anyway
-        EN = g.metric(Gx,Gy,Gz,n,sf=sf,ii=3,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-        EN2 =cumsum(c(0,EN))
-        select = seq(1,length(EN2),by=sf*ws3)
-        EN3b = diff(EN2[round(select)]) / abs(diff(round(select)))
-        if (do.hfenplus == TRUE) {
-          HFENplus = g.metric(Gx,Gy,Gz,n,sf=sf,ii=5,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-          HFENplus[which(HFENplus < 0)] = 0
-          #averaging HFENplus per ws3 seconds
-          HFENplus2 =cumsum(c(0,HFENplus))
-          select = seq(1,length(HFENplus2),by=sf*ws3)
-          HFENplus3b = diff(HFENplus2[round(select)]) / abs(diff(round(select)))
-        }
-        if (do.teLindert2013 == TRUE) {
-          teLindert2013 = g.metric(Gx,Gy,Gz,sf=sf,ii=10) #calling function metric.R to do the calculation
-          teLindert2013 = teLindert2013[seq(1+round(sf/2),length(teLindert2013),by=sf)] #per second
-          teLindert2013 = teLindert2013 * 3.07
-          select = seq(1,length(teLindert2013),by=ws3) #per 5 seconds
-          teLindert2013 =cumsum(c(0,teLindert2013))
-          teLindert2013b = diff(teLindert2013[round(select)]) # not deviding by abs... because this is the sum
-          # this is now a count per 5 seconds, later on this needs to be added over 15 sec epoch
-          # next. there is a weighting formula
-        }
-        
-        if (do.anglex == TRUE | do.angley == TRUE | do.anglez == TRUE) {
-          angle = g.metric(Gx,Gy,Gz,n,sf=sf,ii=11,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-          angle_x = angle[,1]; angle_y = angle[,2]; angle_z = angle[,3]
-          #averaging per ws3 seconds
-          angle_x2 =cumsum(c(0,angle_x)); select = seq(1,length(angle_x2),by=sf*ws3)
-          angle_x3b = diff(angle_x2[round(select)]) / abs(diff(round(select)))
-          angle_y2 =cumsum(c(0,angle_y)); select = seq(1,length(angle_y2),by=sf*ws3)
-          angle_y3b = diff(angle_y2[round(select)]) / abs(diff(round(select)))
-          angle_z2 =cumsum(c(0,angle_z)); select = seq(1,length(angle_z2),by=sf*ws3)
-          angle_z3b = diff(angle_z2[round(select)]) / abs(diff(round(select)))
-        }
-        
-        if (do.roll_med_acc_x == TRUE | do.roll_med_acc_y == TRUE | do.roll_med_acc_z == TRUE) { #rolling median of acceleration
-          roll_med_acc_ = g.metric(Gx,Gy,Gz,n,sf=sf,ii=13,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-          roll_med_acc_x = roll_med_acc_[,1]; roll_med_acc_y = roll_med_acc_[,2]; roll_med_acc_z = roll_med_acc_[,3]
-          #averaging per ws3 seconds
-          roll_med_acc_x2 =cumsum(c(0,roll_med_acc_x)); select = seq(1,length(roll_med_acc_x2),by=sf*ws3)
-          roll_med_acc_x3b = diff(roll_med_acc_x2[round(select)]) / abs(diff(round(select)))
-          roll_med_acc_y2 =cumsum(c(0,roll_med_acc_y)); select = seq(1,length(roll_med_acc_y2),by=sf*ws3)
-          roll_med_acc_y3b = diff(roll_med_acc_y2[round(select)]) / abs(diff(round(select)))
-          roll_med_acc_z2 =cumsum(c(0,roll_med_acc_z)); select = seq(1,length(roll_med_acc_z2),by=sf*ws3)
-          roll_med_acc_z3b = diff(roll_med_acc_z2[round(select)]) / abs(diff(round(select)))
-        }
-        
-        if (do.dev_roll_med_acc_x == TRUE | do.dev_roll_med_acc_y == TRUE | do.dev_roll_med_acc_z == TRUE) { #rolling median of acceleration
-          dev_roll_med_acc = g.metric(Gx,Gy,Gz,n,sf=sf,ii=14,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
-          dev_roll_med_acc_x = dev_roll_med_acc[,1]; dev_roll_med_acc_y = dev_roll_med_acc[,2]; dev_roll_med_acc_z = dev_roll_med_acc[,3]
-          #averaging per ws3 seconds
-          dev_roll_med_acc_x2 =cumsum(c(0,dev_roll_med_acc_x)); select = seq(1,length(dev_roll_med_acc_x2),by=sf*ws3)
-          dev_roll_med_acc_x3b = diff(dev_roll_med_acc_x2[round(select)]) / abs(diff(round(select)))
-          dev_roll_med_acc_y2 =cumsum(c(0,dev_roll_med_acc_y)); select = seq(1,length(dev_roll_med_acc_y2),by=sf*ws3)
-          dev_roll_med_acc_y3b = diff(dev_roll_med_acc_y2[round(select)]) / abs(diff(round(select)))
-          dev_roll_med_acc_z2 =cumsum(c(0,dev_roll_med_acc_z)); select = seq(1,length(dev_roll_med_acc_z2),by=sf*ws3)
-          dev_roll_med_acc_z3b = diff(dev_roll_med_acc_z2[round(select)]) / abs(diff(round(select)))
-        }
-        if (do.enmoa == TRUE) {
-          ENMOa =g.metric(Gx,Gy,Gz,n,sf=sf,ii=12,TW=TW,lb=lb,hb=3.5) #calling function metric.R to do the calculation
-          ENMOa[which(ENMOa < 0)] = 0
-          ENMOa2 =cumsum(c(0,ENMOa))
-          select = seq(1,length(ENMOa2),by=sf*ws3)
-          ENMOa3b = diff(ENMOa2[round(select)]) / abs(diff(round(select)))
-        }
+        EN = sqrt(Gx^2 + Gy^2 + Gz^2)
+        allmetrics = g.applymetrics(Gx,Gy,Gz,n,sf,ws3,metrics2do)
+        attach(allmetrics,warn.conflicts = FALSE)
       }
       if (LD != 0) {
         #-----------------------------------------------------
@@ -814,75 +376,56 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         col_msi = 2
         if (do.bfen == TRUE) {
-          metashort[(count):(count-1+length(BFEN3b)),col_msi] = BFEN3b; col_msi = col_msi + 1
-          rm(BFEN3b)
+          metashort[count:(count-1+length(BFEN3b)),col_msi] = BFEN3b; col_msi = col_msi + 1
         }
         if (do.enmo == TRUE) {
-          metashort[(count):(count-1+length(ENMO3b)),col_msi] = ENMO3b; col_msi = col_msi + 1
-          rm(ENMO3b)
+          metashort[count:(count-1+length(ENMO3b)),col_msi] = ENMO3b; col_msi = col_msi + 1
         }
         if (do.lfenmo == TRUE) {
-          metashort[(count):(count-1+length(LFENMO3b)),col_msi] = LFENMO3b; col_msi = col_msi + 1
-          rm(LFENMO3b)
+          metashort[count:(count-1+length(LFENMO3b)),col_msi] = LFENMO3b; col_msi = col_msi + 1
         }
         if (do.en == TRUE) {
-          metashort[(count):(count-1+length(EN3b)),col_msi] = EN3b; col_msi = col_msi + 1
-          # rm(EN3b)
+          metashort[count:(count-1+length(EN3b)),col_msi] = EN3b; col_msi = col_msi + 1
         }
         if (do.hfen == TRUE) {
-          metashort[(count):(count-1+length(HFEN3b)),col_msi] = HFEN3b; col_msi = col_msi + 1
-          rm(HFEN3b)
+          metashort[count:(count-1+length(HFEN3b)),col_msi] = HFEN3b; col_msi = col_msi + 1
         }
         if (do.hfenplus == TRUE) {
-          metashort[(count):(count-1+length(HFENplus3b)),col_msi] = HFENplus3b; col_msi = col_msi + 1
-          rm(HFENplus3b)
-        }
-        if (do.teLindert2013 == TRUE) {
-          metashort[(count):(count-1+length(teLindert2013b)),col_msi] = teLindert2013b; col_msi = col_msi + 1
-          rm(teLindert2013b)
+          metashort[count:(count-1+length(HFENplus3b)),col_msi] = HFENplus3b; col_msi = col_msi + 1
         }
         if (do.anglex == TRUE) {
-          metashort[(count):(count-1+length(angle_x3b)),col_msi] = angle_x3b; col_msi = col_msi + 1
-          rm(angle_x3b)
+          metashort[count:(count-1+length(angle_x3b)),col_msi] = angle_x3b; col_msi = col_msi + 1
         }
         if (do.angley == TRUE) {
-          metashort[(count):(count-1+length(angle_y3b)),col_msi] = angle_y3b; col_msi = col_msi + 1
-          rm(angle_y3b)
+          metashort[count:(count-1+length(angle_y3b)),col_msi] = angle_y3b; col_msi = col_msi + 1
         }
         if (do.anglez == TRUE) {
-          metashort[(count):(count-1+length(angle_z3b)),col_msi] = angle_z3b; col_msi = col_msi + 1
-          rm(angle_z3b)
+          metashort[count:(count-1+length(angle_z3b)),col_msi] = angle_z3b; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_x == TRUE) {
-          metashort[(count):(count-1+length(roll_med_acc_x3b)),col_msi] = roll_med_acc_x3b; col_msi = col_msi + 1
-          rm(roll_med_acc_x3b)
+          metashort[count:(count-1+length(roll_med_acc_x3b)),col_msi] = roll_med_acc_x3b; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_y == TRUE) {
-          metashort[(count):(count-1+length(roll_med_acc_y3b)),col_msi] = roll_med_acc_y3b; col_msi = col_msi + 1
-          rm(roll_med_acc_y3b)
+          metashort[count:(count-1+length(roll_med_acc_y3b)),col_msi] = roll_med_acc_y3b; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_z == TRUE) {
-          metashort[(count):(count-1+length(roll_med_acc_z3b)),col_msi] = roll_med_acc_z3b; col_msi = col_msi + 1
-          rm(roll_med_acc_z3b)
+          metashort[count:(count-1+length(roll_med_acc_z3b)),col_msi] = roll_med_acc_z3b; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_x == TRUE) {
-          metashort[(count):(count-1+length(dev_roll_med_acc_x3b)),col_msi] = dev_roll_med_acc_x3b; col_msi = col_msi + 1
-          rm(dev_roll_med_acc_x3b)
+          metashort[count:(count-1+length(dev_roll_med_acc_x3b)),col_msi] = dev_roll_med_acc_x3b; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_y == TRUE) {
-          metashort[(count):(count-1+length(dev_roll_med_acc_y3b)),col_msi] = dev_roll_med_acc_y3b; col_msi = col_msi + 1
-          rm(dev_roll_med_acc_y3b)
+          metashort[count:(count-1+length(dev_roll_med_acc_y3b)),col_msi] = dev_roll_med_acc_y3b; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_z == TRUE) {
-          metashort[(count):(count-1+length(dev_roll_med_acc_z3b)),col_msi] = dev_roll_med_acc_z3b; col_msi = col_msi + 1
-          rm(dev_roll_med_acc_z3b)
+          metashort[count:(count-1+length(dev_roll_med_acc_z3b)),col_msi] = dev_roll_med_acc_z3b; col_msi = col_msi + 1
         }
         if (do.enmoa == TRUE) {
-          metashort[(count):(count-1+length(ENMOa3b)),col_msi] = ENMOa3b; col_msi = col_msi + 1
-          rm(ENMOa3b)
+          metashort[count:(count-1+length(ENMOa3b)),col_msi] = ENMOa3b; col_msi = col_msi + 1
         }
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
-        rm(Gx); rm(Gy); rm(Gz)
+        
+        rm(Gx); rm(Gy); rm(Gz); rm(allmetrics)
         # reduce blocksize if memory is getting higher
         gco = gc()
         memuse = gco[2,2] #memuse in mb
@@ -946,7 +489,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             } else if (mon == 4) {
               clipthres = 7.5 # hard coded assumption that dynamic range is 8g
             }
-
+            
             if (dformat == 1) {
               CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,(jj+(mon-1))])) > clipthres))
             } else if (dformat == 2) {
@@ -1006,6 +549,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
         }
         #EN going from sample to ws2
+        
         ENc = cumsum(c(0,EN))
         select = seq(1,length(ENc),by=(ws2*sf))
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
@@ -1113,15 +657,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       time2 = strftime(time2,format="%Y-%m-%dT%H:%M:%S%z")
       metalong[,1] = as.character(time2)
     }
- 
-    
-    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","teLindert2013",
+    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
                           "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa") #
     metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,
-                                                         do.teLindert2013,do.anglex,do.angley,do.anglez,
+                                                         do.anglex,do.angley,do.anglez,
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
+                                                         do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa)]) #
     metashort = data.frame(A = metashort)
     names(metashort) = metricnames_short
