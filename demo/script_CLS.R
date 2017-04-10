@@ -14,14 +14,14 @@ library(tools)
 # specify file number to start and end with, fill in c() if unknown
 f0 = c() #file to start with if used in serial analyses
 f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
-mode= c(1,2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
+mode= c()    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
 #datadir=  c() #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
 dayborder = 4
 
-datadir = "/media/windows-share/London/data_13012017/RDAfiles"
-outputdir = "/media/windows-share/London/data_13012017/" #Name directory where output needs to be stored
+datadir = "/media/windows-share/London/data_spring2017/output_RDAfiles/raw"
+outputdir = "/media/windows-share/London/data_spring2017/" #Name directory where output needs to be stored
 studyname = "RDAfiles"  #name of study, only needed if datadir is a list of filenames
-selectdaysfile = "/media/windows-share/London/data_13012017/RDAfiles" #"dummy value" #"D:/sharedfolder/first5/wearcodes.csv"
+selectdaysfile = "/media/windows-share/London/data_spring2017/wearcodes_2017april14.csv" #"dummy value" #"D:/sharedfolder/first5/wearcodes.csv"
 
 #=====================================================================================
 # load functions from functions folder (replace by require(GGIR) once package is updated)
