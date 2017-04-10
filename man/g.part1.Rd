@@ -22,7 +22,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
                    desiredtz = "Europe/London",chunksize=c(),studyname=c(),
                    do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
                    do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE,
-                   do.teLindert2013=FALSE,do.anglex=FALSE,do.angley=FALSE,
+                   do.anglex=FALSE,do.angley=FALSE,
                    do.anglez=FALSE,do.enmoa=FALSE,
                    do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
                    do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
@@ -85,10 +85,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   if TRUE, calculate metric HFENplus with band-pass filter configuration set
   by \code{lb} and \code{hb}, see \link{g.getmeta}
   }
-    \item{do.teLindert2013}{
-  if TRUE, calculate the 5 sec epoch Actiwatch count replication as described 
-  by te Lindert et al 2013 in the journal SLEEP (volume 36, issue 5, page 781)
-  }
+    
   \item{do.anglex}{
   if TRUE, calculate the angle of the x-axis relative to the horizontal plane
   (degrees) utilizing all three axes
