@@ -6,6 +6,7 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   B = tuneR::extractWave(S, from = start, to = length(S),xunit = c("samples", "time"))
   S = as.data.frame(S)
   B = as.data.frame(B)
+  
   #-------------------------------------------------------
   # extract info from header: fileEncoding does not seem to be consistent, so try two variants
   # header = rownames(read.csv(wavfile,nrow=13,header=TRUE))
@@ -27,6 +28,7 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   #-----------------------------------------------
   # scale acceleration
   scale = as.numeric(as.character(P$hvalues[which(P$hnames == "Scale-1" | P$hnames == "Scale-2" | P$hnames == "Scale-3")]))
+  
   if (length(scale) != 3) scale = rep(scale[1],3)
   range = 2^(H$bits -1) # should be 32768 for 16 bit
   x = (B$C1/range) * scale[1]
