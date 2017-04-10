@@ -83,7 +83,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   sf = INFI$sf
   if (sf == 0) sf = 80 #assume 80Hertz in the absense of any other info
   header = INFI$header
-  
   options(warn=-1)
   if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon)
   options(warn=0)
@@ -370,6 +369,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         } else if (dformat == 3) {
           data = P$rawxyz # no conversion to mg?
         }
+
         #add left over data from last time 
         if (nrow(S) > 0) {
           data = rbind(S,data)
@@ -394,18 +394,24 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             #It seems that Axivity does not store timestamp in a consistent position
             # therefore, we need to search for it in the data:
             starttime = as.character(header[which(rownames(header) == "ICMTzTime"),1])
+            # print(starttime)
             rn = rownames(header)
             vl = header$value
+            
             if (length(starttime) == 0) {
               if (length(which(rn == "Start")) > 0) {
                 starttime = as.character(header$value[which(rn == "Start")])
                 #in one of the files starttime is hidden in rowname
                 if (length(starttime) == 0) starttime = rownames(header)[2] 
               }
+              # print("D")
+              # print(starttime)
               #in one of the files start variable name is hidden in the values
               if (length(which(vl == "Start")) > 0) {
                 starttime = header$value[2]
               }
+              # print("C")
+              # print(starttime)
             }
             if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
             if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")]) 
@@ -450,6 +456,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
               startdate = as.character(unlist(strsplit(as.character(startdate)," "))) 
               starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
             }
+           
+            
             #-----------------------------------------
             #remove possible spaces in date or time
             newstarttime = starttime #20-11-2014
@@ -497,6 +505,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           }
           #==================================================
           #inspection timezone
+          
           timezone = attr(unclass(as.POSIXlt(starttime[1])),which="tzone")
           starttimebefore = as.POSIXlt(starttime)
           # assuming that timestamps is good, but that timezone might be lost in conversion from string to POSIXct
@@ -748,6 +757,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           # this is now a count per 5 seconds, later on this needs to be added over 15 sec epoch
           # next. there is a weighting formula
         }
+        
         if (do.anglex == TRUE | do.angley == TRUE | do.anglez == TRUE) {
           angle = g.metric(Gx,Gy,Gz,n,sf=sf,ii=11,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
           angle_x = angle[,1]; angle_y = angle[,2]; angle_z = angle[,3]
