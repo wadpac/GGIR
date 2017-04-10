@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5 (release date:na)}{
+\itemize{
+  \item Removed teLindert2013 metric, because it was not used and not verified
+  \item Split g.getmeta function into multiple smaller functions
+  \item Added IS and IV variables to g.analyse
+  \item bug fixed related to wav file read errors
+}
+
 \section{Changes in version 1.4 (release date:22-1-2017)}{
 \itemize{
   \item bug fixed in functionlity to process only specific days in measurement

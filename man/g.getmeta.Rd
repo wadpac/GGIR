@@ -19,7 +19,7 @@ offset = c(0,0,0), scale = c(1,1,1),
 tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
 do.lfenmo = FALSE, do.en = FALSE,
 do.hfen = FALSE, do.hfenplus = FALSE,
-do.teLindert2013=FALSE,do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
+do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
 do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
 do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,meantempcal=c(),chunksize=c(),
@@ -69,10 +69,6 @@ selectdaysfile=c(),dayborder=0,...)
   \item{do.hfenplus}{if TRUE, calculate metric HFENplus with band-pass filter
   configuration set by \code{lb} and \code{hb}
 }
-     \item{do.teLindert2013}{
-  if TRUE, calculate the 5 sec epoch Actiwatch count replication as described 
-  by te Lindert et al 2013 in the journal SLEEP (volume 36, issue 5, page 781)
-  }
   \item{do.anglex}{
   if TRUE, calculate the angle of the x-axis relative to the horizontal plane
   (degrees) utilizing all three axes
