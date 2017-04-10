@@ -162,7 +162,6 @@ g.metric= function(Gx,Gy,Gz,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
   } else if (ii == 12) { # vector magnitude minus one and then absolute
     Gfil[,1] = abs(sqrt((Gx^2) + (Gy^2) + (Gz^2)) - gravity)
   }
-  
   if (ii == 11 | ii == 13 | ii == 14) {
     g.metric = Gfil
   } else {
