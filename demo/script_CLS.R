@@ -14,7 +14,7 @@ library(tools)
 # specify file number to start and end with, fill in c() if unknown
 f0 = c() #file to start with if used in serial analyses
 f1 = Inf #c() #file to end with if used in serial analyses (modify accordingly, if infinite then it will process until last file)
-mode= c()    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
+mode= c(2)    #What part of the analysis needs to be done (options: 1,2,3,4 and 5)
 #datadir=  c() #Where is the raw accelerometer data? (leave as c() if you work with milestone data and mode > 1
 dayborder = 4
 
