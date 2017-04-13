@@ -199,7 +199,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #============================
   # IS and IV variables
-
+  
   # select data from first midnight to last midnight
   fmn = midnightsi[1] * (ws2/ws3)
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
@@ -253,7 +253,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
     daysummary = matrix("",ceiling(ndays),nfeatures)
-
+    
     ds_names = rep("",nfeatures)
     #=============================
     if (length(selectdaysfile) > 0) {   # Millenium cohort related:
@@ -379,21 +379,19 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         }
         ws_names = c("id","serial number","filename",
                      "time","Nhoursvalid")
-        if (ncol(vari) == 3) {
-          ws_names = c(ws_names,paste0("mean metric ",colnames(vari)[2]),
-                       paste0("sd metric ",colnames(vari)[2]),
-                       paste0("p5 metric ",colnames(vari)[2]),
-                       paste0("p25 metric ",colnames(vari)[2]),
-                       paste0("p50 metric ",colnames(vari)[2]),
-                       paste0("p75 metric ",colnames(vari)[2]),
-                       paste0("p95 metric ",colnames(vari)[2]),
-                       paste0("mean metric ",colnames(vari)[3]),
-                       paste0("sd metric ",colnames(vari)[3]),
-                       paste0("p5 metric ",colnames(vari)[3]),
-                       paste0("p25 metric ",colnames(vari)[3]),
-                       paste0("p50 metric ",colnames(vari)[3]),
-                       paste0("p75 metric ",colnames(vari)[3]),
-                       paste0("p95 metric ",colnames(vari)[3]))
+        
+        
+        if (ncol(vari) >= 3) {
+          for (columnvari in 2:ncol(vari)) {
+            ws_names = c(ws_names,paste0("mean metric ",colnames(vari)[columnvari]),
+                         paste0("sd metric ",colnames(vari)[columnvari]),
+                         paste0("p5 metric ",colnames(vari)[columnvari]),
+                         paste0("p25 metric ",colnames(vari)[columnvari]),
+                         paste0("p50 metric ",colnames(vari)[columnvari]),
+                         paste0("p75 metric ",colnames(vari)[columnvari]),
+                         paste0("p95 metric ",colnames(vari)[columnvari])) 
+            
+          }
         }
         gikb = gikb + gik
       }
