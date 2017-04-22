@@ -173,7 +173,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         # extraction and modification of starting point of measurement
         if (i == 1 | (i != 1 & length(selectdaysfile) > 0)) { #only do this for first block of data
           starttime = g.getstarttime(datafile=datafile,P=P,header=header,mon=mon,
-                                     dformat=dformat,desiredtz=desiredtz)
+                                     dformat=dformat,desiredtz=desiredtz,selectdaysfile=selectdaysfile)
           #==================================================
           #inspection timezone
           
@@ -583,11 +583,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
     # cut = (count+1):nrow(metashort) # how it was
     cut = count:nrow(metashort)
-    # print(nrow(as.matrix(metashort)) / (12*60))
     if (length(cut) > 1) {
       metashort = as.matrix(metashort[-cut,])
     }
-    # print(nrow(metashort) / (12*60))
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time5 = seq(starttime3,(starttime3+((nrow(metashort)-1)*ws3)),by=ws3)
