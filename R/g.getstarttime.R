@@ -1,4 +1,4 @@
-g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz) {
+g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile) {
   if (mon  == 1 & dformat == 1) {
     starttime = P$timestamps2[1]
     lengthheader = nrow(header)
@@ -7,24 +7,19 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz) {
     #It seems that Axivity does not store timestamp in a consistent position
     # therefore, we need to search for it in the data:
     starttime = as.character(header[which(rownames(header) == "ICMTzTime"),1])
-    # print(starttime)
     rn = rownames(header)
     vl = header$value
-    
     if (length(starttime) == 0) {
       if (length(which(rn == "Start")) > 0) {
         starttime = as.character(header$value[which(rn == "Start")])
         #in one of the files starttime is hidden in rowname
         if (length(starttime) == 0) starttime = rownames(header)[2] 
       }
-      # print("D")
-      # print(starttime)
       #in one of the files start variable name is hidden in the values
       if (length(which(vl == "Start")) > 0) {
         starttime = header$value[2]
       }
-      # print("C")
-      # print(starttime)
+
     }
     if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
     if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")]) 
@@ -33,7 +28,11 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz) {
     if (length(desiredtz) > 0) {
       # starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
       # starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
-      starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1]), tz = desiredtz)
+      if (length(selectdaysfile) == 0) { # Tested way of getting starttime on GENEACtiv data
+        starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
+      } else { # Modified way of getting starttime from Millenium cohort data
+        starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1]), tz = desiredtz)
+      }
       if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
         #needed for MaM study where first timestamp does not have clock time in it
         starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz) 
