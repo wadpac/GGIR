@@ -153,7 +153,86 @@ M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4)
 }
 \value{
  The function provides no values, it only ensures that other functions are called
- and that their output is stored in .RData files.
+ and that their output is stored in .RData files. See details.
+}
+\details{
+This function writes all its output to an RData file
+The value \code{output} is a dataframe and comes with a large range of variables
+which hopefully are sufficiently intuitive or are already explained elsewhere in the
+package tutorial.\cr
+\cr
+Explaination of general terminology:\cr
+\cr
+\itemize{
+\item dur = duration
+\item acc = (average) acceleration
+\item Nblock = number of blocks
+\item D10 = bout lengths with 10 minutes and longer
+\item T120 = threshold of 120 mg and higher
+\item _pla = plain average across available days
+\item _wei = weighted average across available days where weekend days always
+weighted 2/5 relative to the contribution of week days
+\item If there is no D in the variable name like in LIG50_120 then it refers to
+unbouted time spent between those thresholds
+\item dur_LIGB_D10T50_120 = the time spent in bouts of light activity of at
+least 10 minutes
+\item WW in filename refers to analyses based on the timewindow from waking
+to waking up
+\item MM in filename refers to analyses done on windows between midnight and midnight
+\item SIB=sustained inactivity bouts, are the periods of time during which the 
+accelerometer does not rotate at all for at least 5 or 10 minutes. This could be
+daytime sleep or the monitor not being worn for a very short period of time.
+\item INB are bouts of time during which acceleration is below an acceleration
+threshold for at least X percent of the time.
+\item If boutdur.mvpa holds two bout duration thresholds like 1 and 10 minutes when
+it is set to c(1,10) then you will get D1T100 and D10T100. In this case D1T100
+effectively means bouts between 1 and 9.99 minutes, while D10T100 refers to bouts of
+at least 10 minutes. 
+\item TMOD and TVIG are total moderate and total vigorous PA with all bouted and
+unbouted time contributing. Just MOD and VIG are only the unbouted time spent in
+those categories.
+\item nightwak = night waking time
+\item SIB= sustained inactivity bouts, can be part of inactivity bouts 
+(INB variables), SIB are the sustained inactivity bouts that are not part of 
+the inactivity bouts. This is why I have a TSIB and a SIB variable
+\item TSIB = total of all sustained inactivity bouts (regardless of whether
+they contributed or not to inactivity bouts (INB).
+\item TOIN = Total other inactivity
+\item TIN = Total inactivity = TOIN + SIB = Total other inactivty + Sustained
+inactivity
+}
+In summary, g.part5 works with following levels of behaviour 
+from least active to most active:\cr
+\cr
+\itemize{
+\item Sleep or SIB
+\item Other inactivity
+\item Light
+\item Moderate
+\item Vigorous
+}
+
+Additionally they a grouped in:\cr
+\cr
+\itemize{
+\item MVPA bouts (Moderate or Vigorous)
+\item Light bouts (just light)
+\item Inactivity bouts (Other inactivity or SIB)
+\item And the non-bouted time spent in each of the five categories
+\item And also as the total of each category: TSIB, TOIN, TLIG, TMOD, TVIG
+}
+Other variabels:\cr
+\cr
+\itemize{
+\item dur_day_min_pla, dur_night_min_pla, and dur_nightandday_min_pla: duration of
+a day and night time
+}
+Final note:\cr
+\cr
+Motivation for default bout criteria for inactivity 0.9: Ssomewhat arbitrary 
+decision, but the idea is that if you allow for bouts of 30 minutes it would
+not make sense to allow for breaks of 20 percent (6 minutes!) this is why I
+used a more stringent criteria for the highest category
 }
 \examples{
 \dontrun{
