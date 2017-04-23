@@ -7,6 +7,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # set parameters
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE)
   ws4 = 10 #epoch for recalibration, don't change
   ws2 = windowsizes[2] #dummy variable
   ws =  windowsizes[3] # window size for assessing non-wear time (seconds)
@@ -35,22 +36,18 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz) 
-  if (mon == 2) {
+  if (mon == 2 | (mon == 4 & dformat == 4)) {
     meta = matrix(99999,NR,8) #for meta data
-  } else if (mon == 1 | mon == 3 | mon == 4){
+  } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3)){
     meta = matrix(99999,NR,7)
   }
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
   blocksize = round((14512 * (sf/50)) * (chunksize*0.5)) 
   blocksizegenea = round((20608 * (sf/80)) * (chunksize*0.5))
-  if (mon == 1) {
-    blocksize = blocksizegenea
-  }
-  if (mon == 4) {
-    blocksize = round(1440 * chunksize)
-  }
-  #===============================================
+  if (mon == 1) blocksize = blocksizegenea
+  if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
+    #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
   while (LD > 1) {
@@ -58,21 +55,21 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     print(paste("Loading block: ",i,sep=""))
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
-    #when trying to read files of a different format)
-    if (mon == 1 & dformat == 1) {
-      use.temp = FALSE
-      try(expr={P = g.binread(datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
-      if (length(P) > 1) {
-        if (nrow(P$rawxyz) < ((sf*ws)+1)) {
-          P = c()
-          switchoffLD = 1 #added 30-6-2012
-        }
-      } else {
-        P = c()
-      }
-#     } else  if (mon == 4 & dformat == 3) {
+    
+    accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
+                            selectdaysfile = selectdaysfile,filequality=filequality,
+                            decn=decn,dayborder=dayborder)
+    P = accread$P
+    filequality = accread$filequality
+    filetooshort = filequality$filetooshort
+    filecorrupt = filequality$filecorrupt
+    filedoesnotholdday = filequality$filedoesnotholdday
+    switchoffLD = accread$switchoffLD
+#     
+#     #when trying to read files of a different format)
+#     if (mon == 1 & dformat == 1) {
 #       use.temp = FALSE
-#       try(expr={P = g.wavread(datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
+#       try(expr={P = g.binread(datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
 #       if (length(P) > 1) {
 #         if (nrow(P$rawxyz) < ((sf*ws)+1)) {
 #           P = c()
@@ -81,118 +78,131 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
 #       } else {
 #         P = c()
 #       }
-    } else if (mon == 2 & dformat == 1) {
-      ###
-      if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
-        #===================================================================
-        # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
-        I = g.inspectfile(datafile) #, useRDA = useRDA
-        hvars = g.extractheadervars(I)
-        SN = hvars$SN
-        # change by CLS
-        SDFi = which(basename(SDF$binFile) == basename(datafile))
-        tint = c()
-        if(length(SDFi) != 1) {
-          save(tint, SDF, SDFi, file = "debuggingFile.Rda")
-          stop(paste0("CLS error: there are zero or more than one files: ",
-                      datafile, "in the wearcodes file"))
-        }
-        tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
-                      getStartEnd(SDF$Day2[SDFi], dayborder), stringsAsFactors = FALSE) 
-
-        if (i == nrow(tint)+1 | nrow(tint) == 0) {
-          #all data read now make sure that it does not try to re-read it with mmap on
-          switchoffLD = 1
-          P = c()
-        } else {
-          try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
-                                            end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-        }
-        # All of the above needed for Millenium cohort
-        #======================================================================
-      } else {
-        ###
-        try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-      }
-      # try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-      #       if (length(P) > 0) {
-      #         if (nrow(P$data.out) < blocksize*300) { #last block
-      #           cat("\nlast block\n")
-      #           switchoffLD = 1 #this section is not needed for mon = 1 as genea script deals with file-ends automatically
-      #         }
-      #       }
-      
-      if (length(P) > 0) {
-        if (length(selectdaysfile) > 0) { 
-          if (tint[i,1] == "0") {
-            print("last block")
-            switchoffLD = 1
-          }
-        } else {
-          if (nrow(P$data.out) < blocksize*300) { #last block
-            print("last block")
-            switchoffLD = 1 #this section is not needed for mon = 1 as genea script deals with file-ends automatically
-          }
-        }
-      }
-      
-      if (length(P) == 0) { #if first block doens't read then probably corrupt
-        if (i == 1) {
-          try(expr={P = GENEAread::read.bin(binfile=datafile,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-          if(length(P) ==0) {
-            P= c()
-            switchoffLD = 1
-          } #if not then P is now filled with data
-        } else {
-          P= c() #just no data in this last block
-        }
-      }
-      if (length(P) > 0) { #check whether there is enough data
-        if (nrow(P$data.out) < ((sf*ws)+1)) {
-          P = c()
-          switchoffLD = 1
-        }
-      }
-    } else if (mon == 2 & dformat == 2) {
-      try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(100+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
-      if (length(P) > 1) {
-        P = as.matrix(P)
-        if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
-          P = c() ; switchoffLD = 1 #added 30-6-2012
-          cat("\nError code 1: data too short for doing non-wear detection\n")  	
-          filetooshort = TRUE
-        }
-      } else {
-        P = c()
-        cat("\nEnd of file reached\n")
-      }
-    } else if (mon == 3 & dformat == 2) {
-      try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(10+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
-      use.temp = FALSE
-      if (length(P) > 1) {
-        P = as.matrix(P)
-        if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
-          P = c() ; switchoffLD = 1 #added 30-6-2012
-          cat("\nError code 1: data too short for doing non-wear detection\n")
-          filetooshort = TRUE
-        }
-      } else {
-        P = c()
-        cat("\nEnd of file reached\n")
-      }
-    }
+# #     } else  if (mon == 4 & dformat == 3) {
+# #       use.temp = FALSE
+# #       try(expr={P = g.wavread(datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
+# #       if (length(P) > 1) {
+# #         if (nrow(P$rawxyz) < ((sf*ws)+1)) {
+# #           P = c()
+# #           switchoffLD = 1 #added 30-6-2012
+# #         }
+# #       } else {
+# #         P = c()
+# #       }
+#     } else if (mon == 2 & dformat == 1) {
+#       ###
+#       if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
+#         #===================================================================
+#         # All of the below needed for Millenium cohort
+#         SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
+#         I = g.inspectfile(datafile) #, useRDA = useRDA
+#         hvars = g.extractheadervars(I)
+#         SN = hvars$SN
+#         # change by CLS
+#         SDFi = which(basename(SDF$binFile) == basename(datafile))
+#         tint = c()
+#         if(length(SDFi) != 1) {
+#           save(tint, SDF, SDFi, file = "debuggingFile.Rda")
+#           stop(paste0("CLS error: there are zero or more than one files: ",
+#                       datafile, "in the wearcodes file"))
+#         }
+#         tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
+#                       getStartEnd(SDF$Day2[SDFi], dayborder), stringsAsFactors = FALSE) 
+# 
+#         if (i == nrow(tint)+1 | nrow(tint) == 0) {
+#           #all data read now make sure that it does not try to re-read it with mmap on
+#           switchoffLD = 1
+#           P = c()
+#         } else {
+#           try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
+#                                             end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+#         }
+#         # All of the above needed for Millenium cohort
+#         #======================================================================
+#       } else {
+#         ###
+#         try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+#       }
+#       # try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+#       #       if (length(P) > 0) {
+#       #         if (nrow(P$data.out) < blocksize*300) { #last block
+#       #           cat("\nlast block\n")
+#       #           switchoffLD = 1 #this section is not needed for mon = 1 as genea script deals with file-ends automatically
+#       #         }
+#       #       }
+#       
+#       if (length(P) > 0) {
+#         if (length(selectdaysfile) > 0) { 
+#           if (tint[i,1] == "0") {
+#             print("last block")
+#             switchoffLD = 1
+#           }
+#         } else {
+#           if (nrow(P$data.out) < blocksize*300) { #last block
+#             print("last block")
+#             switchoffLD = 1 #this section is not needed for mon = 1 as genea script deals with file-ends automatically
+#           }
+#         }
+#       }
+#       
+#       if (length(P) == 0) { #if first block doens't read then probably corrupt
+#         if (i == 1) {
+#           try(expr={P = GENEAread::read.bin(binfile=datafile,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+#           if(length(P) ==0) {
+#             P= c()
+#             switchoffLD = 1
+#           } #if not then P is now filled with data
+#         } else {
+#           P= c() #just no data in this last block
+#         }
+#       }
+#       if (length(P) > 0) { #check whether there is enough data
+#         if (nrow(P$data.out) < ((sf*ws)+1)) {
+#           P = c()
+#           switchoffLD = 1
+#         }
+#       }
+#     } else if (mon == 2 & dformat == 2) {
+#       try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(100+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
+#       if (length(P) > 1) {
+#         P = as.matrix(P)
+#         if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
+#           P = c() ; switchoffLD = 1 #added 30-6-2012
+#           cat("\nError code 1: data too short for doing non-wear detection\n")  	
+#           filetooshort = TRUE
+#         }
+#       } else {
+#         P = c()
+#         cat("\nEnd of file reached\n")
+#       }
+#     } else if (mon == 3 & dformat == 2) {
+#       try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(10+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
+#       use.temp = FALSE
+#       if (length(P) > 1) {
+#         P = as.matrix(P)
+#         if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
+#           P = c() ; switchoffLD = 1 #added 30-6-2012
+#           cat("\nError code 1: data too short for doing non-wear detection\n")
+#           filetooshort = TRUE
+#         }
+#       } else {
+#         P = c()
+#         cat("\nEnd of file reached\n")
+#       }
+#     }
     options(warn=0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (mon == 1) {
         data = P$rawxyz / 1000 #convert g output to mg for genea
-      } else if (mon == 4) {
+      } else if (mon == 4 & dformat == 3) {
         data = P$rawxyz #change scalling for Axivity?
       } else if (mon == 2  & dformat == 1) {
         data = P$data.out
       } else if (dformat == 2) {
         data = as.matrix(P)
+      } else if (dformat == 4) {
+        data = P$data
       }
       #add left over data from last time 
       if (min(dim(S)) > 1) {
@@ -215,9 +225,12 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           if (mon == 1) {
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
             use.temp = FALSE
-          } else if (mon == 4) {
+          } else if (dformat == 3 & mon == 4) {
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
             use.temp = FALSE
+          } else if (dformat == 4 & mon == 4) {
+            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            use.temp = TRUE
           } else if (mon == 2 & dformat == 1) {
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4]); temperaturre = as.numeric(data[,7])
             temperature = as.numeric(data[,7])
@@ -229,17 +242,22 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
               data2[,jij] = as.numeric(data[,(jij+extra)])
             }
             Gx = as.numeric(data2[,1]); Gy = as.numeric(data2[,2]); Gz = as.numeric(data2[,3])
-            if (mon == 2) {
-              temperature = as.numeric(data[,7])
-            } else if (mon == 1 | mon == 3) {
-              use.temp = FALSE
-            }
           }
-          if (mon == 2 & use.temp == TRUE) { #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
-            if (length(which(is.na(mean(as.numeric(data[1:10,7]))) == T)) > 0) {
+          if (mon == 2 | (mon == 4 & dformat == 4)) {
+            if (mon == 2) {
+              temperaturecolumn = 7; lightcolumn = 5
+            } else if (mon ==4) {
+              temperaturecolumn = 5; lightcolumn = 7
+            }
+            temperature = as.numeric(data[,temperaturecolumn])
+          } else if (mon == 1 | mon == 3) {
+            use.temp = FALSE
+          }
+          if ((mon == 2 | (mon == 4 & dformat == 4)) & use.temp == TRUE) { #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
+            if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               cat("\ntemperature is NA\n")
               use.temp = FALSE
-            } else if (length(which(mean(as.numeric(data[1:10,7])) > 40)) > 0) {
+            } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 40)) > 0) {
               cat("\ntemperature is too high\n")
               use.temp = FALSE
             }
@@ -426,11 +444,11 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       cal.error.end = mean(abs(cal.error.end-1))
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
-        if (use.temp == TRUE & mon == 2) {
+        if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4))) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE & mon == 2)  {
+        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4)))  {
           QC = "recalibration done, but temperature values not used"
-        } else if (mon != 2)  {
+        } else if (mon != 2 & dformat != 3)  {
           QC = "recalibration done, no problems detected"
         }
         LD = 0 #stop loading 

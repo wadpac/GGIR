@@ -2,6 +2,11 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
   if (mon  == 1 & dformat == 1) {
     starttime = P$timestamps2[1]
     lengthheader = nrow(header)
+  } else if (mon  == 4 & dformat == 4) {
+    starttime = P$data[1,1]
+    lengthheader = nrow(header)
+    starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
+    starttime = POSIXtime2iso8601(starttime,tz=desiredtz) 
   } else if (dformat == 3) { #wav
     starttime = c()
     #It seems that Axivity does not store timestamp in a consistent position
@@ -19,7 +24,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       if (length(which(vl == "Start")) > 0) {
         starttime = header$value[2]
       }
-
+      
     }
     if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
     if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")]) 
