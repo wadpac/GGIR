@@ -23,7 +23,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (derivef0f1 == TRUE) { # What file to start with?
     f0 = 1
     if (filelist == FALSE) {  # What file to end with?
-      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa)")) # modified by JH
+      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa|cw)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
     }
@@ -127,6 +127,9 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = c()
   if (length(which(ls() == "bout.metric")) == 0)  bout.metric = 1
   if (length(which(ls() == "closedbout")) == 0)  closedbout = FALSE
+  if (length(which(ls() == "IVIS_windowsize_minutes")) == 0)  IVIS_windowsize_minutes=60
+  if (length(which(ls() == "IVIS_epochsize_seconds")) == 0)  IVIS_epochsize_seconds=30
+  
   
   # # specific for part 5
   if (length(which(ls() == "boutcriter.in")) == 0)  boutcriter.in = 0.9
@@ -181,7 +184,9 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             boutcriter = boutcriter,ndayswindow=ndayswindow,idloc=idloc,do.imp=do.imp,
             storefolderstructure=storefolderstructure,overwrite=overwrite,epochvalues2csv=epochvalues2csv,
             mvpadur=mvpadur,selectdaysfile=selectdaysfile,bout.metric=bout.metric,window.summary.size=window.summary.size,
-            dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz)
+            dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz,
+            IVIS_windowsize_minutes = IVIS_windowsize_minutes,
+            IVIS_epochsize_seconds = IVIS_epochsize_seconds)
   }
   if (dopart3 == TRUE) {
     cat('\n')

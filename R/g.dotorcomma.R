@@ -33,6 +33,16 @@ g.dotorcomma = function(inputfile,dformat,mon) {
     } else {
       decn = "." #dot
     }
+  } else if (dformat == 4) { #!decn is detect, but currently not used in the rest of the code!
+    # Rcpp::sourceCpp('src/numUnpack.cpp')
+    # Rcpp::sourceCpp('src/resample.cpp')
+    try(expr={deci = g.cwaread(inputfile,start = 1, end = 10)},silent=TRUE)
+    deci = as.matrix(deci$data)
+    if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T) {
+      decn = "," #comma
+    } else {
+      decn = "." #dot
+    }
   }
   dotorcomma = decn
 }

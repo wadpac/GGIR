@@ -1,14 +1,20 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5 (release date:na)}{
+\section{Changes in version 1.5 (release date:22-4-2017)}{
 \itemize{
   \item Removed teLindert2013 metric, because it was not used and not verified
   \item Split g.getmeta function into multiple smaller functions
-  \item Added IS and IV variables to g.analyse
+  \item Added IS and IV variables to g.analyse (still in explorative version)
   \item bug fixed related to wav file read errors
+  \item function g.cwaread added (credits to E. Mirkes) for reading 
+  Axivity .cwa-format data. g.shellGGIR will automatically use this function
+  when input data has .cwa extension
+  \item bug fixed related to for GENEactiv starttime recognition which was
+  introduced in version 1.2-11
+  \item g.part5 documentation added on its output
 }
-
+}
 \section{Changes in version 1.4 (release date:22-1-2017)}{
 \itemize{
   \item bug fixed in functionlity to process only specific days in measurement
