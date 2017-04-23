@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-2 (release date:23-4-2017)}{
+\itemize{
+  \item README added to buildignore
+}
+}
+
 \section{Changes in version 1.5-1 (release date:23-4-2017)}{
 \itemize{
   \item Removed teLindert2013 metric, because it was not used and not verified
