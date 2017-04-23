@@ -17,7 +17,8 @@ L5M5window = c(0,24), M5L5res = 10, winhr = 5, qwindow=c(0,24), qlevels = c(0.1)
 ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,ndayswindow=7,idloc=1,
 do.imp=TRUE,storefolderstructure=FALSE,overwrite=FALSE,epochvalues2csv=FALSE,
 mvpadur=c(1,5,10),selectdaysfile=c(),window.summary.size=10,dayborder=0,
-bout.metric=2,closedbout=FALSE,desiredtz="Europe/London")
+bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
+IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30)
 }
 \arguments{
 \item{datadir}{
@@ -147,6 +148,14 @@ bout.metric=2,closedbout=FALSE,desiredtz="Europe/London")
   }
   \item{desiredtz}{
   see \link{g.getmeta}
+  }
+    \item{IVIS_windowsize_minutes}{
+  Window size of the Intradaily Variability (IV) and Interdaily
+  Stability (IS) metrics in minutes
+  }
+  \item{IVIS_epochsize_seconds}{
+  Epoch size of the Intradaily Variability (IV) and Interdaily
+  Stability (IS) metrics in seconds
   }
 }
 \value{
