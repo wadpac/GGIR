@@ -20,7 +20,8 @@ g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24), quantiletype = 7,
 L5M5window = c(0, 24), M5L5res = 10, includedaycrit = 16, ilevels = c(),
 winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),
 selectdaysfile=c(),window.summary.size=10,dayborder=0,bout.metric = 1,
-closedbout=FALSE,desiredtz = c())
+closedbout=FALSE,desiredtz = c(),IVIS_windowsize_minutes = 60,
+IVIS_epochsize_seconds = 30)
 }
 
 \arguments{
@@ -118,7 +119,14 @@ closedbout=FALSE,desiredtz = c())
   \item{desiredtz}{
   see \link{g.getmeta}
   }
-
+  \item{IVIS_windowsize_minutes}{
+  Window size of the Intradaily Variability (IV) and Interdaily
+  Stability (IS) metrics in minutes
+  }
+  \item{IVIS_epochsize_seconds}{
+  Epoch size of the Intradaily Variability (IV) and Interdaily
+  Stability (IS) metrics in seconds
+  }
 }
 \value{
 \item{\code{summary}}{summary for the file that was analysed (see details)}
@@ -171,6 +179,8 @@ modifiable in g.getmeta)
 1am and 6am
 \item \code{N valid WEdays} Number of valid weekend days
 \item \code{N valid WDdays} Number of valid week days
+\item \code{IS_interdailystability} Intra daily variability
+\item \code{IV_intradailyvariability} Intra intradailyvariability
 \item \code{AD_...} The
 variable ... was calculated per day and then averaged over all the available days
 \item \code{WE_...}
