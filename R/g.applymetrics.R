@@ -1,5 +1,28 @@
 g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
-  attach(metrics2do,warn.conflicts = FALSE)
+  # globalVariables(c("do.enmo","do.lfenmo","do.en","do.bfen","do.hfen",
+                    # "do.hfenplus","do.anglex","do.angley","do.anglez",
+                    # "do.roll_med_acc_x","do.roll_med_acc_y","do.roll_med_acc_z",
+                    # "do.dev_roll_med_acc_x","do.dev_roll_med_acc_y",
+                    # "do.dev_roll_med_acc_z","do.enmoa"))
+  # as R check complains about attach, I have just added them to the workspace manually:  
+  do.bfen = metrics2do$do.bfen
+  do.enmo = metrics2do$do.enmo
+  do.lfenmo = metrics2do$do.lfenmo
+  do.en = metrics2do$do.en
+  do.hfen = metrics2do$do.hfen
+  do.hfenplus = metrics2do$do.hfenplus
+  do.anglex = metrics2do$do.anglex
+  do.angley = metrics2do$do.angley
+  do.anglez = metrics2do$do.anglez
+  do.roll_med_acc_x = metrics2do$do.roll_med_acc_x
+  do.roll_med_acc_y = metrics2do$do.roll_med_acc_y
+  do.roll_med_acc_z = metrics2do$do.roll_med_acc_z
+  do.dev_roll_med_acc_x = metrics2do$do.dev_roll_med_acc_x
+  do.dev_roll_med_acc_y = metrics2do$do.dev_roll_med_acc_y
+  do.dev_roll_med_acc_z = metrics2do$do.dev_roll_med_acc_z
+  do.enmoa = metrics2do$do.enmoa
+  
+  # attach(metrics2do,warn.conflicts = FALSE)
   allmetrics = c()
   averageperws3 = function(x,sf,ws3) {
     x2 =cumsum(c(0,x))
@@ -77,5 +100,6 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     ENMOa[which(ENMOa < 0)] = 0
     allmetrics$ENMOa3b = averageperws3(x=ENMOa,sf,ws3)
   }
+  # detach(metrics2do,warn.conflicts = FALSE)
   return(allmetrics)
-}
+} 
