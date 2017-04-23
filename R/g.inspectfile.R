@@ -3,11 +3,12 @@ g.inspectfile = function(datafile) {
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename=c(),datafile=c()) {
     sf = c(); isitageneactive = c();  isitagenea = c();  mon = c();dformat = c() #generating empty variables
-    tmp1 = unlist(strsplit(filename,"[.]c"))
+    tmp1 = unlist(strsplit(filename,"[.]cs"))
     tmp2 = unlist(strsplit(filename,"[.]b"))
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
-    if (tmp1[length(tmp1)] == "sv") { #this is a csv file
+    tmp5 = unlist(strsplit(filename,"[.]cw"))
+    if (tmp1[length(tmp1)] == "v") { #this is a csv file
       dformat = 2 #2 = csv
       testcsv = read.csv(paste(datafile,sep=""),nrow=10,skip=10)
       if (ncol(testcsv) == 2) { #it is a geneactivefile
@@ -19,9 +20,12 @@ g.inspectfile = function(datafile) {
       dformat = 1 #1 = binary
     } else if (tmp3[length(tmp3)] == "av") { #this is a wav file
       dformat = 3 #3 = wav
-      mon = 4
+      mon = 4 # Axivity
+    } else if (tmp5[length(tmp5)] == "a") { #this is a cwa file
+      dformat = 4 #4 = cwa
+      mon = 4 # Axivity
     }
-    if (dformat == 1) {
+    if (dformat == 1) { # .bin
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile)},silent=TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
@@ -117,6 +121,12 @@ g.inspectfile = function(datafile) {
     } else if (dformat == 3) { # wav
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
       sf = H$sample.rate
+    } else if (dformat == 4) { # cwa
+      # Rcpp::sourceCpp('src/numUnpack.cpp')
+      # Rcpp::sourceCpp('src/resample.cpp')
+      PP = g.cwaread(datafile,start = 1, end = 10)
+      H = PP$header
+      sf = H$frequency
     }
     invisible(list(dformat=dformat,mon=mon,sf=sf))
   }
@@ -125,7 +135,7 @@ g.inspectfile = function(datafile) {
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   monnames = c("genea","geneactive","actigraph","axivity") #monitor names
-  fornames = c("bin","csv","wav") #monitor names
+  fornames = c("bin","csv","wav","cwa") #monitor names
   if (length(filename) == 0) {
     print("no files to analyse")
   }
@@ -146,7 +156,7 @@ g.inspectfile = function(datafile) {
     } else if (mon == 3) { #geneactive
       H = read.csv(datafile,nrow=9,skip=0)
     }
-    
+   
   } else if (dformat == 3) { #wav data
     header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="UTF-8"))
     if (length(header) == 0) {
@@ -180,7 +190,13 @@ g.inspectfile = function(datafile) {
       H = as.data.frame(t(H))
     }
     names(H) = c("hnames","hvalues")
+  } else if (dformat == 4) { #cwa data
+    Rcpp::sourceCpp('src/numUnpack.cpp')
+    Rcpp::sourceCpp('src/resample.cpp')
+    PP = g.cwaread(datafile,start = 1, end = 10)
+    H = PP$header
   }
+  
   H = as.matrix(H)
   if (ncol(H) == 1 & dformat == 2) {
     if (mon == 3) {
@@ -202,14 +218,18 @@ g.inspectfile = function(datafile) {
       H = cbind(c(1:length(H)),H)
     }
   }
-  if (mon == 2 & dformat == 1) {
-    varname = rownames(as.matrix(H))
-    H = data.frame(varname = varname,varvalue = as.character(H))
-  } else {    
-    H = data.frame(varname = H[,1],varvalue = H[,2])
+  if (dformat == 4) {
+    header = data.frame(value=H,row.names=rownames(H))
+  } else {
+    if (mon == 2 & dformat == 1) {
+      varname = rownames(as.matrix(H))
+      H = data.frame(varname = varname,varvalue = as.character(H))
+    } else {    
+      H = data.frame(varname = H[,1],varvalue = H[,2])
+    }
   }
   closeAllConnections()
-  header = data.frame(value=H[,2],row.names=H[,1])
+  if (dformat != 4) header = data.frame(value=H[,2],row.names=H[,1])
   monc = mon
   monn = monnames[mon]
   dformc = dformat
