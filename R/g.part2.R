@@ -5,7 +5,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    ilevels = c(0,10), mvpathreshold = c(100),
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
-                   window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London") {
+                   window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
+                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30) {
   # verify whether path1 is a directory or a list of files
   outputfolder = unlist(strsplit(metadatadir,"/output_"))[2]
   outputfolder = paste("/output_",outputfolder,sep="")
@@ -73,7 +74,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                         includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
                         window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
-                        desiredtz=desiredtz)
+                        desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
+                        IVIS_epochsize_seconds = IVIS_epochsize_seconds)
         if (storefolderstructure == TRUE) {
           SUMMARY = SUM$summary
           SUM$summary = SUMMARY

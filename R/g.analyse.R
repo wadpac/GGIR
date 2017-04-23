@@ -2,7 +2,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       includedaycrit = 16,ilevels=c(),winhr=5,idloc=1,snloc=1,
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
-                      dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c()) {
+                      dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
+                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30) {
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -204,10 +205,17 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   fmn = midnightsi[1] * (ws2/ws3)
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
   Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
-  nhr = 24*4 # Number of hours in a day (modify this variable if you want to study different resolutions)
+  if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
+    Xicum =cumsum(Xi)
+    step = IVIS_epochsize_seconds/ws3 # should be 6 when ws3=5 and IVIS_epochsize_seconds = 30
+    select= seq(1,length(Xicum)/step,by=step)
+    Xi = diff(c(0,Xicum[select]))/step
+  }
+  nhr = 24*round(60/IVIS_windowsize_minutes) # Number of hours in a day (modify this variable if you want to study different resolutions)
   Nsecondsinday = 24*3600
-  ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
-  # derive average day with 1 hour resolution:
+  # ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
+  ni = (Nsecondsinday/nhr)/IVIS_epochsize_seconds # number of epochs in an hour
+  # derive average day with 1 'hour' resolution (hour => windowsize):
   N = length(Xi)
   hour = rep(1:ceiling(N/ni),each=ni)
   if (length(hour) > N) hour = hour[1:N]
@@ -675,8 +683,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     if (is.na(summary[(vi+1)]) == TRUE) summary[(vi+1)] = " "
     s_names[vi:(vi+1)] = c("IS_interdailystability","IV_intradailyvariability")
     vi = vi + 2
-    
-    
+    summary[vi] = IVIS_windowsize_minutes
+    if (is.na(summary[vi]) == TRUE) summary[vi] = " "
+    summary[(vi+1)] = IVIS_epochsize_seconds
+    if (is.na(summary[(vi+1)]) == TRUE) summary[(vi+1)] = " "
+    s_names[vi:(vi+1)] = c("IVIS_windowsize_minutes","IVIS_epochsize_seconds")
+    vi = vi + 2
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
     indeces = c()
