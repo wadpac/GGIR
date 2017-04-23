@@ -1,0 +1,42 @@
+\name{g.cwaread}
+\alias{g.cwaread}
+\title{
+(Beta version) function to read .cwa-format files as produced by the accelerometer named 'Axivity'
+}
+\description{
+For reading the wav-format data as collected with the Axivity 
+see function \link{g.wavread}
+}
+\usage{
+g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE, ignorelastblock = TRUE)
+}
+\arguments{
+  \item{fileName}{
+filename (required)
+}
+  \item{start}{
+ start point for reading data, this can either be a timestamp
+ "year-month-day hr:min:sec" or a page number (optional)
+}
+  \item{end}{
+end point for reading data, this can either be a timestamp 
+"year-month-day hr:min:sec" or a page number (optional)
+}
+  \item{progressBar}{
+  Is trigger to switch on/off the text progress bar. If progressBar
+  is TRUE then the function displays the progress bar but it works
+  slightly slower
+}
+\item{ignorelastblock}{
+  Boolean whether to ignore the last block of data, temporary fix to handling the end
+  of a file
+}
+}
+\value{
+ \item{\code{data}}{dataframe with timestamp, raw x, -y, and, -z acceleration values,
+ temperature, battery and light}
+  \item{\code{header}}{file header}
+}
+\author{
+Evgeny Mirkes <em322@leicester.ac.uk>
+}

@@ -71,7 +71,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (filelist == FALSE) {
     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
                    dir(datadir,recursive=TRUE,pattern="[.]bin"),
-                   dir(datadir,recursive=TRUE,pattern="[.]wav"))
+                   dir(datadir,recursive=TRUE,pattern="[.]wav"),
+                   dir(datadir,recursive=TRUE,pattern="[.]cwa"))
   } else {
     fnamesfull = datadir
   }
@@ -124,7 +125,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   filelocationkey = matrix("",length(fnames),3)
   fnames = sort(fnames)
- 
   for (j in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
     if (print.filename == TRUE) {
       print(paste("File name: ",fnames[j],sep=""))
