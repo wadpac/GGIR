@@ -4,8 +4,7 @@
 (Beta version) function to read .cwa-format files as produced by the accelerometer named 'Axivity'
 }
 \description{
-For reading the wav-format data as collected with the Axivity 
-see function \link{g.wavread}
+For reading .cwa-format data, if you have .wav format data then see function \link{g.wavread}
 }
 \usage{
 g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE, ignorelastblock = TRUE)

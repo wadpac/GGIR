@@ -14,7 +14,7 @@ generation accelerometers which stored only processed summary measures.\cr
 \cr
 The package has been developed with and for the accelerometer brands Genea and Geneactive.
 Additionally, it should work for .csv data from Geneactiv, .csv data from
-Actigraph, and .wav format from Axivity. Although, I have tested this less thoroughly
+Actigraph, and .wav and .cwa format from Axivity. Although, I have tested this less thoroughly
 compared with the binary data formats from Genea and Geneactiv.\cr
 Note for Actigraph users: please do not
 export timestamps to the csv-file as this causes memory issues. To cope with the
@@ -87,7 +87,7 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.5\cr
+Version: \tab 1.5-1\cr
 Date: \tab 2017-4-23\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
