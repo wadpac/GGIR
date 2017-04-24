@@ -43,7 +43,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, ignorela
   #
   Rcpp::sourceCpp('src/numUnpack.cpp') # supposed to be outside cwaread, moved here by VvH
   Rcpp::sourceCpp('src/resample.cpp') # supposed to be outside cwaread, moved here by VvH
-  
+
   timestampDecoder = function(coded, fraction, shift) {
     year = struc[[1]]
     if (year == 0) {
@@ -213,7 +213,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, ignorela
           # Read 4 byte for three measurements
           packedData = readBin(fid, integer(), size = 4, n = blockLength)
           # Unpack data
-          
+
           data = numUnpack(packedData)
           # Calculate number of bytes to skip
           temp = 482 - 4 * blockLength
@@ -324,14 +324,14 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, ignorela
     raw = readDataBlock(fid)
     if (is.null(raw))
       break
+    # Save start and length of the previous block
+    prevStart = prevRaw$start
+    prevLength = prevRaw$length
     # Check are previous data block necessary
     if (raw$start<start){
       prevRaw = raw
       next
     }
-    # Save start and length of the previous block
-    prevStart = prevRaw$start
-    prevLength = prevRaw$length
     # Create array of times
     time = seq(prevStart, raw$start, length.out = prevLength + 1)
 
@@ -384,39 +384,35 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, ignorela
     prevLength = prevRaw$length
     # Create array of times
     time = seq(prevStart, prevRaw$start, length.out = prevLength + 1)
-    # Form arrays of raw data
-    rawTime = c(rawTime,time[1:prevLength])
-    rawAccel = rbind(rawAccel, as.matrix(prevRaw$data))
+    # Fragment below was changed by EM 24.04.2017 to unify resampling process.
+    # fill vector rawTime and matrix rawAccel for resampling
+    if (rawPos == 1) {
+      rawAccel[1,] = (prevRaw$data[1,])
+      rawTime[1] = prevStart - 0.00001
+      rawPos = 2
+    }
+    # Define number of rows in prevRaw$data
+    rawLast = prevLength + rawPos - 1
+    rawTime[rawPos:rawLast] = time[1:prevLength]
+    rawAccel[rawPos:rawLast,] = as.matrix(prevRaw$data)
     lastTime = time[prevLength]
 
     ###########################################################################
     # resampling of measurements
-    rPos = 1
-    oldPos = pos
-    rawDataLength = length(rawTime)
-    while (pos <= nr && # We have points without resampled values
-           timeRes[pos] <= lastTime)  # Next point to resample has time less
-      # than last time in raw data
-    {
-      # Shift rPos to state when rawTime[rPos-1]<timeRes[pos]<=rawTime[rPos]
-      while (rPos <= rawDataLength && timeRes[pos] > rawTime[rPos])
-        rPos = rPos + 1
-      if (rPos > rawDataLength)
-        break
-      # Now we can calculate resampled value
-      if (timeRes[pos] == rawTime[rPos])
-        accelRes[pos,] = rawAccel[rPos,]
-      else {
-        accelRes[pos,] = (timeRes[pos] - rawTime[rPos - 1]) /
-          (rawTime[rPos] - rawTime[rPos - 1]) *
-          (rawAccel[rPos,] - rawAccel[rPos - 1,]) +
-          rawAccel[rPos - 1,]
-      }
-      # Go to next pos
-      pos = pos + 1
-      if (pos > nr)
-        break
-    }
+    last = pos+200;
+    if (pos+200>nr)
+      last = nr
+    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
+    # put result to specified position
+    last = nrow(tmp) + pos - 1
+    accelRes[pos:last,] = tmp
+    # Fill light, temp and battery
+    light[pos:last] = prevRaw$light
+    temp[pos:last] = prevRaw$temperature
+    battery[pos:last] = prevRaw$battery
+    # Now current become previous
+    prevRaw = raw
+    pos = last +1
   }
   close(fid)
   #===============================================================================
