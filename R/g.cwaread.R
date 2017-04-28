@@ -1,4 +1,4 @@
-g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, ignorelastblock = TRUE) {
+g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
   #========================================================================
   # fileName is namer of cwa file to read
@@ -377,7 +377,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, ignorela
   }
   #############################################################################
   # Process the last block of data if necessary
-  if (pos <= nr & ignorelastblock == FALSE){ #ignorelastblock == FALSE added by VvH on 22-4-2017
+  if (pos <= nr) { # & ignorelastblock == FALSE){ #ignorelastblock == FALSE added by VvH on 22-4-2017
     print("last block of data")
     # Calculate pseudo time for the "next" block
     newTimes = (prevRaw$start - prevStart) / prevLength * prevRaw$length + prevRaw$start
