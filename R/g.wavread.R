@@ -6,13 +6,18 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   B = tuneR::extractWave(S, from = start, to = length(S),xunit = c("samples", "time"))
   S = as.data.frame(S)
   B = as.data.frame(B)
-  
   #-------------------------------------------------------
-  # extract info from header: fileEncoding does not seem to be consistent, so try two variants
-  # header = rownames(read.csv(wavfile,nrow=13,header=TRUE))
-  header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="UTF-8"))
+  # extract info from header: fileEncoding does not seem to be consistent, so try variants
+  header = c()
+  try(expr={header = rownames(read.csv(wavfile,nrow=15,header=TRUE))},silent=TRUE)
   if (length(header) == 0) {
-    header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="latin1"))
+    header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="WINDOWS-1252"))
+  }
+  if (length(header) == 0) {
+    header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="UTF-8"))
+  }
+  if (length(header) == 0) {
+    header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="latin1"))
   }
   P = sapply(as.character(header),function(x) {
     tmp = unlist(strsplit(x,": "))
