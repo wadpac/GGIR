@@ -20,6 +20,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   dformat = I$dformc
   sf = I$sf
   ws=3600
+  P = c()
   if (length(unlist(strsplit(filename,"[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
