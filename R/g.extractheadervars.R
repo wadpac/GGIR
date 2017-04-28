@@ -36,7 +36,10 @@ g.extractheadervars = function(I) {
     BL = "not extracted" #body location
     SX = "not extracted" #gender
     SN = "not extracted" #serial number
-    if (mon == "axivity") SN = hvalues[which(hnames == "uniqueSerialCode")] #serial number			
+    if (mon == "axivity") {
+      seriali = which(hnames == "uniqueSerialCode")
+      if (length(seriali) > 0) SN = hvalues[seriali[1]] #serial number			
+    }
   }
   invisible(list(id=id,iid=iid,HN=HN,BL=BL,SX=SX,SN=SN)) #  wdayname=wdayname,wdaycode=wdaycode,wday=wday,ws3=ws3,ws2=ws2
 }
