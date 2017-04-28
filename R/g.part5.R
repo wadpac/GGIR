@@ -213,7 +213,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           min = tempp$min
           hour = tempp$hour
           nightsi = which(sec == 0 & min == 0 & hour == 0)
-          
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -446,20 +445,25 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   NNIGHTSACC = length(nightsi) #acc
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
+                  
                   FM = which(diff(diur) == -1)
                   if (length(FM) > 0) {
+                    # ignore first and last midnight because we did not do sleep detection on it
                     nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
                   }
                   # now 0.5+6+0.5 midnights and 7 days
-                  for (timewindowi in  timewindow) {
+                for (timewindowi in timewindow) {
                     for (wi in 1:(nrow(summarysleep_tmp2))) { #loop through 7 windows
                       #check that this is a meaningful day
-                      qqq = rep(0,4)
+                      qqq = rep(0,2)
                       # check that it is possible to find both windows in the data for this day
-                      qqq[1] = nightsi[wi]+1
-                      qqq[2] = nightsi[wi+1]
-                      qqq[3] = which(diff(diur) == -1)[wi]+1 #waking time (select based on diurnal marking)
-                      qqq[4] = which(diff(diur) == -1)[wi+1] #wakingtime next day (select based on diurnal marking)
+                      if (timewindowi == "MM") {
+                        qqq[1] = nightsi[wi]+1
+                        qqq[2] = nightsi[wi+1]
+                      } else {
+                        qqq[1] = which(diff(diur) == -1)[wi]+1 #waking time (select based on diurnal marking)
+                        qqq[2] = which(diff(diur) == -1)[wi+1] #wakingtime next day (select based on diurnal marking)
+                      }
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
