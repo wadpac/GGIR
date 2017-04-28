@@ -700,19 +700,29 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa)]) #
-    metashort = data.frame(A = metashort)
+    metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
+    for (ncolms in 2:ncol(metashort)) {
+      metashort[,ncolms] = as.numeric(metashort[,ncolms])
+    }
+    
     if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
     } else if (mon == 2 | (mon == 4 & dformat == 4)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
     }
-    metalong = data.frame(A = metalong)
+    metalong = data.frame(A = metalong,stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
+    for (ncolml in 2:ncol(metalong)) {
+      metalong[,ncolml] = as.numeric(metalong[,ncolml])
+    }
+    
     closeAllConnections()
   } else {
     metalong=metashort=wday=wdayname=windowsizes = c()
   }
+  
+  
   # detach(allmetrics,warn.conflicts = FALSE)
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
   invisible(list(filecorrupt=filecorrupt,filetooshort=filetooshort,
