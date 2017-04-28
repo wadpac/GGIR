@@ -205,6 +205,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   fmn = midnightsi[1] * (ws2/ws3)
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
   Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
+  if (length(Xi) > (IVIS_epochsize_seconds/ws3) & length(Xi) >  (IVIS_windowsize_minutes*60)/ws3) {
   if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
     Xicum =cumsum(Xi)
     step = IVIS_epochsize_seconds/ws3 # should be 6 when ws3=5 and IVIS_epochsize_seconds = 30
@@ -236,6 +237,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
       # print(paste0(InterdailyStability," ",IntradailyVariability))
     }
+  }
+  } else {
+    InterdailyStability = NA
+    IntradailyVariability = NA
   }
   #--------------------------------------------------------------
   # Features per day
