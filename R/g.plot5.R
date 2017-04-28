@@ -1,4 +1,5 @@
-g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f1=c(),overwrite=FALSE) {
+g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f1=c(),overwrite=FALSE,
+                   desiredtz = "Europe/London") {
   if (file.exists(paste(metadatadir,"/results/file summary reports",sep=""))) {
     fnames.fsr = sort(dir(paste(metadatadir,"/results/file summary reports",sep="")))
     ffdone = fnames.fsr #ffdone is now a list of files that have already been processed by g.part5
@@ -188,6 +189,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         #get variables - activity:
         ENMO = as.numeric(as.matrix(M$metashort[,2])) * 1000
         time =  as.character(M$metashort[,1])
+        if (length(unlist(strsplit(time[1],"T"))) > 1) { # ISO timestamp format
+          time = as.character(iso8601chartime2POSIX(time,desiredtz))
+        }
         MODPA = rep(NA,length(ENMO))
         VIGPA = rep(NA,length(ENMO))
         boutdur2 = 10 * (60/ws3) 
@@ -227,6 +231,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         S = sib.cla.sum #SLES$output
         def = unique(S$definition)[1]
         S = S[which(S$definition==def),] # simplify to one definition
+        
         for (j in 1:length(unique(S$night))) { #nights
           tmp = S[which(S$night==j),]
           for (h in 1:nrow(tmp)) { # sleep periods
@@ -238,13 +243,14 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (length(s1) == 0 | is.na(s1) == TRUE) {
               s1 = which(time == paste(as.character(tmp$sib.end.time[h])," 00:00:00",sep=""))[1]
             }
-#                     print(paste("s0 ",s0," ",as.character(tmp$sib.onset.time[h]),sep=""))
-#                         print(paste("s1 ",s1," ",as.character(tmp$sib.end.time[h]),sep=""))
+                    # print(paste("s0 ",s0," ",as.character(tmp$sib.onset.time[h]),sep=""))
+                    #     print(paste("s1 ",s1," ",as.character(tmp$sib.end.time[h]),sep=""))
             if (is.na(s0) == FALSE & is.na(s1) == FALSE) { #new on 18 May 2015
               detection[s0:s1] = 1 #new on 18 May 2015
             } #new on 18 May 2015
           }
         }
+        
         # detect midnights
         sec = unclass(as.POSIXlt(time))$sec
         min = unclass(as.POSIXlt(time))$min
@@ -258,6 +264,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           xaxislabels = c("noon","2pm","4pm","6pm","8pm","10pm","midnight",
                           "2am","4am","6am","8am","10am","noon")
         }
+
         nplots = length(nightsi)+1
         # plot
         npointsperday = (60/ws3)*1440    
@@ -290,6 +297,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           vpa = VIGPA[t0:t1]
           ang = angle[t0:t1]
           d = detection[t0:t1]
+
           minutesvigorous = (length(which(vpa == 1))*5)/60
           minutesmoderate = (length(which(mpa == 1))*5)/60
           minutesMVPA = (length(which(mpa == 1 | vpa == 1))*5)/60
@@ -359,6 +367,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (I$monc == 2) LPd = c(LPd,extension)
           }
           d = d * 143
+          
           if (I$monc == 2) {
             LPd_dark = as.numeric(LPd)
             LPd_light = as.numeric(LPd)
