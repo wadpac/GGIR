@@ -158,12 +158,19 @@ g.inspectfile = function(datafile) {
     }
    
   } else if (dformat == 3) { #wav data
-    header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="UTF-8"))
+    header = c()
+    try(expr={header = rownames(read.csv(datafile,nrow=15,header=TRUE))},silent=TRUE)
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE,fileEncoding="latin1"))
+      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="WINDOWS-1252"))
     }
-    if (length(which(header %in% paste0(1:13,sep="") == TRUE)) == 13) { #
-      header = read.csv(datafile,skipNul=TRUE,nrow=13,skip=1,header=FALSE)
+    if (length(header) == 0) {
+      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="UTF-8"))
+    }
+    if (length(header) == 0) {
+      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="latin1"))
+    }
+    if (length(which(header %in% paste0(1:15,sep="") == TRUE)) == 15) { #
+      header = read.csv(datafile,skipNul=TRUE,nrow=15,skip=1,header=FALSE)
       if (ncol(header) == 2) {
         ii = which(is.na(header[,2]) == FALSE)
         if (length(ii) > 0) header = header[-ii,]
@@ -171,7 +178,7 @@ g.inspectfile = function(datafile) {
       }
     }
     if (length(header) <= 5) {
-      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=13,header=TRUE))
+      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE))
     }
     H = sapply(header,function(x) {
       tmp = as.character(unlist(strsplit(as.character(x),": ")))
