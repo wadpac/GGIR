@@ -21,8 +21,8 @@ export timestamps to the csv-file as this causes memory issues. To cope with the
 absense of timestamps the code will re-caculate timestamps from the sample frequency
 and the start time and date as presented in the file header.\cr
 \cr
-A non-exhaustive overview of publications related to GGIR can be found
-<https://github.com/wadpac/GGIR/wiki/Publication-list>\cr
+A non-exhaustive overview of publications related to GGIR can be found 
+\href{https://github.com/wadpac/GGIR/wiki/Publication-list}{here}\cr
 \cr
 Function \link{g.inspectfile} assessess to which monitor brand the file belongs 
 and extracts the file header; function \link{g.calibrate} helps to investigate
@@ -87,8 +87,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.5-2\cr
-Date: \tab 2017-4-23\cr
+Version: \tab 1.5-3\cr
+Date: \tab 2017-4-29\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
