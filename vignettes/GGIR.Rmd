@@ -1,0 +1,159 @@
+---
+title: "Accelerometer data processing with GGIR"
+author: "Vincent van Hees"
+date: "April 28, 2017"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Accelerometer data processing with GGIR}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+GGIR is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units.
+
+GGIR works with the following accelerometer brands and formats:
+- Genea .bin and .csv
+- GENEActiv .bin and .csv
+- ActiGraph .csv
+- Axivity .wav and .cwa
+
+Note for Actigraph users:
+In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absense of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
+
+## 1 Quick start guide:
+
+I assume you have R installed on your machine.
+
+### 1.1 Shell function
+
+Copy paste the following code in an R script. It is a shell functions that will allow you to have all your decisions in one place without having to worry about separate scripts and configurations.
+
+```R
+library(GGIR)
+g.shell.GGIR(#=======================================
+             # INPUT NEEDED:
+             mode=c(1,2,3,4,5),
+             datadir="C:/mystudy/mydata",
+             outputdir="D:/myresults",
+             #-------------------------------
+             # Part 1:
+             #-------------------------------
+             # Key functions: reading file, auto-calibration, and extracting features
+             do.enmo = TRUE,             do.anglez=TRUE,
+             chunksize=1,                printsummary=TRUE,
+             #-------------------------------
+             # Part 2:
+             #-------------------------------
+             strategy = 2,               ndayswindow=7,
+             hrs.del.start = 0,          hrs.del.end = 0,
+             maxdur = 9,                 includedaycrit = 16,
+             winhr = c(5,10),
+             qlevels = c(c(1380/1440),c(1410/1440)),
+             qwindow=c(0,24), 
+             ilevels = c(seq(0,400,by=50),8000), 
+             mvpathreshold =c(100,120),
+             bout.metric = 4,
+             closedbout=FALSE,
+             #-------------------------------
+             # Part 3:
+             #-------------------------------
+             # Key functions: Sleep detection
+             timethreshold= c(5),        anglethreshold=5,
+             ignorenonwear = TRUE,
+             #-------------------------------
+             # Part 4:
+             #-------------------------------
+             # Key functions: Integrating sleep log (if available) with sleep detection
+             # storing day and person specific summaries of sleep
+             excludefirstlast = TRUE,
+             includenightcrit = 16,
+             def.noc.sleep = c(),
+             loglocation= "C:/mydata/sleeplog.csv",
+             outliers.only = TRUE,
+             criterror = 4,
+             relyonsleeplog = FALSE,
+             sleeplogidnum = TRUE, 
+             colid=1, 
+             coln1=2, 
+             do.visual = TRUE,
+             nnights = 9, 
+             #-------------------------------
+             # Part 5:
+             # Key functions: Merging physical activity with sleep analyses
+             #-------------------------------
+             threshold.lig = c(30), threshold.mod = c(100),  threshold.vig = c(400),
+             boutcriter = 0.8,      boutcriter.in = 0.9,     boutcriter.lig = 0.8,
+             boutcriter.mvpa = 0.8, boutdur.in = c(1,10,30), boutdur.lig = c(1,10), 
+             boutdur.mvpa = c(1),   timewindow = c("WW"),
+             #-----------------------------------
+             # Report generation
+             #-------------------------------
+             # Key functions: Generating reports based on meta-data
+             do.report=c(2,4,5), 
+             visualreport=TRUE,     dofirstpage = TRUE, 
+             viewingwindow=1) 
+```
+### 1.2	Tailoring the function arguments to your needs
+The function arguments need to be tailored to your experimental protocol. There are many function arguments you can specify which are explained in the package tutorial. GGIR is structured in 5 parts and the arguments to g.shell.GGIR can be structured accordingly:
+
+- Part 1: Loads the data and stores derived features (aggregations) needed for the other parts
+- Part 2: Data quality analyses and low level description of signal features per day and per file
+- Part 3: Estimation of sustained inactivity and sleep periods
+- Part 4: Derives sleep characteristics per night and per file
+- Part 5: Derives sleep and physical activity characteristics by re-using information derived in part 2, 3 and 4
+
+By looking up the corresponding functions g.part1 untill g.part5 you can see what arguments are possible. All of these arguments are also accepted by
+the shell function g.shell.GGIR.
+
+Below I have highlighted a few of the key arguments you may want to be aware of:
+
+#### do.cal
+Performs the autocalibration to investigate calibration error based on free-living data and proposes correction factors
+
+#### datadir
+GGIR only needs to know where your data is. It will detect automatically from what accelerometer brand the data comes from
+and in what data format the information is stored
+
+#### strategy
+Allows you to give GGIR your knowledge about the study design:
+  - strategy = 1: Exclude 'hrs.del.start' number of hours at the beginning and 'hrs.del.end' number of hours at the end of the measurement and never allow for more than 'maxdur' number of hours. These three parameters are set by their respective function arguments.
+  - strategy = 2 makes that only the data between the first midnight and the last midnight is used for imputation.
+  - strategy = 3 only selects the most active X days in the files. X is specified by argument 'ndayswindow'
+
+#### do.imp
+GGIR detects when the accelerometer is not work. Argument 'do.imp' indicates whether you want those missing periods to be
+imputed by measurements from similar timepoints at different days of the measurment
+
+
+#### loglocation
+If you applied a sleeplog in your experiments then this can be used by GGIR to improve the sleep estimations. Argument
+'loglocation' is the location of the spreadsheet (csv) with sleep log information. The spreadsheet needs to have the following structure: one column for participant id, and then followed by alternatingly one column for onset time and one column for waking
+time (see example below). There can be multiple sleeplogs in the same spreadsheet. The first raw of the spreadsheet needs to be filled with column names, it does not matter what these column names are. Timestamps are to be stored without date as in hh:mm:ss. If onset corresponds to lights out or intention to fall asleep, then it is the end-users responsibility to account for this in the interpretation of the results.
+
+```{r, out.width = "700px",echo=FALSE}
+knitr::include_graphics("sleeplogexample.jpg")
+```
+
+## 2 Output:
+-	csv-spreadsheets with all the variables you need for physical activity, sleep and circadian rhythm research
+-	Pdfs with on each page a low resolution plot of the data per file and quality indicators
+- R objects with milestone data
+-	Pdfs with a visual summary of the physical activity and sleep patterns as identified (see example below)
+
+```{r, out.width = "700px",echo=FALSE}
+knitr::include_graphics("reportexample.jpg")
+```
+
+## 3 Publications:
+
+A non-exhaustive overview of publications by others related to GGIR can be found
+[here](https://github.com/wadpac/GGIR/wiki/Publication-list)
+
+The three key publications underlying the development of GGIR are: (1) van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013. (2) van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. (3) van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015
+
+## 4 Citing GGIR:
+You can thank me for sharing the code in this package and for developing it as a generic purpose tool by citing the package name and by citing the supporting publications in your own publications.
