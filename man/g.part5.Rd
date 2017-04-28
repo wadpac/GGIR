@@ -159,13 +159,34 @@ M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4)
 This function writes all its output to an RData file
 The value \code{output} is a dataframe and comes with a large range of variables
 which hopefully are sufficiently intuitive or are already explained elsewhere in the
-package tutorial.\cr
+package tutorial. When g.part5 is called from \link{g.shell.GGIR} with argument 
+do.report = 5 then the output of g.part5 is conventiently stored in a csv spreadsheet.
+Therefore, you may not want/need to work with part5 directly.
 \cr
-Explaination of general terminology:\cr
+\cr
+Explaination of general terminology in the output of g.part5:\cr
 \cr
 \itemize{
+\item acc_onset = onset of sleep according to accelerometer (+ diary) method expressed
+in hours since the midnight in the night preceding the night of interest, e.g. 26 is 2am.
+\item acc_wake = waking up time according to accelerometer (+ diary) method expressed
+in hours since the midnight in the night preceding the night of interest, e.g. 38 is 8am
+\item acc_onset_ts = onset of sleep according to accelerometer (+ diary) method expressed
+as a timestamp hours:minutes:seconds
+\item daysleep, if 0 then the person woke up before noon, if 1 then the person woke
+up after noon
+\item cleaningcode, 0: no problem; 1: sleeplog not available, 2: not enough valid
+accelerometer data, 3: no accelerometer data available, 4: there were no nights
+to be analysed for this person
+\item window_length_in_hours, this relates to the definition of a day either from 
+waking up till waking up the next day or from midnight to midnight
 \item dur = duration
 \item acc = (average) acceleration
+\item nightwak = night waking
+\item SIB=sustained inactivity bouts, are the periods of time during which the 
+accelerometer does not rotate at all for at least 5 or 10 minutes. This could be
+daytime sleep or the monitor not being worn for a very short period of time.
+\item OIN = other inactivity
 \item Nblock = number of blocks
 \item D10 = bout lengths with 10 minutes and longer
 \item T120 = threshold of 120 mg and higher
@@ -179,9 +200,6 @@ least 10 minutes
 \item WW in filename refers to analyses based on the timewindow from waking
 to waking up
 \item MM in filename refers to analyses done on windows between midnight and midnight
-\item SIB=sustained inactivity bouts, are the periods of time during which the 
-accelerometer does not rotate at all for at least 5 or 10 minutes. This could be
-daytime sleep or the monitor not being worn for a very short period of time.
 \item INB are bouts of time during which acceleration is below an acceleration
 threshold for at least X percent of the time.
 \item If boutdur.mvpa holds two bout duration thresholds like 1 and 10 minutes when
@@ -200,39 +218,32 @@ they contributed or not to inactivity bouts (INB).
 \item TOIN = Total other inactivity
 \item TIN = Total inactivity = TOIN + SIB = Total other inactivty + Sustained
 inactivity
-}
-In summary, g.part5 works with following levels of behaviour 
-from least active to most active:\cr
-\cr
-\itemize{
-\item Sleep or SIB
-\item Other inactivity
-\item Light
-\item Moderate
-\item Vigorous
-}
-
-Additionally they a grouped in:\cr
-\cr
-\itemize{
-\item MVPA bouts (Moderate or Vigorous)
-\item Light bouts (just light)
-\item Inactivity bouts (Other inactivity or SIB)
-\item And the non-bouted time spent in each of the five categories
-\item And also as the total of each category: TSIB, TOIN, TLIG, TMOD, TVIG
-}
-Other variabels:\cr
-\cr
-\itemize{
+\item Levels of behaviour from least active to most active are: Sleep or SIB,
+Other inactivity, Light, Moderate, Vigorous
+\item Additionally they a grouped in: MVPA bouts (Moderate or Vigorous),
+Light bouts (just light), Inactivity bouts (Other inactivity or SIB),
+And the non-bouted time spent in each of the five categories, And 
+also as the total of each category: TSIB, TOIN, TLIG, TMOD, TVIG
 \item dur_day_min_pla, dur_night_min_pla, and dur_nightandday_min_pla: duration of
 a day and night time
 }
-Final note:\cr
+Example variable explanations: dur_day_OIN30_min is the time spent in 
+minutes in other inactiivty during the day with a threshold of
+30 mg not part of inactivity bouts, dur_day_MOD100_400_min is the time spent
+in moderate activity defined between 100 and 400mg but not part of an MVPA bout,
+dur_MVPA_D1T100_min is time spent in MVPA bouts defined as 100 mg or higher
+and lasting at least 1 minute and with no upper boundary if there is
+no other variable that starts with dur_MVPA_D,
+the existence of dur_INB_D10T30_min and dur_INB_D30T30_min indicates that
+dur_INB_D10T30_min corresponds to inactivity bouts lasting between 10 and 30
+minutes and are defined by the threshold 30mg.\cr
 \cr
 Motivation for default bout criteria for inactivity 0.9: Ssomewhat arbitrary 
 decision, but the idea is that if you allow for bouts of 30 minutes it would
 not make sense to allow for breaks of 20 percent (6 minutes!) this is why I
-used a more stringent criteria for the highest category
+used a more stringent criteria for the highest category. Please note that
+you can change these criteria via arguments boutcriter.mvpa, boutcriter.in,
+and boutcriter.lig
 }
 \examples{
 \dontrun{
