@@ -130,15 +130,22 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     P = c()
     cat(paste("\nLoading block: ",i,sep=""))
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
-    accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
-                            selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                            dayborder=dayborder)
-    P = accread$P
-    filequality = accread$filequality
-    filetooshort = filequality$filetooshort
-    filecorrupt = filequality$filecorrupt
-    filedoesnotholdday = filequality$filedoesnotholdday
-    switchoffLD = accread$switchoffLD
+    if (useRDA == FALSE) {
+      accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
+                              selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
+                              dayborder=dayborder)
+      
+      P = accread$P
+      filequality = accread$filequality
+      filetooshort = filequality$filetooshort
+      filecorrupt = filequality$filecorrupt
+      filedoesnotholdday = filequality$filedoesnotholdday
+      switchoffLD = accread$switchoffLD
+    } else {
+      filetooshort = FALSE
+      filecorrupt = FALSE
+      filedoesnotholdday = FALSE
+    }
     options(warn=0) #turn on warnings
     #============
     #process data as read from binary file
@@ -286,6 +293,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           switchoffLD = 1
           LD = 0 #ignore rest of the data and store what has been loaded so far.
         }
+      } else { # if useRDA == TRUE
+        LD = length(Gx)
       }
       # if (useRDA == TRUE) LD = 1
       #store data that could not be used for this block, but will be added to next block
@@ -603,7 +612,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       } #end of section which is skipped when switchoff == 1
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
-      cat("\nstop reading because there is not enough data in this block\n")
+      # cat("\nstop reading because there is not enough data in this block\n")
     }
     if (switchoffLD == 1) {
       LD = 0
