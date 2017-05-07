@@ -82,7 +82,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     }
     #-------------------------------------------------------------------
     # detect midnights
-    detemout = g.detecmidnight(ND,time,desiredtz) # no use common function for midnight detection
+    detemout = g.detecmidnight(time,desiredtz) # ND,
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
