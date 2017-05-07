@@ -36,7 +36,7 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
   #======================================
   # detect first and last midnight and all midnights
   tooshort = 0
-  dmidn = g.detecmidnight(ND,time,desiredtz)
+  dmidn = g.detecmidnight(time,desiredtz) #,ND
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi

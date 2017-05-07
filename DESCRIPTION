@@ -12,6 +12,8 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                   person("Severine","Sabia",role="ctb"))
 Maintainer: Vincent T van Hees <vincentvanhees@gmail.com>
 Description: A tool to process and analyse data collected with wearable raw acceleration sensors. The package has been developed and tested for binary data from GENEActiv and GENEA devices, .csv-export data from  Actigraph devices, and .cwa and .wav-format data from Axivity. These devices are currently widely used in research on human daily physical activity.
+URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/RpackageGGIR
+BugReports: https://github.com/wadpac/GGIR/issues
 License: LGPL (>= 2.0, < 3) | file LICENSE
 Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR, testthat, covr, knitr, rmarkdown
 Imports: data.table, Rcpp (>= 0.12.10)
