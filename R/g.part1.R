@@ -293,7 +293,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         filename = paste0(filename,".RData")
       }
       save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
-      SI = sessionInfo()  
+      SI = sessionInfo()
       save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
       rm(M); rm(I); rm(C)
     } else {
