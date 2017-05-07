@@ -273,6 +273,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       ndays = ceiling(ndays)
       if (ndays > 2) ndays = 2 # this is now hardcoded to be a maximum of two days
       nwindows = 1440 / window.summary.size # now defining it as X windows per 24
+      windowL = 24/nwindows # now defined up hear, because window length should be a constant
       windowsummary = matrix("",(ndays*nwindows),(ncol(metashort)*7)+5)
       ws_names = rep("",ncol(windowsummary))
       # Features per day (based on on single variables)
@@ -363,10 +364,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       if (length(selectdaysfile) > 0) {
         #---------------------------
         # Description per timewindow for millenium cohort:
+        
         for (metrici in  2:ncol(vari)) {
           Nfeatures = 7
           nhrs = (nrow(vari)/(3600/ws3))
-          windowL = 24/nwindows
           if (ceiling(nhrs/windowL) < nwindows) nwindows = ceiling(nhrs/windowL)
           for (gik in 1: nwindows) {
             bbb1 = (windowL * (3600/ws3) * (gik-1)) +1
