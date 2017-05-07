@@ -143,6 +143,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
       rm(M); rm(I)
     }
   }
-  SI = sessionInfo()  
+  SI = sessionInfo()
   save(SI,file=paste(path1,outputfolder,"/results/QC/sessioninfo_part2.RData",sep=""))
 }
