@@ -276,7 +276,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (N.files.ms5.out < f0) f0 = 1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
-    g.part5.report(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
+    g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit)
   }
   if (visualreport == TRUE) {

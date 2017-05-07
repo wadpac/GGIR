@@ -1,11 +1,10 @@
 g.create.sp.mat = function(nsp,spo,sleepdet.t,daysleep=FALSE) {
-  
+  # function to convert data into sleep period matrix part of g.part4.R  
   if (daysleep == FALSE) {
     th2 = 12
   } else {
     th2 = 18
   }  
-  #genspm is a function to convert data into sleep period matrix part of g.part4.R
   weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   for (sp in 1:nsp) {
     spo[sp,1] = sp

@@ -221,7 +221,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   } else if (mon == 4 & dformat == 4) { # axivity cwa
     # Rcpp::sourceCpp('src/numUnpack.cpp')
     # Rcpp::sourceCpp('src/resample.cpp')
-    try(expr={P = GGIR::g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)),
+    try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)),
                             end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
     
     if (length(P) > 1) {
