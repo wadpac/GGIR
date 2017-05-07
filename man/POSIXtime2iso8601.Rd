@@ -22,9 +22,11 @@ Vector of timestamps in POSIX format
 }
   
 \examples{
+\dontrun{
 x ="2017-05-07 13:15:17 CEST"
 tz = "Europe/Amsterdam"
 x_converted = POSIXtime2iso8601(x,tz)
+}
 }
 \author{
 Vincent T van Hees <vincentvanhees@gmail.com>
