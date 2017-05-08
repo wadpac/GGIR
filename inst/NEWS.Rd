@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-5 (release date:9-5-2017)}{
+\itemize{
+  \item Vignette expanded
+  \item Bugs fixes in relation to new cwa-read functionality c++ routine registration
+  \item Documentation added for all underlying functions
+}
+}
+
 \section{Changes in version 1.5-3 (release date:29-4-2017)}{
 \itemize{
   \item Vignette added
