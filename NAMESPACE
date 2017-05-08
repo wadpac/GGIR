@@ -3,7 +3,7 @@ export(g.analyse,g.calibrate,g.getmeta,g.impute,g.inspectfile,g.binread,g.plot,
        chartime2iso8601,g.abr.day.names,g.applymetrics,g.createcoordinates,g.create.sp.mat,
         g.detecmidnight,g.dotorcomma,g.downsample,getFirstTimestamp, getStartEndNumeric,
         getStartEnd, g.extractheadervars,g.getidfromheaderobject,g.getM5L5,
-        g.getstarttime,GGIR_numUnpack,GGIR_resample,g.loadlog,g.metric,g.plot5,
+        g.getstarttime,g.loadlog,g.metric,g.plot5,
         g.readaccfile,g.report.part2,g.report.part4,g.report.part5,g.sib.det,
         g.sib.plot,g.wavread,g.weardec,isfilelist,iso8601chartime2POSIX,
         numUnpack,POSIXtime2iso8601,resample)
@@ -17,5 +17,5 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean")
 import(data.table)
 importFrom("stats", "aggregate")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
-useDynLib(GGIR, .registration=TRUE)
+useDynLib(GGIR, .registration=TRUE,.fixes = "C_")
 importFrom(Rcpp, evalCpp)
