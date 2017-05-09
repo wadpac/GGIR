@@ -190,7 +190,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                                  colnames(outputfinal2) == "TRMi" | colnames(outputfinal2) == "TRVi" |
                                  colnames(outputfinal2) == "acc_def")
                 outputfinal2 = outputfinal2[,-delcol]
-                #-------------------------------------------------------------
+                                #-------------------------------------------------------------
                 # store all summaries in csv files
                 write.csv(outputfinal2[seluwi,],paste(metadatadir,"/results/part5_daysummary_",
                                                       uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",uacc_def[h4],".csv",sep=""),row.names=FALSE)
