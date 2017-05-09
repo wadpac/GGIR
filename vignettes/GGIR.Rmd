@@ -17,13 +17,23 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-GGIR is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units.
+# Introduction
 
-The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics.
+## What is GGIR?
 
-_I started assembling this vignette in May 2017 and not all sections may be optimal yet, if you have feedback please get in touch_
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ in raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics.
 
+## Who has been using GGIR?
 
+GGIR is increasingly being used by a number of research groups acros the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list).
+
+A non-exhaustive list of academic institutes that have been using GGIR:
+
+**United Kingdom:** University College London, Exeter University, Newcastle University, Edge Hill University, University of Cambridge, University of Chester, Edinburgh Napier University, University of Birmingham, Liverpool John Moores University | **United States:** University College San Diego, Iowa State University, University of Southern California, University of Michican, West Virginia University, Arizona State University, University of Utah, National Institute of Health | **The Netherlands:** Erasmus Medical Centre Rotterdam, VU University Medical Centre, Leiden University Medical Centre | **France:** French Institute for Health and Medical Research, Institute of Myology, University  of Dijon, University of Montpellier | **Brazil:** Federal University of Pelotas | **Australia:** Newcastle University, Australian Catholic University, University of Sydney, Queensland University of Technology, University of Western Australia | **Spain:** University of Granada | **Norway:** University of Oslo | **Sweden:** University of Lund | **Switszerland:** Centre Hospitalier Universitaire Vaudois | **Germany:** Technische Universität Dresden, Technical University Munich
+
+## How can I contribute to the GGIR development?
+
+The development version of GGIR can be found on [github](https://github.com/wadpac/GGIR), which is also where you will find guidance on how to contribute to the package development.
 
 # Setting up your work environment
 
@@ -48,9 +58,8 @@ In ActiLife you have the option to export data with timestamps. Please do not do
     - [Axivity](http://axivity.com/) .wav and .cwa
     - Genea (not available anymore) .bin and .csv
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
-3. GENEActiv or GENEA data should be in raw .bin format. ActiGraph data should be in raw csv format. Convert the raw.gt3x files to raw .csv files in ActiLife, but do not export the timestamps to the csv file as this causes memory issues. To cope with the absence of timestamps the code will re-calculate timestamps from the sample frequency and the start time and date as presented in the file header. Axivity data should be in .cwa (in beta version at the moment) or .wav format.
-4. Give the folder an appropriate name, e.g. studyname_data
-5.	Create a folder where the output will be stored. This should also be on the external hard drive. Give the folder an appropriate name, e.g. studyname_output
+3. Give the folder an appropriate name, e.g. studyname_data
+4.	Create a folder where the output will be stored. This should also be on the external hard drive. Give the folder an appropriate name, e.g. studyname_output
 
 ## GGIR shell function
 
@@ -203,10 +212,10 @@ if(length(args) > 0) {
     eval(parse(text = args[[i]]))
   }
 }
-g.shell.GGIR(...)
+g.shell.GGIR(f0=f0,f1=f1,...)
 ```
 
-You will need to copy paste the g.shell.GGIR function call to the  `myshellscript.R`.
+You will need to update the ... in the last line with the arguments you used for g.shell.GGIR. Note that `f0=f0,f1=f1` is essential for this to work. The values of `f0` and `f1` are passed from the bash script.
 
 Once this is all setup you will need to call `bash submit.sh`
 from the command line.
@@ -236,7 +245,7 @@ Part 2 generates:
 ### Dictionary of variables in part2_summary.csv
 
 Variable   |   Description
------------------------- | ---------------------------------------------
+------------------------ | ------------------------------------------------------
 ID | Participant id
 device_sn | Device serial number
 bodylocation | Body location extracted from file header
@@ -318,6 +327,16 @@ The output of part 5 is dependent on the parameter configuration, it will genera
 
 In this chapter I will try to collect motivations and clarification behind GGIR which may not have been clear from the existing publications
 
+## Reproducibilty of GGIR analyses
+
+Some tips to increase reproducibility of your findings:
+
+1. When you publish your findings please remember to add the GGIR package version number. All of GGIR are archived by CRAN and available from the archive section on the package [website](https://CRAN.R-project.org/package=GGIR), so this will enable others to reproduce your analyses. GGIR has evolved over the years. To get a better understanding of how versions differ you should check the NEWS sections from the package [website](https://CRAN.R-project.org/package=GGIR).
+2. Keep a copy of your scripts with the functions calls
+3. Keep a copy of your milestone data
+4. Try to be explicit in referring to variable names
+
+
 ## Auto-calibration
 
 An acceleration sensor works on the principle that acceleration is captured mechanically and converted into an electrical signal. The relationship between the electrical signal and the acceleration is usually assumed to be linear, involving an offset and a gain factor. We shall refer to the establishment of the offset and gain factor as the sensor calibration procedure. Accelerometers are usually calibrated as part of the manufacturing process under non-movement conditions using the local gravitational acceleration as a reference. The manufacturer calibration can later be evaluated by holding each sensor axis parallel (up and down) or perpendicular to the direction of gravity; readings for each axis should be ±1 and 0 g, respectively. However, this procedure can be cumbersome in studies with a high throughput. Furthermore, such a calibration check will not be possible for data that have been collected in the past and for which the corresponding accelerometer device does not exist anymore. Techniques have been proposed that can check and correct for calibration error based on the collected triaxial accelerometer data in the participant's daily life without additional experiments, referred to as autocalibration. The general principle of these techniques is that a recording of acceleration is screened for nonmovement periods. Next, the moving average over the nonmovement periods is taken from each of the three orthogonal sensor axes and used to generate a three-dimensional ellipsoid representation that should ideally be a sphere with radius 1 g. Here, deviations between the radius of the three-dimensional ellipsoid and 1 g (ideal calibration) can then be used to derive correction factors for sensor axis-specific calibration error. This auto-calibration performed by GGIR uses this technique and a more detailed description and demonstration can be found in the published paper.
@@ -389,20 +408,31 @@ In most studies I have been involved in we used metric ENMO (Euclidean Norm Minu
 3.	Attempt to quantify the actual biomechanical acceleration in universal units. I prefer to avoid using abstract index for movement quantification
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN (which is essentially the same as the MAD metric recently used in literature). The few studies I am aware of who contested this, did not use auto-calibration by which ENMO was evalauted under unrealistic conditions. Metric ENMO depends by design on well calibrated acceleration signals, while metrics like HFEN and MAD are not affected by calibration offset.
 
+## What does GGIR stand for?
+
+I wanted a short name and not to spend too much time finding it. At the time when I created GGIR I was working with GENEActiv and GENEA data In R, and that's how the name GGIR was born.
 
 # Other Resources
 
-- The [GGIR package manual](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf) provides documentation on individual functions.
+- The [GGIR package manual](https://CRAN.R-project.org/package=GGIR) provides documentation on individual functions.
 - For general questions about how to use GGIR join our [google group/mailing list](https://groups.google.com/forum/#!forum/rpackageggir).
 - For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
-- A non-exhaustive overview of publications by others related to GGIR can be found
-[here](https://github.com/wadpac/GGIR/wiki/Publication-list)
-
-The three key publications underlying the development of GGIR are:
-
-1. van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013. [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
-2. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](http://jap.physiology.org/cgi/pmidlookup?view=long&pmid=25103964)
-3. van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015 [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533)
 
 # Citing GGIR
-Cite GGIR in publicationsa as R package GGIR version x.x-x. Additionally, I would appreciate if you could also cite the above papers.
+Cite GGIR in publicationsa as R package GGIR version x.x-x. Additionally, please also cite:
+
+If you look at **physical activity:**
+
+1. van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013. [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+2. Sabia S, van Hees VT, Shipley MJ, Trenell MI, Hagger-Johnson G, Elbaz A, Kivimaki M, Singh-Manoux A.
+Association between questionnaire- and accelerometer-assessed physical activity: the role of sociodemographic factors. Am J Epidemiol. 2014 Mar 15;179(6):781-90. doi: 10.1093/aje/kwt330. Epub 2014 Feb 4.
+PMID: 24500862 [link](https://www.ncbi.nlm.nih.gov/pubmed/24500862)
+
+If you used the **auto-calibration functionality:**
+
+3. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](http://jap.physiology.org/cgi/pmidlookup?view=long&pmid=25103964)
+
+If you used the **sleep detection:**
+
+4. van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015 [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533)
+
