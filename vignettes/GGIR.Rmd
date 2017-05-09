@@ -2,7 +2,11 @@
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
 date: "May 8 2017"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc : true
+    number_sections: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{Accelerometer data processing with GGIR}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,39 +19,44 @@ knitr::opts_chunk$set(echo = TRUE)
 
 GGIR is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units.
 
-The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of the average magnitude of dynamic acceleration (Euclidean Norm Minus One, ENMO). A range of outcome variables to describe the activity profile, light intensity physical activity, moderate-to-vigorous physical activity (MVPA) and sleep (van Hees et al., 2015) are also calculated. The autocalibration is an important step as the ENMO statistic is vulnerable to calibration error due to the inherent assumption that gravity is measured as 1 g (van Hees et al., 2014). 
+The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics.
 
-## 1 Setting up your work environment
+_I started assembling this vignette in May 2017 and not all sections may be optimal yet, if you have feedback please get in touch_
 
-### 1.1  Install R and RStudio
+
+
+# Setting up your work environment
+
+## Install R and RStudio
 
 [Download and install R](https://cran.r-project.org/)
 
 [Download and install RStudio](https://www.rstudio.com/products/rstudio/download2/)
 
 Download GGIR with its dependencies, you can do this with one command from the console command line:
-```R
+
+```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
 ```
 
-### 1.2  Prepare folder structure
+## Prepare folder structure
 
 1. GGIR works with the following accelerometer brands and formats:
-  - Genea .bin and .csv
-  - GENEActiv .bin and .csv
-  - ActiGraph .csv. Note for Actigraph users:
+    - [GENEActiv](https://www.geneactiv.org/) .bin and .csv
+    - [ActiGraph](http://actigraphcorp.com/) .csv. Note for Actigraph users:
 In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absense of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
-  - Axivity .wav and .cwa
-2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder. 
+    - [Axivity](http://axivity.com/) .wav and .cwa
+    - Genea (not available anymore) .bin and .csv
+2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. GENEActiv or GENEA data should be in raw .bin format. ActiGraph data should be in raw csv format. Convert the raw.gt3x files to raw .csv files in ActiLife, but do not export the timestamps to the csv file as this causes memory issues. To cope with the absence of timestamps the code will re-calculate timestamps from the sample frequency and the start time and date as presented in the file header. Axivity data should be in .cwa (in beta version at the moment) or .wav format.
 4. Give the folder an appropriate name, e.g. studyname_data
 5.	Create a folder where the output will be stored. This should also be on the external hard drive. Give the folder an appropriate name, e.g. studyname_output
 
-### 1.3 GGIR shell function
+## GGIR shell function
 
 Copy paste the following code in a new R script (file ending with .R). It is a shell functions that will allow you to have all your decisions in one place without having to worry about separate scripts and configurations.
 
-```R
+```{R,eval=FALSE}
 library(GGIR)
 g.shell.GGIR(#=======================================
              # INPUT NEEDED:
@@ -68,8 +77,8 @@ g.shell.GGIR(#=======================================
              maxdur = 9,                 includedaycrit = 16,
              winhr = c(5,10),
              qlevels = c(c(1380/1440),c(1410/1440)),
-             qwindow=c(0,24), 
-             ilevels = c(seq(0,400,by=50),8000), 
+             qwindow=c(0,24),
+             ilevels = c(seq(0,400,by=50),8000),
              mvpathreshold =c(100,120),
              bout.metric = 4,
              closedbout=FALSE,
@@ -91,32 +100,33 @@ g.shell.GGIR(#=======================================
              outliers.only = TRUE,
              criterror = 4,
              relyonsleeplog = FALSE,
-             sleeplogidnum = TRUE, 
-             colid=1, 
-             coln1=2, 
+             sleeplogidnum = TRUE,
+             colid=1,
+             coln1=2,
              do.visual = TRUE,
-             nnights = 9, 
+             nnights = 9,
              #-------------------------------
              # Part 5:
              # Key functions: Merging physical activity with sleep analyses
              #-------------------------------
              threshold.lig = c(30), threshold.mod = c(100),  threshold.vig = c(400),
              boutcriter = 0.8,      boutcriter.in = 0.9,     boutcriter.lig = 0.8,
-             boutcriter.mvpa = 0.8, boutdur.in = c(1,10,30), boutdur.lig = c(1,10), 
+             boutcriter.mvpa = 0.8, boutdur.in = c(1,10,30), boutdur.lig = c(1,10),
              boutdur.mvpa = c(1),   timewindow = c("WW"),
              #-----------------------------------
              # Report generation
              #-------------------------------
              # Key functions: Generating reports based on meta-data
-             do.report=c(2,4,5), 
-             visualreport=TRUE,     dofirstpage = TRUE, 
-             viewingwindow=1) 
+             do.report=c(2,4,5),
+             visualreport=TRUE,     dofirstpage = TRUE,
+             viewingwindow=1)
 ```
-## 2 Configuring the GGIR shell function
+
+## Updating the GGIR shell input arguments
 
 The function arguments need to be tailored to your experimental protocol. There are many function arguments you can specify which are explained in the package tutorial. GGIR is structured in 5 parts and the arguments to g.shell.GGIR can be structured accordingly:
 
-- Part 1: Loads the data and stores derived features (aggregations) needed for the other parts. This is the time consuming part. Once this is done, parts 2-5 can be run (or re-run with different parameters in parts 2-5) relatively quickly. 
+- Part 1: Loads the data and stores derived features (aggregations) needed for the other parts. This is the time consuming part. Once this is done, parts 2-5 can be run (or re-run with different parameters in parts 2-5) relatively quickly.
 - Part 2: Data quality analyses and low level description of signal features per day and per file. At this point a day is defined from midnight to midnight
 - Part 3: Estimation of sustained inactivity and sleep periods, needed for input to Part 4 for sleep detection
 - Part 4: o	Labels the sustained inactive periods detected in Part 3 as sleep, or daytime sustained inactivity, per night and per file
@@ -126,24 +136,24 @@ By looking up the corresponding functions g.part1, g.part2, g.part3, g.part4, an
 
 Below I have highlighted a few of the key arguments you may want to be aware of:
 
-#### 2.5.1 do.cal
+### do.cal
 Performs the autocalibration to investigate calibration error based on free-living data and proposes correction factors
 
-#### 2.5.2 datadir
+### datadir
 GGIR only needs to know where your data is. It will detect automatically from what accelerometer brand the data comes from
 and in what data format the information is stored
 
-#### 2.5.3 strategy
+### strategy
 Allows you to give GGIR your knowledge about the study design:
   - strategy = 1: Exclude 'hrs.del.start' number of hours at the beginning and 'hrs.del.end' number of hours at the end of the measurement and never allow for more than 'maxdur' number of hours. These three parameters are set by their respective function arguments.
   - strategy = 2 makes that only the data between the first midnight and the last midnight is used for imputation.
   - strategy = 3 only selects the most active X days in the files. X is specified by argument 'ndayswindow'
 
-#### 2.5.4 do.imp
+### do.imp
 GGIR detects when the accelerometer is not work. Argument 'do.imp' indicates whether you want those missing periods to be
 imputed by measurements from similar timepoints at different days of the measurment
 
-#### 2.5.5 loglocation
+### loglocation
 If you applied a sleeplog in your experiments then this can be used by GGIR to improve the sleep estimations. Argument
 'loglocation' is the location of the spreadsheet (csv) with sleep log information. The spreadsheet needs to have the following structure: one column for participant id, and then followed by alternatingly one column for onset time and one column for waking
 time (see example below). There can be multiple sleeplogs in the same spreadsheet. The first raw of the spreadsheet needs to be filled with column names, it does not matter what these column names are. Timestamps are to be stored without date as in hh:mm:ss. If onset corresponds to lights out or intention to fall asleep, then it is the end-users responsibility to account for this in the interpretation of the results.
@@ -152,7 +162,59 @@ time (see example below). There can be multiple sleeplogs in the same spreadshee
 knitr::include_graphics("sleeplogexample.jpg")
 ```
 
-## 3 Output
+
+# Time for action: How to run your analysis?
+
+## From the console
+
+You can use ```source("pathtoscript/myshellscript.R")``` or use the Source button in RStudio if you use RStudio.
+
+## In a cluster
+
+It is possible to run GGIR on a computing cluster to processing multiple files in parallel is possible. The way I did it is as follows, please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specilist to tailor this to your situation. I have three files:
+
+**submit.sh**
+
+```{bash,eval=FALSE}
+for i in {1..707}; do
+    n=1
+    s=$(($(($n * $[$i-1]))+1))
+    e=$(($i * $n))
+    qsub /home/nvhv/WORKING_DATA/bashscripts/run-mainscript.sh $s $e
+done
+```
+
+**run-mainscript.sh**
+
+```{bash,eval=FALSE}
+#! /bin/bash
+#$ -cwd -V
+#$ -l h_vmem=12G
+/usr/bin/R --vanilla --args f0=$1 f1=$2 < /home/nvhv/WORKING_DATA/test/myshellscript.R
+```
+
+**myshellscript.R**
+
+```{R,eval=FALSE}
+options(echo=TRUE)
+args = commandArgs(TRUE)
+if(length(args) > 0) {
+  for (i in 1:length(args)) {
+    eval(parse(text = args[[i]]))
+  }
+}
+g.shell.GGIR(...)
+```
+
+You will need to copy paste the g.shell.GGIR function call to the  `myshellscript.R`.
+
+Once this is all setup you will need to call `bash submit.sh`
+from the command line.
+_**Note: Please make sure that you process one GGIR part at the same time on a cluster, because each part assumes that preceding parts have been ran. You can make sure of this by always specifying argument mode to a single part of GGIR. Once the analysis stops update argument mode to the next part until all parts are done.**_
+The speed of the parallel processing is obviously dependent on the capacity of your computing cluster. I have been able to process all 4000 files of the Whitehall II Study in just a couple of hours.
+
+
+# Inspecting the results
 -	csv-spreadsheets with all the variables you need for physical activity, sleep and circadian rhythm research
 -	Pdfs with on each page a low resolution plot of the data per file and quality indicators
 - R objects with milestone data
@@ -162,28 +224,108 @@ knitr::include_graphics("sleeplogexample.jpg")
 knitr::include_graphics("reportexample.jpg")
 ```
 
-### 3.1 Output variables from part 2
+## Output part 2
 
-*To be completed*
+Part 2 generates:
 
-### 3.2 Output variables from part 4
+- part2_summary.csv
+- part2_daysummary.csv
+- QC/data_quality_report.csv
+- QC/plots to check data quality 1.pdf
 
-*To be completed*
+### Dictionary of variables in part2_summary.csv
 
-### 3.3 Output variables from part 5
+Variable   |   Description
+------------------------ | ---------------------------------------------
+ID | Participant id
+device_sn | Device serial number
+bodylocation | Body location extracted from file header
+filename | Name of the data file
+start_time | Start time experiment
+startday |	Day of the week on which measurement started
+samplefreq |	Sample frequency (Hz)
+device | Accelerometer brand, e.g. GENEACtiv
+clipping_score | The Clipping score: Fraction of 15 minute windows per file for which the acceleration in one of the three axis was close to the maximum for at least 80\% of the time. This should be 0.
+Measurement duration (days) |	-
+complete_24hcycle | Completeness score: Fraction of 15 minute windows per 24 hours for which no valid data is available at any day of the measurement.
+meas_dur_def_proto_day | measurement duration according to protocol (days):	Measurement duration (days) minus the hours that are ignored at the beginning and end of the measurement motived by protocol design
+wear_dur_def_proto_day | wear duration duration according to protocol (days): So, if the protocol was seven days of measurement then wearing the accelerometer for 8 days and recording data for 8 days will still makethat the wear duration is 7 days
+calib_err | Calibration error (static estimate)	Estimated based on all ‘non-movement’ periods in the measurement after applying the autocalibration.
+calib_status | Calibration status: Summary statement about the status of the calibration error minimisation
+ENMO | (only available if set to true in part1.R)	ENMO is the main summary measure of acceleration. The value presented is the average ENMO over all the available data normalised per 24 hour cycles, with invalid data imputed by the average at similar timepoints on different days of the week. In addition to ENMO it is possible to extract other acceleration metrics in part1.R (i.e. BFEN, HFEN, HFENplus)	See also [van Hees PLoSONE April 2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691) for a detailed description and comparison of these techniques.
+pX_A_mg_0-24h |	This variable represents the Xth percentile in the distribution of short epoch metric value A of the average day. The average day may not be ideal. Therefore, the code also extracts similar variables per day and then takes the averages over days (see daysummary)
+L5_A_mg_0-24 | Average of metric A during the least active five* hours in the day that is the lowest rolling average value of metric A. (* window size is modifiable in part2.R)
+M5_A_mg_0-24 |  Average of metric A during the most active five* hours in the day that is the lowest rolling average value of metric A. (* window size is modifiable in part2.R)
+L5hr_A_mg_0-24 | Starting time in hours and fractions of hours of L5_A_mg_0-24
+M5hr_A_mg_0-24 | Starting time in hours and fractions of hours of M5_A_mg_0-24
+1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am
+N valid WEdays | Number of valid weekend days
+N valid WKdays | Number of valid week days
+IS_interdailystability | inter daily stability
+IV_intradailyvariability | intra daily variability
+IVIS_windowsize_minutes | Sizes of the windows based on which IV and IS are calculated (note that this is modifiable)
+IVIS_epochsize_seconds | size of the epochs based on which IV and IS are calculated (note that this is modifiable)
+AD_... | All days (plain average of all available days, no weighting). The variable ... was calculated per day and then averaged over all the available days
+WE_... | Weekend days (plain average of all available days, no weighting). The variable ... was calculated per day and then averaged over weekend days only
+WD_... | Week days (plain average of all available days, no weighting). The variable ... was calculated per day and then averaged over week days only
+WWE_... | Weekend days (weighted average)	The variable ... was calculated per day and then averaged over weekend days. Double weekend days are averaged. This is only relevant for experiments that last for more than seven days.
+WWD_... | Week days (weighted average)	The variable ... was calculated per day and then averaged over week days. Double weekend days were averaged. This is only relevant for experiments that last for more than seven days)
+WWD_MVPA_E5S_T100_ENMO | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100
+`WWE_MVPA_E5S_B1M80%_T100_ENMO` | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 based on a bout criteria of 100
+`WE_[100,150)_mg_0-24h_ENMO` | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight) |	A log of decision made in part2.R
+n hours ignored at start of meas (if strategy=1) | number of hours ignored at the start of the measurement (if strategy = 1)	A log of decision made in part2.R
+n hours ignored at end of meas (if strategy=1) | number of hours ignored at the end of the measurement (if strategy = 1).	A log of decision made in part2.R
+n hours ignored at end of meas (if strategy=1) | number of days of measurement after which all data is ignored (if strategy = 1)	A log of decision made in part2.R
+epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R
+pdffilenumb |	Indicator of in which pdf-file the plot was stored
+pdfpagecount |	Indicator of in which pdf-page the plot was stored
 
-*To be completed*
 
-## 4 Motivation and clarification
+### Dictionary of variables in part2_daysummary.csv
 
-### 4.1 Auto-calibration
+Tis is a non-exhaustive list, because most concepts have been explained in summary.csv
+
+Variables	| Description
+------------------------ | ---------------------------------------------
+N valid hours | Number of hours with valid data
+N hours	| Number of hours of measurement
+weekday | Name of weekday
+measurement | Day of measurement	Day number relative to start of the measurement
+`[A,B)_mg_0-24h_ENMO` |	Time spent in minutes between (and including) acceleration value A in mg and (excluding) acceleration value B in mg based on metric ENMO
+
+
+## Output part 4
+
+Part 4 generates the following output:
+
+- part4_nightsummary_sleep_cleaned.csv
+- part4_summary_sleep_cleaned.csv
+- visualisation_sleep.pdf (optional)
+
+
+## Output part 5
+
+The output of part 5 is dependent on the parameter configuration, it will generate as many output files as there are unique combination of the three thresholds provide. For example, the output could be:
+
+- part5_daysummary_MM_L30M100V400_T5A5.csv
+- part5_daysummary_WW_L30M100V400_T5A5.csv
+- part5_personsummary_MM_L30M100V400_T5A5.csv
+- part5_personsummary_WW_L30M100V400_T5A5.csv
+- file summary reports/Report_nameofdatafile.pdf
+
+
+# Motivation and clarification
+
+In this chapter I will try to collect motivations and clarification behind GGIR which may not have been clear from the existing publications
+
+## Auto-calibration
 
 An acceleration sensor works on the principle that acceleration is captured mechanically and converted into an electrical signal. The relationship between the electrical signal and the acceleration is usually assumed to be linear, involving an offset and a gain factor. We shall refer to the establishment of the offset and gain factor as the sensor calibration procedure. Accelerometers are usually calibrated as part of the manufacturing process under non-movement conditions using the local gravitational acceleration as a reference. The manufacturer calibration can later be evaluated by holding each sensor axis parallel (up and down) or perpendicular to the direction of gravity; readings for each axis should be ±1 and 0 g, respectively. However, this procedure can be cumbersome in studies with a high throughput. Furthermore, such a calibration check will not be possible for data that have been collected in the past and for which the corresponding accelerometer device does not exist anymore. Techniques have been proposed that can check and correct for calibration error based on the collected triaxial accelerometer data in the participant's daily life without additional experiments, referred to as autocalibration. The general principle of these techniques is that a recording of acceleration is screened for nonmovement periods. Next, the moving average over the nonmovement periods is taken from each of the three orthogonal sensor axes and used to generate a three-dimensional ellipsoid representation that should ideally be a sphere with radius 1 g. Here, deviations between the radius of the three-dimensional ellipsoid and 1 g (ideal calibration) can then be used to derive correction factors for sensor axis-specific calibration error. This auto-calibration performed by GGIR uses this technique and a more detailed description and demonstration can be found in the published paper.
 
 Reference:
 
 - van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. doi: 10.1152/japplphysiol.00421.2014. Epub 2014 Aug 7.
-PMID: 25103964
+PMID: 25103964 [link](http://jap.physiology.org/cgi/pmidlookup?view=long&pmid=25103964)
 
 Key decisions to be made:
 
@@ -194,8 +336,8 @@ Key output variables:
 
 1. Variable value cal.error.end as stored in data_quality_report.csv or variable value calib_err in summary.csv. These should be less than 0.01 g (10mg).
 
-### 4.2 Non-wear detection
-Accelerometer non-wear time was estimated on the basis of the standard deviation and the value range of the raw data from each accelerometer axis. Classification was done per 15 minute block and based on the characteristics of the 60 minute window centred at these 15 minutes. A block was classified as non-wear time if the standard deviation of the 60 minute window was less than 13.0 mg (1 mg = 0.00981 m·s−2) for at least two out of the three axes or if the value range, for at least two out of three axes, was less than 50 mg. The procedure for non-wear detection was modified in comparison to the procedure as applied in the 2011 publication (van Hees, PLoSONE). Instead of 30-minute time windows 60-minute time windows were used to decrease the chance of accidently detecting short sedentary periods as non-wear time. The windows were overlapping (15 minute steps, window overlap of 45 minutes), which was done to improve the accuracy of detecting the boundaries of non-wear time as opposed to non-overlapping time windows. Inspection of unpublished data on non-wear classification by the algorithm as described in our published work indicated that the algorithm does not cope well with periods of monitor transportation per post. Here, long periods of non-wear are briefly interrupted by periods of movement, which are normally interpreted as monitor wear. Therefore, the algorithm was expanded with an additional stage in which the plausibility of “wear-periods” in-between non-wear periods is tested. Short periods of detected wear-time in-between longer periods of detected non-wear were classified as non-wear time based on the duration and the proportion of the duration relative to the bordering periods of detected non-wear-periods. The following criteria were derived from visual observation of various datasets using knowledge about study protocols. All detected wear-periods of less than six hours and less than 30% of the combined duration of their bordering non-wear periods were classified as non-wear. Additionally, all wear-periods of less than three hours and which formed less than 80% of their bordering non-wear periods were classified as non-wear. The motivation for selecting a relatively high criteria (< 30%) in combination with a long period (6hrs) and a low criteria (< 80%) in combination with a short period (3 hrs) was that long period are more likely to be actually related to monitor wear time. A visual model was created, see Figure 1. Here, units of time are presented in squares and marked grey if detected as non-wear time. Period C is detected as wear-time and borders to non-wear periods B and D, see Figure 1. If the length of C is less than six hours and C divided by the sum of B and D is less than 0.3 then the first criteria is met and block C is turned into a non-wear period.
+## Non-wear detection
+Accelerometer non-wear time was estimated on the basis of the standard deviation and the value range of the raw data from each accelerometer axis. Classification was done per 15 minute block and based on the characteristics of the 60 minute window centred at these 15 minutes. A block was classified as non-wear time if the standard deviation of the 60 minute window was less than 13.0 mg (1 mg = 0.00981 m·s−2) for at least two out of the three axes or if the value range, for at least two out of three axes, was less than 50 mg. The procedure for non-wear detection was modified in comparison to the procedure as applied in the 2011 PLoSONE publication [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922). Instead of 30-minute time windows 60-minute time windows were used to decrease the chance of accidently detecting short sedentary periods as non-wear time. The windows were overlapping (15 minute steps, window overlap of 45 minutes), which was done to improve the accuracy of detecting the boundaries of non-wear time as opposed to non-overlapping time windows. Inspection of unpublished data on non-wear classification by the algorithm as described in our published work indicated that the algorithm does not cope well with periods of monitor transportation per post. Here, long periods of non-wear are briefly interrupted by periods of movement, which are normally interpreted as monitor wear. Therefore, the algorithm was expanded with an additional stage in which the plausibility of “wear-periods” in-between non-wear periods is tested. Short periods of detected wear-time in-between longer periods of detected non-wear were classified as non-wear time based on the duration and the proportion of the duration relative to the bordering periods of detected non-wear-periods. The following criteria were derived from visual observation of various datasets using knowledge about study protocols. All detected wear-periods of less than six hours and less than 30% of the combined duration of their bordering non-wear periods were classified as non-wear. Additionally, all wear-periods of less than three hours and which formed less than 80% of their bordering non-wear periods were classified as non-wear. The motivation for selecting a relatively high criteria (< 30%) in combination with a long period (6hrs) and a low criteria (< 80%) in combination with a short period (3 hrs) was that long period are more likely to be actually related to monitor wear time. A visual model was created, see Figure 1. Here, units of time are presented in squares and marked grey if detected as non-wear time. Period C is detected as wear-time and borders to non-wear periods B and D, see Figure 1. If the length of C is less than six hours and C divided by the sum of B and D is less than 0.3 then the first criteria is met and block C is turned into a non-wear period.
 
 ```{r, out.width = "400px",echo=FALSE}
 knitr::include_graphics("nonwearimage.jpg")
@@ -205,7 +347,7 @@ By visual inspection of >100 traces from a large observational study it turned o
 
 Reference:
 
-- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23;8(4):e61691. doi: 10.1371/journal.pone.0061691. Print 2013.
+- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23;8(4):e61691. doi: 10.1371/journal.pone.0061691. Print 2013 [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
 
 Key decisions to be made:
 
@@ -218,15 +360,15 @@ Key output variables:
 2.	Non-wear duration
 3.	Non-wear duration taking into account the protocol
 
-### 4.3 Clipping score
+## Clipping score
 
 The acceleration signal was screened for ‘clipping’. If more than 50% of the data points in a 15 minute time window are higher than 7.5g (close to the maximal dynamic range of this sensor) the corresponding time period is considered as potentially corrupt data, which may be explained by the sensor getting stuck at its extreme value.
 
 Reference:
 
-- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23;8(4):e61691. doi: 10.1371/journal.pone.0061691. Print 2013
+- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23;8(4):e61691. doi: 10.1371/journal.pone.0061691. Print 2013 [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
 
-### 4.4 Why collapse information to epoch level?
+## Why collapse information to epoch level?
 
 Although many data points are collected we decide to only work with aggregated values (e.g. 1 or 5 second epochs) for the following reasons:
 
@@ -234,13 +376,13 @@ Although many data points are collected we decide to only work with aggregated v
 
 2.	Collapsing the data to epoch summary measures helps to standardise for differences in sample frequency between studies
 
-3.	There is little evidence that the raw data is an accurate representation of body acceleration. All scientific evidence on the validaty of accelerometer data is so far are based on epoch averages. 
+3.	There is little evidence that the raw data is an accurate representation of body acceleration. All scientific evidence on the validaty of accelerometer data is so far are based on epoch averages.
 
 4.	Collapsing the data to epoch summary measures may help to average out different noise levels and make sensor brands more comparable
 
-### 4.5 Why use data metric ENMO (Euclidean Norm Minus ONE)?
+## Why use data metric ENMO?
 
-In most studies I have been involved in we used metric ENMO. In 2013 I wrote a paper in which I investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the supperiority ofany metric. As long as different studies use different metrics their findings will not be comparable. I am using ENMO with negative values rounded up to zero because:
+In most studies I have been involved in we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 I wrote a paper in which I investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the supperiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. I am using ENMO because:
 
 1.	Has demonstrated value in describing variance in energy expenditure, correlated with questionnaire data, able to describe patterns in physical activity
 2.	Easy to describe mathematically and by that higher chances of reproducibility
@@ -248,21 +390,19 @@ In most studies I have been involved in we used metric ENMO. In 2013 I wrote a p
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN (which is essentially the same as the MAD metric recently used in literature). The few studies I am aware of who contested this, did not use auto-calibration by which ENMO was evalauted under unrealistic conditions. Metric ENMO depends by design on well calibrated acceleration signals, while metrics like HFEN and MAD are not affected by calibration offset.
 
 
-## 5 Other Resources
+# Other Resources
 
-The GGIR [user manual](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf) provides documentation on individual functions.
-
-For general questions about how to use GGIR join our google [discussion group](https://groups.google.com/forum/#!forum/rpackageggir).
-
-For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
-
-A non-exhaustive overview of publications by others related to GGIR can be found
+- The [GGIR package manual](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf) provides documentation on individual functions.
+- For general questions about how to use GGIR join our [google group/mailing list](https://groups.google.com/forum/#!forum/rpackageggir).
+- For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
+- A non-exhaustive overview of publications by others related to GGIR can be found
 [here](https://github.com/wadpac/GGIR/wiki/Publication-list)
 
 The three key publications underlying the development of GGIR are:
-1. van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013.
-2. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014.
-3. van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015
 
-## 6 Citations
+1. van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013. [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+2. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](http://jap.physiology.org/cgi/pmidlookup?view=long&pmid=25103964)
+3. van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015 [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533)
+
+# Citing GGIR
 Cite GGIR in publicationsa as R package GGIR version x.x-x. Additionally, I would appreciate if you could also cite the above papers.
