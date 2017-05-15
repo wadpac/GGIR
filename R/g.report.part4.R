@@ -104,7 +104,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     ####
     summarynames_backup = c()
     for (dotwice in 1:2) { #store data twice, once full and once cleaned
-      print("================================")
       if (dotwice == 2) {
         # ignore nights that were derived without sleep log?
         if (only.use.sleeplog == TRUE) {
