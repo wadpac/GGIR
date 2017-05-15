@@ -88,10 +88,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     nightsummary2 = as.data.frame(do.call(rbind,lapply(fnames.ms4,myfun)),stringsAsFactors=FALSE)
     #----------------
     nightsummary = nightsummary2
-    
-    #     print(nightsummary$acc_dur_noc[1:10])
-    #     obobo
-    
     # next 4 lines moved here on 25/11/2015
     pko = which(nightsummary$acc_onset == 0 & nightsummary$acc_wake == 0 & nightsummary$acc_timeinbed == 0)
     if (length(pko) > 0) {
@@ -100,14 +96,15 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     #####################################################
     # COLLAPSING nightsummary TO A ONELINE summary PER PARTICIPANT
     if (nrow(nightsummary) == 0) {
-      print("report note stored, because no results available")
+      print("report not stored, because no results available")
     } else {
       write.csv(nightsummary,file=paste(resultfolder,"/results/QC/part4_nightsummary_sleep_full.csv",sep=""),row.names=FALSE)
       nightsummary_bu = nightsummary
     }
     ####
-    
+    summarynames_backup = c()
     for (dotwice in 1:2) { #store data twice, once full and once cleaned
+      print("================================")
       if (dotwice == 2) {
         # ignore nights that were derived without sleep log?
         if (only.use.sleeplog == TRUE) {
@@ -142,11 +139,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           # nightsummary.tmp = nightsummary[which(nightsummary$id == uid[i] & nightsummary$cleaningcode == 0),]
           nightsummary.tmp = nightsummary[which(nightsummary$id == uid[i]),] #back up
           udef = as.character(unique(nightsummary.tmp$acc_def))
-          #           print(class(nightsummary.tmp$acc_def))
-          #           print(class(udef))
-          #           print(nightsummary.tmp$acc_def[1])
-          #           print(which(nightsummary.tmp$acc_def == udef[1]))
-          #           bobob
           if(length(which(as.character(udef)=="0") > 0)) udef = udef[-c(which(as.character(udef)=="0"))]
           udefn = udef
           #-------------------------------------------
@@ -234,18 +226,18 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           #-------------------------------------------
           # accelerometer summary
           #----------------------------------------------
-          if (only.use.sleeplog == FALSE) { #when sleep log is available
+        
+          if (only.use.sleeplog == FALSE) { #when sleep log is not available
             if (dotwice == 2) {
               CRIT = which(nightsummary$id == uid[i] & (nightsummary$cleaningcode == 0 | nightsummary$cleaningcode == 1))
             } else {
               CRIT = which(nightsummary$id == uid[i])
-              
             }
           } else {
             CRIT = which(nightsummary$id == uid[i] & nightsummary$cleaningcode == 0) #when sleep log is available
           }
-          summarynames_backup = c()
-         
+          # summarynames_backup = c()
+          
           if (length(CRIT) > 0) { #summarise data if there is data
             #-----------------------------------------------
             #         if (length(which(nightsummary$id == uid[i] & nightsummary$cleaningcode == 0)) > 0) { #summarise data if there is data
@@ -318,7 +310,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           }
         }
         summary = as.data.frame(summary)
-        #         print(length(summarynames)C)
         if (length(summarynames) != ncol(summary)) {
           if (length(summarynames_backup) > 0) {
             names(summary) = summarynames_backup
@@ -330,10 +321,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             }
             
           }
-          
-          # <= 29) print("use backup"); summarynames = summarynames_backup
+        } else {
+          names(summary) =summarynames
         }
-        names(summary) =summarynames
         
         if (storefolderstructure==TRUE) {
           colnames(summary)[length(colnames(summary))-1] = "filename_dir"
@@ -356,7 +346,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       }
       #######################################################
       if (nrow(nightsummary) == 0) {
-        print("report note stored, because no results available")
+        print("report not stored, because no results available")
       } else {
         if (dotwice == 1) {
           write.csv(nightsummary,file=paste(resultfolder,"/results/QC/part4_nightsummary_sleep_full.csv",sep=""),row.names=FALSE)
