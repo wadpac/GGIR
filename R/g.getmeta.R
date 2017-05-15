@@ -7,7 +7,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
-                     dayborder=0,...) {
+                     dayborder=0,dynrange=c(),...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -527,14 +527,18 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
               minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             }
             #estimate number of data points of clipping based on raw data at about 87 Hz
-            if (mon == 1) {
-              clipthres = 5.5
-            } else if (mon == 2) {
-              clipthres = 7.5
-            } else if (mon == 3) {
-              clipthres = 7.5 # hard coded assumption that dynamic range is 8g
-            } else if (mon == 4) {
-              clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+            if (length(dynrange) > 0) {
+              clipthres = dynrange - 0.5
+            } else {
+              if (mon == 1) {
+                clipthres = 5.5
+              } else if (mon == 2) {
+                clipthres = 7.5
+              } else if (mon == 3) {
+                clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+              } else if (mon == 4) {
+                clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+              }
             }
             
             if (dformat == 1) {

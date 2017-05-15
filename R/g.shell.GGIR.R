@@ -91,6 +91,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "do.dev_roll_med_acc_y")) == 0)  do.dev_roll_med_acc_y=FALSE
   if (length(which(ls() == "do.dev_roll_med_acc_z")) == 0)  do.dev_roll_med_acc_z=FALSE
   if (length(which(ls() == "do.enmoa")) == 0)  do.enmoa = FALSE
+  if (length(which(ls() == "dynrange")) == 0)  dynrange = c()
   if (length(which(ls() == "printsummary")) == 0)  printsummary = FALSE
   if (length(which(ls() == "includedaycrit")) == 0)  includedaycrit = 16
   if (length(which(ls() == "L5M5window")) == 0)  L5M5window = c(0,24)
@@ -168,7 +169,9 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
             do.enmoa = do.enmoa,printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
-            overwrite=overwrite,backup.cal.coef=backup.cal.coef,selectdaysfile=selectdaysfile,dayborder=dayborder)
+            overwrite=overwrite,backup.cal.coef=backup.cal.coef,
+            selectdaysfile=selectdaysfile,dayborder=dayborder,
+            dynrange=dynrange)
   }
   if (dopart2 == TRUE) {
     cat('\n')
