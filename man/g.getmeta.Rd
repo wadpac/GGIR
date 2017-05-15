@@ -23,7 +23,7 @@ do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
 do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
 do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,meantempcal=c(),chunksize=c(),
-selectdaysfile=c(),dayborder=0,...)
+selectdaysfile=c(),dayborder=0,dynrange=c(),...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -118,6 +118,9 @@ below 1 is recommended.
   see \link{g.part1}
   }
   \item{dayborder}{
+   see \link{g.part1}
+  }
+  \item{dynrange}{
    see \link{g.part1}
   }
   \item{...}{
