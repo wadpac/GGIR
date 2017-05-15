@@ -9,7 +9,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0) {
+                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,dynrange=c()) {
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       print("Variable datadir is not defined")
@@ -278,7 +278,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     selectdaysfile=selectdaysfile,
                     outputdir=outputdir,
                     outputfolder=outputfolder,
-                    dayborder=dayborder)
+                    dayborder=dayborder,dynrange=dynrange)
       #------------------------------------------------
       print("save .RData-file with: calibration report, file inspection report and all meta data...")
       # remove directory in filename if present
