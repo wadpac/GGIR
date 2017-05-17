@@ -1,21 +1,23 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-8 (release date:15-5-2017)}{
+\section{Changes in version 1.5-8 (release date:17-5-2017)}{
 \itemize{
   \item g.inspectfile now also functional with cwa data
+  \item option added to enforce dynamic range with argument dynrange
+  \item vignette expanded
 }
 }
 \section{Changes in version 1.5-7 (release date:9-5-2017)}{
 \itemize{
-  \item Vignette expanded
+  \item vignette expanded
   \item Bugs fixes in relation to new cwa-read functionality c++ routine registration
   \item Documentation added for all underlying functions
 }
 }
 \section{Changes in version 1.5-3 (release date:29-4-2017)}{
 \itemize{
-  \item Vignette added
+  \item vignette added
   \item Bugs fixes in relation to new cwa-read functionality
   \item Bugs fixes in correct number of days recognition in part5
 }
