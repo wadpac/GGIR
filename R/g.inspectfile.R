@@ -196,8 +196,6 @@ g.inspectfile = function(datafile) {
     }
     names(H) = c("hnames","hvalues")
   } else if (dformat == 4) { #cwa data
-    # Rcpp::sourceCpp('src/numUnpack.cpp')
-    # Rcpp::sourceCpp('src/resample.cpp')
     PP = g.cwaread(datafile,start = 1, end = 10)
     H = PP$header
   }
