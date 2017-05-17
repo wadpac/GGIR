@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## What is GGIR?
 
-[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ in raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics.
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ in raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per day of measurement or per measurement, including estimates of physical activity, inactivity and sleep.
 
 ## Who has been using GGIR?
 
@@ -30,6 +30,16 @@ GGIR is increasingly being used by a number of research groups acros the world. 
 A non-exhaustive list of academic institutes that have been using GGIR:
 
 **United Kingdom:** University College London, Exeter University, Newcastle University, Edge Hill University, University of Cambridge, University of Chester, Edinburgh Napier University, University of Birmingham, Liverpool John Moores University | **United States:** University College San Diego, Iowa State University, University of Southern California, University of Michican, West Virginia University, Arizona State University, University of Utah, National Institute of Health | **The Netherlands:** Erasmus Medical Centre Rotterdam, VU University Medical Centre, Leiden University Medical Centre | **France:** French Institute for Health and Medical Research, Institute of Myology, University  of Dijon, University of Montpellier | **Brazil:** Federal University of Pelotas | **Australia:** Newcastle University, Australian Catholic University, University of Sydney, Queensland University of Technology, University of Western Australia | **Spain:** University of Granada | **Norway:** University of Oslo | **Sweden:** University of Lund | **Switszerland:** Centre Hospitalier Universitaire Vaudois | **Germany:** Technische Universität Dresden, Technical University Munich
+
+## Acknowledgements
+
+R package GGIR would not have been possible without the support of the following people, institutions, and funders:
+ 
+**People:** Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R; Dr. Zhou Fang contributed code for the auto-calibration functionality; Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording; Dr. Severine Sabia tested and provided feedback on numerous aspects of the package; Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR, and; Dr. Vincent van Hees as main developer
+ 
+**Institutions:** The MRC Epidemiology Unit at the University of Cambridge, Movelab at Newcastle University, the Netherlands eScience Center, and the University of Exeter as host organisations
+ 
+**Funders:** Medical Research Council (MRC) grant MR/P012167/1, Biotechnology and Biological Sciences Research Council (BBSRC), Economic and Social Research Council (ESRC) and Unilever Discover Ltd funded the positions of VvH and projects that enabled the development and evaluation of GGIR
 
 ## How can I contribute to the GGIR development?
 
@@ -58,8 +68,7 @@ In ActiLife you have the option to export data with timestamps. Please do not do
     - [Axivity](http://axivity.com/) .wav and .cwa
     - Genea (not available anymore) .bin and .csv
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
-3. Give the folder an appropriate name, e.g. studyname_data
-4.	Create a folder where the output will be stored. This should also be on the external hard drive. Give the folder an appropriate name, e.g. studyname_output
+3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
 ## GGIR shell function
 
@@ -72,6 +81,7 @@ g.shell.GGIR(#=======================================
              mode=c(1,2,3,4,5),
              datadir="C:/mystudy/mydata",
              outputdir="D:/myresults",
+             f0=1, f1=2,
              #-------------------------------
              # Part 1:
              #-------------------------------
@@ -180,7 +190,7 @@ You can use ```source("pathtoscript/myshellscript.R")``` or use the Source butto
 
 ## In a cluster
 
-It is possible to run GGIR on a computing cluster to processing multiple files in parallel is possible. The way I did it is as follows, please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specilist to tailor this to your situation. I have three files:
+It is possible to run GGIR on a computing cluster to process multiple files in parallel. The way I did it is as follows, please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specilist to tailor this to your situation. I have three files:
 
 **submit.sh**
 
