@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-8 (release date:15-5-2017)}{
+\itemize{
+  \item g.inspectfile now also functional with cwa data
+}
+}
 \section{Changes in version 1.5-7 (release date:9-5-2017)}{
 \itemize{
   \item Vignette expanded
