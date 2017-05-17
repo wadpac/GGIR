@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "May 9 2017"
+date: "May 17 2017"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -37,7 +37,7 @@ R package GGIR would not have been possible without the support of the following
  
 **People:** Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R; Dr. Zhou Fang contributed code for the auto-calibration functionality; Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording; Dr. Severine Sabia tested and provided feedback on numerous aspects of the package; Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR, and; Dr. Vincent van Hees as main developer
  
-**Institutions:** The MRC Epidemiology Unit at the University of Cambridge, Movelab at Newcastle University, the Netherlands eScience Center, and the University of Exeter as host organisations
+**Institutions:** The MRC Epidemiology Unit at the University of Cambridge, Movelab at Newcastle University, the Netherlands eScience Center, and the University of Exeter provided a productive work environment
  
 **Funders:** Medical Research Council (MRC) grant MR/P012167/1, Biotechnology and Biological Sciences Research Council (BBSRC), Economic and Social Research Council (ESRC) and Unilever Discover Ltd funded the positions of VvH and projects that enabled the development and evaluation of GGIR
 
@@ -51,7 +51,7 @@ The development version of GGIR can be found on [github](https://github.com/wadp
 
 [Download and install R](https://cran.r-project.org/)
 
-[Download and install RStudio](https://www.rstudio.com/products/rstudio/download2/)
+[Download and install RStudio](https://www.rstudio.com/products/rstudio/download2/) (optional, but recommended)
 
 Download GGIR with its dependencies, you can do this with one command from the console command line:
 
@@ -186,7 +186,11 @@ knitr::include_graphics("sleeplogexample.jpg")
 
 ## From the console
 
-You can use ```source("pathtoscript/myshellscript.R")``` or use the Source button in RStudio if you use RStudio.
+You can use
+
+```source("pathtoscript/myshellscript.R")```
+
+or use the Source button in RStudio if you use RStudio.
 
 ## In a cluster
 
@@ -321,6 +325,16 @@ Part 4 generates the following output:
 - part4_summary_sleep_cleaned.csv
 - visualisation_sleep.pdf (optional)
 
+When input argument `do.visual` is set to TRUE GGIR can show the following visual comparison between the time window of being asleep (or in bed) according to the sleeplog and the detected sustained inactivity bouts according to the accelerometer data. This visualisation is stored in the results folder as visualisation_sleep.pdf. 
+
+Explanation of the image: Each line represents one night. Colors are used to dinstinguish definitions of sustianed inacitivty bouts (2 definitions in this case) and to indicate existence or absense of overlap with the sleeplog. When argument `outliers.only` is set to FALSE it will visualise all available nights in the dataset. If `outliers.only` is set to TRUE it will visualise only nights with a difference in onset or waking time between sleeplog and sustained inactivity bouts larger than the value of argument `criterror`.
+
+This visualisation with outliers.only set to TRUE and critererror set to 4 was very powerful to identify entry errors in sleeplog data in van Hees et al PLoSONE 2016. We had over 25 thousand nights of data, and this visualisation allowed us to quickly zoom in on the most problematic nights to investigate possible mistakes in GGIR or mistakes in data entry.
+
+```{r, out.width = "700px",echo=FALSE}
+knitr::include_graphics("example_dovisual.jpg")
+```
+
 
 ## Output part 5
 
@@ -332,6 +346,41 @@ The output of part 5 is dependent on the parameter configuration, it will genera
 - part5_personsummary_WW_L30M100V400_T5A5.csv
 - file summary reports/Report_nameofdatafile.pdf
 
+Here is a beta-version of the variable dictionary, see GGIR package manual for more details
+
+Variables	| Description
+------------------------ | ---------------------------------------------
+dur_nightsleep_min_pla | Sleep duration
+XX_pla | plain average of variable XX across all days
+XX_wei | weighted average of variable XX across all days
+L5VALUE_pla	| Acceleration value for lowest 5hrs
+M5VALUE_pla	| Acceleration value for highest 5hrs
+Acc_day_mg_pla |	Average acceleration for daytime hours
+ACC_night_mg_pla |	Average acceleration for night hours
+ACC_nightandday_mg_pla | Average acceleleration for night and day combined
+Dur_day_SIB_min_pla	| sustained inactivity bouts, are the periods of time during which the arm does not rotate at all for at least 5 or 10 minutes (depending on criteria used). This could be daytime sleep or the monitor not being worn for a very short period of time (these are not part of the inactivity bouts)
+dur_day_OIN40_min_pla | Time spent below 40mg (OTHER INACTIVITY)
+dur_day_LIG40_100_min_pla | Time spent in light (only unbouted)
+dur_day_MOD100_400_min_pla | Time spent in moderate (only unbouted)
+dur_day_VIG400_min_pla | Time spent in vigorous (only unbouted)
+dur_MVPA_D10T100_min_pla | Bouts of at least 10 minutes of MVPA (i.e above 100mg) 
+dur_MVPA_D1T100_min_pla | 	Bouts between 1-9.99mins above MVPA
+dur_INB_D10T40_min_pla | Bouts of 10mins INACTIVE (other inactivity or SIB)
+dur_LIGB_D10T40_100_min_pla | Bouts of 10mins light
+dur_LIGB_D1T40_100_min_pla | Bouts between 1-99.9mins light
+dur_TSIBday_min_pla | T=unbouted+bouted. THIS IS DIFFERENT TO SIB, because TSIB is regardless of whether they contributed or not to inactivity (INB) bouts or not, whereas SIB is just time not part of INB. So would expect TSIB to be higher
+dur_TOINday_min_pla | Unbouted and bouted time  spent in ‘other inactivity’ 
+dur_TLIGday_min_pla | Unbouted and bouted time spent in light
+dur_TMODday_min_pla |	Unbouted and bouted time spent in mod
+dur_TVIGday_min_pla | Unbouted and bouted time spent in vig
+dur_TINday_min_pla | Unbouted and bouted time spent in TOTAL INACTIVITY=TOIN+SIB
+nonwear_perc_day_pla | non-wear time day
+nonwear_perc_night_pla | non-wear time night
+nonwear_perc_nightandday_pla | non-wear time night and day
+sleep_efficiency_pla | Sleep efficiency
+boutcriter.in_pla | 0.9-90% of the bout has to be above threshold. The reason that the criteria is 90% rather than 80%, is “somewhat arbitrary decision, but the idea was that if you allow for bouts of 30 minutes it would not make sense if you allow for breaks of 20% of the time(6 minutes!) this is why I used a more stringent criteria for the highest category”
+boutcriter.lig_pla | 0.8-80% has to be above
+boutcriter.mvpa_pla | 0.8-80% has to be above threshold
 
 # Motivation and clarification
 
@@ -423,7 +472,6 @@ In most studies I have been involved in we used metric ENMO (Euclidean Norm Minu
 I wanted a short name and not to spend too much time finding it. At the time when I created GGIR I was working with GENEActiv and GENEA data In R, and that's how the name GGIR was born.
 
 # Other Resources
-
 - The [GGIR package manual](https://CRAN.R-project.org/package=GGIR) provides documentation on individual functions.
 - For general questions about how to use GGIR join our [google group/mailing list](https://groups.google.com/forum/#!forum/rpackageggir).
 - For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
