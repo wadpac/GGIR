@@ -76,10 +76,10 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                         window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                         desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
                         IVIS_epochsize_seconds = IVIS_epochsize_seconds)
-        if (storefolderstructure == TRUE) {
-          SUMMARY = SUM$summary
-          SUM$summary = SUMMARY
-        }
+        # if (storefolderstructure == TRUE) {
+        #   SUMMARY = SUM$summary
+        #   SUM$summary = SUMMARY
+        # }
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
         if (epochvalues2csv==TRUE) {
           if (length(IMP$metashort) > 0) {
@@ -87,9 +87,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           } 
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-          if (i == 1 | i == f0 | cnt78 == 1) {
+          if (cnt78 == 1) { #i == 1 | i == f0 | 
             SUMMARY = SUM$summary
-            SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
             if (length(selectdaysfile) > 0) {
               winSUMMARY = SUM$windowsummary[,which(
@@ -97,18 +96,14 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             }
             cnt78 = 2
           } else {
-            SUMMARY = SUM$summary
-            SUM$summary = SUMMARY
-            if (ncol(SUMMARY) == ncol(SUM$summary)) {
-            } else {
+            if (ncol(SUMMARY) != ncol(SUM$summary)) {
               SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
                                   matrix(" ",1,(ncol(SUMMARY) - ncol(SUM$summary))),
                                   SUM$summary[(ncol(SUM$summary)-7):ncol(SUM$summary)])
               colnames(SUM$summary) = colnames(SUMMARY)
             }
             # daysummary
-            if (ncol(daySUMMARY) == ncol(SUM$daysummary)) {
-            } else {
+            if (ncol(daySUMMARY) != ncol(SUM$daysummary)) {
               SUM$daysummary = cbind(SUM$daysummary,matrix(" ",1,(ncol(daySUMMARY) - ncol(SUM$daysummary))))
               colnames(SUM$daysummary) = colnames(daySUMMARY)
             }
@@ -118,8 +113,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             if (length(selectdaysfile) > 0) {
               # windowsummary
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
-              if (ncol(winSUMMARY) == ncol(winSUMMARY2)) {
-              } else {
+              if (ncol(winSUMMARY) != ncol(winSUMMARY2)) {
                 winSUMMARY2 = cbind(winSUMMARY2,matrix(" ",1,(ncol(winSUMMARY) - ncol(winSUMMARY2))))
                 colnames(winSUMMARY2) = colnames(winSUMMARY)
               }
