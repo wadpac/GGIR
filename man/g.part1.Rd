@@ -30,7 +30,8 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
                    do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
                    use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
                    printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0)
+                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,
+                   dynrange=c())
 }
 \arguments{
   \item{datadir}{
@@ -98,9 +99,9 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   if TRUE, calculate the angle of the z-axis relative to the horizontal plane
   (degrees) utilizing all three axes
   }
-    \item{do.enmoa}{if TRUE (default), calculate metric ENMOa which is equal to
+  \item{do.enmoa}{if TRUE (default), calculate metric ENMOa which is equal to
   metric ENMO but with the absolute taken from the Euclidean norm minus one.
-}
+  }
  \item{do.roll_med_acc_x}{ see \link{g.getmeta}
   }
   \item{do.roll_med_acc_y}{ see \link{g.getmeta}
@@ -113,8 +114,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   }
   \item{do.dev_roll_med_acc_z}{see \link{g.getmeta}
   }
-
-   \item{do.cal}{
+  \item{do.cal}{
   Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
   recommended setting is TRUE
   }
@@ -179,6 +179,10 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   }
   \item{dayborder}{
   Hour at which days start and end (default = 0), value = 4 would mean 4am
+  }
+  \item{dynrange}{
+   Optional, provide dynamic range for accelerometer data to overwrite hardcoded
+   6 g for GENEA and 8g for other brands
   }
 
 }
