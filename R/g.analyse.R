@@ -880,7 +880,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(mw) > 0) {
     daysummary[which(is.na(daysummary)==T)] = " "
   }
-  cut = which(ds_names == " ")
+  
+  cut = which(ds_names == " " | ds_names == "" | is.na(ds_names)==T)
   if (length(cut > 0)) {
     ds_names = ds_names[-cut]
     daysummary = daysummary[,-cut]
@@ -897,7 +898,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(mw) > 0) {
     summary[which(is.na(summary)==T)] = " "
   }
-  cut = which(as.character(s_names) == " " | is.na(s_names)==T)
+  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T)
   if (length(cut) > 0) {
     s_names = s_names[-cut]
     summary = summary[-cut]
