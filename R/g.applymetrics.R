@@ -7,6 +7,7 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   # as R check complains about attach, I have just added them to the workspace manually:  
   do.bfen = metrics2do$do.bfen
   do.enmo = metrics2do$do.enmo
+  do.mad = metrics2do$do.mad
   do.lfenmo = metrics2do$do.lfenmo
   do.en = metrics2do$do.en
   do.hfen = metrics2do$do.hfen
@@ -47,6 +48,18 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     ENMO = EN - 1
     ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
     allmetrics$ENMO3b = averageperws3(x=ENMO,sf,ws3)
+  }
+  #-----------------------------------------------------
+  #deriving metric MAD (Mean Amplitude Deviation)
+  if (do.mad == TRUE) {
+    EN = sqrt(Gx^2 + Gy^2 + Gz^2)
+    from = seq(from=1, to=length(EN), by = sf*ws3)
+    to = seq(from=sf*ws3, to=length(EN), by = sf*ws3)
+    means=c()
+    for (i in 1:length(from)) means[i] = mean(EN[from[i]:to[i]])
+    means = rep(means, each=sf*ws3)
+    MAD = abs(EN - means)
+    allmetrics$MAD3b = averageperws3(x=MAD,sf,ws3)
   }
   #------------------------------------------------------------
   # space for extra metrics
