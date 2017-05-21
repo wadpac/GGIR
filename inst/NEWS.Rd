@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-8 (release date:17-5-2017)}{
+\section{Changes in version 1.5-9 (release date:21-5-2017)}{
 \itemize{
   \item g.inspectfile now also functional with cwa data
   \item option added to enforce dynamic range with argument dynrange
@@ -22,7 +22,6 @@
   \item Bugs fixes in correct number of days recognition in part5
 }
 }
-
 \section{Changes in version 1.5-1 (release date:23-4-2017)}{
 \itemize{
   \item Removed teLindert2013 metric, because it was not used and not verified
