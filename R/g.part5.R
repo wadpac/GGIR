@@ -134,7 +134,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         # load output g.part1
         selp = which(fnames.ms1 == paste("meta_",fnames.ms3[i],sep=""))
         if (length(selp) != 1) {
-          cat("Error: File not processed with part1")
+          cat("Warning: File not processed with part1")
         }
         load(paste0(metadatadir,"/meta/basic/",fnames.ms1[selp]))
         # load output g.part3
@@ -146,7 +146,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         ACC = IMP$metashort[,2] * 1000 #note that this is imputed ACCELERATION because we use this for describing behaviour
         
         if (length(which(names(IMP$metashort) == "anglez")) == 0) {
-          cat("Error: anglez not extracted. Please check that do.anglez == TRUE")
+          cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
         }
         angle = as.numeric(as.matrix(M$metashort[,which(names(IMP$metashort) == "anglez")])) #note that this is the non-imputed angle because we use this here only for the visualisation
         nonwear = IMP$rout[,5]
