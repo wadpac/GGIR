@@ -65,131 +65,6 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     filecorrupt = filequality$filecorrupt
     filedoesnotholdday = filequality$filedoesnotholdday
     switchoffLD = accread$switchoffLD
-#     
-#     #when trying to read files of a different format)
-#     if (mon == 1 & dformat == 1) {
-#       use.temp = FALSE
-#       try(expr={P = g.binread(datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
-#       if (length(P) > 1) {
-#         if (nrow(P$rawxyz) < ((sf*ws)+1)) {
-#           P = c()
-#           switchoffLD = 1 #added 30-6-2012
-#         }
-#       } else {
-#         P = c()
-#       }
-# #     } else  if (mon == 4 & dformat == 3) {
-# #       use.temp = FALSE
-# #       try(expr={P = g.wavread(datafile,(blocksize*(i-1)),(blocksize*i))},silent=TRUE)
-# #       if (length(P) > 1) {
-# #         if (nrow(P$rawxyz) < ((sf*ws)+1)) {
-# #           P = c()
-# #           switchoffLD = 1 #added 30-6-2012
-# #         }
-# #       } else {
-# #         P = c()
-# #       }
-#     } else if (mon == 2 & dformat == 1) {
-#       ###
-#       if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
-#         #===================================================================
-#         # All of the below needed for Millenium cohort
-#         SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
-#         I = g.inspectfile(datafile) #, useRDA = useRDA
-#         hvars = g.extractheadervars(I)
-#         SN = hvars$SN
-#         # change by CLS
-#         SDFi = which(basename(SDF$binFile) == basename(datafile))
-#         tint = c()
-#         if(length(SDFi) != 1) {
-#           save(tint, SDF, SDFi, file = "debuggingFile.Rda")
-#           stop(paste0("CLS error: there are zero or more than one files: ",
-#                       datafile, "in the wearcodes file"))
-#         }
-#         tint <- rbind(getStartEnd(SDF$Day1[SDFi], dayborder),
-#                       getStartEnd(SDF$Day2[SDFi], dayborder), stringsAsFactors = FALSE) 
-# 
-#         if (i == nrow(tint)+1 | nrow(tint) == 0) {
-#           #all data read now make sure that it does not try to re-read it with mmap on
-#           switchoffLD = 1
-#           P = c()
-#         } else {
-#           try(expr={P = GENEAread::read.bin(binfile=datafile,start=tint[i,1],
-#                                             end=tint[i,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-#         }
-#         # All of the above needed for Millenium cohort
-#         #======================================================================
-#       } else {
-#         ###
-#         try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-#       }
-#       # try(expr={P = GENEAread::read.bin(binfile=datafile,start=(blocksize*(i-1)),end=(blocksize*i),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-#       #       if (length(P) > 0) {
-#       #         if (nrow(P$data.out) < blocksize*300) { #last block
-#       #           cat("\nlast block\n")
-#       #           switchoffLD = 1 #this section is not needed for mon = 1 as genea script deals with file-ends automatically
-#       #         }
-#       #       }
-#       
-#       if (length(P) > 0) {
-#         if (length(selectdaysfile) > 0) { 
-#           if (tint[i,1] == "0") {
-#             print("last block")
-#             switchoffLD = 1
-#           }
-#         } else {
-#           if (nrow(P$data.out) < blocksize*300) { #last block
-#             print("last block")
-#             switchoffLD = 1 #this section is not needed for mon = 1 as genea script deals with file-ends automatically
-#           }
-#         }
-#       }
-#       
-#       if (length(P) == 0) { #if first block doens't read then probably corrupt
-#         if (i == 1) {
-#           try(expr={P = GENEAread::read.bin(binfile=datafile,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-#           if(length(P) ==0) {
-#             P= c()
-#             switchoffLD = 1
-#           } #if not then P is now filled with data
-#         } else {
-#           P= c() #just no data in this last block
-#         }
-#       }
-#       if (length(P) > 0) { #check whether there is enough data
-#         if (nrow(P$data.out) < ((sf*ws)+1)) {
-#           P = c()
-#           switchoffLD = 1
-#         }
-#       }
-#     } else if (mon == 2 & dformat == 2) {
-#       try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(100+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
-#       if (length(P) > 1) {
-#         P = as.matrix(P)
-#         if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
-#           P = c() ; switchoffLD = 1 #added 30-6-2012
-#           cat("\nError code 1: data too short for doing non-wear detection\n")  	
-#           filetooshort = TRUE
-#         }
-#       } else {
-#         P = c()
-#         cat("\nEnd of file reached\n")
-#       }
-#     } else if (mon == 3 & dformat == 2) {
-#       try(expr={P = read.csv(datafile,nrow = (blocksize*300), skip=(10+(blocksize*300*(i-1))),dec=decn)},silent=TRUE)
-#       use.temp = FALSE
-#       if (length(P) > 1) {
-#         P = as.matrix(P)
-#         if (nrow(P) < ((sf*ws*2)+1) & i == 1) {
-#           P = c() ; switchoffLD = 1 #added 30-6-2012
-#           cat("\nError code 1: data too short for doing non-wear detection\n")
-#           filetooshort = TRUE
-#         }
-#       } else {
-#         P = c()
-#         cat("\nEnd of file reached\n")
-#       }
-#     }
     options(warn=0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -454,7 +329,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         LD = 0 #stop loading 
       } else { #continue loading data
         if (nhoursused > minloadcrit) {
-          print(paste("new error: ",cal.error.end," g",sep=""))
+          print(paste("new calibration error: ",cal.error.end," g",sep=""))
           print(paste("npoints around sphere: ", npoints,sep=""))
         }
         QC = "recalibration attempted with all available data, but possibly not good enough: Check calibration error variable to varify this"
@@ -483,9 +358,9 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     cat("Summary of autocalibration procedure:\n")
     cat("\nStatus:\n")
     print(QCmessage)
-    cat("\nError (g) before:\n")
+    cat("\nCalibration error (g) before:\n")
     print(cal.error.start)
-    cat("\nError (g) after:\n")
+    cat("\nCallibration error (g) after:\n")
     print(cal.error.end)
     cat("\nOffset correction:\n")
     print(offset)
