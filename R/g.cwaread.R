@@ -40,10 +40,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
 
   #############################################################################
   # Internal functions
-  #
-  # Rcpp::sourceCpp('src/numUnpack.cpp') # supposed to be outside cwaread, moved here by VvH
-  # Rcpp::sourceCpp('src/resample.cpp') # supposed to be outside cwaread, moved here by VvH
-
   timestampDecoder = function(coded, fraction, shift) {
     year = struc[[1]]
     if (year == 0) {
