@@ -35,11 +35,28 @@ A non-exhaustive list of academic institutes that have been using GGIR:
 
 R package GGIR would not have been possible without the support of the following people, institutions, and funders:
  
-**People:** Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R; Dr. Zhou Fang contributed code for the auto-calibration functionality; Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording; Dr. Severine Sabia tested and provided feedback on numerous aspects of the package; Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR, and; Dr. Vincent van Hees as main developer
+**People:** 
+
+- Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R
+- Dr. Zhou Fang contributed code for the auto-calibration functionality
+- Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording
+- Dr. Severine Sabia tested and provided feedback on numerous aspects of the package
+- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR
+- Dr. Vincent van Hees as main developer
  
-**Institutions:** The MRC Epidemiology Unit at the University of Cambridge, Movelab at Newcastle University, the Netherlands eScience Center, and the University of Exeter provided a productive work environment
+**Institutions:**
+
+- The MRC Epidemiology Unit at the University of Cambridge, Cambridge, UK
+- Movelab at Newcastle University, Newcastle upon Tyne, UK
+- Netherlands eScience Center, Amsterdam, NL
+- University of Exeter, Exeter, UK
+- Centre for Longitudinal Studies, London, UK
  
-**Funding:** Medical Research Council (MRC) grants MR/P012167/1 and MC_UU_12015/3; Economic and Social Research Council (ESRC) grant ES/K005987 for ‘Millennium Cohort Study Sweep 6 (Age 14) Survey’ (MCS6), and; the Biotechnology and Biological Sciences Research Council (BBSRC) and Unilever Discover Ltd for funding a CASE studentship 
+**Funders:**
+
+- Medical Research Council (MRC) grants MR/P012167/1 and MC_UU_12015/3
+- Economic and Social Research Council (ESRC) grant ES/K005987 for ‘Millennium Cohort Study Sweep 6 (Age 14) Survey’ (MCS6)
+- Biotechnology and Biological Sciences Research Council (BBSRC) and Unilever Discover Ltd funded a CASE studentship 
 
 ## How can I contribute to the GGIR development?
 
@@ -153,24 +170,24 @@ The function arguments need to be tailored to your experimental protocol. There 
 
 By looking up the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible. All of these arguments are also accepted by the shell function g.shell.GGIR, because g.shell.GGIR is nothing more than a wrapper around those functions.
 
-Below I have highlighted a few of the key arguments you may want to be aware of:
+Below I have highlighted a few of the key arguments you may want to be aware of. Please see the package manual for more detailed documentation:
 
 ### do.cal
-Performs the autocalibration to investigate calibration error based on free-living data and proposes correction factors
+Autocalibration is the process of investigating the acceleration signals for calibration error based on free-living data.  `do.cal` is a boolean argument to indicate whether autocalibration needs to be performed. If set to TRUE (default) GGIR will propose calibration correction factors to minimize calibration error.
 
 ### datadir
-GGIR only needs to know where your data is. It will detect automatically from what accelerometer brand the data comes from
+GGIR needs to know where your data is. It will detect automatically from what accelerometer brand the data comes from
 and in what data format the information is stored
 
 ### strategy
-Allows you to give GGIR your knowledge about the study design:
+Argument `strategy` allows you to give GGIR your knowledge about the study design:
   - strategy = 1: Exclude 'hrs.del.start' number of hours at the beginning and 'hrs.del.end' number of hours at the end of the measurement and never allow for more than 'maxdur' number of hours. These three parameters are set by their respective function arguments.
   - strategy = 2 makes that only the data between the first midnight and the last midnight is used for imputation.
   - strategy = 3 only selects the most active X days in the files. X is specified by argument 'ndayswindow'
 
 ### do.imp
-GGIR detects when the accelerometer is not work. Argument 'do.imp' indicates whether you want those missing periods to be
-imputed by measurements from similar timepoints at different days of the measurment
+GGIR detects when the accelerometer is not worn. Argument 'do.imp' indicates whether you want those missing periods to be
+imputed by measurements from similar timepoints at different days of the measurment or not.
 
 ### loglocation
 If you applied a sleeplog in your experiments then this can be used by GGIR to improve the sleep estimations. Argument
