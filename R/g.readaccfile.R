@@ -128,7 +128,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
           }
         } else {
           P= c() #just no data in this last block
-          cat("\nnot enough data in this block 3\n")
+          # cat("\nnot enough data in this block 3\n")
         }
       } else { #check whether there is enough data
         if (nrow(P$data.out) < ((sf*ws*2)+1) & blocknumber == 1) {
@@ -179,13 +179,13 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
           } #if not then P is now filled with data
         } else {
           P= c() #just no data in this last block
-          cat("\nnot enough data in this block 3\n")
+          # cat("\nnot enough data in this block 3\n")
         }
       }
       if (length(P) > 0) { #check whether there is enough data
         if (nrow(P$data.out) < ((sf*ws*2)+1) & blocknumber == 1) {
           P = c();  switchoffLD = 1
-          cat("\nError code 2: data in block too short for doing non-wear detection\n")
+          cat("\nWarning (2): data in block too short for doing non-wear detection\n")
           filequality$filetooshort = TRUE
         }
       }
@@ -198,7 +198,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
-        cat("\nError code 1: data in block too short for doing non-wear detection\n")		
+        cat("\nWarning (1): data in block too short for doing non-wear detection\n")		
         filequality$filetooshort = TRUE
       }
     } else {
@@ -211,7 +211,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
-        cat("\nError code 1: data in block too short for doing non-wear detection\n")
+        cat("\nWarning (1): data in block too short for doing non-wear detection\n")
         filequality$filetooshort = TRUE
       }
     } else {
@@ -225,7 +225,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     if (length(P) > 1) {
       if (length(P$data) == 0) {
         P = c() ; switchoffLD = 1
-        cat("\nError code 1: data in block too short for doing non-wear detection\n")
+        cat("\nWarning (1): data in block too short for doing non-wear detection\n")
         if (blocknumber == 1) filequality$filetooshort = TRUE
       } else {
         if (nrow(P$data) < ((sf*ws*2)+1)) { # & blocknumber == 1 #VvH 23/4/2017
