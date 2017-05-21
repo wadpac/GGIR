@@ -28,7 +28,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   # load summary spreadsheets for this study
   if (file.exists(paste(results,"/part2_daysummary.csv",sep=""))) {
   } else {
-    print("ERROR: File daysummary.csv not generated yet")
+    print("Warning: File daysummary.csv not generated yet")
     stop()
   }
   daysummary = read.csv(paste(results,"/part2_daysummary.csv",sep=""))

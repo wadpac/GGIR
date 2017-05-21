@@ -11,7 +11,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   ms3.out = "/meta/ms3.out"
   if (file.exists(paste(metadatadir,ms3.out,sep=""))) {
   } else {
-    cat("Error: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
+    cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
   }
   ms4.out = "/meta/ms4.out"
   if (file.exists(paste(metadatadir,ms4.out,sep=""))) {
