@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "May 17 2017"
+date: "May 21 2017"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -39,7 +39,7 @@ R package GGIR would not have been possible without the support of the following
  
 **Institutions:** The MRC Epidemiology Unit at the University of Cambridge, Movelab at Newcastle University, the Netherlands eScience Center, and the University of Exeter provided a productive work environment
  
-**Funders:** Medical Research Council (MRC) grant MR/P012167/1, Biotechnology and Biological Sciences Research Council (BBSRC), Economic and Social Research Council (ESRC) and Unilever Discover Ltd funded the positions of VvH and projects that enabled the development and evaluation of GGIR
+**Funding:** Medical Research Council (MRC) grants MR/P012167/1 and MC_UU_12015/3; Economic and Social Research Council (ESRC) grant ES/K005987 for ‘Millennium Cohort Study Sweep 6 (Age 14) Survey’ (MCS6), and; the Biotechnology and Biological Sciences Research Council (BBSRC) and Unilever Discover Ltd for funding a CASE studentship 
 
 ## How can I contribute to the GGIR development?
 
@@ -194,7 +194,7 @@ or use the Source button in RStudio if you use RStudio.
 
 ## In a cluster
 
-It is possible to run GGIR on a computing cluster to process multiple files in parallel. The way I did it is as follows, please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specilist to tailor this to your situation. I have three files:
+It is possible to run GGIR on a computing cluster to process multiple files in parallel. The way I did it is as follows, please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specilist to tailor this to your situation. In my case, I had three files:
 
 **submit.sh**
 
@@ -229,12 +229,12 @@ if(length(args) > 0) {
 g.shell.GGIR(f0=f0,f1=f1,...)
 ```
 
-You will need to update the ... in the last line with the arguments you used for g.shell.GGIR. Note that `f0=f0,f1=f1` is essential for this to work. The values of `f0` and `f1` are passed from the bash script.
+You will need to update the ... in the last line with the arguments you used for g.shell.GGIR. Note that `f0=f0,f1=f1` is essential for this to work. The values of `f0` and `f1` are passed on from the bash script.
 
 Once this is all setup you will need to call `bash submit.sh`
 from the command line.
 _**Note: Please make sure that you process one GGIR part at the same time on a cluster, because each part assumes that preceding parts have been ran. You can make sure of this by always specifying argument mode to a single part of GGIR. Once the analysis stops update argument mode to the next part until all parts are done.**_
-The speed of the parallel processing is obviously dependent on the capacity of your computing cluster. I have been able to process all 4000 files of the Whitehall II Study in just a couple of hours.
+The speed of the parallel processing is obviously dependent on the capacity of your computing cluster and the size of your dataset. I have been able to process all 4000 files from the Whitehall II Study in just a couple of hours.
 
 
 # Inspecting the results
@@ -310,12 +310,17 @@ Tis is a non-exhaustive list, because most concepts have been explained in summa
 
 Variables	| Description
 ------------------------ | ---------------------------------------------
-N valid hours | Number of hours with valid data
-N hours	| Number of hours of measurement
+ID | Participant id
+filename | Name of the data file
+calender_date | Timestamp and date on which measurement started
+bodylocation | Location of the accelerometer as extracted from file header
+N valid hours | Number of hours with valid data in the day
+N hours	| Number of hours of measurement in a day, which typically is 24, unless it is a day on which the clock changes (DST) resulting in 23 or 25 hours. The value can be less than 23 if the measurement started or ended this day
 weekday | Name of weekday
 measurement | Day of measurement	Day number relative to start of the measurement
+L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO)
+L5_ENMO_mg_0-24h | Average acceleration for L5 (defined with metric ENMO)
 `[A,B)_mg_0-24h_ENMO` |	Time spent in minutes between (and including) acceleration value A in mg and (excluding) acceleration value B in mg based on metric ENMO
-
 
 ## Output part 4
 
