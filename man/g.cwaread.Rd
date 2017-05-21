@@ -1,7 +1,7 @@
 \name{g.cwaread}
 \alias{g.cwaread}
 \title{
-(Beta version) function to read .cwa-format files as produced by the accelerometer named 'Axivity'
+Function to read .cwa-format files as produced by the accelerometer named 'Axivity'
 }
 \description{
 For reading .cwa-format data, if you have .wav format data then see function \link{g.wavread}

@@ -96,7 +96,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
   if (mon == 4 & dformat == 4) {
     blocksize = round(blocksize * 1.0043)
-    cat("\nwarning: g.cwaread in beta version\n")
   }
   id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   #creating matrixes for storing output
