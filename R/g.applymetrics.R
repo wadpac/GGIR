@@ -1,6 +1,6 @@
 g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   # globalVariables(c("do.enmo","do.lfenmo","do.en","do.bfen","do.hfen",
-                    # "do.hfenplus","do.anglex","do.angley","do.anglez",
+                    # "do.hfenplus", "do.mad", "do.anglex","do.angley","do.anglez",
                     # "do.roll_med_acc_x","do.roll_med_acc_y","do.roll_med_acc_z",
                     # "do.dev_roll_med_acc_x","do.dev_roll_med_acc_y",
                     # "do.dev_roll_med_acc_z","do.enmoa"))
