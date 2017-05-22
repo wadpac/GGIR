@@ -708,10 +708,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       time2 = strftime(time2,format="%Y-%m-%dT%H:%M:%S%z")
       metalong[,1] = as.character(time2)
     }
-    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus",
+    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
                           "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa") #
-    metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,
+    metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                                                          do.anglex,do.angley,do.anglez,
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
