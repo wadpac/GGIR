@@ -22,13 +22,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
-                    do.hfenplus,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
+                    do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                     do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa)
   
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.2) chunksize = 0.2
-  nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,
+  nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa))
@@ -439,6 +439,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         if (do.hfenplus == TRUE) {
           metashort[count:(count-1+length(HFENplus3b)),col_msi] = HFENplus3b; col_msi = col_msi + 1
+        }
+        if (do.mad == TRUE) {
+          metashort[count:(count-1+length(MAD3b)),col_msi] = MAD3b; col_msi = col_msi + 1
         }
         if (do.anglex == TRUE) {
           metashort[count:(count-1+length(angle_x3b)),col_msi] = angle_x3b; col_msi = col_msi + 1
