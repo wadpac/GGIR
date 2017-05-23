@@ -130,12 +130,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   BFENi = which(colnames(metashort) == "BFEN")
   HFENi = which(colnames(metashort) == "HFEN")
   HFENplusi = which(colnames(metashort) == "HFENplus")
+  MADi = which(colnames(metashort) == "MAD")
   ENi = which(colnames(metashort) == "EN")
   if (length(ENMOi) == 0) ENMOi = -1
   if (length(LFENMOi) == 0) LFENMOi = -1
   if (length(BFENi) == 0) BFENi = -1
   if (length(HFENi) == 0) HFENi = -1
   if (length(HFENplusi) == 0) HFENplusi = -1
+  if (length(MADi) == 0) MADi = -1
   if (length(ENi) == 0) ENi = -1
   #===============================================
   # Extract features from the imputed data
@@ -427,7 +429,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 varnum = c(varnum,IMP$averageday[a56:a57,(mi-1)])
               }
             }
-            if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi) { #currently intensity/activity level features are based on metric ENMO, but by copy-pasting this to another metric this should work the same.
+            if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) { #currently intensity/activity level features are based on metric ENMO, but by copy-pasting this to another metric this should work the same.
               ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr)
               if (length(ML5$DAYL5HOUR) > 0) {
                 daysummary[di,fi] = ML5$DAYL5HOUR; ds_names[fi] = paste("L5hr_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",sep=""); fi=fi+1
@@ -448,6 +450,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 daysummary[di,fi] = mean(varnum) * 1000;  ds_names[fi] = "mean_HFEN_mg_24hr"; fi=fi+1 #HFEN
               } else if (mi == HFENplusi) {
                 daysummary[di,fi] = mean(varnum) * 1000;  ds_names[fi] = "mean_HFENplus_mg_24hr"; fi=fi+1 #HFEN+
+              } else if (mi == MADi) {
+                daysummary[di,fi] = mean(varnum) * 1000;  ds_names[fi] = "mean_MAD_mg_24hr"; fi=fi+1 #MAD
               }
               if (doquan == TRUE) {
                 #newly added on 9-7-2013, percentiles of acceleration in the specified window:
@@ -702,7 +706,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       for (mvpai in 1:length(mvpathreshold)) {
         #if mvpa is not done then this will look in the dummy variable and replace by c()
         for (mi in 2:ncol(metashort)) {
-          if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi) {
+          if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
             indeces = c(indeces,which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],sep="")),
                         which(ds_names == paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],sep="")),
                         which(ds_names == paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],sep="")),
@@ -723,7 +727,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                      which(ds_names == "mean_BFEN_mg_24hr"),
                      which(ds_names == "mean_EN_mg_24hr"),
                      which(ds_names == "mean_HFEN_mg_24hr"),
-                     which(ds_names == "mean_HFENplus_mg_24hr")
+                     which(ds_names == "mean_HFENplus_mg_24hr"),
+                     which(ds_names == "mean_MAD_mg_24hr")
     )
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
