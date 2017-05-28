@@ -414,6 +414,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         # extract time spent in activity levels (there are possibly many more features that can be extracted from this)
         if (nvalidhours >= includedaycrit) {
           #============================================================
+          keepindex_46 = matrix(NA, length(2:ncol(metashort)), 2) #added on 28/05/2017. Matrix to store indices for qlevels places for different metrics (SUM$summary)
+          keepindex_48 = matrix(NA, length(2:ncol(metashort)), 2) #added on 28/05/2017. Matrix to store indices for ilevels places for different metrics (SUM$summary)
           for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
             varnum = as.numeric(as.matrix(vari[,mi]))
             # if this is the first or last day and it has more than includedaycrit number of days then expand it
@@ -452,7 +454,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               if (doquan == TRUE) {
                 #newly added on 9-7-2013, percentiles of acceleration in the specified window:
                 q46 = quantile(varnum[((qwindow[1]*60*(60/ws3))+1):(qwindow[2]*60*(60/ws3))],probs=qlevels,na.rm=T,type=quantiletype) * 1000 #times 1000 to convert to mg
-                keepindex_46 = c(fi,(fi+(length(qlevels)-1)))
+                keepindex_46[mi,] = c(fi,(fi+(length(qlevels)-1))) #changed on 28/05/2017. Index for the qlevels of the mi metric
                 namesq46 = rep(0,length(rownames(as.matrix(q46))))
                 for (rq46i in 1:length(rownames(as.matrix(q46)))) {
                   tmp1 = rownames(as.matrix(q46))[rq46i]
@@ -468,7 +470,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 q47 = cut((varnum[((qwindow[1]*60*(60/ws3))+1):(qwindow[2]*60*(60/ws3))]*1000),breaks,right=FALSE)
                 q47 = table(q47)
                 q48  = (as.numeric(q47) * ws3)/60 #converting to minutes
-                keepindex_48 = c(fi,(fi+(length(q48)-1)))
+                keepindex_48[mi,] = c(fi,(fi+(length(q48)-1))) #changed on 28/05/2017. Index for the ilevels of the mi metric
                 namesq47 = rep(0,length(rownames(q47)))
                 for (rq47i in 1:length(rownames(q47))) {
                   namesq47[rq47i] = paste(rownames(q47)[rq47i],"_mg_",t_TWDI[1],"-",t_TWDI[2],"h",sep="")
@@ -762,95 +764,99 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       vi = vi+6+((dtwtel*sp)-1)
       #===========================================================================
       # SUMMARISE Percentiles (q46)
-      if (doquan == TRUE) {
-        if (length(q46) > 0) {
-          for (ki46 in keepindex_46[1]:keepindex_46[2]) {
-            v4 = mean(as.numeric(daysummary[,ki46]),na.rm=TRUE) #plain average of available days
-            summary[vi] = v4 # #average all availabel days
-            s_names[vi] = paste("AD_",ds_names[ki46],sep="") 
-            vi = vi + 1
-          }
-          for (ki46 in keepindex_46[1]:keepindex_46[2]) {
-            dtw_wkend = as.numeric(daysummary[wkend,ki46])
-            v1 = mean(dtw_wkend,na.rm=TRUE)
-            summary[vi] = v1 # #weekend average
-            s_names[vi] = paste("WE_",ds_names[ki46],sep="")
-            vi = vi + 1
-          }
-          for (ki46 in keepindex_46[1]:keepindex_46[2]) {
-            dtw_wkday = as.numeric(daysummary[wkday,ki46])
-            v2 = mean(dtw_wkday,na.rm=TRUE)
-            summary[vi] = v2 # #weekday average
-            s_names[vi] = paste("WD_",ds_names[ki46],sep="") 
-            vi = vi + 1
-          }
-          # Weighted average of available days
-          for (ki46 in keepindex_46[1]:keepindex_46[2]) {
-            dtw_wkend = as.numeric(daysummary[wkend,ki46])
-            if (length(dtw_wkend) > 2) {
-              dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+      keepindex_46 = keepindex_46[complete.cases(keepindex_46),] #added on 28/05/2017
+      keepindex_48 = keepindex_48[complete.cases(keepindex_48),] #added on 28/05/2017
+      for (mi in 1:nrow(keepindex_46)) { #added on 28/05/2017. Run through metrics (for features based on single metrics)
+        if (doquan == TRUE) {
+          if (length(q46) > 0) {
+            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+              v4 = mean(as.numeric(daysummary[,ki46]),na.rm=TRUE) #plain average of available days
+              summary[vi] = v4 # #average all availabel days
+              s_names[vi] = paste("AD_",ds_names[ki46],sep="") 
+              vi = vi + 1
             }
-            v1 = mean(dtw_wkend,na.rm=TRUE)
-            summary[vi] = v1 # #weekend average
-            s_names[vi] = paste("WWE_",ds_names[ki46],sep="") 
-            vi = vi + 1
-          }
-          for (ki46 in keepindex_46[1]:keepindex_46[2]) {
-            dtw_wkday = as.numeric(daysummary[wkday,ki46])
-            if (length(dtw_wkday) > 5) {
-              dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+              dtw_wkend = as.numeric(daysummary[wkend,ki46])
+              v1 = mean(dtw_wkend,na.rm=TRUE)
+              summary[vi] = v1 # #weekend average
+              s_names[vi] = paste("WE_",ds_names[ki46],sep="")
+              vi = vi + 1
             }
-            v2 = mean(dtw_wkday,na.rm=TRUE)
-            summary[vi] = v2 # #weekday average
-            s_names[vi] = paste("WWD_",ds_names[ki46],sep="")
-            vi = vi+1
+            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+              dtw_wkday = as.numeric(daysummary[wkday,ki46])
+              v2 = mean(dtw_wkday,na.rm=TRUE)
+              summary[vi] = v2 # #weekday average
+              s_names[vi] = paste("WD_",ds_names[ki46],sep="") 
+              vi = vi + 1
+            }
+            # Weighted average of available days
+            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+              dtw_wkend = as.numeric(daysummary[wkend,ki46])
+              if (length(dtw_wkend) > 2) {
+                dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+              }
+              v1 = mean(dtw_wkend,na.rm=TRUE)
+              summary[vi] = v1 # #weekend average
+              s_names[vi] = paste("WWE_",ds_names[ki46],sep="") 
+              vi = vi + 1
+            }
+            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+              dtw_wkday = as.numeric(daysummary[wkday,ki46])
+              if (length(dtw_wkday) > 5) {
+                dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+              }
+              v2 = mean(dtw_wkday,na.rm=TRUE)
+              summary[vi] = v2 # #weekday average
+              s_names[vi] = paste("WWD_",ds_names[ki46],sep="")
+              vi = vi+1
+            }
           }
         }
-      }
-      #======================================================
-      # SUMMARISE acceleration distribution(q48)
-      if (doilevels == TRUE) {
-        if (length(q48) > 0) {
-          for (ki48 in keepindex_48[1]:keepindex_48[2]) {
-            v4 = mean(as.numeric(daysummary[,ki48]),na.rm=TRUE) #plain average of available days
-            summary[vi] = v4 # #average all availabel days
-            s_names[vi] = paste("AD_",ds_names[ki48],sep="") 
-            vi = vi + 1
-          }
-          for (ki48 in keepindex_48[1]:keepindex_48[2]) {
-            dtw_wkend = as.numeric(daysummary[wkend,ki48])
-            v1 = mean(dtw_wkend,na.rm=TRUE)
-            summary[vi] = v1 # #weekend average
-            s_names[vi] = paste("WE_",ds_names[ki48],sep="")
-            vi = vi + 1
-          }
-          for (ki48 in keepindex_48[1]:keepindex_48[2]) {
-            dtw_wkday = as.numeric(daysummary[wkday,ki48])
-            v2 = mean(dtw_wkday,na.rm=TRUE)
-            summary[vi] = v2 # #weekday average
-            s_names[vi] = paste("WD_",ds_names[ki48],sep="")
-            vi = vi + 1
-          }
-          # Weighted average of available days
-          for (ki48 in keepindex_48[1]:keepindex_48[2]) {
-            dtw_wkend = as.numeric(daysummary[wkend,ki48])
-            if (length(dtw_wkend) > 2) {
-              dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+        #======================================================
+        # SUMMARISE acceleration distribution(q48)
+        if (doilevels == TRUE) {
+          if (length(q48) > 0) {
+            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+              v4 = mean(as.numeric(daysummary[,ki48]),na.rm=TRUE) #plain average of available days
+              summary[vi] = v4 # #average all availabel days
+              s_names[vi] = paste("AD_",ds_names[ki48],sep="") 
+              vi = vi + 1
             }
-            v1 = mean(dtw_wkend,na.rm=TRUE)
-            summary[vi] = v1 # #weekend average
-            s_names[vi] = paste("WWE_",ds_names[ki48],sep="")
-            vi = vi + 1
-          }
-          for (ki48 in keepindex_48[1]:keepindex_48[2]) {
-            dtw_wkday = as.numeric(daysummary[wkday,ki48])
-            if (length(dtw_wkday) > 5) {
-              dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+              dtw_wkend = as.numeric(daysummary[wkend,ki48])
+              v1 = mean(dtw_wkend,na.rm=TRUE)
+              summary[vi] = v1 # #weekend average
+              s_names[vi] = paste("WE_",ds_names[ki48],sep="")
+              vi = vi + 1
             }
-            v2 = mean(dtw_wkday,na.rm=TRUE)
-            summary[vi] = v2 # #weekday average
-            s_names[vi] = paste("WWD_",ds_names[ki48],sep="") 
-            vi = vi+1
+            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+              dtw_wkday = as.numeric(daysummary[wkday,ki48])
+              v2 = mean(dtw_wkday,na.rm=TRUE)
+              summary[vi] = v2 # #weekday average
+              s_names[vi] = paste("WD_",ds_names[ki48],sep="")
+              vi = vi + 1
+            }
+            # Weighted average of available days
+            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+              dtw_wkend = as.numeric(daysummary[wkend,ki48])
+              if (length(dtw_wkend) > 2) {
+                dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+              }
+              v1 = mean(dtw_wkend,na.rm=TRUE)
+              summary[vi] = v1 # #weekend average
+              s_names[vi] = paste("WWE_",ds_names[ki48],sep="")
+              vi = vi + 1
+            } 
+            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+              dtw_wkday = as.numeric(daysummary[wkday,ki48])
+              if (length(dtw_wkday) > 5) {
+                dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+              }
+              v2 = mean(dtw_wkday,na.rm=TRUE)
+              summary[vi] = v2 # #weekday average
+              s_names[vi] = paste("WWD_",ds_names[ki48],sep="") 
+              vi = vi+1
+            }
           }
         }
       }
