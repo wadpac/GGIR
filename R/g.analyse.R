@@ -769,20 +769,20 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       for (mi in 1:nrow(keepindex_46)) { #added on 28/05/2017. Run through metrics (for features based on single metrics)
         if (doquan == TRUE) {
           if (length(q46) > 0) {
-            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+            for (ki46 in keepindex_46[mi,1]:keepindex_46[mi,2]) {
               v4 = mean(as.numeric(daysummary[,ki46]),na.rm=TRUE) #plain average of available days
               summary[vi] = v4 # #average all availabel days
               s_names[vi] = paste("AD_",ds_names[ki46],sep="") 
               vi = vi + 1
             }
-            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+            for (ki46 in keepindex_46[mi,1]:keepindex_46[mi,2]) {
               dtw_wkend = as.numeric(daysummary[wkend,ki46])
               v1 = mean(dtw_wkend,na.rm=TRUE)
               summary[vi] = v1 # #weekend average
               s_names[vi] = paste("WE_",ds_names[ki46],sep="")
               vi = vi + 1
             }
-            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+            for (ki46 in keepindex_46[mi,1]:keepindex_46[mi,2]) {
               dtw_wkday = as.numeric(daysummary[wkday,ki46])
               v2 = mean(dtw_wkday,na.rm=TRUE)
               summary[vi] = v2 # #weekday average
@@ -790,7 +790,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               vi = vi + 1
             }
             # Weighted average of available days
-            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+            for (ki46 in keepindex_46[mi,1]:keepindex_46[mi,2]) {
               dtw_wkend = as.numeric(daysummary[wkend,ki46])
               if (length(dtw_wkend) > 2) {
                 dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
@@ -800,7 +800,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               s_names[vi] = paste("WWE_",ds_names[ki46],sep="") 
               vi = vi + 1
             }
-            for (ki46 in keepindex_46[1]:keepindex_46[2]) {
+            for (ki46 in keepindex_46[mi,1]:keepindex_46[mi,2]) {
               dtw_wkday = as.numeric(daysummary[wkday,ki46])
               if (length(dtw_wkday) > 5) {
                 dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
@@ -816,20 +816,20 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         # SUMMARISE acceleration distribution(q48)
         if (doilevels == TRUE) {
           if (length(q48) > 0) {
-            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+            for (ki48 in keepindex_48[mi,1]:keepindex_48[mi,2]) {
               v4 = mean(as.numeric(daysummary[,ki48]),na.rm=TRUE) #plain average of available days
               summary[vi] = v4 # #average all availabel days
               s_names[vi] = paste("AD_",ds_names[ki48],sep="") 
               vi = vi + 1
             }
-            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+            for (ki48 in keepindex_48[mi,1]:keepindex_48[mi,2]) {
               dtw_wkend = as.numeric(daysummary[wkend,ki48])
               v1 = mean(dtw_wkend,na.rm=TRUE)
               summary[vi] = v1 # #weekend average
               s_names[vi] = paste("WE_",ds_names[ki48],sep="")
               vi = vi + 1
             }
-            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+            for (ki48 in keepindex_48[mi,1]:keepindex_48[mi,2]) {
               dtw_wkday = as.numeric(daysummary[wkday,ki48])
               v2 = mean(dtw_wkday,na.rm=TRUE)
               summary[vi] = v2 # #weekday average
@@ -837,7 +837,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               vi = vi + 1
             }
             # Weighted average of available days
-            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+            for (ki48 in keepindex_48[mi,1]:keepindex_48[mi,2]) {
               dtw_wkend = as.numeric(daysummary[wkend,ki48])
               if (length(dtw_wkend) > 2) {
                 dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
@@ -847,7 +847,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               s_names[vi] = paste("WWE_",ds_names[ki48],sep="")
               vi = vi + 1
             } 
-            for (ki48 in keepindex_48[1]:keepindex_48[2]) {
+            for (ki48 in keepindex_48[mi,1]:keepindex_48[mi,2]) {
               dtw_wkday = as.numeric(daysummary[wkday,ki48])
               if (length(dtw_wkday) > 5) {
                 dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
