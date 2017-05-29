@@ -414,8 +414,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         # extract time spent in activity levels (there are possibly many more features that can be extracted from this)
         if (nvalidhours >= includedaycrit) {
           #============================================================
-          keepindex_46 = matrix(NA, length(2:ncol(metashort)), 2) #added on 28/05/2017. Matrix to store indices for qlevels places for different metrics (SUM$summary)
-          keepindex_48 = matrix(NA, length(2:ncol(metashort)), 2) #added on 28/05/2017. Matrix to store indices for ilevels places for different metrics (SUM$summary)
+          keepindex_46 = matrix(NA, ncol(metashort), 2) #added on 28/05/2017. Matrix to store indices for qlevels places for different metrics (SUM$summary)
+          keepindex_48 = matrix(NA, ncol(metashort), 2) #added on 28/05/2017. Matrix to store indices for ilevels places for different metrics (SUM$summary)
           for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
             varnum = as.numeric(as.matrix(vari[,mi]))
             # if this is the first or last day and it has more than includedaycrit number of days then expand it
