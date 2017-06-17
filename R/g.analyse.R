@@ -764,8 +764,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       vi = vi+6+((dtwtel*sp)-1)
       #===========================================================================
       # SUMMARISE Percentiles (q46)
-      keepindex_46 = keepindex_46[complete.cases(keepindex_46),] #added on 28/05/2017
-      keepindex_48 = keepindex_48[complete.cases(keepindex_48),] #added on 28/05/2017
+      keepindex_46 = keepindex_46[stats::complete.cases(keepindex_46),] #added on 28/05/2017
+      keepindex_48 = keepindex_48[stats::complete.cases(keepindex_48),] #added on 28/05/2017
       for (mi in 1:nrow(keepindex_46)) { #added on 28/05/2017. Run through metrics (for features based on single metrics)
         if (doquan == TRUE) {
           if (length(q46) > 0) {
