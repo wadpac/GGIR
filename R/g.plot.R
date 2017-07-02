@@ -15,6 +15,7 @@ g.plot = function(IMP,M,I,durplot) {
   mon = I$monc
   monn = I$monn
   dformat = I$dformc
+  # print(paste0(nrow(M$metashort)," ",nrow(M$metalong)," ",length(timeline)," ",length(r1)))
   #=====================================================
   #create coordinates for rectangles non-wear
   cd1 = g.createcoordinates(r1,timeline) #nonwear
