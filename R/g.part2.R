@@ -25,6 +25,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
     dir.create(file.path(metadatadir,ms2.out))
   }
   
+
   csvfolder = "/meta/csv"
   if (epochvalues2csv==TRUE) {
     if (file.exists(paste(metadatadir,csvfolder,sep=""))) {
@@ -34,6 +35,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   }
   fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
   ffdone = fnames.ms2
+
   #---------------------------------
   # house keeping variables
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
