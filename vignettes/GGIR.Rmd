@@ -37,13 +37,13 @@ R package GGIR would not have been possible without the support of the following
  
 **People:** 
 
+- Dr. Vincent van Hees as main developer
 - Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R
-- Dr. Zhou Fang contributed code for the auto-calibration functionality
+- Dr. Zhou Fang contributed to a part of the code for the auto-calibration functionality
 - Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording
 - Dr. Severine Sabia tested and provided feedback on numerous aspects of the package
 - Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR
-- Dr. Vincent van Hees as main developer
- 
+
 **Institutions:**
 
 - The MRC Epidemiology Unit at the University of Cambridge, Cambridge, UK
@@ -83,7 +83,7 @@ install.packages("GGIR", dependencies = TRUE)
     - [ActiGraph](http://actigraphcorp.com/) .csv. Note for Actigraph users:
 In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absense of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Axivity](http://axivity.com/) .wav and .cwa
-    - Genea (not available anymore) .bin and .csv
+    - Genea (an accelerometer that is not available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
@@ -351,7 +351,7 @@ When input argument `do.visual` is set to TRUE GGIR can show the following visua
 
 Explanation of the image: Each line represents one night. Colors are used to dinstinguish definitions of sustianed inacitivty bouts (2 definitions in this case) and to indicate existence or absense of overlap with the sleeplog. When argument `outliers.only` is set to FALSE it will visualise all available nights in the dataset. If `outliers.only` is set to TRUE it will visualise only nights with a difference in onset or waking time between sleeplog and sustained inactivity bouts larger than the value of argument `criterror`.
 
-This visualisation with outliers.only set to TRUE and critererror set to 4 was very powerful to identify entry errors in sleeplog data in van Hees et al PLoSONE 2016. We had over 25 thousand nights of data, and this visualisation allowed us to quickly zoom in on the most problematic nights to investigate possible mistakes in GGIR or mistakes in data entry.
+This visualisation with outliers.only set to TRUE and critererror set to 4 was very powerful to identify entry errors in sleeplog data in van Hees et al PLoSONE 2015. We had over 25 thousand nights of data, and this visualisation allowed us to quickly zoom in on the most problematic nights to investigate possible mistakes in GGIR or mistakes in data entry.
 
 ```{r, out.width = "700px",echo=FALSE}
 knitr::include_graphics("example_dovisual.jpg")
