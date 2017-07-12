@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-10 (release date:12-7-2017)}{
+\itemize{
+  \item Date format recognition improved for Actigraph csv files
+  }
+}
+
 \section{Changes in version 1.5-9 (release date:21-5-2017)}{
 \itemize{
   \item g.inspectfile now also functional with cwa data
