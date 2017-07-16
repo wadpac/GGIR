@@ -109,14 +109,27 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       B3 = length(unlist(strsplit(topline,"dd[.]MM[.]yyyy")))
       B4 = length(unlist(strsplit(topline,"d[.]M[.]yyyy")))
       if (B1 > 1) {
-        starttime = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
+        starttime0 = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
+        if(is.na(starttime0) == TRUE) {
+          starttime0 = as.POSIXlt(starttime,format='%m-%d-%Y %H:%M:%S')
+        }
       } else if (B2 > 1) {
-        starttime = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
+        starttime0 = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
+        if(is.na(starttime0) == TRUE) {
+          starttime0 = as.POSIXlt(starttime,format='%m-%d-%Y %H:%M:%S')
+        }
       } else if (B3 > 1) {
-        starttime = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
+        starttime0 = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
+        if(is.na(starttime0) == TRUE) {
+          starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+        }
       } else if (B4 > 1) {
-        starttime = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
+        starttime0 = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
+        if(is.na(starttime0) == TRUE) {
+          starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+        }
       }
+      starttime = starttime0
       lengthheader = 9
     }
   }
