@@ -9,7 +9,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    boutdur.lig = c(1,5,10),
                    winhr = 5,
                    M5L5res = 10,
-                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4) {
+                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0) {
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
@@ -212,7 +212,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           sec = tempp$sec
           min = tempp$min
           hour = tempp$hour
-          nightsi = which(sec == 0 & min == 0 & hour == 0)
+          if (dayborder == 0) {
+            nightsi = which(sec == 0 & min == 0 & hour == 0)
+            } else {
+            nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
+                    }
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
