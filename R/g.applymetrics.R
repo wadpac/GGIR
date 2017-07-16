@@ -1,6 +1,6 @@
 g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   # globalVariables(c("do.enmo","do.lfenmo","do.en","do.bfen","do.hfen",
-                    # "do.hfenplus","do.anglex","do.angley","do.anglez",
+                    # "do.hfenplus", "do.mad", "do.anglex","do.angley","do.anglez",
                     # "do.roll_med_acc_x","do.roll_med_acc_y","do.roll_med_acc_z",
                     # "do.dev_roll_med_acc_x","do.dev_roll_med_acc_y",
                     # "do.dev_roll_med_acc_z","do.enmoa"))
@@ -11,6 +11,7 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   do.en = metrics2do$do.en
   do.hfen = metrics2do$do.hfen
   do.hfenplus = metrics2do$do.hfenplus
+  do.mad = metrics2do$do.mad
   do.anglex = metrics2do$do.anglex
   do.angley = metrics2do$do.angley
   do.anglez = metrics2do$do.anglez
@@ -47,6 +48,13 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     ENMO = EN - 1
     ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
     allmetrics$ENMO3b = averageperws3(x=ENMO,sf,ws3)
+  }
+  #-----------------------------------------------------
+  #deriving metric MAD (Mean Amplitude Deviation)
+  if (do.mad == TRUE) {
+    MEANS = rep(averageperws3(x=EN,sf,ws3), each = sf*ws3)
+    MAD = abs(EN - MEANS)
+    allmetrics$MAD3b = averageperws3(x=MAD,sf,ws3)
   }
   #------------------------------------------------------------
   # space for extra metrics
