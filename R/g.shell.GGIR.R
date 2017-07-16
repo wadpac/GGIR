@@ -81,6 +81,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "do.bfen")) == 0)  do.bfen = FALSE
   if (length(which(ls() == "do.hfen")) == 0)  do.hfen = FALSE
   if (length(which(ls() == "do.hfenplus")) == 0)  do.hfenplus = FALSE
+  if (length(which(ls() == "do.mad")) == 0)  do.mad = FALSE
   if (length(which(ls() == "do.anglex")) == 0)  do.anglex = FALSE
   if (length(which(ls() == "do.angley")) == 0)  do.angley = FALSE
   if (length(which(ls() == "do.anglez")) == 0)  do.anglez = FALSE
@@ -163,7 +164,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             do.enmo = do.enmo,
             do.lfenmo = do.lfenmo,do.en = do.en,
             do.bfen = do.bfen,do.hfen=do.hfen,
-            do.hfenplus = do.hfenplus,
+            do.hfenplus = do.hfenplus, do.mad=do.mad,
             do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
             do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
             do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
