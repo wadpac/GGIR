@@ -130,12 +130,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   BFENi = which(colnames(metashort) == "BFEN")
   HFENi = which(colnames(metashort) == "HFEN")
   HFENplusi = which(colnames(metashort) == "HFENplus")
+  MADi = which(colnames(metashort) == "MAD")
   ENi = which(colnames(metashort) == "EN")
   if (length(ENMOi) == 0) ENMOi = -1
   if (length(LFENMOi) == 0) LFENMOi = -1
   if (length(BFENi) == 0) BFENi = -1
   if (length(HFENi) == 0) HFENi = -1
   if (length(HFENplusi) == 0) HFENplusi = -1
+  if (length(MADi) == 0) MADi = -1
   if (length(ENi) == 0) ENi = -1
   #===============================================
   # Extract features from the imputed data
@@ -414,8 +416,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         # extract time spent in activity levels (there are possibly many more features that can be extracted from this)
         if (nvalidhours >= includedaycrit) {
           #============================================================
-          keepindex_46 = matrix(NA, ncol(metashort), 2) #added on 28/05/2017. Matrix to store indices for qlevels places for different metrics (SUM$summary)
-          keepindex_48 = matrix(NA, ncol(metashort), 2) #added on 28/05/2017. Matrix to store indices for ilevels places for different metrics (SUM$summary)
+          keepindex_46 = matrix(NA, length(2:ncol(metashort)), 2)
+          keepindex_48 = matrix(NA, length(2:ncol(metashort)), 2)
           for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
             varnum = as.numeric(as.matrix(vari[,mi]))
             # if this is the first or last day and it has more than includedaycrit number of days then expand it
@@ -429,7 +431,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 varnum = c(varnum,IMP$averageday[a56:a57,(mi-1)])
               }
             }
-            if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi) { #currently intensity/activity level features are based on metric ENMO, but by copy-pasting this to another metric this should work the same.
+            if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) { #currently intensity/activity level features are based on metric ENMO, but by copy-pasting this to another metric this should work the same.
               ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr)
               if (length(ML5$DAYL5HOUR) > 0) {
                 daysummary[di,fi] = ML5$DAYL5HOUR; ds_names[fi] = paste("L5hr_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",sep=""); fi=fi+1
@@ -450,11 +452,13 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 daysummary[di,fi] = mean(varnum) * 1000;  ds_names[fi] = "mean_HFEN_mg_24hr"; fi=fi+1 #HFEN
               } else if (mi == HFENplusi) {
                 daysummary[di,fi] = mean(varnum) * 1000;  ds_names[fi] = "mean_HFENplus_mg_24hr"; fi=fi+1 #HFEN+
+              } else if (mi == MADi) {
+                daysummary[di,fi] = mean(varnum) * 1000;  ds_names[fi] = "mean_MAD_mg_24hr"; fi=fi+1 #MAD
               }
               if (doquan == TRUE) {
                 #newly added on 9-7-2013, percentiles of acceleration in the specified window:
                 q46 = quantile(varnum[((qwindow[1]*60*(60/ws3))+1):(qwindow[2]*60*(60/ws3))],probs=qlevels,na.rm=T,type=quantiletype) * 1000 #times 1000 to convert to mg
-                keepindex_46[mi,] = c(fi,(fi+(length(qlevels)-1))) #changed on 28/05/2017. Index for the qlevels of the mi metric
+                keepindex_46[mi,] = c(fi,(fi+(length(qlevels)-1)))
                 namesq46 = rep(0,length(rownames(as.matrix(q46))))
                 for (rq46i in 1:length(rownames(as.matrix(q46)))) {
                   tmp1 = rownames(as.matrix(q46))[rq46i]
@@ -470,7 +474,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 q47 = cut((varnum[((qwindow[1]*60*(60/ws3))+1):(qwindow[2]*60*(60/ws3))]*1000),breaks,right=FALSE)
                 q47 = table(q47)
                 q48  = (as.numeric(q47) * ws3)/60 #converting to minutes
-                keepindex_48[mi,] = c(fi,(fi+(length(q48)-1))) #changed on 28/05/2017. Index for the ilevels of the mi metric
+                keepindex_48[mi,] = c(fi,(fi+(length(q48)-1)))
                 namesq47 = rep(0,length(rownames(q47)))
                 for (rq47i in 1:length(rownames(q47))) {
                   namesq47[rq47i] = paste(rownames(q47)[rq47i],"_mg_",t_TWDI[1],"-",t_TWDI[2],"h",sep="")
@@ -704,7 +708,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       for (mvpai in 1:length(mvpathreshold)) {
         #if mvpa is not done then this will look in the dummy variable and replace by c()
         for (mi in 2:ncol(metashort)) {
-          if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi) {
+          if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
             indeces = c(indeces,which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],sep="")),
                         which(ds_names == paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],sep="")),
                         which(ds_names == paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],sep="")),
@@ -725,7 +729,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                      which(ds_names == "mean_BFEN_mg_24hr"),
                      which(ds_names == "mean_EN_mg_24hr"),
                      which(ds_names == "mean_HFEN_mg_24hr"),
-                     which(ds_names == "mean_HFENplus_mg_24hr")
+                     which(ds_names == "mean_HFENplus_mg_24hr"),
+                     which(ds_names == "mean_MAD_mg_24hr")
     )
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
@@ -764,9 +769,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       vi = vi+6+((dtwtel*sp)-1)
       #===========================================================================
       # SUMMARISE Percentiles (q46)
-      keepindex_46 = keepindex_46[complete.cases(keepindex_46),] #added on 28/05/2017
-      keepindex_48 = keepindex_48[complete.cases(keepindex_48),] #added on 28/05/2017
-      for (mi in 1:nrow(keepindex_46)) { #added on 28/05/2017. Run through metrics (for features based on single metrics)
+      keepindex_46 = keepindex_46[complete.cases(keepindex_46),]
+      keepindex_48 = keepindex_48[complete.cases(keepindex_48),]
+      for (mi in 1:nrow(keepindex_46)) { #run through metrics (for features based on single metrics)
         if (doquan == TRUE) {
           if (length(q46) > 0) {
             for (ki46 in keepindex_46[mi,1]:keepindex_46[mi,2]) {
@@ -846,7 +851,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               summary[vi] = v1 # #weekend average
               s_names[vi] = paste("WWE_",ds_names[ki48],sep="")
               vi = vi + 1
-            } 
+            }
             for (ki48 in keepindex_48[mi,1]:keepindex_48[mi,2]) {
               dtw_wkday = as.numeric(daysummary[wkday,ki48])
               if (length(dtw_wkday) > 5) {
