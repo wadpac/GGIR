@@ -206,38 +206,38 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
   Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
   if (length(Xi) > (IVIS_epochsize_seconds/ws3) & length(Xi) >  (IVIS_windowsize_minutes*60)/ws3) {
-  if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
-    Xicum =cumsum(Xi)
-    step = IVIS_epochsize_seconds/ws3 # should be 6 when ws3=5 and IVIS_epochsize_seconds = 30
-    select= seq(1,length(Xicum)/step,by=step)
-    Xi = diff(c(0,Xicum[select]))/step
-  }
-  nhr = 24*round(60/IVIS_windowsize_minutes) # Number of hours in a day (modify this variable if you want to study different resolutions)
-  Nsecondsinday = 24*3600
-  # ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
-  ni = (Nsecondsinday/nhr)/IVIS_epochsize_seconds # number of epochs in an hour
-  # derive average day with 1 'hour' resolution (hour => windowsize):
-  N = length(Xi)
-  hour = rep(1:ceiling(N/ni),each=ni)
-  if (length(hour) > N) hour = hour[1:N]
-  dat = data.frame(Xi=Xi,hour=hour)
-  InterdailyStability = NA
-  IntradailyVariability = NA
-  if (nrow(dat) > 1) {
-    hh = aggregate(. ~ hour,data=dat,mean)
-    hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
-    hh$day = ceiling(hh$hour/nhr)
-    if (nrow(hh) > 1) {
-      hh2 = aggregate(. ~ hour_perday,data=hh,mean)
-      Xh = hh2$Xi
-      # average acceleration per day
-      Xm = mean(Xh,na.rm = TRUE) 
-      p = length(Xh)
-      InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
-      IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
-      # print(paste0(InterdailyStability," ",IntradailyVariability))
+    if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
+      Xicum =cumsum(Xi)
+      step = IVIS_epochsize_seconds/ws3 # should be 6 when ws3=5 and IVIS_epochsize_seconds = 30
+      select= seq(1,length(Xicum),by=step) # adjusted 17/7/2017
+      Xi = diff(c(0,Xicum[select]))/step
     }
-  }
+    nhr = 24*round(60/IVIS_windowsize_minutes) # Number of hours in a day (modify this variable if you want to study different resolutions)
+    Nsecondsinday = 24*3600
+    # ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
+    ni = (Nsecondsinday/nhr)/IVIS_epochsize_seconds # number of epochs in an hour
+    # derive average day with 1 'hour' resolution (hour => windowsize):
+    N = length(Xi)
+    hour = rep(1:ceiling(N/ni),each=ni)
+    if (length(hour) > N) hour = hour[1:N]
+    dat = data.frame(Xi=Xi,hour=hour)
+    InterdailyStability = NA
+    IntradailyVariability = NA
+    if (nrow(dat) > 1) {
+      hh = aggregate(. ~ hour,data=dat,mean)
+      hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
+      hh$day = ceiling(hh$hour/nhr)
+      if (nrow(hh) > 1) {
+        hh2 = aggregate(. ~ hour_perday,data=hh,mean)
+        Xh = hh2$Xi
+        # average acceleration per day
+        Xm = mean(Xh,na.rm = TRUE) 
+        p = length(Xh)
+        InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
+        IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
+        # print(paste0(InterdailyStability," ",IntradailyVariability))
+      }
+    }
   } else {
     InterdailyStability = NA
     IntradailyVariability = NA
