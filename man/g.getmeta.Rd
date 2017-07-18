@@ -151,6 +151,9 @@ print(M$metalong[1:5,])
 print(M$metalong[1:5,])
 }
 }
+\author{
+Vincent T van Hees <vincentvanhees@gmail.com>
+}
 \references{
   \itemize{
 \item van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating
@@ -162,6 +165,4 @@ amplitude deviation calculated from raw acceleration data : a novel method for
 classifying the intensity of adolescents ’ physical activity irrespective of accelerometer 
 brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
-\author{
-Vincent T van Hees <vincentvanhees@gmail.com>
 }
