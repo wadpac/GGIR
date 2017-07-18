@@ -86,7 +86,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   if TRUE, calculate metric HFENplus with band-pass filter configuration set
   by \code{lb} and \code{hb}, see \link{g.getmeta}
   }
-  \item{do.MAD}{
+  \item{do.mad}{
   if TRUE, calculate metric MAD (Mean Amplitude Deviation), see \link{g.getmeta}
   }  
   \item{do.anglex}{
