@@ -769,6 +769,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       vi = vi+6+((dtwtel*sp)-1)
       #===========================================================================
       # SUMMARISE Percentiles (q46)
+      import(stats)
       keepindex_46 = keepindex_46[complete.cases(keepindex_46),]
       keepindex_48 = keepindex_48[complete.cases(keepindex_48),]
       for (mi in 1:nrow(keepindex_46)) { #run through metrics (for features based on single metrics)
