@@ -1,7 +1,9 @@
 library(GGIR)
 test_that("chainof5parts", {
-  createtestfile()
-  fn = "testfile.csv"
+  create_test_acc_csv()
+  create_test_sleeplog_csv()
+  fn = "123A_testaccfile.csv"
+  sleeplog_fn = "testsleeplogfile.csv"
   metadatadir = paste0(getwd(),"/output_test")
   dn = "output_test"
   # part 1
@@ -22,7 +24,7 @@ test_that("chainof5parts", {
   expect_that(C$npoints,equals(2606))
   
   # part 2
-  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
+  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = 2, includedaycrit = 1)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=2)
@@ -57,23 +59,25 @@ test_that("chainof5parts", {
   
   # part 4
   g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-          idloc=1,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
-          excludefirstlast=FALSE,criterror = 1,includenightcrit=1,
-          relyonsleeplog=FALSE,def.noc.sleep=c(21,9),
+          idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
+          excludefirstlast=FALSE,criterror = 1,includenightcrit=1,nnights=7,colid=1,coln1=2,
+          relyonsleeplog=FALSE,
           storefolderstructure=FALSE, overwrite=TRUE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-  # g.report.part4(datadir=fn,metadatadir=metadatadir,loglocation =c(),f0=1,f1=1)
+  g.report.part4(datadir=fn,metadatadir=metadatadir,loglocation = sleeplog_fn,f0=1,f1=1)
   
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(vis_sleep_file),is_true())
   expect_that(round(nightsummary$acc_dur_sibd,digits=4),equals(0.2403))
   expect_that(as.logical(nightsummary$acc_available),is_true())
-  expect_that(as.logical(nightsummary$sleeplog_used),is_false())
+  expect_that(as.logical(nightsummary$sleeplog_used),is_true())
   
   dn = "output_test"
   # if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
+  if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
+  
 })
