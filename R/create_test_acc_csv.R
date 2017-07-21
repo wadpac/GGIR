@@ -34,6 +34,14 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   
   # default values, including some calibration error such that auto-calibration can do its work
   
+  #============================================================
+  # insert 2 minute blocks of activity at the beginning of every 15 minutes
+  actP1 = seq((1*3600*sf)+1,Nrows,by=0.25*3600*sf) # starts at the 1st hour of every 24 hours
+  actP2 = rep(actP1,each=2*60*sf) # and lasts 2 minutes
+  actP3 = actP2 + rep(0:((length(actP2)/length(actP1))-1), time = length(actP1))
+  ACC = rep(0,Nrows) #empty ACC pattern
+  ACC[actP3] = 0.08 + rnorm(n = length(actP3),mean = 0,sd=0.01) # add 0.08g + 10 mg noise
+  testdata[,1] = testdata[,1] + ACC
   #======================================
   # insert 2 hour blocks of accelermeter non-wear time
   nw1 = seq((300*sf)+1,Nrows,by=24*3600*sf) #non wear starts at the 5th minute of every 24 hours
@@ -54,6 +62,7 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   act_periods = sort(unique(c(actL3,actS3)))
   ACC[act_periods] = 0.5 + rnorm(n = length(act_periods),mean = 0,sd=0.04) # add 0.5g + 20 mg noise
   testdata[,1] = testdata[,1] + ACC
+  
   #======================================
   # insert variations in angle
   gensequence = function(t0,t1) {
