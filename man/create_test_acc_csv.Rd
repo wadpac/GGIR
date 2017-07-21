@@ -1,5 +1,5 @@
-\name{createtestfile}
-\alias{createtestfile}
+\name{create_test_acc_csv}
+\alias{create_test_acc_csv}
 \title{
 Creates csv data file for testing purposes
 }
@@ -10,7 +10,7 @@ with bouts of higher acceleration, variations non-movement periods
 in a range of accelerometer positions to allow for testing the
 auto-calibration functionality.}
 \usage{
-  createtestfile(sf=3,Nmin=2000,storagelocation=c())
+  create_test_acc_csv(sf=3,Nmin=2000,storagelocation=c())
 }
 \arguments{
   \item{sf}{
@@ -32,6 +32,6 @@ auto-calibration functionality.}
   
 \examples{
   \dontrun{
-    createtestfile()
+    create_test_acc_csv()
   }
 }
