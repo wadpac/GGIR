@@ -43,7 +43,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         dev.off()
       }
       if (pdfpagecount == 1) {
-        pdf(paste(path1,outputfolder,"/results/QC/plots to check data quality ",pdffilenumb,".pdf",sep=""),width=7,height=7)
+        pdf(paste(path1,outputfolder,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf",sep=""),width=7,height=7)
       }
       M = c()
       load(paste(path,fnames[i],sep="")) #reading RData-file
