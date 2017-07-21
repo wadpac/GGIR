@@ -1,7 +1,8 @@
-create_test_sleeplog_csv = function(Nnight=7,storagelocation=c()) {
+create_test_sleeplog_csv = function(Nnights=7,storagelocation=c()) {
   # function to create a test sleeplog file needed for testing GGIR
   # Nnights is the number of nights the sleeplog has
   if (length(storagelocation) == 0) storagelocation = getwd()
+  if (Nnights == 0) Nnights = 1
   Nnights= 7
   sleeplog = as.data.frame(t(c("123",rep(c("23:00:00","07:00:00"),Nnights))))
   colnames(sleeplog) = c("id",rep(c("onset","wakeup"),Nnights))
