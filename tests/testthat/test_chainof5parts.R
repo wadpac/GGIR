@@ -75,7 +75,6 @@ test_that("chainof5parts", {
   expect_that(as.logical(nightsummary$acc_available[1]),is_true())
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
   
-  
   # #part 5
   # g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
   #         strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
