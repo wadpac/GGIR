@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 numUnpack <- function(pack) {
-    .Call('GGIR_numUnpack', PACKAGE = 'GGIR', pack)
+    .Call(GGIR_numUnpack, pack)
 }
 
 resample <- function(raw, rawTime, time, stop) {
-    .Call('GGIR_resample', PACKAGE = 'GGIR', raw, rawTime, time, stop)
+    .Call(GGIR_resample, raw, rawTime, time, stop)
 }
 
