@@ -1,4 +1,4 @@
-createtestfile = function(sf=3,Nmin=2000,storagelocation=c()) {
+create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   # function to create a test Actigraph csv file needed for testing GGIR
   # adds variation in angle to enable autocalibration
   # adds some activity periods
@@ -90,5 +90,5 @@ createtestfile = function(sf=3,Nmin=2000,storagelocation=c()) {
   testfile[1:10,1] = header
   testfile[11,1:3] = variablenames
   testfile[12:(Nrows+11),1:3] = testdata
-  write.table(testfile,file=paste0(storagelocation,"/testfile.csv"),row.names = FALSE,col.names = FALSE,sep=",")
+  write.table(testfile,file=paste0(storagelocation,"/123A_testaccfile.csv"),row.names = FALSE,col.names = FALSE,sep=",")
 }
