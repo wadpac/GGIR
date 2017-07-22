@@ -22,7 +22,7 @@ test_that("chainof5parts", {
   expect_that(I$monc,equals(3))
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
-  expect_that(C$npoints,equals(14854))
+  expect_that(C$npoints,equals(14848))
   
   # part 2
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,
@@ -84,6 +84,9 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(dir.exists(dirname),is_true())
+  expect_that(file.exists(rn[1]),is_true())
+  expect_that(nrow(output),equals(3))
+  expect_that(ncol(output),equals(134))
   # expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
   # expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
   
