@@ -44,7 +44,7 @@ test_that("chainof5parts", {
   expect_that(nrow(IMP$metashort),equals(68940))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.03172))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
-  expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6533))
+  expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
   expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
   
   # part 3
