@@ -180,11 +180,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   directory in a new subfolder named 'raw'.
   }
   \item{dayborder}{
-  Hour at which days start and end (default = 0), value = 4 would mean 4am
+  Hour at which days start and end (default = 0), value = 4 would mean 4 am
   }
   \item{dynrange}{
    Optional, provide dynamic range for accelerometer data to overwrite hardcoded
-   6 g for GENEA and 8g for other brands
+   6 g for GENEA and 8 g for other brands
   }
 
 }
@@ -212,9 +212,9 @@ doi:10.1371/journal.pone.0061691
 White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
 free-living physical activity assessment using local gravity and temperature: 
 an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
-\item Aittasalo M, Vähä-Ypyä H, Vasankari T, Husu P, Jussila AM, and Siëvanen H. Mean 
-amplitude deviation calculated from raw acceleration data : a novel method for 
-classifying the intensity of adolescents ’ physical activity irrespective of accelerometer 
+\item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
+amplitude deviation calculated from raw acceleration data: a novel method for 
+classifying the intensity of adolescents’ physical activity irrespective of accelerometer 
 brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
 }
