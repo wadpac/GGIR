@@ -770,8 +770,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         if (ncol(output) > lastcolumn) {
           emptycols = which(output[1,] == "" & output[2,] == "")
           if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
-          if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
-          output = output[-emptycols,]
+          if (length(emptycols) > 0) output = output[-emptycols]
         }
         save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
         rm(output,dsummary)
