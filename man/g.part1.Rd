@@ -214,7 +214,7 @@ free-living physical activity assessment using local gravity and temperature:
 an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
 \item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
 amplitude deviation calculated from raw acceleration data: a novel method for 
-classifying the intensity of adolescents’ physical activity irrespective of accelerometer 
+classifying the intensity of adolescents physical activity irrespective of accelerometer 
 brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
 }
