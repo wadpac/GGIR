@@ -113,7 +113,7 @@ available then leave blank (default)
   }
   \item{chunksize}{number between 0.2 and 1 to specificy the size of chunks to be 
 loaded as a fraction of a 24 hour period, e.g. 0.5 equals 12 hour chunks.
-The default is 1 (24 hrs). For machines with less than 4Gb of RAM memory a value
+The default is 1 (24 hrs). For machines with less than 4 Gb of RAM memory a value
 below 1 is recommended.
   }
   \item{selectdaysfile}{
