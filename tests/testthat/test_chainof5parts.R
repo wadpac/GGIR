@@ -29,6 +29,7 @@ test_that("chainof5parts", {
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
+  
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -43,7 +44,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
   expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6754))
   expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.14))
-  
+
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,
                      timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE) 
