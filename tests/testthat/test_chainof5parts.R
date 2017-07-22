@@ -84,8 +84,8 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-  # expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
-  # expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
+  expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
+  expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
   # expect_that(round(as.numeric(output$dur_nightwak_MOD100_400_min[1]),digits=4),equals(7.9167))
   # expect_that(round(as.numeric(output$dur_TMODday_min[2]),digits=4),equals(79.6667))
   # expect_that(round(as.numeric(output$dur_day_min[3]),digits=4),equals(639.75))
