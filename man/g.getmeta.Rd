@@ -160,9 +160,9 @@ Vincent T van Hees <vincentvanhees@gmail.com>
 Movement and Gravity Components in an Acceleration Signal and Implications for the
 Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
 doi:10.1371/journal.pone.0061691
-\item Aittasalo M, Vähä-Ypyä H, Vasankari T, Husu P, Jussila AM, and Siëvanen H. Mean 
-amplitude deviation calculated from raw acceleration data : a novel method for 
-classifying the intensity of adolescents ’ physical activity irrespective of accelerometer 
+\item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
+amplitude deviation calculated from raw acceleration data: a novel method for 
+classifying the intensity of adolescents’ physical activity irrespective of accelerometer 
 brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
 }
