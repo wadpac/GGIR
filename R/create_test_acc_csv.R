@@ -44,12 +44,12 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   testdata = matrix(0,Nrows,3)
   # add enough noise to not trigger the non-wear detection
   set.seed(300)
-  testdata[,1] = accx + rnorm(n = Nrows,mean = 0.03,sd=0.02) #gravity
+  testdata[,1] = accx + round(rnorm(n = Nrows,mean = 0.03,sd=0.02),digits=4) #gravity
   set.seed(400)
-  testdata[,2] = accy + rnorm(n = Nrows,mean = 0.03,sd=0.1) #no gravity
+  testdata[,2] = accy + round(rnorm(n = Nrows,mean = 0.03,sd=0.1),digits=4) #no gravity
   Nsamplesinday = 24*3600*sf
   set.seed(500)
-  testdata[,3] = accz + rnorm(n = Nrows,mean = 0.03,sd=0.02) + #no gravity
+  testdata[,3] = accz + round(rnorm(n = Nrows,mean = 0.03,sd=0.02),digits=4) + #no gravity
                   sin(((1:Nrows)/((Nrows)/(Nsamplesinday/0.1))))* 0.05 +
                   sin(((1:Nrows)/((Nrows)/(Nsamplesinday/2))))* 0.1
   
@@ -67,11 +67,11 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   # ACC = rep(0,Nrows) #empty ACC pattern
   sleep_periods = sort(unique(c(sleepL3,sleepS3)))
   set.seed(300)
-  testdata[sleep_periods,1] = accx + rnorm(n = length(sleep_periods),mean = 0,sd=0.015) 
+  testdata[sleep_periods,1] = accx + round(rnorm(n = length(sleep_periods),mean = 0,sd=0.015) ,digits = 4)
   set.seed(400)
-  testdata[sleep_periods,2] = accy + rnorm(n = length(sleep_periods),mean = 0,sd=0.015)
+  testdata[sleep_periods,2] = accy + round(rnorm(n = length(sleep_periods),mean = 0,sd=0.015) ,digits = 4)
   set.seed(500)
-  testdata[sleep_periods,3] = accz + rnorm(n = length(sleep_periods),mean = 0,sd=0.015)
+  testdata[sleep_periods,3] = accz + round(rnorm(n = length(sleep_periods),mean = 0,sd=0.015) ,digits = 4)
   # add some rotations to the acceleormeter, to avoid non-wear detection
   for (j in 1:(Nrows/(sf*3600))) { # loop to add angle changes to every night
     t0v = seq(12+((j-1)*24),22+((j-1)*24),by=0.25) # start times of angle positions
@@ -102,7 +102,7 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   actP3 = actP2 + rep(0:((length(actP2)/length(actP1))-1), time = length(actP1))
   ACC = rep(0,Nrows) #empty ACC pattern
   set.seed(300)
-  ACC[actP3] = 0.08 + rnorm(n = length(actP3),mean = 0,sd=0.01) # add 0.08g + 10 mg noise
+  ACC[actP3] = 0.08 + round(rnorm(n = length(actP3),mean = 0,sd=0.01) ,digits = 4) # add 0.08g + 10 mg noise
   testdata[,1] = testdata[,1] + ACC
   #======================================
   # insert 2 hour blocks of accelermeter non-wear time
@@ -123,7 +123,7 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   ACC = rep(0,Nrows) #empty ACC pattern
   act_periods = sort(unique(c(actL3,actS3)))
   set.seed(300)
-  ACC[act_periods] = 0.5 + rnorm(n = length(act_periods),mean = 0,sd=0.04) # add 0.5g + 20 mg noise
+  ACC[act_periods] = 0.5 + round(rnorm(n = length(act_periods),mean = 0,sd=0.04) ,digits = 4) # add 0.5g + 20 mg noise
   testdata[,1] = testdata[,1] + ACC
   #======================================
   # insert variations in angle to facilitate autocalibration
