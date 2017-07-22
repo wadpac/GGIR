@@ -87,6 +87,9 @@ test_that("chainof5parts", {
   expect_that(file.exists(rn[1]),is_true())
   expect_that(nrow(output),equals(3))
   expect_that(ncol(output),equals(134))
+  expect_that(class(output),equals("data.frame"))
+  print(output[1:3,7:30])
+  
   # expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
   # expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
   
@@ -107,4 +110,5 @@ test_that("chainof5parts", {
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
   
+
 
