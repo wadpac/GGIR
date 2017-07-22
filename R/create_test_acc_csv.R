@@ -44,11 +44,14 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   testdata = matrix(0,Nrows,3)
   # add enough noise to not trigger the non-wear detection
   set.seed(300)
-  testdata[,1] = accx + rnorm(n = Nrows,mean = 0.07,sd=0.02) #gravity
+  testdata[,1] = accx + rnorm(n = Nrows,mean = 0.03,sd=0.02) #gravity
   set.seed(400)
-  testdata[,2] = accy + rnorm(n = Nrows,mean = 0.07,sd=0.1) #no gravity
+  testdata[,2] = accy + rnorm(n = Nrows,mean = 0.03,sd=0.1) #no gravity
   set.seed(500)
-  testdata[,3] = accz + rnorm(n = Nrows,mean = 0.07,sd=0.01) #no gravity
+  Nsamplesinday = 24*3600*sf
+  testdata[,3] = accz + rnorm(n = Nrows,mean = 0.03,sd=0.02) + #no gravity
+                  sin(((1:Nrows)/((Nrows)/(Nsamplesinday/0.1))))* 0.05 +
+                  sin(((1:Nrows)/((Nrows)/(Nsamplesinday/2))))* 0.1
   
   
   

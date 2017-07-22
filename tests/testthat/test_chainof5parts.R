@@ -52,9 +52,9 @@ test_that("chainof5parts", {
   load(rn[1])
   
   expect_that(dir.exists(dirname),is_true())
-  expect_that(round(sum(sib.cla.sum$tot.sib.dur.hrs[1:10]),digits=4),equals(5.4583))
-  expect_that(round(sum(sib.cla.sum$fraction.night.invalid[1:10]),digits=4),equals(0.625))
-  expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 21:10:05"))
+  expect_that(round(sum(sib.cla.sum$tot.sib.dur.hrs[1:10]),digits=4),equals(2.468))
+  expect_that(round(sum(sib.cla.sum$fraction.night.invalid[1:10]),digits=4),equals(0.3125))
+  expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 12:15:30"))
   
   # part 4
   g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
