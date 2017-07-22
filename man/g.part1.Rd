@@ -21,7 +21,7 @@ that allows for operating g.part1 and g.part2.
 g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
                    desiredtz = "Europe/London",chunksize=c(),studyname=c(),
                    do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
-                   do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE,
+                   do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE,do.mad = FALSE,
                    do.anglex=FALSE,do.angley=FALSE,
                    do.anglez=FALSE,do.enmoa=FALSE,
                    do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
@@ -86,7 +86,9 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   if TRUE, calculate metric HFENplus with band-pass filter configuration set
   by \code{lb} and \code{hb}, see \link{g.getmeta}
   }
-    
+  \item{do.mad}{
+  if TRUE, calculate metric MAD (Mean Amplitude Deviation), see \link{g.getmeta}
+  }  
   \item{do.anglex}{
   if TRUE, calculate the angle of the x-axis relative to the horizontal plane
   (degrees) utilizing all three axes
@@ -178,11 +180,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
   directory in a new subfolder named 'raw'.
   }
   \item{dayborder}{
-  Hour at which days start and end (default = 0), value = 4 would mean 4am
+  Hour at which days start and end (default = 0), value = 4 would mean 4 am
   }
   \item{dynrange}{
    Optional, provide dynamic range for accelerometer data to overwrite hardcoded
-   6 g for GENEA and 8g for other brands
+   6 g for GENEA and 8 g for other brands
   }
 
 }
@@ -210,5 +212,9 @@ doi:10.1371/journal.pone.0061691
 White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
 free-living physical activity assessment using local gravity and temperature: 
 an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
+\item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
+amplitude deviation calculated from raw acceleration data: a novel method for 
+classifying the intensity of adolescents physical activity irrespective of accelerometer 
+brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
 }
