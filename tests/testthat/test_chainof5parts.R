@@ -91,7 +91,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(output$dur_day_min[3]),digits=4),equals(639.75))
   expect_that(round(as.numeric(output$ACC_MVPA_D10T100_mg[3]),digits=4),equals(543.1976))
   expect_that(output$L5TIME[1],equals("2016-06-25T00:00:05+0100"))
-  expect_that(as.numeric(output$Nblocks_MVPA_D10T100[1]),equals(1))
+  expect_that(round(as.numeric(output$Nblocks_MVPA_D10T100[1])),equals(1))
   
   # g.report.part5(metadatadir=metadatadir,f0=1,f1=1,loglocation=sleeplog_fn,
   #                includenightcrit=0,includedaycrit=0)
