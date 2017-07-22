@@ -10,6 +10,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    winhr = 5,
                    M5L5res = 10,
                    overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0) {
+  
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
@@ -187,7 +188,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               s1 = which(time[pr0:pr1] == gik.end[g])[1]
               timebb = as.character(time[pr0:pr1]) 
               if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
+                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
@@ -296,7 +297,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               timebb = as.character(time) 
               
               if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
+                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
               }
                 if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
                 if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
@@ -651,8 +652,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi] = paste("M",wini,"VALUE",sep="");      fi = fi + 1
                           if (ignore == FALSE) {
                             if(length(unlist(strsplit(L5HOUR,"[+]"))) > 1) { # only do this for ISO8601 format
-                              L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz="Europe/London"))
-                              M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz="Europe/London"))
+                              L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
+                              M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
