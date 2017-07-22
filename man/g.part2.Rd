@@ -18,7 +18,7 @@ ilevels = c(0,10), mvpathreshold = c(100),boutcriter = 0.8,ndayswindow=7,idloc=1
 do.imp=TRUE,storefolderstructure=FALSE,overwrite=FALSE,epochvalues2csv=FALSE,
 mvpadur=c(1,5,10),selectdaysfile=c(),window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
-IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30)
+IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600)
 }
 \arguments{
 \item{datadir}{
