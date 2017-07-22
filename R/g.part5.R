@@ -742,7 +742,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
           }
         }
-        output = as.data.frame(dsummary)
+        output = as.data.frame(dsummary,stringsAsFactors=FALSE)
         names(output) = ds_names
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
@@ -761,6 +761,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
             }
           }
+        }
+        # tidy up output data frame, because it may have a lot of empty rows and columns
+        emptyrows = which(output[,1] == "" & output[,2] == "")
+        if (length(emptyrows) > 0) output = output[-emptyrows,]
+        lastcolumn = which(colnames(output) == "bout.metric")
+        if (ncol(output) > lastcolumn) {
+          emptycols = which(output[1,] == "" & output[2,] == "")
+          if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
+          if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
+          output = output[-emptycols,]
         }
         save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
         rm(output,dsummary)
