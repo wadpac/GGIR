@@ -6,6 +6,23 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   # sf = 3
   # Nmin = 2000
   # storagelocation = c()
+  #===============================================
+  gensequence = function(t0,t1) {
+    x = round(t0*3600*sf):(round(t1*3600*sf)-1)
+    return(x)
+  }
+  genrotationmatrix = function(phi) {   # create rotation matrix
+    Rx = Ry = matrix(0,3,3) # no z rotation needed, all we need is to populate sphere on all sides
+    Ry[1,] = c(cos(phi),0,sin(phi))
+    Ry[2,] = c(0,1,0)
+    Ry[3,] = c(-sin(phi),0,cos(phi))
+    Rx[1,] = c(cos(phi),-sin(phi),0)
+    Rx[2,] = c(sin(phi),cos(phi),0)
+    Rx[3,] = c(0,0,1)
+    invisible(list(Rx=Rx,Ry=Ry))
+  }
+  #==================================
+  
   if (length(storagelocation) == 0) storagelocation = getwd()
   if (Nmin < 2000) Nmin = 2000 # only make this file for tests with at least 2k minutes of data
   header = c(paste0("------------ Data File Created By ActiGraph GT3X+ ActiLife v6.13.3 Firmware v1.8.0 date format M/d/yyyy at ",sf," Hz  Filter Normal -----------"),
@@ -20,24 +37,65 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
              "--------------------------------------------------")
   variablenames = c("Accelerometer X","Accelerometer Y","Accelerometer Z")
   Nrows = Nmin*sf*60
+  # default values, including some calibration error such that auto-calibration can do its work
   accx = 1.015
   accy = 0.005
   accz = -0.005
   testdata = matrix(0,Nrows,3)
   # add enough noise to not trigger the non-wear detection
   set.seed(300)
-  testdata[,1] = accx + rnorm(n = Nrows,mean = 0,sd=0.025) #gravity
+  testdata[,1] = accx + rnorm(n = Nrows,mean = 0.07,sd=0.02) #gravity
   set.seed(400)
-  testdata[,2] = accy + rnorm(n = Nrows,mean = 0,sd=0.025) #no gravity
+  testdata[,2] = accy + rnorm(n = Nrows,mean = 0.07,sd=0.1) #no gravity
   set.seed(500)
-  testdata[,3] = accz + rnorm(n = Nrows,mean = 0,sd=0.025) #no gravity
+  testdata[,3] = accz + rnorm(n = Nrows,mean = 0.07,sd=0.01) #no gravity
   
-  # default values, including some calibration error such that auto-calibration can do its work
   
+  
+  
+  #======================================
+  # insert sleep blocks from the 15th till the 21st hour
+  sleepL1 = seq((12*3600*sf)+1,Nrows,by=24*3600*sf) #first sleep bout
+  sleepL2 = rep(sleepL1,each=2.5*3600*sf) # 2.5 hours
+  sleepL3 = sleepL2 + rep(0:((length(sleepL2)/length(sleepL1))-1), time = length(sleepL1))
+  sleepS1 = seq((15*3600*sf)+1,Nrows,by=24*3600*sf) #second sleep bout
+  sleepS2 = rep(sleepS1,each=3*3600*sf) # 3 hours
+  sleepS3 = sleepS2 + rep(0:((length(sleepS2)/length(sleepS1))-1), time = length(sleepS1))
+  # ACC = rep(0,Nrows) #empty ACC pattern
+  sleep_periods = sort(unique(c(sleepL3,sleepS3)))
+  set.seed(300)
+  testdata[sleep_periods,1] = accx + rnorm(n = length(sleep_periods),mean = 0,sd=0.015) 
+  set.seed(400)
+  testdata[sleep_periods,2] = accy + rnorm(n = length(sleep_periods),mean = 0,sd=0.015)
+  set.seed(500)
+  testdata[sleep_periods,3] = accz + rnorm(n = length(sleep_periods),mean = 0,sd=0.015)
+  # add some rotations to the acceleormeter, to avoid non-wear detection
+  for (j in 1:(Nrows/(sf*3600))) { # loop to add angle changes to every night
+    t0v = seq(12+((j-1)*24),22+((j-1)*24),by=0.25) # start times of angle positions
+    phiv = 1:length(t0v)
+    phiv = scale(x = phiv,center = 0,scale = diff(range(phiv))/(2*pi))  # rescale such that angle goes 180 degrees
+    gammav = scale(x = phiv,center = 0,scale = diff(range(phiv))/(2*pi))  # rescale such that angle goes 180 degrees
+    for (i in 1:length(t0v)) {
+      B = gensequence(t0=t0v[i],t1=t0v[i]+0.245) #long activity starts at the 3rd hour of every 24 hours
+      Rm_phi = genrotationmatrix(phiv[i])
+      Rm_gamma = genrotationmatrix(gammav[i])
+      Ry = Rm_phi$Ry; Rx = Rm_gamma$Rx
+      B = B[which(B < nrow(testdata))]
+      if (length(B) > 0) {
+        testdata[B,1] = accx # set constant such that it is detected as a period without movement
+        testdata[B,2] = accy
+        testdata[B,3] = accz
+        testdata[B,] = t(Ry %*% t(testdata[B,]))
+        testdata[B,] = t(Rx %*% t(testdata[B,]))
+      }
+    }
+  }
+  
+  # angle rotations are not needed, because
   #============================================================
   # insert 2 minute blocks of activity at the beginning of every 15 minutes
-  actP1 = seq((1*3600*sf)+1,Nrows,by=0.25*3600*sf) # starts at the 1st hour of every 24 hours
-  actP2 = rep(actP1,each=2*60*sf) # and lasts 2 minutes
+  actP1 = seq(1,Nrows,by=0.25*3600*sf) # starts at the 1st minutes and then everry 15 minutes
+  actP2 = rep(actP1,each=2*60*sf) # and it lasts 2 minutes
   actP3 = actP2 + rep(0:((length(actP2)/length(actP1))-1), time = length(actP1))
   ACC = rep(0,Nrows) #empty ACC pattern
   ACC[actP3] = 0.08 + rnorm(n = length(actP3),mean = 0,sd=0.01) # add 0.08g + 10 mg noise
@@ -62,23 +120,8 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
   act_periods = sort(unique(c(actL3,actS3)))
   ACC[act_periods] = 0.5 + rnorm(n = length(act_periods),mean = 0,sd=0.04) # add 0.5g + 20 mg noise
   testdata[,1] = testdata[,1] + ACC
-  
   #======================================
-  # insert variations in angle
-  gensequence = function(t0,t1) {
-    x = round(t0*3600*sf):(round(t1*3600*sf)-1)
-    return(x)
-  }
-  genrotationmatrix = function(phi) {   # create rotation matrix
-    Rx = Ry = matrix(0,3,3) # no z rotation needed, all we need is to populate sphere on all sides
-    Ry[1,] = c(cos(phi),0,sin(phi))
-    Ry[2,] = c(0,1,0)
-    Ry[3,] = c(-sin(phi),0,cos(phi))
-    Rx[1,] = c(cos(phi),-sin(phi),0)
-    Rx[2,] = c(sin(phi),cos(phi),0)
-    Rx[3,] = c(0,0,1)
-    invisible(list(Rx=Rx,Ry=Ry))
-  }
+  # insert variations in angle to facilitate autocalibration
   t0v = seq(4.5,9,by=1/120) # start times of angle positions, and 30 seconds each
   phiv = 1:length(t0v)
   phiv = scale(x = phiv,center = 0,scale = diff(range(phiv))/(20*pi))  # rescale such that angle go 4 times 360 degrees
@@ -93,7 +136,6 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
     testdata[B,3] = accz
     testdata[B,] = t(Ry %*% t(testdata[B,]))
     testdata[B,] = t(Rx %*% t(testdata[B,]))
-    
   }
   testfile = matrix(" ",Nrows+11,3)
   testfile[1:10,1] = header
