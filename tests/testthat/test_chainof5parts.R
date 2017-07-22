@@ -29,6 +29,7 @@ test_that("chainof5parts", {
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
+  
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])

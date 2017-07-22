@@ -3,7 +3,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
-                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30) {
+                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
+  
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -202,7 +203,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #============================
   # IS and IV variables
-  
   # select data from first midnight to last midnight
   fmn = midnightsi[1] * (ws2/ws3)
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
@@ -545,6 +545,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
   }
+
   #metashort is shortened from midgnight to midnight if requested (strategy 2)
   if (strategy == 2) {
     if (starttimei == 1) {
@@ -566,7 +567,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       colnames(metashort) != "angley" &
                       colnames(metashort) != "anglez")
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
-  
   colnames_to_lookat = colnames(metashort)[lookat]
   
   MA = matrix(NA,length(lookat),1)
@@ -767,10 +767,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         dtwtel = dtwtel + 1
       }
       vi = vi+6+((dtwtel*sp)-1)
+
       #===========================================================================
       # SUMMARISE Percentiles (q46)
       keepindex_46 = keepindex_46[stats::complete.cases(keepindex_46),]
       keepindex_48 = keepindex_48[stats::complete.cases(keepindex_48),]
+      # if there is only matrix then matrix may have collapse into a vector, fix this
+      if (is.null(nrow(keepindex_46)) == TRUE) keepindex_46 = as.matrix(t(keepindex_46))
+      if (is.null(nrow(keepindex_48)) == TRUE) keepindex_48 = as.matrix(t(keepindex_48))
       for (mi in 1:nrow(keepindex_46)) { #run through metrics (for features based on single metrics)
         if (doquan == TRUE) {
           if (length(q46) > 0) {
@@ -891,7 +895,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(mw) > 0) {
     daysummary[which(is.na(daysummary)==T)] = " "
   }
-  
   cut = which(ds_names == " " | ds_names == "" | is.na(ds_names)==T)
   if (length(cut > 0)) {
     ds_names = ds_names[-cut]
