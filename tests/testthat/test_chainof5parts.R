@@ -8,7 +8,7 @@ test_that("chainof5parts", {
   metadatadir = paste0(getwd(),"/output_test")
   dn = "output_test"
   # part 1
-  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,
+  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz="Europe/London",
                      studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE)
   expect_that(dir.exists(dn),is_true())
   rn = dir("output_test/meta/basic/",full.names = TRUE)
@@ -25,7 +25,7 @@ test_that("chainof5parts", {
   expect_that(C$npoints,equals(14848))
   
   # part 2
-  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,
+  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz="Europe/London",
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
@@ -46,7 +46,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
   
   # part 3
-  g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,
+  g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz="Europe/London",
                      timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE) 
   dirname = "output_test/meta/ms3.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -76,7 +76,7 @@ test_that("chainof5parts", {
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
   
   #part 5
-  g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
+  g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz="Europe/London",
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
                      loglocation= sleeplog_fn,
                      overwrite=TRUE)
@@ -87,19 +87,17 @@ test_that("chainof5parts", {
   expect_that(file.exists(rn[1]),is_true())
   expect_that(nrow(output),equals(3))
   expect_that(ncol(output),equals(134))
-  expect_that(class(output),equals("data.frame"))
-  print(output[1:3,7:30])
   expect_that(output[2,23],equals("28.0888888888889"))
   expect_that(output$window_length_in_hours[2],equals("28.0888888888889"))
-  # expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
-  # expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
+  expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
+  expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
   
-  # expect_that(round(as.numeric(output$dur_nightwak_MOD100_400_min[1]),digits=4),equals(7.9167))
-  # expect_that(round(as.numeric(output$dur_TMODday_min[2]),digits=4),equals(79.6667))
-  # expect_that(round(as.numeric(output$dur_day_min[3]),digits=4),equals(639.75))
-  # expect_that(round(as.numeric(output$ACC_MVPA_D10T100_mg[3]),digits=4),equals(542.2611))
+  expect_that(round(as.numeric(output$dur_nightwak_MOD100_400_min[1]),digits=4),equals(7.9167))
+  expect_that(round(as.numeric(output$dur_TMODday_min[2]),digits=4),equals(79.6667))
+  expect_that(round(as.numeric(output$dur_day_min[3]),digits=4),equals(639.75))
+  expect_that(round(as.numeric(output$ACC_MVPA_D10T100_mg[3]),digits=4),equals(542.2611))
   expect_that(output$L5TIME[1],equals("2016-06-25T00:00:05+0100"))
-  # expect_that(round(as.numeric(output$Nblocks_MVPA_D10T100[1])),equals(1))
+  expect_that(round(as.numeric(output$Nblocks_MVPA_D10T100[1])),equals(1))
   
   # g.report.part5(metadatadir=metadatadir,f0=1,f1=1,loglocation=sleeplog_fn,
   #                includenightcrit=0,includedaycrit=0)
