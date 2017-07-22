@@ -19,6 +19,7 @@ test_that("chainof5parts", {
   expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100"))
   expect_that(nrow(M$metashort),equals(68940))
   expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.03173))
+  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.0492))
   expect_that(I$monc,equals(3))
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
@@ -53,10 +54,11 @@ test_that("chainof5parts", {
   load(rn[1])
   
   expect_that(dir.exists(dirname),is_true())
-  expect_that(round(sum(sib.cla.sum$tot.sib.dur.hrs[1:10]),digits=4),equals(2.468))
-  expect_that(round(sum(sib.cla.sum$fraction.night.invalid[1:10]),digits=4),equals(0.3125))
-  expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 12:15:30"))
 
+  expect_that(round(sum(sib.cla.sum$tot.sib.dur.hrs[1:10]),digits=4),equals(5.4583))
+  expect_that(round(sum(sib.cla.sum$fraction.night.invalid[1:10]),digits=4),equals(0.625))
+  expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 21:10:05"))
+  
   # part 4
   g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
