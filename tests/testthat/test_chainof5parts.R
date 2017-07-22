@@ -29,6 +29,7 @@ test_that("chainof5parts", {
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
+
   
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -44,7 +45,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
   expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6754))
   expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.14))
-  
+
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,
                      timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE) 
@@ -56,8 +57,7 @@ test_that("chainof5parts", {
   expect_that(round(sum(sib.cla.sum$tot.sib.dur.hrs[1:10]),digits=4),equals(2.468))
   expect_that(round(sum(sib.cla.sum$fraction.night.invalid[1:10]),digits=4),equals(0.3125))
   expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 12:15:30"))
-  
-  
+
   # part 4
   g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
@@ -85,6 +85,7 @@ test_that("chainof5parts", {
   # g.report.part5(metadatadir=metadatadir,f0=1,f1=1,loglocation=sleeplog_fn,
   #                includenightcrit=0,includedaycrit=0)
   # 
+
   
   dn = "output_test"
   # if (file.exists(dn))  unlink(dn,recursive=TRUE)
