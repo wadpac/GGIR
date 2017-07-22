@@ -7,6 +7,7 @@ test_that("chainof5parts", {
   sleeplog_fn = "testsleeplogfile.csv"
   metadatadir = paste0(getwd(),"/output_test")
   dn = "output_test"
+  if (file.exists(dn))  unlink(dn,recursive=TRUE)
   # part 1
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz="Europe/London",
                      studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE)
@@ -76,10 +77,15 @@ test_that("chainof5parts", {
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
   
   #part 5
+  
+  
+  
+  
+  
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz="Europe/London",
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
                      loglocation= sleeplog_fn,
-                     overwrite=TRUE)
+                     overwrite=TRUE, excludefirstlast=FALSE)
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -104,7 +110,7 @@ test_that("chainof5parts", {
   # 
   
   # dn = "output_test"
-  # if (file.exists(dn))  unlink(dn,recursive=TRUE)
+  if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
