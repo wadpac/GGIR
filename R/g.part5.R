@@ -742,7 +742,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
           }
         }
-        output = as.data.frame(dsummary,stringsAsFactors=FALSE)
+        output = data.frame(dsummary,stringsAsFactors=FALSE)
+
         names(output) = ds_names
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
