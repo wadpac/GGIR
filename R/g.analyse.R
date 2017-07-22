@@ -771,7 +771,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       # SUMMARISE Percentiles (q46)
       keepindex_46 = keepindex_46[stats::complete.cases(keepindex_46),]
       keepindex_48 = keepindex_48[stats::complete.cases(keepindex_48),]
-      # if there is only matrix then matrix may have collapse into a vector, fix this
+      # if there is only one row in the matrix then matrix collapses to a vector, the next two lines fix this
       if (is.null(nrow(keepindex_46)) == TRUE) keepindex_46 = as.matrix(t(keepindex_46))
       if (is.null(nrow(keepindex_48)) == TRUE) keepindex_48 = as.matrix(t(keepindex_48))
       for (mi in 1:nrow(keepindex_46)) { #run through metrics (for features based on single metrics)
