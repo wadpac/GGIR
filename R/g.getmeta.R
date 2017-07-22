@@ -2,7 +2,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
                      do.bfen=FALSE,do.enmo=TRUE,do.lfenmo=FALSE,
                      do.en=FALSE,do.hfen=FALSE,
-                     do.hfenplus=FALSE,
+                     do.hfenplus=FALSE, do.mad=FALSE,
                      do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
                      do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
@@ -22,13 +22,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
-                    do.hfenplus,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
+                    do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                     do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa)
   
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.2) chunksize = 0.2
-  nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,
+  nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa))
@@ -389,7 +389,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         allmetrics = g.applymetrics(Gx,Gy,Gz,n,sf,ws3,metrics2do)
         # attach(allmetrics,warn.conflicts = FALSE)
         # globalVariables(c("BFEN3b","ENMO3b","LFENMO3b","EN3b","HFEN3b",
-        #                   "HFENplus3b","angle_x3b","angle_y3b","angle_z3b",
+        #                   "HFENplus3b", "MAD3b", "angle_x3b","angle_y3b","angle_z3b",
         #                   "roll_med_acc_x3b","roll_med_acc_y3b","roll_med_acc_z3b","dev_roll_med_acc_x3b",
         #                   "dev_roll_med_acc_y3b","dev_roll_med_acc_z3b"))
         BFEN3b = allmetrics$BFEN3b
@@ -399,6 +399,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         EN3b = allmetrics$EN3b
         HFEN3b = allmetrics$HFEN3b
         HFENplus3b = allmetrics$HFENplus3b
+        MAD3b = allmetrics$MAD3b
         angle_x3b = allmetrics$angle_x3b
         angle_y3b = allmetrics$angle_y3b
         angle_z3b = allmetrics$angle_z3b
@@ -438,6 +439,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         if (do.hfenplus == TRUE) {
           metashort[count:(count-1+length(HFENplus3b)),col_msi] = HFENplus3b; col_msi = col_msi + 1
+        }
+        if (do.mad == TRUE) {
+          metashort[count:(count-1+length(MAD3b)),col_msi] = MAD3b; col_msi = col_msi + 1
         }
         if (do.anglex == TRUE) {
           metashort[count:(count-1+length(angle_x3b)),col_msi] = angle_x3b; col_msi = col_msi + 1
@@ -704,10 +708,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       time2 = strftime(time2,format="%Y-%m-%dT%H:%M:%S%z")
       metalong[,1] = as.character(time2)
     }
-    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus",
+    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
                           "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa") #
-    metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,
+    metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                                                          do.anglex,do.angley,do.anglez,
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,

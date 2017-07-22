@@ -18,7 +18,7 @@ windowsizes = c(5, 900, 3600),daylimit = FALSE,
 offset = c(0,0,0), scale = c(1,1,1),
 tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
 do.lfenmo = FALSE, do.en = FALSE,
-do.hfen = FALSE, do.hfenplus = FALSE,
+do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE,
 do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
 do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
 do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
@@ -69,6 +69,8 @@ selectdaysfile=c(),dayborder=0,dynrange=c(),...)
   \item{do.hfenplus}{if TRUE, calculate metric HFENplus with band-pass filter
   configuration set by \code{lb} and \code{hb}
 }
+  \item{do.mad}{if TRUE, calculate metric MAD (Mean Amplitude Deviarion)
+}
   \item{do.anglex}{
   if TRUE, calculate the angle of the x-axis relative to the horizontal plane
   (degrees) utilizing all three axes
@@ -111,7 +113,7 @@ available then leave blank (default)
   }
   \item{chunksize}{number between 0.2 and 1 to specificy the size of chunks to be 
 loaded as a fraction of a 24 hour period, e.g. 0.5 equals 12 hour chunks.
-The default is 1 (24 hrs). For machines with less than 4Gb of RAM memory a value
+The default is 1 (24 hrs). For machines with less than 4 Gb of RAM memory a value
 below 1 is recommended.
   }
   \item{selectdaysfile}{
@@ -149,13 +151,18 @@ print(M$metalong[1:5,])
 print(M$metalong[1:5,])
 }
 }
-\references{
-van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating
-Movement and Gravity Components in an Acceleration Signal and Implications for
-the Assessment of Human Daily Physical Activity. PLoS ONE 8(4):
-e61691. doi:10.1371/journal.pone.0061691
-}
-
 \author{
 Vincent T van Hees <vincentvanhees@gmail.com>
+}
+\references{
+  \itemize{
+\item van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating
+Movement and Gravity Components in an Acceleration Signal and Implications for the
+Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
+doi:10.1371/journal.pone.0061691
+\item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
+amplitude deviation calculated from raw acceleration data: a novel method for 
+classifying the intensity of adolescents physical activity irrespective of accelerometer 
+brand. BMC Sports Science, Medicine and Rehabilitation (2015).
+}
 }

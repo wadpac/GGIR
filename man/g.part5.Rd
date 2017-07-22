@@ -16,7 +16,7 @@ boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,
 storefolderstructure=FALSE,threshold.lig = c(40),threshold.mod = c(100),
 threshold.vig = c(400),timewindow=c("MM","WW"),boutdur.mvpa = c(1,5,10),
 boutdur.in = c(10,20,30),boutdur.lig = c(1,5,10),winhr = 5,
-M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4)
+M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0)
 
 }
 \arguments{
@@ -146,6 +146,9 @@ M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4)
   }
   \item{bout.metric}{
    See documnetion in \link{g.getbout} and 
+  }
+  \item{dayborder}{
+   Hour at which days start and end (default = 0), value = 4 would mean 4am 
   }
   \item{winhr}{
    see \link{g.getmeta}
