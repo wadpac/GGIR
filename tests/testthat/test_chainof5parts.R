@@ -18,7 +18,7 @@ test_that("chainof5parts", {
   expect_that(nrow(M$metalong),equals(383))
   expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100"))
   expect_that(nrow(M$metashort),equals(68940))
-  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.03173))
+  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.0492))
   expect_that(I$monc,equals(3))
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
@@ -29,7 +29,6 @@ test_that("chainof5parts", {
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
-  
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -40,11 +39,11 @@ test_that("chainof5parts", {
   expect_that(file.exists(summarycsv),is_true())
   expect_that(file.exists(daysummarycsv),is_true())
   expect_that(nrow(IMP$metashort),equals(68940))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.03173))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.0492))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
-  expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6754))
-  expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.14))
-
+  expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(114.8982))
+  expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(46.3317))
+  
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,
                      timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE) 
@@ -71,11 +70,11 @@ test_that("chainof5parts", {
   
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(vis_sleep_file),is_true())
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.5389))
+  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.9556))
   expect_that(as.logical(nightsummary$acc_available[1]),is_true())
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
   
-  # #part 5
+  #part 5
   # g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
   #         strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
   #                    loglocation= sleeplog_fn,
@@ -83,6 +82,7 @@ test_that("chainof5parts", {
   # g.report.part5(metadatadir=metadatadir,f0=1,f1=1,loglocation=sleeplog_fn,
   #                includenightcrit=0,includedaycrit=0)
   # 
+  
   dn = "output_test"
   # if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
