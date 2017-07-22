@@ -77,10 +77,22 @@ test_that("chainof5parts", {
   
   #part 5
   
-  # g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-  #         strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
-  #                    loglocation= sleeplog_fn,
-  #                    overwrite=TRUE)
+  g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
+          strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
+                     loglocation= sleeplog_fn,
+                     overwrite=TRUE)
+  dirname = "output_test/meta/ms5.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
+  expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
+  expect_that(round(as.numeric(output$dur_nightwak_MOD100_400_min[1]),digits=4),equals(7.9167))
+  expect_that(round(as.numeric(output$dur_TMODday_min[2]),digits=4),equals(79.6667))
+  expect_that(round(as.numeric(output$dur_day_min[3]),digits=4),equals(639.75))
+  expect_that(round(as.numeric(output$ACC_MVPA_D10T100_mg[3]),digits=4),equals(543.1976))
+  expect_that(output$L5TIME[1],equals("2016-06-25T00:00:05+0100"))
+  expect_that(as.numeric(output$Nblocks_MVPA_D10T100[1]),equals(1))
+  
   # g.report.part5(metadatadir=metadatadir,f0=1,f1=1,loglocation=sleeplog_fn,
   #                includenightcrit=0,includedaycrit=0)
   # 
@@ -91,3 +103,4 @@ test_that("chainof5parts", {
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
   
+
