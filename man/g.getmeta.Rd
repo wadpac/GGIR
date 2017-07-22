@@ -162,7 +162,7 @@ Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
 doi:10.1371/journal.pone.0061691
 \item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
 amplitude deviation calculated from raw acceleration data: a novel method for 
-classifying the intensity of adolescents’ physical activity irrespective of accelerometer 
+classifying the intensity of adolescents physical activity irrespective of accelerometer 
 brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
 }
