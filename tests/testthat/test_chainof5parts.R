@@ -89,7 +89,8 @@ test_that("chainof5parts", {
   expect_that(ncol(output),equals(134))
   expect_that(class(output),equals("data.frame"))
   print(output[1:3,7:30])
-  
+  expect_that(output[2,23],equals("28.0888888888889"))
+  expect_that(output$window_length_in_hours[2],equals("28.0888888888889"))
   # expect_that(round(as.numeric(output$window_length_in_hours[2]),digits=4),equals(28.0889))
   # expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708))
   
