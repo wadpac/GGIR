@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=expandtests)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/expandtests/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR)
 
+[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=expandtests)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/expandtests/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR)
 The code in this repository is the development version for the code in R-package GGIR
 
 ## Contribution guidelines:
