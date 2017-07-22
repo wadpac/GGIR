@@ -29,7 +29,6 @@ test_that("chainof5parts", {
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
-
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -53,7 +52,6 @@ test_that("chainof5parts", {
   load(rn[1])
   
   expect_that(dir.exists(dirname),is_true())
-
   expect_that(round(sum(sib.cla.sum$tot.sib.dur.hrs[1:10]),digits=4),equals(2.468))
   expect_that(round(sum(sib.cla.sum$fraction.night.invalid[1:10]),digits=4),equals(0.3125))
   expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 12:15:30"))
