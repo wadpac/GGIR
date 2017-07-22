@@ -55,7 +55,7 @@ test_that("chainof5parts", {
   load(rn[1])
   
   expect_that(dir.exists(dirname),is_true())
-  expect_that(round(sum(sib.cla.sum[,4:7]),digits=4),equals(10114.56))
+  expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(10115))
   expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 12:15:30"))
   
   # part 4
