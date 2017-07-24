@@ -32,7 +32,7 @@
     See \link{g.part3}
   }
   \item{metric}{
-    Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M.
+    Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{desiredtz}{
   See \link{g.part3}
