@@ -9,7 +9,7 @@
 }
 \usage{
   g.plot5(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,
-  f0=c(),f1=c(),overwrite=FALSE,desiredtz = "Europe/London")	
+  f0=c(),f1=c(),overwrite=FALSE,metric="ENMO",desiredtz = "Europe/London")	
 }
 \arguments{
   \item{metadatadir}{
@@ -30,6 +30,9 @@
   }
   \item{overwrite}{
     See \link{g.shell.GGIR}
+  }
+  \item{metric}{
+    Which one of the metrics do you want to consider to describe behaviour. The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{desiredtz}{
     See \link{g.getmeta}
