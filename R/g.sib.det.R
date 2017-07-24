@@ -1,5 +1,5 @@
-g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5, metric = "ENMO",
-                     timethreshold = c(5,10),desiredtz="Europe/London") {
+g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
+                     timethreshold = c(5,10), metric = "ENMO", desiredtz="Europe/London") {
   #==============================================================
   # get variables  
   D = IMP$metashort
