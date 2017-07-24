@@ -127,7 +127,11 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   switchoffLD = 0 #dummy variable part "end of loop mechanism"
   while (LD > 1) {
     P = c()
-    cat(paste("\nLoading block: ",i,sep=""))
+    if (i  == 1) {
+      cat(paste("\nLoading block: ",i,sep=""))
+    } else {
+      cat(paste(" ",i,sep=""))
+    }
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,

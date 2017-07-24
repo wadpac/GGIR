@@ -3,7 +3,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
-                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30) {
+                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
+  
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -202,44 +203,43 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #============================
   # IS and IV variables
-  
   # select data from first midnight to last midnight
   fmn = midnightsi[1] * (ws2/ws3)
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
   Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
   if (length(Xi) > (IVIS_epochsize_seconds/ws3) & length(Xi) >  (IVIS_windowsize_minutes*60)/ws3) {
-  if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
-    Xicum =cumsum(Xi)
-    step = IVIS_epochsize_seconds/ws3 # should be 6 when ws3=5 and IVIS_epochsize_seconds = 30
-    select= seq(1,length(Xicum)/step,by=step)
-    Xi = diff(c(0,Xicum[select]))/step
-  }
-  nhr = 24*round(60/IVIS_windowsize_minutes) # Number of hours in a day (modify this variable if you want to study different resolutions)
-  Nsecondsinday = 24*3600
-  # ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
-  ni = (Nsecondsinday/nhr)/IVIS_epochsize_seconds # number of epochs in an hour
-  # derive average day with 1 'hour' resolution (hour => windowsize):
-  N = length(Xi)
-  hour = rep(1:ceiling(N/ni),each=ni)
-  if (length(hour) > N) hour = hour[1:N]
-  dat = data.frame(Xi=Xi,hour=hour)
-  InterdailyStability = NA
-  IntradailyVariability = NA
-  if (nrow(dat) > 1) {
-    hh = aggregate(. ~ hour,data=dat,mean)
-    hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
-    hh$day = ceiling(hh$hour/nhr)
-    if (nrow(hh) > 1) {
-      hh2 = aggregate(. ~ hour_perday,data=hh,mean)
-      Xh = hh2$Xi
-      # average acceleration per day
-      Xm = mean(Xh,na.rm = TRUE) 
-      p = length(Xh)
-      InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
-      IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
-      # print(paste0(InterdailyStability," ",IntradailyVariability))
+    if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
+      Xicum =cumsum(Xi)
+      step = IVIS_epochsize_seconds/ws3 # should be 6 when ws3=5 and IVIS_epochsize_seconds = 30
+      select= seq(1,length(Xicum),by=step) # adjusted 17/7/2017
+      Xi = diff(c(0,Xicum[select]))/step
     }
-  }
+    nhr = 24*round(60/IVIS_windowsize_minutes) # Number of hours in a day (modify this variable if you want to study different resolutions)
+    Nsecondsinday = 24*3600
+    # ni = (Nsecondsinday/nhr)/ws3 # number of epochs in an hour
+    ni = (Nsecondsinday/nhr)/IVIS_epochsize_seconds # number of epochs in an hour
+    # derive average day with 1 'hour' resolution (hour => windowsize):
+    N = length(Xi)
+    hour = rep(1:ceiling(N/ni),each=ni)
+    if (length(hour) > N) hour = hour[1:N]
+    dat = data.frame(Xi=Xi,hour=hour)
+    InterdailyStability = NA
+    IntradailyVariability = NA
+    if (nrow(dat) > 1) {
+      hh = aggregate(. ~ hour,data=dat,mean)
+      hh$hour_perday = hh$hour - (floor(hh$hour/nhr)*nhr) # 24 hour in a day
+      hh$day = ceiling(hh$hour/nhr)
+      if (nrow(hh) > 1) {
+        hh2 = aggregate(. ~ hour_perday,data=hh,mean)
+        Xh = hh2$Xi
+        # average acceleration per day
+        Xm = mean(Xh,na.rm = TRUE) 
+        p = length(Xh)
+        InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
+        IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
+        # print(paste0(InterdailyStability," ",IntradailyVariability))
+      }
+    }
   } else {
     InterdailyStability = NA
     IntradailyVariability = NA
@@ -545,6 +545,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
   }
+
   #metashort is shortened from midgnight to midnight if requested (strategy 2)
   if (strategy == 2) {
     if (starttimei == 1) {
@@ -566,7 +567,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       colnames(metashort) != "angley" &
                       colnames(metashort) != "anglez")
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
-  
   colnames_to_lookat = colnames(metashort)[lookat]
   
   MA = matrix(NA,length(lookat),1)
@@ -767,10 +767,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         dtwtel = dtwtel + 1
       }
       vi = vi+6+((dtwtel*sp)-1)
+
       #===========================================================================
       # SUMMARISE Percentiles (q46)
       keepindex_46 = keepindex_46[stats::complete.cases(keepindex_46),]
       keepindex_48 = keepindex_48[stats::complete.cases(keepindex_48),]
+      # if there is only one row in the matrix then matrix collapses to a vector, the next two lines fix this
+      if (is.null(nrow(keepindex_46)) == TRUE) keepindex_46 = as.matrix(t(keepindex_46))
+      if (is.null(nrow(keepindex_48)) == TRUE) keepindex_48 = as.matrix(t(keepindex_48))
       for (mi in 1:nrow(keepindex_46)) { #run through metrics (for features based on single metrics)
         if (doquan == TRUE) {
           if (length(q46) > 0) {
@@ -891,7 +895,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(mw) > 0) {
     daysummary[which(is.na(daysummary)==T)] = " "
   }
-  
   cut = which(ds_names == " " | ds_names == "" | is.na(ds_names)==T)
   if (length(cut > 0)) {
     ds_names = ds_names[-cut]
@@ -916,6 +919,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   summary = data.frame(value=t(summary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
   names(summary) = s_names
+  
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
     names(windowsummary) = ws_names
@@ -923,4 +927,5 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   } else {
     invisible(list(summary=summary,daysummary=daysummary))
   }
+  
 }
