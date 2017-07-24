@@ -52,7 +52,11 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
   while (LD > 1) {
     P = c()
-    print(paste("Loading block: ",i,sep=""))
+    if (i  == 1) {
+      cat(paste("\nLoading block: ",i,sep=""))
+    } else {
+      cat(paste(" ",i,sep=""))
+    }
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     
