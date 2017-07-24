@@ -19,8 +19,8 @@ getfolderstructure = function(datadir=c(),referencefnames=c()) {
     foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
     for (i in 1:length(referencefnames)) {
       if (length(which(fnamesshort == referencefnames[i])) > 0) {
-        fullfilenames[i] = fnamesfull[which(fnamesshort == ff)]
-        foldername[i] = foldername[which(fnamesshort == ff)]
+        fullfilenames[i] = fnamesfull[which(fnamesshort == referencefnames[i])]
+        foldername[i] = foldername[which(fnamesshort == referencefnames[i])]
       }
     }
   }
