@@ -7,14 +7,18 @@ Extracts folderstructure based on data directory.
 Extracts folderstructure based on data directory. This is used when
 accelerometer files are stored in a hierarchical folder structure and
 the user likes to have a reference to the exact position in the folder
-tree, rather than just the filename
+tree, rather than just the filename.  Function not
+intended for direct use by package user.
 }
 \usage{
-getfolderstructure(datadir)	
+getfolderstructure(datadir=c(),referencefnames=c())	
 }
 \arguments{
   \item{datadir}{
 Argument datadir as used in various other functions in GGIR
+}
+\item{referencefnames}{
+vector with filename to filter on
 }
 }
 \value{
