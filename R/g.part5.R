@@ -1,5 +1,5 @@
 g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7,hrs.del.start=0,hrs.del.end =0,
-                   loglocation= c(),excludefirstlast=FALSE,windowsizes=c(5,900,3600),
+                   loglocation= c(),excludefirstlast=FALSE,windowsizes=c(5,900,3600), metric="ENMO",
                    boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,storefolderstructure=FALSE,
                    threshold.lig = c(40),
                    threshold.mod = c(100),
@@ -122,7 +122,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
                        hrs.del.end=hrs.del.end,maxdur=maxdur)
         time = IMP$metashort[,1]
-        ACC = IMP$metashort[,2] * 1000 #note that this is imputed ACCELERATION because we use this for describing behaviour
+        ACC = IMP$metashort[,metric] * 1000 #note that this is imputed ACCELERATION because we use this for describing behaviour
         
         if (length(which(names(IMP$metashort) == "anglez")) == 0) {
           cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
