@@ -51,33 +51,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
-    filelist = isfilelist(datadir)
-    if (filelist == FALSE) {
-      # fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),dir(datadir,recursive=TRUE,pattern="[.]bin"))
-      fnamesfull = dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wav)")
-    } else {
-      fnamesfull = datadir
-    }
-    f16 = function(X) {
-      out = unlist(strsplit(X,"/"))
-      f16 = out[length(out)]
-    }
-    f17 = function(X) {
-      out = unlist(strsplit(X,"/"))
-      f17 = out[(length(out)-1)]
-    }
-    ffd = ffp = rep("",length(fnamesfull))
-    if (length(fnamesfull) > 0) {
-      fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-      foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-      for (i in 1:length(fnames.ms3)) {
-        ff = as.character(unlist(strsplit(fnames.ms3[i],".RDa"))[1])
-        if (length(which(fnamesshort == ff)) > 0) {
-          ffd[i] = fnamesfull[which(fnamesshort == ff)]
-          ffp[i] = foldername[which(fnamesshort == ff)]
-        }
-      }
-    }
+    folderstructure = getfolderstructure(datadir)
+    fullfilenames = folderstructure$fullfilenames
+    foldername = folderstructure$foldername
   }
   #======================================================================
   # loop through milestone data-files (in case of store.ms=TRUE)
@@ -729,9 +705,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = bout.metric
                         ds_names[fi] = "bout.metric"; fi = fi + 1 
                         if (storefolderstructure == TRUE) {
-                          dsummary[di,fi] = ffd[i] #full filename structure
+                          dsummary[di,fi] = fullfilenames[i] #full filename structure
                           ds_names[fi] = "filename_dir"; fi = fi + 1 
-                          dsummary[di,fi] = ffp[i] #store the lowest foldername
+                          dsummary[di,fi] = foldername[i] #store the lowest foldername
                           ds_names[fi] = "foldername"; fi = fi + 1 
                         }
                         di = di + 1
