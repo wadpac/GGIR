@@ -10,6 +10,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    winhr = 5,
                    M5L5res = 10,
                    overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0) {
+  
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
@@ -50,33 +51,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
-    filelist = isfilelist(datadir)
-    if (filelist == FALSE) {
-      # fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),dir(datadir,recursive=TRUE,pattern="[.]bin"))
-      fnamesfull = dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wav)")
-    } else {
-      fnamesfull = datadir
-    }
-    f16 = function(X) {
-      out = unlist(strsplit(X,"/"))
-      f16 = out[length(out)]
-    }
-    f17 = function(X) {
-      out = unlist(strsplit(X,"/"))
-      f17 = out[(length(out)-1)]
-    }
-    ffd = ffp = rep("",length(fnamesfull))
-    if (length(fnamesfull) > 0) {
-      fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-      foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-      for (i in 1:length(fnames.ms3)) {
-        ff = as.character(unlist(strsplit(fnames.ms3[i],".RDa"))[1])
-        if (length(which(fnamesshort == ff)) > 0) {
-          ffd[i] = fnamesfull[which(fnamesshort == ff)]
-          ffp[i] = foldername[which(fnamesshort == ff)]
-        }
-      }
-    }
+    extractfilenames = function(x) as.character(unlist(strsplit(x,".RDa"))[1])
+    referencefnames = sapply(fnames.ms3,extractfilenames)
+    folderstructure = getfolderstructure(datadir,referencefnames)
+    fullfilenames = folderstructure$fullfilenames
+    foldername = folderstructure$foldername
   }
   #======================================================================
   # loop through milestone data-files (in case of store.ms=TRUE)
@@ -187,7 +166,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               s1 = which(time[pr0:pr1] == gik.end[g])[1]
               timebb = as.character(time[pr0:pr1]) 
               if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
+                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
@@ -214,9 +193,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           hour = tempp$hour
           if (dayborder == 0) {
             nightsi = which(sec == 0 & min == 0 & hour == 0)
-            } else {
+          } else {
             nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
-                    }
+          }
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -296,10 +275,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               timebb = as.character(time) 
               
               if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz="Europe/London")
+                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
               }
-                if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
-                if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
+              if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
+              if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
               # }
               if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
                 diur[s0:s1] = 1
@@ -349,98 +328,19 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
-                  #=======================================================
-                  # LABEL INSENTITY LEVELS
-                  LEVELS = rep(0,length(time))
-                  OLEVELS = rep(0,length(time)) #to capture moderate and vigorous seperately
-                  LEVELS[which(detection == 1 & diur == 1)] = 0 #nocturnal sleep
-                  LEVELS[which(detection == 0 & diur == 1)] = 1 #nocturnal waking
-                  Lnames = c("nightsleep",paste("nightwak_and_IN",TRLi,sep=""))
-                  # activity during the night
-                  LEVELS[which(detection == 0 & diur == 1 & ACC > TRLi & ACC <= TRMi)] = 2 #LIGHT
-                  LEVELS[which(detection == 0 & diur == 1 & ACC > TRMi & ACC <= TRVi)] = 3 #MODERATE
-                  LEVELS[which(detection == 0 & diur == 1 & ACC > TRVi)] = 4 #VIGOROUS
-                  Lnames = c(Lnames,paste("nightwak_LIG",TRLi,"_",TRMi,sep=""),
-                             paste("nightwak_MOD",TRMi,"_",TRVi,sep=""),
-                             paste("nightwak_VIG",TRVi,sep=""))
-                  # activity during the day
-                  LEVELS[which(detection == 1 & diur == 0)] = 5 #daytime sustained inactivity
-                  #============================================================
-                  # newly added on 20 may 2015:
-                  if (length(detection == 1) > 0) ACC[detection == 1] = 0 #turn all acceleration to zero if sustained inactivity bouts are detected
-                  #======================================
-                  LEVELS[which(detection == 0 & diur == 0 & ACC <= TRLi)] = 6 #other inactivity
-                  LEVELS[which(detection == 0 & diur == 0 & ACC > TRLi & ACC <= TRMi)] = 7 #LIGHT
-                  LEVELS[which(detection == 0 & diur == 0 & ACC > TRMi & ACC <= TRVi)] = 8 #MODERATE
-                  LEVELS[which(detection == 0 & diur == 0 & ACC > TRVi)] = 9 #VIGOROUS
-                  Lnames = c(Lnames,"day_SIB",paste("day_OIN",TRLi,sep=""),
-                             paste("day_LIG",TRLi,"_",TRMi,sep=""),
-                             paste("day_MOD",TRMi,"_",TRVi,sep=""),
-                             paste("day_VIG",TRVi,sep=""))
-                  # store separate copy of moderate and vigorous levels
-                  OLEVELS[which(LEVELS == 5)] = 1 #SIB
-                  OLEVELS[which(LEVELS == 6)] = 2 #OIN
-                  OLEVELS[which(LEVELS == 7)] = 3 #LIGHT
-                  OLEVELS[which(LEVELS == 8)] = 4 #MOD
-                  OLEVELS[which(LEVELS == 9)] = 5 #VIG
-                  #-------------------------------------
-                  # NEW MVPA BOUTS
-                  LN = length(time)
-                  boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
-                  boutduration = boutdur.mvpa * (60/ws3) 
-                  NBL = length(boutduration) #number of bout lengths
-                  CL = 10 #current level
-                  refe = rep(0,LN)
-                  bc.mvpa = c()
-                  for (BL in 1:NBL) { # needs to be flexible to varibale number of bout lengths
-                    rr1 = rep(0,LN)
-                    p = which(detection == 0 & ACC >= TRMi & refe == 0 & diur == 0); rr1[p] = 1
-                    out1 = g.getbout(x=rr1,boutduration=boutduration[BL],boutcriter=boutcriter.mvpa,
-                                     closedbout=FALSE,bout.metric=bout.metric,ws3=ws3)
-                    LEVELS[which(diur == 0 & out1$x == 1)] = CL
-                    bc.mvpa = rbind(bc.mvpa,out1$boutcount)
-                    refe = refe + out1$x
-                    Lnames = c(Lnames,paste0("MVPA_D",boutdur.mvpa[BL],"T",TRMi))
-                    CL = CL + 1
-                  }
-                  #-------------------------------------
-                  # NEW INACTIVITY BOUTS
-                  LN = length(time)
-                  boutdur.in = sort(boutdur.in,decreasing = TRUE)
-                  boutduration = boutdur.in * (60/ws3)
-                  NBL = length(boutduration) #number of bout lengths
-                  # refe = rep(0,LN)
-                  bc.in = c()
-                  for (BL in 1:NBL) {
-                    rr1 = rep(0,LN)
-                    p = which((detection == 1 | ACC < TRLi) & refe == 0 & diur == 0); rr1[p] = 1
-                    out1 = g.getbout(x=rr1,boutduration=boutduration[BL],boutcriter=boutcriter.in,
-                                     closedbout=FALSE,bout.metric=bout.metric,ws3=ws3)
-                    LEVELS[which(diur == 0 & out1$x == 1)] = CL
-                    bc.in = rbind(bc.in,out1$boutcount)
-                    refe = refe + out1$x
-                    Lnames = c(Lnames,paste0("INB_D",boutdur.in[BL],"T",TRLi))
-                    CL = CL + 1
-                  }
-                  #-------------------------------------
-                  # NEW LIGHT BOUTS
-                  LN = length(time)
-                  boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
-                  boutduration = boutdur.lig * (60/ws3)
-                  NBL = length(boutduration) #number of bout lengths
-                  # refe = rep(0,LN)
-                  bc.lig = c()
-                  for (BL in 1:NBL) {
-                    rr1 = rep(0,LN)
-                    p = which(detection == 0 & ACC >= TRLi & refe ==0 & ACC < TRMi & diur == 0); rr1[p] = 1
-                    out1 = g.getbout(x=rr1,boutduration=boutduration[BL],boutcriter=boutcriter.lig,
-                                     closedbout=FALSE,bout.metric=bout.metric,ws3=ws3)                    
-                    LEVELS[which(diur == 0 & out1$x == 1)] = CL
-                    bc.lig = rbind(bc.lig,out1$boutcount)
-                    refe = refe + out1$x
-                    Lnames = c(Lnames,paste0("LIGB_D",boutdur.lig[BL],"T",TRLi,"_",TRMi))
-                    CL = CL + 1
-                  }
+                  
+                  levels = identify_levels(time,diur,detection,ACC,
+                                             TRLi,TRMi,TRVi,
+                                             boutdur.mvpa,boutcriter.mvpa,
+                                             boutdur.lig,boutcriter.lig,
+                                             boutdur.in,boutcriter.in,
+                                             ws3,bout.metric)
+                  LEVELS = levels$LEVELS
+                  OLEVELS = levels$OLEVELS
+                  Lnames = levels$Lnames
+                  bc.mvpa = levels$bc.mvpa
+                  bc.lig = levels$bc.lig
+                  bc.in = levels$bc.in
                   
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
@@ -456,7 +356,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
                   }
                   # now 0.5+6+0.5 midnights and 7 days
-                for (timewindowi in timewindow) {
+                  for (timewindowi in timewindow) {
                     for (wi in 1:(nrow(summarysleep_tmp2))) { #loop through 7 windows
                       #check that this is a meaningful day
                       qqq = rep(0,2)
@@ -651,8 +551,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi] = paste("M",wini,"VALUE",sep="");      fi = fi + 1
                           if (ignore == FALSE) {
                             if(length(unlist(strsplit(L5HOUR,"[+]"))) > 1) { # only do this for ISO8601 format
-                              L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz="Europe/London"))
-                              M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz="Europe/London"))
+                              L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
+                              M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
@@ -728,9 +628,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = bout.metric
                         ds_names[fi] = "bout.metric"; fi = fi + 1 
                         if (storefolderstructure == TRUE) {
-                          dsummary[di,fi] = ffd[i] #full filename structure
+                          dsummary[di,fi] = fullfilenames[i] #full filename structure
                           ds_names[fi] = "filename_dir"; fi = fi + 1 
-                          dsummary[di,fi] = ffp[i] #store the lowest foldername
+                          dsummary[di,fi] = foldername[i] #store the lowest foldername
                           ds_names[fi] = "foldername"; fi = fi + 1 
                         }
                         di = di + 1
@@ -742,7 +642,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
           }
         }
-        output = as.data.frame(dsummary)
+        output = data.frame(dsummary,stringsAsFactors=FALSE)
+        
         names(output) = ds_names
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
@@ -761,6 +662,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
             }
           }
+        }
+        # tidy up output data frame, because it may have a lot of empty rows and columns
+        emptyrows = which(output[,1] == "" & output[,2] == "")
+        if (length(emptyrows) > 0) output = output[-emptyrows,]
+        lastcolumn = which(colnames(output) == "bout.metric")
+        if (ncol(output) > lastcolumn) {
+          emptycols = which(output[1,] == "" & output[2,] == "")
+          if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
+          if (length(emptycols) > 0) output = output[-emptycols]
         }
         save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
         rm(output,dsummary)
