@@ -22,10 +22,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     # Specifying directories with meta-data and extracting filenames 
     path = paste(path1,outputfolder,"/meta/basic/",sep="")  #values stored per long epoch, e.g. 15 minutes
     fnames = dir(path)
+
     if (f1 > length(fnames)) f1 = length(fnames)
     # create output folders
     ms2.out = "/meta/ms2.out"
     fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
+    
     #---------------------------------
     # house keeping variables
     pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
@@ -43,7 +45,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         dev.off()
       }
       if (pdfpagecount == 1) {
-        pdf(paste(path1,outputfolder,"/results/QC/plots to check data quality ",pdffilenumb,".pdf",sep=""),width=7,height=7)
+        pdf(paste(path1,outputfolder,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf",sep=""),width=7,height=7)
       }
       M = c()
       load(paste(path,fnames[i],sep="")) #reading RData-file

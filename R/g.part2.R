@@ -6,7 +6,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
-                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 30) {
+                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
   # verify whether path1 is a directory or a list of files
   outputfolder = unlist(strsplit(metadatadir,"/output_"))[2]
   outputfolder = paste("/output_",outputfolder,sep="")
@@ -72,6 +72,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
         }
+        
         SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
                         includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
@@ -88,6 +89,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             write.csv(IMP$metashort,paste(metadatadir,"/",csvfolder,"/",name,".csv",sep=""),row.names=FALSE)
           } 
         }
+
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (cnt78 == 1) { #i == 1 | i == f0 | 
             SUMMARY = SUM$summary
