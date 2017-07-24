@@ -1,7 +1,6 @@
-getfolderstructure = function(datadir=c()) {
+getfolderstructure = function(datadir=c(),referencefnames=c()) {
   filelist = isfilelist(datadir)
   if (filelist == FALSE) {
-    # fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),dir(datadir,recursive=TRUE,pattern="[.]bin"))
     fnamesfull = dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wav)")
   } else {
     fnamesfull = datadir
@@ -18,9 +17,8 @@ getfolderstructure = function(datadir=c()) {
   if (length(fnamesfull) > 0) {
     fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
     foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-    for (i in 1:length(fnames.ms3)) {
-      ff = as.character(unlist(strsplit(fnames.ms3[i],".RDa"))[1])
-      if (length(which(fnamesshort == ff)) > 0) {
+    for (i in 1:length(referencefnames)) {
+      if (length(which(fnamesshort == referencefnames[i])) > 0) {
         fullfilenames[i] = fnamesfull[which(fnamesshort == ff)]
         foldername[i] = foldername[which(fnamesshort == ff)]
       }
