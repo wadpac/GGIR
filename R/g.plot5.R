@@ -1,5 +1,5 @@
 g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f1=c(),overwrite=FALSE,
-                   desiredtz = "Europe/London") {
+                   metric="ENMO",desiredtz = "Europe/London") {
   if (file.exists(paste(metadatadir,"/results/file summary reports",sep=""))) {
     fnames.fsr = sort(dir(paste(metadatadir,"/results/file summary reports",sep="")))
     ffdone = fnames.fsr #ffdone is now a list of files that have already been processed by g.part5
@@ -115,7 +115,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           sleepefficiency = (nocsleepdur /lengthnight) * 100
           
           f01 = daysummary_tmp[,c45]
-          f02 = daysummary_tmp$mean_ENMO_mg_24hr
+          f02 = daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]
           f05 = nocsleepdur #runif(length(days), 4, 10)
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
