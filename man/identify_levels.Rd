@@ -39,7 +39,7 @@ identify_levels(time,diur,detection,ACC,
 }
 \item{boutcriter.lig}{
 }
-\item{boutdur.in
+\item{boutdur.in}{
 }
 \item{boutcriter.in}{
 }
