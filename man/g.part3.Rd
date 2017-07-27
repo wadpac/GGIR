@@ -11,7 +11,7 @@ them as nocturnal sleep or day time sustained inactivity periods.
 Typical users should work with function g.shell.GGIR only.
 }
 \usage{
-g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
+g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,metric="ENMO",
   ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London")
 }
 \arguments{
@@ -36,6 +36,9 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   Time threshold (minutes) for sustained inactivity periods detection, 
   default = 5. This can be specified as multiple thresholds, each of 
   which will be implemented. For example, timethreshold = c(5,10)
+  }
+  \item{metric}{
+    Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{ignorenonwear}{
   If TRUEE then ignore detected monitor non-wear periods to avoid 
