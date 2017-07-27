@@ -1,5 +1,5 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
-                     timethreshold = c(5,10),desiredtz="Europe/London") {
+                     timethreshold = c(5,10), metric = "ENMO", desiredtz="Europe/London") {
   #==============================================================
   # get variables  
   D = IMP$metashort
@@ -36,7 +36,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       cat("metric anglez was not extracted, please make sure that anglez  is extracted")
     }
     angle = as.numeric(as.matrix(D[1:nD,which(colnames(D)=="anglez")]))
-    ENMO = as.numeric(as.matrix(D[1:nD,which(colnames(D)=="ENMO")]))
+    ACC = as.numeric(as.matrix(D[1:nD,which(colnames(D)==metric)]))
     night = rep(0,length(angle))
     if (length(which(is.na(angle) ==TRUE)) > 0) {
       if (which(is.na(angle) ==TRUE)[1] == length(angle)) {
@@ -103,14 +103,14 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         detection.failed = FALSE  
         #------------------------------------------------------------------
         # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
-        tmpENMO = ENMO[qqq1:qqq2]
+        tmpACC = ACC[qqq1:qqq2]
         windowRL = round((3600/ws3)*5)
         if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
-        if (length(tmpENMO) < windowRL) {  0 # added 4/4/2-17
+        if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
           cat("Warning: time window shorter than 5 hours which makes it impossible to identify L5")
           L5 = 0
         } else {
-          ZRM = zoo::rollmean(x=c(tmpENMO),k=windowRL,fill="extend",align="center") #
+          ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
           
           L5 = which(ZRM == min(ZRM))[1]
           if (sd(ZRM) == 0) {
@@ -139,10 +139,10 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           night[qqq1:qqq2] = j
           #------------------------------------------------------------------
           # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
-          tmpENMO = ENMO[qqq1:qqq2]
+          tmpACC = ACC[qqq1:qqq2]
           windowRL = round((3600/ws3)*5)
           if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
-          ZRM = zoo::rollmean(x=c(tmpENMO),k=windowRL,fill="extend",align="center") #
+          ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
           L5 = which(ZRM == min(ZRM))[1]
           if (sd(ZRM) == 0) {
             L5 = c()
