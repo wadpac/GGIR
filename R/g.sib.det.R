@@ -102,6 +102,15 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         night[qqq1:qqq2] = 1
         detection.failed = FALSE  
         #------------------------------------------------------------------
+        # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
+        
+        
+        
+        
+        
+        
+        
+        #------------------------------------------------------------------
         # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
         tmpACC = ACC[qqq1:qqq2]
         windowRL = round((3600/ws3)*5)
