@@ -1,5 +1,5 @@
 g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f1=c(),overwrite=FALSE,
-                   desiredtz = "Europe/London") {
+                   metric="ENMO",desiredtz = "Europe/London") {
   if (file.exists(paste(metadatadir,"/results/file summary reports",sep=""))) {
     fnames.fsr = sort(dir(paste(metadatadir,"/results/file summary reports",sep="")))
     ffdone = fnames.fsr #ffdone is now a list of files that have already been processed by g.part5
@@ -99,7 +99,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         c45 = c45[length(c45)]
         #######################
         # First page of the report
-        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp$mean_ENMO_mg_24hr) == FALSE)) > 1
+        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]) == FALSE)) > 1
             & length(which(is.na(daysummary_tmp[,c45]) == FALSE)) > 1
             & nrow(summarysleep_tmp) > 0) {
           # abbreviate names of days
@@ -115,7 +115,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           sleepefficiency = (nocsleepdur /lengthnight) * 100
           
           f01 = daysummary_tmp[,c45]
-          f02 = daysummary_tmp$mean_ENMO_mg_24hr
+          f02 = daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]
           f05 = nocsleepdur #runif(length(days), 4, 10)
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
@@ -187,18 +187,18 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         #=================================================
         # Next pages with day specific graphs
         #get variables - activity:
-        ENMO = as.numeric(as.matrix(M$metashort[,2])) * 1000
+        ACC = as.numeric(as.matrix(M$metashort[,metric])) * 1000
         time =  as.character(M$metashort[,1])
         if (length(unlist(strsplit(time[1],"T"))) > 1) { # ISO timestamp format
           time = as.character(iso8601chartime2POSIX(time,desiredtz))
         }
-        MODPA = rep(NA,length(ENMO))
-        VIGPA = rep(NA,length(ENMO))
+        MODPA = rep(NA,length(ACC))
+        VIGPA = rep(NA,length(ACC))
         boutdur2 = 10 * (60/ws3) 
         boutcriter = 0.8
         #moderate and vigorous activity
-        rr1 = matrix(0,length(ENMO),1)
-        p = which(ENMO >= 100)
+        rr1 = matrix(0,length(ACC),1)
+        p = which(ACC >= 100)
         rr1[p] = 1
         rr1t = rr1
         jmvpa = 1
@@ -219,8 +219,8 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           jmvpa = jmvpa + 1
         }
         rr1[which(rr1t == 2)] = 1
-        MODPA[which(rr1 == 1 & ENMO < 400)] = 1 #moderate as part of 10 minute bouts of mvpa
-        VIGPA[which(ENMO >= 400 & rr1 == 1)] = 1 #vigorous as part of 10 minute bouts of mvpa
+        MODPA[which(rr1 == 1 & ACC < 400)] = 1 #moderate as part of 10 minute bouts of mvpa
+        VIGPA[which(ACC >= 400 & rr1 == 1)] = 1 #vigorous as part of 10 minute bouts of mvpa
         #get variables - sleep:
         angle = as.matrix(M$metashort[,which(colnames(M$metashort) == "anglez")])
         if (I$monc == 2) {
@@ -292,7 +292,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           if (((t1-t0) + 1) / (12*60) == 23) { # day with 23 hours, just extend timeline with 1 hour
             t1 = t1 + (12*60)
           }
-          acc = ENMO[t0:t1]
+          acc = ACC[t0:t1]
           mpa = MODPA[t0:t1]
           vpa = VIGPA[t0:t1]
           ang = angle[t0:t1]

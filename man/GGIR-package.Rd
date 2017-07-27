@@ -126,6 +126,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \item Joe Heywood helped develop the functionality to process only specific days
 \item Evgeny Mirkes developed function \link{g.cwaread}
 \item Severine Sabia tested and provided feedback on various functions
+\item Jairo H Migueles <jairohm@ugr.es> co-developed some functions
 }
 }
 \references{
