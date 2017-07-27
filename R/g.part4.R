@@ -156,7 +156,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1
-      L5list = sib.cla.sum = c()
+      lightson = ligthsout = L5list = sib.cla.sum = c()
       # load data, check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
@@ -222,18 +222,22 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # get default onset and wake
           # use default assumption if no other info is available (def.noc.sleep is an input argument people can use
           # to specify assumed time in bed in the absense of sleep diary in a study)
-          if (length(def.noc.sleep) != 2) { #has a default nocturnal sleep window defined? if not, do this part:
+          if (length(def.noc.sleep) == 0 | (length(def.noc.sleep) == 1 & length(lightsout) == 0)) { #has a default nocturnal sleep window defined? if not, do this part:
             # NOW USE L5 to replace defaulttmp3 and tmp6 if L5 is a number
             if (length(L5list) > 0) {
               defaulttmp3 = L5list[j] - 6
               defaulttmp6 = L5list[j] + 6
             }
-            if (defaulttmp3 >= 24) defaulttmp3 = defaulttmp3 - 24
-            if (defaulttmp6 >= 24) defaulttmp6 = defaulttmp6 - 24
-          } else {
+          } else if (length(def.noc.sleep) == 1) { # use time in bed
+            defaulttmp3 = lightsout[j]
+            defaulttmp6 = lightson[j]
+            
+          } else if (length(def.noc.sleep) == 2) {
             defaulttmp3 = def.noc.sleep[1] #onset
             defaulttmp6 = def.noc.sleep[2] #wake
           }
+          if (defaulttmp3 >= 24) defaulttmp3 = defaulttmp3 - 24
+          if (defaulttmp6 >= 24) defaulttmp6 = defaulttmp6 - 24
           defaultdur = defaulttmp6 - defaulttmp3
           # for this night OR if dolog == FALSE
           if (dolog == TRUE & length(wi)  > 0) { #if sleep log is available, use it

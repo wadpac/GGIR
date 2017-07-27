@@ -1,6 +1,55 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), metric = "ENMO", desiredtz="Europe/London") {
   #==============================================================
+  inbed = function(angle, k =50, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60) {
+    # exploratory function, documentation to be added 27/7/2017
+    m25 = function(angle) {
+      angvar = median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
+      return(angvar)
+    }
+    x = zoo::rollapply(angle, k, m25)
+    cla = rep(0,length(x))
+    inbed = rep(NA,length(x))
+    pp = quantile(x,probs=c(perc)) * inbedthreshold
+    cla[which(x < pp)] = 1
+    cla = c(0,cla,0)
+    s1 = which(diff(cla) == 1) #start of blocks in bed
+    e1 = which(diff(cla) == -1) #end of blocks in bed
+    bedblock = which((e1 - s1) > (12*bedblocksize*1))
+    s2 = s1[bedblock]
+    e2 = e1[bedblock]
+    for (j in 1:length(s2)){
+      inbed[ s2[j]:e2[j]] = 1
+    }
+    # fill up gaps
+    outofbed = rep(0,length(inbed))
+    outofbed[which(is.na(inbed) == TRUE)] = 1
+    outofbed = c(0,outofbed,0)
+    s1 = which(diff(outofbed) == 1) #start of blocks out of bed?
+    e1 = which(diff(outofbed) == -1) #end blocks out of bed?
+    bedblock = which((e1 - s1) < (12*outofbedsize*1))
+    s2 = s1[bedblock]
+    e2 = e1[bedblock]
+    if (length(s2) > 0) {
+      for (j in 1:length(s2)){
+        inbed[ s2[j]:e2[j]] = 1
+      }
+    }
+    if (length(inbed) == (length(x)+1)) inbed = inbed[1:(length(inbed)-1)]
+    
+    # get indices for larges in bed window:
+    inbed2 = rep(1,length(inbed))
+    inbed2[which(is.na(inbed) == TRUE)] = 0
+    s1 = which(diff(c(0,inbed2,0)) == 1) #start of blocks out of bed?
+    e1 = which(diff(c(0,inbed2,0)) == -1) #end blocks out of bed?
+    inbeddurations = e1 - s1
+    longestinbed = which(inbeddurations == max(inbeddurations))
+    lightsout = s1[longestinbed] - 1
+    lightson = e1[longestinbed] - 1
+    invisible(list(lightsout=lightsout,lightson=lightson))
+  }
+  
+  #==================================================
   # get variables  
   D = IMP$metashort
   nD = nrow(D)
@@ -83,11 +132,13 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     }
     #-------------------------------------------------------------------
     # detect midnights
+    
+    
     detemout = g.detecmidnight(time,desiredtz) # ND,
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
-    L5list = rep(0,countmidn)
+    lightson = lightsout = L5list = rep(0,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
         tooshort = 1
@@ -103,11 +154,10 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         detection.failed = FALSE  
         #------------------------------------------------------------------
         # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
-        
-        
-        
-        
-        
+        tmpANGLE = angle[qqq1:qqq2]
+        inbedout = inbed(tmpANGLE)
+        lightson[1] = inbedout$lightson
+        lightsout[1] = inbedout$lightsout
         
         
         #------------------------------------------------------------------
@@ -160,6 +210,13 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           }
           if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
           L5list[j] = L5
+          # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
+          tmpANGLE = angle[qqq1:qqq2]
+          inbedout = inbed(tmpANGLE)
+          lightson[j] = (inbedout$lightson / (3600/ ws3)) + 12
+          lightsout[j] = (inbedout$lightsout / (3600/ ws3)) + 12
+          
+          
         }
         detection.failed = FALSE      
       }
@@ -174,5 +231,5 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     L5list = c()
     detection.failed = TRUE
   }
-  invisible(list(output = metatmp,detection.failed=detection.failed,L5list=L5list))
+  invisible(list(output = metatmp,detection.failed=detection.failed,L5list=L5list,lightson =lightson,lightsout=lightsout))
 }
