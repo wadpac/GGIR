@@ -4,13 +4,14 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   inbed = function(angle, k =50, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60) {
     # exploratory function, documentation to be added 27/7/2017
     m25 = function(angle) {
-      angvar = median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
+      angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
       return(angvar)
     }
     x = zoo::rollapply(angle, k, m25)
     cla = rep(0,length(x))
-    inbed = rep(NA,length(x))
+    inbedtime = rep(NA,length(x))
     pp = quantile(x,probs=c(perc)) * inbedthreshold
+    if (pp == 0) pp = 7
     cla[which(x < pp)] = 1
     cla = c(0,cla,0)
     s1 = which(diff(cla) == 1) #start of blocks in bed
@@ -19,11 +20,11 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     s2 = s1[bedblock]
     e2 = e1[bedblock]
     for (j in 1:length(s2)){
-      inbed[ s2[j]:e2[j]] = 1
+      inbedtime[ s2[j]:e2[j]] = 1
     }
     # fill up gaps
-    outofbed = rep(0,length(inbed))
-    outofbed[which(is.na(inbed) == TRUE)] = 1
+    outofbed = rep(0,length(inbedtime))
+    outofbed[which(is.na(inbedtime) == TRUE)] = 1
     outofbed = c(0,outofbed,0)
     s1 = which(diff(outofbed) == 1) #start of blocks out of bed?
     e1 = which(diff(outofbed) == -1) #end blocks out of bed?
@@ -32,16 +33,15 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     e2 = e1[bedblock]
     if (length(s2) > 0) {
       for (j in 1:length(s2)){
-        inbed[ s2[j]:e2[j]] = 1
+        inbedtime[ s2[j]:e2[j]] = 1
       }
     }
-    if (length(inbed) == (length(x)+1)) inbed = inbed[1:(length(inbed)-1)]
-    
+    if (length(inbedtime) == (length(x)+1)) inbedtime = inbedtime[1:(length(inbedtime)-1)]
     # get indices for larges in bed window:
-    inbed2 = rep(1,length(inbed))
-    inbed2[which(is.na(inbed) == TRUE)] = 0
-    s1 = which(diff(c(0,inbed2,0)) == 1) #start of blocks out of bed?
-    e1 = which(diff(c(0,inbed2,0)) == -1) #end blocks out of bed?
+    inbedtime2 = rep(1,length(inbedtime))
+    inbedtime2[which(is.na(inbedtime) == TRUE)] = 0
+    s1 = which(diff(c(0,inbedtime2,0)) == 1) #start of blocks out of bed?
+    e1 = which(diff(c(0,inbedtime2,0)) == -1) #end blocks out of bed?
     inbeddurations = e1 - s1
     longestinbed = which(inbeddurations == max(inbeddurations))
     lightsout = s1[longestinbed] - 1
@@ -132,7 +132,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     }
     #-------------------------------------------------------------------
     # detect midnights
-    
     
     detemout = g.detecmidnight(time,desiredtz) # ND,
     midnights=detemout$midnights
