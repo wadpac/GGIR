@@ -156,7 +156,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1
-      lightson = ligthsout = L5list = sib.cla.sum = c()
+      lightson = lightsout = L5list = sib.cla.sum = c()
       # load data, check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
