@@ -16,11 +16,11 @@ importFrom("grDevices", "colors", "dev.off", "pdf","rainbow")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
              "lines", "mtext", "text")
-importFrom("stats", "C", "lm.wfit", "quantile", "sd")
 importFrom("utils", "read.csv", "sessionInfo", "write.csv")
-importFrom("stats", "aggregate.data.frame", "weighted.mean","rnorm")
+importFrom("stats", "aggregate.data.frame", "weighted.mean",
+           "rnorm","median","aggregate","C", "lm.wfit",
+           "quantile", "sd")
 import(data.table)
-importFrom("stats", "aggregate")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
 useDynLib(GGIR, .registration=TRUE)
 importFrom(Rcpp, sourceCpp)
