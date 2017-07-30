@@ -1,51 +1,58 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), metric = "ENMO", desiredtz="Europe/London") {
   #==============================================================
-  inbed = function(angle, k =50, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60) {
-    # exploratory function, documentation to be added 27/7/2017
-    m25 = function(angle) {
+  inbed = function(angle, k =60, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60, ws3 = 5) {
+    # exploratory function 27/7/2017
+    medabsdi = function(angle) {
       angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
       return(angvar)
     }
-    x = zoo::rollapply(angle, k, m25)
-    cla = rep(0,length(x))
+    x = zoo::rollapply(angle, k, medabsdi) # 5 minute rolling median of the absolute difference
+    nomov = rep(0,length(x)) # no movement
     inbedtime = rep(NA,length(x))
-    pp = quantile(x,probs=c(perc)) * inbedthreshold
+    pp = quantile(x,probs=c(perc)) * inbedthreshold 
     if (pp == 0) pp = 7
-    cla[which(x < pp)] = 1
-    cla = c(0,cla,0)
-    s1 = which(diff(cla) == 1) #start of blocks in bed
-    e1 = which(diff(cla) == -1) #end of blocks in bed
-    bedblock = which((e1 - s1) > (12*bedblocksize*1))
-    s2 = s1[bedblock]
-    e2 = e1[bedblock]
-    for (j in 1:length(s2)){
-      inbedtime[ s2[j]:e2[j]] = 1
-    }
-    # fill up gaps
-    outofbed = rep(0,length(inbedtime))
-    outofbed[which(is.na(inbedtime) == TRUE)] = 1
-    outofbed = c(0,outofbed,0)
-    s1 = which(diff(outofbed) == 1) #start of blocks out of bed?
-    e1 = which(diff(outofbed) == -1) #end blocks out of bed?
-    bedblock = which((e1 - s1) < (12*outofbedsize*1))
-    s2 = s1[bedblock]
-    e2 = e1[bedblock]
-    if (length(s2) > 0) {
+    nomov[which(x < pp)] = 1
+    nomov = c(0,nomov,0)
+    s1 = which(diff(nomov) == 1) #start of blocks in bed
+    e1 = which(diff(nomov) == -1) #end of blocks in bed
+    bedblock = which((e1 - s1) > ((60/ws3)*bedblocksize*1)) #which are the blocks longer than bedblocksize in minutes?
+    if (length(bedblock) > 0) { #
+      s2 = s1[bedblock] # only keep the bedblocks that are long enough
+      e2 = e1[bedblock] # only keep the bedblocks that are long enough
       for (j in 1:length(s2)){
-        inbedtime[ s2[j]:e2[j]] = 1
+        inbedtime[ s2[j]:e2[j]] = 1 #record these blocks in the inbedtime vector
       }
+      # fill up gaps in time between bed blocks
+      outofbed = rep(0,length(inbedtime))
+      outofbed[which(is.na(inbedtime) == TRUE)] = 1
+      outofbed = c(0,outofbed,0)
+      s3 = which(diff(outofbed) == 1) #start of blocks out of bed?
+      e3 = which(diff(outofbed) == -1) #end blocks out of bed?
+      outofbedblock = which((e3 - s3) < ((60/ws3)*outofbedsize*1))
+      if (length(outofbedblock) > 0) { # only fill up gap if there are gaps
+        s4 = s3[outofbedblock]
+        e4 = e3[outofbedblock]
+        if (length(s4) > 0) {
+          for (j in 1:length(s4)){
+            inbedtime[ s4[j]:e4[j]] = 1
+          }
+        }
+      }
+      if (length(inbedtime) == (length(x)+1)) inbedtime = inbedtime[1:(length(inbedtime)-1)]
+      # keep indices for longest in bed block:
+      inbedtime2 = rep(1,length(inbedtime))
+      inbedtime2[which(is.na(inbedtime) == TRUE)] = 0
+      s5 = which(diff(c(0,inbedtime2,0)) == 1) #start of blocks out of bed?
+      e5 = which(diff(c(0,inbedtime2,0)) == -1) #end blocks out of bed?
+      inbeddurations = e5 - s5
+      longestinbed = which(inbeddurations == max(inbeddurations))
+      lightsout = s5[longestinbed] - 1
+      lightson = e5[longestinbed] - 1
+    } else {
+      lightson = c()
+      lightsout = c()
     }
-    if (length(inbedtime) == (length(x)+1)) inbedtime = inbedtime[1:(length(inbedtime)-1)]
-    # get indices for larges in bed window:
-    inbedtime2 = rep(1,length(inbedtime))
-    inbedtime2[which(is.na(inbedtime) == TRUE)] = 0
-    s1 = which(diff(c(0,inbedtime2,0)) == 1) #start of blocks out of bed?
-    e1 = which(diff(c(0,inbedtime2,0)) == -1) #end blocks out of bed?
-    inbeddurations = e1 - s1
-    longestinbed = which(inbeddurations == max(inbeddurations))
-    lightsout = s1[longestinbed] - 1
-    lightson = e1[longestinbed] - 1
     invisible(list(lightsout=lightsout,lightson=lightson))
   }
   
@@ -154,7 +161,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         #------------------------------------------------------------------
         # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
-        inbedout = inbed(tmpANGLE)
+        inbedout = inbed(tmpANGLE,ws3=ws3)
         lightson[1] = inbedout$lightson
         lightsout[1] = inbedout$lightsout
         
@@ -211,7 +218,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           L5list[j] = L5
           # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
           tmpANGLE = angle[qqq1:qqq2]
-          inbedout = inbed(tmpANGLE)
+          inbedout = inbed(tmpANGLE,ws3=ws3)
           lightson[j] = (inbedout$lightson / (3600/ ws3)) + 12
           lightsout[j] = (inbedout$lightsout / (3600/ ws3)) + 12
           
@@ -223,7 +230,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       cat("No midnights found")
       detection.failed = TRUE
     }
-
+    
     metatmp = data.frame(time,invalid,night=night,sleep = sleep)
   } else {
     metatmp =c()
