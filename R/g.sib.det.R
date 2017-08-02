@@ -144,6 +144,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
+    
     lightson = lightsout = L5list = rep(0,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
@@ -239,6 +240,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   } else {
     metatmp =c()
     L5list = c()
+    lightson = c()
+    lightsout = c()
     detection.failed = TRUE
   }
   invisible(list(output = metatmp,detection.failed=detection.failed,L5list=L5list,lightson =lightson,lightsout=lightsout))
