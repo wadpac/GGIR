@@ -162,8 +162,10 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
         inbedout = inbed(tmpANGLE,ws3=ws3)
-        lightson[1] = inbedout$lightson
-        lightsout[1] = inbedout$lightsout
+        if (length(inbedout$lightson) > 0 & length(inbedout$lightsout) > 0) {
+          lightson[1] = inbedout$lightson
+          lightsout[1] = inbedout$lightsout
+        }
         
         
         #------------------------------------------------------------------
