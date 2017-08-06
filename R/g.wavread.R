@@ -19,6 +19,8 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   if (length(header) == 0) {
     header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="latin1"))
   }
+  scale3position = grep("Scale-3",header)
+  header = header[1:scale3position,]
   P = sapply(as.character(header),function(x) {
     tmp = unlist(strsplit(x,": "))
     if (length(tmp) == 1) {
