@@ -1,9 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-11 (release date:01-8-2017)}{
+\section{Changes in version 1.5-11 (release date:07-8-2017)}{
 \itemize{
-  \item Codecov badge added to the README file
+  \item Fixed bug introduced in 1.5-1: large window size of 3600 seconds was accidentally
+  hardcoded when the g.readaccfile function was added to GGIR in version 1.5-1
+  \item Codecov testing added and badge added to the README file
   \item Functions added to create dummy accelerometer file (csv) and dummy sleeplog (csv), 
 	needed for testing
   \item Default IVIS_epochsize_seconds parameter updated from 30 to 3600
@@ -19,6 +21,7 @@
 	the user to select which metric to use to describe behavior
   \item Argument dayborder is now included in g.part5 to consider the whole measurement in case the protocol
 	starts after midnight
+	\item Jairo Migueles added to list contributors
   }
 }
 			 
