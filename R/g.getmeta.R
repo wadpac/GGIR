@@ -136,7 +136,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                               selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                              dayborder=dayborder)
+                              dayborder=dayborder,ws=ws)
       
       P = accread$P
       filequality = accread$filequality
