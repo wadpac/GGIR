@@ -1,5 +1,5 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder) {
+                         decn,dayborder,ws) {
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -27,7 +27,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     dformat = I$dformc
     sf = I$sf
   }
-  ws=3600
+  
   P = c()
   
   if (mon == 1 & dformat == 1) { # genea binary
