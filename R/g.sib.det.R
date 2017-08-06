@@ -1,5 +1,5 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
-                     timethreshold = c(5,10), metric = "ENMO", desiredtz="Europe/London") {
+                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London") {
   #==============================================================
   inbed = function(angle, k =60, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60, ws3 = 5) {
     # exploratory function 27/7/2017
@@ -92,7 +92,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       cat("metric anglez was not extracted, please make sure that anglez  is extracted")
     }
     angle = as.numeric(as.matrix(D[1:nD,which(colnames(D)=="anglez")]))
-    ACC = as.numeric(as.matrix(D[1:nD,which(colnames(D)==metric)]))
+    ACC = as.numeric(as.matrix(D[1:nD,which(colnames(D)==acc.metric)]))
     night = rep(0,length(angle))
     if (length(which(is.na(angle) ==TRUE)) > 0) {
       if (which(is.na(angle) ==TRUE)[1] == length(angle)) {

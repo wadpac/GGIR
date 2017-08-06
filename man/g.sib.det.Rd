@@ -9,7 +9,7 @@
 }
 \usage{
   g.sib.det(M,IMP,I,twd=c(-12,12),anglethreshold = 5, 
-                     timethreshold = c(5,10), metric = "ENMO", desiredtz="Europe/London")
+                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London")
 }
 \arguments{
   \item{M}{
@@ -31,7 +31,7 @@
   \item{timethreshold}{
     See \link{g.part3}
   }
-  \item{metric}{
+  \item{acc.metric}{
     Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{desiredtz}{
