@@ -9,7 +9,8 @@
 }
 \usage{
   g.sib.det(M,IMP,I,twd=c(-12,12),anglethreshold = 5, 
-                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London")
+                     timethreshold = c(5,10), acc.metric = "ENMO",
+                     desiredtz="Europe/London")
 }
 \arguments{
   \item{M}{
