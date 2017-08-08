@@ -91,7 +91,7 @@ journal/conference publications.
 Package: \tab GGIR\cr
 Type: \tab Package\cr
 Version: \tab 1.5-11\cr
-Date: \tab 2017-8-7\cr
+Date: \tab 2017-8-8\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -120,7 +120,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
 \author{
 \itemize{
-\item Vincent T van Hees <vincentvanhees@gmail.com> was main developer
+\item Vincent T van Hees <vincentvanhees@gmail.com> main developer
 \item Zhou Fang co-developed function \link{g.calibrate}
 \item Jing Hua Zhao <jinghua.zhao@mrc-epid.cam.ac.uk> co-developed function \link{g.binread}
 \item Joe Heywood helped develop the functionality to process only specific days
