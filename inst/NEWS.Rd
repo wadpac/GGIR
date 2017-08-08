@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-11 (release date:07-8-2017)}{
+\section{Changes in version 1.5-11 (release date:08-8-2017)}{
 \itemize{
   \item Fixed bug introduced in 1.5-1: large window size of 3600 seconds was accidentally
   hardcoded when the g.readaccfile function was added to GGIR in version 1.5-1
