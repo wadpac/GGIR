@@ -170,6 +170,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
+              #Change 1 - 03/10/2017
+              if ( timebb[s0] != as.character(timebb[s0])){
+                    timebb = as.character(timebb)
+                    s0 = which(timebb == gik.ons[g])[1]
+                    s1 = which(timebb == gik.end[g])[1]
+                }
+              #End of change 1
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(gik.ons[g]," 00:00:00",sep=""))[1]
               if (is.na(s1) == TRUE) s1 = which(timebb == paste(gik.end[g]," 00:00:00",sep=""))[1]
               s0 = s0 + pr0 - 1
@@ -279,6 +286,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
               if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
+              #Change 2 - 03/10/2017
+               if ( timebb[s0] != as.character(timebb[s0])){
+                    timebb = as.character(timebb)
+                    timebb = as.character(timebb)
+                    if (is.na(s0) == TRUE) s0 = which(timebb == w0c)[1]
+                    if (is.na(s1) == TRUE) s1 = which(timebb == w1c)[1]
+                }
+              #End of change 2
               # }
               if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
                 diur[s0:s1] = 1
