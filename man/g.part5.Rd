@@ -156,6 +156,11 @@ M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0
   \item{winhr}{
    see \link{g.getmeta}
   }
+  \item{save_ms5rawlevels}{
+   boolean, whether to save the time series classification (levels) as a csv files
+  }
+  
+  
 }
 \value{
  The function provides no values, it only ensures that other functions are called
