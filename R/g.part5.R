@@ -9,7 +9,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    boutdur.lig = c(1,5,10),
                    winhr = 5,
                    M5L5res = 10,
-                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0) {
+                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0, save_ms5rawlevels = TRUE) {
   
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
@@ -25,6 +25,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   } else {
     dir.create(file.path(metadatadir,ms5.out))
   }
+  
+  if (save_ms5rawlevels == TRUE) {
+    ms5.outraw = "/meta/ms5.outraw"
+    if (file.exists(paste(metadatadir,ms5.outraw,sep=""))) {
+    } else {
+      dir.create(file.path(metadatadir,ms5.outraw))
+    }
+  }
   SUM = nightsummary = M = sib.cla.sum= c()
   #======================================================================
   # compile lists of milestone data filenames
@@ -33,6 +41,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
   fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
+  # fnames.ms5raw = sort(dir(paste(metadatadir,"/meta/ms5.outraw",sep="")))
   # results
   results = paste(metadatadir,"/results",sep="")
   #------------------------------------------------
@@ -345,17 +354,27 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 for (TRVi in threshold.vig) {
                   
                   levels = identify_levels(time,diur,detection,ACC,
-                                             TRLi,TRMi,TRVi,
-                                             boutdur.mvpa,boutcriter.mvpa,
-                                             boutdur.lig,boutcriter.lig,
-                                             boutdur.in,boutcriter.in,
-                                             ws3,bout.metric)
+                                           TRLi,TRMi,TRVi,
+                                           boutdur.mvpa,boutcriter.mvpa,
+                                           boutdur.lig,boutcriter.lig,
+                                           boutdur.in,boutcriter.in,
+                                           ws3,bout.metric)
                   LEVELS = levels$LEVELS
                   OLEVELS = levels$OLEVELS
                   Lnames = levels$Lnames
                   bc.mvpa = levels$bc.mvpa
                   bc.lig = levels$bc.lig
                   bc.in = levels$bc.in
+                  
+                  if (save_ms5rawlevels == TRUE) {
+                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms5[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
+                    if (length(time) == length(LEVELS)) {
+                      ind = c(1,which(diff(LEVELS)!=0) + 1)
+                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
+                      write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
+                      rm(ms5rawlevels)
+                    }
+                  }
                   
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
