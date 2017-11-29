@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // numUnpack
 IntegerMatrix numUnpack(IntegerVector pack);
-RcppExport SEXP GGIR_numUnpack(SEXP packSEXP) {
+RcppExport SEXP _GGIR_numUnpack(SEXP packSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // resample
 NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector time, int stop);
-RcppExport SEXP GGIR_resample(SEXP rawSEXP, SEXP rawTimeSEXP, SEXP timeSEXP, SEXP stopSEXP) {
+RcppExport SEXP _GGIR_resample(SEXP rawSEXP, SEXP rawTimeSEXP, SEXP timeSEXP, SEXP stopSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
