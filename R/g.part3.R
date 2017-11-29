@@ -62,6 +62,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
         L5list = SLE$L5list
         lightson = SLE$lightson
         lightsout = SLE$lightsout
+        tib.threshold = SLE$tib.threshold
         if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
           id = as.character(unlist(strsplit(I$filename,"_"))[1])
           datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
@@ -71,7 +72,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           dev.off()
           sib.cla.sum = c()
           sib.cla.sum = g.sib.sum(SLE,M,ignorenonwear=ignorenonwear,desiredtz=desiredtz)
-          save(sib.cla.sum,L5list,lightson,lightsout,file=paste(metadatadir,"/meta/ms3.out/",fname,".RData",sep=""))
+          save(sib.cla.sum,L5list,lightson,lightsout,tib.threshold,file=paste(metadatadir,"/meta/ms3.out/",fname,".RData",sep=""))
         }
       }
     }
