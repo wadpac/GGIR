@@ -11,6 +11,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     nomov = rep(0,length(x)) # no movement
     inbedtime = rep(NA,length(x))
     pp = quantile(x,probs=c(perc)) * inbedthreshold 
+    print(paste0("pp ",pp," "))
     if (pp == 0) pp = 7
     nomov[which(x < pp)] = 1
     nomov = c(0,nomov,0)
@@ -52,8 +53,10 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     } else {
       lightson = c()
       lightsout = c()
+      tib.threshold = c()
     }
-    invisible(list(lightsout=lightsout,lightson=lightson))
+    tib.threshold = pp
+    invisible(list(lightsout=lightsout,lightson=lightson,tib.threshold=tib.threshold))
   }
   
   #==================================================
@@ -145,7 +148,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
     
-    lightson = lightsout = L5list = rep(0,countmidn)
+    tib.threshold = lightson = lightsout = L5list = rep(0,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
         tooshort = 1
@@ -166,6 +169,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         if (length(inbedout$lightson) > 0 & length(inbedout$lightsout) > 0) {
           lightson[1] = inbedout$lightson
           lightsout[1] = inbedout$lightsout
+          tib.threshold[1] = inbedout$tib.threshold
         }
         
         
@@ -225,6 +229,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           if (length(inbedout$lightson) != 0 & length(inbedout$lightsout) != 0) {
             lightson[j] = (inbedout$lightson / (3600/ ws3)) + 12
             lightsout[j] = (inbedout$lightsout / (3600/ ws3)) + 12
+            tib.threshold[j] = inbedout$tib.threshold
           }
           
           
@@ -242,7 +247,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     L5list = c()
     lightson = c()
     lightsout = c()
+    tib.threshold = c()
     detection.failed = TRUE
   }
-  invisible(list(output = metatmp,detection.failed=detection.failed,L5list=L5list,lightson =lightson,lightsout=lightsout))
+  invisible(list(output = metatmp,detection.failed=detection.failed,L5list=L5list,lightson =lightson,lightsout=lightsout,tib.threshold=tib.threshold))
 }
