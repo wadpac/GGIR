@@ -145,7 +145,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "boutdur.mvpa")) == 0)  boutdur.mvpa = c(1,5,10)
   if (length(which(ls() == "boutdur.in")) == 0)  boutdur.in = c(10,20,30)
   if (length(which(ls() == "boutdur.lig")) == 0)  boutdur.lig = c(1,5,10)
-  if (length(which(ls() == "save_ms5rawlevels")) == 0) save_ms5rawlevels = TRUE
+  if (length(which(ls() == "save_ms5rawlevels")) == 0) save_ms5rawlevels = FALSE
   # part 2
   if (length(which(ls() == "mvpadur")) == 0)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE
