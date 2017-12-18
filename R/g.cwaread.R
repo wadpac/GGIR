@@ -278,7 +278,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     }
     end = origin + end * step
   }
-  # to prevent creatio of too big arrays we can use this estimation
+  # to prevent creation of too big arrays we can use this estimation
   if (end > origin + numDBlocks * 150 * step)
     end = origin + numDBlocks * 150 * step
   # If data is not necessary then stop work
@@ -363,7 +363,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     battery[pos:last] = prevRaw$battery
     # Now current become previous
     prevRaw = raw
-    pos = last +1
+    pos = last + 1
     # Refresh progress bar if it is necessary
     if (progressBar)
       setTxtProgressBar(pb, pos)
@@ -379,7 +379,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     newTimes = (prevRaw$start - prevStart) / prevLength * prevRaw$length + prevRaw$start
     prevLength = prevRaw$length
     # Create array of times
-    time = seq(prevStart, prevRaw$start, length.out = prevLength + 1)
+    time = seq(prevStart, newTimes, length.out = prevLength + 1) #Row eddited by EM 18/12/2017. Correction of the final time.
     # Fragment below was changed by EM 24.04.2017 to unify resampling process.
     # fill vector rawTime and matrix rawAccel for resampling
     if (rawPos == 1) {
