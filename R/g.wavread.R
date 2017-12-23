@@ -13,7 +13,7 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   while (length(header) == 0 | length(grep("Scale-3",header)) == 0 |
          length(grep("Scale-2",header)) == 0 |
          length(grep("Scale-1",header)) == 0) { # as we do not know what header size is, search for it (needed in R version =< 3.1)
-    
+
     try(expr={header = rownames(read.csv(wavfile,nrow=Nlines,header=TRUE))},silent=TRUE)
     if (length(header) == 0) {
       header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="WINDOWS-1252"))
@@ -24,7 +24,7 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
     if (length(header) == 0) {
       header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="latin1"))
     }
-    
+
     Nlines = Nlines - 1
     if (Nlines == 10) print("Error: wav file header not recognized in function g.wavread")
   }
@@ -46,7 +46,7 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   #-----------------------------------------------
   # scale acceleration
   scale = as.numeric(as.character(P$hvalues[which(P$hnames == "Scale-1" | P$hnames == "Scale-2" | P$hnames == "Scale-3")]))
-  
+
   if (length(scale) != 3) scale = rep(scale[1],3)
   range = 2^(H$bits -1) # should be 32768 for 16 bit
   x = (B$C1/range) * scale[1]
@@ -58,11 +58,11 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   A = scan(wavfile,what="character",nlines=12,quiet=TRUE)
   timestamp = paste0(A[which(A == "ICMTz")+1:2],collapse=" ")
   if (length(timestamp) == 0 | timestamp == "") { #if not possible use other time in fileheader
-    timestamp = as.character(P$hvalues[which(P$hnames == "Start")]) 
+    timestamp = as.character(P$hvalues[which(P$hnames == "Start")])
   }
   # Note: temperature information is available in channel 4, but documentation is unclear on how to interpret this information
   # therefore I am not using it and rely on auto-calibration as performed before .wav file is generated
   # g = (B$C4/ range) # temperature, light and battery ?
   invisible(list(rawxyz=rawxyz,header=P,timestamp = timestamp))
-  
+
 }
