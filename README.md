@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051065.svg)](https://doi.org/10.5281/zenodo.1051065)
+[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1129323.svg)](https://doi.org/10.5281/zenodo.1129323)
+
+
 
 The code in this repository is the development version for the code in R-package GGIR
 
