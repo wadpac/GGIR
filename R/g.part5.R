@@ -151,6 +151,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         rm(sib.cla.sum)
         def = unique(S$definition)
         cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
+
         if (length(cut) > 0) S = S[-cut,]
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)        
           #========================================================
@@ -180,7 +181,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
               #Change 1 - 03/10/2017
-              if ( timebb[s0] != as.character(timebb[s0])){
+              if ( timebb[1] != as.character(timebb[1])){ #not s0 because s0 does not exist yet if classes differ
                     timebb = as.character(timebb)
                     s0 = which(timebb == gik.ons[g])[1]
                     s1 = which(timebb == gik.end[g])[1]
@@ -679,7 +680,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           }
         }
         output = data.frame(dsummary,stringsAsFactors=FALSE)
-        
         names(output) = ds_names
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
