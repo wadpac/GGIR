@@ -1,6 +1,15 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.5-15 (release date:23-12-2017)}{
+\itemize{
+  \item cwaread issue #57 fixed
+  \item cpp code fixed which did not compile anymore
+  \item a machine specific function test removed
+  }
+}
+
 \section{Changes in version 1.5-12 (release date:08-8-2017)}{
 \itemize{
   \item Fixed bug introduced in 1.5-1: large window size of 3600 seconds was accidentally
