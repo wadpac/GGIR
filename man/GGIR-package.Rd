@@ -24,25 +24,25 @@ export timestamps to the csv-file as this causes memory issues. To cope with the
 absense of timestamps the code will re-caculate timestamps from the sample frequency
 and the start time and date as presented in the file header.\cr
 \cr
-A non-exhaustive overview of publications related to GGIR can be found 
+A non-exhaustive overview of publications related to GGIR can be found
 \href{https://github.com/wadpac/GGIR/wiki/Publication-list}{here}\cr
 \cr
-Function \link{g.inspectfile} assessess to which monitor brand the file belongs 
+Function \link{g.inspectfile} assessess to which monitor brand the file belongs
 and extracts the file header; function \link{g.calibrate} helps to investigate
 calibration error based on free-living data and proposes correction factors;
-function \link{g.getmeta} extracts the signal features; \link{g.impute} takes 
-that information, identifies unreliable signal sections (e.g. monitor not worn 
+function \link{g.getmeta} extracts the signal features; \link{g.impute} takes
+that information, identifies unreliable signal sections (e.g. monitor not worn
 or signal clips near its extreme) and replaces these
 sections by imputed values; and finally  \link{g.analyse} takes the output from
 all the functions, runs a basic descriptive analysis and then summarises the output
 both per measurement and per day of measurement.\cr
 \cr
-To enhance the feasibility of using these individual functions I am providing a 
+To enhance the feasibility of using these individual functions I am providing a
 couple of shell functions to ease implementing the above functions in study data
 by less experienced R-users. Here, the main shell function is \link{g.shell.GGIR}
 and allows for automating the full analysis of a dataset
 including all necessary calls to the functions above. Function
-g.shell.GGIR relies on functions \link{g.part1} and \link{g.part2} also part 
+g.shell.GGIR relies on functions \link{g.part1} and \link{g.part2} also part
 of this package. In summary, the user is expected to specify the location of the
 acceleerometer data and the desired output folder. Next, data is loaded and pre-
 processed with g.getmeta and g.calibrate. Next, the output is converted
@@ -59,20 +59,20 @@ basic, ms2.out, ms3out, ms4out, and ms5out for respectively g.part1, g.part2, g.
 g.part4, and g.part5 milestone data.\cr
 \cr
 The reason why g.part1 and g.part2 are not merged as one generic shell
-function is because g.part1 takes much longer to 
-run and involves only minor decisions of interest to the movement scientist. 
-Function g.part2 on the other hand is relatively fast and comes with all the 
+function is because g.part1 takes much longer to
+run and involves only minor decisions of interest to the movement scientist.
+Function g.part2 on the other hand is relatively fast and comes with all the
 decisions that directly impact on the variables that are of interest to the movement
 scientist. Therefore, the user may want to run g.part1 overnight or on a computing
 cluster, while g.part2 can then be the main playing ground for the movement scientist.
 So, function g.shell.GGIR basically is the central point for operating both g.part1 and
 g.part2 and most users should not really need to interact with g.part1 or g.part2
-directly. More recently I expanded the package with g.part3 and g.part4 which 
+directly. More recently I expanded the package with g.part3 and g.part4 which
 provide functionality for estimating sleep and sustained inactivity bouts.\cr
 \cr
-g.part5 finally takes the output from parts 2 and 4 to describe time spent between 
-waking up in the morning and waking up the next day subdivided by behavioural category. 
-g.part5 calculates for each of these categories the time spent, the number of bouts, 
+g.part5 finally takes the output from parts 2 and 4 to describe time spent between
+waking up in the morning and waking up the next day subdivided by behavioural category.
+g.part5 calculates for each of these categories the time spent, the number of bouts,
 the average acceleration and the number of blocks.\cr
 \cr
 If you want to use this package for a different data format (e.g. from a different
@@ -81,7 +81,7 @@ example files for testing purposes.\cr
 \cr
 Please note that there is google discussion group for this package (link below).\cr
 \cr
-You can thank me for sharing the code in this package and for developing 
+You can thank me for sharing the code in this package and for developing
 it as a generic purpose tool by citing the package name and by
 citing the supporting publications in your own scientific
 journal/conference publications.
@@ -100,10 +100,10 @@ Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 \dontrun{
   #inspect file:
   I = g.inspectfile(datafile)
-  
+
   #autocalibration:
   C = g.calibrate(datafile)
-  
+
   #get meta-data:
   M = g.getmeta(datafile)
 }
@@ -135,9 +135,9 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 Movement and Gravity Components in an Acceleration Signal and Implications for the
 Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
 doi:10.1371/journal.pone.0061691
-\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, 
+\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI,
 White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
-free-living physical activity assessment using local gravity and temperature: 
+free-living physical activity assessment using local gravity and temperature:
 an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
 \item van Hees VT, Sabia S, et al. (2015) A novel, open access method to
 assess sleep duration using a wrist-worn accelerometer, PLoS ONE, November 2015
