@@ -11,7 +11,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     nomov = rep(0,length(x)) # no movement
     inbedtime = rep(NA,length(x))
     pp = quantile(x,probs=c(perc)) * inbedthreshold 
-    print(paste0("pp ",pp," "))
     if (pp == 0) pp = 7
     nomov[which(x < pp)] = 1
     nomov = c(0,nomov,0)
