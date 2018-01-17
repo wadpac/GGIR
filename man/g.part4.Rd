@@ -113,7 +113,10 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   left blank 'def.noc.sleep=c()' then the 12 hour window centred
   at the least active 5 hours of the 24 hour period will be used
   instead. Here, L5 is hardcoded and will not change by changing
-  argument winhr in function \link{g.part2}
+  argument winhr in function \link{g.part2}. If def.noc.sleep is filled
+  with a single integer, e.g. def.noc.sleep=c(1) then the window
+  will be detected with a new method for which a manuscript is
+  currently in preparation.
   }
   \item{storefolderstructure}{
   Store folder structure of the accelerometer data
