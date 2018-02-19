@@ -132,6 +132,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "IVIS_windowsize_minutes")) == 0)  IVIS_windowsize_minutes=60
   if (length(which(ls() == "IVIS_epochsize_seconds")) == 0)  IVIS_epochsize_seconds=30
   if (length(which(ls() == "acc.metric")) == 0) acc.metric = "ENMO"
+  if (length(which(ls() == "constrain2range")) == 0) constrain2range = TRUE
   
   
   # # specific for part 5
@@ -155,7 +156,9 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   
 
   
-  cat("\n   g.shell.GGIR {GGIR} by Vincent van Hees\n")
+  cat("\n   Help sustain GGIR into the future \n")
+  cat("   Check out: https://www.movementdata.nl/how-to-help-sustain-ggir \n")
+  cat("   for more information. \n")
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
@@ -200,7 +203,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
     g.part3(metadatadir=metadatadir,f0=f0, acc.metric = acc.metric,
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
-            ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz)
+            ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
+            constrain2range=constrain2range)
   }
   if (dopart4 == TRUE) {
     cat('\n')
