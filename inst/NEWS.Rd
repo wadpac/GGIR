@@ -2,9 +2,18 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
+\section{Changes in version 1.5-17 (release date:19-2-2017)}{
+\itemize{
+  \item SPT-window detection now updated with a constrained threshold to make it more robust
+  against between accelerometer brand differences. This is the approach used for our PSG in
+  <https://www.biorxiv.org/content/early/2018/02/01/257972>
+  }
+}
+
 \section{Changes in version 1.5-16 (release date:17-1-2017)}{
 \itemize{
   \item cwaread issue #57 fixed
+  \item SPT-window detection included (work in progress)
   \item cpp code fixed which did not compile anymore
   \item a machine specific function test removed following feedback from CRAN maintainers
   }
