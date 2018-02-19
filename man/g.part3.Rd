@@ -12,7 +12,7 @@ Typical users should work with function g.shell.GGIR only.
 }
 \usage{
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,acc.metric="ENMO",
-  ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London")
+  ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London",constrain2range=TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -52,6 +52,10 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,acc.metric="E
   }
   \item{desiredtz}{
     See \link{g.getmeta}
+  }
+   \item{constrain2range}{
+   Whether or not to constrain the range of threshold used in the diary free
+   Sleep period time window detection
   }
 }
 \value{
