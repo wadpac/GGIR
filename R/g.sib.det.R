@@ -1,17 +1,22 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
-                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London") {
+                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London",constrain2range = TRUE) {
   #==============================================================
-  inbed = function(angle, k =60, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60, ws3 = 5) {
-    # exploratory function 27/7/2017
+  inbed = function(angle, k =60, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60, ws3 = 5, constrain2range = FALSE) {
     medabsdi = function(angle) {
       angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
       return(angvar)
     }
+    
     x = zoo::rollapply(angle, k, medabsdi) # 5 minute rolling median of the absolute difference
     nomov = rep(0,length(x)) # no movement
     inbedtime = rep(NA,length(x))
     pp = quantile(x,probs=c(perc)) * inbedthreshold 
-    if (pp == 0) pp = 7
+    if (constrain2range == TRUE) {
+      if (pp < 0.13) pp = 0.13 # needed because dummy data is inserted in psg study (this line will not be part of GGIR code)
+      if (pp > 0.50) pp = 0.50 # needed because dummy data is inserted in psg study (this line will not be part of GGIR code)
+    } else {
+      if (pp == 0) pp = 0.20
+    }
     nomov[which(x < pp)] = 1
     nomov = c(0,nomov,0)
     s1 = which(diff(nomov) == 1) #start of blocks in bed
@@ -30,6 +35,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       s3 = which(diff(outofbed) == 1) #start of blocks out of bed?
       e3 = which(diff(outofbed) == -1) #end blocks out of bed?
       outofbedblock = which((e3 - s3) < ((60/ws3)*outofbedsize*1))
+      
       if (length(outofbedblock) > 0) { # only fill up gap if there are gaps
         s4 = s3[outofbedblock]
         e4 = e3[outofbedblock]
@@ -164,7 +170,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         #------------------------------------------------------------------
         # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
-        inbedout = inbed(tmpANGLE,ws3=ws3)
+        inbedout = inbed(tmpANGLE,ws3=ws3,constrain2range=constrain2range)
         if (length(inbedout$lightson) > 0 & length(inbedout$lightsout) > 0) {
           lightson[1] = inbedout$lightson
           lightsout[1] = inbedout$lightsout
@@ -224,7 +230,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           L5list[j] = L5
           # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
           tmpANGLE = angle[qqq1:qqq2]
-          inbedout = inbed(tmpANGLE,ws3=ws3)
+          inbedout = inbed(tmpANGLE,ws3=ws3,constrain2range=constrain2range)
           if (length(inbedout$lightson) != 0 & length(inbedout$lightsout) != 0) {
             lightson[j] = (inbedout$lightson / (3600/ ws3)) + 12
             lightsout[j] = (inbedout$lightsout / (3600/ ws3)) + 12
