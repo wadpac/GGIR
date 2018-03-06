@@ -63,7 +63,18 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     tib.threshold = pp
     invisible(list(lightsout=lightsout,lightson=lightson,tib.threshold=tib.threshold))
   }
-  
+  dstime_handling_check = function(tmpTIME=tmpTIME,inbedout=inbedout,tz=tz,calc_lightson=c(),calc_lightsout=c()) {
+    time_lightsout =iso8601chartime2POSIX(tmpTIME[inbedout$lightsout[j]],tz=tz)
+    time_lightson =iso8601chartime2POSIX(tmpTIME[inbedout$lightson[j]],tz=tz)
+    deltat_lightsout_data = calc_lightson - calc_lightsout
+    deltat_lightsout_clock = time_lightson - time_lightsout
+    if (deltat_lightsout_data > deltat_lightsout_clock + 0.1) { #extra DST hour not recognized
+      calc_lightson = calc_lightson + 1
+    } else if (deltat_lightsout_data - 0.1 < deltat_lightsout_clock) { #missing DST hour not recognized
+      calc_lightson = calc_lightson - 1
+    }
+    return(calc_lightson)
+  }
   #==================================================
   # get variables  
   D = IMP$metashort
@@ -170,10 +181,14 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         #------------------------------------------------------------------
         # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
+        tmpTIME = time[qqq1:qqq2]
         inbedout = inbed(tmpANGLE,ws3=ws3,constrain2range=constrain2range)
         if (length(inbedout$lightson) > 0 & length(inbedout$lightsout) > 0) {
           lightson[1] = inbedout$lightson
           lightsout[1] = inbedout$lightsout
+          lightson[1] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
+                                              tz=tz,calc_lightson=lightson[1],
+                                              calc_lightsout=lightsout[1])
           tib.threshold[1] = inbedout$tib.threshold
         }
         
@@ -230,10 +245,14 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           L5list[j] = L5
           # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
           tmpANGLE = angle[qqq1:qqq2]
+          tmpTIME = time[qqq1:qqq2]
           inbedout = inbed(tmpANGLE,ws3=ws3,constrain2range=constrain2range)
           if (length(inbedout$lightson) != 0 & length(inbedout$lightsout) != 0) {
             lightson[j] = (inbedout$lightson / (3600/ ws3)) + 12
             lightsout[j] = (inbedout$lightsout / (3600/ ws3)) + 12
+            lightson[j] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
+                                                tz=tz,calc_lightson=lightson[j],
+                                                calc_lightsout=lightsout[j])
             tib.threshold[j] = inbedout$tib.threshold
           }
           
