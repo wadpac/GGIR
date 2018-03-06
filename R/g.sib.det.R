@@ -72,12 +72,14 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     t1 = as.numeric(format(iso8601chartime2POSIX(tmpTIME[length(tmpTIME)],tz=tz), format = "%H"))
     Nhoursdata = floor(length(tmpTIME) / (3600/ws3))
     delta_t1_t0 = (t1+24) - t0
-    if (Nhoursdata > (delta_t1_t0 + 0.1) &  # time has moved backward (autumn)  so lightson also needs to move backward
-        (time_lightson_hr > 1 | time_lightson_hr < 12) & (time_lightsout_hr < 1 | time_lightsout_hr > 12)) { #extra DST hour not recognized
-      calc_lightson = calc_lightson - 1
-    } else if (Nhoursdata + 0.1 < delta_t1_t0 &  # time has moved forward (spring) so lightson also needs to move forward
-               (time_lightson_hr > 1 | time_lightson_hr < 12) & (time_lightsout_hr < 1 | time_lightsout_hr > 12)) { #missing DST hour not recognized
-      calc_lightson = calc_lightson + 1
+    if (length(time_lightson_hr) > 0 & length(time_lightsout_hr) > 0) {
+      if (Nhoursdata > (delta_t1_t0 + 0.1) &  # time has moved backward (autumn)  so lightson also needs to move backward
+          (time_lightson_hr > 1 | time_lightson_hr < 12) & (time_lightsout_hr < 1 | time_lightsout_hr > 12)) { #extra DST hour not recognized
+        calc_lightson = calc_lightson - 1
+      } else if (Nhoursdata + 0.1 < delta_t1_t0 &  # time has moved forward (spring) so lightson also needs to move forward
+                 (time_lightson_hr > 1 | time_lightson_hr < 12) & (time_lightsout_hr < 1 | time_lightsout_hr > 12)) { #missing DST hour not recognized
+        calc_lightson = calc_lightson + 1
+      }
     }
     
     return(calc_lightson)
