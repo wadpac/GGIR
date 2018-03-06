@@ -49,7 +49,7 @@ test_that("chainof5parts", {
   
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
-                     timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE) 
+                     timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE,do.part3.pdf=TRUE) 
   dirname = "output_test/meta/ms3.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
