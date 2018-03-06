@@ -133,6 +133,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "IVIS_epochsize_seconds")) == 0)  IVIS_epochsize_seconds=30
   if (length(which(ls() == "acc.metric")) == 0) acc.metric = "ENMO"
   if (length(which(ls() == "constrain2range")) == 0) constrain2range = TRUE
+  if (length(which(ls() == "do.part3.pdf")) == 0) do.part3.pdf = TRUE
   
   
   # # specific for part 5

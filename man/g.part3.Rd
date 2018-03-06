@@ -12,7 +12,8 @@ Typical users should work with function g.shell.GGIR only.
 }
 \usage{
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,acc.metric="ENMO",
-  ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London",constrain2range=TRUE)
+  ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London",constrain2range=TRUE,
+  do.part3.pdf=TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -57,6 +58,11 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,acc.metric="E
    Whether or not to constrain the range of threshold used in the diary free
    Sleep period time window detection
   }
+  \item{do.part3.pdf}{
+   Whether to generate a pdf for part 3 (default is TRUE). Turning this off 
+   could speed up the processing.
+  }
+  
 }
 \value{
 The function provides no values, it only ensures that other functions 
