@@ -3,7 +3,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    excludefirstlast=FALSE,criterror = 1,includenightcrit=4,
                    relyonsleeplog=FALSE,def.noc.sleep=c(),
                    storefolderstructure=FALSE,
-                   overwrite=FALSE) {
+                   overwrite=FALSE,desiredtz="Europe/London") {
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
   nnpp = 40
@@ -557,7 +557,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
           # PLOT
           # ------------------------------------------------------------------------
-          if (nrow(spocum) > 0) {
+          if (nrow(spocum) > 0 & calendardate[j] != "") {
             undef = unique(spocum[,5])
             for (defi in undef) {
               #------------------------------------------------------------------------
@@ -636,11 +636,67 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               }
               nocs = as.numeric(spocum.t[which(spocum.t[,4] == 1),3]) - as.numeric(spocum.t[which(spocum.t[,4] == 1),2])
               sibds = as.numeric(spocum.t[which(spocum.t[,4] == 0),3]) - as.numeric(spocum.t[which(spocum.t[,4] == 0),2])
+              
+              # it is possible that nocs is negative if when sleep episode starts before dst
+              # in the autumn and ends inside the dst hour
+              negval = which(nocs < 0)
+              if (length(negval) > 0) {
+                kk0 = as.numeric(spocum.t[which(spocum.t[,4] == 1),2]) # episode onsets
+                kk1 = as.numeric(spocum.t[which(spocum.t[,4] == 1),3]) # episode endings
+                kk1[negval] = kk1[negval] + 1
+                nocs = kk1 - kk0
+              }
+              
               if (length(nocs) > 0) {
                 spocum.t.dur.noc = sum(nocs)
               } else {
                 spocum.t.dur.noc = 0
               }
+              #======================================================================================================
+              # check whether it is dst the next day
+              is_this_a_dst_night = function(calendardate=c(),tz=desiredtz) {
+                # calendardata in dd/mm/yyyy format
+                # this function investigates whether it is a dst night
+                splitdate = unlist(strsplit(calendardate,"/"))
+                t0 = as.POSIXlt(paste0(splitdate[3],"-",splitdate[2],"-",splitdate[1]," 21:00:00"),tz=desiredtz)
+                t1 = as.numeric(format(as.POSIXlt(as.numeric(t0) + 3600*9,origin="1970-01-01",tz=desiredtz),"%H")) + 24
+                t0 = as.numeric(format(t0,"%H"))
+                if (t1 - t0 < 9) { 
+                  # if time has moved backward (clock gives the impression that 8 hours 
+                  # elapsed, while physically 9 hours elepsed
+                  retval = -1
+                } else if (t1 - t0 > 9) {
+                  # if time has moved forwared (clock gives the impression that 10 hours
+                  # elapsed, while physically 9 hours elapsed
+                  retval = 1
+                } else if (t1 - t0 == 9) {
+                  retval = 0
+                }
+              }
+              dst_night_or_not = is_this_a_dst_night(calendardate=calendardate[j],tz=desiredtz)
+              # if yes, then check whether any of the sleep episodes overlaps
+              if (dst_night_or_not == 1) {
+                checkoverlap = spocum.t[which(spocum.t[,4] == 1),2:3]
+                overlaps = which(checkoverlap[,1] <= 25 & checkoverlap[,2] >= 26 | checkoverlap[,1] <= 26 & checkoverlap[,2] >= 27)
+                if (length(overlaps) > 0) {
+                  # if yes, then reduce the length of those sleep episodes
+                  spocum.t.dur.noc = spocum.t.dur.noc - 1
+                  nightsummary[sumi,5] = nightsummary[sumi,5] - 1
+                  nightsummary[sumi,9] = nightsummary[sumi,9] - 1
+                }
+              } else if (dst_night_or_not == -1) {
+                # spocum.t.dur.noc has been calculated correctly including the double hour
+                # However, time elapse between onset and wake needs to be expanded by 1 if onset was
+                # before dst and waking up was after dst.
+                if (nightsummary[sumi,3] <= 25 & nightsummary[sumi,4] >= 26 | nightsummary[sumi,3] <= 26 & nightsummary[sumi,4] >= 27) {
+                  nightsummary[sumi,5] = nightsummary[sumi,5] + 1 # accelerometer derived sleep druation
+                }
+                if (nightsummary[sumi,7] <= 25 & nightsummary[sumi,8] >= 26 | nightsummary[sumi,7] <= 26 & nightsummary[sumi,8] >= 27) {
+                  nightsummary[sumi,9] = nightsummary[sumi,9] + 1 # sleep log sleepduration
+                }
+              }
+              #======================================================================================================
+              
               if (length(sibds) > 0) {
                 spocum.t.dur_sibd = sum(sibds)
               } else {
