@@ -218,7 +218,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             excludefirstlast=excludefirstlast,criterror = criterror,
             includenightcrit=includenightcrit,relyonsleeplog=relyonsleeplog,
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
-            storefolderstructure=storefolderstructure,overwrite=overwrite)
+            storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz)
   }
   if (dopart5 == TRUE) {
     cat('\n')

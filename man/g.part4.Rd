@@ -15,7 +15,7 @@ loglocation = c(),colid = 1,coln1 = 9,nnights = 7,
 sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=4,
     relyonsleeplog=FALSE,def.noc.sleep=c(),
-    storefolderstructure=FALSE,overwrite=FALSE)
+    storefolderstructure=FALSE,overwrite=FALSE,desiredtz="Europe/London")
 }
 \arguments{
   \item{datadir}{
@@ -126,6 +126,9 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     for this particular dataset. If FALSE then it will skip the
     previously processed files (default = FALSE).
 }
+ \item{desiredtz}{
+    See \link{g.getmeta}
+  }
 }
 \value{
 
