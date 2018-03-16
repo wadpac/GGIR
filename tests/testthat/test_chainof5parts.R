@@ -9,6 +9,7 @@ test_that("chainof5parts", {
   desiredtz="Europe/London"
   dn = "output_test"
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
+  #--------------------------------------------
   # part 1
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
                      studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE)
@@ -25,7 +26,7 @@ test_that("chainof5parts", {
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
   expect_that(C$npoints,equals(14848))
-  
+  #--------------------------------------------
   # part 2
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
@@ -46,7 +47,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
   expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
   expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
-  
+  #--------------------------------------------
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
                      timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE,do.part3.pdf=TRUE) 
@@ -58,6 +59,7 @@ test_that("chainof5parts", {
   expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(10115))
   # expect_that(sib.cla.sum$sib.end.time[1],equals("2016-06-23 12:15:30")) # turned off because not consistent across machines, to investigate
   
+  #--------------------------------------------
   # part 4
   g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
@@ -76,6 +78,7 @@ test_that("chainof5parts", {
   expect_that(as.logical(nightsummary$acc_available[1]),is_true())
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
   
+  #--------------------------------------------
   #part 5
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
@@ -86,10 +89,11 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(rn[1]),is_true())
-  expect_that(nrow(output),equals(3))
+  cat(nrow(output))
+  expect_that(nrow(output),equals(2))
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708)) 
-  expect_that(round(as.numeric(output$dur_day_min[3]),digits=4),equals(639.75))
+  expect_that(round(as.numeric(output$dur_day_min[2]),digits=4),equals(945.1667))
   # expect_that(output$L5TIME[1],equals("2016-06-25T00:00:05+0100")) # turned off because not consistent across machine, to investigate
   
   # Somehow, the following test to now work yet on Travis, but they do work locally.
