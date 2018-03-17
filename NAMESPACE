@@ -10,7 +10,7 @@ export(g.analyse,g.calibrate,g.getmeta
         g.getstarttime,g.loadlog,g.metric,g.plot5,
         g.readaccfile,g.report.part2,g.report.part4,
        g.report.part5,g.sib.det,g.sib.plot,g.wavread,
-       g.weardec,isfilelist,iso8601chartime2POSIX,
+       g.weardec,isfilelist,iso8601chartime2POSIX,is_this_a_dst_night,
         numUnpack,POSIXtime2iso8601,resample)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
