@@ -166,7 +166,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           getCharBeforeUnderscore = function(x) {
             return(as.character(unlist(strsplit(x,"_")))[1])
           }
-          print(fnames[i])
           accid = apply(as.matrix(as.character(fnames[i])),MARGIN=c(1),FUN=getCharBeforeUnderscore)
           accid_bu = accid
           getLastCharacterValue = function(x) {
