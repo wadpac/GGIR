@@ -290,8 +290,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 s1 = which(as.character(time) == w1c)[1]
               }
               timebb = as.character(time) 
-              
-              if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
+              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
                 timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
               }
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
