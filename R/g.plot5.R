@@ -415,7 +415,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               legend("topright",legend=c( "sleep /rest", #"arm angle (top) activity (bottom)",
                                           "active period lasting at least 10 minutes",
                                           "vigorous part of the activite period"),
-                     lty=c(1,1),col=c("red","blue","green"),
+                     lty=c(1,1),col=c("red","skyblue","darkblue"),
                      lwd=c(LWDX,LWDX,LWDX),bg="white",cex=0.6,ncol=3,box.lwd=BLX)
             }
             if (daycount==1 | ((daycount-1)/NGPP) == (round((daycount-1)/NGPP))) {
