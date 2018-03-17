@@ -2,7 +2,18 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 1.5-17 (release date:19-2-2017)}{
+\section{Changes in version 1.5-18 (release date:17-3-2018)}{
+\itemize{
+  \item Improved handling of day saving time in g.part3 and g.part4
+  \item Algorithm HDCZA is now the default algorithm to use when sleep log
+  is used, but an entry is missing for a particular night.
+  \item pdf generation in part 3 is now optional (do.part3.pdf), this as an option to
+  slightly speed up data processing.
+  \item test added for g.getbout function.
+  }
+}
+
+\section{Changes in version 1.5-17 (release date:19-2-2018)}{
 \itemize{
   \item SPT-window detection now updated with a constrained threshold to make it more robust
   against between accelerometer brand differences. This is the approach used for our PSG in
@@ -10,7 +21,7 @@
   }
 }
 
-\section{Changes in version 1.5-16 (release date:17-1-2017)}{
+\section{Changes in version 1.5-16 (release date:17-1-2018)}{
 \itemize{
   \item cwaread issue #57 fixed
   \item SPT-window detection included (work in progress)
