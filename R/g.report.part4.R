@@ -243,7 +243,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
               weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$acc_def == udef[j])]
               for (k in 1:3) {
                 if (ncol(summary) < (cnt + 22)) { # expand summary matrix if there is a change that is not big enough
-                  summary = cbind(summary,summary[,(ncol(summary)-20):ncol(summary)])
+                  summary = cbind(summary,t(as.matrix(summary[,(cnt+1):ncol(summary)])))
                 }
                 
                 if (k == 1) {
