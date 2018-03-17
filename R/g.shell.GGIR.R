@@ -251,12 +251,12 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
       stop()
     }
   }  
-  if (visualreport==TRUE & length(do.report) == 0) {
-    if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
-    } else {
-      do.report=c(2,4) #visual report is impossible without creating quantitative reports first
-    }
-  }  
+  # if (visualreport==TRUE & length(do.report) == 0) { 
+  #   if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
+  #   } else {
+  #     do.report=c(2,4) #visual report is impossible without creating quantitative reports first
+  #   }
+  # }  
   if (length(which(do.report == 2)) > 0) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
