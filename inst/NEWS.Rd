@@ -10,6 +10,7 @@
   \item pdf generation in part 3 is now optional (do.part3.pdf), this as an option to
   slightly speed up data processing.
   \item test added for g.getbout function.
+  \item bug fixed in timestamp recognition for object timebb in function g.part5
   }
 }
 
