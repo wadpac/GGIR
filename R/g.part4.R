@@ -162,7 +162,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         #------------------------------------------------------
         # extract the identifier from accelerometer data
         if (idloc == 2) { #idloc is an argument to specify where the participant identifier can be found
-          
           getCharBeforeUnderscore = function(x) {
             return(as.character(unlist(strsplit(x,"_")))[1])
           }
@@ -197,7 +196,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           wi = 1
         } 
         #-----------------------------------------------------------
-        # create overview of nights in file: nnightlist
+        # create overview of night numbers in the data file: nnightlist
         if (length(nnights) == 0) {
           nnightlist = 1:max(sib.cla.sum$night) # sib.cla.sum is the output from g.part3
         } else {
@@ -207,7 +206,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             nnightlist = 1:nnights
           }
         }
-        # create overview of which nights have a value and are not equal to zero
+        # create overview of which night numbers in the file that have a value and are not equal to zero
         nnights.list = nnightlist
         nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]
         if (excludefirstlast==TRUE) {#exclude first and last night
@@ -288,24 +287,20 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # Assess whether it is a daysleeper or a nightsleeper
           daysleeper[j] = FALSE # default
           if (is.na(SptOnset) == FALSE & is.na(SptWake) == FALSE & tmp1 != "" & tmp4 != "") { # is the sleep log valid?
-            # transform numeric timestamps to characters that can be interpretted as hours, minutes and seconds
-            tmp1 = unlist(strsplit(tmp1,":"))
-            tmp1HR = as.numeric(tmp1[1])
-            tmp1MI = as.numeric(tmp1[2])
-            tmp1SE = as.numeric(tmp1[3])
-            if (tmp1HR < 9) tmp1HR = paste("0",tmp1HR,sep="")
-            if (tmp1MI < 9) tmp1MI = paste("0",tmp1MI,sep="")
-            if (tmp1SE < 9) tmp1SE = paste("0",tmp1SE,sep="")
-            tmp1 = paste(tmp1HR,":",tmp1MI,":",tmp1SE,sep="")
-            #----------------------------------------------
-            tmp4 = unlist(strsplit(tmp4,":"))
-            tmp4HR = as.numeric(tmp4[1])
-            tmp4MI = as.numeric(tmp4[2])
-            tmp4SE = as.numeric(tmp4[3])
-            if (tmp4HR < 9) tmp4HR = paste("0",tmp4HR,sep="")
-            if (tmp4MI < 9) tmp4MI = paste("0",tmp4MI,sep="")
-            if (tmp4SE < 9) tmp4SE = paste("0",tmp4SE,sep="")
-            tmp4 = paste(tmp4HR,":",tmp4MI,":",tmp4SE,sep="")
+            # transform possible Single Digit clock times to Double Digits: hours, minutes and seconds
+            doubleDigitClocktime = function(x) {
+              x = unlist(strsplit(x,":"))
+              xHR = as.numeric(x[1])
+              xMI = as.numeric(x[2])
+              xSE = as.numeric(x[3])
+              if (xHR < 9) xHR = paste("0",xHR,sep="")
+              if (xMI < 9) xMI = paste("0",xMI,sep="")
+              if (xSE < 9) xSE = paste("0",xSE,sep="")
+              x = paste(xHR,":",xMI,":",xSE,sep="") 
+              return(x)
+            }
+            tmp1 = doubleDigitClocktime(tmp1)
+            tmp4 = doubleDigitClocktime(tmp4)
             #------------------------------------------------------------------
             # does sleep period overlap with noon? If yes, then classify as daysleeper
             if (SptWake > 12 & SptOnset < 12) daysleeper[j] = TRUE
@@ -547,11 +542,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               # Calculate errors between accelerometer estimate and sleeplog (or HDCZA or L5+/-6hr)
               nightsummary[sumi,10] = nightsummary[sumi,3] - nightsummary[sumi,7] #error onset
               nightsummary[sumi,11] = nightsummary[sumi,4] - nightsummary[sumi,8] #error wake
-              #sometimes error can be in the wrong direction, e.g. log = 11, acc is 35
-              if (nightsummary[sumi,10] > 12) nightsummary[sumi,10] = -(24 - nightsummary[sumi,10])
-              if (nightsummary[sumi,10] < -12) nightsummary[sumi,10] = -(nightsummary[sumi,10] + 24)
-              if (nightsummary[sumi,11] > 12) nightsummary[sumi,11] = -(24 - nightsummary[sumi,11])
-              if (nightsummary[sumi,11] < -12) nightsummary[sumi,11] = -(nightsummary[sumi,11] + 24)
+              #sometimes difference calculations (error) can be in the wrong direction, e.g. log = 11, acc is 35
+              if (nightsummary[sumi,10] > 12)   nightsummary[sumi,10] = -(24 - nightsummary[sumi,10])
+              if (nightsummary[sumi,10] < -12)  nightsummary[sumi,10] = -(nightsummary[sumi,10] + 24)
+              if (nightsummary[sumi,11] > 12)   nightsummary[sumi,11] = -(24 - nightsummary[sumi,11])
+              if (nightsummary[sumi,11] < -12)  nightsummary[sumi,11] = -(nightsummary[sumi,11] + 24)
               nightsummary[sumi,12] = nightsummary[sumi,5] - nightsummary[sumi,9] #error duration
               #------------------------------------
               # Other variables
