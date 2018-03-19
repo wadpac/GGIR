@@ -12,7 +12,7 @@ calls to \link{g.part1}, \link{g.part2}, \link{g.part3} and
 on optional input arguments.
 }
 \usage{
-g.shell.GGIR(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
+g.shell.GGIR(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0, acc.metric="ENMO",
 do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...)
 }
 \arguments{
@@ -46,7 +46,9 @@ do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...)
   \item{f1}{
    File index to finish with (defaults to number of files available)
   }
-  
+  \item{acc.metric}{
+    Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1})
+  }
   \item{overwrite}{
   Do you want to overwrite analysis for which milestone data exists? 
   If overwrite=FALSE then milestone data from a previous analysis will 
@@ -92,7 +94,8 @@ g.shell.GGIR(#-------------------------------
              outputdir=outputdir, 
              studyname=studyname, 
              f0=f0, 
-             f1=f1, 
+             f1=f1,
+             acc.metric="ENMO",
              overwrite = FALSE, 
              do.imp=TRUE,
              idloc=1, 
