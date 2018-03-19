@@ -1,4 +1,4 @@
-g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
+g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0, acc.metric = "ENMO",
                         do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...) {
   #get input variables
   input = list(...)
