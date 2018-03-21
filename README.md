@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1154149.svg)](https://doi.org/10.5281/zenodo.1154149)
+[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
 
 
 
