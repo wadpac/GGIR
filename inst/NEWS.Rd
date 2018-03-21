@@ -2,13 +2,16 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 1.5-18 (release date:17-3-2018)}{
+\section{Changes in version 1.5-18 (release date:18-3-2018)}{
 \itemize{
-  \item Improved handling of day saving time in g.part3 and g.part4
-  \item Algorithm HDCZA is now the default algorithm to use when sleep log
-  is used, but an entry is missing for a particular night.
-  \item pdf generation in part 3 is now optional (do.part3.pdf), this as an option to
-  slightly speed up data processing.
+  \item Improved handling of day saving time in g.part3 and g.part4 within the two nights
+  in a year when the clock changes (DST was already correctly handled in the rest
+  of the year)
+  \item Algorithm HDCZA is now the default algorithm to use, if a sleeplog
+  is used and an entry is missing for a particular night.
+  \item pdf generation in part 3 is now optional (argument do.part3.pdf), this may
+  be useful for slightly speeding up data processing as it takes a few second to generate
+  the plot.
   \item test added for g.getbout function.
   \item bug fixed in timestamp recognition for object timebb in function g.part5
   }
