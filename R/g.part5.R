@@ -324,7 +324,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             #update diur to include at least end of first night (needed to identify awakening)
             ss0 = nightsi[1]-10 #index in data minus resolution of window
             if (ss0 < 1) ss0 = 1 # added on 7/9/2015: if previous line results in negative index then use first index
-            diur[ss0:waketi] = 1
+            diur[ss0:waketi] = detection[waketi]  # changed on 9/4/2018: In case the accelerometer started the measurement when the participant is awake, this line was changing the whole period before the first night to 1 (= sustained inactivity).
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
@@ -361,13 +361,26 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       #check that this is a meaningful day
                       qqq = rep(0,2)
                       # check that it is possible to find both windows in the data for this day
-                      if (timewindowi == "MM") {
-                        qqq[1] = nightsi[wi]+1
-                        qqq[2] = nightsi[wi+1]
-                      } else {
-                        qqq[1] = which(diff(diur) == -1)[wi]+1 #waking time (select based on diurnal marking)
-                        qqq[2] = which(diff(diur) == -1)[wi+1] #wakingtime next day (select based on diurnal marking)
+                      # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
+                      # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
+                      if (timewindowi == "MM" & wi==1) {
+                        qqq[1] = 1
+                        qqq[2] = nightsi[wi]
                       }
+                      else if (timewindowi == "MM") {
+                        qqq[1] = nightsi[wi-1] + 1
+                        qqq[2] = nightsi[wi]
+                      }
+                      else if(timewindowi == "WW" & wi==1){
+                        qqq[1]=1
+                        qqq[2]=which(diff(diur) == 
+                                     -1)[wi] + 1
+                      }
+                      else {
+                        qqq[1] = which(diff(diur) == 
+                                       -1)[wi-1] + 1
+                        qqq[2] = which(diff(diur) == 
+                                       -1)[wi]
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
@@ -406,14 +419,26 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = summarysleep_tmp2$acc_available[wi]
                         ds_names[fi] = "acc_available";      fi = fi + 1
                         # define time windows
-                        if (timewindowi == "MM") { # midnight to midnight
-                          qqq1 = nightsi[wi]+1
-                          qqq2 = nightsi[wi+1]
-                          dsummary[di,fi] = "MM"
-                        } else { #waking to waking
-                          qqq1 = which(diff(diur) == -1)[wi]+1 #waking time (select based on diurnal marking)
-                          qqq2 = which(diff(diur) == -1)[wi+1] #wakingtime next day (select based on diurnal marking)
-                          dsummary[di,fi] = "WW"
+                        # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
+                        # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
+                        if (timewindowi == "MM" & wi==1) {
+                          qqq1 = 1
+                          qqq2 = nightsi[wi]
+                          dsummary[di, fi] = "MM"
+                        } else if (timewindowi == "MM") {
+                          qqq1 = nightsi[wi-1] + 1
+                          qqq2 = nightsi[wi]
+                          dsummary[di, fi] = "MM"
+                        } else if(timewindowi == "WW" & wi==1){
+                          qqq1=1
+                          qqq2=which(diff(diur) == 
+                                       -1)[wi] + 1
+                        } else {
+                          qqq1 = which(diff(diur) == 
+                                         -1)[wi-1] + 1
+                          qqq2 = which(diff(diur) == 
+                                         -1)[wi]
+                          dsummary[di, fi] = "WW"
                         }
                         ds_names[fi] = "window";      fi = fi + 1    
                         # keep track of threshold value
@@ -467,15 +492,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # percentage of available data
                         zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 0 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #day
                         zt_hrs_total = (length(which(diur[qqq1:qqq2] == 0)) * ws3) / 3600 #day
-                        dsummary[di,fi] = round( (zt_hrs_nonwear/zt_hrs_total)  * 10000) / 100
+                        dsummary[di,fi] = (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                         ds_names[fi] = "nonwear_perc_day";      fi = fi + 1
                         zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 1 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #night
                         zt_hrs_total = (length(which(diur[qqq1:qqq2] == 1)) * ws3) / 3600 #night
-                        dsummary[di,fi] =  round((zt_hrs_nonwear/zt_hrs_total)  * 10000) / 100
+                        dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                         ds_names[fi] = "nonwear_perc_night";      fi = fi + 1
                         zt_hrs_nonwear = (length(which(nonwear[qqq1:qqq2] == 1)) * ws3) / 3600
                         zt_hrs_total = (length(diur[qqq1:qqq2]) * ws3) / 3600 #night and day
-                        dsummary[di,fi] =  round((zt_hrs_nonwear/zt_hrs_total)  * 10000) / 100
+                        dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                         ds_names[fi] = "nonwear_perc_nightandday";      fi = fi + 1
                         #=============================
                         # sleep efficiency
