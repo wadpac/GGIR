@@ -476,12 +476,17 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             }
           }
           # Fill matrix 'nightsummary' with key sleep parameters
-          if (nrow(spocum) > 0 & calendardate[j] != "") {
+          if (length(spocum) > 0 & length(calendardate) >= j) {
+	  if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendardate[j] != "") {
             undef = unique(spocum[,5])
+	print("z")
+	print(undef)
             for (defi in undef) {
               #------------------------------------------------------------------------
               # nightsummary
+	print(dim(spocum))
               spocum.t = spocum[which(spocum[,5] == defi),]
+	print(dim(spocum.t))
               # in DST it can be that a double hour is not recognized as part of the SPT
               correct01010pattern = function(x) {
                 x = as.numeric(x)
@@ -493,7 +498,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 }
                 return(x)
               }
-              sbefore = spocum.t[,4]
+              #sbefore = spocum.t[,4]
+	print(dim(spocum.t))
               delta_t1 = diff(as.numeric(spocum.t[,3]))
               spocum.t[,4] = correct01010pattern(spocum.t[,4])
               #----------------------------
@@ -630,6 +636,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=3,wakecol=4,durcol=5,dsthour=dsthour,delta_t1=delta_t1)
                 nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=7,wakecol=8,durcol=9,dsthour=dsthour,delta_t1=delta_t1)
               }
+		
               #======================================================================================================
               if (length(sibds) > 0) {
                 spocum.t.dur_sibd = sum(sibds)
@@ -761,6 +768,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               }
             }
           }
+	}
           # END OF PLOT AND nightsummary MEASURES
           ##########################################################################
         } #nights
