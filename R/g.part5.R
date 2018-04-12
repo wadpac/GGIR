@@ -336,8 +336,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             # Below, the code analyses the first hour of measurement, if detection is consistently 0, then the code assumes that the accelerometer was initialized during the day and do not look for a "inexistent" first awakening. Otherwise, the code keep looken for the first awakening.
             if (unique(detection[1:((60/ws3)*60)]) != 0 & (60/ws3)*60 < nightsi[1]) {
               waketi = which(diff(detection) == -1)[1]
-              } else {waketi = NA}
-            if (length(waketi) > 0) diur[1:waketi] = 1            
+              } else {waketi = 0}
+            if (waketi > 0) diur[1:waketi] = 1            
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
