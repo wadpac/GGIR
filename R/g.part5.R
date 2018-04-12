@@ -433,6 +433,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq1=1
                           qqq2=which(diff(diur) == 
                                        -1)[wi] + 1
+                          dsummary[di, fi] = "WW"
                         } else {
                           qqq1 = which(diff(diur) == 
                                          -1)[wi-1] + 1
