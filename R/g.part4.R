@@ -342,6 +342,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
           #now generate empty overview for this night / person
           dummyspo = matrix(0,1,5); dummyspo[1,1] = 1
+	  spo_day = c()
           #============================================================================================
           for (loaddaysi in 1:loaddays) { #load twice if daysleeper because we also need data from the afternoon on the next day
             # now get accelerometer sleep detection
@@ -401,7 +402,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       tmpCmd = paste("spo_day",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
                     }
-                  } else if (loaddaysi == 2) {
+                  } else if (loaddaysi == 2 & length(spo_day) > 0) { #length check added because day may have been skipped
                     w2 = which(spo[,2] < 18) #only use periods starting before 6pm
                     if (length(w2) > 0) {
                       spo = as.matrix(spo[w2,])
