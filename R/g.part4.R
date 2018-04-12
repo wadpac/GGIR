@@ -342,7 +342,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
           #now generate empty overview for this night / person
           dummyspo = matrix(0,1,5); dummyspo[1,1] = 1
-	  spo_day = c()
+          spo_day = c()
           #============================================================================================
           for (loaddaysi in 1:loaddays) { #load twice if daysleeper because we also need data from the afternoon on the next day
             # now get accelerometer sleep detection
@@ -476,300 +476,300 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               cnt = 1
             }
           }
-	  if (length(spocum) > 0) {
-		if (length(which(spocum[,5] == "0")) > 0){
-			spocum = spocum[-which(spocum[,5]== "0"),]
-		}
-	  }
+          if (length(spocum) > 0) {
+            if (length(which(spocum[,5] == "0")) > 0){
+              spocum = spocum[-which(spocum[,5]== "0"),]
+            }
+          }
           # Fill matrix 'nightsummary' with key sleep parameters
           if (length(spocum) > 0 & class(spocum) == "matrix" & length(calendardate) >= j) {
-	    if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendardate[j] != "") {
-	      undef = unique(spocum[,5])
-            for (defi in undef) {
-              #------------------------------------------------------------------------
-              # nightsummary
-              spocum.t = spocum[which(spocum[,5] == defi),]
-              # in DST it can be that a double hour is not recognized as part of the SPT
-              correct01010pattern = function(x) {
-                x = as.numeric(x)
-                if (length(which(diff(x) == 1)) > 1) {
-                  minone = which(diff(x) == -1)+1
-                  plusone = which(diff(x) == 1)
-                  matchingvalue = which(minone %in% plusone == TRUE)
-                  if(length(matchingvalue) > 0) x[minone[matchingvalue]] = 1
-                }
-                return(x)
-              }
-              #sbefore = spocum.t[,4]
-              delta_t1 = diff(as.numeric(spocum.t[,3]))
-              spocum.t[,4] = correct01010pattern(spocum.t[,4])
-              #----------------------------
-              nightsummary[sumi,1] = accid
-              nightsummary[sumi,2] = j #night
-              if (is.matrix(spocum.t) == FALSE) {
-                spocum.t = t(as.matrix(spocum.t))
-              }
-              #------------------------------------
-              # ACCELEROMETER
-              if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
-                rtl = which(spocum.t[,4] == 1)
-                nightsummary[sumi,3] =spocum.t[rtl[1],2]
-                nightsummary[sumi,4] =spocum.t[rtl[length(rtl)],3]
-              } else {
-                nightsummary[sumi,3:4] = 0
-              }
-              nightsummary[,3] = as.numeric(nightsummary[,3])
-              nightsummary[,4] = as.numeric(nightsummary[,4])
-              if (nightsummary[sumi,3] > nightsummary[sumi,4]) {
-                nightsummary[sumi,5] = (36 - nightsummary[sumi,3]) + (nightsummary[sumi,4] - 12)
-              } else {
-                nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3]
-              }
-              nightsummary[,5] = as.numeric(nightsummary[,5])
-              nightsummary[sumi,6] = defi #sleep definition
-              #------------------------------------
-              # SLEEP LOG
-              #correct SptOnset and SptWake to fall within [12-36] window and store as sleeplog_onset and sleeplog_wake
-              if (SptOnset > 36) {
-                nightsummary[sumi,7] = SptOnset-24 #onset
-              } else {
-                nightsummary[sumi,7] = SptOnset
-              }
-              if (SptWake > 36) {
-                nightsummary[sumi,8] = SptWake-24 #wake
-              } else {
-                nightsummary[sumi,8] = SptWake
-              }
-              if (nightsummary[sumi,7] > nightsummary[sumi,8]) {
-                nightsummary[sumi,9] = abs((36 - nightsummary[sumi,7]) + (nightsummary[sumi,8] - 12))
-              } else {
-                nightsummary[sumi,9] = abs(nightsummary[sumi,8] - nightsummary[sumi,7])
-              }
-              #------------------------------------
-              # Calculate errors between accelerometer estimate and sleeplog (or HDCZA or L5+/-6hr)
-              nightsummary[sumi,10] = nightsummary[sumi,3] - nightsummary[sumi,7] #error onset
-              nightsummary[sumi,11] = nightsummary[sumi,4] - nightsummary[sumi,8] #error wake
-              #sometimes difference calculations (error) can be in the wrong direction, e.g. log = 11, acc is 35
-              if (nightsummary[sumi,10] > 12)   nightsummary[sumi,10] = -(24 - nightsummary[sumi,10])
-              if (nightsummary[sumi,10] < -12)  nightsummary[sumi,10] = -(nightsummary[sumi,10] + 24)
-              if (nightsummary[sumi,11] > 12)   nightsummary[sumi,11] = -(24 - nightsummary[sumi,11])
-              if (nightsummary[sumi,11] < -12)  nightsummary[sumi,11] = -(nightsummary[sumi,11] + 24)
-              nightsummary[sumi,12] = nightsummary[sumi,5] - nightsummary[sumi,9] #error duration
-              #------------------------------------
-              # Other variables
-              if (acc_available == TRUE) {
-                nightsummary[sumi,13] = sleepdet.t$fraction.night.invalid[1]
-                if (sleepdet.t$fraction.night.invalid[1] > ((24-includenightcrit)/24)) {
-                  cleaningcode = 2
-                }
-              } else {
-                nightsummary[sumi,13] = 1
-              }
-              # Accumulated nocturnal sleep and daytime sustained inactivity bouts
-              nocs = as.numeric(spocum.t[which(spocum.t[,4] == 1),3]) - as.numeric(spocum.t[which(spocum.t[,4] == 1),2])
-              sibds = as.numeric(spocum.t[which(spocum.t[,4] == 0),3]) - as.numeric(spocum.t[which(spocum.t[,4] == 0),2])
-              # it is possible that nocs is negative if when sleep episode starts before dst
-              # in the autumn and ends inside the dst hour
-              negval = which(nocs < 0)
-              if (length(negval) > 0) {
-                kk0 = as.numeric(spocum.t[which(spocum.t[,4] == 1),2]) # episode onsets
-                kk1 = as.numeric(spocum.t[which(spocum.t[,4] == 1),3]) # episode endings
-                kk1[negval] = kk1[negval] + 1
-                nocs = kk1 - kk0
-              }
-              if (length(nocs) > 0) {
-                spocum.t.dur.noc = sum(nocs)
-              } else {
-                spocum.t.dur.noc = 0
-              }
-              #======================================================================================================
-              # check whether it is day saving time (DST) the next day (= the night connected to the present day)
-              is_this_a_dst_night_output = is_this_a_dst_night(calendardate=calendardate[j],tz=desiredtz)
-              dst_night_or_not = is_this_a_dst_night_output$dst_night_or_not
-              dsthour = is_this_a_dst_night_output$dsthour
-              # if yes, then check whether any of the sleep episodes overlaps
-              if (dst_night_or_not == 1) { # dst in spring, one hour skipped
-                checkoverlap = spocum.t[which(spocum.t[,4] == 1),2:3]
-                overlaps = which(checkoverlap[,1] <= (dsthour+24) & checkoverlap[,2] >= (dsthour+25))
-                if (length(overlaps) > 0) {
-                  # if yes, then reduce the length of those sleep episodes
-                  spocum.t.dur.noc = spocum.t.dur.noc - 1
-                  nightsummary[sumi,5] = nightsummary[sumi,5] - 1
-                  nightsummary[sumi,9] = nightsummary[sumi,9] - 1
-                }
-              } else if (dst_night_or_not == -1) { # dst in autumn, one double hour
-                # spocum.t.dur.noc has been calculated correctly including the double hour
-                # However, time elapse between onset and wake needs to be expanded by 1 if onset was
-                # before dst and waking up was after dst.
-                if (nightsummary[sumi,3] <= (dsthour+24) & nightsummary[sumi,4] >= (dsthour+25)) {
-                  nightsummary[sumi,5] = nightsummary[sumi,5] + 1 # accelerometer derived sleep duration
-                }
-                if (nightsummary[sumi,7] <= (dsthour+24) & nightsummary[sumi,8] >= (dsthour+25)) {
-                  nightsummary[sumi,9] = nightsummary[sumi,9] + 1 # sleep log sleepduration
-                }
-                # does SPT end within double hour?
-                correctSptEdgingInDoubleHour = function(nightsummary,onsetcol,wakecol,durcol,dsthour,delta_t1) {
-                  wakeInDoubleHour = nightsummary[,wakecol] >= (dsthour+24) & nightsummary[,wakecol] <= (dsthour+25)
-                  onsetInDoubleHour = nightsummary[,onsetcol] >= (dsthour+24) & nightsummary[,onsetcol] <= (dsthour+25)
-                  onsetBeforeDoubleHour = nightsummary[,onsetcol] <= (dsthour+24)
-                  wakeAfterDoubleHour = nightsummary[,wakecol] >= (dsthour+25)
-                  timeWentBackward = length(which(delta_t1 < 0)) > 0
-                  if (onsetBeforeDoubleHour == TRUE & wakeInDoubleHour == TRUE ) {
-                    if (timeWentBackward == TRUE) { # if time went back then it ended in the second hour of the double hour and the + 1 is definitely justified
-                      nightsummary[,durcol] = nightsummary[,durcol] + 1
-                    } else if (timeWentBackward == FALSE) { 
-                      # if time did not go back then SPT may have ended in either the first or second of the double hour
-                      # TO DO: distinguish these rare cases, for now assume it ends in the second hour to avoid sleep efficiency above 100%.
-                      nightsummary[,durcol] = nightsummary[,durcol] + 1
-                    }
+            if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendardate[j] != "") {
+              undef = unique(spocum[,5])
+              for (defi in undef) {
+                #------------------------------------------------------------------------
+                # nightsummary
+                spocum.t = spocum[which(spocum[,5] == defi),]
+                # in DST it can be that a double hour is not recognized as part of the SPT
+                correct01010pattern = function(x) {
+                  x = as.numeric(x)
+                  if (length(which(diff(x) == 1)) > 1) {
+                    minone = which(diff(x) == -1)+1
+                    plusone = which(diff(x) == 1)
+                    matchingvalue = which(minone %in% plusone == TRUE)
+                    if(length(matchingvalue) > 0) x[minone[matchingvalue]] = 1
                   }
-                  if (wakeAfterDoubleHour == TRUE & onsetInDoubleHour == TRUE) {
-                    if (timeWentBackward == TRUE) { # if time went back then it ended in the second hour of the double hour and the + 1 is definitely justified
-                      nightsummary[,durcol] = nightsummary[,durcol] + 1 # accelerometer derived sleep duration
-                    } else if (timeWentBackward == FALSE) { 
-                      # if time did not go back then SPT may have ended in either the first or second of the double hour
-                      # TO DO: distinguish these rare cases, for now assume it ends in the second hour to avoid sleep efficiency above 100%.
-                      nightsummary[,durcol] = nightsummary[,durcol] + 1 # accelerometer derived sleep duration
-                    }
-                  }
-                  return(nightsummary)
+                  return(x)
                 }
-                nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=3,wakecol=4,durcol=5,dsthour=dsthour,delta_t1=delta_t1)
-                nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=7,wakecol=8,durcol=9,dsthour=dsthour,delta_t1=delta_t1)
-              }
-		
-              #======================================================================================================
-              if (length(sibds) > 0) {
-                spocum.t.dur_sibd = sum(sibds)
-              } else {
-                spocum.t.dur_sibd = 0
-              }
-              nightsummary[sumi,14] = spocum.t.dur.noc #total nocturnalsleep /accumulated sleep duration
-              nightsummary[sumi,15] = spocum.t.dur_sibd #total sib (sustained inactivty bout) duration
-              nightsummary[sumi,16] = length(which(spocum.t[,4] == 1)) #number of nocturnalsleep periods
-              nightsummary[sumi,17] = length(which(spocum.t[,4] == 0)) #number of sib (sustained inactivty bout) periods
-              #-------------------------------------------------------
-              # Also report timestamps in non-numeric format:
-              acc_onset = nightsummary[sumi,3]
-              acc_wake = nightsummary[sumi,4]
-              if (acc_onset > 24) acc_onset = acc_onset - 24
-              if (acc_wake > 24) acc_wake = acc_wake - 24
-              #--------------------------------------------
-              # convert into clocktime
-              convertHRsinceprevMN2Clocktime = function(x) {
-                # x = hours Since Previous Midnight
-                HR = floor(x)
-                MI = floor((x - floor(x)) * 60)
-                SE = round(((x - HR) - (MI/60)) * 3600)
-                if (SE == 60) {
-                  MI = MI + 1; SE = 0
+                #sbefore = spocum.t[,4]
+                delta_t1 = diff(as.numeric(spocum.t[,3]))
+                spocum.t[,4] = correct01010pattern(spocum.t[,4])
+                #----------------------------
+                nightsummary[sumi,1] = accid
+                nightsummary[sumi,2] = j #night
+                if (is.matrix(spocum.t) == FALSE) {
+                  spocum.t = t(as.matrix(spocum.t))
                 }
-                if (MI == 60) {
-                  HR = HR + 1; MI = 0
-                }
-                if (HR == 24) HR = 0
-                if (HR < 9) HR = paste0("0",HR)
-                if (MI < 9) MI = paste0("0",MI)
-                if (SE < 9) SE = paste0("0",SE)
-                return(paste0(HR,":",MI,":",SE))
-              }
-              acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
-              acc_wakeTS = convertHRsinceprevMN2Clocktime(acc_wake)
-              nightsummary[sumi,18] = acc_onsetTS
-              nightsummary[sumi,19] = acc_wakeTS
-              #----------------------------------------------
-              nightsummary[sumi,20] = tmp1
-              nightsummary[sumi,21] = tmp4
-              nightsummary[sumi,22] = pagei
-              nightsummary[sumi,23] = daysleeper[j]
-              nightsummary[sumi,24] = wdayname[j]
-              nightsummary[sumi,25] = calendardate[j]
-              nightsummary[sumi,26] = fnames[i]
-              # nightsummary
-              #------------------------------------------------------------------------
-              # PLOT     
-              if (do.visual == TRUE) {
-                if (defi == undef[1]) { #only decide whether to plot the first time
-                  if (outliers.only == TRUE) {
-                    if (abs(nightsummary$error_onset[sumi]) > criterror | abs(nightsummary$error_wake[sumi]) > criterror |
-                        abs(nightsummary$error_dur[sumi]) > (criterror * 2)) {
-                      doplot = TRUE
-                      cat(" PLOT ")
-                    } else {
-                      doplot = FALSE
-                    }
-                  } else {
-                    doplot = TRUE
-                  }
-                }
-                # upcoming 5 lines added to avoid ending up with meaningless visualisations of nights
-                # for which no sleep log entry was available, and for which L5 method provided estimates
-                if (length(loglocation) > 0) { 
-                  cleaningcriterion = 1
+                #------------------------------------
+                # ACCELEROMETER
+                if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
+                  rtl = which(spocum.t[,4] == 1)
+                  nightsummary[sumi,3] =spocum.t[rtl[1],2]
+                  nightsummary[sumi,4] =spocum.t[rtl[length(rtl)],3]
                 } else {
-                  cleaningcriterion = 2
+                  nightsummary[sumi,3:4] = 0
                 }
-                if (doplot == TRUE & cleaningcode < cleaningcriterion) {
-                  idlabels[cnt] = paste("id",accid," night",j,sep="")
-                  den = 20
-                  defii = which(undef == defi)              
-                  qtop = ((defii / length(undef))*0.6) - 0.3
-                  qbot = (((defii-1) / length(undef))*0.6) - 0.3
-                  # add bar for each sleep defintion of accelerometer
-                  for (pli in 1:nrow(spocum.t)) { 
-                    if (spocum.t[pli,2] > spocum.t[pli,3]) {
-                      if (pli > 1 & pli < nrow(spocum.t) & abs(as.numeric(spocum.t[pli,2]) - as.numeric(spocum.t[pli,3])) < 2) {
-                        spocum.t[pli,2:3] = spocum.t[pli,3:2] #add 15/12/2014 to deal with effect of daysaving time.
+                nightsummary[,3] = as.numeric(nightsummary[,3])
+                nightsummary[,4] = as.numeric(nightsummary[,4])
+                if (nightsummary[sumi,3] > nightsummary[sumi,4]) {
+                  nightsummary[sumi,5] = (36 - nightsummary[sumi,3]) + (nightsummary[sumi,4] - 12)
+                } else {
+                  nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3]
+                }
+                nightsummary[,5] = as.numeric(nightsummary[,5])
+                nightsummary[sumi,6] = defi #sleep definition
+                #------------------------------------
+                # SLEEP LOG
+                #correct SptOnset and SptWake to fall within [12-36] window and store as sleeplog_onset and sleeplog_wake
+                if (SptOnset > 36) {
+                  nightsummary[sumi,7] = SptOnset-24 #onset
+                } else {
+                  nightsummary[sumi,7] = SptOnset
+                }
+                if (SptWake > 36) {
+                  nightsummary[sumi,8] = SptWake-24 #wake
+                } else {
+                  nightsummary[sumi,8] = SptWake
+                }
+                if (nightsummary[sumi,7] > nightsummary[sumi,8]) {
+                  nightsummary[sumi,9] = abs((36 - nightsummary[sumi,7]) + (nightsummary[sumi,8] - 12))
+                } else {
+                  nightsummary[sumi,9] = abs(nightsummary[sumi,8] - nightsummary[sumi,7])
+                }
+                #------------------------------------
+                # Calculate errors between accelerometer estimate and sleeplog (or HDCZA or L5+/-6hr)
+                nightsummary[sumi,10] = nightsummary[sumi,3] - nightsummary[sumi,7] #error onset
+                nightsummary[sumi,11] = nightsummary[sumi,4] - nightsummary[sumi,8] #error wake
+                #sometimes difference calculations (error) can be in the wrong direction, e.g. log = 11, acc is 35
+                if (nightsummary[sumi,10] > 12)   nightsummary[sumi,10] = -(24 - nightsummary[sumi,10])
+                if (nightsummary[sumi,10] < -12)  nightsummary[sumi,10] = -(nightsummary[sumi,10] + 24)
+                if (nightsummary[sumi,11] > 12)   nightsummary[sumi,11] = -(24 - nightsummary[sumi,11])
+                if (nightsummary[sumi,11] < -12)  nightsummary[sumi,11] = -(nightsummary[sumi,11] + 24)
+                nightsummary[sumi,12] = nightsummary[sumi,5] - nightsummary[sumi,9] #error duration
+                #------------------------------------
+                # Other variables
+                if (acc_available == TRUE) {
+                  nightsummary[sumi,13] = sleepdet.t$fraction.night.invalid[1]
+                  if (sleepdet.t$fraction.night.invalid[1] > ((24-includenightcrit)/24)) {
+                    cleaningcode = 2
+                  }
+                } else {
+                  nightsummary[sumi,13] = 1
+                }
+                # Accumulated nocturnal sleep and daytime sustained inactivity bouts
+                nocs = as.numeric(spocum.t[which(spocum.t[,4] == 1),3]) - as.numeric(spocum.t[which(spocum.t[,4] == 1),2])
+                sibds = as.numeric(spocum.t[which(spocum.t[,4] == 0),3]) - as.numeric(spocum.t[which(spocum.t[,4] == 0),2])
+                # it is possible that nocs is negative if when sleep episode starts before dst
+                # in the autumn and ends inside the dst hour
+                negval = which(nocs < 0)
+                if (length(negval) > 0) {
+                  kk0 = as.numeric(spocum.t[which(spocum.t[,4] == 1),2]) # episode onsets
+                  kk1 = as.numeric(spocum.t[which(spocum.t[,4] == 1),3]) # episode endings
+                  kk1[negval] = kk1[negval] + 1
+                  nocs = kk1 - kk0
+                }
+                if (length(nocs) > 0) {
+                  spocum.t.dur.noc = sum(nocs)
+                } else {
+                  spocum.t.dur.noc = 0
+                }
+                #======================================================================================================
+                # check whether it is day saving time (DST) the next day (= the night connected to the present day)
+                is_this_a_dst_night_output = is_this_a_dst_night(calendardate=calendardate[j],tz=desiredtz)
+                dst_night_or_not = is_this_a_dst_night_output$dst_night_or_not
+                dsthour = is_this_a_dst_night_output$dsthour
+                # if yes, then check whether any of the sleep episodes overlaps
+                if (dst_night_or_not == 1) { # dst in spring, one hour skipped
+                  checkoverlap = spocum.t[which(spocum.t[,4] == 1),2:3]
+                  overlaps = which(checkoverlap[,1] <= (dsthour+24) & checkoverlap[,2] >= (dsthour+25))
+                  if (length(overlaps) > 0) {
+                    # if yes, then reduce the length of those sleep episodes
+                    spocum.t.dur.noc = spocum.t.dur.noc - 1
+                    nightsummary[sumi,5] = nightsummary[sumi,5] - 1
+                    nightsummary[sumi,9] = nightsummary[sumi,9] - 1
+                  }
+                } else if (dst_night_or_not == -1) { # dst in autumn, one double hour
+                  # spocum.t.dur.noc has been calculated correctly including the double hour
+                  # However, time elapse between onset and wake needs to be expanded by 1 if onset was
+                  # before dst and waking up was after dst.
+                  if (nightsummary[sumi,3] <= (dsthour+24) & nightsummary[sumi,4] >= (dsthour+25)) {
+                    nightsummary[sumi,5] = nightsummary[sumi,5] + 1 # accelerometer derived sleep duration
+                  }
+                  if (nightsummary[sumi,7] <= (dsthour+24) & nightsummary[sumi,8] >= (dsthour+25)) {
+                    nightsummary[sumi,9] = nightsummary[sumi,9] + 1 # sleep log sleepduration
+                  }
+                  # does SPT end within double hour?
+                  correctSptEdgingInDoubleHour = function(nightsummary,onsetcol,wakecol,durcol,dsthour,delta_t1) {
+                    wakeInDoubleHour = nightsummary[,wakecol] >= (dsthour+24) & nightsummary[,wakecol] <= (dsthour+25)
+                    onsetInDoubleHour = nightsummary[,onsetcol] >= (dsthour+24) & nightsummary[,onsetcol] <= (dsthour+25)
+                    onsetBeforeDoubleHour = nightsummary[,onsetcol] <= (dsthour+24)
+                    wakeAfterDoubleHour = nightsummary[,wakecol] >= (dsthour+25)
+                    timeWentBackward = length(which(delta_t1 < 0)) > 0
+                    if (onsetBeforeDoubleHour == TRUE & wakeInDoubleHour == TRUE ) {
+                      if (timeWentBackward == TRUE) { # if time went back then it ended in the second hour of the double hour and the + 1 is definitely justified
+                        nightsummary[,durcol] = nightsummary[,durcol] + 1
+                      } else if (timeWentBackward == FALSE) { 
+                        # if time did not go back then SPT may have ended in either the first or second of the double hour
+                        # TO DO: distinguish these rare cases, for now assume it ends in the second hour to avoid sleep efficiency above 100%.
+                        nightsummary[,durcol] = nightsummary[,durcol] + 1
                       }
                     }
-                    if (spocum.t[pli,4] == 1) {
-                      colb = rainbow(length(undef),start=0.7,end=1) #"dodgerblue"
-                    } else {
-                      colb =  rainbow(length(undef),start=0.2,end=0.4) #"darkgreen"
+                    if (wakeAfterDoubleHour == TRUE & onsetInDoubleHour == TRUE) {
+                      if (timeWentBackward == TRUE) { # if time went back then it ended in the second hour of the double hour and the + 1 is definitely justified
+                        nightsummary[,durcol] = nightsummary[,durcol] + 1 # accelerometer derived sleep duration
+                      } else if (timeWentBackward == FALSE) { 
+                        # if time did not go back then SPT may have ended in either the first or second of the double hour
+                        # TO DO: distinguish these rare cases, for now assume it ends in the second hour to avoid sleep efficiency above 100%.
+                        nightsummary[,durcol] = nightsummary[,durcol] + 1 # accelerometer derived sleep duration
+                      }
                     }
-                    if (spocum.t[pli,2] > spocum.t[pli,3]) {
-                      rect(xleft=spocum.t[pli,2], ybottom=(cnt+qbot), xright=36, ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
-                      rect(xleft=12, ybottom=(cnt+qbot), xright=spocum.t[pli,3], ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
+                    return(nightsummary)
+                  }
+                  nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=3,wakecol=4,durcol=5,dsthour=dsthour,delta_t1=delta_t1)
+                  nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=7,wakecol=8,durcol=9,dsthour=dsthour,delta_t1=delta_t1)
+                }
+                
+                #======================================================================================================
+                if (length(sibds) > 0) {
+                  spocum.t.dur_sibd = sum(sibds)
+                } else {
+                  spocum.t.dur_sibd = 0
+                }
+                nightsummary[sumi,14] = spocum.t.dur.noc #total nocturnalsleep /accumulated sleep duration
+                nightsummary[sumi,15] = spocum.t.dur_sibd #total sib (sustained inactivty bout) duration
+                nightsummary[sumi,16] = length(which(spocum.t[,4] == 1)) #number of nocturnalsleep periods
+                nightsummary[sumi,17] = length(which(spocum.t[,4] == 0)) #number of sib (sustained inactivty bout) periods
+                #-------------------------------------------------------
+                # Also report timestamps in non-numeric format:
+                acc_onset = nightsummary[sumi,3]
+                acc_wake = nightsummary[sumi,4]
+                if (acc_onset > 24) acc_onset = acc_onset - 24
+                if (acc_wake > 24) acc_wake = acc_wake - 24
+                #--------------------------------------------
+                # convert into clocktime
+                convertHRsinceprevMN2Clocktime = function(x) {
+                  # x = hours Since Previous Midnight
+                  HR = floor(x)
+                  MI = floor((x - floor(x)) * 60)
+                  SE = round(((x - HR) - (MI/60)) * 3600)
+                  if (SE == 60) {
+                    MI = MI + 1; SE = 0
+                  }
+                  if (MI == 60) {
+                    HR = HR + 1; MI = 0
+                  }
+                  if (HR == 24) HR = 0
+                  if (HR < 9) HR = paste0("0",HR)
+                  if (MI < 9) MI = paste0("0",MI)
+                  if (SE < 9) SE = paste0("0",SE)
+                  return(paste0(HR,":",MI,":",SE))
+                }
+                acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
+                acc_wakeTS = convertHRsinceprevMN2Clocktime(acc_wake)
+                nightsummary[sumi,18] = acc_onsetTS
+                nightsummary[sumi,19] = acc_wakeTS
+                #----------------------------------------------
+                nightsummary[sumi,20] = tmp1
+                nightsummary[sumi,21] = tmp4
+                nightsummary[sumi,22] = pagei
+                nightsummary[sumi,23] = daysleeper[j]
+                nightsummary[sumi,24] = wdayname[j]
+                nightsummary[sumi,25] = calendardate[j]
+                nightsummary[sumi,26] = fnames[i]
+                # nightsummary
+                #------------------------------------------------------------------------
+                # PLOT     
+                if (do.visual == TRUE) {
+                  if (defi == undef[1]) { #only decide whether to plot the first time
+                    if (outliers.only == TRUE) {
+                      if (abs(nightsummary$error_onset[sumi]) > criterror | abs(nightsummary$error_wake[sumi]) > criterror |
+                          abs(nightsummary$error_dur[sumi]) > (criterror * 2)) {
+                        doplot = TRUE
+                        cat(" PLOT ")
+                      } else {
+                        doplot = FALSE
+                      }
                     } else {
-                      rect(xleft=spocum.t[pli,2], ybottom=(cnt+qbot), xright=spocum.t[pli,3], ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
+                      doplot = TRUE
                     }
                   }
-                  SptWaken = SptWake
-                  SptOnsetn = SptOnset
-                  if (SptWake > 36) SptWaken = SptWake - 24
-                  if (SptOnset > 36) SptOnsetn = SptOnset - 24
-                  if (defi == undef[length(undef)]) {# only plot log for last definition
-                    if (SptOnsetn > SptWaken) { #night sleeper
-                      rect(xleft=SptOnsetn, ybottom=(cnt-0.3), xright=36, ytop=(cnt+0.3),col="black",border=TRUE,density=den) #lwd=0.2,
-                      rect(xleft=12, ybottom=(cnt-0.3), xright=SptWaken, ytop=(cnt+0.3),col="black",border=TRUE,density=den) #lwd=0.2,
-                    } else { #day sleeper
-                      rect(xleft=SptOnsetn, ybottom=(cnt-0.3), xright=SptWaken, ytop=(cnt+0.3),col="black",border=TRUE,density=den) #lwd=0.2,
+                  # upcoming 5 lines added to avoid ending up with meaningless visualisations of nights
+                  # for which no sleep log entry was available, and for which L5 method provided estimates
+                  if (length(loglocation) > 0) { 
+                    cleaningcriterion = 1
+                  } else {
+                    cleaningcriterion = 2
+                  }
+                  if (doplot == TRUE & cleaningcode < cleaningcriterion) {
+                    idlabels[cnt] = paste("id",accid," night",j,sep="")
+                    den = 20
+                    defii = which(undef == defi)              
+                    qtop = ((defii / length(undef))*0.6) - 0.3
+                    qbot = (((defii-1) / length(undef))*0.6) - 0.3
+                    # add bar for each sleep defintion of accelerometer
+                    for (pli in 1:nrow(spocum.t)) { 
+                      if (spocum.t[pli,2] > spocum.t[pli,3]) {
+                        if (pli > 1 & pli < nrow(spocum.t) & abs(as.numeric(spocum.t[pli,2]) - as.numeric(spocum.t[pli,3])) < 2) {
+                          spocum.t[pli,2:3] = spocum.t[pli,3:2] #add 15/12/2014 to deal with effect of daysaving time.
+                        }
+                      }
+                      if (spocum.t[pli,4] == 1) {
+                        colb = rainbow(length(undef),start=0.7,end=1) #"dodgerblue"
+                      } else {
+                        colb =  rainbow(length(undef),start=0.2,end=0.4) #"darkgreen"
+                      }
+                      if (spocum.t[pli,2] > spocum.t[pli,3]) {
+                        rect(xleft=spocum.t[pli,2], ybottom=(cnt+qbot), xright=36, ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
+                        rect(xleft=12, ybottom=(cnt+qbot), xright=spocum.t[pli,3], ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
+                      } else {
+                        rect(xleft=spocum.t[pli,2], ybottom=(cnt+qbot), xright=spocum.t[pli,3], ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
+                      }
+                    }
+                    SptWaken = SptWake
+                    SptOnsetn = SptOnset
+                    if (SptWake > 36) SptWaken = SptWake - 24
+                    if (SptOnset > 36) SptOnsetn = SptOnset - 24
+                    if (defi == undef[length(undef)]) {# only plot log for last definition
+                      if (SptOnsetn > SptWaken) { #night sleeper
+                        rect(xleft=SptOnsetn, ybottom=(cnt-0.3), xright=36, ytop=(cnt+0.3),col="black",border=TRUE,density=den) #lwd=0.2,
+                        rect(xleft=12, ybottom=(cnt-0.3), xright=SptWaken, ytop=(cnt+0.3),col="black",border=TRUE,density=den) #lwd=0.2,
+                      } else { #day sleeper
+                        rect(xleft=SptOnsetn, ybottom=(cnt-0.3), xright=SptWaken, ytop=(cnt+0.3),col="black",border=TRUE,density=den) #lwd=0.2,
+                      }
                     }
                   }
                 }
-              }
-              # PLOT
-              #------------------------------------------------------------------------
-              nightsummary[sumi,27] = cleaningcode
-              nightsummary[sumi,28] = sleeplog_used[i]
-              nightsummary[sumi,29] = acc_available
-              if (storefolderstructure == TRUE) {
-                nightsummary[sumi,30] = ffd[i] #full filename structure
-                nightsummary[sumi,31] = ffp[i] #use the lowest foldername as foldername name
-              }
-              sumi = sumi + 1
-            } #run through definitions
-            if (do.visual == TRUE) {
-              if (cleaningcode < cleaningcriterion & doplot == TRUE) { #only increase count if there was bar plotted
-                lines(x=c(12,36),y=c(cnt,cnt),lwd=0.2,lty=2)  #abline(h=cnt,lwd=0.2,lty=2)
-                if (daysleeper[j] == TRUE) {
-                  lines(x=c(18,18),y=c((cnt-0.3),(cnt+0.3)),lwd=2,lty=2,col="black")
+                # PLOT
+                #------------------------------------------------------------------------
+                nightsummary[sumi,27] = cleaningcode
+                nightsummary[sumi,28] = sleeplog_used[i]
+                nightsummary[sumi,29] = acc_available
+                if (storefolderstructure == TRUE) {
+                  nightsummary[sumi,30] = ffd[i] #full filename structure
+                  nightsummary[sumi,31] = ffp[i] #use the lowest foldername as foldername name
                 }
-                cnt = cnt + 1
+                sumi = sumi + 1
+              } #run through definitions
+              if (do.visual == TRUE) {
+                if (cleaningcode < cleaningcriterion & doplot == TRUE) { #only increase count if there was bar plotted
+                  lines(x=c(12,36),y=c(cnt,cnt),lwd=0.2,lty=2)  #abline(h=cnt,lwd=0.2,lty=2)
+                  if (daysleeper[j] == TRUE) {
+                    lines(x=c(18,18),y=c((cnt-0.3),(cnt+0.3)),lwd=2,lty=2,col="black")
+                  }
+                  cnt = cnt + 1
+                }
               }
             }
           }
-	  }
           # END OF PLOT AND nightsummary MEASURES
           ##########################################################################
         } #nights
@@ -793,8 +793,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   } #end of loop through acc files
   if (cnt67 == 2 & do.visual == TRUE) {
     if (cnt-1 != (nnpp+1)) {
-       idlabels[which(idlabels == 0)] = " "
-       axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.5)
+      idlabels[which(idlabels == 0)] = " "
+      axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.5)
     }
     dev.off()
     cnt67 = 1
