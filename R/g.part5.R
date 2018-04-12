@@ -334,8 +334,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             # Why don't we start with the first epoch of the measurement and advance till we find the first awakening?
             # Feel free to remove these previous comments if you finally merge this pull request. 
             # Below, the code analyses the first hour of measurement, if detection is consistently 0, then the code assumes that the accelerometer was initialized during the day and do not look for a "inexistent" first awakening. Otherwise, the code keep looken for the first awakening.
-            if (unique(detection[1:((60/ws3)*60)]) != 0 & (60/ws3)*60 < nightsi[1]) waketi = which(diff(detection) == -1)[1]
-            diur[1:waketi] = 1            
+            if (unique(detection[1:((60/ws3)*60)]) != 0 & (60/ws3)*60 < nightsi[1]) {
+              waketi = which(diff(detection) == -1)[1]
+              } else {waketi = NA}
+            if (length(waketi) > 0) diur[1:waketi] = 1            
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
@@ -375,7 +377,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
                       # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
                       if (timewindowi == "MM" & wi==1) {
-                        qqq[1] = 1
+                        if (length(waketi) > 0) qqq[1] = waketi
+                        else {qqq[1] = 1}
                         qqq[2] = nightsi[wi]
                       }
                       else if (timewindowi == "MM") {
@@ -383,7 +386,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         qqq[2] = nightsi[wi]
                       }
                       else if(timewindowi == "WW" & wi==1){
-                        qqq[1]=1
+                        if (length(waketi) > 0) qqq[1] = waketi
+                        else {qqq[1] = 1}
                         qqq[2]=which(diff(diur) == 
                                      -1)[wi] + 1
                       }
@@ -433,7 +437,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
                         # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
                         if (timewindowi == "MM" & wi==1) {
-                          qqq1 = 1
+                          if (length(waketi) > 0) qqq[1] = waketi
+                          else {qqq[1] = 1}
                           qqq2 = nightsi[wi]
                           dsummary[di, fi] = "MM"
                         } else if (timewindowi == "MM") {
@@ -441,7 +446,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq2 = nightsi[wi]
                           dsummary[di, fi] = "MM"
                         } else if(timewindowi == "WW" & wi==1){
-                          qqq1=1
+                          if (length(waketi) > 0) qqq[1] = waketi
+                          else {qqq[1] = 1}
                           qqq2=which(diff(diur) == 
                                        -1)[wi] + 1
                           dsummary[di, fi] = "WW"
