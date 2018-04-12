@@ -1,6 +1,7 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London",constrain2range = TRUE) {
   #==============================================================
+  perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
   sptwindow_HDCZA = function(angle, k =60, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60, ws3 = 5, constrain2range = FALSE) {
     medabsdi = function(angle) {
       angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
@@ -202,7 +203,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
-        inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range)
+        inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range, 
+                                   perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize, outofbedsize = outofbedsize)
         if (length(inbedout$lightson) > 0 & length(inbedout$lightsout) > 0) {
           lightson[1] = inbedout$lightson
           lightsout[1] = inbedout$lightsout
@@ -266,7 +268,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
           tmpANGLE = angle[qqq1:qqq2]
           tmpTIME = time[qqq1:qqq2]
-          inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range)
+          inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
+                                     perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize, outofbedsize = outofbedsize)
           if (length(inbedout$lightson) != 0 & length(inbedout$lightsout) != 0) {
             lightson[j] = (inbedout$lightson / (3600/ ws3)) + 12
             lightsout[j] = (inbedout$lightsout / (3600/ ws3)) + 12
