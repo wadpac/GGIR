@@ -286,45 +286,56 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
             #=========
             # EXPAND DIUR WITH AT LEAST ONE EPOCH AT END OF SLEEP IN FIRST NIGHT TO MARK MORNING AWAKENING
-            if (length(loglocation) > 0) {
-              LOG = read.csv(loglocation)
+            # Jairo: I have problems with the next part of the code in my files.
+            # I have some data where the accelerometer was initialized during the day and this part of the code confunded sustained inactivity during the day with nocturnal time, and so, it marke the whole first day as night.
+            # See my proposal for this part of the code below, I'm not going to delete the previous code so you can compare them, just put it as comment.
+            
+            #if (length(loglocation) > 0) {
+              #LOG = read.csv(loglocation)
               # id = summarysleep_tmp2$id[1]
-              waket= as.character(LOG[which(LOG$STNO == id),which(names(LOG)=="FGAWK2")])
-              if (length(waket) > 0) {
-                if (waket != ""){
-                  waket2 = as.numeric(unlist(strsplit(waket,":")))
-                  waket3 = waket2[1] * (60*(60/ws3)) + waket2[2] * ((60/ws3)) + round(waket2[3]/5)
-                  waketi = nightsi[1] + waket3
-                } else {
-                  waketi = nightsi[1] + ((60/ws3)*8*60)
-                }
-              } else {
-                waketi = nightsi[1] + ((60/ws3)*8*60)
-              }
-            } else {
-              waketi = nightsi[1] + ((60/ws3)*8*60)
-            }
+              #waket= as.character(LOG[which(LOG$STNO == id),which(names(LOG)=="FGAWK2")])
+              #if (length(waket) > 0) {
+                #if (waket != ""){
+                  #waket2 = as.numeric(unlist(strsplit(waket,":")))
+                  #waket3 = waket2[1] * (60*(60/ws3)) + waket2[2] * ((60/ws3)) + round(waket2[3]/5)
+                  #waketi = nightsi[1] + waket3
+                #} else {
+                  #waketi = nightsi[1] + ((60/ws3)*8*60)
+                #}
+              #} else {
+                #waketi = nightsi[1] + ((60/ws3)*8*60)
+              #}
+            #} else {
+              #waketi = nightsi[1] + ((60/ws3)*8*60)
+            #}
             # now round off to nearest end of sleep detection
-            found = FALSE
-            step = 0
-            while (found == FALSE) {
-              if (detection[waketi] == 1) {
-                step = step + 1
-              } else {
-                step = step - 1
-              }
-              if (detection[waketi+step] != detection[waketi]) {
-                found = TRUE
-                waketi = waketi+step
-              }
-              if (abs(step) == (60/ws3)*(4*60) | (waketi+step) < nightsi[1]) { # do not shift it by more than 4 hours or before the first midnight
-                found = TRUE
-              }
-            }
+            #found = FALSE
+            #step = 0
+            #while (found == FALSE) {
+              #if (detection[waketi] == 1) {
+                #step = step + 1
+              #} else {
+                #step = step - 1
+              #}
+              #if (detection[waketi+step] != detection[waketi]) {
+                #found = TRUE
+                #waketi = waketi+step
+              #}
+              #if (abs(step) == (60/ws3)*(4*60) | (waketi+step) < nightsi[1]) { # do not shift it by more than 4 hours or before the first midnight
+                #found = TRUE
+              #}
+            #}
             #update diur to include at least end of first night (needed to identify awakening)
-            ss0 = nightsi[1]-10 #index in data minus resolution of window
-            if (ss0 < 1) ss0 = 1 # added on 7/9/2015: if previous line results in negative index then use first index
-            diur[ss0:waketi] = detection[waketi]  # changed on 9/4/2018: In case the accelerometer started the measurement when the participant is awake, this line was changing the whole period before the first night to 1 (= sustained inactivity).
+            #ss0 = nightsi[1]-10 #index in data minus resolution of window
+            #if (ss0 < 1) ss0 = 1 # added on 7/9/2015: if previous line results in negative index then use first index
+            #diur[ss0:waketi] = 1
+            
+            # Jairo's proposal:
+            # Why don't we start with the first epoch of the measurement and advance till we find the first awakening?
+            # Feel free to remove these previous comments if you finally merge this pull request. 
+            # Below, the code analyses the first hour of measurement, if detection is consistently 0, then the code assumes that the accelerometer was initialized during the day and do not look for a "inexistent" first awakening. Otherwise, the code keep looken for the first awakening.
+            if (unique(detection[1:((60/ws3)*60)]) != 0 & (60/ws3)*60 < nightsi[1]) waketi = which(diff(detection) == -1)[1]
+            diur[1:waketi] = 1            
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
