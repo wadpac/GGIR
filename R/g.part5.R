@@ -377,7 +377,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
                       # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
                       if (timewindowi == "MM" & wi==1) {
-                        if (length(waketi) > 0) qqq[1] = waketi
+                        if (waketi > 0) qqq[1] = waketi +1
                         else {qqq[1] = 1}
                         qqq[2] = nightsi[wi]
                       }
@@ -386,7 +386,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         qqq[2] = nightsi[wi]
                       }
                       else if(timewindowi == "WW" & wi==1){
-                        if (length(waketi) > 0) qqq[1] = waketi
+                        if (waketi > 0) qqq[1] = waketi +1
                         else {qqq[1] = 1}
                         qqq[2]=which(diff(diur) == 
                                      -1)[wi] + 1
@@ -437,7 +437,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
                         # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
                         if (timewindowi == "MM" & wi==1) {
-                          if (length(waketi) > 0) qqq[1] = waketi
+                          if (waketi > 0) qqq[1] = waketi + 1
                           else {qqq[1] = 1}
                           qqq2 = nightsi[wi]
                           dsummary[di, fi] = "MM"
@@ -446,7 +446,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq2 = nightsi[wi]
                           dsummary[di, fi] = "MM"
                         } else if(timewindowi == "WW" & wi==1){
-                          if (length(waketi) > 0) qqq[1] = waketi
+                          if (waketi > 0) qqq[1] = waketi + 1
                           else {qqq[1] = 1}
                           qqq2=which(diff(diur) == 
                                        -1)[wi] + 1
