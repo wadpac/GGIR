@@ -396,6 +396,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                        -1)[wi-1] + 1
                         qqq[2] = which(diff(diur) == 
                                        -1)[wi]
+                        }
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
