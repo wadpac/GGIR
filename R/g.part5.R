@@ -469,6 +469,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         } else if (timewindowi == "MM" & wi>nrow(summarysleep_tmp2)) {
                           qqq1 = qqq2 + 1
                           qqq2 = length(diur)
+                          dsummary[di, fi] = "MM"
                         } else if(timewindowi == "WW" & wi==1){
                           if (waketi > 0) qqq1 = waketi + 1
                           else {qqq1 = 1}
@@ -484,6 +485,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         } else if (timewindowi == "WW" & wi>nrow(summarysleep_tmp2)) {
                           qqq1 = qqq2 + 1
                           qqq2 = length(diur)
+                          dsummary[di, fi] = "WW"
                         }
                         ds_names[fi] = "window";      fi = fi + 1    
                         # keep track of threshold value
@@ -716,7 +718,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         
         names(output) = ds_names
         if (excludefirstlast == TRUE) { #undesirable because it will slowly remove alchanged to TRUE on 20 May 2015
-          output = output[-c(1,nrow(output)),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
+          output = output[-c(which(output$night_number == min(output$night_number)),
+                             which(output$night_number == max(output$night_number))),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
         }
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
