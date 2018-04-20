@@ -112,7 +112,7 @@ test_that("chainof5parts", {
   
   # dn = "output_test"
   # if (file.exists(dn))  unlink(dn,recursive=TRUE)
-  # if (file.exists(fn)) file.remove(fn)
+  if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
   
