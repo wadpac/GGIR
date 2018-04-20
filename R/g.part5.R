@@ -1,5 +1,5 @@
 g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7,hrs.del.start=0,hrs.del.end =0,
-                   loglocation= c(),excludefirstlast=FALSE,windowsizes=c(5,900,3600), acc.metric="ENMO",
+                   loglocation= c(),excludefirstlast.part5=FALSE,windowsizes=c(5,900,3600), acc.metric="ENMO",
                    boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,storefolderstructure=FALSE,
                    threshold.lig = c(40),
                    threshold.mod = c(100),
@@ -791,10 +791,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         # therefore, part5 will also mis waking up time for the second and the beforelast day.
         # So, I think if we want to facilitate that the first and last day are excluded in part5 then this will have to be handled
         # with a different input argument
-        # if (excludefirstlast == TRUE) { #undesirable because it will slowly remove alchanged to TRUE on 20 May 2015
-        #   output = output[-c(which(output$night_number == min(output$night_number)),
-        #                      which(output$night_number == max(output$night_number))),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
-        # }
+        if (excludefirstlast.part5 == TRUE) { #undesirable because it will slowly remove alchanged to TRUE on 20 May 2015
+          output = output[-c(which(output$night_number == min(output$night_number)),
+                             which(output$night_number == max(output$night_number))),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
+        }
         
         print(output[1:20,1:8])
         
