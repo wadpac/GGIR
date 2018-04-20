@@ -89,11 +89,10 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(rn[1]),is_true())
-  cat(nrow(output))
-  expect_that(nrow(output),equals(2))
+  expect_that(nrow(output),equals(8))
   expect_that(ncol(output),equals(134))
-  expect_that(round(as.numeric(output$acc_wake[1]),digits=4),equals(31.1708)) 
-  expect_that(round(as.numeric(output$dur_day_min[2]),digits=4),equals(945.1667))
+  expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(31.1708)) 
+  expect_that(round(as.numeric(output$dur_day_min[6]),digits=4),equals(945.1667))
   # expect_that(output$L5TIME[1],equals("2016-06-25T00:00:05+0100")) # turned off because not consistent across machine, to investigate
   
   # Somehow, the following test to now work yet on Travis, but they do work locally.
@@ -113,7 +112,7 @@ test_that("chainof5parts", {
   
   # dn = "output_test"
   # if (file.exists(dn))  unlink(dn,recursive=TRUE)
-  if (file.exists(fn)) file.remove(fn)
+  # if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
   
