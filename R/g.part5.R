@@ -196,6 +196,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           } else {
             nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
           }
+          
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -333,8 +334,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             # Below, the code analyses the first hour of measurement, if detection is consistently 0, then the code assumes that the accelerometer was initialized during the day and do not look for a "inexistent" first awakening. Otherwise, the code keep looken for the first awakening.
             if (unique(detection[1:((60/ws3)*60)]) != 0 & (60/ws3)*60 < nightsi[1]) {
               waketi = which(diff(detection) == -1)[1]
-            } else {waketi = 0}
-            if (waketi > 0) diur[1:waketi] = 1            
+              onseti = which(diff(detection) == 1)[1] # added 20/4/2018 by VvH
+            } else {
+              waketi = 0
+              onseti = 0 # added 20/4/2018 by VvH
+            }
+            if (waketi > 0) {
+              diur[1:waketi] = 1
+            }
+            if (waketi > 0 & onseti > 0) { # added 20/4/2018 by VvH
+              diur[onseti:waketi] = 1
+            }
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
@@ -360,17 +370,19 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
                   
-                  FM = which(diff(diur) == -1)
-                  if (length(FM) > 0) {
-                    # ignore first and last midnight because we did not do sleep detection on it
-                    nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
-                  }
+                  FM = which(diff(diur) == -1)                  
+                  nightsi_bu = nightsi
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in timewindow) {
+                    nightsi = nightsi_bu 
                     if (timewindowi == "WW") {
                       plusrow = 1
+                      if (length(FM) > 0) {
+                        # ignore first and last midnight because we did not do sleep detection on it
+                        nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
+                      }
                     } else {
-                      plusrow = 0
+                      plusrow = 1
                     }
                     for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)
                       #check that this is a meaningful day
@@ -379,29 +391,43 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
                       # Also, it allows for the analysis of the first day for those studies in which the accelerometer is 
                       # started during the morning and the first day is of interest.
-                      if (timewindowi == "MM" & wi==1) {
-                        if (waketi > 0) qqq[1] = waketi +1
-                        else {qqq[1] = 1}
-                        qqq[2] = nightsi[wi]
-                      } else if (timewindowi == "MM" & wi<=nrow(summarysleep_tmp2)) {
-                        qqq[1] = nightsi[wi-1] + 1
-                        qqq[2] = nightsi[wi]
-                      } else if (timewindowi == "MM" & wi>nrow(summarysleep_tmp2)) {
-                        qqq[1] = qqq[2] + 1
-                        qqq[2] = length(diur)
-                      } else if(timewindowi == "WW" & wi==1){
-                        if (waketi > 0) {
-                          qqq[1] = waketi +1
-                        } else {
+                      if (timewindowi == "MM") {
+                        # if (wi==1) {
+                        #   if (waketi > 0) qqq[1] = waketi +1
+                        #   else {qqq[1] = 1}
+                        #   qqq[2] = nightsi[wi]
+                        # } else if (wi<=nrow(summarysleep_tmp2)) {
+                        #   qqq[1] = nightsi[wi-1] + 1
+                        #   qqq[2] = nightsi[wi]
+                        # } else if (wi>nrow(summarysleep_tmp2)) {
+                        #   qqq[1] = qqq[2] + 1
+                        #   qqq[2] = length(diur)
+                        # }
+                        if (wi==1) {
                           qqq[1] = 1
+                          qqq[2] = nightsi[wi]
+                        } else if (wi<=nrow(summarysleep_tmp2)) {
+                          qqq[1] = nightsi[wi-1] + 1
+                          qqq[2] = nightsi[wi]
+                        } else if (wi>nrow(summarysleep_tmp2)) {
+                          qqq[1] = qqq[2] + 1
+                          qqq[2] = length(diur)
                         }
-                        qqq[2]=which(diff(diur) == -1)[wi] + 1
-                      } else if (timewindowi == "WW" & wi<=nrow(summarysleep_tmp2)) {
-                        qqq[1] = which(diff(diur) == -1)[wi-1] + 1
-                        qqq[2] = which(diff(diur) == -1)[wi]
-                      } else if (timewindowi == "WW" & wi>nrow(summarysleep_tmp2)) {
-                        qqq[1] = qqq[2] + 1
-                        qqq[2] = length(diur)
+                      } else if(timewindowi == "WW") {
+                        if (wi==1){
+                          if (waketi > 0) {
+                            qqq[1] = waketi +1
+                          } else {
+                            qqq[1] = 1
+                          }
+                          qqq[2]=which(diff(diur) == -1)[wi] + 1
+                        } else if (wi<=nrow(summarysleep_tmp2)) {
+                          qqq[1] = which(diff(diur) == -1)[wi-1] + 1
+                          qqq[2] = which(diff(diur) == -1)[wi]
+                        } else if (wi>nrow(summarysleep_tmp2)) {
+                          qqq[1] = qqq[2] + 1
+                          qqq[2] = length(diur)
+                        }
                       }
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
@@ -410,7 +436,12 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         ds_names[fi] = "id";      fi = fi + 1
                         dsummary[di,fi] = fnames.ms3[i]
                         ds_names[fi] = "filename";      fi = fi + 1
-                        if(wi>nrow(summarysleep_tmp2)) {
+                        if (timewindowi == "WW") {
+                          plusb = 0
+                        } else {
+                          plusb = 1
+                        }
+                        if(wi>nrow(summarysleep_tmp2)+plusb) {
                           dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
                                                      as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
                           ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
@@ -420,53 +451,64 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi] = "night number";      fi = fi + 1
                           dsummary[di,fi:(fi+11)] = NA  #Since this is data afte last night, we don't have sleep information here
                           ds_names[fi:(fi+11)] = c("acc_onset","acc_wake","sleeplog_onset","sleeplog_wake",
-                                                  "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts","sleeplog_wake_ts",
-                                                  "daysleeper","cleaningcode","sleeplog_used","acc_available"); fi = fi + 12
-                        
+                                                   "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts","sleeplog_wake_ts",
+                                                   "daysleeper","cleaningcode","sleeplog_used","acc_available"); fi = fi + 12
+                          
                         } else {
-                          if (timewindowi == "WW") {
+                          if(timewindowi == "MM" & wi == nrow(summarysleep_tmp2)+plusb) { # for the last day a ot of information is missing, so fill in defaults 
+                            dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
+                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
+                            ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
+                            dsummary[di,fi] = j
+                            ds_names[fi] = "acc_def";      fi = fi + 1
+                            dsummary[di,fi] = summarysleep_tmp2$night[wi-1]+1
+                            ds_names[fi] = "night number";      fi = fi + 1
+                          } else {
+                            
                             dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi]),as.character(summarysleep_tmp2$calendardate[wi]))
-                          } else {
-                            dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi+1]),as.character(summarysleep_tmp2$calendardate[wi+1]))
+                            ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
+                            dsummary[di,fi] = j
+                            ds_names[fi] = "acc_def";      fi = fi + 1
+                            dsummary[di,fi] = summarysleep_tmp2$night[wi]
+                            ds_names[fi] = "night number";      fi = fi + 1
                           }
-                          ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
-                          dsummary[di,fi] = j
-                          ds_names[fi] = "acc_def";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$night[wi]
-                          ds_names[fi] = "night number";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$acc_onset[wi]
-                          } else {
-                            dsummary[di,fi] = summarysleep_tmp2$acc_onset[wi+1]
-                          }
+                          dsummary[di,fi] = summarysleep_tmp2$acc_onset[wi]
                           ds_names[fi] = "acc_onset";      fi = fi + 1
-                          
-                          dsummary[di,fi] = summarysleep_tmp2$acc_wake[wi]
+                          if (timewindowi == "WW") {
+                            dsummary[di,fi] = summarysleep_tmp2$acc_wake[wi]
+                          } else {
+                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$acc_wake[wi-1]
+                          }
                           ds_names[fi] = "acc_wake";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset[wi]
-                          } else {
-                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset[wi+1]
-                          }
-                          ds_names[fi] = "sleeplog_onset";      fi = fi + 1
                           
-                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset[wi]
+                          
+                          ds_names[fi] = "sleeplog_onset";      fi = fi + 1
+                          if (timewindowi == "WW") {
+                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake[wi]
+                          } else {
+                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake[wi-1]
+                          }
                           ds_names[fi] = "sleeplog_wake";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$acc_onset_ts[wi]     
-                          } else {
-                            dsummary[di,fi] = summarysleep_tmp2$acc_onset_ts[wi+1] 
-                          }
+                          
+                          dsummary[di,fi] = summarysleep_tmp2$acc_onset_ts[wi]     
+                          
                           ds_names[fi] = "acc_onset_ts";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$acc_wake_ts[wi]
-                          ds_names[fi] = "acc_wake_ts";      fi = fi + 1
                           if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset_ts[wi]
+                            dsummary[di,fi] = summarysleep_tmp2$acc_wake_ts[wi]
                           } else {
-                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset_ts[wi+1]
+                            if (wi >1) dsummary[di,fi] = summarysleep_tmp2$acc_wake_ts[wi-1]
                           }
+                          ds_names[fi] = "acc_wake_ts";      fi = fi + 1
+                          
+                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset_ts[wi]
+                          
                           ds_names[fi] = "sleeplog_onset_ts";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake_ts[wi]
+                          if (timewindowi == "WW") {
+                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake_ts[wi]
+                          } else {
+                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake_ts[wi-1]
+                          }
                           ds_names[fi] = "sleeplog_wake_ts";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$daysleeper[wi]
                           # if timewindowi is MM then the following variables are less informative,
@@ -485,11 +527,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
                         if (timewindowi == "MM") {
                           if (wi==1) {
-                            if (waketi > 0) {
-                              qqq1 = waketi + 1
-                            } else {
-                              qqq1 = 1
-                            }
+                            # if (waketi > 0) {
+                            #   qqq1 = waketi + 1
+                            # } else {
+                            qqq1 = 1
+                            # }
                             qqq2 = nightsi[wi]
                           } else if (wi<=nrow(summarysleep_tmp2)) {
                             qqq1 = nightsi[wi-1] + 1
