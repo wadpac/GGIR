@@ -11,7 +11,7 @@ based on bouted periods as well as non-bouted periods.
 \usage{
 g.part5(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7,
 hrs.del.start=0,hrs.del.end =0,
-loglocation= c(),excludefirstlast=FALSE,windowsizes=c(5,900,3600), acc.metric="ENMO",
+loglocation= c(),excludefirstlast.part5=FALSE,windowsizes=c(5,900,3600), acc.metric="ENMO",
 boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,
 storefolderstructure=FALSE,threshold.lig = c(40),threshold.mod = c(100),
 threshold.vig = c(400),timewindow=c("MM","WW"),boutdur.mvpa = c(1,5,10),
@@ -63,7 +63,7 @@ M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0
   to lights out or intention to fall asleep, then it is the end-users responsibility
   to account for this in the interpretation of the results.
   }
- \item{excludefirstlast}{
+ \item{excludefirstlast.part5}{
     If TRUE then the first and last night of the measurement are ignored for the
   sleep assessment.
   }

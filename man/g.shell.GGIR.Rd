@@ -131,7 +131,7 @@ g.shell.GGIR(#-------------------------------
              #-------------------------------
              # Part 4 parameters:
              #-------------------------------
-             excludefirstlast = TRUE,
+             excludefirstlast = FALSE,
              includenightcrit = 16,
              def.noc.sleep = c(),
              loglocation= "D:/sleeplog.csv",
@@ -150,6 +150,7 @@ g.shell.GGIR(#-------------------------------
              threshold.lig = c(30,40,50),
              threshold.mod = c(100,120),
              threshold.vig = c(400,500),
+             excludefirstlast = FALSE,
              boutcriter = 0.8,
              boutcriter.in = 0.9,
              boutcriter.lig = 0.8,
