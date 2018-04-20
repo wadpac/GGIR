@@ -9,7 +9,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    boutdur.lig = c(1,5,10),
                    winhr = 5,
                    M5L5res = 10,
-                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0) {
+                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE) {
   
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
@@ -25,6 +25,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   } else {
     dir.create(file.path(metadatadir,ms5.out))
   }
+  
+  if (save_ms5rawlevels == TRUE) {
+    ms5.outraw = "/meta/ms5.outraw"
+    if (file.exists(paste(metadatadir,ms5.outraw,sep=""))) {
+    } else {
+      dir.create(file.path(metadatadir,ms5.outraw))
+    }
+  }
   SUM = nightsummary = M = sib.cla.sum= c()
   #======================================================================
   # compile lists of milestone data filenames
@@ -33,6 +41,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
   fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
+  # fnames.ms5raw = sort(dir(paste(metadatadir,"/meta/ms5.outraw",sep="")))
   # results
   results = paste(metadatadir,"/results",sep="")
   #------------------------------------------------
@@ -142,6 +151,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         rm(sib.cla.sum)
         def = unique(S$definition)
         cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
+
         if (length(cut) > 0) S = S[-cut,]
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)        
           #========================================================
@@ -170,6 +180,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
+              #Change 1 - 03/10/2017
+              if ( timebb[1] != as.character(timebb[1])){ #not s0 because s0 does not exist yet if classes differ
+                    timebb = as.character(timebb)
+                    s0 = which(timebb == gik.ons[g])[1]
+                    s1 = which(timebb == gik.end[g])[1]
+                }
+              #End of change 1
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(gik.ons[g]," 00:00:00",sep=""))[1]
               if (is.na(s1) == TRUE) s1 = which(timebb == paste(gik.end[g]," 00:00:00",sep=""))[1]
               s0 = s0 + pr0 - 1
@@ -271,12 +288,19 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 s1 = which(as.character(time) == w1c)[1]
               }
               timebb = as.character(time) 
-              
-              if(length(unlist(strsplit(timebb,"[+]"))) > 1) { # only do this for ISO8601 format
+              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
                 timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
               }
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
               if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
+              #Change 2 - 03/10/2017
+               if ( timebb[s0] != as.character(timebb[s0])){
+                    timebb = as.character(timebb)
+                    timebb = as.character(timebb)
+                    if (is.na(s0) == TRUE) s0 = which(timebb == w0c)[1]
+                    if (is.na(s1) == TRUE) s1 = which(timebb == w1c)[1]
+                }
+              #End of change 2
               # }
               if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
                 diur[s0:s1] = 1
@@ -361,6 +385,18 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.mvpa = levels$bc.mvpa
                   bc.lig = levels$bc.lig
                   bc.in = levels$bc.in
+                  
+                  if (save_ms5rawlevels == TRUE) {
+                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms5[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
+                    if (length(time) == length(LEVELS)) {
+                      ind = 1:length(time) #c(1,which(diff(LEVELS)!=0) + 1)
+                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
+                      ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
+                      # ms5rawlevels$time[1]
+                      write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
+                      rm(ms5rawlevels)
+                    }
+                  }
                   
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
@@ -697,15 +733,24 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
-                            time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
-                            if (time_num < 12) time_num = time_num + 24
-                            dsummary[di,fi] = time_num
+                          
+                            if (L5HOUR != "not detected") {
+                              time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
+                              if (time_num < 12) time_num = time_num + 24
+                              dsummary[di,fi] = time_num
+                            } else {
+                              dsummary[di,fi] = NA
+                            }
                           }
                           ds_names[fi] = paste("L",wini,"TIME_num",sep="");      fi = fi + 1
                           if (ignore == FALSE) {
-                            time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(M5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
-                            if (time_num < 12) time_num = time_num + 24
-                            dsummary[di,fi] = time_num
+                            if (M5HOUR != "not detected") {
+                              time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(M5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
+                              if (time_num < 12) time_num = time_num + 24
+                              dsummary[di,fi] = time_num
+                            } else {
+                              dsummary[di,fi] = NA
+                            }
                           }
                           ds_names[fi] = paste("M",wini,"TIME_num",sep="");      fi = fi + 1
                         }
@@ -784,7 +829,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           }
         }
         output = data.frame(dsummary,stringsAsFactors=FALSE)
-        
         names(output) = ds_names
         
         # This is not a good solution anymore: If excludefirstlast == TRUE then part4 does not generate sleep estimates for the first and last night,

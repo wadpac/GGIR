@@ -10,7 +10,7 @@ for memory management.
 }
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder)
+                         decn,dayborder,ws)
 }
 \arguments{
   \item{filename}{
@@ -37,6 +37,10 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   \item{dayborder}{
   See documentation \link{g.part1}
   }
+    \item{ws}{
+  Larger windowsize for non-detection, see documentation \link{g.part2}
+  }
+
 }
 \value{
 P=P,filequality=filequality, switchoffLD = switchoffLD

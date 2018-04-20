@@ -16,7 +16,8 @@ boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,
 storefolderstructure=FALSE,threshold.lig = c(40),threshold.mod = c(100),
 threshold.vig = c(400),timewindow=c("MM","WW"),boutdur.mvpa = c(1,5,10),
 boutdur.in = c(10,20,30),boutdur.lig = c(1,5,10),winhr = 5,
-M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0)
+M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0,
+save_ms5rawlevels=FALSE)
 
 }
 \arguments{
@@ -156,6 +157,11 @@ M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0
   \item{winhr}{
    see \link{g.getmeta}
   }
+  \item{save_ms5rawlevels}{
+   boolean, whether to save the time series classification (levels) as a csv files
+  }
+  
+  
 }
 \value{
  The function provides no values, it only ensures that other functions are called
