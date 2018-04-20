@@ -590,7 +590,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 # if yes, then check whether any of the sleep episodes overlaps
                 if (dst_night_or_not == 1) { # dst in spring, one hour skipped
                   checkoverlap = spocum.t[which(spocum.t[,4] == 1),2:3]
-                  if (length(checkoverlap) > 0) {
+                  if (length(checkoverlap) > 0 & is.matrix(checkoverlap) == TRUE) {
                     overlaps = which(checkoverlap[,1] <= (dsthour+24) & checkoverlap[,2] >= (dsthour+25))
                   } else {
                     overlaps = c()
