@@ -465,7 +465,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             ds_names[fi] = "night number";      fi = fi + 1
                           } else {
                             
-                            dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi]),as.character(summarysleep_tmp2$calendardate[wi]))
+                            dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi]),
+                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi], format="%e/%m/%Y")))
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
                             ds_names[fi] = "acc_def";      fi = fi + 1
@@ -785,10 +786,18 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         output = data.frame(dsummary,stringsAsFactors=FALSE)
         
         names(output) = ds_names
-        if (excludefirstlast == TRUE) { #undesirable because it will slowly remove alchanged to TRUE on 20 May 2015
-          output = output[-c(which(output$night_number == min(output$night_number)),
-                             which(output$night_number == max(output$night_number))),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
-        }
+        
+        # This is not a good solution anymore: If excludefirstlast == TRUE then part4 does not generate sleep estimates for the first and last night,
+        # therefore, part5 will also mis waking up time for the second and the beforelast day.
+        # So, I think if we want to facilitate that the first and last day are excluded in part5 then this will have to be handled
+        # with a different input argument
+        # if (excludefirstlast == TRUE) { #undesirable because it will slowly remove alchanged to TRUE on 20 May 2015
+        #   output = output[-c(which(output$night_number == min(output$night_number)),
+        #                      which(output$night_number == max(output$night_number))),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
+        # }
+        
+        print(output[1:20,1:8])
+        
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW
