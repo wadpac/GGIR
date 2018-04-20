@@ -1,13 +1,50 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-11 (release date:01-8-2017)}{
+
+\section{Changes in version 1.5-18 (release date:18-3-2018)}{
 \itemize{
-  \item Codecov badge added to the README file
-  \item Functions added to create dummy accelerometer file (csv) and dummy sleeplog (csv), 
+  \item Improved handling of day saving time in g.part3 and g.part4 within the two nights
+  in a year when the clock changes (DST was already correctly handled in the rest
+  of the year)
+  \item Algorithm HDCZA is now the default algorithm to use, if a sleeplog
+  is used and an entry is missing for a particular night.
+  \item pdf generation in part 3 is now optional (argument do.part3.pdf), this may
+  be useful for slightly speeding up data processing as it takes a few second to generate
+  the plot.
+  \item test added for g.getbout function.
+  \item bug fixed in timestamp recognition for object timebb in function g.part5
+  }
+}
+
+\section{Changes in version 1.5-17 (release date:19-2-2018)}{
+\itemize{
+  \item SPT-window detection now updated with a constrained threshold to make it more robust
+  against between accelerometer brand differences. This is the approach used for our PSG in
+  <https://www.biorxiv.org/content/early/2018/02/01/257972>
+  }
+}
+
+\section{Changes in version 1.5-16 (release date:17-1-2018)}{
+\itemize{
+  \item cwaread issue #57 fixed
+  \item SPT-window detection included (work in progress)
+  \item cpp code fixed which did not compile anymore
+  \item a machine specific function test removed following feedback from CRAN maintainers
+  }
+}
+
+\section{Changes in version 1.5-12 (release date:8-8-2017)}{
+\itemize{
+  \item Fixed bug introduced in 1.5-1: large window size of 3600 seconds was accidentally
+  hardcoded when the g.readaccfile function was added to GGIR in version 1.5-1
+  \item Codecov testing added and badge added to the README file
+  \item Functions added to create dummy accelerometer file (csv) and dummy sleeplog (csv),
 	needed for testing
+	\item Bug fixed in g.wavread to recognize .wav extension file header for files with alternative
+	header size
   \item Default IVIS_epochsize_seconds parameter updated from 30 to 3600
-  \item g.part1 messages on the consolo are now condensed printing only the number of the 
+  \item g.part1 messages on the consolo are now condensed printing only the number of the
 	blocks loaded separated by spaces rather than new lines
   \item Split g.part5 function into multiple smaller functions
   \item Replace hard-coded "Europe/London" in g.part5 by desiredtz, to make the function
@@ -19,9 +56,10 @@
 	the user to select which metric to use to describe behavior
   \item Argument dayborder is now included in g.part5 to consider the whole measurement in case the protocol
 	starts after midnight
+	\item Jairo Migueles added to list of contributors
   }
 }
-			 
+
 \section{Changes in version 1.5-10 (release date:12-7-2017)}{
 \itemize{
   \item Date format recognition improved for Actigraph csv files
@@ -55,7 +93,7 @@
   \item Split g.getmeta function into multiple smaller functions
   \item Added IS and IV variables to g.analyse (still in explorative version)
   \item bug fixed related to wav file read errors
-  \item function g.cwaread added (credits to E. Mirkes) for reading 
+  \item function g.cwaread added (credits to E. Mirkes) for reading
   Axivity .cwa-format data. g.shellGGIR will automatically use this function
   when input data has .cwa extension
   \item bug fixed related to for GENEactiv starttime recognition which was
@@ -94,7 +132,7 @@
 \section{Changes in version 1.2-10 (release date: 28-8-2016)}{
 \itemize{
   \item Changed function argument 'mvpa.2014' into 'bout.metric' across
-  the package in preparation for a central defintion of bouts for future 
+  the package in preparation for a central defintion of bouts for future
   GGIR version which will not only provide bout calculations for MVPA
   but also for inactivity. Further, I added function g.getbout to improve
   transparency about the bout calculations
@@ -127,18 +165,18 @@
 }
 \section{Changes in version 1.2-6 (release date: 10-5-2016)}{
 \itemize{
-  \item Modified warning message in relation to the change in MVPA bout defintion 
+  \item Modified warning message in relation to the change in MVPA bout defintion
 }
 }
 \section{Changes in version 1.2-5 (release date: 8-5-2016)}{
 \itemize{
   \item Accelerometer non-wear time is now also reported in the output of part 4
-  \item Part 1 is now able to only process specific days of a measurement via argument 
+  \item Part 1 is now able to only process specific days of a measurement via argument
   selectdaysfile. This is useful when measurement lasts for a week and the participant
   is instructed to only wear the accelerometer on one or two specific days.
   \item Argument mvpa.2014 and closedbout added to function g.analyse. The calculation of
   MVPA (moderate and vigorous physical activity) has been available since 2014.
-  This calculation has been improved, but the user has the option to continue using 
+  This calculation has been improved, but the user has the option to continue using
   the old calculation.
 }
 }
@@ -222,13 +260,13 @@
   \item Expanded \link{g.analyse} with estimates of time spent in moderate and
   vigorous activity (a construct popular among physical activity researchers)
   \item Re-named a number of variables in the output from \link{g.analyse} to be
-  more friendly for re-use in stata or sas. The majority of variable names are now 
+  more friendly for re-use in stata or sas. The majority of variable names are now
   shorter and do not include spaces, dots or commas
   }
 }
 \section{Changes in version 1.0-1 (release date: 29-1-2014)}{
 \itemize{
-  \item Fixed Linux-Windows sensitivty in \link{g.getmeta}. Certain damaged files 
+  \item Fixed Linux-Windows sensitivty in \link{g.getmeta}. Certain damaged files
   can only be read with mmap.load set to FALSE in package GENEAread. Function
   \link{g.getmeta} in GGIR catches this problem and turns mmap.load to FALSE if
   necessary. This catch worked  well under Linux, but not for R in Windows.
@@ -251,6 +289,6 @@
 }
 \section{Changes in version 0.6-17 (release date: 8-8-2013)}{
 \itemize{
-  \item This was the first version  
+  \item This was the first version
 }
 }

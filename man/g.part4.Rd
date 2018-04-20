@@ -15,7 +15,7 @@ loglocation = c(),colid = 1,coln1 = 9,nnights = 7,
 sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
     relyonsleeplog=FALSE,def.noc.sleep=c(),
-    storefolderstructure=FALSE,overwrite=FALSE)
+    storefolderstructure=FALSE,overwrite=FALSE,desiredtz="Europe/London")
 }
 \arguments{
   \item{datadir}{
@@ -113,7 +113,10 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   left blank 'def.noc.sleep=c()' then the 12 hour window centred
   at the least active 5 hours of the 24 hour period will be used
   instead. Here, L5 is hardcoded and will not change by changing
-  argument winhr in function \link{g.part2}
+  argument winhr in function \link{g.part2}. If def.noc.sleep is filled
+  with a single integer, e.g. def.noc.sleep=c(1) then the window
+  will be detected with a new method for which a manuscript is
+  currently in preparation.
   }
   \item{storefolderstructure}{
   Store folder structure of the accelerometer data
@@ -123,6 +126,9 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     for this particular dataset. If FALSE then it will skip the
     previously processed files (default = FALSE).
 }
+ \item{desiredtz}{
+    See \link{g.getmeta}
+  }
 }
 \value{
 
