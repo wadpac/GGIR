@@ -82,9 +82,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       if (length(cut) > 0 & length(cut) < nrow(nightsummary)) {
         nightsummary = nightsummary[-cut,]
       }
-      
       out = as.matrix(nightsummary)
     }
+    
     nightsummary2 = as.data.frame(do.call(rbind,lapply(fnames.ms4,myfun)),stringsAsFactors=FALSE)
     #----------------
     nightsummary = nightsummary2
@@ -119,6 +119,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       NIDS = length(unique(nightsummary$id))
       NDEF = length(unique(nightsummary$acc_def))
       uuu = unique(nightsummary$acc_def)
+      
       rem = which(uuu == 0 | uuu == "0" | is.na(uuu) == TRUE)
       if (length(rem) > 0) {
         uuu = uuu[-rem]
@@ -225,7 +226,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           #-------------------------------------------
           # accelerometer summary
           #----------------------------------------------
-        
           if (only.use.sleeplog == FALSE) { #when sleep log is not available
             if (dotwice == 2) {
               CRIT = which(nightsummary$id == uid[i] & (nightsummary$cleaningcode == 0 | nightsummary$cleaningcode == 1))
@@ -236,13 +236,18 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             CRIT = which(nightsummary$id == uid[i] & nightsummary$cleaningcode == 0) #when sleep log is available
           }
           # summarynames_backup = c()
-          
           if (length(CRIT) > 0) { #summarise data if there is data
             #-----------------------------------------------
             #         if (length(which(nightsummary$id == uid[i] & nightsummary$cleaningcode == 0)) > 0) { #summarise data if there is data
             for (j in 1:length(udef)) {
               weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$acc_def == udef[j])]
               for (k in 1:3) {
+                if (ncol(summary) < (cnt + 22)) { # expand summary matrix if there is a change that is not big enough
+                  expansion = as.matrix(summary[,(cnt+1):ncol(summary)])
+                  if (nrow(expansion) != nrow(summary)) expansion = t(expansion)
+                  summary = cbind(summary,expansion)
+                }
+                
                 if (k == 1) {
                   TW = "AD"
                   Seli = 1:length(weekday)
@@ -253,53 +258,53 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                   TW = "WE"
                   Seli = which(weekday == "Friday" | weekday == "Saturday")              
                 }
-                summary[i,(cnt+1)] = mean(nightsummary.tmp$acc_timeinbed[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+2)] = sd(nightsummary.tmp$acc_timeinbed[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                indexUdef = which(nightsummary.tmp$acc_def == udef[j])[Seli]
+                summary[i,(cnt+1)] = mean(nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+2)] = sd(nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_timeinbed_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_timeinbed_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+3)] = mean(nightsummary.tmp$acc_dur_noc[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                
-                summary[i,(cnt+4)] = sd(nightsummary.tmp$acc_dur_noc[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+3)] = mean(nightsummary.tmp$acc_dur_noc[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+4)] = sd(nightsummary.tmp$acc_dur_noc[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_dur_noc_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_dur_noc_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+5)] = mean(nightsummary.tmp$acc_dur_noc[which(nightsummary.tmp$acc_def == udef[j])[Seli]] /
-                                            nightsummary.tmp$acc_timeinbed[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+6)] = sd(nightsummary.tmp$acc_dur_noc[which(nightsummary.tmp$acc_def == udef[j])[Seli]] /
-                                          nightsummary.tmp$acc_timeinbed[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+5)] = mean(nightsummary.tmp$acc_dur_noc[indexUdef] /
+                                            nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+6)] = sd(nightsummary.tmp$acc_dur_noc[indexUdef] /
+                                          nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_eff_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_eff_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+7)] = mean(nightsummary.tmp$acc_dur_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+8)] = sd(nightsummary.tmp$acc_dur_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+7)] = mean(nightsummary.tmp$acc_dur_sibd[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+8)] = sd(nightsummary.tmp$acc_dur_sibd[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_dur_sibd_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_dur_sibd_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+9)] = mean(nightsummary.tmp$acc_n_noc[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+10)] = sd(nightsummary.tmp$acc_n_noc[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+9)] = mean(nightsummary.tmp$acc_n_noc[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+10)] = sd(nightsummary.tmp$acc_n_noc[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_n_noc_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_n_noc_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+11)] = mean(nightsummary.tmp$acc_n_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+12)] = sd(nightsummary.tmp$acc_n_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+11)] = mean(nightsummary.tmp$acc_n_sibd[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+12)] = sd(nightsummary.tmp$acc_n_sibd[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_n_sibd_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_n_sibd_",TW,"_",udefn[j],"_sd",sep=""))
                 # average sibd per night
-                AVEsibdDUR = c(nightsummary.tmp$acc_dur_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]] /
-                                 nightsummary.tmp$acc_n_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]])
-                if (length(which(nightsummary.tmp$acc_n_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]] == 0))) {
-                  AVEsibdDUR[which(nightsummary.tmp$acc_n_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]] == 0)] = 0
+                AVEsibdDUR = c(nightsummary.tmp$acc_dur_sibd[indexUdef] /
+                                 nightsummary.tmp$acc_n_sibd[indexUdef])
+                if (length(which(nightsummary.tmp$acc_n_sibd[indexUdef] == 0))) {
+                  AVEsibdDUR[which(nightsummary.tmp$acc_n_sibd[indexUdef] == 0)] = 0
                 }
                 summary[i,(cnt+13)] = mean(AVEsibdDUR,na.rm=TRUE)
                 summary[i,(cnt+14)] = sd(AVEsibdDUR,na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_dur_msibd_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_dur_msibd_",TW,"_",udefn[j],"_sd",sep=""))
-                NDAYsibd = length(which(nightsummary.tmp$acc_n_sibd[which(nightsummary.tmp$acc_def == udef[j])[Seli]] > 0))
+                NDAYsibd = length(which(nightsummary.tmp$acc_n_sibd[indexUdef] > 0))
                 if (length(NDAYsibd) == 0) NDAYsibd = 0
                 summary[i,(cnt+15)] = NDAYsibd
                 summarynames = c(summarynames,paste("acc_n_days_w_sibds_",TW,"_",udefn[j],sep=""))
-                summary[i,(cnt+16)] = mean(nightsummary.tmp$acc_onset[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+17)] = sd(nightsummary.tmp$acc_onset[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+16)] = mean(nightsummary.tmp$acc_onset[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+17)] = sd(nightsummary.tmp$acc_onset[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_onset_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_onset_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+18)] = mean(nightsummary.tmp$acc_wake[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
-                summary[i,(cnt+19)] = sd(nightsummary.tmp$acc_wake[which(nightsummary.tmp$acc_def == udef[j])[Seli]],na.rm=TRUE)
+                summary[i,(cnt+18)] = mean(nightsummary.tmp$acc_wake[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+19)] = sd(nightsummary.tmp$acc_wake[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_wake_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_wake_",TW,"_",udefn[j],"_sd",sep=""))
                 cnt = cnt + 19

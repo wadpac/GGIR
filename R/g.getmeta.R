@@ -128,7 +128,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading block: ",i,sep=""))
+      cat(paste("\nLoading chunk: ",i,sep=""))
     } else {
       cat(paste(" ",i,sep=""))
     }
@@ -136,7 +136,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                               selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                              dayborder=dayborder)
+                              dayborder=dayborder,ws=ws)
       
       P = accread$P
       filequality = accread$filequality
