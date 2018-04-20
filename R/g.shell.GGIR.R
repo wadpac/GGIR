@@ -116,13 +116,13 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "nnights")) == 0)  nnights=7
   if (length(which(ls() == "outliers.only")) == 0)  outliers.only=FALSE
   if (length(which(ls() == "excludefirstlast")) == 0)  excludefirstlast=FALSE
+  if (length(which(ls() == "excludefirstlast.part5")) == 0)  excludefirstlast.part5=FALSE
   if (length(which(ls() == "criterror")) == 0)  criterror=3
   if (length(which(ls() == "includenightcrit")) == 0)  includenightcrit=16
   if (length(which(ls() == "relyonsleeplog")) == 0)  relyonsleeplog=FALSE
   if (length(which(ls() == "sleeplogidnum")) == 0)  sleeplogidnum=TRUE
   if (length(which(ls() == "def.noc.sleep")) == 0)  def.noc.sleep=c()
   if (length(which(ls() == "do.visual")) == 0)  do.visual=FALSE
-  if (length(which(ls() == "excludefirstlast")) == 0)  excludefirstlast = FALSE
   if (length(which(ls() == "viewingwindow")) == 0)  viewingwindow = 1
   if (length(which(ls() == "dofirstpage")) == 0)  dofirstpage = TRUE
   if (length(which(ls() == "visualreport")) == 0)  visualreport = FALSE
@@ -224,7 +224,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
             hrs.del.start=hrs.del.start, 
             hrs.del.end=hrs.del.end,
-            loglocation=loglocation,excludefirstlast=excludefirstlast, acc.metric=acc.metric,
+            loglocation=loglocation,excludefirstlast.part5=excludefirstlast.part5, acc.metric=acc.metric,
             windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
             boutcriter.mvpa=boutcriter.mvpa,storefolderstructure=storefolderstructure,
             threshold.lig = threshold.lig,
