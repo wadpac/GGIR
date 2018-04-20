@@ -1,0 +1,9 @@
+library(GGIR)
+test_that("is_this_a_dst_night", {
+  dst_uk = is_this_a_dst_night(calendardate = "29/03/2014",tz="Europe/London")
+  expect_that(dst_uk$dst_night_or_not,equals(1))
+  expect_that(dst_uk$dsthour,equals(1))
+  dst_nl = is_this_a_dst_night(calendardate = "25/10/2014",tz="Europe/Amsterdam")
+  expect_that(dst_nl$dst_night_or_not,equals(-1))
+  expect_that(dst_nl$dsthour,equals(2))
+})

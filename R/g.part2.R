@@ -46,6 +46,9 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   #--------------------------------
   # Loop through all the files
   fnames = sort(fnames)
+  if (f1 > length(fnames)) f1 = length(fnames)
+  if (f0 > f1) f0 = 1
+  
   #---------------------------------------
   cnt78 = 1
   for (i in f0:f1) {
