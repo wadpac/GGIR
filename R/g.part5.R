@@ -479,37 +479,40 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           dsummary[di,fi] = summarysleep_tmp2$acc_available[wi]
                           ds_names[fi] = "acc_available";      fi = fi + 1
                         }
+                        # 
                         # define time windows
-                        # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
+                        # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row.
                         # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
-                        if (timewindowi == "MM" & wi==1) {
-                          if (waketi > 0) qqq1 = waketi + 1
-                          else {qqq1 = 1}
-                          qqq2 = nightsi[wi]
+                        if (timewindowi == "MM") {
+                          if (wi==1) {
+                            if (waketi > 0) {
+                              qqq1 = waketi + 1
+                            } else {
+                              qqq1 = 1
+                            }
+                            qqq2 = nightsi[wi]
+                          } else if (wi<=nrow(summarysleep_tmp2)) {
+                            qqq1 = nightsi[wi-1] + 1
+                            qqq2 = nightsi[wi]
+                          } else if (wi>nrow(summarysleep_tmp2)) {
+                            qqq1 = qqq2 + 1
+                            qqq2 = length(diur)
+                          }
                           dsummary[di, fi] = "MM"
-                        } else if (timewindowi == "MM" & wi<=nrow(summarysleep_tmp2)) {
-                          qqq1 = nightsi[wi-1] + 1
-                          qqq2 = nightsi[wi]
-                          dsummary[di, fi] = "MM"
-                        } else if (timewindowi == "MM" & wi>nrow(summarysleep_tmp2)) {
-                          qqq1 = qqq2 + 1
-                          qqq2 = length(diur)
-                          dsummary[di, fi] = "MM"
-                        } else if(timewindowi == "WW" & wi==1){
-                          if (waketi > 0) qqq1 = waketi + 1
-                          else {qqq1 = 1}
-                          qqq2 = which(diff(diur) == -1)[wi] + 1
-                          dsummary[di, fi] = "WW"
-                        } else if (timewindowi == "WW" & wi<=nrow(summarysleep_tmp2)) {
-                          qqq1 = which(diff(diur) == -1)[wi-1] + 1
-                          qqq2 = which(diff(diur) == -1)[wi]
-                          dsummary[di, fi] = "WW"
-                        } else if (timewindowi == "WW" & wi>nrow(summarysleep_tmp2)) {
-                          qqq1 = qqq2 + 1
-                          qqq2 = length(diur)
+                        } else if (timewindowi == "WW") {
+                          if (wi==1){
+                            if (waketi > 0) qqq1 = waketi + 1
+                            else {qqq1 = 1}
+                            qqq2 = which(diff(diur) == -1)[wi] + 1
+                          } else if (wi<=nrow(summarysleep_tmp2)) {
+                            qqq1 = which(diff(diur) == -1)[wi-1] + 1
+                            qqq2 = which(diff(diur) == -1)[wi]
+                          } else if (wi>nrow(summarysleep_tmp2)) {
+                            qqq1 = qqq2 + 1
+                            qqq2 = length(diur)
+                          }
                           dsummary[di, fi] = "WW"
                         }
-                        
                         ds_names[fi] = "window";      fi = fi + 1    
                         # keep track of threshold value
                         dsummary[di,fi] = TRLi
