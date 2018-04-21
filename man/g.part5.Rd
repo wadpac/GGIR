@@ -222,13 +222,15 @@ at least 10 minutes.
 unbouted time contributing. Just MOD and VIG are only the unbouted time spent in
 those categories.
 \item nightwak = night waking time
-\item SIB= sustained inactivity bouts, can be part of inactivity bouts 
-(INB variables), SIB are the sustained inactivity bouts that are not part of 
-the inactivity bouts. This is why I have a TSIB and a SIB variable
+\item Variable names with SIB in them are the sustained inactivity bouts that are
+not part of the inactivity bouts. Only TSIB shows the total time spent in all
+sustained inactivity bouts. I make this distinction, because sustained inactivity
+bouts, can be part of inactivity bouts and are then counted towards the inactivity
+bout (INB variables) and not towards the SIB category.
 \item TSIB = total of all sustained inactivity bouts (regardless of whether
 they contributed or not to inactivity bouts (INB).
 \item TOIN = Total other inactivity
-\item TIN = Total inactivity = TOIN + SIB = Total other inactivty + Sustained
+\item TIN = Total inactivity = TOIN + TSIB = Total other inactivty + Total sustained
 inactivity
 \item Levels of behaviour from least active to most active are: Sleep or SIB,
 Other inactivity, Light, Moderate, Vigorous
