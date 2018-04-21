@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "May 21 2017"
+date: "April 21 2018"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -40,6 +40,7 @@ R package GGIR would not have been possible without the support of the following
 - Dr. Vincent van Hees as main developer
 - Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R
 - Dr. Zhou Fang contributed to a part of the code for the auto-calibration functionality
+- Jairo Migueles helps maintain and improve the code
 - Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording
 - Dr. Severine Sabia tested and provided feedback on numerous aspects of the package
 - Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR
@@ -346,6 +347,8 @@ Part 4 generates the following output:
 - part4_nightsummary_sleep_cleaned.csv
 - part4_summary_sleep_cleaned.csv
 - visualisation_sleep.pdf (optional)
+
+The csv. files contain variables that are explained in the documentation of GGIR function [g.part4](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf).
 
 When input argument `do.visual` is set to TRUE GGIR can show the following visual comparison between the time window of being asleep (or in bed) according to the sleeplog and the detected sustained inactivity bouts according to the accelerometer data. This visualisation is stored in the results folder as visualisation_sleep.pdf. 
 
