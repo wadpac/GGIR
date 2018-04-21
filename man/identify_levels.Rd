@@ -5,11 +5,11 @@ Identifies levels of behaviour for g.part5 function.
 }
 \description{
 Identifies levels of behaviour from acceleratioon
-and sustained inactivity detection (using angles). Function not
+and sustained inactivity sibdetection (using angles). Function not
 intended for direct use by package user.
 }
 \usage{
-identify_levels(time,diur,detection,ACC,
+identify_levels(time,diur,sibdetection,ACC,
                            TRLi,TRMi,TRVi,
                            boutdur.mvpa,boutcriter.mvpa,
                            boutdur.lig,boutcriter.lig,
@@ -21,7 +21,7 @@ identify_levels(time,diur,detection,ACC,
 }
 \item{diur}{
 }
-\item{detection}{
+\item{sibdetection}{
 }
 \item{ACC}{
 }
@@ -59,7 +59,7 @@ item{bc.in}{}
   
 \examples{
 \dontrun{
-levels = identify_levels(time,diur,detection,ACC,
+levels = identify_levels(time,diur,sibdetection,ACC,
                            TRLi,TRMi,TRVi,
                            boutdur.mvpa,boutcriter.mvpa,
                            boutdur.lig,boutcriter.lig,
