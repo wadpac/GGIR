@@ -207,10 +207,13 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     nr = nrow(A)
                     if (nr > 30) nr = 30
                     options(warn=-1)
-                    trynum = as.numeric(A[1:nr,ee])
+                    trynum = as.numeric(as.character(A[1:nr,ee]))
                     options(warn=0)
+                    
                     if (length(which(is.na(trynum) == TRUE)) != nr & length(which(ignorevar == names(A)[ee])) == 0) {
+                      options(warn=-1)
                       class(A[,ee]) = "numeric"
+                      options(warn=0)
                     }
                   }
                   df = function(x) {
@@ -261,12 +264,14 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                                     OF3$weekday == "Wednesday" | OF3$weekday == "Thursday" |
                                     OF3$weekday == "Friday")] = "WD"
                 OF3 = as.data.frame(OF3)
+
                 # before processing OF3, first identify which days have enough monitor wear time
                 maxpernwnight = (1 - (includenightcrit / 24)) * 100
                 maxpernwday = (1 - (includedaycrit / 24)) * 100
                 validdaysi = which(OF3$nonwear_perc_day < maxpernwday & OF3$nonwear_perc_night < maxpernwnight)
                 # aggregate OF3 (days) to person summaries in OF4
                 OF4 = takeweightedmean(OF3[validdaysi,],filename="filename",day="daytype")
+                
                 #--------------------
                 # calculate additional variables
                 OF3tmp = OF3[,c("filename","night number","daysleeper","cleaningcode","sleeplog_used",
@@ -281,6 +286,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   names(B)[which(names(B)=="cc")] = namenew
                   foo34 = B
                 }
+                
                 # calculate number of valid days (both night and day criteria met)
                 OF3tmp$validdays = 0
                 OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
