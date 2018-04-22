@@ -758,10 +758,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (tooshort == 0) {
     #--------------------------------------------------------------
     # expand with extracted values from features per day: do this for ENMO and activity levels
-    wkend  = which(daysummary[,7] == "Saturday" | daysummary[,7] == "Sunday")
+    wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
     v1 = which(is.na(as.numeric(daysummary[wkend,10])) == F)
     wkend = wkend[v1]
-    wkday  = which(daysummary[,7] != "Saturday" & daysummary[,7] != "Sunday")
+    wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday,10])) == F)	
     wkday = wkday[v2]
     summary[vi] = length(wkend) # number of weekend days
