@@ -12,8 +12,6 @@
   \item size of example data and vignette images reduced to reduce package size
   }
 }
-
-
 \section{Changes in version 1.5-18 (release date:18-3-2018)}{
 \itemize{
   \item Improved handling of day saving time in g.part3 and g.part4 within the two nights
