@@ -376,7 +376,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         if (qwindow[1] != 0 | qwindow[2] != 24) {
           daysummary[di,(fi)] = nvalidhours_qwindow
           daysummary[di,(fi+1)] = nhours_qwindow
-          ds_names[fi:(fi+1)] = c(paste0("N_valid_hours_",qwindow[1],"-",qwindow[2],"h"),paste0("N_hours_",qwindow[1],"-",qwindow[2],"h"))
+          ds_names[fi:(fi+1)] = c(paste0("N_valid_hours_",qwindow[1],"-",qwindow[2],"hr"),paste0("N_hours_",qwindow[1],"-",qwindow[2],"hr"))
           fi = fi + 2
         }
       }
@@ -456,7 +456,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
             if (qwindow[1] != 0 | qwindow[2] != 24) {
               anwi_t0 = c(anwi_t0,((qwindow[1]*60*(60/ws3))+1))
               anwi_t1 = c(anwi_t1,(qwindow[2]*60*(60/ws3)))
-              anwi_name = c(anwi_name,paste0("_",qwindow[1],"-",qwindow[2],"h"))
+              anwi_name = c(anwi_name,paste0("_",qwindow[1],"-",qwindow[2],"hr"))
             }
           }
           for (anwi_index in 1:length(anwi_t0)) {
@@ -481,11 +481,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 if (anwi_index == 1) { # don't do this part for qwindow
                   ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr)
                   if (length(ML5$DAYL5HOUR) > 0) {
-                    daysummary[di,fi] = ML5$DAYL5HOUR; ds_names[fi] = paste("L5hr_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",anwi_name[anwi_index],sep=""); fi=fi+1
-                    daysummary[di,fi] = ML5$DAYL5VALUE; ds_names[fi] = paste("L5_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",anwi_name[anwi_index],sep=""); fi=fi+1
-                    daysummary[di,fi] = ML5$DAYM5HOUR; ds_names[fi] = paste("M5hr_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",anwi_name[anwi_index],sep=""); fi=fi+1
-                    daysummary[di,fi] = ML5$DAYM5VALUE;  ds_names[fi] = paste("M5_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",anwi_name[anwi_index],sep=""); fi=fi+1
-                    daysummary[di,fi] = ML5$V5NIGHT;  ds_names[fi] = paste("mean_",colnames(metashort)[mi],"_mg_1-6am",anwi_name[anwi_index],sep=""); fi=fi+1
+                    daysummary[di,fi] = ML5$DAYL5HOUR; ds_names[fi] = paste("L5hr_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",sep=""); fi=fi+1
+                    daysummary[di,fi] = ML5$DAYL5VALUE; ds_names[fi] = paste("L5_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",sep=""); fi=fi+1
+                    daysummary[di,fi] = ML5$DAYM5HOUR; ds_names[fi] = paste("M5hr_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",sep=""); fi=fi+1
+                    daysummary[di,fi] = ML5$DAYM5VALUE;  ds_names[fi] = paste("M5_",colnames(metashort)[mi],"_mg_",L5M5window[1],"-",L5M5window[2],"h",sep=""); fi=fi+1
+                    daysummary[di,fi] = ML5$V5NIGHT;  ds_names[fi] = paste("mean_",colnames(metashort)[mi],"_mg_1-6am",sep=""); fi=fi+1
                   }
                 
                   if (mi == ENMOi) {
@@ -529,10 +529,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     for (rq46i in 1:length(rownames(as.matrix(q46)))) {
                       tmp1 = rownames(as.matrix(q46))[rq46i]
                       tmp2 = as.character(unlist(strsplit(tmp1,"%")))
-                      namesq46[rq46i] = paste("p",tmp2,"_mg_",t_TWDI[1],"-",t_TWDI[2],"h",anwi_name[anwi_index],sep="")
+                      namesq46[rq46i] = paste("p",tmp2,"_mg_",t_TWDI[1],"-",t_TWDI[2],"h",sep="")
                     }
                     daysummary[di,fi:(fi+(length(qlevels)-1))] = q46
-                    ds_names[fi:(fi+(length(qlevels)-1))] = paste(namesq46,"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")
+                    ds_names[fi:(fi+(length(qlevels)-1))] = paste(namesq46,"_",colnames(metashort)[mi],sep="")
                     fi = fi+length(qlevels)
                   }
                   if (doilevels == TRUE) {
@@ -543,10 +543,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     keepindex_48[mi,] = c(fi,(fi+(length(q48)-1)))
                     namesq47 = rep(0,length(rownames(q47)))
                     for (rq47i in 1:length(rownames(q47))) {
-                      namesq47[rq47i] = paste(rownames(q47)[rq47i],"_mg_",t_TWDI[1],"-",t_TWDI[2],"h",anwi_name[anwi_index],sep="")
+                      namesq47[rq47i] = paste(rownames(q47)[rq47i],"_mg_",t_TWDI[1],"-",t_TWDI[2],"h",sep="")
                     }
                     daysummary[di,fi:(fi+(length(q48)-1))] = q48
-                    ds_names[fi:(fi+(length(q48)-1))] = paste(namesq47,"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")
+                    ds_names[fi:(fi+(length(q48)-1))] = paste(namesq47,"_",colnames(metashort)[mi],sep="")
                     fi = fi+length(q48)
                   }
                 }
@@ -592,18 +592,18 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     }
                     if (length(which(is.nan(mvpa) == TRUE)) > 0) mvpa[which(is.nan(mvpa) == TRUE)] = 0
 
-                    mvpanames[,mvpai] = c( paste("MVPA_E",ws3,"S_T",mvpathreshold[mvpai],anwi_name[anwi_index],sep=""),
-                                           paste("MVPA_E1M_T",mvpathreshold[mvpai],anwi_name[anwi_index],sep=""),
-                                           paste("MVPA_E5M_T",mvpathreshold[mvpai],anwi_name[anwi_index],sep=""),
-                                           paste("MVPA_E",ws3,"S_B",mvpadur[1],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],anwi_name[anwi_index],sep=""),
-                                           paste("MVPA_E",ws3,"S_B",mvpadur[2],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],anwi_name[anwi_index],sep=""),
-                                           paste("MVPA_E",ws3,"S_B",mvpadur[3],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],anwi_name[anwi_index],sep=""))
-                    daysummary[di,fi] = mvpa[1];  ds_names[fi] = paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],sep=""); fi=fi+1
-                    daysummary[di,fi] = mvpa[2];  ds_names[fi] = paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],sep=""); fi=fi+1
-                    daysummary[di,fi] = mvpa[3];  ds_names[fi] = paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],sep=""); fi=fi+1
-                    daysummary[di,fi] = mvpa[4];  ds_names[fi] = paste(mvpanames[4,mvpai],"_",colnames(metashort)[mi],sep=""); fi=fi+1
-                    daysummary[di,fi] = mvpa[5];  ds_names[fi] = paste(mvpanames[5,mvpai],"_",colnames(metashort)[mi],sep=""); fi=fi+1
-                    daysummary[di,fi] = mvpa[6];  ds_names[fi] = paste(mvpanames[6,mvpai],"_",colnames(metashort)[mi],sep=""); fi=fi+1
+                    mvpanames[,mvpai] = c( paste("MVPA_E",ws3,"S_T",mvpathreshold[mvpai],sep=""),
+                                           paste("MVPA_E1M_T",mvpathreshold[mvpai],sep=""),
+                                           paste("MVPA_E5M_T",mvpathreshold[mvpai],sep=""),
+                                           paste("MVPA_E",ws3,"S_B",mvpadur[1],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""),
+                                           paste("MVPA_E",ws3,"S_B",mvpadur[2],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""),
+                                           paste("MVPA_E",ws3,"S_B",mvpadur[3],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""))
+                    daysummary[di,fi] = mvpa[1];  ds_names[fi] = paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep=""); fi=fi+1
+                    daysummary[di,fi] = mvpa[2];  ds_names[fi] = paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep=""); fi=fi+1
+                    daysummary[di,fi] = mvpa[3];  ds_names[fi] = paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep=""); fi=fi+1
+                    daysummary[di,fi] = mvpa[4];  ds_names[fi] = paste(mvpanames[4,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep=""); fi=fi+1
+                    daysummary[di,fi] = mvpa[5];  ds_names[fi] = paste(mvpanames[5,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep=""); fi=fi+1
+                    daysummary[di,fi] = mvpa[6];  ds_names[fi] = paste(mvpanames[6,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep=""); fi=fi+1
                   }
                 }
               }
@@ -774,41 +774,78 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     vi = vi + 2
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
-    
     indeces = c()
-    if (length(mvpathreshold) > 0) {
-      for (mvpai in 1:length(mvpathreshold)) {
-        #if mvpa is not done then this will look in the dummy variable and replace by c()
-        for (mi in 2:ncol(metashort)) {
-          if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
-            indeces = c(indeces,which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],sep="")),
-                        which(ds_names == paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],sep="")),
-                        which(ds_names == paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],sep="")),
-                        which(ds_names == paste(mvpanames[4,mvpai],"_",colnames(metashort)[mi],sep="")),
-                        which(ds_names == paste(mvpanames[5,mvpai],"_",colnames(metashort)[mi],sep="")),
-                        which(ds_names == paste(mvpanames[6,mvpai],"_",colnames(metashort)[mi],sep="")),
-                        which(ds_names == paste("L5 ",colnames(metashort)[mi]," (mg)",sep="")),
-                        which(ds_names == paste("M5 ",colnames(metashort)[mi]," (mg)",sep="")),
-                        which(ds_names == paste("mean_",colnames(metashort)[mi],"_mg_1to6am",sep="")))
-          }
-        }
+    daytoweekvar = c()
+    # Generate all variables per 24 hours or repeat this over the time window defined by qwindow
+    anwi_t0 = 1 # analysis window time 0
+    anwi_t1 = anwi_t1[1] # analysis window time 1
+    anwi_name = ""
+    if (length(qwindow) > 0) {
+      if (qwindow[1] != 0 | qwindow[2] != 24) {
+        anwi_t0 = c(anwi_t0,((qwindow[1]*60*(60/ws3))+1))
+        anwi_t1 = c(anwi_t1,(qwindow[2]*60*(60/ws3)))
+        anwi_name = c(anwi_name,paste0("_",qwindow[1],"-",qwindow[2],"hr"))
       }
     }
-    daytoweekvar = c(indeces,
-                     which(ds_names == paste0("N_valid_hours_",qwindow[1],"-",qwindow[2],"h")),
-                     which(ds_names == paste0("N_hours_",qwindow[1],"-",qwindow[2],"h")),
-                     which(ds_names == "mean_ENMO_mg_24hr"),
-                     which(ds_names == "mean_LFENMO_mg_24hr"),
-                     which(ds_names == "mean_EN_mg_24hr"),
-                     which(ds_names == "mean_HFEN_mg_24hr"),
-                     which(ds_names == "mean_HFENplus_mg_24hr"),
-                     which(ds_names == "mean_MAD_mg_24hr"))
-    
-    # expand with qwindow variables
-    
-    
-    
-    
+    for (anwi_index in 1:length(anwi_t0)) {
+      if (anwi_index == 1) {
+        if (length(mvpathreshold) > 0) {
+          for (mvpai in 1:length(mvpathreshold)) {
+            #if mvpa is not done then this will look in the dummy variable and replace by c()
+            for (mi in 2:ncol(metashort)) {
+              if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
+                indeces = c(which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],sep="")),
+                            which(ds_names == paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],sep="")),
+                            which(ds_names == paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],sep="")),
+                            which(ds_names == paste(mvpanames[4,mvpai],"_",colnames(metashort)[mi],sep="")),
+                            which(ds_names == paste(mvpanames[5,mvpai],"_",colnames(metashort)[mi],sep="")),
+                            which(ds_names == paste(mvpanames[6,mvpai],"_",colnames(metashort)[mi],sep="")),
+                            which(ds_names == paste("L5 ",colnames(metashort)[mi]," (mg)",sep="")),
+                            which(ds_names == paste("M5 ",colnames(metashort)[mi]," (mg)",sep="")),
+                            which(ds_names == paste("mean_",colnames(metashort)[mi],"_mg_1to6am",sep="")))
+              }
+            }
+          }
+        }
+        daytoweekvar = c(indeces,
+                         which(ds_names == paste0("N valid hours")),
+                         which(ds_names == paste0("N hours")),
+                         which(ds_names == "mean_ENMO_mg_24hr"),
+                         which(ds_names == "mean_LFENMO_mg_24hr"),
+                         which(ds_names == "mean_EN_mg_24hr"),
+                         which(ds_names == "mean_HFEN_mg_24hr"),
+                         which(ds_names == "mean_HFENplus_mg_24hr"),
+                         which(ds_names == "mean_MAD_mg_24hr"))
+      } else {
+        if (length(mvpathreshold) > 0) {
+          
+          for (mvpai in 1:length(mvpathreshold)) {
+            #if mvpa is not done then this will look in the dummy variable and replace by c()
+            for (mi in 2:ncol(metashort)) {
+              if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
+                indeces = c(which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
+                            which(ds_names == paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
+                            which(ds_names == paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
+                            which(ds_names == paste(mvpanames[4,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
+                            which(ds_names == paste(mvpanames[5,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
+                            which(ds_names == paste(mvpanames[6,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")))
+              }
+            }
+          }
+        }
+        daytoweekvar = c(daytoweekvar,indeces,
+                         which(ds_names == paste0("N_valid_hours",anwi_name[anwi_index])),
+                         which(ds_names == paste0("N_hours",anwi_name[anwi_index])),
+                         which(ds_names == paste0("mean_ENMO_mg",anwi_name[anwi_index])),
+                         which(ds_names == paste0("mean_LFENMO_mg",anwi_name[anwi_index])),
+                         which(ds_names == paste0("mean_EN_mg",anwi_name[anwi_index])),
+                         which(ds_names == paste0("mean_HFEN_mg",anwi_name[anwi_index])),
+                         which(ds_names == paste0("mean_HFENplus_mg",anwi_name[anwi_index])),
+                         which(ds_names == paste0("mean_MAD_mg",anwi_name[anwi_index])))
+      }
+      
+    }
+
     
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
