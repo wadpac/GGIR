@@ -2,12 +2,14 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 1.5-19 (release date:20-4-2018)}{
+\section{Changes in version 1.5-21 (release date:22-4-2018)}{
 \itemize{
   \item g.part5 is now able to generate summary from all measurment days (thanks Jairo).
   \item MM results in g.part5 now correctly stores onset and waking for single date per row.
   \item Various checks added to g.part4 to ensure measurements in all shapes and size can be
   processed.
+  \item minor improvements to documentation g.part5
+  \item size of example data and vignette images reduced to reduce package size
   }
 }
 
