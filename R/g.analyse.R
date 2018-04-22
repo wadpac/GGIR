@@ -47,6 +47,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   s_names = rep(" ",ncol(summary))
   NVARS = (length(colnames(IMP$metashort))-1)
   if (NVARS < 1) NVARS = 1
+  if (length(qwindow) > 0) NVARS = NVARS + 2 # for qwindow non-wear time
   nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels 
   i = 1  
   #---------------
@@ -325,8 +326,18 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       val = qcheck[qqq1:qqq2]
       #--------------------------------
       val = as.numeric(val)
+      if (length(qwindow > 0)) {
+        if((qwindow[2]*60*(60/ws3)) <= length(val)) {
+          valq = val[((qwindow[1]*60*(60/ws3))+1):(qwindow[2]*60*(60/ws3))]
+        } else {
+          valq = val[((qwindow[1]*60*(60/ws3))+1):length(val)]
+        }
+        nvalidhours_qwindow =length(which(valq == 0))/ (3600/ws3)
+        nhours_qwindow = length(valq)/ (3600/ws3) #valid hours per day (or half a day)
+      }
       nvalidhours = length(which(val == 0))/ (3600/ws3) #valid hours per day (or half a day)
       nhours = length(val)/ (3600/ws3) #valid hours per day (or half a day)
+      
       #start collecting information about the day
       fi = 1
       daysummary[di,fi] = unlist(strsplit(fname,"_"))[1] #participant ID
@@ -350,6 +361,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       daysummary[di,(fi+3)] = nhours
       ds_names[fi:(fi+3)] = c("calender_date","bodylocation","N valid hours","N hours")
       fi = fi + 4
+      if (length(qwindow > 0)) {
+        daysummary[di,(fi)] = nvalidhours_qwindow
+        daysummary[di,(fi+1)] = nhours_qwindow
+        ds_names[fi:(fi+1)] = c("N valid hours qwindow","N hours qwindow")
+        fi = fi + 2
+      }
       #--------------------------------------      
       weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
                    ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
@@ -558,6 +575,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   LW = length(which(r5 < 1)) * (ws2/60) #length wear in minutes (for entire signal)
   LWp = length(which(r5[which(r4 == 0)] < 1)) * (ws2/60) #length wear in minutes (for protocol)
   LMp = length(which(r4 == 0)) * (ws2/60) #length protocol
+  
+
   #================================================
   # Summary per individual, not per day:
   #------------------------------
@@ -677,10 +696,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (tooshort == 0) {
     #--------------------------------------------------------------
     # expand with extracted values from features per day: do this for ENMO and activity levels
-    wkend  = which(daysummary[,7] == "Saturday" | daysummary[,7] == "Sunday")
+    wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
     v1 = which(is.na(as.numeric(daysummary[wkend,10])) == F)
     wkend = wkend[v1]
-    wkday  = which(daysummary[,7] != "Saturday" & daysummary[,7] != "Sunday")
+    wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday,10])) == F)	
     wkday = wkday[v2]
     summary[vi] = length(wkend) # number of weekend days
