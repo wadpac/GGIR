@@ -348,7 +348,7 @@ Part 4 generates the following output:
 - part4_summary_sleep_cleaned.csv
 - visualisation_sleep.pdf (optional)
 
-The csv. files contain variables that are explained in the documentation of GGIR function [g.part4](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf).
+The csv. files contain variables that are explained in the documentation of GGIR function [g.part4](https://CRAN.R-project.org/package=GGIR).
 
 When input argument `do.visual` is set to TRUE GGIR can show the following visual comparison between the time window of being asleep (or in bed) according to the sleeplog and the detected sustained inactivity bouts according to the accelerometer data. This visualisation is stored in the results folder as visualisation_sleep.pdf. 
 
