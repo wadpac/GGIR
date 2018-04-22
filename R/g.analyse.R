@@ -364,7 +364,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       if (length(qwindow > 0)) {
         daysummary[di,(fi)] = nvalidhours_qwindow
         daysummary[di,(fi+1)] = nhours_qwindow
-        ds_names[fi:(fi+1)] = c("N valid hours qwindow","N hours qwindow")
+        ds_names[fi:(fi+1)] = c("N_valid_hours_qwindow","N_hours_qwindow")
         fi = fi + 2
       }
       #--------------------------------------      
@@ -742,7 +742,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
     daytoweekvar = c(indeces,
-                     #                      which(ds_names == "mean_ENMO_mg_1to6am"),
+                     which(ds_names == "N_valid_hours_qwindow"),
+                     which(ds_names == "N_hours_qwindow"),
                      which(ds_names == "mean_ENMO_mg_24hr"),
                      which(ds_names == "mean_LFENMO_mg_24hr"),
                      which(ds_names == "mean_BFEN_mg_24hr"),
