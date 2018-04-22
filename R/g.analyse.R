@@ -818,7 +818,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           }
         }
         daytoweekvar = c(indices,
-                         #                      which(ds_names == "mean_ENMO_mg_1to6am"),
                          which(ds_names == "mean_ENMO_mg_24hr"),
                          which(ds_names == "mean_LFENMO_mg_24hr"),
                          which(ds_names == "mean_BFEN_mg_24hr"),
@@ -833,7 +832,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
             #if mvpa is not done then this will look in the dummy variable and replace by c()
             for (mi in 2:ncol(metashort)) {
               if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
-                indices = c(which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
+                indices = c(indices,which(ds_names == paste(mvpanames[1,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
                             which(ds_names == paste(mvpanames[2,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
                             which(ds_names == paste(mvpanames[3,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
                             which(ds_names == paste(mvpanames[4,mvpai],"_",colnames(metashort)[mi],anwi_name[anwi_index],sep="")),
@@ -854,6 +853,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                          which(ds_names == paste0("mean_MAD_mg",anwi_name[anwi_index])))
       }
     }
+    daytoweekvar = unique(daytoweekvar)
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
