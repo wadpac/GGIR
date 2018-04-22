@@ -73,8 +73,7 @@ IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600)
     window size in hours of L5 and M5 analysis (dedault = 5 hours)
   }
   \item{qwindow}{
-  start and end time, in 24 hour clock hours, over which distribution in metric 
-  values need to be extracted. Value = c(0,24) will consider all 24 hours.
+   see \link{g.analyse}
   }
   \item{qlevels}{
     array of percentiles for which value needs to be extracted. These need to

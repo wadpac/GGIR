@@ -46,7 +46,10 @@ IVIS_epochsize_seconds = 3600)
   }
   \item{qwindow}{
   start and end time, in 24 hour clock hours, over which distribution in metric 
-  values need to be extracted. Default value = c(0,24) will consider all 24 hours.
+  values need to be extracted. Value = c(0,24) will consider all 24 hours.
+  If qwindow does not equal c(0,24) then also N valid hours, MVPA,
+  mean metric values are calculated over both the full day and over the time
+  window defined by qwindow.
   }
   \item{quantiletype}{
   type of quantile function to use (default recommended). For details, see 
