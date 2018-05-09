@@ -308,6 +308,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             # change time stamps to be a continues time
             if (SptOnset < 12) SptOnset = SptOnset + 24 #shift 24 hours to create continues time
             if (SptWake <= 12) SptWake = SptWake + 24 #shift 24 hours to create continues time
+            if (SptWake > 12 & daysleeper[j] == TRUE) SptWake = SptWake + 24 # NEW 10/5/2018 by Vincent
             if (daysleeper[j] == TRUE) {
               logdur[i] = SptOnset - SptWake
             } else {
@@ -397,12 +398,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       }
                       tmpCmd = paste("spo_day",k,"= spo",sep="") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
-                      
+
                     } else {
                       tmpCmd = paste("spo_day",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
                     }
-                  } else if (loaddaysi == 2 & length(spo_day) > 0) { #length check added because day may have been skipped
+                  } else if (loaddaysi == 2 & length(eval(parse(text = paste0("spo_day",k)))) > 0) { #length check added because day may have been skipped
                     w2 = which(spo[,2] < 18) #only use periods starting before 6pm
                     if (length(w2) > 0) {
                       spo = as.matrix(spo[w2,])
@@ -415,6 +416,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       spo[,2:3] = spo[,2:3]+ 24 # + 24 to create continues timelines for day 2 relative to day 1
                       tmpCmd = paste("spo_day2",k,"= spo",sep="") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
+                      
                     } else {
                       tmpCmd = paste("spo_day2",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
@@ -476,6 +478,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               cnt = 1
             }
           }
+       
           if (length(spocum) > 0) {
             if (length(which(spocum[,5] == "0")) > 0){
               spocum = spocum[-which(spocum[,5]== "0"),]
@@ -502,6 +505,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 }
                 #sbefore = spocum.t[,4]
                 delta_t1 = diff(as.numeric(spocum.t[,3]))
+                
                 spocum.t[,4] = correct01010pattern(spocum.t[,4])
                 #----------------------------
                 nightsummary[sumi,1] = accid
@@ -511,6 +515,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 }
                 #------------------------------------
                 # ACCELEROMETER
+                
                 if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
                   rtl = which(spocum.t[,4] == 1)
                   nightsummary[sumi,3] =spocum.t[rtl[1],2]
