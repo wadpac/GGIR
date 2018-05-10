@@ -1,5 +1,4 @@
 library(GGIR)
-options(encoding = "UTF-8") 
 test_that("g.impute returns a non-empty dataframe", {
   data(data.getmeta)
   data(data.inspectfile)
