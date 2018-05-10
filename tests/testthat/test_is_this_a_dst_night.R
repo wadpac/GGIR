@@ -1,5 +1,4 @@
 library(GGIR)
-options(encoding = "UTF-8") 
 test_that("is_this_a_dst_night", {
   dst_uk = is_this_a_dst_night(calendardate = "29/03/2014",tz="Europe/London")
   expect_that(dst_uk$dst_night_or_not,equals(1))
