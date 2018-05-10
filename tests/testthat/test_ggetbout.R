@@ -1,4 +1,5 @@
 library(GGIR)
+options(encoding = "UTF-8") 
 test_that("g.getbout produces expected output", {
   # Metric 1
   set.seed(300)
