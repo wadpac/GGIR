@@ -308,7 +308,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             # change time stamps to be a continues time
             if (SptOnset < 12) SptOnset = SptOnset + 24 #shift 24 hours to create continues time
             if (SptWake <= 12) SptWake = SptWake + 24 #shift 24 hours to create continues time
-            if (SptWake > 12 & daysleeper[j] == TRUE) SptWake = SptWake + 24 # NEW 10/5/2018 by Vincent
+            if (SptWake > 12 & SptWake < 18 & daysleeper[j] == TRUE) SptWake = SptWake + 24 # NEW 10/5/2018 by Vincent
             if (daysleeper[j] == TRUE) {
               logdur[i] = SptOnset - SptWake
             } else {
@@ -344,6 +344,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           #now generate empty overview for this night / person
           dummyspo = matrix(0,1,5); dummyspo[1,1] = 1
           spo_day = c()
+          # cat(daysleeper[j])s
           #============================================================================================
           for (loaddaysi in 1:loaddays) { #load twice if daysleeper because we also need data from the afternoon on the next day
             # now get accelerometer sleep detection
@@ -398,7 +399,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       }
                       tmpCmd = paste("spo_day",k,"= spo",sep="") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
-
                     } else {
                       tmpCmd = paste("spo_day",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
@@ -478,7 +478,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               cnt = 1
             }
           }
-       
           if (length(spocum) > 0) {
             if (length(which(spocum[,5] == "0")) > 0){
               spocum = spocum[-which(spocum[,5]== "0"),]
@@ -515,7 +514,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 }
                 #------------------------------------
                 # ACCELEROMETER
-                
                 if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
                   rtl = which(spocum.t[,4] == 1)
                   nightsummary[sumi,3] =spocum.t[rtl[1],2]
@@ -534,13 +532,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 nightsummary[sumi,6] = defi #sleep definition
                 #------------------------------------
                 # SLEEP LOG
-                #correct SptOnset and SptWake to fall within [12-36] window and store as sleeplog_onset and sleeplog_wake
+                #correct SptOnset and SptWake to fall within [12-36] window and store as sleeplog_onset and sleeplog_wake, except when it is a daysleeper
                 if (SptOnset > 36) {
                   nightsummary[sumi,7] = SptOnset-24 #onset
                 } else {
                   nightsummary[sumi,7] = SptOnset
                 }
-                if (SptWake > 36) {
+                if (SptWake > 36 & daysleeper[j] == FALSE) {
                   nightsummary[sumi,8] = SptWake-24 #wake
                 } else {
                   nightsummary[sumi,8] = SptWake
