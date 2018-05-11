@@ -30,10 +30,10 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
       out = as.matrix(output)
     }
     outputfinal = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun)),stringsAsFactors=FALSE)
-    cut = which(outputfinal[1,] == "")
-    if (length(cut) > 0) {
-      outputfinal = outputfinal[,-cut]
-    }
+    #cut = which(outputfinal[1,] == "") #After the last update in g.part5, we can expect empy rows for sleep variables, but we do not want to remove these columns
+    #if (length(cut) > 0) {
+    #  outputfinal = outputfinal[,-cut]
+    #}
     cut2 = which(outputfinal[,1] == "" & outputfinal[,2] == "")
     if (length(cut2) > 0) {
       outputfinal = outputfinal[-cut2,]
@@ -268,7 +268,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 # before processing OF3, first identify which days have enough monitor wear time
                 maxpernwnight = (1 - (includenightcrit / 24)) * 100
                 maxpernwday = (1 - (includedaycrit / 24)) * 100
-                validdaysi = which(OF3$nonwear_perc_day < maxpernwday & OF3$nonwear_perc_night < maxpernwnight)
+                validdaysi = which(as.numeric(OF3$nonwear_perc_day) < maxpernwday & as.numeric(OF3$nonwear_perc_night) < maxpernwnight)  #as.numeric function included, it was producing inconsistencies.
                 # aggregate OF3 (days) to person summaries in OF4
                 OF4 = takeweightedmean(OF3[validdaysi,],filename="filename",day="daytype")
                 
