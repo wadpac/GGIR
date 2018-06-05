@@ -351,16 +351,16 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       # Ignore qwindow values that are not possible for this day
       LENVAL_hours = length(val)/ (60*(60/ws3)) #11.2
       if (length(which(LENVAL_hours %in% 23:25 == TRUE)) == 0) {
-        if (di == 1) {
-          hours2delta = 24 - LENVAL_hours
-          qw_select = which(qwindow > hours2delta)
-          if(qw_select[1] > 1) qw_select = c(qw_select[1] - 1,qw_select)
-          qwindow = qwindow[qw_select]
-          qwindowindices = qwindow - hours2delta # - LENVAL_hours # because 1 is now different
-          if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
-        } else if (di == ndays) {
-          qwindowindices = qwindow
-        }
+        # if (di == 1) { # turned off on June 5 2018 because first and last day are imputed
+        #   hours2delta = 24 - LENVAL_hours
+        #   qw_select = which(qwindow > hours2delta)
+        #   if(qw_select[1] > 1) qw_select = c(qw_select[1] - 1,qw_select)
+        #   qwindow = qwindow[qw_select]
+        #   qwindowindices = qwindow - hours2delta # - LENVAL_hours # because 1 is now different
+        #   if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
+        # } else if (di == ndays) {
+        qwindowindices = qwindow
+        # }
       } else {
         hours2delta = 0
         qwindowindices = qwindow
@@ -545,7 +545,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
                 varnum = as.numeric(as.matrix(vari[,mi]))
                 
-                # if this is the first or last day and it has more than includedaycrit number of days then expand it
+                # # if this is the first or last day and it has more than includedaycrit number of days then expand it
+                # Comment out the following 10 lines if you want to include only the actual data
                 if (NRV != length(IMP$averageday[,(mi-1)])) { #
                   difference = NRV - length(IMP$averageday[,(mi-1)])
                   if (di == 1) {
@@ -556,16 +557,27 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     varnum = c(varnum,IMP$averageday[a56:a57,(mi-1)])
                   }
                 }
-                if (anwi_index != 1) { #cut short varnum to match qwindow
+                if (anwi_index != 1) { #cut short varnum to match qwindow, and use varnum
                   if (length(anwindices) > 0) {
-                    if (max(anwindices) > nrow(as.matrix(vari))) {
-                      anwindices = anwindices[which(anwindices <= nrow(as.matrix(vari)))]
+                    if (max(anwindices) > length(varnum)) {
+                      anwindices = anwindices[which(anwindices <= length(varnum))]
                     }
-                    varnum = as.numeric(as.matrix(vari[anwindices,mi]))
+                    varnum = as.numeric(varnum[anwindices])
                   } else {
                     varnum = c()
                   }
                 }
+                # old code:
+                # if (anwi_index != 1) { #cut short varnum to match qwindow
+                #   if (length(anwindices) > 0) {
+                #     if (max(anwindices) > nrow(as.matrix(vari))) {
+                #       anwindices = anwindices[which(anwindices <= nrow(as.matrix(vari)))]
+                #     }
+                #     varnum = as.numeric(as.matrix(vari[anwindices,mi]))
+                #   } else {
+                #     varnum = c()
+                #   }
+                # }
                 if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) { #currently intensity/activity level features are based on metric ENMO, but by copy-pasting this to another metric this should work the same.
                   # if (anwi_index == 1) { # don't do this part for qwindow # don't do this part for qwindow # now turned off, we want all these variables
                   if (length(varnum) > ((60/ws3)*60*5.5)) {
@@ -649,6 +661,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     q48  = (as.numeric(q47) * ws3)/60 #converting to minutes
                     keepindex_48[mi-1,] = c(fi,(fi+(length(q48)-1)))
                     namesq47 = rep(0,length(rownames(q47)))
+                    
                     for (rq47i in 1:length(rownames(q47))) {
                       namesq47[rq47i] = paste0(rownames(q47)[rq47i],"_",colnames(metashort)[mi],"_mg",anwi_nameindices[anwi_index]) #t_TWDI[1],"-",t_TWDI[2],"h",sep="")
                     }
@@ -878,7 +891,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:12,15:length(ds_names))
-    daytoweekvar = unique(daytoweekvar)
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
@@ -962,7 +974,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(mw) > 0) {
     filesummary[which(is.na(filesummary)==T)] = " "
   }
-  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | s_names == "AD_"  | s_names == "WE_"  | s_names == "WD_"  | s_names == "WWD_"  | s_names == "WWE_")
+  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | 
+                s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_"))
+  # == "AD_"  | s_names == "WE_"  | s_names == "WD_"  | s_names == "WWD_"  | s_names == "WWE_"
   if (length(cut) > 0) {
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
