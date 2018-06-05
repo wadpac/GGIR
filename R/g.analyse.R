@@ -226,6 +226,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   fmn = midnightsi[1] * (ws2/ws3)
   lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
   Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
+  # Xi = ifelse((Xi*1000) < 20, 0, 1) # explored on 5 June 2018 as an attempt to better mimic original ISIV construct
+  # Xi = zoo::rollsum(x=Xi,k=(600/ws3)) # explored on 5 June 2018 as an first attempt to better mimic original ISIV construct
+
   if (length(Xi) > (IVIS_epochsize_seconds/ws3) & length(Xi) >  (IVIS_windowsize_minutes*60)/ws3) {
     if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
       Xicum =cumsum(Xi)
@@ -840,7 +843,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     vi = vi + q1
     q1 = length(ML5AD)
     filesummary[vi:((vi-1)+q1)] = ML5AD
-    print(ML5AD_names)
     s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_diurnalBalanced")
     vi = vi + q1
   }
