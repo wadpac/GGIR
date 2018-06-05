@@ -178,6 +178,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       QLN[QLNi] = paste("p",(round((qlevels[QLNi]) * 10000))/100,sep="")
     }
   }
+  
   if (doquan == TRUE) {
     QUAN = qlevels_names = c()
     ML5AD = ML5AD_names = c()
@@ -187,12 +188,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           colnames(M$metashort)[(quani+1)] != "anglez") {
         #--------------------------------------
         # quantiles
-        QUANtmp =  quantile(averageday[((t_TWDI[1]*(3600/ws3))+1):(t_TWDI[2]*(3600/ws3)),quani],probs=qlevels,na.rm=T,type=quantiletype)
+        QUANtmp =  quantile(averageday[((t_TWDI[1]*(3600/ws3))+1):(t_TWDI[length(t_TWDI)]*(3600/ws3)),quani],probs=qlevels,na.rm=T,type=quantiletype)
         QUAN = c(QUAN,QUANtmp)
         qlevels_namestmp = rep(" ",length(qlevels))
         for (QLNi in 1:length(qlevels)) {
           qlevels_namestmp[QLNi] = paste(QLN[QLNi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
-                                         t_TWDI[1],"-",t_TWDI[2],"h",sep="")
+                                         t_TWDI[1],"-",t_TWDI[length(t_TWDI)],"h",sep="")
         }
         qlevels_names = c(qlevels_names,qlevels_namestmp)
         #--------------------------------------
@@ -827,6 +828,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   q0 = length(MA) + 1
   filesummary[(vi+2):(vi+q0)] = MA
+  colnames_to_lookat = paste0(colnames_to_lookat,"_diurnalBalancedMean")
   s_names[vi:(vi+q0)] = c("calib_err",
                           "calib_status",colnames_to_lookat) #colnames(metashort)[2:ncol(metashort)]
   vi = vi+q0+2
@@ -834,11 +836,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (doquan == TRUE) {
     q1 = length(QUAN)
     filesummary[vi:((vi-1)+q1)] = QUAN*1000
-    s_names[vi:((vi-1)+q1)] = qlevels_names
+    s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_diurnalBalanced")
     vi = vi + q1
     q1 = length(ML5AD)
     filesummary[vi:((vi-1)+q1)] = ML5AD
-    s_names[vi:((vi-1)+q1)] = ML5AD_names
+    print(ML5AD_names)
+    s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_diurnalBalanced")
     vi = vi + q1
   }
   #---------------------------------------
@@ -966,7 +969,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   names(filesummary) = s_names
   columns2order = 30:(ncol(filesummary)-8)
   filesummary = filesummary[,c(names(filesummary)[1:29],sort(names(filesummary[,columns2order])),names(filesummary)[(ncol(filesummary)-7):ncol(filesummary)])]
-  filesummary = filesummary[,-c(16:22)] # remove double variables
+  # filesummary = filesummary[,-c(16:22)] # remove double variables
   filesummary = filesummary[,!duplicated(filesummary)]
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
