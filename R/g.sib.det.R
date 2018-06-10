@@ -2,6 +2,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London",constrain2range = TRUE) {
   #==============================================================
   perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
+
   sptwindow_HDCZA = function(angle, k =60, perc = 0.1, inbedthreshold = 15, bedblocksize = 30, outofbedsize = 60, ws3 = 5, constrain2range = FALSE) {
     medabsdi = function(angle) {
       angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
@@ -56,6 +57,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       longestinbed = which(inbeddurations == max(inbeddurations))
       lightsout = s5[longestinbed] - 1
       lightson = e5[longestinbed] - 1
+      if (lightsout == 0) lightsout = 1
     } else {
       lightson = c()
       lightsout = c()
