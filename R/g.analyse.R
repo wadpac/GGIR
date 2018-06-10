@@ -4,14 +4,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
-  
+
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
   strategy = IMP$strategy
   hrs.del.start = IMP$hrs.del.start
   hrs.del.end = IMP$hrs.del.end
-  maxdur = IMP$maxdur  
+  maxdur = IMP$maxdur
   windowsizes = M$windowsizes
   metalong = M$metalong
   metashort = IMP$metashort
@@ -48,9 +48,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   #==========================================================================================
   # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
   domvpa = doilevels = doquan = FALSE
-  if (length(qlevels) > 0) doquan = TRUE    
-  if (length(ilevels) > 0) doilevels = TRUE    
-  if (length(mvpathreshold) > 0) domvpa = TRUE    
+  if (length(qlevels) > 0) doquan = TRUE
+  if (length(ilevels) > 0) doilevels = TRUE
+  if (length(mvpathreshold) > 0) domvpa = TRUE
   doperday = TRUE
   #------------------------------------------------------
   filesummary = matrix(" ",1,100) #matrix to be stored with summary per participant
@@ -58,13 +58,13 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   NVARS = (length(colnames(IMP$metashort))-1)
   if (NVARS < 1) NVARS = 1
   if (length(qwindow) > 0) NVARS = NVARS + 2 # for qwindow non-wear time
-  nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels 
+  nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels
   if (length(qwindow) > 0) {
     if (qwindow[1] != 0 | qwindow[2] != 24) {
       nfeatures = 50+NVARS*(2*(20+(length(qlevels)+length(ilevels))))
     }
   }
-  i = 1  
+  i = 1
   #---------------
   if (domvpa) { #create dummy data
     mvpanames = matrix(0,6,length(mvpathreshold))
@@ -81,7 +81,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   n_ws3_perday = (1440*60) / ws3
   if (((nrow(metalong)/((1440*60)/ws2)*10) - (nrow(metashort)/((60/ws3)*1440)) * 10) > 1) {
     cat("Matrices 'metalong' and 'metashort' are not compatible")
-  }  
+  }
   #----------------------
   # Pelotas specific
   id2 = id
@@ -113,7 +113,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   LD = nrow(metalong) * (ws2/60) #length data in minutes
   ND = nrow(metalong)/n_ws2_perday #number of days
   #  time variable
-  timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)	
+  timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
   dmidn = g.detecmidnight(time,desiredtz) #ND,
@@ -126,9 +126,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
-    starttimei = firstmidnighti 
+    starttimei = firstmidnighti
     endtimei = lastmidnighti - 1
-  } 
+  }
   # calibration error
   if (length(which(r1==1)) > 0) {
     CALIBRATE = mean(as.numeric(as.matrix(metalong[which(r1==1 & r2 != 1),which(colnames(M$metalong) == "EN")]))) #mean EN during non-wear time and non-clipping time
@@ -178,7 +178,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       QLN[QLNi] = paste("p",(round((qlevels[QLNi]) * 10000))/100,sep="")
     }
   }
-  
+
   if (doquan == TRUE) {
     QUAN = qlevels_names = c()
     ML5AD = ML5AD_names = c()
@@ -206,7 +206,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         } else {
           ML5AD = c(ML5AD," "," "," "," "," ")
         }
-        ML5AD_namestmp = rep(" ",5)      
+        ML5AD_namestmp = rep(" ",5)
         ML5N = c(paste0("L",winhr,"hr"), paste0("L",winhr), paste0("M",winhr,"hr"), paste0("M",winhr),"1to6am")
         for (ML5ADi in 1:5) {
           ML5AD_namestmp[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
@@ -254,7 +254,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         hh2 = aggregate(. ~ hour_perday,data=hh,mean)
         Xh = hh2$Xi
         # average acceleration per day
-        Xm = mean(Xh,na.rm = TRUE) 
+        Xm = mean(Xh,na.rm = TRUE)
         p = length(Xh)
         InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
         IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
@@ -289,7 +289,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
     daysummary = matrix("",ceiling(ndays),nfeatures)
-    
+
     ds_names = rep("",nfeatures)
     #=============================
     if (length(selectdaysfile) > 0) {   # Millenium cohort related:
@@ -311,10 +311,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       #extract day from matrix D and qcheck
       if (length(selectdaysfile) > 0 & startatmidnight == 1 & endatmidnight == 1) { #added on 14/9/2016
         qqq1 = 1#midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
-        qqq2 = midnightsi[di]*(ws2/ws3) #(midnightsi[(di+1)]*(ws2/ws3))-1 
+        qqq2 = midnightsi[di]*(ws2/ws3) #(midnightsi[(di+1)]*(ws2/ws3))-1
       } else if (length(selectdaysfile) == 0 & startatmidnight == 1 & endatmidnight == 1) {
         qqq1 = midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
-        qqq2 = (midnightsi[(di+1)]*(ws2/ws3))-1 
+        qqq2 = (midnightsi[(di+1)]*(ws2/ws3))-1
       } else if (startatmidnight == 1 & endatmidnight == 0) {
         if (di < floor(ndays)) { #applying floor because when day there is day saving time then ndays is not an integer
           qqq1 = midnightsi[di]*(ws2/ws3)
@@ -400,7 +400,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               nvalidhours_qwindow[qwi + deltaLengthQwindow] = 0
               nhours_qwindow[qwi + deltaLengthQwindow] = 0 #valid hours per day (or half a day)
             }
-          } 
+          }
         }
       }
       val = as.numeric(val)
@@ -423,7 +423,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       daysummary[di,fi] = fname
       ds_names[fi] = "filename";  fi = fi + 1
       calenderdate = unlist(strsplit(as.character(vari[1,1])," "))[1]
-      daysummary[di,fi] = calenderdate               
+      daysummary[di,fi] = calenderdate
       daysummary[di,(fi+1)] =BL
       daysummary[di,(fi+2)] = nvalidhours
       daysummary[di,(fi+3)] = nhours
@@ -445,7 +445,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           }
         }
       }
-      #--------------------------------------      
+      #--------------------------------------
       weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
       weekdays = rep(weekdays,12) # hardcoded maximum number of weeks of 12, not ideal
       if (di == 1) {
@@ -494,19 +494,19 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                          paste0("p25 metric ",colnames(vari)[columnvari]),
                          paste0("p50 metric ",colnames(vari)[columnvari]),
                          paste0("p75 metric ",colnames(vari)[columnvari]),
-                         paste0("p95 metric ",colnames(vari)[columnvari])) 
+                         paste0("p95 metric ",colnames(vari)[columnvari]))
           }
         }
         gikb = gikb + gik
       }
       if (tooshort == 0) {
-        #--------------------------------------      
+        #--------------------------------------
         # extract time spent in activity levels (there are possibly many more features that can be extracted from this)
         if (nvalidhours >= includedaycrit) {
           #============================================================
           keepindex_46 = matrix(NA, length(2:ncol(metashort)), 2)
           keepindex_48 = matrix(NA, length(2:ncol(metashort)), 2)
-          
+
           # Generate all variables per 24 hours or repeat this over the time window defined by qwindow
           anwi_t0 = 1 # analysis window time 0
           anwi_t1 = nrow(as.matrix(vari)) # analysis window time 1
@@ -542,7 +542,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
                 NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
                 varnum = as.numeric(as.matrix(vari[,mi]))
-                
+
                 # # if this is the first or last day and it has more than includedaycrit number of days then expand it
                 # Comment out the following 10 lines if you want to include only the actual data
                 if (NRV != length(IMP$averageday[,(mi-1)])) { #
@@ -618,7 +618,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   } else if (mi == MADi) {
                     ds_names[fi] = paste0("mean_MAD_mg",anwi_nameindices[anwi_index]); fi=fi+1 #MAD
                   }
-                  
+
                   if (anwi_nameindices[anwi_index] == "_24hr") {
                     anwi_nameindices[anwi_index] = ""
                   }
@@ -648,7 +648,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     q48  = (as.numeric(q47) * ws3)/60 #converting to minutes
                     keepindex_48[mi-1,] = c(fi,(fi+(length(q48)-1)))
                     namesq47 = rep(0,length(rownames(q47)))
-                    
+
                     for (rq47i in 1:length(rownames(q47))) {
                       namesq47[rq47i] = paste0(rownames(q47)[rq47i],"_",colnames(metashort)[mi],"_mg",anwi_nameindices[anwi_index]) #t_TWDI[1],"-",t_TWDI[2],"h",sep="")
                     }
@@ -685,7 +685,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                         getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
                                                bout.metric=bout.metric,ws3=ws3)
                         mvpa[4] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
-                        
+
                         # METHOD 5: time spent above threshold 5 minutes
                         boutduration = mvpadur[2] * (60/ws3) #per five minutes
                         rr1 = matrix(0,length(varnum),1)
@@ -744,7 +744,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       colnames(metashort) != "anglez")
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
   colnames_to_lookat = colnames(metashort)[lookat]
-  
+
   MA = matrix(NA,length(lookat),1)
   if (length(which(r5 == 0)) > 0) { #to catch strategy 2 with only 1 midnight and other cases where there is no valid data
     for (h in 1:length(lookat)) {
@@ -855,7 +855,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F)
     wkend = wkend[v1]
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
-    v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F)	
+    v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F)
     wkday = wkday[v2]
     filesummary[vi] = length(wkend) # number of weekend days
     if (is.na(filesummary[vi]) == TRUE) filesummary[vi] = 0
@@ -919,7 +919,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
       vi = vi+6+((dtwtel*sp)-1)
     }
-    filesummary[vi] = strategy 
+    filesummary[vi] = strategy
     filesummary[(vi+1)] = hrs.del.start
     filesummary[(vi+2)] = hrs.del.end
     filesummary[(vi+3)] = maxdur
@@ -955,7 +955,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     }
   }
   daysummary = data.frame(value=daysummary,stringsAsFactors=FALSE)
-  names(daysummary) = ds_names  
+  names(daysummary) = ds_names
 
   # remove double columns with 1-6am variables
   columnswith16am = grep("1-6am",x=colnames(daysummary))
@@ -966,16 +966,16 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(mw) > 0) {
     filesummary[which(is.na(filesummary)==T)] = " "
   }
-  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | 
+  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T |
                 s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_"))
   if (length(cut) > 0) {
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
   }
-  
+
   filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
-  
+
   columns2order = 30:(ncol(filesummary)-6)
   selectcolumns = c(names(filesummary)[1:29],
                     sort(names(filesummary[,columns2order])),
