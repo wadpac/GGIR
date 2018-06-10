@@ -877,24 +877,24 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     vi = vi + 2
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
-    daytoweekvar = c(5:12,15:length(ds_names))
+    daytoweekvar = c(5:12,14:length(ds_names))
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
       for (dtwi in daytoweekvar) {
         #checkwhether columns is empty:
         uncona = unique(daysummary[,dtwi])
-        storevalue = !(length(uncona) == 1 & uncona[1] == "")
+        storevalue = !(length(uncona) == 1 & length(qwindow) > 2 & uncona[1] == "")
         if (storevalue == TRUE) {
-          v4 = mean(as.numeric(daysummary[,dtwi]),na.rm=TRUE) #plain average of available days
+          v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) #plain average of available days
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
         }
         s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")  #daytoweekvar_names[dtwtel+1]
         #========================================================================
         # attempt to stratify to week and weekend days
         # Average of available days
-        dtw_wkend = as.numeric(daysummary[wkend,dtwi])
-        dtw_wkday = as.numeric(daysummary[wkday,dtwi])
+        dtw_wkend = suppressWarnings(as.numeric(daysummary[wkend,dtwi]))
+        dtw_wkday = suppressWarnings(as.numeric(daysummary[wkday,dtwi]))
         if (storevalue == TRUE) {
           filesummary[(vi+2+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # #weekend average
           filesummary[(vi+3+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # #weekday average
@@ -956,6 +956,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   daysummary = data.frame(value=daysummary,stringsAsFactors=FALSE)
   names(daysummary) = ds_names  
+
   # remove double columns with 1-6am variables
   columnswith16am = grep("1-6am",x=colnames(daysummary))
   if (length(columnswith16am) > 1) {
@@ -974,6 +975,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   
   filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
+  
   columns2order = 30:(ncol(filesummary)-6)
   selectcolumns = c(names(filesummary)[1:29],
                     sort(names(filesummary[,columns2order])),
