@@ -17,7 +17,7 @@ g.dotorcomma = function(inputfile,dformat,mon) {
         decn = "." #dot
       }
     } else if (mon == 2 ){
-      try(expr={deci = GENEAread::read.bin(binfile=inputfile,start=1,end=3,mmap.load=FALSE,calibrate=TRUE)},silent=TRUE)
+      try(expr={deci = read.bin(binfile=inputfile,start=1,end=3,mmap.load=FALSE,calibrate=TRUE)},silent=TRUE)
       deci = as.matrix(deci$data.out)
       if(is.na(as.numeric(deci[2,2])) == T) {
         decn = "," #comma
