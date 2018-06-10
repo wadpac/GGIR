@@ -882,14 +882,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         uncona = unique(daysummary[,dtwi])
         if (length(uncona) == 1 & uncona[1] == "") {
         } else {
-          v4 = mean(as.numeric(daysummary[,dtwi]),na.rm=TRUE) #plain average of available days
+          v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) #plain average of available days
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
           s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")  #daytoweekvar_names[dtwtel+1]
           #========================================================================
           # attempt to stratify to week and weekend days
           # Average of available days
-          dtw_wkend = as.numeric(daysummary[wkend,dtwi])
-          dtw_wkday = as.numeric(daysummary[wkday,dtwi])
+          dtw_wkend = suppressWarnings(as.numeric(daysummary[wkend,dtwi]))
+          dtw_wkday = suppressWarnings(as.numeric(daysummary[wkday,dtwi]))
           filesummary[(vi+2+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # #weekend average
           filesummary[(vi+3+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # #weekday average
           s_names[(vi+2+(dtwtel*sp))] = paste("WE_",ds_names[dtwi],sep="") #Weekend no weighting

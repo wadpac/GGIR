@@ -16,9 +16,10 @@ Description: A tool to process and analyse data collected with wearable raw acce
 URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/RpackageGGIR
 BugReports: https://github.com/wadpac/GGIR/issues
 License: LGPL (>= 2.0, < 3) | file LICENSE
-Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR, testthat, covr, knitr, rmarkdown
+Suggests: MASS, signal, zoo, mmap, bitops, matlab, tuneR, testthat, covr, knitr, rmarkdown
 Imports: data.table, Rcpp (>= 0.12.10)
 Depends: stats, utils, R (>= 2.10)
 NeedsCompilation: yes
 LinkingTo: Rcpp
 VignetteBuilder: knitr
+ByteCompile: yes
