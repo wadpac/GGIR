@@ -2,6 +2,10 @@ language: r
 sudo: false
 cache: packages
 
+addons:
+  apt:
+    update: TRUE
+
 r_packages:
   - covr
 
