@@ -207,7 +207,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           ML5AD = c(ML5AD," "," "," "," "," ")
         }
         ML5AD_namestmp = rep(" ",5)      
-        ML5N = c("L5hr","L5","M5hr","M5","1to6am")
+        ML5N = c(paste0("L",winhr,"hr"), paste0("L",winhr), paste0("M",winhr,"hr"), paste0("M",winhr),"1to6am")
         for (ML5ADi in 1:5) {
           ML5AD_namestmp[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
                                          L5M5window[1],"-",L5M5window[2],"h",sep="")
@@ -446,10 +446,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         }
       }
       #--------------------------------------      
-      weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
-                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
-                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
-                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+      weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+      weekdays = rep(weekdays,12) # hardcoded maximum number of weeks of 12, not ideal
       if (di == 1) {
         daysummary[di,fi] = wdayname
       } else {
@@ -567,17 +565,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     varnum = c()
                   }
                 }
-                # old code:
-                # if (anwi_index != 1) { #cut short varnum to match qwindow
-                #   if (length(anwindices) > 0) {
-                #     if (max(anwindices) > nrow(as.matrix(vari))) {
-                #       anwindices = anwindices[which(anwindices <= nrow(as.matrix(vari)))]
-                #     }
-                #     varnum = as.numeric(as.matrix(vari[anwindices,mi]))
-                #   } else {
-                #     varnum = c()
-                #   }
-                # }
                 if (mi == ENMOi | mi == LFENMOi | mi == BFENi | mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) { #currently intensity/activity level features are based on metric ENMO, but by copy-pasting this to another metric this should work the same.
                   # if (anwi_index == 1) { # don't do this part for qwindow # don't do this part for qwindow # now turned off, we want all these variables
                   if (length(varnum) > ((60/ws3)*60*5.5)) {
@@ -603,10 +590,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   } else {
                     daysummary[di,fi:(fi+4)] = ""
                   }
-                  ds_names[fi] = paste0("L5hr_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
-                  ds_names[fi] = paste0("L5_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
-                  ds_names[fi] = paste0("M5hr_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
-                  ds_names[fi] = paste0("M5_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
+                  ds_names[fi] = paste0("L",winhr,"hr_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
+                  ds_names[fi] = paste0("L",winhr,"_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
+                  ds_names[fi] = paste0("M",winhr,"hr_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
+                  ds_names[fi] = paste0("M",winhr,"_",colnames(metashort)[mi],"_mg",L5M5window); fi=fi+1
                   ds_names[fi] = paste0("mean_",colnames(metashort)[mi],"_mg_1-6am"); fi=fi+1
                   if (anwi_nameindices[anwi_index] == "") { # for consistency with previous GGIR version
                     anwi_nameindices[anwi_index] = "_24hr"
@@ -897,34 +884,38 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       for (dtwi in daytoweekvar) {
         #checkwhether columns is empty:
         uncona = unique(daysummary[,dtwi])
-        if (length(uncona) == 1 & uncona[1] == "") {
-        } else {
+        storevalue = !(length(uncona) == 1 & uncona[1] == "")
+        if (storevalue == TRUE) {
           v4 = mean(as.numeric(daysummary[,dtwi]),na.rm=TRUE) #plain average of available days
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
-          s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")  #daytoweekvar_names[dtwtel+1]
-          #========================================================================
-          # attempt to stratify to week and weekend days
-          # Average of available days
-          dtw_wkend = as.numeric(daysummary[wkend,dtwi])
-          dtw_wkday = as.numeric(daysummary[wkday,dtwi])
+        }
+        s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")  #daytoweekvar_names[dtwtel+1]
+        #========================================================================
+        # attempt to stratify to week and weekend days
+        # Average of available days
+        dtw_wkend = as.numeric(daysummary[wkend,dtwi])
+        dtw_wkday = as.numeric(daysummary[wkday,dtwi])
+        if (storevalue == TRUE) {
           filesummary[(vi+2+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # #weekend average
           filesummary[(vi+3+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # #weekday average
-          s_names[(vi+2+(dtwtel*sp))] = paste("WE_",ds_names[dtwi],sep="") #Weekend no weighting
-          s_names[(vi+3+(dtwtel*sp))] = paste("WD_",ds_names[dtwi],sep="") #weekdays no weighting
-          #==================================================
-          # Weighted average of available days
-          if (length(dtw_wkend) > 2) {
-            dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
-          }
-          if (length(dtw_wkday) > 5) {
-            dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
-          }
+        }
+        s_names[(vi+2+(dtwtel*sp))] = paste("WE_",ds_names[dtwi],sep="") #Weekend no weighting
+        s_names[(vi+3+(dtwtel*sp))] = paste("WD_",ds_names[dtwi],sep="") #weekdays no weighting
+        #==================================================
+        # Weighted average of available days
+        if (length(dtw_wkend) > 2) {
+          dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+        }
+        if (length(dtw_wkday) > 5) {
+          dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+        }
+        if (storevalue == TRUE) {
           filesummary[(vi+4+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # #weekend average
           filesummary[(vi+5+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # #weekday average
-          s_names[(vi+4+(dtwtel*sp))] = paste("WWE_",ds_names[dtwi],sep="")
-          s_names[(vi+5+(dtwtel*sp))] = paste("WWD_",ds_names[dtwi],sep="")
-          dtwtel = dtwtel + 1
         }
+        s_names[(vi+4+(dtwtel*sp))] = paste("WWE_",ds_names[dtwi],sep="")
+        s_names[(vi+5+(dtwtel*sp))] = paste("WWD_",ds_names[dtwi],sep="")
+        dtwtel = dtwtel + 1
       }
       vi = vi+6+((dtwtel*sp)-1)
     }
@@ -976,16 +967,19 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | 
                 s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_"))
-  # == "AD_"  | s_names == "WE_"  | s_names == "WD_"  | s_names == "WWD_"  | s_names == "WWE_"
   if (length(cut) > 0) {
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
   }
+  
   filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
-  columns2order = 30:(ncol(filesummary)-8)
-  filesummary = filesummary[,c(names(filesummary)[1:29],sort(names(filesummary[,columns2order])),names(filesummary)[(ncol(filesummary)-7):ncol(filesummary)])]
-  # filesummary = filesummary[,-c(16:22)] # remove double variables
+  columns2order = 30:(ncol(filesummary)-6)
+  selectcolumns = c(names(filesummary)[1:29],
+                    sort(names(filesummary[,columns2order])),
+                    names(filesummary)[(ncol(filesummary)-5):ncol(filesummary)])
+  selectcolumns = selectcolumns[which(selectcolumns %in% colnames(filesummary) == TRUE)]
+  filesummary = filesummary[,selectcolumns]
   filesummary = filesummary[,!duplicated(filesummary)]
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
