@@ -1,6 +1,5 @@
 library(GGIR)
 context("Chainof5parts")
-options(encoding = "UTF-8")
 test_that("chainof5parts", {
   Ndays = 4
   create_test_acc_csv(Nmin=Ndays*1440)
@@ -48,7 +47,7 @@ test_that("chainof5parts", {
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.03172))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
   expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
-  expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
+  expect_that(round(as.numeric(SUM$summary$`WD_L5_ENMO_mg_0-24hr`), digits=4),equals(4.3364))
   #--------------------------------------------
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
