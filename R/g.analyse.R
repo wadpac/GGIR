@@ -454,7 +454,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         daysummary[di,fi] = weekdays[wdaycode + (di-1)]
       }
       daysummary[di,(fi+1)] = di #day number relative to start of measurement
-      ds_names[fi:(fi+1)] = c("weekday","measurmentday")
+      ds_names[fi:(fi+1)] = c("weekday","measurementday")
       fi = fi + 2
       if (length(selectdaysfile) > 0) {
         #---------------------------
@@ -878,6 +878,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:12,14:length(ds_names))
+    md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday") == TRUE)
+    if (length(md) > 0) daytoweekvar = daytoweekvar[-md]
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
