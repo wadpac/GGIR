@@ -12,6 +12,9 @@ export(g.analyse,g.calibrate,g.getmeta
        g.report.part5,g.sib.det,g.sib.plot,g.wavread,
        g.weardec,isfilelist,iso8601chartime2POSIX,is_this_a_dst_night,
         numUnpack,POSIXtime2iso8601,resample)
+export(read.bin,header.info,get.intervals, convert.time, parse.time, axis.GRtime, 
+       format.GRtime, plot.AccData, print.VirtAccData,  epoch.apply, svm, epoch.mean,
+       epoch.sd, epoch.median, epoch.mad, epoch.autocor, epoch.quantile, as.GRtime)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
@@ -22,5 +25,27 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "quantile", "sd")
 import(data.table)
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
+importFrom("graphics", "points")
+importFrom("utils", "tail")
+import("stats")
+importFrom("graphics", "Axis", "axis", "barplot", "hist", "par", "plot",
+           "plot.default")
+S3method(Axis, GRtime)
+S3method(print, GRtime)
+S3method(Ops, GRtime)
+S3method(c, GRtime)
+S3method(Summary, GRtime)
+S3method(Axis, GRtime)
+S3method(pretty, GRtime)
+S3method("[", GRtime)
+S3method(print, AccData)
+S3method("[", AccData)
+S3method("$", AccData)
+S3method(c, AccData)
+S3method(dim, AccData)
+S3method(summary, AccData)
+S3method(format,GRtime)
+S3method(plot,AccData)
+S3method(print,VirtAccData)
 useDynLib(GGIR, .registration=TRUE)
 importFrom(Rcpp, sourceCpp)

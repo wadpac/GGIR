@@ -75,7 +75,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         stop(paste0("CLS error: there are zero or more than one files: ",
                     filename, "in the wearcodes file"))
       }
-      hhr <- GENEAread::header.info(filename)
+      hhr <- header.info(filename)
       tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
                     getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
       
@@ -84,7 +84,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         switchoffLD = 1
       } else {
         try(expr= {
-          P = GENEAread::read.bin(binfile=filename,start=tint[blocknumber,1],
+          P = read.bin(binfile=filename,start=tint[blocknumber,1],
                                   end=tint[blocknumber,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)
           if (sf != P$freq) sf = P$freq
         },silent=TRUE)
@@ -117,7 +117,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (length(P) == 0) { #if first block doens't read then probably corrupt
         if (blocknumber == 1) {
           #try to read without specifying blocks (file too short)
-          try(expr={P = GENEAread::read.bin(binfile=filename,start=1,end=10,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+          try(expr={P = read.bin(binfile=filename,start=1,end=10,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
           if (length(P) == 0) {
             cat("\nError: file possibly corrupt\n")
             P= c(); switchoffLD = 1
@@ -141,12 +141,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       # All of the above needed for Millenium cohort
       #======================================================================
     } else { 
-      try(expr={P = GENEAread::read.bin(binfile=filename,start=(blocksize*(blocknumber-1)),
+      try(expr={P = read.bin(binfile=filename,start=(blocksize*(blocknumber-1)),
                                         end=(blocksize*blocknumber),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
       if (length(P) <= 2) {
         cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
         #try again but now with mmap.load turned on
-        try(expr={P = GENEAread::read.bin(binfile=filename,start=(blocksize*(blocknumber-1)),
+        try(expr={P = read.bin(binfile=filename,start=(blocksize*(blocknumber-1)),
                                           end=(blocksize*blocknumber),calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
         if (length(P) != 0) {
           cat("\ndata read succesfully\n")
@@ -171,7 +171,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (length(P) == 0) { #if first block doens't read then probably corrupt
         if (blocknumber == 1) {
           #try to read without specifying blocks (file too short)
-          try(expr={P = GENEAread::read.bin(binfile=filename,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+          try(expr={P = read.bin(binfile=filename,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
           if (length(P) == 0) {
             cat("\nError: file possibly corrupt\n")
             P= c(); switchoffLD = 1
