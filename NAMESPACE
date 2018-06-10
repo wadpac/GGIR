@@ -11,25 +11,23 @@ export(g.analyse,g.calibrate,g.getmeta
         g.readaccfile,g.report.part2,g.report.part4,
        g.report.part5,g.sib.det,g.sib.plot,g.wavread,
        g.weardec,isfilelist,iso8601chartime2POSIX,is_this_a_dst_night,
-        numUnpack,POSIXtime2iso8601,resample)
-export(read.bin,header.info,get.intervals, convert.time, parse.time, axis.GRtime, 
+        numUnpack,POSIXtime2iso8601,resample,
+       
+       read.bin,header.info,get.intervals, convert.time, parse.time, axis.GRtime, 
        format.GRtime, plot.AccData, print.VirtAccData,  epoch.apply, svm, epoch.mean,
        epoch.sd, epoch.median, epoch.mad, epoch.autocor, epoch.quantile, as.GRtime)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
-             "lines", "mtext", "text")
-importFrom("utils", "read.csv", "sessionInfo", "write.csv")
+             "lines", "mtext", "text", "points",
+      "Axis", "hist", "plot.default")
+importFrom("utils", "read.csv", "sessionInfo", "write.csv", "tail")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd")
 import(data.table)
-importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
-importFrom("graphics", "points")
-importFrom("utils", "tail")
 import("stats")
-importFrom("graphics", "Axis", "axis", "barplot", "hist", "par", "plot",
-           "plot.default")
 S3method(Axis, GRtime)
 S3method(print, GRtime)
 S3method(Ops, GRtime)
