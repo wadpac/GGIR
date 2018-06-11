@@ -6,7 +6,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   } else {
     dir.create(file.path(paste(metadatadir,"/results",sep=""),"file summary reports"))
     ffdone = c()
-  }  
+  }
   # directories
   meta = paste(metadatadir,"/meta/basic",sep="")
   metasleep = paste(metadatadir,"/meta/ms3.out",sep="")
@@ -99,7 +99,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         c45 = c45[length(c45)]
         #######################
         # First page of the report
-        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]) == FALSE)) > 1
+        columnwithENMO = paste0("mean_",metric,"_mg_0.24hr")
+        if (length(columnwithENMO) == 0) columnwithENMO = paste0("mean_",metric,"_mg_24hr") # for consistency with old output
+        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,columnwithENMO]) == FALSE)) > 1
             & length(which(is.na(daysummary_tmp[,c45]) == FALSE)) > 1
             & nrow(summarysleep_tmp) > 0) {
           # abbreviate names of days
@@ -115,7 +117,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           sleepefficiency = (nocsleepdur /lengthnight) * 100
           
           f01 = daysummary_tmp[,c45]
-          f02 = daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]
+          f02 = daysummary_tmp[,columnwithENMO]
           f05 = nocsleepdur #runif(length(days), 4, 10)
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
@@ -231,7 +233,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         S = sib.cla.sum #SLES$output
         def = unique(S$definition)[1]
         S = S[which(S$definition==def),] # simplify to one definition
-        
         for (j in 1:length(unique(S$night))) { #nights
           tmp = S[which(S$night==j),]
           for (h in 1:nrow(tmp)) { # sleep periods
@@ -243,14 +244,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (length(s1) == 0 | is.na(s1) == TRUE) {
               s1 = which(time == paste(as.character(tmp$sib.end.time[h])," 00:00:00",sep=""))[1]
             }
-                    # print(paste("s0 ",s0," ",as.character(tmp$sib.onset.time[h]),sep=""))
-                    #     print(paste("s1 ",s1," ",as.character(tmp$sib.end.time[h]),sep=""))
             if (is.na(s0) == FALSE & is.na(s1) == FALSE) { #new on 18 May 2015
               detection[s0:s1] = 1 #new on 18 May 2015
             } #new on 18 May 2015
           }
         }
-        
         # detect midnights
         sec = unclass(as.POSIXlt(time))$sec
         min = unclass(as.POSIXlt(time))$min
@@ -264,7 +262,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           xaxislabels = c("noon","2pm","4pm","6pm","8pm","10pm","midnight",
                           "2am","4am","6am","8am","10am","noon")
         }
-
+        
         nplots = length(nightsi)+1
         # plot
         npointsperday = (60/ws3)*1440    
@@ -310,7 +308,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               if (length(which(n2exclude == g)) > 0) skip = TRUE
             }
           }
-          
           title = paste("Day ",daycount,": ",
                         wdaynames[unclass(as.POSIXlt(time[t0]))$wday+1],
                         "    ",
