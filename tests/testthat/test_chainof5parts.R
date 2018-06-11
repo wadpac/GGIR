@@ -27,8 +27,29 @@ test_that("chainof5parts", {
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
   expect_that(C$npoints,equals(14848))
+  
   #--------------------------------------------
-  # part 2
+  # part 2 with strategy = 3
+  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
+          strategy = 3,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
+          maxdur = Ndays, includedaycrit = 0)
+  dirname = "output_test/meta/ms2.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_that(nrow(IMP$metashort),equals(68940))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.03253))
+  expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=5),equals(3.73958))
+  # part 2 with strategy = 2
+  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
+          strategy = 2,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
+          maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE)
+  dirname = "output_test/meta/ms2.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_that(nrow(IMP$metashort),equals(68940))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=4),equals(0.0317))
+  expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=2),equals(3))
+  # part 2 with strategy = 1
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
@@ -94,7 +115,20 @@ test_that("chainof5parts", {
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(31.1708))
   # expect_that(round(as.numeric(output$dur_day_min[6]),digits=4),equals(775.5))
-
+  
+  #--------------------------------------------
+  #g.shell.GGIR
+  suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
+                          do.report=c(2,4,5),overwrite=FALSE,visualreport=FALSE,viewingwindow=1))
+  suppressWarnings(g.shell.GGIR(mode=c(),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
+                                do.report=c(),overwrite=FALSE,visualreport=TRUE,viewingwindow=1))
+  expect_that(file.exists("output_test/results/part2_daysummary.csv"),is_true())
+  expect_that(file.exists("output_test/results/part2_summary.csv"),is_true())
+  expect_that(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"),is_true())
+  expect_that(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"),is_true())
+  expect_that(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"),is_true())
+  
+  
   dn = "output_test"
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
