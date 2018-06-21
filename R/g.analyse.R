@@ -42,6 +42,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(qwindow) == 0 & (length(qlevels) > 0 | length(ilevels) > 0)) {
     qwindow = c(0,24)
   }
+  
+  if (qwindow[1] != 0) qwindow = c(0,qwindow)
+  if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow,24)
+  
   #==========================================================================================
   # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
   domvpa = doilevels = doquan = FALSE
