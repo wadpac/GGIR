@@ -17,7 +17,6 @@ test_that("chainof5parts", {
   expect_that(dir.exists(dn),is_true())
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-
   expect_that(round(C$scale,digits=5),equals(c(0.98480, 0.98337, 0.98432)))
   expect_that(nrow(M$metalong),equals(383))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
@@ -27,7 +26,6 @@ test_that("chainof5parts", {
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
   expect_that(C$npoints,equals(14848))
-  
   #--------------------------------------------
   # part 2 with strategy = 3
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
@@ -54,7 +52,6 @@ test_that("chainof5parts", {
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0)
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
-
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -99,7 +96,6 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.5389))
   expect_that(as.logical(nightsummary$acc_available[1]),is_true())
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
-
   #--------------------------------------------
   #part 5
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
@@ -115,8 +111,7 @@ test_that("chainof5parts", {
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(31.1708))
   # expect_that(round(as.numeric(output$dur_day_min[6]),digits=4),equals(775.5))
-  
-  #--------------------------------------------
+ #--------------------------------------------
   #g.shell.GGIR
   suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
                           do.report=c(2,4,5),overwrite=FALSE,visualreport=FALSE,viewingwindow=1))
@@ -127,8 +122,7 @@ test_that("chainof5parts", {
   expect_that(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"),is_true())
   expect_that(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"),is_true())
   expect_that(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"),is_true())
-  
-  
+
   dn = "output_test"
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
