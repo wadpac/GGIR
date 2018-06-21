@@ -42,9 +42,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(qwindow) == 0 & (length(qlevels) > 0 | length(ilevels) > 0)) {
     qwindow = c(0,24)
   }
-  # if (length(qwindow) > 0 & length(qlevels) == 0) {
-  #   qlevels = c()
-  # }
   #==========================================================================================
   # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
   domvpa = doilevels = doquan = FALSE
@@ -383,7 +380,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           }
         } else if (length(qwindowbackup) > 2) {
           deltaLengthQwindow = length(qwindowbackup) - length(qwindowindices)
-          for (qwi in 1:(length(qwindowindices)-1)) {
+          for (qwi in 1:(length(qwindowindices)-1)) { # 
             startindex = qwindowindices[qwi]*60*(60/ws3)
             endindex = qwindowindices[qwi+1]*60*(60/ws3)
             if(startindex <= length(val) & endindex <= length(val)) {
@@ -405,7 +402,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
       val = as.numeric(val)
       nvalidhours = length(which(val == 0))/ (3600/ws3) #valid hours per day (or half a day)
-      nhours = length(val)/ (3600/ws3) #valid hours per day (or half a day)
+      nhours = length(val) / (3600/ws3) #valid hours per day (or half a day)
       #start collecting information about the day
       fi = 1
       daysummary[di,fi] = unlist(strsplit(fname,"_"))[1] #participant ID
@@ -445,6 +442,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           }
         }
       }
+      
       #--------------------------------------
       weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
       weekdays = rep(weekdays,12) # hardcoded maximum number of weeks of 12, not ideal
@@ -877,7 +875,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     vi = vi + 2
     #############################################################
     #metrics - summarise with stratification to weekdays and weekend days
-    daytoweekvar = c(5:12,14:length(ds_names))
+    daytoweekvar = c(5:length(ds_names))
+    
     md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday") == TRUE)
     if (length(md) > 0) daytoweekvar = daytoweekvar[-md]
     dtwtel = 0
@@ -969,7 +968,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     filesummary[which(is.na(filesummary)==T)] = " "
   }
   cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T |
-                s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_"))
+                s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_",
+                               "AD_N hours", "WE_N hours", "WD_N hours", "WWD_N hours", "WWE_N hours",
+                               "AD_N valid hours", "WE_N valid hours", "WD_N valid hours", "WWD_N valid hours", "WWE_N valid hours"))
   if (length(cut) > 0) {
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
@@ -979,12 +980,16 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   names(filesummary) = s_names
 
   columns2order = 30:(ncol(filesummary)-6)
+  
+  
+ 
   selectcolumns = c(names(filesummary)[1:29],
                     sort(names(filesummary[,columns2order])),
                     names(filesummary)[(ncol(filesummary)-5):ncol(filesummary)])
   selectcolumns = selectcolumns[which(selectcolumns %in% colnames(filesummary) == TRUE)]
   filesummary = filesummary[,selectcolumns]
   filesummary = filesummary[,!duplicated(filesummary)]
+  
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
     names(windowsummary) = ws_names
