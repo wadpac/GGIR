@@ -4,7 +4,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
-
+  
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -177,7 +177,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       QLN[QLNi] = paste("p",(round((qlevels[QLNi]) * 10000))/100,sep="")
     }
   }
-
+  
   if (doquan == TRUE) {
     QUAN = qlevels_names = c()
     ML5AD = ML5AD_names = c()
@@ -227,7 +227,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   Xi = IMP$metashort$ENMO[fmn:lmn] # this is already imputed, so no need to ignore segments
   # Xi = ifelse((Xi*1000) < 20, 0, 1) # explored on 5 June 2018 as an attempt to better mimic original ISIV construct
   # Xi = zoo::rollsum(x=Xi,k=(600/ws3)) # explored on 5 June 2018 as an first attempt to better mimic original ISIV construct
-
+  
   if (length(Xi) > (IVIS_epochsize_seconds/ws3) & length(Xi) >  (IVIS_windowsize_minutes*60)/ws3) {
     if (IVIS_epochsize_seconds > ws3) { # downsample Xi now
       Xicum =cumsum(Xi)
@@ -288,7 +288,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
     daysummary = matrix("",ceiling(ndays),nfeatures)
-
+    
     ds_names = rep("",nfeatures)
     #=============================
     if (length(selectdaysfile) > 0) {   # Millenium cohort related:
@@ -506,7 +506,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           #============================================================
           keepindex_46 = matrix(NA, length(2:ncol(metashort)), 2)
           keepindex_48 = matrix(NA, length(2:ncol(metashort)), 2)
-
+          
           # Generate all variables per 24 hours or repeat this over the time window defined by qwindow
           anwi_t0 = 1 # analysis window time 0
           anwi_t1 = nrow(as.matrix(vari)) # analysis window time 1
@@ -542,7 +542,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
               for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
                 NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
                 varnum = as.numeric(as.matrix(vari[,mi]))
-
+                
                 # # if this is the first or last day and it has more than includedaycrit number of days then expand it
                 # Comment out the following 10 lines if you want to include only the actual data
                 if (NRV != length(IMP$averageday[,(mi-1)])) { #
@@ -618,7 +618,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   } else if (mi == MADi) {
                     ds_names[fi] = paste0("mean_MAD_mg",anwi_nameindices[anwi_index]); fi=fi+1 #MAD
                   }
-
+                  
                   if (anwi_nameindices[anwi_index] == "_24hr") {
                     anwi_nameindices[anwi_index] = ""
                   }
@@ -648,7 +648,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     q48  = (as.numeric(q47) * ws3)/60 #converting to minutes
                     keepindex_48[mi-1,] = c(fi,(fi+(length(q48)-1)))
                     namesq47 = rep(0,length(rownames(q47)))
-
+                    
                     for (rq47i in 1:length(rownames(q47))) {
                       namesq47[rq47i] = paste0(rownames(q47)[rq47i],"_",colnames(metashort)[mi],"_mg",anwi_nameindices[anwi_index]) #t_TWDI[1],"-",t_TWDI[2],"h",sep="")
                     }
@@ -685,7 +685,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                         getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
                                                bout.metric=bout.metric,ws3=ws3)
                         mvpa[4] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
-
+                        
                         # METHOD 5: time spent above threshold 5 minutes
                         boutduration = mvpadur[2] * (60/ws3) #per five minutes
                         rr1 = matrix(0,length(varnum),1)
@@ -744,7 +744,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       colnames(metashort) != "anglez")
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
   colnames_to_lookat = colnames(metashort)[lookat]
-
+  
   MA = matrix(NA,length(lookat),1)
   if (length(which(r5 == 0)) > 0) { #to catch strategy 2 with only 1 midnight and other cases where there is no valid data
     for (h in 1:length(lookat)) {
@@ -959,7 +959,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   daysummary = data.frame(value=daysummary,stringsAsFactors=FALSE)
   names(daysummary) = ds_names
-
+  
   # remove double columns with 1-6am variables
   columnswith16am = grep("1-6am",x=colnames(daysummary))
   if (length(columnswith16am) > 1) {
@@ -977,17 +977,22 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
   }
-
+  
   filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
-
-  columns2order = 30:(ncol(filesummary)-6)
   
+  columns2order = c()
+  if (ncol(filesummary) > 37) {
+    columns2order = 30:(ncol(filesummary)-6)
+  }
   
- 
-  selectcolumns = c(names(filesummary)[1:29],
-                    sort(names(filesummary[,columns2order])),
-                    names(filesummary)[(ncol(filesummary)-5):ncol(filesummary)])
+  if (length(columns2order) > 0) {
+    selectcolumns = c(names(filesummary)[1:29],
+                      sort(names(filesummary[,columns2order])),
+                      names(filesummary)[(ncol(filesummary)-5):ncol(filesummary)])
+  } else {
+    selectcolumns = names(filesummary)
+  }
   selectcolumns = selectcolumns[which(selectcolumns %in% colnames(filesummary) == TRUE)]
   filesummary = filesummary[,selectcolumns]
   filesummary = filesummary[,!duplicated(filesummary)]
