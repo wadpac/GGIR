@@ -8,7 +8,8 @@ Loads sleeplog from a csv input file and applies sanity checks
 before storing the output in a dataframe
 }
 \usage{
-g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidnum=TRUE)
+g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
+sleeplogidnum=TRUE)
 }
 \arguments{
   \item{loglocation}{

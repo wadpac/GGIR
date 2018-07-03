@@ -44,7 +44,8 @@ windowsize of M5L5 analyses, e.g. 5 hours
 }
 \examples{
 data(data.getmeta)
-g.getM5L5 = function(varnum=data.getmeta,ws3=5,t0_LFMF=0,t1_LFMF=24,M5L5res=10,winhr=5)
+g.getM5L5 = function(varnum=data.getmeta,ws3=5,t0_LFMF=0,
+t1_LFMF=24,M5L5res=10,winhr=5)
 }
 \author{
 Vincent T van Hees <vincentvanhees@gmail.com>
