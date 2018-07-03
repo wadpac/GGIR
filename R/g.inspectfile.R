@@ -27,7 +27,7 @@ g.inspectfile = function(datafile) {
     }
     if (dformat == 1) { # .bin
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-      suppressWarnings(try(expr={isitageneactive = header.info(binfile=datafile)},silent=TRUE))
+      suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile)},silent=TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
@@ -146,7 +146,7 @@ g.inspectfile = function(datafile) {
       genea = g.binread(datafile,0,1)
       H = genea$header
     } else if (mon == 2) { #geneactive
-      H = header.info(binfile=datafile)
+      H = GENEAread::header.info(binfile=datafile)
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea

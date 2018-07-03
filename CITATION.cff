@@ -33,8 +33,8 @@
     given-names: Severine
   cff-version: "1.0.3"
   commit: 5f5edfaf4aaf4004d082d49910ad7175d91e8d57
-  date-released: 2018-03-18
-  doi: https://doi.org/10.5281/zenodo.1051064
+  date-released: 2018-07-03
+  doi: https://zenodo.org/record/1226461
   keywords: 
     - "accelerometry"
     - "signal processing"
@@ -43,4 +43,4 @@
   message: "If you use this software, please cite it using these metadata."
   repository-code: "https://github.com/wadpac/GGIR"
   title: GGIR
-  version: "1.5-18"
+  version: "1.5-22"
