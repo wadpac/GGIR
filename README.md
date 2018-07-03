@@ -14,7 +14,9 @@ Key steps:
 1. Create your own working branch
 2. Make your changes in that branch
 3. Commit your changes to your working branch as long as you are not finished with your development
-4. Once your work is finished, make a pull request, such that another developer can review your changes before merging them with the master branch
+4. Make sure the release notes in NEWS.Rd are up to date
+5. Run the tests and checks as CRAN, make sure they pass
+6. Once your work is finished, make a pull request, such that another developer can review your changes before merging them with the master branch
 
 ### For end-users unfamiliar with GitHub:
 If you would like to propose additional functionalities or report an issue. Go to [issues](https://github.com/wadpac/GGIR/issues) and create a new issue.
