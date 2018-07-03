@@ -10,7 +10,8 @@ which is used to generate the timestamps of the start hour minutes 5 minutes and
 start hour plus 24 hours. Function not designed for direct use by package user.
 }
 \usage{
-getStartEnd(d, startHour, outputFormat = "\%d/\%m/\%Y \%H:\%M:\%S",tz = "Europe/London")
+getStartEnd(d, startHour, outputFormat = "\%d/\%m/\%Y \%H:\%M:\%S",
+  tz = "Europe/London")
 }
 \arguments{
   \item{d}{
