@@ -1,12 +1,10 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-22 (release date:10-6-2018)}{
+\section{Changes in version 1.5-22 (release date:3-7-2018)}{
 \itemize{
   \item g.part4 bug fixed that was introduced in version 1.5-21 regarding the handling
-  of daysleepers (people who wake up after noon) causing all estimates to be zero.
-  \item code from depricated R package GENEAread added to GGIR. GENEAread used to be
-  a dependency of GGIR, and by adding the code this missing dependency is now fixed.
+  of daysleepers (people who wake up after noon) causing sleep estimates to be zero.
   }
 }
 \section{Changes in version 1.5-21 (release date:22-4-2018)}{

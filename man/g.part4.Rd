@@ -15,7 +15,8 @@ loglocation = c(),colid = 1,coln1 = 9,nnights = 7,
 sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
     relyonsleeplog=FALSE,def.noc.sleep=c(),
-    storefolderstructure=FALSE,overwrite=FALSE,desiredtz="Europe/London")
+    storefolderstructure=FALSE,overwrite=FALSE,
+    desiredtz="Europe/London")
 }
 \arguments{
   \item{datadir}{
