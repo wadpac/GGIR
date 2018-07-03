@@ -17,8 +17,8 @@ year-month-date and optional followed by hour:minute:second
 For example, "1980-01-01 18:00:00"
 }
   \item{tz}{
- Timezone of data collection, e.g. "Europe/London". See
- https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+ Timezone of data collection, e.g. "Europe/London".
+ See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
  for full list
 }
 }
