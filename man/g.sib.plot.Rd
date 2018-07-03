@@ -8,7 +8,8 @@
   check purposes as part of \link{g.part3}. Not intended for direct use by package user
 }
 \usage{
-  g.sib.plot(SLE,M,I,plottitle,nightsperpage=7,desiredtz="Europe/London")
+  g.sib.plot(SLE, M, I, plottitle, nightsperpage=7, 
+  desiredtz="Europe/London")
 }
 \arguments{
   \item{SLE}{

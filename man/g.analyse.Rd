@@ -16,11 +16,15 @@ combination with the epoch length as defined in g.getmeta.
 
 }
 \usage{
-g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24), quantiletype = 7,
-L5M5window = c(0, 24), M5L5res = 10, includedaycrit = 16, ilevels = c(),
-winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),
-selectdaysfile=c(),window.summary.size=10,dayborder=0,bout.metric = 1,
-closedbout=FALSE,desiredtz = c(),IVIS_windowsize_minutes = 60,
+g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24),
+quantiletype = 7, L5M5window = c(0, 24), M5L5res = 10,
+includedaycrit = 16, ilevels = c(),
+winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),
+boutcriter=c(),mvpadur=c(1,5,10),
+selectdaysfile=c(),window.summary.size=10,
+dayborder=0,bout.metric = 1,
+closedbout=FALSE,desiredtz = c(),
+IVIS_windowsize_minutes = 60,
 IVIS_epochsize_seconds = 3600)
 }
 
@@ -256,8 +260,10 @@ data(data.calibrate)
   C = g.calibrate(datafile) 
   
   #get meta-data:
-  M = g.getmeta(datafile, desiredtz = "Europe/London", windowsizes = c(5, 900, 3600),
-  daylimit = FALSE, offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0))
+  M = g.getmeta(datafile, desiredtz = "Europe/London", 
+  windowsizes = c(5, 900, 3600),
+  daylimit = FALSE, offset = c(0, 0, 0), 
+  scale = c(1, 1, 1), tempoffset = c(0, 0, 0))
 }
 
 
@@ -265,7 +271,8 @@ data(data.calibrate)
 IMP = g.impute(M = data.getmeta, I = data.inspectfile)
 
 #analyse and produce summary:
-A = g.analyse(I = data.inspectfile, C = data.calibrate, M = data.getmeta, IMP)
+A = g.analyse(I = data.inspectfile, C = data.calibrate,
+M = data.getmeta, IMP)
 
 }
 \author{
