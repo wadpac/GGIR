@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-22 (release date:??-?-2018)}{
+\section{Changes in version 1.5-22 (release date:03-7-2018)}{
 \itemize{
   \item g.part4 bug fixed that was introduced in version 1.5-21 regarding the handling
   of daysleepers (people who wake up after noon) causing all estimates to be zero.
