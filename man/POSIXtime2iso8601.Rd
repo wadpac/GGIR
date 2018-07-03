@@ -15,7 +15,8 @@ POSIXtime2iso8601(x,tz)
 Vector of timestamps in POSIX format
 }
   \item{tz}{
- Timezone of data collection, e.g. "Europe/London". See
+ Timezone of data collection, e.g. "Europe/London".
+ See
  https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
  for full list
 }
