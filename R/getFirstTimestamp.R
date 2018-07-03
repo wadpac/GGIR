@@ -1,5 +1,5 @@
 getFirstTimestamp <- function(f, p1) {
-    hhr <- header.info(f)
+    hhr <- GENEAread::header.info(f)
     hcal <- attr(hhr, "calibration")
     t1 <- hcal$t1
     rate <- 1 / hcal$freq
