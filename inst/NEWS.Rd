@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-23 (release date:4-7-2018)}{
+\itemize{
+  \item Unit tests speeded up by using a smaller test file.
+  }
+}
+
 \section{Changes in version 1.5-22 (release date:3-7-2018)}{
 \itemize{
   \item g.part4 bug fixed that was introduced in version 1.5-21 regarding the handling
