@@ -397,7 +397,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq[2] = nightsi[wi]
                         } else if (wi>nrow(summarysleep_tmp2)) {
                           qqq[1] = qqq[2] + 1
-                          qqq[2] = length(diur)
+                          #qqq[2] = length(diur)
+                          qqq[2] = nightsi[wi]
+                          if(is.na(qqq[2])==TRUE | length(diur) < qqq[2]) qqq[2] = length(diur)
                         }
                       } else if(timewindowi == "WW") {
                         if (wi==1){
@@ -525,7 +527,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             qqq2 = nightsi[wi]
                           } else if (wi>nrow(summarysleep_tmp2)) {
                             qqq1 = qqq2 + 1
-                            qqq2 = length(diur)
+                            #qqq2 = length(diur)
+                            qqq2 = nightsi[wi]
+                            if(is.na(qqq2)==TRUE | length(diur) < qqq2) qqq2 = length(diur)
                           }
                           dsummary[di, fi] = "MM"
                         } else if (timewindowi == "WW") {
@@ -645,7 +649,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           endd = floor(WLH*10) /10 # rounding needed for non-integer window lengths
                           nwindow_f = (endd-wini) #number of windows for L5M5 analyses
                           ignore = FALSE
-                          if (endd <= wini) ignore = TRUE # day is shorter then time window, so ignore this # modified from < to <= on 21-1-2017
+                          if (endd <= wini | nwindow_f < 1) ignore = TRUE # day is shorter then time window, so ignore this # modified from < to <= on 21-1-2017
                           nwindow_f = nwindow_f * (60/reso)
                           if (ignore == FALSE) {
                             ACCrunwin = matrix(0,nwindow_f,1)
