@@ -11,8 +11,9 @@ them as nocturnal sleep or day time sustained inactivity periods.
 Typical users should work with function g.shell.GGIR only.
 }
 \usage{
-g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,acc.metric="ENMO",
-  ignorenonwear=FALSE,overwrite=FALSE,desiredtz="Europe/London",constrain2range=TRUE,
+g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
+  acc.metric="ENMO", ignorenonwear=FALSE,overwrite=FALSE,
+  desiredtz="Europe/London",constrain2range=TRUE,
   do.part3.pdf=TRUE)
 }
 \arguments{
@@ -39,7 +40,8 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,acc.metric="E
   which will be implemented. For example, timethreshold = c(5,10)
   }
   \item{acc.metric}{
-    Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1})
+    Which one of the metrics do you want to consider to analyze L5. 
+    The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{ignorenonwear}{
   If TRUEE then ignore detected monitor non-wear periods to avoid 
@@ -87,7 +89,8 @@ accelerometer data was invalid, e.g. monitor not worn
 \dontrun{
 metadatadir = "C:/myfolder/meta" # assumes that there is a subfolder in
 # metadatadir named 'basic' containing the output from g.part1
-g.part3(metadatadir=metadatadir,anglethreshold=5,timethreshold=5,overwrite=FALSE)
+g.part3(metadatadir=metadatadir, anglethreshold=5, 
+timethreshold=5, overwrite=FALSE)
 }
 }
 \author{
