@@ -2,7 +2,7 @@ library(GGIR)
 context("Chainof5parts")
 options(encoding = "UTF-8")
 test_that("chainof5parts", {
-  Ndays = 4
+  Ndays = 2
   create_test_acc_csv(Nmin=Ndays*1440)
   create_test_sleeplog_csv()
   fn = "123A_testaccfile.csv"
@@ -14,20 +14,21 @@ test_that("chainof5parts", {
   #--------------------------------------------
   # part 1
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
-                     studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE)
+                     studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE,
+          windowsizes = c(15,3600,3600))
   expect_that(dir.exists(dn),is_true())
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   
-  expect_that(round(C$scale,digits=5),equals(c(0.98480, 0.98337, 0.98432)))
-  expect_that(nrow(M$metalong),equals(383))
+  expect_that(round(C$scale,digits=5),equals(c(0.98472, 0.98387, 0.98435)))
+  expect_that(nrow(M$metalong),equals(47))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
-  expect_that(nrow(M$metashort),equals(68940))
-  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.03172))
+  expect_that(nrow(M$metashort),equals(11280))
+  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.02894))
   expect_that(I$monc,equals(3))
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
-  expect_that(C$npoints,equals(14848))
+  expect_that(C$npoints,equals(9807))
   #--------------------------------------------
   # part 2
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
@@ -44,11 +45,11 @@ test_that("chainof5parts", {
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(summarycsv),is_true())
   expect_that(file.exists(daysummarycsv),is_true())
-  expect_that(nrow(IMP$metashort),equals(68940))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.03172))
-  expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(3.98958))
-  expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
-  expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
+  expect_that(nrow(IMP$metashort),equals(11280))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02894))
+  expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
+  #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
+  #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
   #--------------------------------------------
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
@@ -58,7 +59,7 @@ test_that("chainof5parts", {
   load(rn[1])
   
   expect_that(dir.exists(dirname),is_true())
-  expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(10115))
+  expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(2952))
 
   #--------------------------------------------
   # part 4
@@ -75,7 +76,7 @@ test_that("chainof5parts", {
   
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(vis_sleep_file),is_true())
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.5389))
+  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
   expect_that(as.logical(nightsummary$acc_available[1]),is_true())
   expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
   
@@ -90,9 +91,9 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_that(dir.exists(dirname),is_true())
   expect_that(file.exists(rn[1]),is_true())
-  expect_that(nrow(output),equals(10)) # changed because part5 now gives also first and last day
+  expect_that(nrow(output),equals(6)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(134))
-  expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(31.1708)) 
+  expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958)) 
   # expect_that(round(as.numeric(output$dur_day_min[6]),digits=4),equals(775.5))
 
   dn = "output_test"
