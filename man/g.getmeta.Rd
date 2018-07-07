@@ -20,9 +20,11 @@ tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
 do.lfenmo = FALSE, do.en = FALSE,
 do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE,
 do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
-do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
-do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,meantempcal=c(),chunksize=c(),
+do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
+do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
+do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
+do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,
+meantempcal=c(),chunksize=c(),
 selectdaysfile=c(),dayborder=0,dynrange=c(),...)
 }
 \arguments{

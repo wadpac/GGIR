@@ -12,8 +12,9 @@ calls to \link{g.part1}, \link{g.part2}, \link{g.part3} and
 on optional input arguments.
 }
 \usage{
-g.shell.GGIR(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0, 
-do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...)
+g.shell.GGIR(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),
+f0=1,f1=0, do.report=c(2),overwrite=FALSE,visualreport=FALSE,
+viewingwindow=1,...)
 }
 \arguments{
   \item{mode}{
@@ -27,7 +28,7 @@ do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...)
   \item{datadir}{
   Directory where the accelerometer files are stored or list, e.g. 
   "C:/mydata" of accelerometer filenames and directories, e.g. 
-  c("C:/mydata/myfile1.bin","C:/mydata/myfile2.bin").
+  c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
   \item{outputdir}{
   Directory where the output needs to be stored. Note that this 

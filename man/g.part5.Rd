@@ -9,15 +9,17 @@ profiling of sleep and physical activity stratified across intensity levels and
 based on bouted periods as well as non-bouted periods.
 }
 \usage{
-g.part5(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7,
-hrs.del.start=0,hrs.del.end =0,
-loglocation= c(),excludefirstlast.part5=FALSE,windowsizes=c(5,900,3600), 
-acc.metric="ENMO",boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,
-storefolderstructure=FALSE,threshold.lig = c(40),threshold.mod = c(100),
-threshold.vig = c(400),timewindow=c("MM","WW"),boutdur.mvpa = c(1,5,10),
-boutdur.in = c(10,20,30),boutdur.lig = c(1,5,10),winhr = 5,
-M5L5res = 10,overwrite=FALSE,desiredtz="Europe/London",bout.metric=4,dayborder=0,
-save_ms5rawlevels=FALSE)
+g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1, 
+  maxdur=7, hrs.del.start=0, hrs.del.end =0,
+  loglocation= c(), excludefirstlast.part5=FALSE, 
+  windowsizes=c(5,900,3600),acc.metric="ENMO", boutcriter.mvpa=0.8, 
+  boutcriter.in=0.9, boutcriter.lig=0.8, storefolderstructure=FALSE, 
+  threshold.lig = c(40), threshold.mod = c(100),
+  threshold.vig = c(400), timewindow=c("MM","WW"), 
+  boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), 
+  boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
+  overwrite=FALSE, desiredtz="Europe/London", 
+  bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE)
 
 }
 \arguments{

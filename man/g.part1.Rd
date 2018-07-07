@@ -18,20 +18,21 @@ for the movement scientist. Function \link{g.shell.GGIR} provides the main shell
 that allows for operating g.part1 and g.part2.
 }
 \usage{
-g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
-                   desiredtz = "Europe/London",chunksize=c(),studyname=c(),
-                   do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
-                   do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE,do.mad = FALSE,
-                   do.anglex=FALSE,do.angley=FALSE,
-                   do.anglez=FALSE,do.enmoa=FALSE,
-                   do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
-                   do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
-                   do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-                   do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
-                   use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
-                   printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,
-                   dynrange=c())
+g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
+        windowsizes = c(5,900,3600),
+        desiredtz = "Europe/London",chunksize=c(),studyname=c(),
+        do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
+        do.bfen = FALSE, do.hfen=FALSE, do.hfenplus = FALSE,
+        do.mad = FALSE, do.anglex=FALSE, do.angley=FALSE,
+        do.anglez=FALSE, do.enmoa=FALSE,
+        do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE,
+        do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE,
+        do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
+        do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
+        use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
+        printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
+        backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,
+        dynrange=c())
 }
 \arguments{
   \item{datadir}{
