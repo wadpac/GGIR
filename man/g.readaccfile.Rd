@@ -9,8 +9,8 @@ accelerometer file, which are processed and then deleted. This is needed
 for memory management.
 }
 \usage{
-g.readaccfile(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder,ws)
+g.readaccfile(filename,blocksize,blocknumber,
+  selectdaysfile=c(),filequality, decn,dayborder,ws)
 }
 \arguments{
   \item{filename}{
@@ -55,11 +55,12 @@ continueing to read the next block of data or not
 }
 \examples{
 \dontrun{
-filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
+filequality = data.frame(filetooshort=FALSE, filecorrupt=FALSE,
 filedoesnotholdday = FALSE)
-output = g.readaccfile(filename="C:/myfile.bin",blocksize=20000,blocknumber=1,
-selectdaysfile=c(),filequality=filequality,
-                         decn=".",dayborder=0) 
+output = g.readaccfile(filename="C:/myfile.bin", 
+locksize=20000, blocknumber=1,
+selectdaysfile=c(), filequality=filequality,
+                         decn=".", dayborder=0) 
 }
 }
 \author{
