@@ -206,7 +206,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       cat("\nEnd of file reached\n")
     }
   } else if (mon == 3 & dformat == 2) { # Actigraph csv format
-    try(expr={P = read.csv(filename,nrow = (blocksize*300), skip=(10+(blocksize*300*(blocknumber-1))),dec=decn)},silent=TRUE)
+    try(expr={
+      P = invisible(as.data.frame(
+        data.table::fread(filename,nrow = (blocksize*300), 
+                          skip=(10+(blocksize*300*(blocknumber-1))), 
+                          dec=decn,showProgress = FALSE)))
+      },silent=TRUE)
     if (length(P) > 1) {
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
