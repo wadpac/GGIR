@@ -92,7 +92,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   # the setting below loads blocks size of 24 hours (modify if causing memory problems)
   blocksize = round(14512 * (sf/50) * chunksize)
   if (mon == 1) blocksize = round(21467 * (sf/80)  * chunksize)
-  if (mon == 3 & dformat == 2) blocksize = round(blocksize/5)
+  if (mon == 3 & dformat == 2) blocksize = round(blocksize)#round(blocksize/5) # Actigraph
   if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
   if (mon == 4 & dformat == 4) {
     blocksize = round(blocksize * 1.0043)
