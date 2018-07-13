@@ -51,6 +51,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   nfeatures = 500
   ws3 = windowsizes[1]
   ds_names = rep("",nfeatures)
+  ds_defs = rep("",nfeatures)
   di = 1
   cnt = 1
   fnames.ms3 = sort(fnames.ms3)
@@ -419,9 +420,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         fi = 1
                         # START STORING BASIC INFORMATION
                         dsummary[di,fi] = id #summarysleep_tmp2$id[1]
-                        ds_names[fi] = "id";      fi = fi + 1
+                        ds_names[fi] = "id";  ds_defs[fi] = "Identification of the participant";    fi = fi + 1
                         dsummary[di,fi] = fnames.ms3[i]
-                        ds_names[fi] = "filename";      fi = fi + 1
+                        ds_names[fi] = "filename"; ds_defs[fi] = "Filename";     fi = fi + 1
                         if (timewindowi == "WW") {
                           plusb = 0
                         } else {
@@ -430,11 +431,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         if(wi>nrow(summarysleep_tmp2)+plusb) {
                           dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
                                                      as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
-                          ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
+                          ds_names[fi:(fi+1)] = c("weekday","calendardate") 
+                          ds_defs[fi:(fi+1)] = c("Day of the week","Calendar date");      fi = fi + 2
                           dsummary[di,fi] = j
-                          ds_names[fi] = "acc_def";      fi = fi + 1
+                          ds_names[fi] = "acc_def" 
+                          ds_defs[fi] = "Angle and time values for the sustained inactivity periods detection";     fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$night[wi-1]+1
-                          ds_names[fi] = "night number";      fi = fi + 1
+                          ds_names[fi] = "night number"; ds_defs[fi] = "Night number";     fi = fi + 1
                           dsummary[di,fi:(fi+11)] = NA  #Since this is data afte last night, we don't have sleep information here
                           ds_names[fi:(fi+11)] = c("acc_onset","acc_wake","sleeplog_onset","sleeplog_wake",
                                                    "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts","sleeplog_wake_ts",
