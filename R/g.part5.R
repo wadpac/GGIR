@@ -441,7 +441,19 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           dsummary[di,fi:(fi+11)] = NA  #Since this is data afte last night, we don't have sleep information here
                           ds_names[fi:(fi+11)] = c("acc_onset","acc_wake","sleeplog_onset","sleeplog_wake",
                                                    "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts","sleeplog_wake_ts",
-                                                   "daysleeper","cleaningcode","sleeplog_used","acc_available"); fi = fi + 12
+                                                   "daysleeper","cleaningcode","sleeplog_used","acc_available")
+                          ds_defs[fi:(fi+11)] = c("Detected onset of sleep expressed as hours since the previous midnight (e.g., 26 means 2am)",
+                                                 "Detected waking time (after sleep period) expressed as hours since the previous midnight (e.g., 38 means 8am)",
+                                                 "Sleep onset derived from sleep log or specified by researcher if not sleep log is available (e.g., 26 means 2am)",
+                                                 "Waking time derived from sleep log or specified by researcher if not sleep log is available (e.g., 38 means 8am)",
+                                                 "acc_onset formatted as a timestamp",
+                                                 "acc_wake formatted as a timestamp",
+                                                 "sleeplog_onset formatted as a timestamp",
+                                                 "sleeplog_wake formatted as a timestamp",
+                                                 "0 = nightsleeper (sleep period did not overlap with noon); 1 = daysleeper (sleep period did overlap with noon)",
+                                                 "0 = no problem; 1 = sleeplog not available, 2 = not enough valid accelerometer data, 3 = no accelerometer data available; 4 = there were no nights to be analysed for this person",
+                                                 "Whether a sleep log was used for this sleep period detection (TRUE/FALSE)",
+                                                 "Whether accelerometer data was available (TRUE/FALSE). This dataframe is used in g.report.part4 to create two reports one per night and one per person"); fi = fi + 12
                           
                         } else {
                           if(timewindowi == "MM" & wi == nrow(summarysleep_tmp2)+plusb) { # for the last day a ot of information is missing, so fill in defaults 
