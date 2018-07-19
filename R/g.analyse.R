@@ -250,7 +250,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         hh2 = aggregate(. ~ hour_perday,data=hh,mean)
         Xh = hh2$Xi
         # average acceleration per day
-        Xm = mean(Xh,na.rm = TRUE) 
+        Xm = suppressWarnings(mean(Xh,na.rm = TRUE))
         p = length(Xh)
         InterdailyStability = (sum((Xh - Xm)^2) * N) / (p * sum((Xi-Xm)^2)) # IS: lower is less synchronized with the 24 hour zeitgeber
         IntradailyVariability = (sum(diff(Xi)^2) * N) / ((N-1) * sum((Xm-Xi)^2)) #IV: higher is more variability within days (fragmentation)
@@ -882,7 +882,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         uncona = unique(daysummary[,dtwi])
         if (length(uncona) == 1 & uncona[1] == "") {
         } else {
-          v4 = mean(as.numeric(daysummary[,dtwi]),na.rm=TRUE) #plain average of available days
+          v4 = suppressWarnings(mean(as.numeric(daysummary[,dtwi]),na.rm=TRUE)) #plain average of available days
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
           s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")  #daytoweekvar_names[dtwtel+1]
           #========================================================================
@@ -890,8 +890,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           # Average of available days
           dtw_wkend = as.numeric(daysummary[wkend,dtwi])
           dtw_wkday = as.numeric(daysummary[wkday,dtwi])
-          filesummary[(vi+2+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # #weekend average
-          filesummary[(vi+3+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # #weekday average
+          filesummary[(vi+2+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkend,na.rm=TRUE)) # #weekend average
+          filesummary[(vi+3+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkday,na.rm=TRUE)) # #weekday average
           s_names[(vi+2+(dtwtel*sp))] = paste("WE_",ds_names[dtwi],sep="") #Weekend no weighting
           s_names[(vi+3+(dtwtel*sp))] = paste("WD_",ds_names[dtwi],sep="") #weekdays no weighting
           #==================================================
@@ -902,8 +902,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           if (length(dtw_wkday) > 5) {
             dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
           }
-          filesummary[(vi+4+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # #weekend average
-          filesummary[(vi+5+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # #weekday average
+          filesummary[(vi+4+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkend,na.rm=TRUE)) # #weekend average
+          filesummary[(vi+5+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkday,na.rm=TRUE)) # #weekday average
           s_names[(vi+4+(dtwtel*sp))] = paste("WWE_",ds_names[dtwi],sep="")
           s_names[(vi+5+(dtwtel*sp))] = paste("WWD_",ds_names[dtwi],sep="")
           dtwtel = dtwtel + 1
@@ -922,11 +922,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     GGIRversion = SI$otherPkgs$GGIR$Version
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
     filesummary[(vi+5)] = GGIRversion #"2014-03-14 12:14:00 GMT"
-    s_names[vi:(vi+5)] = c("data exclusion stategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight)",
+    # options(warn=-1)
+    s_names[vi:(vi+5)] = as.character(c("data exclusion stategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight)",
                            "n hours ignored at start of meas (if strategy=1)",
                            "n hours ignored at end of meas (if strategy=1)",
                            "n days of measurement after which all data is ignored (if strategy=1)",
-                           "epoch size to which acceleration was averaged (seconds)","GGIR version")
+                           "epoch size to which acceleration was averaged (seconds)",
+                           "GGIR version"))
+    # options(warn=0)s
     vi = vi + 5
   }
   #---------------------------------------------------------------
@@ -966,7 +969,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   names(filesummary) = s_names
   columns2order = 30:(ncol(filesummary)-8)
   filesummary = filesummary[,c(names(filesummary)[1:29],sort(names(filesummary[,columns2order])),names(filesummary)[(ncol(filesummary)-7):ncol(filesummary)])]
-  filesummary = filesummary[,-c(16:22)] # remove double variables
+  # filesummary = filesummary[,-c(16:22)] # remove double variables
   filesummary = filesummary[,!duplicated(filesummary)]
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort

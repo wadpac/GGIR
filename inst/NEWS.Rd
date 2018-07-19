@@ -1,6 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-24 (release date:9-7-2018)}{
+\itemize{
+  \item Variable names ENMO accidentatly disappeared from g.analyse output
+  in 1.5-23, this has now been reversed.
+  \item Fixed issue in g.part5 in handling the last day of measurement when using
+  'MM' windows and dayborder not equal to 0 (midnight) sometimes resulting in 
+  the last day longer than 25 hours.
+  \item Fixed error message in g.part5 that occurs when calculating L5M5 when day
+  is shorter than L5M5 time window. 
+  }
+}
+
 \section{Changes in version 1.5-23 (release date:4-7-2018)}{
 \itemize{
   \item Unit tests speeded up by using a smaller test file.
