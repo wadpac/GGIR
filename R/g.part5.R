@@ -797,21 +797,21 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         for (bci in 1:nrow(bc.mvpa)) {
                           dsummary[di,fi+(bci-1)] = length(which(diff(bc.mvpa[bci,])[sse] == 1))
                           ds_names[fi+(bci-1)] = paste0("Nbouts_MVPA_D",boutdur.mvpa[bci],"T",TRMi)
-                          ds_defs[fi+(bci-1)] = paste0("Number of MVPA bouts lasting at least ",boutdur.mvpa[bci]," minutes",TRMi)
+                          ds_defs[fi+(bci-1)] = paste0("Number of MVPA bouts lasting at least ",boutdur.mvpa[bci]," minute(s)")
                         }
                         fi = fi + bci
                         bc.in = checkshape(bc.in)
                         for (bci in 1:nrow(bc.in)) {
                           dsummary[di,fi+(bci-1)] = length(which(diff(bc.in[bci,])[sse] == 1))
                           ds_names[fi+(bci-1)] = paste0("Nbouts_INB_D",boutdur.in[bci],"T",TRLi)
-                          ds_defs[fi+(bci-1)] = paste0("Number of inactivity bouts lasting at least ",boutdur.mvpa[bci]," minutes",TRMi)
+                          ds_defs[fi+(bci-1)] = paste0("Number of inactivity bouts lasting at least ",boutdur.mvpa[bci]," minute(s)")
                         }
                         fi = fi + bci
                         bc.lig = checkshape(bc.lig)
                         for (bci in 1:nrow(bc.lig)) {
                           dsummary[di,fi+(bci-1)] = length(which(diff(bc.lig[bci,])[sse] == 1))
                           ds_names[fi+(bci-1)] = paste0("Nbouts_LIGB_D",boutdur.lig[bci],"T",TRLi,"_",TRMi)
-                          ds_defs[fi+(bci-1)] = paste0("Number of light physical activity bouts lasting at least ",boutdur.mvpa[bci]," minutes",TRMi)
+                          ds_defs[fi+(bci-1)] = paste0("Number of light physical activity bouts lasting at least ",boutdur.mvpa[bci]," minute(s)")
                         }
                         fi = fi + bci
                         #===============================================
