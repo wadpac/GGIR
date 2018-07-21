@@ -30,6 +30,9 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   \item{includedaycrit}{
   see \link{g.part2}
   }
+  \item{includewindowcrit}{
+  Number hours for a day to be considered in the analyses (this is not wearing hours, but total number of hours)
+  }
 }
 \value{
 Function does not produce data, but only writes reports
