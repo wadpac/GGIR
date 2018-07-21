@@ -1,5 +1,5 @@
 g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
-                        do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...) {
+                        do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,includewindowcrit=2,...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -284,7 +284,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
-                   includenightcrit=includenightcrit,includedaycrit=includedaycrit)
+                   includenightcrit=includenightcrit,includedaycrit=includedaycrit,
+                   includewindowcrit=includewindowcrit)
   }
   if (visualreport == TRUE) {
     cat('\n')
