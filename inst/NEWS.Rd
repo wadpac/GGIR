@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-25 (release date:22-7-2018)}{
+\section{Changes in version 1.6-0 (release date:22-7-2018)}{
 \itemize{
   \item Read functionality for Actigraph csv files speeded up by replacing
   read.csv by data.table::fread
