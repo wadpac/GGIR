@@ -13,6 +13,12 @@
   window over which L5M5 analysis is performed.
   \item Argument winhr is now reflected in g.analyse/g.part2 output variable
   names, previously this variable name was hardcoded to L5M5.
+  \item Part2 output variable names updated to be more consistent in
+  structure and more explicit about the timewindow over which they
+  are calculated. The variables that were calculated over the full 
+  recording (using diurnal normalization) now have the extension 
+  "fullRecording", this in contrast to the variables that are only 
+  calculated from measurement days with 'enough' valid data.
   }
 }
 \section{Changes in version 1.5-24 (release date:9-7-2018)}{
