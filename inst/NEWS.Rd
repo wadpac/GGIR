@@ -5,6 +5,10 @@
 \itemize{
   \item Read functionality for Actigraph csv files speeded up by replacing
   read.csv by data.table::fread
+  \item Argument qwindow is now able to handle input vectors longer than 2
+  and will derived all variables for each time window that can be defined 
+  from the values of qwindow, e.g. value =c(0,8,24) will analyse the windows:
+  0-8, 8-24 and 0-24.
   \item Argument L5M5window depricated because argument qwindow now defines the
   window over which L5M5 analysis is performed.
   \item Argument winhr is now reflected in g.analyse/g.part2 output variable
