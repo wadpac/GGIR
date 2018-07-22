@@ -75,7 +75,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
         }
-        
         SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
                         includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
@@ -92,7 +91,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             write.csv(IMP$metashort,paste(metadatadir,"/",csvfolder,"/",name,".csv",sep=""),row.names=FALSE)
           } 
         }
-
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (cnt78 == 1) { #i == 1 | i == f0 | 
             SUMMARY = SUM$summary
@@ -131,7 +129,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                 names(SUM$windowsummary) =   colnames(winSUMMARY2)
               }
             }
-            
           }
         }
         if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
