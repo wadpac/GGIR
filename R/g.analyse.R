@@ -4,7 +4,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
-  
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
@@ -285,7 +284,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
     daysummary = matrix("",ceiling(ndays),nfeatures)
-    
     ds_names = rep("",nfeatures)
     #=============================
     if (length(selectdaysfile) > 0) {   # Millenium cohort related:
@@ -445,6 +443,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
                    ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
                    ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
+                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
+                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
+                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
+                   ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
                    ,"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
       if (di == 1) {
         daysummary[di,fi] = wdayname
@@ -504,7 +506,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           #============================================================
           keepindex_46 = matrix(NA, length(2:ncol(metashort)), 2)
           keepindex_48 = matrix(NA, length(2:ncol(metashort)), 2)
-          
           # Generate all variables per 24 hours or repeat this over the time window defined by qwindow
           anwi_t0 = 1 # analysis window time 0
           anwi_t1 = nrow(as.matrix(vari)) # analysis window time 1
@@ -740,7 +741,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       colnames(metashort) != "anglez")
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
   colnames_to_lookat = colnames(metashort)[lookat]
-  
   MA = matrix(NA,length(lookat),1)
   if (length(which(r5 == 0)) > 0) { #to catch strategy 2 with only 1 midnight and other cases where there is no valid data
     for (h in 1:length(lookat)) {
@@ -847,10 +847,13 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     # expand with extracted values from features per day: do this for ENMO and activity levels
     wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
     columnWithAlwaysData = which(ds_names == "N hours")
-    v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F)
+    NVHcolumn = which(ds_names == "N valid hours") #only count in the days for which the inclusion criteria is met
+    v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F &
+                 as.numeric(daysummary[wkend,NVHcolumn]) >= includedaycrit)
     wkend = wkend[v1]
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
-    v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F)	
+    v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F  & 
+                 as.numeric(daysummary[wkday,NVHcolumn]) >= includedaycrit)
     wkday = wkday[v2]
     filesummary[vi] = length(wkend) # number of weekend days
     if (is.na(filesummary[vi]) == TRUE) filesummary[vi] = 0
@@ -888,12 +891,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           #========================================================================
           # attempt to stratify to week and weekend days
           # Average of available days
-          dtw_wkend = as.numeric(daysummary[wkend,dtwi])
-          dtw_wkday = as.numeric(daysummary[wkday,dtwi])
+          dtw_wkend = suppressWarnings(as.numeric(daysummary[wkend,dtwi]))
+          dtw_wkday = suppressWarnings(as.numeric(daysummary[wkday,dtwi]))
           filesummary[(vi+2+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkend,na.rm=TRUE)) # #weekend average
           filesummary[(vi+3+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkday,na.rm=TRUE)) # #weekday average
-          s_names[(vi+2+(dtwtel*sp))] = paste("WE_",ds_names[dtwi],sep="") #Weekend no weighting
-          s_names[(vi+3+(dtwtel*sp))] = paste("WD_",ds_names[dtwi],sep="") #weekdays no weighting
+          s_names[(vi+2+(dtwtel*sp))] = paste0("WE_",ds_names[dtwi]) #Weekend no weighting
+          s_names[(vi+3+(dtwtel*sp))] = paste0("WD_",ds_names[dtwi]) #weekdays no weighting
           #==================================================
           # Weighted average of available days
           if (length(dtw_wkend) > 2) {
