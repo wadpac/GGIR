@@ -4,7 +4,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
-
+  L5M5window = c(0,24) # as of version 1.5-25 this is hardcoded because argument qwindow now
+  # specifies the window over which L5M5 analysis is done
   winhr = winhr[1]
   fname=I$filename
   averageday = IMP$averageday
