@@ -832,7 +832,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   q0 = length(MA) + 1
   filesummary[(vi+2):(vi+q0)] = MA
-  colnames_to_lookat = paste0(colnames_to_lookat,"_diurnalBalancedMean")
+  colnames_to_lookat = paste0(colnames_to_lookat,"_fullRecordingMean")
   s_names[vi:(vi+q0)] = c("calib_err",
                           "calib_status",colnames_to_lookat) #colnames(metashort)[2:ncol(metashort)]
   vi = vi+q0+2
@@ -840,11 +840,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (doquan == TRUE) {
     q1 = length(QUAN)
     filesummary[vi:((vi-1)+q1)] = QUAN*1000
-    s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_diurnalBalanced")
+    s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_fullRecording")
     vi = vi + q1
     q1 = length(ML5AD)
     filesummary[vi:((vi-1)+q1)] = ML5AD
-    s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_diurnalBalanced")
+    s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_fullRecording")
     vi = vi + q1
   }
   #---------------------------------------
