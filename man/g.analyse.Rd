@@ -60,8 +60,9 @@ IVIS_epochsize_seconds = 3600)
   quantile function in STATS package
   }
   \item{L5M5window}{
+    Argument depricated after version 1.5-24. This argument used to define the
     start and end time, in 24 hour clock hours, over which L5M5 needs to be
-    calculated.
+    calculated. Now this is done with argument qwindow.
   }
   \item{M5L5res}{
   resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
