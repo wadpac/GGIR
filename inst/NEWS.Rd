@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.5-25 (release date:22-7-2018)}{
+\itemize{
+  \item Read functionality for Actigraph csv files speeded up by replacing
+  read.csv by data.table::fread
+  }
+}
 \section{Changes in version 1.5-24 (release date:9-7-2018)}{
 \itemize{
   \item Variable names ENMO accidentatly disappeared from g.analyse output
@@ -12,7 +18,6 @@
   is shorter than L5M5 time window. 
   }
 }
-
 \section{Changes in version 1.5-23 (release date:4-7-2018)}{
 \itemize{
   \item Unit tests speeded up by using a smaller test file.
