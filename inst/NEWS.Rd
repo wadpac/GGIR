@@ -7,6 +7,8 @@
   read.csv by data.table::fread
   \item Argument L5M5window depricated because argument qwindow now defines the
   window over which L5M5 analysis is performed.
+  \item Argument winhr is now reflected in g.analyse/g.part2 output variable
+  names, previously this variable name was hardcoded to L5M5.
   }
 }
 \section{Changes in version 1.5-24 (release date:9-7-2018)}{
