@@ -64,10 +64,8 @@ test_that("chainof5parts", {
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02894))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
-  # expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
-  # expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
-  expect_that(round(as.numeric(SUM$summary$`WD_L5_ENMO_mg_0-24hr`), digits=4),equals(3.7564))
-
+  #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
+  #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
   #--------------------------------------------
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
@@ -111,7 +109,7 @@ test_that("chainof5parts", {
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958))
   # expect_that(round(as.numeric(output$dur_day_min[6]),digits=4),equals(775.5))
-  
+
  #--------------------------------------------
   #g.shell.GGIR
   suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
