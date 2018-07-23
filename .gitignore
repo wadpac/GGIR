@@ -6,3 +6,4 @@
 *.dll
 *.RData
 *.Rd2pdf*
+.zenodo.json
