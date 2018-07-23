@@ -39,7 +39,7 @@
     - "accelerometry"
     - "signal processing"
     - "time series"
-  license: LGPL (>= 2.0, < 3)
+  license: LGPL-2.0-or-later
   message: "If you use this software, please cite it using these metadata."
   repository-code: "https://github.com/wadpac/GGIR"
   title: GGIR
