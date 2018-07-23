@@ -1,0 +1,42 @@
+{
+    "creators": [
+        {
+            "affiliation": "Netherlands eScience Center",
+            "name": "van Hees, Vincent",
+            "orcid": "https://orcid.org/0000-0003-0182-9008"
+        },
+        {
+            "affiliation": "Biomathematics and Statistics Scotland, UK",
+            "name": "Fang, Zhou"
+        },
+        {
+            "affiliation": "MRC Epidemiology Unit, Cambridge, UK",
+            "name": "Zhao, Jing Hua"
+        },
+        {
+            "affiliation": "Centre for Longitudinal Studies, University College London, London, UK",
+            "name": "Heywood, Joe"
+        },
+        {
+            "affiliation": "Department of Mathematics, University of Leicester, UK, Siberian Federal University, Krasnoyarsk, Rusia",
+            "name": "Mirkes, Evgeny"
+        },
+        {
+            "affiliation": "Faculty of Physical Activity and Sport Sciences, University of Granada, Spain",
+            "name": "Migueles, Jairo"
+        },
+        {
+            "affiliation": "INSERM, French Institute of Health and Medical Research, Paris, France",
+            "name": "Sabia, Severine"
+        }
+    ],
+    "keywords": [
+        "accelerometry",
+        "signal processing",
+        "time series"
+    ],
+    "license": {
+        "id": "LGPL-2.0-or-later"
+    },
+    "title": "GGIR"
+}
