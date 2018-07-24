@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis.yml$
+.zenodo.json
 CITATION.cff
