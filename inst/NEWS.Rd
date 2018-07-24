@@ -1,13 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-25 (release date:22-7-2018)}{
+\section{Changes in version 1.5-25 (release date:24-7-2018)}{
 \itemize{
   \item Read functionality for Actigraph csv files speeded up by replacing
   read.csv by data.table::fread
   \item Fixed calculation of N valid WEdays and Nvalid WKdays in part2 that was wrong
   since version 1.5-21. It counted all days and did not exclude days with insufficient
   amount of data.
+  \item Fixed warning message in test of g.part5
   }
 }
 \section{Changes in version 1.5-24 (release date:9-7-2018)}{
