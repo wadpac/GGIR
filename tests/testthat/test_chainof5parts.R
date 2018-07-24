@@ -101,6 +101,7 @@ test_that("chainof5parts", {
                      loglocation= sleeplog_fn,
                      overwrite=TRUE, excludefirstlast=FALSE)
   dirname = "output_test/meta/ms5.out/"
+
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(dir.exists(dirname),is_true())
