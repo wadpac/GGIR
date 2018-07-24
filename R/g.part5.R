@@ -252,6 +252,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
           }
           # update variable sibdetection
+          if (redo2 > length(sibdetection)) {
+            delta = redo2 - length(sibdetection)
+            redo2 = length(sibdetection)
+            sdl1 = sdl1[1:(length(sdl1)-delta)]
+          }
+          if (redo1 > length(sibdetection)) {
+            redo1 = length(sibdetection)
+            sdl1 = sdl1[1]
+          }
           sibdetection[redo1:redo2] = sdl1
           #========================================================
           # DIURNAL BINARY CLASSIFICATION INTO SLEEP OR WAKE PERIOD 
@@ -333,7 +342,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
-                  
                   levels = identify_levels(time,diur,sibdetection,ACC,
                                            TRLi,TRMi,TRVi,
                                            boutdur.mvpa,boutcriter.mvpa,
