@@ -272,7 +272,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           }
           if (nrow(summarysleep_tmp2) > 0) {
             for (k in 1:length(summarysleep_tmp2$calendardate)){
-              print("-----------------")
               tt = unlist(strsplit(as.character(summarysleep_tmp2$calendardate[k]),"/"))
               w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$acc_onset_ts[k]),sep="")
               w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$acc_wake_ts[k]),sep="")
