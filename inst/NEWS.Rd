@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.5-26 (release date:26-7-2018)}{
+\itemize{
+  \item Fixed timezone dependency of g.analyse (affecting order of columns), g.part5
+  (affecting time detection), and test_chainof5parts.R (combination of both)
+  }
+}
 \section{Changes in version 1.5-25 (release date:24-7-2018)}{
 \itemize{
   \item Read functionality for Actigraph csv files speeded up by replacing
