@@ -971,6 +971,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
   columns2order = 30:(ncol(filesummary)-8)
+  options(encoding = "UTF-8")
   filesummary = filesummary[,c(names(filesummary)[1:29],sort(names(filesummary[,columns2order])),names(filesummary)[(ncol(filesummary)-7):ncol(filesummary)])]
   # filesummary = filesummary[,-c(16:22)] # remove double variables
   filesummary = filesummary[,!duplicated(filesummary)]
