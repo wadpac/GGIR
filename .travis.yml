@@ -1,8 +1,10 @@
-
 matrix:
-  befor_install:
-    - export TZ=Europe/London
-    - export TZ=America/Los_Angeles
+    include:
+        env: timezone=Europe/London
+        env: timezone=America/Los_Angeles
+
+befor_install:
+  - export TZ=$timezone
 
 language: r
 sudo: false
