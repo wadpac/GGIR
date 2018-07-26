@@ -82,7 +82,7 @@ test_that("chainof5parts", {
   g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
           excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
-          relyonsleeplog=FALSE,
+          relyonsleeplog=FALSE,desiredtz=desiredtz,
           storefolderstructure=FALSE, overwrite=TRUE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -101,7 +101,6 @@ test_that("chainof5parts", {
                      loglocation= sleeplog_fn,
                      overwrite=TRUE, excludefirstlast=FALSE)
   dirname = "output_test/meta/ms5.out/"
-
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(dir.exists(dirname),is_true())
@@ -109,7 +108,6 @@ test_that("chainof5parts", {
   expect_that(nrow(output),equals(6)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958))
-  # expect_that(round(as.numeric(output$dur_day_min[6]),digits=4),equals(775.5))
 
  #--------------------------------------------
   #g.shell.GGIR
