@@ -1012,7 +1012,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (ncol(filesummary) > 37) {
     columns2order = 30:(ncol(filesummary)-6)
   }
-
+  options(encoding = "UTF-8")
   if (length(columns2order) > 0) {
     selectcolumns = c(names(filesummary)[1:29],
                       sort(names(filesummary[,columns2order])),
