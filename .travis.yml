@@ -1,6 +1,8 @@
-befor_install:
-- export TZ=Europe/London
-- export TZ=America/Los_Angeles
+
+matrix:
+  befor_install:
+    - export TZ=Europe/London
+    - export TZ=America/Los_Angeles
 
 language: r
 sudo: false
