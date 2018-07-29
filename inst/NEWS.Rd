@@ -2,20 +2,20 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 1.6-0 (release date:26-7-2018)}{
+\section{Changes in version 1.6-0 (release date:29-7-2018)}{
 \itemize{
-  \item Fixed timezone dependency of g.analyse (affecting order of columns), g.part5
-  (affecting time detection), and test_chainof5parts.R (combination of both)
+  \item Fixed timezone dependency of g.analyse (affected only order of columns), g.part5
+  (affected time detection), and consequently test_chainof5parts.R
   \item Read functionality for Actigraph csv files speeded up by replacing
   read.csv by data.table::fread
   \item Argument qwindow is now able to handle input vectors longer than 2
-  and will derived all variables for each time window that can be defined
+  and will derive all part2 variables for each time window that can be defined
   from the values of qwindow, e.g. value =c(0,8,24) will analyse the windows:
-  0-8, 8-24 and 0-24.
+  0-8, 8-24 and 0-24 hour.
   \item Argument L5M5window depricated because argument qwindow now defines the
   window over which L5M5 analysis is performed.
   \item Argument winhr is now reflected in g.analyse/g.part2 output variable
-  names, previously this variable name was hardcoded to L5M5.
+  names, previously this variable name was hardcoded as L5M5, even if winhr was not 5.
   \item Part2 output variable names updated to be more consistent in
   structure and more explicit about the timewindow over which they
   are calculated. The variables that were calculated over the full
@@ -25,7 +25,12 @@
   \item Fixed calculation of N valid WEdays and Nvalid WKdays in part2 that was wrong
   since version 1.5-21. It counted all days and did not exclude days with insufficient
   amount of data.
-  \item Fixed warning message in test of g.part5
+  \item Fixed warning message in test of g.part5.
+  \item output variable acc_timeinbed renamed to acc_SptDuration to avoid confusion
+  with terminology used in supporting papers, which are about SPT (sleep period time)
+  detection and not about time in bed detection.
+  \item output variable acc_dur_noc renamed to acc_SleepDurationInSpt to improve clarity
+  of variable name relative to acc_SptDuration
   }
 }
 \section{Changes in version 1.5-24 (release date:9-7-2018)}{

@@ -143,7 +143,7 @@ named \code{nightsummary} and comes with the following variables:\cr
 since the previous midnight
 \item \code{acc_wake} Detected waking time (after sleep period)
 expressed as hours since the previous midnight
-\item \code{acc_timeinbed} Difference between onset and waking time.
+\item \code{acc_SptDuration} Difference between onset and waking time.
 \item \code{acc_def} Definition of sustained inactivity by accelerometer
 \item \code{sleeplog_onset} Sleep onset derived from sleep log
 or specified by researcher if not sleep log is available
@@ -158,7 +158,7 @@ by accelerometer and estimated by sleeplog/defined by researcher
 \item \code{fraction_night_invalid} Fraction of the night for which
 the data was invalid, e.g. monitor not worn or no accelerometer
 measurement started/ended within the night
-\item \code{acc_dur_noc} Total sleep duration, which equals the
+\item \code{acc_SleepDurationInSpt} Total sleep duration, which equals the
 accumulated nocturnal sustained inactivity bouts. This is not the same
 as the time in bed, which only looks at time difference between falling
 asleep and waking up.
