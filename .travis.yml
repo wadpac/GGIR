@@ -3,6 +3,11 @@ env:
     - TZ=Europe/London
     - TZ=America/Los_Angeles
 
+matrix:
+  include:
+    - os: linux
+    - os: osx
+
 language: r
 sudo: false
 cache: packages
