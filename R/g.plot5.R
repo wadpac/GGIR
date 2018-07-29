@@ -76,7 +76,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         # do not include days with no meaningful data
         d2excludeb = d2exclude = which(daysummary_tmp$N.valid.hours < 10)
         n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
-                                       | summarysleep_tmp$acc_timeinbed == 0)
+                                       | summarysleep_tmp$acc_SptDuration == 0)
         if (length(d2exclude) > 0) {
           d2excludeb = daysummary_tmp$measurmentday[d2exclude]
           daysummary_tmp = daysummary_tmp[-d2exclude,] #ignore days with non-wear
@@ -121,8 +121,8 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           daynames = as.character(days2)
           days_SLEEP = g.abr.day.names(daynames)
           # extract variables
-          lengthnight = summarysleep_tmp$acc_timeinbed #including wake periods
-          nocsleepdur = summarysleep_tmp$acc_dur_noc
+          lengthnight = summarysleep_tmp$acc_SptDuration #including wake periods
+          nocsleepdur = summarysleep_tmp$acc_SleepDurationInSpt
           sleepefficiency = (nocsleepdur /lengthnight) * 100
 
           f01 = daysummary_tmp[,c45]

@@ -202,7 +202,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         night[qqq1:qqq2] = 1
         detection.failed = FALSE  
         #------------------------------------------------------------------
-        # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
+        # Estimate Sleep Period Time Window, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range, 
@@ -267,7 +267,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           }
           if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
           L5list[j] = L5
-          # calculate time in bed, because this will be used by g.part4 if sleeplog is not available
+          # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
           tmpANGLE = angle[qqq1:qqq2]
           tmpTIME = time[qqq1:qqq2]
           inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
