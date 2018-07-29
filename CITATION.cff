@@ -3,7 +3,7 @@
   authors:
   -
     affiliation: "Netherlands eScience Center"
-    family-names: Hees
+    family-names: van Hees
     given-names: Vincent
     name-particle: van
     orcid: "https://orcid.org/0000-0003-0182-9008"
@@ -33,7 +33,7 @@
     given-names: Severine
   cff-version: "1.0.3"
   commit: 5f5edfaf4aaf4004d082d49910ad7175d91e8d57
-  date-released: 2018-07-22
+  date-released: 2018-07-29
   doi: 10.5281/zenodo.1051064
   keywords:
     - "accelerometry"
