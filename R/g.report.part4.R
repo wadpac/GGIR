@@ -63,11 +63,11 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     }
     #-----------------------------------------------------
     nightsummary2 = as.data.frame(matrix(0,0,29)) 
-    colnames(nightsummary2) = c("id", "night","acc_onset", "acc_wake", "acc_timeinbed", "acc_def", 
-                                "sleeplog_onset", "sleeplog_wake", "sleeplog_timeinbed",
+    colnames(nightsummary2) = c("id", "night","acc_onset", "acc_wake", "acc_SptDuration", "acc_def", 
+                                "sleeplog_onset", "sleeplog_wake", "sleeplog_SptDuration",
                                 "error_onset", "error_wake", "error_dur",
                                 "fraction_night_invalid",
-                                "acc_dur_noc","acc_dur_sibd","acc_n_noc","acc_n_sibd",
+                                "acc_SleepDurationInSpt","acc_dur_sibd","acc_n_noc","acc_n_sibd",
                                 "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts", "sleeplog_wake_ts",
                                 "page","daysleeper","weekday","calendardate","filename",
                                 "cleaningcode","sleeplog_used","acc_available")
@@ -89,7 +89,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     #----------------
     nightsummary = nightsummary2
     # next 4 lines moved here on 25/11/2015
-    pko = which(nightsummary$acc_onset == 0 & nightsummary$acc_wake == 0 & nightsummary$acc_timeinbed == 0)
+    pko = which(nightsummary$acc_onset == 0 & nightsummary$acc_wake == 0 & nightsummary$acc_SptDuration == 0)
     if (length(pko) > 0) {
       nightsummary = nightsummary[-pko,]
     }
@@ -183,14 +183,14 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           cnt = cntt+9
           #-------------------------------------------
           # sleep log summary
-          nightsummary.tmp$sleeplog_timeinbed = as.numeric(nightsummary.tmp$sleeplog_timeinbed)
+          nightsummary.tmp$sleeplog_SptDuration = as.numeric(nightsummary.tmp$sleeplog_SptDuration)
           nightsummary.tmp$sleeplog_onset = as.numeric(nightsummary.tmp$sleeplog_onset)
           nightsummary.tmp$sleeplog_wake = as.numeric(nightsummary.tmp$sleeplog_wake)
-          nightsummary.tmp$acc_timeinbed = as.numeric(nightsummary.tmp$acc_timeinbed)
+          nightsummary.tmp$acc_SptDuration = as.numeric(nightsummary.tmp$acc_SptDuration)
           nightsummary.tmp$acc_onset = as.numeric(nightsummary.tmp$acc_onset)
           nightsummary.tmp$acc_wake = as.numeric(nightsummary.tmp$acc_wake)
                                                   
-          nightsummary.tmp$acc_dur_noc = as.numeric(nightsummary.tmp$acc_dur_noc)
+          nightsummary.tmp$acc_SleepDurationInSpt = as.numeric(nightsummary.tmp$acc_SleepDurationInSpt)
           nightsummary.tmp$acc_n_noc = as.numeric(nightsummary.tmp$acc_n_noc)
           nightsummary.tmp$acc_dur_sibd = as.numeric(nightsummary.tmp$acc_dur_sibd)
           nightsummary.tmp$acc_n_sibd = as.numeric(nightsummary.tmp$acc_n_sibd)
@@ -206,10 +206,10 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
               TW = "WE"
               Seli = which(weekday == "Friday" | weekday == "Saturday")              
             }
-            summary[i,cnt+1] = mean(nightsummary.tmp$sleeplog_timeinbed[which(nightsummary.tmp$acc_def == udef[1])[Seli]],na.rm=TRUE)
-            summary[i,cnt+2] = sd(nightsummary.tmp$sleeplog_timeinbed[which(nightsummary.tmp$acc_def == udef[1])[Seli]],na.rm=TRUE)
-            summarynames = c(summarynames,paste("sleeplog_timeinbed_",TW,"_mn",sep=""),
-                             paste("sleeplog_timeinbed_",TW,"_sd",sep=""))
+            summary[i,cnt+1] = mean(nightsummary.tmp$sleeplog_SptDuration[which(nightsummary.tmp$acc_def == udef[1])[Seli]],na.rm=TRUE)
+            summary[i,cnt+2] = sd(nightsummary.tmp$sleeplog_SptDuration[which(nightsummary.tmp$acc_def == udef[1])[Seli]],na.rm=TRUE)
+            summarynames = c(summarynames,paste("sleeplog_SptDuration_",TW,"_mn",sep=""),
+                             paste("sleeplog_SptDuration_",TW,"_sd",sep=""))
             summary[i,cnt+3] = mean(nightsummary.tmp$sleeplog_onset[which(nightsummary.tmp$acc_def == udef[1])[Seli]],na.rm=TRUE)
             summary[i,cnt+4] = sd(nightsummary.tmp$sleeplog_onset[which(nightsummary.tmp$acc_def == udef[1])[Seli]],na.rm=TRUE)
             summarynames = c(summarynames,paste("sleeplog_onset_",TW,"_mn",sep=""),
@@ -259,18 +259,18 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                   Seli = which(weekday == "Friday" | weekday == "Saturday")              
                 }
                 indexUdef = which(nightsummary.tmp$acc_def == udef[j])[Seli]
-                summary[i,(cnt+1)] = mean(nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
-                summary[i,(cnt+2)] = sd(nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
-                summarynames = c(summarynames,paste("acc_timeinbed_",TW,"_",udefn[j],"_mn",sep=""),
-                                 paste("acc_timeinbed_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+3)] = mean(nightsummary.tmp$acc_dur_noc[indexUdef],na.rm=TRUE)
-                summary[i,(cnt+4)] = sd(nightsummary.tmp$acc_dur_noc[indexUdef],na.rm=TRUE)
-                summarynames = c(summarynames,paste("acc_dur_noc_",TW,"_",udefn[j],"_mn",sep=""),
-                                 paste("acc_dur_noc_",TW,"_",udefn[j],"_sd",sep=""))
-                summary[i,(cnt+5)] = mean(nightsummary.tmp$acc_dur_noc[indexUdef] /
-                                            nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
-                summary[i,(cnt+6)] = sd(nightsummary.tmp$acc_dur_noc[indexUdef] /
-                                          nightsummary.tmp$acc_timeinbed[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+1)] = mean(nightsummary.tmp$acc_SptDuration[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+2)] = sd(nightsummary.tmp$acc_SptDuration[indexUdef],na.rm=TRUE)
+                summarynames = c(summarynames,paste("acc_SptDuration_",TW,"_",udefn[j],"_mn",sep=""),
+                                 paste("acc_SptDuration_",TW,"_",udefn[j],"_sd",sep=""))
+                summary[i,(cnt+3)] = mean(nightsummary.tmp$acc_SleepDurationInSpt[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+4)] = sd(nightsummary.tmp$acc_SleepDurationInSpt[indexUdef],na.rm=TRUE)
+                summarynames = c(summarynames,paste("acc_SleepDurationInSpt_",TW,"_",udefn[j],"_mn",sep=""),
+                                 paste("acc_SleepDurationInSpt_",TW,"_",udefn[j],"_sd",sep=""))
+                summary[i,(cnt+5)] = mean(nightsummary.tmp$acc_SleepDurationInSpt[indexUdef] /
+                                            nightsummary.tmp$acc_SptDuration[indexUdef],na.rm=TRUE)
+                summary[i,(cnt+6)] = sd(nightsummary.tmp$acc_SleepDurationInSpt[indexUdef] /
+                                          nightsummary.tmp$acc_SptDuration[indexUdef],na.rm=TRUE)
                 summarynames = c(summarynames,paste("acc_eff_",TW,"_",udefn[j],"_mn",sep=""),
                                  paste("acc_eff_",TW,"_",udefn[j],"_sd",sep=""))
                 summary[i,(cnt+7)] = mean(nightsummary.tmp$acc_dur_sibd[indexUdef],na.rm=TRUE)
