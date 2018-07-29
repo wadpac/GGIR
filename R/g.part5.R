@@ -553,7 +553,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             qqq2 = which(diff(diur) == -1)[wi]
                           } else if (wi>nrow(summarysleep_tmp2)) {
                             qqq1 = qqq2 + 1
-                            qqq2 = length(diur)
+                            # qqq2 = length(diur)
+                            qqq2 = nightsi[wi]
+                            if(is.na(qqq2)==TRUE | length(diur) < qqq2) qqq2 = length(diur)
                           }
                           dsummary[di, fi] = "WW"
                         }
