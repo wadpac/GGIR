@@ -1,6 +1,5 @@
 library(GGIR)
 context("POSIX")
-options(encoding = "UTF-8")
 test_that("g.impute returns a non-empty dataframe", {
   # POSIXtime2iso8601
   x ="2017-05-07 13:15:17 CEST"
