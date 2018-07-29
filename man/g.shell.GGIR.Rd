@@ -14,7 +14,7 @@ on optional input arguments.
 \usage{
 g.shell.GGIR(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),
 f0=1,f1=0, do.report=c(2),overwrite=FALSE,visualreport=FALSE,
-viewingwindow=1,...)
+viewingwindow=1,includewindowcrit=2,...)
 }
 \arguments{
   \item{mode}{
@@ -66,6 +66,9 @@ viewingwindow=1,...)
   }
   \item{viewingwindow}{
   Centre the day as displayed around noon (value = 1) or around midnight (value = 2)
+  }
+  \item{includewindowcrit}{
+  Number hours for a day to be considered in the analyses (this is not wearing hours, but total number of hours)
   }
   \item{...}{
    Any input argument needed for functions g.part1, g.part2, g.part3

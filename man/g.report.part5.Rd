@@ -9,7 +9,7 @@ Creates report from milestone data produced by \link{g.part5}. Not intended
 }
 \usage{
 g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
-                          includenightcrit=c(),includedaycrit=c())
+                          includenightcrit=c(),includedaycrit=c(),includewindowcrit=c(2))
 }
 \arguments{
   \item{metadatadir}{
@@ -29,6 +29,9 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   }
   \item{includedaycrit}{
   see \link{g.part2}
+  }
+  \item{includewindowcrit}{
+  Number hours for a day to be considered in the analyses (this is not wearing hours, but total number of hours)
   }
 }
 \value{
