@@ -297,21 +297,19 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3tmp$validdays[which((OF3tmp$nonwear_perc_day < maxpernwday | OF3tmp$dur_day_min < 120) &
                                          (OF3tmp$nonwear_perc_night < maxpernwnight | OF3tmp$dur_night_min < 120))] = 1
                 OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
-                OF3tmp$validdays = 0 #-
+                OF3tmp$validdays = 0
                 OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
                                          OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WE")] = 1
                 OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
-                OF3tmp$validdays = 0 #-
+                OF3tmp$validdays = 0
                 OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
                                          OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WD")] = 1
                 OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1)
-
-                
                 # OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="night number",namenew="Nnights",cval=99)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
-                OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="acc_available",namenew="Nacc_available",cval=TRUE)
+                OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
                 
                 OF4 = cbind(OF4[,1:4],OF4[,(ncol(OF4)-6):ncol(OF4)],OF4[,5:(ncol(OF4)-7)])
                 nom = names(OF4)
