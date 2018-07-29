@@ -96,10 +96,21 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             c45 = c(c45,i45)
           }
         }
+        
         c45 = c45[length(c45)]
         #######################
         # First page of the report
-        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]) == FALSE)) > 1
+        MainMetric_1 = paste0("mean_",metric,"_mg_24hr")
+        MainMetric_2 = paste0("mean_",metric,"_mg_0-24hr")
+        MainMetric_3 = paste0("mean_",metric,"_mg_0.24hr")
+        if (length(which(colnames(daysummary_tmp) == MainMetric_1)) == 1) {
+          MainMetric = MainMetric_1
+        } else if (length(which(colnames(daysummary_tmp) == MainMetric_2)) == 1) {
+          MainMetric = MainMetric_2
+        } else if (length(which(colnames(daysummary_tmp) == MainMetric_3)) == 1) {
+          MainMetric = MainMetric_3
+        }
+        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,MainMetric]) == FALSE)) > 1
             & length(which(is.na(daysummary_tmp[,c45]) == FALSE)) > 1
             & nrow(summarysleep_tmp) > 0) {
           # abbreviate names of days
@@ -115,7 +126,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           sleepefficiency = (nocsleepdur /lengthnight) * 100
           
           f01 = daysummary_tmp[,c45]
-          f02 = daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]
+          f02 = daysummary_tmp[,MainMetric]
           f05 = nocsleepdur #runif(length(days), 4, 10)
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
@@ -421,7 +432,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (daycount==1 | ((daycount-1)/NGPP) == (round((daycount-1)/NGPP))) {
               mtext(paste("Filename: ",fnamesmeta[i],sep=""),side = 3,line=0,outer=TRUE,font=2,cex=0.6)
             }
-            #             daycount = daycount + 1
           }
           daycount = daycount + 1
         }
