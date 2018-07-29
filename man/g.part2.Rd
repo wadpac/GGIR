@@ -67,8 +67,9 @@ IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600)
     inference on average metric value per week)
   }
   \item{L5M5window}{
+    Argument depricated after version 1.5-24. This argument used to define the
     start and end time, in 24 hour clock hours, over which L5M5 needs to be
-    calculated. The calculation is done based on the average day
+    calculated. Now this is done with argument qwindow.
   }
   \item{M5L5res}{
     resoltion of L5 and M5 analysis in minutes (default: 10 minutes)

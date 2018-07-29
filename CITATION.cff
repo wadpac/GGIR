@@ -1,7 +1,7 @@
 # YAML 1.2
---- 
-  authors: 
-  - 
+---
+  authors:
+  -
     affiliation: "Netherlands eScience Center"
     family-names: Hees
     given-names: Vincent
@@ -33,9 +33,9 @@
     given-names: Severine
   cff-version: "1.0.3"
   commit: 5f5edfaf4aaf4004d082d49910ad7175d91e8d57
-  date-released: 2018-03-18
+  date-released: 2018-07-22
   doi: 10.5281/zenodo.1051064
-  keywords: 
+  keywords:
     - "accelerometry"
     - "signal processing"
     - "time series"
@@ -43,4 +43,4 @@
   message: "If you use this software, please cite it using these metadata."
   repository-code: "https://github.com/wadpac/GGIR"
   title: GGIR
-  version: "1.5-24"
+  version: "1.6-0"
