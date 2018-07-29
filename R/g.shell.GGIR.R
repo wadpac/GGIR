@@ -245,6 +245,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
     } else {
       cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
+      cat("before you can use argument visualreport or create a report for part 4\n")
       stop()
     }
   }  
