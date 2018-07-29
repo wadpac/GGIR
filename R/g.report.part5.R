@@ -287,25 +287,50 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   foo34 = B
                 }
                 
-                # calculate number of valid days (both night and day criteria met)
-                OF3tmp$validdays = 0
-                OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
-                OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
-                OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
-                OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
-                # criteria is that nonwear percentage needs to be below threshold unless the actual time in minutes
-                # of daypart (night or day) is less than 120 minutes
-                OF3tmp$validdays[which((OF3tmp$nonwear_perc_day < maxpernwday | OF3tmp$dur_day_min < 120) &
-                                         (OF3tmp$nonwear_perc_night < maxpernwnight | OF3tmp$dur_night_min < 120))] = 1
-                OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
-                OF3tmp$validdays = 0
-                OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
-                                         OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WE")] = 1
-                OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
-                OF3tmp$validdays = 0
-                OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
-                                         OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WD")] = 1
-                OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1)
+                # Suggested insertion Jairo:
+                # number of valid days is already calculated in validdaysi (line 271), I suggest to recycle this variable 
+                # First - I select only validdays in OF3tmp and count the number of valid days 
+                OF3tmp = OF3tmp[validdaysi,] 
+                OF3tmp$validdays = 1 
+                OF4.tmp = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays",cval=1) #,
+                # defnew = "Number of valid days (i.e., enough wearing data during day, night and whole window)") 
+                OF4 = OF4.tmp[[1]] 
+                # codebook2 = OF4.tmp[[2]] 
+                # Second - weekend days 
+                OF3tmp$validdays = 0 
+                OF3tmp$validdays[which(OF3tmp$daytype == "WE")] = 1 
+                OF4.tmp = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1) #, 
+                # defnew = "Number of valid weekend days (i.e., enough wearing data during day, night and whole window)") 
+                OF4 = OF4.tmp[[1]] 
+                # codebook2 = OF4.tmp[[2]] 
+                # Third - weekdays 
+                OF3tmp$validdays = 0 
+                OF3tmp$validdays[which(OF3tmp$daytype == "WD")] = 1 
+                OF4.tmp = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1) #, 
+                # defnew = "Number of valid weekdays (i.e., enough wearing data during day, night and whole window)") 
+                OF4 = OF4.tmp[[1]] 
+                # codebook2 = OF4.tmp[[2]]  
+                
+                # Old code:
+                # # calculate number of valid days (both night and day criteria met)
+                # OF3tmp$validdays = 0
+                # OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
+                # OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
+                # OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
+                # OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
+                # # criteria is that nonwear percentage needs to be below threshold unless the actual time in minutes
+                # # of daypart (night or day) is less than 120 minutes
+                # OF3tmp$validdays[which((OF3tmp$nonwear_perc_day < maxpernwday | OF3tmp$dur_day_min < 120) &
+                #                          (OF3tmp$nonwear_perc_night < maxpernwnight | OF3tmp$dur_night_min < 120))] = 1
+                # OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
+                # OF3tmp$validdays = 0
+                # OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
+                #                          OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WE")] = 1
+                # OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
+                # OF3tmp$validdays = 0
+                # OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
+                #                          OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WD")] = 1
+                # OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1)
 
                 # OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="night number",namenew="Nnights",cval=99)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
