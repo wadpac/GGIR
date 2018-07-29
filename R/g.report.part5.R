@@ -279,7 +279,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                                 "dur_night_min")]
                 foo34 = function(A,B,nameold,namenew,cval) {
                   # function to help with calculating additinal variables
-                  df2 = function(x) df2 = length(which(x==cval))
+                  df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
                   mmm = as.data.frame(aggregate.data.frame(A,by=list(A$filename),FUN = df2))
                   mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold])
                   B = merge(B,mmm2,by="filename")
@@ -317,7 +317,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                               nom == "sleeplog_onset_ts" | nom == "sleeplog_wake_ts" | nom == "night number"
                             | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
                             | nom == "sleeplog_used" | nom == "L5TIME" | nom == "M5TIME"
-                            | nom == "L10TIME" | nom == "M10TIME" | nom == "night number")
+                            | nom == "L10TIME" | nom == "M10TIME" | nom == "night number" | nom == "acc_available")
                 names(OF4)[which(names(OF4)=="weekday")] = "startday"
                 OF4 = OF4[,-cut]
                 OF4 = as.matrix(OF4)
