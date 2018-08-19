@@ -25,7 +25,7 @@ selectdaysfile=c(),window.summary.size=10,
 dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c(),
 IVIS_windowsize_minutes = 60,
-IVIS_epochsize_seconds = 3600)
+IVIS_epochsize_seconds = 3600, iglevels = c())
 }
 
 \arguments{
@@ -134,6 +134,14 @@ IVIS_epochsize_seconds = 3600)
   \item{IVIS_epochsize_seconds}{
   Epoch size of the Intradaily Variability (IV) and Interdaily
   Stability (IS) metrics in seconds
+  }
+  \item{iglevels}{
+    Levels for acceleration value frequency distribution in mg used for intensity
+    gradient calculation (according to the method by Rowlands 2018). By default this
+    is argument is empty and the intensity gradient calculation is not done. 
+    The user can either provide a single value (any) to make the intensity gradient use
+    the bins c(seq(0,4000,by=25),8000) or the user could specify their own
+    distribution. There is no constriction to the number of levels.
   }
 }
 \value{

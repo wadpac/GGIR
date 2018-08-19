@@ -1,6 +1,7 @@
 g.intensitygradient = function(x,y) {
   # x: numeric vector of bin mid-points
   # y: numeric vector of time spent in bins
+  y = ifelse(test = y <=0,yes = NA,no = y)
   ly = log(y)
   lx = log(x)
   fitsum = summary(stats::lm(ly ~ lx))
