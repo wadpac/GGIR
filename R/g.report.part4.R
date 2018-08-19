@@ -153,9 +153,11 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           # sleep log used
           personSummary[i,cntt+3] = as.character(nightsummary.tmp$sleeplog_used[1])
           personSummarynames = c(personSummarynames,paste("sleeplog_used",sep=""))
+
           # total number of nights with acceleration and accelerometer worn
           personSummary[i,cntt+4] = length(which(
-            nightsummary.tmp$acc_available[which(nightsummary.tmp$acc_def == udef[1])] == "TRUE" &
+            (nightsummary.tmp$acc_available[which(nightsummary.tmp$acc_def == udef[1])] == "TRUE" |
+            nightsummary.tmp$acc_available[which(nightsummary.tmp$acc_def == udef[1])] == "1") &
               nightsummary.tmp$cleaningcode[which(nightsummary.tmp$acc_def == udef[1])] != 2))
           personSummarynames = c(personSummarynames,paste("n_nights_acc",sep=""))
           # total number of nights with sleep log
