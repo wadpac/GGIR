@@ -21,7 +21,8 @@ do.imp=TRUE,storefolderstructure=FALSE,overwrite=FALSE,
 epochvalues2csv=FALSE, mvpadur=c(1,5,10),selectdaysfile=c(),
 window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
-IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600)
+IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
+iglevels = c())
 }
 \arguments{
 \item{datadir}{
@@ -160,6 +161,9 @@ IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600)
   \item{IVIS_epochsize_seconds}{
   Epoch size of the Intradaily Variability (IV) and Interdaily
   Stability (IS) metrics in seconds
+  }
+  \item{iglevels}{
+    see function \link{g.analyse}
   }
 }
 \value{
