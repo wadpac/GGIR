@@ -352,10 +352,10 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       } else {
         if (dotwice == 1) {
           write.csv(nightsummary,file=paste(resultfolder,"/results/QC/part4_nightsummary_sleep_full.csv",sep=""),row.names=FALSE)
-          write.csv(personSummary,file=paste(resultfolder,"/results/QC/part4_personsummary_sleep_full.csv",sep=""),row.names=FALSE)
+          write.csv(personSummary,file=paste(resultfolder,"/results/QC/part4_summary_sleep_full.csv",sep=""),row.names=FALSE)
         } else {
           write.csv(nightsummary,file=paste(resultfolder,"/results/part4_nightsummary_sleep_cleaned.csv",sep=""),row.names=FALSE)
-          write.csv(personSummary,file=paste(resultfolder,"/results/part4_personsummary_sleep_cleaned.csv",sep=""),row.names=FALSE)
+          write.csv(personSummary,file=paste(resultfolder,"/results/part4_summary_sleep_cleaned.csv",sep=""),row.names=FALSE)
         }
       }
     }  
