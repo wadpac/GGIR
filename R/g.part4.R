@@ -48,11 +48,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   cnt67 = 1 # counter used to decide whether to create a new pdf file for the plots
   #-----------------------------------------------------
   # initialize output variable names
-  colnamesnightsummary = c("id", "night","acc_onset", "acc_wake", "acc_timeinbed", "acc_def", 
-                           "sleeplog_onset", "sleeplog_wake", "sleeplog_timeinbed",
+  colnamesnightsummary = c("id", "night","acc_onset", "acc_wake", "acc_SptDuration", "acc_def", 
+                           "sleeplog_onset", "sleeplog_wake", "sleeplog_SptDuration",
                            "error_onset", "error_wake", "error_dur",
                            "fraction_night_invalid",
-                           "acc_dur_noc","acc_dur_sibd","acc_n_noc","acc_n_sibd",
+                           "acc_SleepDurationInSpt","acc_dur_sibd","acc_n_noc","acc_n_sibd",
                            "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts", "sleeplog_wake_ts",
                            "page","daysleeper","weekday","calendardate","filename",
                            "cleaningcode","sleeplog_used","acc_available")
