@@ -310,6 +310,15 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             personSummarynames_backup = personSummarynames #if (length(personSummarynames) >= 29)
           }
         }
+        
+        # replace matrix values "NA" and "NaN" by empty cells
+        for (colli in 1:ncol(personSummary)) {
+          missingv = which(is.na(personSummary[,colli]) == TRUE | personSummary[,colli] == "NA" |  personSummary[,colli] == "NaN")
+          if (length(missingv) > 0) {
+            personSummary[missingv,colli] = ""
+          }
+        }
+        
         personSummary = as.data.frame(personSummary)
         if (length(personSummarynames) != ncol(personSummary)) {
           if (length(personSummarynames_backup) > 0) {
@@ -329,6 +338,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         if (length(emptycolumns) > 0) {
           personSummary = personSummary[,-emptycolumns]
         }
+        
+
+        
         if (storefolderstructure==TRUE) {
           colnames(personSummary)[length(colnames(personSummary))-1] = "filename_dir"
           colnames(personSummary)[length(colnames(personSummary))] = "foldername"
