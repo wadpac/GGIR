@@ -1,10 +1,63 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.5-22 (release date:??-?-2018)}{
+\section{Changes in version 1.6-x (release date:??-8-2018)}{
+\itemize{
+  \item Report part 4: Count of available nights with accelerometer data fixed
+  \item Report part 4: NA and NaN values replaced by empty cells like in other reports
+  }
+}
+\section{Changes in version 1.6-0 (release date:29-7-2018)}{
+\itemize{
+  \item Fixed timezone dependency of g.analyse (affected only order of columns), g.part5
+  (affected time detection), and consequently test_chainof5parts.R
+  \item Read functionality for Actigraph csv files speeded up by replacing
+  read.csv by data.table::fread
+  \item Argument qwindow is now able to handle input vectors longer than 2
+  and will derive all part2 variables for each time window that can be defined
+  from the values of qwindow, e.g. value =c(0,8,24) will analyse the windows:
+  0-8, 8-24 and 0-24 hour.
+  \item Argument L5M5window depricated because argument qwindow now defines the
+  window over which L5M5 analysis is performed.
+  \item Argument winhr is now reflected in g.analyse/g.part2 output variable
+  names, previously this variable name was hardcoded as L5M5, even if winhr was not 5.
+  \item Part2 output variable names updated to be more consistent in
+  structure and more explicit about the timewindow over which they
+  are calculated. The variables that were calculated over the full
+  recording (using diurnal normalization) now have the extension
+  "fullRecording", this in contrast to the variables that are only
+  calculated from measurement days with 'enough' valid data.
+  \item Fixed calculation of N valid WEdays and Nvalid WKdays in part2 that was wrong
+  since version 1.5-21. It counted all days and did not exclude days with insufficient
+  amount of data.
+  \item Fixed warning message in test of g.part5.
+  \item output variable acc_timeinbed renamed to acc_SptDuration to avoid confusion
+  with terminology used in supporting papers, which are about SPT (sleep period time)
+  detection and not about time in bed detection.
+  \item output variable acc_dur_noc renamed to acc_SleepDurationInSpt to improve clarity
+  of variable name relative to acc_SptDuration
+  }
+}
+\section{Changes in version 1.5-24 (release date:9-7-2018)}{
+\itemize{
+  \item Variable names ENMO accidentatly disappeared from g.analyse output
+  in 1.5-23, this has now been reversed.
+  \item Fixed issue in g.part5 in handling the last day of measurement when using
+  'MM' windows and dayborder not equal to 0 (midnight) sometimes resulting in
+  the last day longer than 25 hours.
+  \item Fixed error message in g.part5 that occurs when calculating L5M5 when day
+  is shorter than L5M5 time window.
+  }
+}
+\section{Changes in version 1.5-23 (release date:4-7-2018)}{
+\itemize{
+  \item Unit tests speeded up by using a smaller test file.
+  }
+}
+\section{Changes in version 1.5-22 (release date:3-7-2018)}{
 \itemize{
   \item g.part4 bug fixed that was introduced in version 1.5-21 regarding the handling
-  of daysleepers (people who wake up after noon) causing all estimates to be zero.
+  of daysleepers (people who wake up after noon) causing sleep estimates to be zero.
   }
 }
 \section{Changes in version 1.5-21 (release date:22-4-2018)}{

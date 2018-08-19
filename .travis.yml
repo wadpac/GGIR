@@ -1,3 +1,12 @@
+env:
+  matrix:
+    - TZ=Europe/London
+    - TZ=America/Los_Angeles
+
+os:
+  - linux
+  - osx
+
 language: r
 sudo: false
 cache: packages

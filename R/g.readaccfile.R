@@ -206,7 +206,30 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       cat("\nEnd of file reached\n")
     }
   } else if (mon == 3 & dformat == 2) { # Actigraph csv format
-    try(expr={P = read.csv(filename,nrow = (blocksize*300), skip=(10+(blocksize*300*(blocknumber-1))),dec=decn)},silent=TRUE)
+    headerlength = 10
+    #--------------
+    skiprows = (headerlength+(blocksize*300*(blocknumber-1)))
+    # load rows 11:13  to investigate whether the file has a header
+    testheader = as.data.frame(data.table::fread(filename,nrow = 2, 
+                                                 skip=10, 
+                                                 dec=",",showProgress = FALSE, header = FALSE))
+    if (suppressWarnings(is.na(as.numeric(testheader[1,1]))) ==  FALSE) { # it has no header, first value is a number
+      freadheader = FALSE
+    } else { # it has a header, first value is a character
+      freadheader = TRUE
+      headerlength = 11
+      if (skiprows == 10) {
+        skiprows = 11
+        freadheader = FALSE
+      }
+    }
+    #--------------
+    try(expr={
+      P = as.data.frame(
+        data.table::fread(filename,nrow = (blocksize*300), 
+                          skip=skiprows, 
+                          dec=decn,showProgress = FALSE, header = freadheader))
+      },silent=TRUE)
     if (length(P) > 1) {
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {

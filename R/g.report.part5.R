@@ -279,15 +279,14 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                                 "dur_night_min")]
                 foo34 = function(A,B,nameold,namenew,cval) {
                   # function to help with calculating additinal variables
-                  df2 = function(x) df2 = length(which(x==cval))
+                  df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
                   mmm = as.data.frame(aggregate.data.frame(A,by=list(A$filename),FUN = df2))
                   mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold])
                   B = merge(B,mmm2,by="filename")
                   names(B)[which(names(B)=="cc")] = namenew
                   foo34 = B
                 }
-                
-                # calculate number of valid days (both night and day criteria met)
+                # # calculate number of valid days (both night and day criteria met)
                 OF3tmp$validdays = 0
                 OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
                 OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
@@ -306,12 +305,11 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
                                          OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WD")] = 1
                 OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1)
-
                 # OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="night number",namenew="Nnights",cval=99)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
-                OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="acc_available",namenew="Nacc_available",cval=TRUE)
+                OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
                 
                 OF4 = cbind(OF4[,1:4],OF4[,(ncol(OF4)-6):ncol(OF4)],OF4[,5:(ncol(OF4)-7)])
                 nom = names(OF4)
@@ -319,7 +317,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                               nom == "sleeplog_onset_ts" | nom == "sleeplog_wake_ts" | nom == "night number"
                             | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
                             | nom == "sleeplog_used" | nom == "L5TIME" | nom == "M5TIME"
-                            | nom == "L10TIME" | nom == "M10TIME" | nom == "night number")
+                            | nom == "L10TIME" | nom == "M10TIME" | nom == "night number" | nom == "acc_available")
                 names(OF4)[which(names(OF4)=="weekday")] = "startday"
                 OF4 = OF4[,-cut]
                 OF4 = as.matrix(OF4)

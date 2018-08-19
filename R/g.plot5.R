@@ -6,7 +6,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   } else {
     dir.create(file.path(paste(metadatadir,"/results",sep=""),"file summary reports"))
     ffdone = c()
-  }  
+  }
   # directories
   meta = paste(metadatadir,"/meta/basic",sep="")
   metasleep = paste(metadatadir,"/meta/ms3.out",sep="")
@@ -38,7 +38,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   # loop through files
   for (i in f0:f1) {  #1:length(fnamesmeta)
     if (length(ffdone) > 0) {
-      if (length(which(ffdone == paste("Report_",fnamesmeta[i],".pdf",sep=""))) > 0) { 
+      if (length(which(ffdone == paste("Report_",fnamesmeta[i],".pdf",sep=""))) > 0) {
         skip = 1 #skip this file because it was analysed before")
       } else {
         skip = 0 #do not skip this file
@@ -67,7 +67,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         if (length(unique(summarysleep_tmp$acc_def)) > 1) {
           if (length(which(unique(summarysleep_tmp$acc_def) == "T5A5")) == 1) {
             della = which(summarysleep_tmp$acc_def == "T5A5")
-            
+
           } else {
             della = which(summarysleep_tmp$acc_def == unique(summarysleep_tmp$acc_def)[1])
           }
@@ -76,7 +76,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         # do not include days with no meaningful data
         d2excludeb = d2exclude = which(daysummary_tmp$N.valid.hours < 10)
         n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
-                                       | summarysleep_tmp$acc_timeinbed == 0)
+                                       | summarysleep_tmp$acc_SptDuration == 0)
         if (length(d2exclude) > 0) {
           d2excludeb = daysummary_tmp$measurmentday[d2exclude]
           daysummary_tmp = daysummary_tmp[-d2exclude,] #ignore days with non-wear
@@ -96,10 +96,21 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             c45 = c(c45,i45)
           }
         }
+
         c45 = c45[length(c45)]
         #######################
         # First page of the report
-        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]) == FALSE)) > 1
+        MainMetric_1 = paste0("mean_",metric,"_mg_24hr")
+        MainMetric_2 = paste0("mean_",metric,"_mg_0-24hr")
+        MainMetric_3 = paste0("mean_",metric,"_mg_0.24hr")
+        if (length(which(colnames(daysummary_tmp) == MainMetric_1)) == 1) {
+          MainMetric = MainMetric_1
+        } else if (length(which(colnames(daysummary_tmp) == MainMetric_2)) == 1) {
+          MainMetric = MainMetric_2
+        } else if (length(which(colnames(daysummary_tmp) == MainMetric_3)) == 1) {
+          MainMetric = MainMetric_3
+        }
+        if (dofirstpage == TRUE & length(which(is.na(daysummary_tmp[,MainMetric]) == FALSE)) > 1
             & length(which(is.na(daysummary_tmp[,c45]) == FALSE)) > 1
             & nrow(summarysleep_tmp) > 0) {
           # abbreviate names of days
@@ -110,12 +121,12 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           daynames = as.character(days2)
           days_SLEEP = g.abr.day.names(daynames)
           # extract variables
-          lengthnight = summarysleep_tmp$acc_timeinbed #including wake periods
-          nocsleepdur = summarysleep_tmp$acc_dur_noc
+          lengthnight = summarysleep_tmp$acc_SptDuration #including wake periods
+          nocsleepdur = summarysleep_tmp$acc_SleepDurationInSpt
           sleepefficiency = (nocsleepdur /lengthnight) * 100
-          
+
           f01 = daysummary_tmp[,c45]
-          f02 = daysummary_tmp[,paste0("mean_",metric,"_mg_24hr")]
+          f02 = daysummary_tmp[,MainMetric]
           f05 = nocsleepdur #runif(length(days), 4, 10)
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
@@ -141,7 +152,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           B3 = barplot(as.matrix(f01),names.arg=days_PA,beside=TRUE,#axes=FALSE,
                        ylim=YXLIM,cex.names=CEXN,las=0,col=CLS_A,density = 20) #
           abline(h=30,lty=2,lwd=2)
-          
+
           topp = mean(as.matrix(round(f01)))*0.1
           text(y= as.matrix(round(f01))+topp+5, x= B3, labels=as.character(as.matrix(round(f01))), xpd=TRUE,cex=1)
           text(x=1,y=(max(YXLIM)*0.95),labels=vars[1],pos=4,font=2,cex=1.2)
@@ -168,7 +179,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           abline(h=6,lty=2,lwd=2)
           topp = mean(as.matrix(round(f05,digits=1)))*0.1
           text(y= as.matrix(round(f05,digits=1))+topp, x= B4, labels=as.character(as.matrix(round(f05,digits=1))), xpd=TRUE,cex=1)
-          text(x=1,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)      
+          text(x=1,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)
           #Sleep efficiency
           YXLIM = c(0,120)
           B5 = barplot(as.matrix(f06),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
@@ -177,12 +188,12 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           abline(h=100,lty=3,lwd=1)
           topp = mean(as.matrix(round(f06)))*0.1
           text(y= as.matrix(round(f06))+topp, x= B5, labels=as.character(as.matrix(round(f06))), xpd=TRUE,cex=1)
-          text(x=1,y=(max(YXLIM)-10),labels=vars[4],pos=4,font=2,cex=1.2)      
+          text(x=1,y=(max(YXLIM)-10),labels=vars[4],pos=4,font=2,cex=1.2)
           #-----------------------------------------------------------------------------------
           mtext(paste("Activity and sleep report: ",fnamesmeta[i],sep=""), side = 3, line = 0, outer = TRUE,font=2,cex=0.7)
         }
         LWDX = 2.5 #linewidth for coloured lines
-        LWDA = 0.2 
+        LWDA = 0.2
         BLX = 0.6
         #=================================================
         # Next pages with day specific graphs
@@ -194,7 +205,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         }
         MODPA = rep(NA,length(ACC))
         VIGPA = rep(NA,length(ACC))
-        boutdur2 = 10 * (60/ws3) 
+        boutdur2 = 10 * (60/ws3)
         boutcriter = 0.8
         #moderate and vigorous activity
         rr1 = matrix(0,length(ACC),1)
@@ -210,11 +221,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               rr1t[p[jmvpa]:endi] = 2 #remember that this was a bout in r1t
             } else {
               rr1[p[jmvpa]] = 0
-            }      
+            }
           } else { #bout does not fall within measurement
             if (length(p) > 1 & jmvpa > 2) {
               rr1[p[jmvpa]] = rr1[p[jmvpa-1]]
-            }  			
+            }
           }
           jmvpa = jmvpa + 1
         }
@@ -231,7 +242,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         S = sib.cla.sum #SLES$output
         def = unique(S$definition)[1]
         S = S[which(S$definition==def),] # simplify to one definition
-        
         for (j in 1:length(unique(S$night))) { #nights
           tmp = S[which(S$night==j),]
           for (h in 1:nrow(tmp)) { # sleep periods
@@ -243,14 +253,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (length(s1) == 0 | is.na(s1) == TRUE) {
               s1 = which(time == paste(as.character(tmp$sib.end.time[h])," 00:00:00",sep=""))[1]
             }
-                    # print(paste("s0 ",s0," ",as.character(tmp$sib.onset.time[h]),sep=""))
-                    #     print(paste("s1 ",s1," ",as.character(tmp$sib.end.time[h]),sep=""))
             if (is.na(s0) == FALSE & is.na(s1) == FALSE) { #new on 18 May 2015
               detection[s0:s1] = 1 #new on 18 May 2015
             } #new on 18 May 2015
           }
         }
-        
         # detect midnights
         sec = unclass(as.POSIXlt(time))$sec
         min = unclass(as.POSIXlt(time))$min
@@ -267,7 +274,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
 
         nplots = length(nightsi)+1
         # plot
-        npointsperday = (60/ws3)*1440    
+        npointsperday = (60/ws3)*1440
         x = 1:npointsperday
         NGPP = 7 #number of graphs per page
         par(mfcol=c(NGPP,1),mar=c(2,0.5,1,0.5)+0.1,omi=c(0,0,0.1,0),mgp=c(2,0.8,0))
@@ -310,7 +317,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               if (length(which(n2exclude == g)) > 0) skip = TRUE
             }
           }
-          
           title = paste("Day ",daycount,": ",
                         wdaynames[unclass(as.POSIXlt(time[t0]))$wday+1],
                         "    ",
@@ -333,7 +339,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (length(acc) == (length(x)+1)) {
               extension = extension[1:(length(extension)-1)]
               acc = acc[1:(length(acc)-1)]
-            }      
+            }
             mpa = c(mpa,extension)
             vpa = c(vpa,extension)
           }
@@ -362,12 +368,12 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (length(ang) == (length(x)+1)) {
               extension = extension[1:(length(extension)-1)]
               ang = ang[1:(length(ang)-1)]
-            }      
+            }
             d = c(d,extension)
             if (I$monc == 2) LPd = c(LPd,extension)
           }
           d = d * 143
-          
+
           if (I$monc == 2) {
             LPd_dark = as.numeric(LPd)
             LPd_light = as.numeric(LPd)
@@ -421,7 +427,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (daycount==1 | ((daycount-1)/NGPP) == (round((daycount-1)/NGPP))) {
               mtext(paste("Filename: ",fnamesmeta[i],sep=""),side = 3,line=0,outer=TRUE,font=2,cex=0.6)
             }
-            #             daycount = daycount + 1
           }
           daycount = daycount + 1
         }

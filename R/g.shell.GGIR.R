@@ -69,6 +69,9 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "hrs.del.start")) == 0)  hrs.del.start = 0
   if (length(which(ls() == "hrs.del.end")) == 0)  hrs.del.end = 0
   if (length(which(ls() == "loglocation")) == 0)  loglocation = c()
+  if (length(loglocation) == 1) {
+   if (loglocation == "") loglocation = c() #inserted because some users mistakingly use this
+  }
   if (length(which(ls() == "acc.metric")) == 0)  acc.metric = "ENMO"
   if (length(which(ls() == "storefolderstructure")) == 0)  storefolderstructure = FALSE
   if (length(which(ls() == "windowsizes")) == 0)  windowsizes = c(5,900,3600)
@@ -245,6 +248,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
     } else {
       cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
+      cat("before you can use argument visualreport or create a report for part 4\n")
       stop()
     }
   }  
