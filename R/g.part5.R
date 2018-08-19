@@ -10,7 +10,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    winhr = 5,
                    M5L5res = 10,
                    overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE) {
-  
+  options(encoding = "UTF-8")
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
@@ -37,7 +37,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms1 = sort(dir(paste(metadatadir,"/meta/basic",sep="")))
-  fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
+  # fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
   fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
   fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
@@ -97,10 +97,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         cat(paste(" ",i,sep=""))
       }
       # load output g.part2
-      selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
-      load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
-      daysummary = SUM$daysummary
-      summary = SUM$summary
+      # selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
+      # load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
+      # daysummary = SUM$daysummary # commented out because not used
+      # summary = SUM$summary # commented out  because not used
       # load output g.part4
       selp = which(fnames.ms4 == fnames.ms3[i])
       load(file=paste(metadatadir,"/meta/ms4.out/",fnames.ms4[selp],sep=""))
@@ -151,7 +151,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         rm(sib.cla.sum)
         def = unique(S$definition)
         cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
-
+        
         if (length(cut) > 0) S = S[-cut,]
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)        
           #========================================================
@@ -182,10 +182,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               s1 = which(timebb == gik.end[g])[1]
               #Change 1 - 03/10/2017
               if ( timebb[1] != as.character(timebb[1])){ #not s0 because s0 does not exist yet if classes differ
-                    timebb = as.character(timebb)
-                    s0 = which(timebb == gik.ons[g])[1]
-                    s1 = which(timebb == gik.end[g])[1]
-                }
+                timebb = as.character(timebb)
+                s0 = which(timebb == gik.ons[g])[1]
+                s1 = which(timebb == gik.end[g])[1]
+              }
               #End of change 1
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(gik.ons[g]," 00:00:00",sep=""))[1]
               if (is.na(s1) == TRUE) s1 = which(timebb == paste(gik.end[g]," 00:00:00",sep=""))[1]
@@ -213,7 +213,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           } else {
             nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
           }
-          
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -252,6 +251,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             }
           }
           # update variable sibdetection
+          if (redo2 > length(sibdetection)) {
+            delta = redo2 - length(sibdetection)
+            redo2 = length(sibdetection)
+            sdl1 = sdl1[1:(length(sdl1)-delta)]
+          }
+          if (redo1 > length(sibdetection)) {
+            redo1 = length(sibdetection)
+            sdl1 = sdl1[1]
+          }
           sibdetection[redo1:redo2] = sdl1
           #========================================================
           # DIURNAL BINARY CLASSIFICATION INTO SLEEP OR WAKE PERIOD 
@@ -279,6 +287,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               w1c = as.character(as.POSIXlt(w1[k],tz=desiredtz))
               s0 = which(as.character(time) == w0c)[1]
               s1 = which(as.character(time) == w1c)[1]
+              
               if (length(s0) == 0) {
                 w0c = paste0(w0c," 00:00:00")
                 s0 = which(as.character(time) == w0c)[1]
@@ -290,32 +299,35 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               timebb = as.character(time) 
               if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
                 timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
-              }
-              if (is.na(s0) == TRUE) s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
-              if (is.na(s1) == TRUE) s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
-              #Change 2 - 03/10/2017
-               if ( timebb[s0] != as.character(timebb[s0])){
-                    timebb = as.character(timebb)
-                    timebb = as.character(timebb)
-                    if (is.na(s0) == TRUE) s0 = which(timebb == w0c)[1]
-                    if (is.na(s1) == TRUE) s1 = which(timebb == w1c)[1]
+                s0 = which(as.character(timebb) == w0c)[1]
+                s1 = which(as.character(timebb) == w1c)[1]
+                
+                if (length(s0) == 0) {
+                  w0c = paste0(w0c," 00:00:00")
+                  s0 = which(as.character(timebb) == w0c)[1]
                 }
-              #End of change 2
-              # }
+                if (length(s1) == 0) {
+                  w1c = paste0(w1c," 00:00:00")
+                  s1 = which(as.character(timebb) == w1c)[1]
+                }
+              }
+              if (is.na(s0) == TRUE) {
+                s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
+                if (is.na(s0) == TRUE) {
+                  s0 = which(as.character(timebb) == paste(w0c," 00:00:00",sep=""))[1]
+                }
+              }
+              if (is.na(s1) == TRUE) {
+                s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
+                if (is.na(s1) == TRUE) {
+                  s1 = which(as.character(timebb) == paste(w1c," 00:00:00",sep=""))[1]
+                }
+              }
               if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
                 diur[s0:s1] = 1
               }
             }
-           
-            # Jairo's proposal:
-            # Why don't we start with the first epoch of the measurement and advance till we find the first awakening?
-            # Feel free to remove these previous comments if you finally merge this pull request. 
-            # Below, the code analyses the first hour of measurement, if detection is consistently 0,
-            # then the code assumes that the accelerometer was initialized during the day and do 
-            # not look for a "inexistent" first awakening. Otherwise, the code keep looken for the first awakening.
-            # Response Vincent: ok, good idea, but we need to use the diur variable which represents nighttime/daytime.
-            # detection only represents sustained inctivity bouts. I have now updated the object name to be 
-            # sibdetection to clarify this
+            
             if (diur[1] != 0 & (60/ws3)*60 < nightsi[1]) { # the statement with unique that was here results is ambiguous because it can have multiple values
               # waketi = which(diff(detection) == -1)[1]
               # onseti = which(diff(detection) == 1)[1] # added 20/4/2018 by VvH
@@ -333,7 +345,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
-                  
                   levels = identify_levels(time,diur,sibdetection,ACC,
                                            TRLi,TRMi,TRVi,
                                            boutdur.mvpa,boutcriter.mvpa,
@@ -397,7 +408,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq[2] = nightsi[wi]
                         } else if (wi>nrow(summarysleep_tmp2)) {
                           qqq[1] = qqq[2] + 1
-                          qqq[2] = length(diur)
+                          #qqq[2] = length(diur)
+                          qqq[2] = nightsi[wi]
+                          if(is.na(qqq[2])==TRUE | length(diur) < qqq[2]) qqq[2] = length(diur)
                         }
                       } else if(timewindowi == "WW") {
                         if (wi==1){
@@ -525,7 +538,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             qqq2 = nightsi[wi]
                           } else if (wi>nrow(summarysleep_tmp2)) {
                             qqq1 = qqq2 + 1
-                            qqq2 = length(diur)
+                            #qqq2 = length(diur)
+                            qqq2 = nightsi[wi]
+                            if(is.na(qqq2)==TRUE | length(diur) < qqq2) qqq2 = length(diur)
                           }
                           dsummary[di, fi] = "MM"
                         } else if (timewindowi == "WW") {
@@ -538,7 +553,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             qqq2 = which(diff(diur) == -1)[wi]
                           } else if (wi>nrow(summarysleep_tmp2)) {
                             qqq1 = qqq2 + 1
-                            qqq2 = length(diur)
+                            # qqq2 = length(diur)
+                            qqq2 = nightsi[wi]
+                            if(is.na(qqq2)==TRUE | length(diur) < qqq2) qqq2 = length(diur)
                           }
                           dsummary[di, fi] = "WW"
                         }
@@ -645,7 +662,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           endd = floor(WLH*10) /10 # rounding needed for non-integer window lengths
                           nwindow_f = (endd-wini) #number of windows for L5M5 analyses
                           ignore = FALSE
-                          if (endd <= wini) ignore = TRUE # day is shorter then time window, so ignore this # modified from < to <= on 21-1-2017
+                          if (endd <= wini | nwindow_f < 1) ignore = TRUE # day is shorter then time window, so ignore this # modified from < to <= on 21-1-2017
                           nwindow_f = nwindow_f * (60/reso)
                           if (ignore == FALSE) {
                             ACCrunwin = matrix(0,nwindow_f,1)
@@ -684,7 +701,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
-                          
+                            
                             if (L5HOUR != "not detected") {
                               time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
                               if (time_num < 12) time_num = time_num + 24
