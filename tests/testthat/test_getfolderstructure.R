@@ -1,6 +1,5 @@
 library(GGIR)
 context("getfolderstructure")
-options(encoding = "UTF-8")
 test_that("getfolderstructure", {
   dn = "A" # name of the datadir folder
   if (file.exists(dn))  unlink(dn,recursive=TRUE)

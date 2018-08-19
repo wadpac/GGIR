@@ -1,6 +1,5 @@
 library(GGIR)
 context("identify_levels")
-options(encoding = "UTF-8")
 test_that("identify_levels", {
   time = rep(0,10000) # the values of time are not used in the function, we only care about the length the object time
   diur = c(rep(0,2000),rep(1,4000),rep(0,4000))
