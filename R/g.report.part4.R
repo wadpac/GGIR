@@ -339,8 +339,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           personSummary = personSummary[,-emptycolumns]
         }
         
-
-        
         if (storefolderstructure==TRUE) {
           colnames(personSummary)[length(colnames(personSummary))-1] = "filename_dir"
           colnames(personSummary)[length(colnames(personSummary))] = "foldername"

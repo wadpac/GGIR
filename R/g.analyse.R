@@ -3,7 +3,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
-                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
+                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c()) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done
   winhr = winhr[1]
@@ -47,9 +47,13 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #==========================================================================================
   # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
-  domvpa = doilevels = doquan = FALSE
+  domvpa = doilevels = doiglevels = doquan = FALSE
   if (length(qlevels) > 0) doquan = TRUE
   if (length(ilevels) > 0) doilevels = TRUE
+  if (length(iglevels) > 0) {
+    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
+    doiglevels = TRUE
+  }
   if (length(mvpathreshold) > 0) domvpa = TRUE
   doperday = TRUE
   #------------------------------------------------------
@@ -659,6 +663,24 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     ds_names[fi:(fi+(length(q48)-1))] = namesq47
                     fi = fi+length(q48)
                   }
+                  
+                  if (doiglevels == TRUE) { # intensity gradient (as described by Alex Rowlands 2018)
+                    breaks = iglevels
+                    q49 = c()
+                    q50 = cut((varnum*1000),breaks,right=FALSE)
+                    q50 = table(q50)
+                    q49  = (as.numeric(q50) * ws3)/60 #converting to minutes
+                    x_ig = zoo::rollmean(iglevels,k=2)
+                    y_ig = q49
+                    igout = g.intensitygradient(x_ig, y_ig)
+                    if (length(varnum) > 0) {
+                      daysummary[di,fi:(fi+2)] = as.vector(unlist(igout))
+                    } else {
+                      daysummary[di,fi:(fi+2)] = rep("",3)
+                    }
+                    ds_names[fi:(fi+2)] = paste0(c("ig_gradient","ig_intercept","ig_rsquared"), anwi_nameindices[anwi_index])
+                    fi = fi+3
+                  }
                   #=========================================
                   if (domvpa == TRUE) {
                     for (mvpai in 1:length(mvpathreshold)) {
@@ -708,7 +730,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                              paste("MVPA_E",ws3,"S_B",mvpadur[2],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""),
                                              paste("MVPA_E",ws3,"S_B",mvpadur[3],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""))
                       for (fillds in 1:6) {
-                        daysummary[di,fi] = mvpa[fillds];  ds_names[fi] = paste(mvpanames[fillds,mvpai],"_",colnames(metashort)[mi] ,anwi_nameindices[anwi_index],sep=""); fi=fi+1
+                        daysummary[di,fi] = mvpa[fillds]
+                        ds_names[fi] = paste(mvpanames[fillds,mvpai],"_",colnames(metashort)[mi] ,anwi_nameindices[anwi_index],sep=""); fi=fi+1
                       }
                     }
                   }
