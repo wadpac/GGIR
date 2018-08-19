@@ -1,7 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 1.6-x (release date:??-8-2018)}{
+\itemize{
+  \item Report part 4: Count of available nights with accelerometer data fixed
+  \item Report part 4: NA and NaN values replaced by empty cells like in other reports
+  }
+}
 \section{Changes in version 1.6-0 (release date:29-7-2018)}{
 \itemize{
   \item Fixed timezone dependency of g.analyse (affected only order of columns), g.part5
