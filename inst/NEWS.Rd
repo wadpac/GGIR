@@ -5,6 +5,8 @@
 \itemize{
   \item Report part 4: Count of available nights with accelerometer data fixed
   \item Report part 4: NA and NaN values replaced by empty cells like in other reports
+  \item Intensity gradient analysis added to part2 output according to Rowlands et al.
+  MSSE 2018, doi: 10.1249/MSS.0000000000001561
   }
 }
 \section{Changes in version 1.6-0 (release date:29-7-2018)}{
