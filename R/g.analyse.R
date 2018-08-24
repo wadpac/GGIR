@@ -678,7 +678,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     } else {
                       daysummary[di,fi:(fi+2)] = rep("",3)
                     }
-                    ds_names[fi:(fi+2)] = paste0(c("ig_gradient","ig_intercept","ig_rsquared"), anwi_nameindices[anwi_index])
+                    ds_names[fi:(fi+2)] = paste0(c("ig_gradient","ig_intercept","ig_rsquared"),paste0("_",colnames(metashort)[mi], anwi_nameindices[anwi_index]))
                     fi = fi+3
                   }
                   #=========================================
