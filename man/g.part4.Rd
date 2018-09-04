@@ -153,7 +153,7 @@ L5HR6 algorithm, or specified by researcher,
 \item \code{sleeplog_wake} End of Sleep Period Time window derived from 
 (in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
 L5HR6 algorithm, or specified by researcher.
-\item \code{sleeplog_timeinbed} Time in bed derived from 
+\item \code{sleeplog_SptDuration} Time in bed derived from 
 sleeplog_wake and sleeplog_onset.
 \item \code{error_onset} Difference between acc_onset and sleeplog_onset
 \item \code{error_wake} Difference between acc_wake and sleeplog_wake
@@ -198,6 +198,9 @@ of the variable names for which the meaning may not be obvious:\cr
 \itemize{
 \item \code{sleeplog_used} Whether a sleeplog was available (TRUE)
 or not (FALSE)
+\item \code{acc_eff} Accelerometer detrive sleep efficiency within
+the sleep period time calculatd as the ratio between 
+acc_SleepDurationInSpt and acc_SptDuration (denominator).
 \item \code{n_nights_acc} Number of nights of accelerometer data
 \item \code{n_nights_sleeplog} Number of nights of sleeplog
 data, see details
@@ -223,23 +226,27 @@ according to sleeplog accros weekend days
 \details{
 The term sleeplog in variable names originates from the fact
 that the code was first developed in the presence of sleeplog data.
-Please interpret sleeplog as Sleep Period Time window derived from
-sleeplog, HDCZA algorithm, L5R6 algorithm, or specified by researcher
-as a constant as applicable.
+Please interpret sleeplog as the method to derived the Sleep
+Period Time  (SPT) window derived from (as applicable):
+sleeplog, HDCZA algorithm, L5R6 algorithm, or specified
+by researcher as a constant time interval.
 
 There are, however, two exceptions: Variable sleeplog_used and 
-n_nights_sleeplog truly refer to whether a sleeplog was used.
-I know this is confusing, but so far I have kept it like this to
-facilitate consistency in output.
+n_nights_sleeplog truly refer to whether a sleep log was used and 
+the number of nights on which a sleep log was used, respectively.
+I know this is confusing, but so far I have kept the variable names
+as they are to facilitate consistency in terminology.
 
-If relyonsleeplog = FALSE then the sleep parameter estimates from 
-accelerometry, e.g. acc_onset, are guided by the sleeplog
-(or whichever method was used instead). In this example, the sleep
-onset time equals the start of the first sustained inactiviy bout
-that overlaps or follows the sleep onset derived from 
-the sleeplog (or whichever method was used instead for SPT window 
-estimation). If relyonsleeplog = TRUE then the sleep onset estimates
-from accelerometry equal the estimate from the sleeplog.
+If argument relyonsleeplog = FALSE, then the sleep parameter
+estimates from accelerometry, e.g. acc_onset, are guided by the sleeplog
+(or whichever method was used instead for SPT window estimation).
+In this example, the sleep onset time equals the start of the
+first sustained inactiviy bout that overlaps or follows the
+sleep onset time derived from the sleeplog (or whichever method 
+was used instead for SPT window estimation).
+
+If argument relyonsleeplog = TRUE, then the sleep onset estimates
+from accelerometry equals the estimate from the sleeplog.
 }
 \examples{
 \dontrun{
