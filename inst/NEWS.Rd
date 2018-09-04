@@ -6,6 +6,9 @@
   \item Report part 4: Count of available nights with accelerometer data fixed
   \item Report part 4: NA and NaN values replaced by empty cells like in other reports
   \item Documentation on part4 output variables improved.
+  \item Providing incorrect value of sleeplogidnum in part4 should now provide a more
+  informative error message
+  \item 
   }
 }
 \section{Changes in version 1.6-0 (release date:29-7-2018)}{
