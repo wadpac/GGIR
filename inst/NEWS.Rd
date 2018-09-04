@@ -8,7 +8,7 @@
   \item Documentation on part4 output variables improved.
   \item Providing incorrect value of sleeplogidnum in part4 should now provide a more
   informative error message
-  \item 
+  \item Added functionality to handle timestamps that start with the year.
   }
 }
 \section{Changes in version 1.6-0 (release date:29-7-2018)}{
