@@ -1,8 +1,6 @@
 [![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
 
-
-
-The code in this repository is the development version for the code in R-package GGIR
+The code in this repository is the development version for the code in R-package GGIR on CRAN
 
 ## Contribution guidelines:
 Contributions are welcome.
@@ -11,12 +9,14 @@ Contributions are welcome.
 We work with [GitHub Flow](https://guides.github.com/introduction/flow/) branching model.
 
 Key steps:
-1. Create your own working branch
-2. Make your changes in that branch
-3. Commit your changes to your working branch as long as you are not finished with your development
-4. Make sure the release notes in NEWS.Rd are up to date
-5. Run the tests and checks as CRAN, make sure they pass
-6. Once your work is finished, make a pull request, such that another developer can review your changes before merging them with the master branch
+1. Create a GitHub issue in this repository.
+2. Assign yourself to the GitHub issue you are working on, to inform other develpers that you are workin on it.
+3. Create your own working branch.
+4. Make your changes in that branch.
+5. Commit your changes to your working branch as long as you are not finished with your development.
+6. Make sure the release notes in NEWS.Rd are up to date.
+7. Run the tests and checks as CRAN, make sure they pass.
+8. Once your work is finished, make a pull request, such that another developer can review your changes before merging them with the master branch.
 
 ### For end-users unfamiliar with GitHub:
 If you would like to propose additional functionalities or report an issue. Go to [issues](https://github.com/wadpac/GGIR/issues) and create a new issue.
