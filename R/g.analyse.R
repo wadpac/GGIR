@@ -3,7 +3,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
-                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600) {
+                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c()) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done
   winhr = winhr[1]
@@ -47,9 +47,13 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #==========================================================================================
   # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
-  domvpa = doilevels = doquan = FALSE
+  domvpa = doilevels = doiglevels = doquan = FALSE
   if (length(qlevels) > 0) doquan = TRUE
   if (length(ilevels) > 0) doilevels = TRUE
+  if (length(iglevels) > 0) {
+    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
+    doiglevels = TRUE
+  }
   if (length(mvpathreshold) > 0) domvpa = TRUE
   doperday = TRUE
   #------------------------------------------------------
@@ -200,8 +204,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         #M5L5
         avday = averageday[,quani]
         avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
+        
         if (mean(avday) > 0 & nrow(as.matrix(M$metashort)) > 1440*(60/ws3)) {
-          ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr)
+          # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
+          ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr)
           ML5AD = c(ML5AD,c(ML5ADtmp$DAYL5HOUR, ML5ADtmp$DAYL5VALUE, ML5ADtmp$DAYM5HOUR, ML5ADtmp$DAYM5VALUE, ML5ADtmp$V5NIGHT))
         } else {
           ML5AD = c(ML5AD," "," "," "," "," ")
@@ -220,6 +226,37 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
     }
   }
+  
+  if (doiglevels == TRUE) { 
+    # intensity gradient (as described by Alex Rowlands 2018)
+    # applied to the averageday per metric (except from angle metrics)
+    igfullr = igfullr_names = c()
+    for (igi in 1:ncol(averageday)) {
+      if (colnames(M$metashort)[(igi+1)] != "anglex" &
+          colnames(M$metashort)[(igi+1)] != "angley" &
+          colnames(M$metashort)[(igi+1)] != "anglez") {
+        breaks = iglevels
+        q59 = c()
+        avday = averageday[,igi] 
+        avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
+        # we are not taking the segment of the day now (too much output)
+        q60 = cut((avday*1000),breaks,right=FALSE)
+        q60 = table(q60)
+        q59  = (as.numeric(q60) * ws3)/60 #converting to minutes
+        x_ig = zoo::rollmean(iglevels,k=2)
+        y_ig = q59
+        igout = g.intensitygradient(x_ig, y_ig)
+        if (length(avday) > 0) {
+          igfullr = c(igfullr,as.vector(unlist(igout)))
+        } else {
+          igfullr = c(igfullr,rep("",3))
+        }
+        igfullr_names = c(igfullr_names,paste0(c("ig_gradient","ig_intercept","ig_rsquared"),
+                                    paste0("_",colnames(metashort)[igi+1], "_0-24hr")))
+      }
+    }
+  }
+  
   #============================
   # IS and IV variables
   # select data from first midnight to last midnight
@@ -659,6 +696,24 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                     ds_names[fi:(fi+(length(q48)-1))] = namesq47
                     fi = fi+length(q48)
                   }
+                  
+                  if (doiglevels == TRUE) { # intensity gradient (as described by Alex Rowlands 2018)
+                    breaks = iglevels
+                    q49 = c()
+                    q50 = cut((varnum*1000),breaks,right=FALSE)
+                    q50 = table(q50)
+                    q49  = (as.numeric(q50) * ws3)/60 #converting to minutes
+                    x_ig = zoo::rollmean(iglevels,k=2)
+                    y_ig = q49
+                    igout = g.intensitygradient(x_ig, y_ig)
+                    if (length(varnum) > 0) {
+                      daysummary[di,fi:(fi+2)] = as.vector(unlist(igout))
+                    } else {
+                      daysummary[di,fi:(fi+2)] = rep("",3)
+                    }
+                    ds_names[fi:(fi+2)] = paste0(c("ig_gradient","ig_intercept","ig_rsquared"),paste0("_",colnames(metashort)[mi], anwi_nameindices[anwi_index]))
+                    fi = fi+3
+                  }
                   #=========================================
                   if (domvpa == TRUE) {
                     for (mvpai in 1:length(mvpathreshold)) {
@@ -708,7 +763,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                              paste("MVPA_E",ws3,"S_B",mvpadur[2],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""),
                                              paste("MVPA_E",ws3,"S_B",mvpadur[3],"M",(boutcriter * 100),"%_T",mvpathreshold[mvpai],sep=""))
                       for (fillds in 1:6) {
-                        daysummary[di,fi] = mvpa[fillds];  ds_names[fi] = paste(mvpanames[fillds,mvpai],"_",colnames(metashort)[mi] ,anwi_nameindices[anwi_index],sep=""); fi=fi+1
+                        daysummary[di,fi] = mvpa[fillds]
+                        ds_names[fi] = paste(mvpanames[fillds,mvpai],"_",colnames(metashort)[mi] ,anwi_nameindices[anwi_index],sep=""); fi=fi+1
                       }
                     }
                   }
@@ -844,6 +900,15 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_fullRecording")
     vi = vi + q1
   }
+  if (doiglevels == TRUE) { 
+    # intensity gradient (as described by Alex Rowlands 2018)
+    # applied to the averageday per metric (except from angle metrics)
+    q1 = length(igfullr)
+    filesummary[vi:((vi-1)+q1)] = igfullr
+    s_names[vi:((vi-1)+q1)] = paste0(igfullr_names,"_fullRecording")
+    vi = vi + q1
+  }
+  
   #---------------------------------------
   if (tooshort == 0) {
     #--------------------------------------------------------------

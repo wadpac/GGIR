@@ -27,7 +27,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   Directory that holds a folders 'meta' and inside this a folder
   'basic' which contains the milestone data produced by g.part1.
   The folderstructure is normally created by g.part3. When using
-  g.part4 via g.shell.GGIR then g.shell.GGIR will automatically 
+  g.part4 via g.shell.GGIR then g.shell.GGIR will automatically
   recognise what the value of metadatadir is, so the user does not
   need to specify this.
   }
@@ -92,7 +92,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   }
   \item{criterror}{
   Relevant for do.visual == TRUE and outliers.only == TRUE.
-  criterror specifies the number of minimum number of hours difference 
+  criterror specifies the number of minimum number of hours difference
   between sleep log and  accelerometer estimate for the night to be
   included in the visualisation
   }
@@ -105,7 +105,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   log is only used to guide the accelerometer-based detection.
   If participants were instructed NOT to wear the accelerometer
   during waking hours then set to TRUE, in all other scenarios
-  set to FALSE (FALSE). 
+  set to FALSE (FALSE).
   }
   \item{def.noc.sleep}{
   The time window during which sustained inactivity will be assumed
@@ -141,19 +141,19 @@ with the following variables:\cr
 \itemize{
 \item \code{id} Participant id extracted from file
 \item \code{night} Night number
-\item \code{acc_onset} Detected onset of sleep expressed as hours 
+\item \code{acc_onset} Detected onset of sleep expressed as hours
 since the midnight of the previous night, see details.
 \item \code{acc_wake} Detected waking time (after sleep period)
 expressed as hours since the midnight of the previous night, see details.
 \item \code{acc_SptDuration} Difference between onset and waking time.
 \item \code{acc_def} Definition of sustained inactivity by accelerometer
-\item \code{sleeplog_onset} Start of Sleep Period Time window derived from 
+\item \code{sleeplog_onset} Start of Sleep Period Time window derived from
 (in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
 L5HR6 algorithm, or specified by researcher,
-\item \code{sleeplog_wake} End of Sleep Period Time window derived from 
+\item \code{sleeplog_wake} End of Sleep Period Time window derived from
 (in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
 L5HR6 algorithm, or specified by researcher.
-\item \code{sleeplog_SptDuration} Time in bed derived from 
+\item \code{sleeplog_SptDuration} Time in bed derived from
 sleeplog_wake and sleeplog_onset.
 \item \code{error_onset} Difference between acc_onset and sleeplog_onset
 \item \code{error_wake} Difference between acc_wake and sleeplog_wake
@@ -167,7 +167,7 @@ during the day. These are the periods we would label during the night
 as sleep, but during the day they form a subclass of inactivity,
 which may represent day time sleep or wakefulness while being
 motionless for a sustained period of time
-\item \code{acc_n_noc} Number of noturnal sleep periods, with nocturnal 
+\item \code{acc_n_noc} Number of noturnal sleep periods, with nocturnal
 referring to the Sleep Period Time window.
 \item \code{acc_n_sibd} Number of sustained inactivity bouts during the day,
 with day referring to the time outside the Sleep Period Time window.
@@ -185,21 +185,21 @@ is a daysleeper (sleep period did overlap with noon)
 \item \code{cleaningcode} 0: no problem; 1: sleeplog not available,
 2: not enough valid accelerometer data, 3: no accelerometer data available,
 4: there were no nights to be analysed for this person
-\item \code{sleeplog_used} Whether a sleep log was used (TRUE/FALSE) 
+\item \code{sleeplog_used} Whether a sleep log was used (TRUE/FALSE)
 \item \code{acc_available} Whether accelerometer data was available
-(TRUE/FALSE). 
+(TRUE/FALSE).
 }
 
 Note that function g.shell.GGIR comes with the option for report
 generation. In relation to function g.part4 it is important to mention
 that these reports are effectively the variable names mentioned above
-or derivatives. Please fine below extra clarification on a few 
+or derivatives. Please fine below extra clarification on a few
 of the variable names for which the meaning may not be obvious:\cr
 \itemize{
 \item \code{sleeplog_used} Whether a sleeplog was available (TRUE)
 or not (FALSE)
 \item \code{acc_eff} Accelerometer detrive sleep efficiency within
-the sleep period time calculatd as the ratio between 
+the sleep period time calculatd as the ratio between
 acc_SleepDurationInSpt and acc_SptDuration (denominator).
 \item \code{n_nights_acc} Number of nights of accelerometer data
 \item \code{n_nights_sleeplog} Number of nights of sleeplog
@@ -212,6 +212,10 @@ which means both accelerometer and sleeplog data
 the person slept until after noon
 \item \code{n_WDnights_daysleeper} Number of weekday nights on which
 the person slept until after noon
+\item \code{acc_dur_msibd} Average duration of the sustained inactivity
+bouts during the day (outside the sleep period duration). Calculated
+as acc_dur_sibd divided by acc_n_sibd per day, after which the mean
+and standard deviation are calculated across days.
 \item \code{sleeplog_dur_AD_mn} Mean sleep duration according to sleeplog
 accros all days
 \item \code{sleeplog_dur_AD_sd} Standard deviation of sleep duration
@@ -231,8 +235,8 @@ Period Time  (SPT) window derived from (as applicable):
 sleeplog, HDCZA algorithm, L5R6 algorithm, or specified
 by researcher as a constant time interval.
 
-There are, however, two exceptions: Variable sleeplog_used and 
-n_nights_sleeplog truly refer to whether a sleep log was used and 
+There are, however, two exceptions: Variable sleeplog_used and
+n_nights_sleeplog truly refer to whether a sleep log was used and
 the number of nights on which a sleep log was used, respectively.
 I know this is confusing, but so far I have kept the variable names
 as they are to facilitate consistency in terminology.
@@ -242,7 +246,7 @@ estimates from accelerometry, e.g. acc_onset, are guided by the sleeplog
 (or whichever method was used instead for SPT window estimation).
 In this example, the sleep onset time equals the start of the
 first sustained inactiviy bout that overlaps or follows the
-sleep onset time derived from the sleeplog (or whichever method 
+sleep onset time derived from the sleeplog (or whichever method
 was used instead for SPT window estimation).
 
 If argument relyonsleeplog = TRUE, then the sleep onset estimates
@@ -261,7 +265,7 @@ g.part4(metadatadir=metadatadir)
 \references{
 \itemize{
 \item van Hees VT, Sabia S, et al. (2015) A novel, open access method
-to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 
+to assess sleep duration using a wrist-worn accelerometer, PLoS ONE,
 accepted for publication October 2015
 }
 }

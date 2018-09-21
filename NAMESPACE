@@ -20,7 +20,7 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
-           "quantile", "sd")
+           "quantile", "sd","coef", "lm")
 import(data.table)
 useDynLib(GGIR, .registration=TRUE)
 importFrom(Rcpp, sourceCpp)
