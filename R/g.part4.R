@@ -189,9 +189,31 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         if (dolog == TRUE) {
           if (sleeplogidnum == FALSE) {
             wi = which(as.character(sleeplog$id) == as.character(accid))
+            if (length(wi) == 0) {
+              wi_alternative = which(sleeplog$id == as.numeric(accid))
+              if (length(wi_alternative) > 0) {
+                cat("\nWarning: argument sleeplogidnum is set to FALSE, but it seems the identifiers are
+                    stored as numeric values, you may want to consider changing sleeplogidnum to TRUE")
+              } else {
+                cat(paste0("\nWarning: sleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
+                           code expects format: ",as.character(accid[1])))
+                
+              }
+            }
           } else {
             wi = which(sleeplog$id == as.numeric(accid))
+            if (length(wi) == 0) {
+              wi_alternative = which(as.character(sleeplog$id) == as.character(accid))
+              if (length(wi_alternative) > 0) {
+                cat("\nWarning: argument sleeplogidnum is set to TRUE, but it seems the identifiers are
+                    stored as characrter values, you may want to consider changing sleeplogidnum to TRUE")
+              } else {
+                cat(paste0("\nWarning: sleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
+                           code expects format: ",as.character(accid[1])))
+              }
+            }
           }
+          
         } else {
           wi = 1
         } 
