@@ -1,10 +1,12 @@
 \name{g.intensitygradient}
 \alias{g.intensitygradient}
 \title{
-Calculate intensity gradient by Rowlands
+Intensity gradient calculation
 }
 \description{
-Calculates the intensity gradient as described in Rowlands et al. 2018
+Calculates the intensity gradient based on Rowlands et al. 2018.
+The function assumes that the user has already calculated the value
+distribution.
 }
 \usage{
 g.intensitygradient(x,y)
