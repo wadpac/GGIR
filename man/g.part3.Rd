@@ -100,5 +100,8 @@ timethreshold=5, overwrite=FALSE)
 \itemize{
 \item van Hees VT, Sabia S, et al. (2015) A novel, open access method to
 assess sleep duration using a wrist-worn accelerometer, PLoS ONE, November 2015
+\item van Hees VT, Sabia S, et al. (2018) Estimating sleep parameters 
+using an accelerometer without sleep diary. Scientific Reports.
+
 }
 }
