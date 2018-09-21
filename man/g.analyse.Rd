@@ -25,7 +25,7 @@ selectdaysfile=c(),window.summary.size=10,
 dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c(),
 IVIS_windowsize_minutes = 60,
-IVIS_epochsize_seconds = 3600)
+IVIS_epochsize_seconds = 3600, iglevels = c())
 }
 
 \arguments{
@@ -135,6 +135,14 @@ IVIS_epochsize_seconds = 3600)
   Epoch size of the Intradaily Variability (IV) and Interdaily
   Stability (IS) metrics in seconds
   }
+  \item{iglevels}{
+    Levels for acceleration value frequency distribution in mg used for intensity
+    gradient calculation (according to the method by Rowlands 2018). By default this
+    is argument is empty and the intensity gradient calculation is not done. 
+    The user can either provide a single value (any) to make the intensity gradient use
+    the bins c(seq(0,4000,by=25),8000) or the user could specify their own
+    distribution. There is no constriction to the number of levels.
+  }
 }
 \value{
 \item{\code{summary}}{summary for the file that was analysed (see details)}
@@ -179,13 +187,16 @@ hours of data.
 percentile in the distribution of short epoch acceleration values of the average 
 day within the time interval as specified. 
 \item \code{L5hr_ENMO_mg_0-24_fullRecording} Starting time in hours of the
-least active five* hours within the time interval as specified (* window size is
-modifiable in g.getmeta)
+least active five* hours within the time interval as specified (* window size defined by
+argument winhr)
 \item \code{L5_ENMO_mg} Average acceleration over L5
 \item \code{M5hr_ENMO_mg_0-24_fullRecording} Starting time in hours of the most active
-five* hours in the day within the time interval as specified (* window size is
+five* hours in the day within the time interval as specified (* window size defined by
+argument winhr)
 modifiable in g.getmeta)
 \item \code{M5_ENMO_mg_0-24_fullRecording} Average acceleration over M5
+\item \code{ig_gradient_ENMO_0-24hr_fullRecording} Intensity gradient calculated over
+the full recording.
 \item \code{1am-6am_ENMO_mg_fullRecording} Average acceleration between
 1am and 6am
 \item \code{N valid WEdays} Number of valid weekend days
@@ -250,6 +261,15 @@ only done for metric ENMO at the moment, and only done if ilevels is not left bl
 setting bout duration 1 Minute and inclusion criterion of more than 80 percent.
 This is only done for metric ENMO at the moment, and only if mvpathreshold is
 not left blank
+\item \code{ig_gradient_ENMO_0-24hr} Gradient from intensity gradient
+analysis (Rowlands et al 2018) based on metric ENMO for the time segment
+0 to 24 hours
+\item \code{ig_intercept_ENMO_0-24hr} Intercept from intensity gradient
+analysis (Rowlands et al 2018) based on metric ENMO for the time segment
+0 to 24 hours
+\item \code{ig_rsquared_ENMO_0-24hr} r squared from intensity gradient
+analysis (Rowlands et al 2018) based on metric ENMO for the time segment
+0 to 24 hours
 }
 }
 
