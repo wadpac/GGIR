@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "April 21 2018"
+date: "September 21 2018"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -34,8 +34,8 @@ A non-exhaustive list of academic institutes that have been using GGIR:
 ## Acknowledgements
 
 R package GGIR would not have been possible without the support of the following people, institutions, and funders:
- 
-**People:** 
+
+**People:**
 
 - Dr. Vincent van Hees as main developer
 - Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R
@@ -52,12 +52,12 @@ R package GGIR would not have been possible without the support of the following
 - Netherlands eScience Center, Amsterdam, NL
 - University of Exeter, Exeter, UK
 - Centre for Longitudinal Studies, London, UK
- 
+
 **Funders:**
 
 - Medical Research Council (MRC) grants MR/P012167/1 and MC_UU_12015/3
 - Economic and Social Research Council (ESRC) grant ES/K005987 for ‘Millennium Cohort Study Sweep 6 (Age 14) Survey’ (MCS6)
-- Biotechnology and Biological Sciences Research Council (BBSRC) and Unilever Discover Ltd funded a CASE studentship 
+- Biotechnology and Biological Sciences Research Council (BBSRC) and Unilever Discover Ltd funded a CASE studentship
 
 ## How can I contribute to the GGIR development?
 
@@ -350,7 +350,7 @@ Part 4 generates the following output:
 
 The csv. files contain variables that are explained in the documentation of GGIR function [g.part4](https://CRAN.R-project.org/package=GGIR).
 
-When input argument `do.visual` is set to TRUE GGIR can show the following visual comparison between the time window of being asleep (or in bed) according to the sleeplog and the detected sustained inactivity bouts according to the accelerometer data. This visualisation is stored in the results folder as visualisation_sleep.pdf. 
+When input argument `do.visual` is set to TRUE GGIR can show the following visual comparison between the time window of being asleep (or in bed) according to the sleeplog and the detected sustained inactivity bouts according to the accelerometer data. This visualisation is stored in the results folder as visualisation_sleep.pdf.
 
 Explanation of the image: Each line represents one night. Colors are used to dinstinguish definitions of sustianed inacitivty bouts (2 definitions in this case) and to indicate existence or absense of overlap with the sleeplog. When argument `outliers.only` is set to FALSE it will visualise all available nights in the dataset. If `outliers.only` is set to TRUE it will visualise only nights with a difference in onset or waking time between sleeplog and sustained inactivity bouts larger than the value of argument `criterror`.
 
@@ -388,13 +388,13 @@ dur_day_OIN40_min_pla | Time spent below 40mg (OTHER INACTIVITY)
 dur_day_LIG40_100_min_pla | Time spent in light (only unbouted)
 dur_day_MOD100_400_min_pla | Time spent in moderate (only unbouted)
 dur_day_VIG400_min_pla | Time spent in vigorous (only unbouted)
-dur_MVPA_D10T100_min_pla | Bouts of at least 10 minutes of MVPA (i.e above 100mg) 
+dur_MVPA_D10T100_min_pla | Bouts of at least 10 minutes of MVPA (i.e above 100mg)
 dur_MVPA_D1T100_min_pla | 	Bouts between 1-9.99mins above MVPA
 dur_INB_D10T40_min_pla | Bouts of 10mins INACTIVE (other inactivity or SIB)
 dur_LIGB_D10T40_100_min_pla | Bouts of 10mins light
 dur_LIGB_D1T40_100_min_pla | Bouts between 1-99.9mins light
 dur_TSIBday_min_pla | T=unbouted+bouted. THIS IS DIFFERENT TO SIB, because TSIB is regardless of whether they contributed or not to inactivity (INB) bouts or not, whereas SIB is just time not part of INB. So would expect TSIB to be higher
-dur_TOINday_min_pla | Unbouted and bouted time  spent in ‘other inactivity’ 
+dur_TOINday_min_pla | Unbouted and bouted time  spent in ‘other inactivity’
 dur_TLIGday_min_pla | Unbouted and bouted time spent in light
 dur_TMODday_min_pla |	Unbouted and bouted time spent in mod
 dur_TVIGday_min_pla | Unbouted and bouted time spent in vig
@@ -519,3 +519,5 @@ If you used the **sleep detection:**
 
 4. van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015 [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533)
 
+If you used the **sleep detection without relying on sleep diary:**
+5. van Hees VT, Sabia S, et al. Estimating sleep parameters using an accelerometer without sleep diary. Scientific Reports 2018. doi: 10.1038/s41598-018-31266-z. [link](https://www.nature.com/articles/s41598-018-31266-z)
