@@ -31,7 +31,7 @@
     family-names: Sabia
     given-names: Severine
   cff-version: "1.0.3"
-  commit: 5f5edfaf4aaf4004d082d49910ad7175d91e8d57
+  commit: e71b050b4ded2cd4fc876526fe0c644e650206de
   date-released: 2018-09-21
   doi: 10.5281/zenodo.1051064
   keywords:
@@ -42,4 +42,4 @@
   message: "If you use this software, please cite it using these metadata."
   repository-code: "https://github.com/wadpac/GGIR"
   title: GGIR
-  version: "1.6-1"
+  version: "1.6-3"
