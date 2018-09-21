@@ -169,7 +169,7 @@ which may represent day time sleep or wakefulness while being
 motionless for a sustained period of time
 \item \code{acc_n_noc} Number of noturnal sleep periods
 \item \code{acc_n_sibd} Number of sustained inactivity periods
-during the day
+during the day outside sleep period time
 \item \code{acc_onset_ts} acc_onset formatted as a timestamp
 \item \code{acc_wake_ts} acc_wake formatted as a timestamp
 \item \code{sleeplog_onset_ts} sleeplog_onset formatted as a timestamp
@@ -207,6 +207,10 @@ which means both accelerometer and sleeplog data
 the person slept until after noon
 \item \code{n_WDnights_daysleeper} Number of weekday nights on which
 the person slept until after noon
+\item \code{acc_dur_msibd} Average duration of the sustained inactivity
+bouts during the day (outside the sleep period duration). Calculated
+as acc_dur_sibd divided by acc_n_sibd per day, after which the mean 
+and standard deviation are calculated across days.
 \item \code{sleeplog_dur_AD_mn} Mean sleep duration according to sleeplog
 accros all days
 \item \code{sleeplog_dur_AD_sd} Standard deviation of sleep duration
