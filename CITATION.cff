@@ -2,44 +2,43 @@
 ---
   authors:
   -
-    affiliation: "Netherlands eScience Center"
+    affiliation: Netherlands eScience Center
     family-names: van Hees
     given-names: Vincent
     name-particle: van
   -
-    affiliation: "Biomathematics and Statistics Scotland, UK"
+    affiliation: Biomathematics and Statistics Scotland, UK
     family-names: Fang
     given-names: Zhou
   -
-    affiliation: "MRC Epidemiology Unit, Cambridge, UK"
+    affiliation: MRC Epidemiology Unit, Cambridge, UK
     family-names: Zhao
     given-names: Jing Hua
   -
-    affiliation: "Centre for Longitudinal Studies, University College London, London, UK"
+    affiliation: Centre for Longitudinal Studies, University College London, London, UK
     family-names: Heywood
     given-names: Joe
   -
-    affiliation: "Department of Mathematics, University of Leicester, UK, Siberian Federal University, Krasnoyarsk, Rusia"
+    affiliation: Department of Mathematics, University of Leicester, UK, Siberian Federal University, Krasnoyarsk, Rusia
     family-names: Mirkes
     given-names: Evgeny
   -
-    affiliation: "Faculty of Physical Activity and Sport Sciences, University of Granada, Spain"
+    affiliation: Faculty of Physical Activity and Sport Sciences, University of Granada, Spain
     family-names: Migueles
     given-names: Jairo
   -
-    affiliation: "INSERM, French Institute of Health and Medical Research, Paris, France"
+    affiliation: INSERM, French Institute of Health and Medical Research, Paris, France
     family-names: Sabia
     given-names: Severine
-  cff-version: "1.0.3"
-  commit: e71b050b4ded2cd4fc876526fe0c644e650206de
+  cff-version: 1.0.3
   date-released: 2018-09-21
   doi: 10.5281/zenodo.1051064
   keywords:
-    - "accelerometry"
-    - "signal processing"
-    - "time series"
+    - accelerometry
+    - signal processing
+    - time series
   license: LGPL-2.0-or-later
-  message: "If you use this software, please cite it using these metadata."
-  repository-code: "https://github.com/wadpac/GGIR"
+  message: If you use this software, please cite it using these metadata.
+  repository-code: https://github.com/wadpac/GGIR
   title: GGIR
-  version: "1.6-3"
+  version: 1.6-3
