@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.6-7 (release date:21-9-2018)}{
+\itemize{
+  \item Link with Zenodo for doi generation improved, no changes to the package itself
+  }
+}
 \section{Changes in version 1.6-1 (release date:21-9-2018)}{
 \itemize{
   \item Report part 4: Count of available nights with accelerometer data fixed
