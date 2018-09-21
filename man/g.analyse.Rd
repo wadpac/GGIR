@@ -261,6 +261,15 @@ only done for metric ENMO at the moment, and only done if ilevels is not left bl
 setting bout duration 1 Minute and inclusion criterion of more than 80 percent.
 This is only done for metric ENMO at the moment, and only if mvpathreshold is
 not left blank
+\item \code{ig_gradient_ENMO_0-24hr} Gradient from intensity gradient
+analysis (Rowlands et al 2018) based on metric ENMO for the time segment
+0 to 24 hours
+\item \code{ig_intercept_ENMO_0-24hr} Intercept from intensity gradient
+analysis (Rowlands et al 2018) based on metric ENMO for the time segment
+0 to 24 hours
+\item \code{ig_rsquared_ENMO_0-24hr} r squared from intensity gradient
+analysis (Rowlands et al 2018) based on metric ENMO for the time segment
+0 to 24 hours
 }
 }
 
