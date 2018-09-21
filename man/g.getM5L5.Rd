@@ -20,10 +20,10 @@ g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr)
 
 }
 \item{t0_LFMF}{
-Start hour of the day for the M5L5 analyses, e.g. 0 for midniht
+Start hour of the day for the M5L5 analyses, e.g. 0 for midnight
 }
 \item{t1_LFMF}{
-End hour of the day for the M5L5 analyses, e.g. 24 for midniht
+End hour of the day for the M5L5 analyses, e.g. 24 for midnight
 }
 \item{M5L5res}{
 Resolution of hte M5L5 analyses in minutes 
