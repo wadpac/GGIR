@@ -428,7 +428,7 @@ An acceleration sensor works on the principle that acceleration is captured mech
 Reference:
 
 - van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. doi: 10.1152/japplphysiol.00421.2014. Epub 2014 Aug 7.
-PMID: 25103964 [link](http://jap.physiology.org/cgi/pmidlookup?view=long&pmid=25103964)
+PMID: 25103964 [link](https://www.physiology.org/doi/10.1152/japplphysiol.00421.2014)
 
 Key decisions to be made:
 
@@ -513,7 +513,7 @@ PMID: 24500862 [link](https://www.ncbi.nlm.nih.gov/pubmed/24500862)
 
 If you used the **auto-calibration functionality:**
 
-3. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](http://jap.physiology.org/cgi/pmidlookup?view=long&pmid=25103964)
+3. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](https://www.physiology.org/doi/10.1152/japplphysiol.00421.2014)
 
 If you used the **sleep detection:**
 
