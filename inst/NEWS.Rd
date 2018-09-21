@@ -1,12 +1,16 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.6-1 (release date:21-9-2018)}{
+\section{Changes in version 1.6-x (release date:21-9-2018)}{
 \itemize{
   \item Report part 4: Count of available nights with accelerometer data fixed
   \item Report part 4: NA and NaN values replaced by empty cells like in other reports
   \item Intensity gradient analysis added to part2 output according to Rowlands et al.
   MSSE 2018, doi: 10.1249/MSS.0000000000001561
+  \item Documentation on part4 output variables improved.
+  \item Providing incorrect value of sleeplogidnum in part4 should now provide a more
+  informative error message
+  \item Added functionality to handle timestamps that start with the year.
   }
 }
 \section{Changes in version 1.6-0 (release date:29-7-2018)}{
