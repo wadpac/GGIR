@@ -109,7 +109,9 @@ g.inspectfile = function(datafile) {
         tmp0 = read.csv(datafile,nrow=9,skip=0)
         tmp = colnames(tmp0)
         tmp2 = as.character(unlist(strsplit(tmp,".Hz"))[1])
-        tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2])
+        # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2]) 
+        # following suggestion by XInyue on github https://github.com/wadpac/GGIR/issues/102 replaced by:
+        tmp3 = as.character(unlist(strsplit(tmp2, ".at.",fixed = T))[2])
         tmp5 = unlist(strsplit(tmp3,","))
         if (length(tmp5) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp5[1])
