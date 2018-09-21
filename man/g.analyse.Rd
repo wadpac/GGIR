@@ -187,13 +187,16 @@ hours of data.
 percentile in the distribution of short epoch acceleration values of the average 
 day within the time interval as specified. 
 \item \code{L5hr_ENMO_mg_0-24_fullRecording} Starting time in hours of the
-least active five* hours within the time interval as specified (* window size is
-modifiable in g.getmeta)
+least active five* hours within the time interval as specified (* window size defined by
+argument winhr)
 \item \code{L5_ENMO_mg} Average acceleration over L5
 \item \code{M5hr_ENMO_mg_0-24_fullRecording} Starting time in hours of the most active
-five* hours in the day within the time interval as specified (* window size is
+five* hours in the day within the time interval as specified (* window size defined by
+argument winhr)
 modifiable in g.getmeta)
 \item \code{M5_ENMO_mg_0-24_fullRecording} Average acceleration over M5
+\item \code{ig_gradient_ENMO_0-24hr_fullRecording} Intensity gradient calculated over
+the full recording.
 \item \code{1am-6am_ENMO_mg_fullRecording} Average acceleration between
 1am and 6am
 \item \code{N valid WEdays} Number of valid weekend days
