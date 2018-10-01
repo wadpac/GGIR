@@ -1,9 +1,10 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.6-7 (release date:21-9-2018)}{
+\section{Changes in version 1.6-7 (release date:23-9-2018)}{
 \itemize{
-  \item Link with Zenodo for doi generation improved, no changes to the package itself
+  \item Link with Zenodo for doi generation removed
+  \item Broken url fixed in vignette
   }
 }
 \section{Changes in version 1.6-1 (release date:21-9-2018)}{
