@@ -91,7 +91,7 @@ journal/conference publications.
 Package: \tab GGIR\cr
 Type: \tab Package\cr
 Version: \tab 1.6-7\cr
-Date: \tab 2018-9-21\cr
+Date: \tab 2018-9-23\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
