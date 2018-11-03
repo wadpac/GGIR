@@ -6,9 +6,8 @@
             "orcid": "0000-0003-0182-9008"
         },
         {
-            "affiliation": "University of Granada",
-            "name": "Migueles, Jairo H.",
-            "orcid": "0000-0003-0366-6935"
+            "affiliation": "Activinsights Ltd.",
+            "name": "Fang, Zhou"
         },
         {
             "affiliation": "University of Leicester",
@@ -30,8 +29,9 @@
             "orcid": "0000-0003-3109-9720"
         },
         {
-            "affiliation": "Activinsights Ltd.",
-            "name": "Fang, Zhou"
+            "affiliation": "University of Granada",
+            "name": "Migueles, Jairo H.",
+            "orcid": "0000-0003-0366-6935"
         }
     ],
     "description": "Converts raw data from wearables into insightful reports for researchers investigating human daily physical activity and sleep.",
