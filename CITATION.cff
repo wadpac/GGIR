@@ -1,0 +1,53 @@
+# YAML 1.2
+---
+abstract: "Converts raw data from wearables into insightful reports for researchers investigating human daily physical activity and sleep."
+authors: 
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Hees
+    given-names: Vincent
+    name-particle: van
+    orcid: "https://orcid.org/0000-0003-0182-9008"
+  -
+    affiliation: "Activinsights Ltd."
+    family-names: Fang
+    given-names: Zhou
+  -
+    affiliation: "University of Leicester"
+    family-names: Mirkes
+    given-names: Evgeny
+    orcid: "https://orcid.org/0000-0003-1474-1734"
+  -
+    affiliation: "University College London"
+    family-names: Heywood
+    given-names: Joe
+  -
+    affiliation: "MRC Epidemiology Unit"
+    family-names: Zhao
+    given-names: "Jing Hua"
+    orcid: "https://orcid.org/0000-0003-4930-3582"
+  -
+    affiliation: Inserm
+    family-names: Sabia
+    given-names: "Séverine"
+    orcid: "https://orcid.org/0000-0003-3109-9720"
+  -
+    affiliation: "University of Granada"
+    family-names: Migueles
+    given-names: "Jairo H."
+    orcid: "https://orcid.org/0000-0003-0366-6935"
+cff-version: "1.0.3"
+date-released: 2018-09-23
+doi: "10.5281/zenodo.1051064"
+keywords: 
+  - "activity tracker"
+  - health
+  - fitness
+  - "sleep research"
+  - accelerometer
+license: "LGPL-2.0-only"
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/wadpac/GGIR"
+title: GGIR
+version: "1.6-7"
+...
