@@ -10,7 +10,7 @@ for memory management.
 }
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,
-  selectdaysfile=c(),filequality, decn,dayborder,ws)
+  selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz=c())
 }
 \arguments{
   \item{filename}{
@@ -39,6 +39,9 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   }
     \item{ws}{
   Larger windowsize for non-detection, see documentation \link{g.part2}
+  }
+   \item{desiredtz}{
+  Desired timezone, see documentation \link{g.getmeta}
   }
 
 }

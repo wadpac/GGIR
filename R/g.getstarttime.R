@@ -74,79 +74,84 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
     }
     
-    
-    #-----------------------------------------
-    #remove possible spaces in date or time
-    newstarttime = starttime #20-11-2014
-    newstartdate = startdate #20-11-2014
-    if (length(startdate) > 1) {
-      for (rpsi in 1:length(startdate)) {
-        if (length(unlist(strsplit(startdate[rpsi],"")))>1) {
-          newstartdate = startdate[rpsi]
+    if (mon == 4) {
+      starttime = P[1,1]
+      starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
+      # startdate = unlist(strsplit(as.character(starttime)," "))[1]
+    } else {
+      #-----------------------------------------
+      #remove possible spaces in date or time
+      newstarttime = starttime #20-11-2014
+      newstartdate = startdate #20-11-2014
+      if (length(startdate) > 1) {
+        for (rpsi in 1:length(startdate)) {
+          if (length(unlist(strsplit(startdate[rpsi],"")))>1) {
+            newstartdate = startdate[rpsi]
+          }
         }
       }
-    }
-    if (length(starttime) > 1) {
-      for (rpsi in 1:length(starttime)) {
-        if (length(unlist(strsplit(starttime[rpsi],"")))>1) {
-          newstarttime = starttime[rpsi]
+      if (length(starttime) > 1) {
+        for (rpsi in 1:length(starttime)) {
+          if (length(unlist(strsplit(starttime[rpsi],"")))>1) {
+            newstarttime = starttime[rpsi]
+          }
         }
       }
-    }
-    starttime = newstarttime
-    startdate = newstartdate
-    #-----------------------------------------
-    # flexible four date/time formats
-    starttime = paste(startdate," ",starttime,sep="")
-    getOption("digits.secs")
-    options(digits.secs = 3)
-    if (mon == 3) {
-      options(warn=-1)
-      topline = as.matrix(colnames(as.matrix(read.csv(datafile,nrow=1,skip=0))))
-      options(warn=0)
-      B1 = length(unlist(strsplit(topline,"MM[.]dd[.]yyyy")))
-      B2 = length(unlist(strsplit(topline,"M[.]d[.]yyyy")))
-      B6 = length(unlist(strsplit(topline,"M[.]dd[.]yyyy")))
-      B7 = length(unlist(strsplit(topline,"MM[.]d[.]yyyy")))
-      
-      B3 = length(unlist(strsplit(topline,"dd[.]MM[.]yyyy")))
-      B4 = length(unlist(strsplit(topline,"d[.]M[.]yyyy")))
-      B5 = length(unlist(strsplit(topline,"d[.]MM[.]yyyy")))
-      B8 = length(unlist(strsplit(topline,"dd[.]M[.]yyyy")))
-      
-      B9 = length(unlist(strsplit(topline,"yyyy[.]MM[.]dd")))
-      B10 = length(unlist(strsplit(topline,"yyyy[.]M[.]d")))
-      B11 = length(unlist(strsplit(topline,"yyyy[.]MM[.]d")))
-      B12 = length(unlist(strsplit(topline,"yyyy[.]M[.]dd")))
-      
-      B13 = length(unlist(strsplit(topline,"yyyy[.]dd[.]MM")))
-      B14 = length(unlist(strsplit(topline,"yyyy[.]d[.]M")))
-      B15 = length(unlist(strsplit(topline,"yyyy[.]d[.]MM")))
-      B16 = length(unlist(strsplit(topline,"yyyy[.]dd[.]M")))
-      
-      if (B1 > 1 | B2 > 1 | B6 > 1 | B7 > 1) {
-        starttime0 = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
-        if(is.na(starttime0) == TRUE) {
-          starttime0 = as.POSIXlt(starttime,format='%m-%d-%Y %H:%M:%S')
+      starttime = newstarttime
+      startdate = newstartdate
+      #-----------------------------------------
+      # flexible four date/time formats
+      starttime = paste(startdate," ",starttime,sep="")
+      getOption("digits.secs")
+      options(digits.secs = 3)
+      if (mon == 3) {
+        options(warn=-1)
+        topline = as.matrix(colnames(as.matrix(read.csv(datafile,nrow=1,skip=0))))
+        options(warn=0)
+        B1 = length(unlist(strsplit(topline,"MM[.]dd[.]yyyy")))
+        B2 = length(unlist(strsplit(topline,"M[.]d[.]yyyy")))
+        B6 = length(unlist(strsplit(topline,"M[.]dd[.]yyyy")))
+        B7 = length(unlist(strsplit(topline,"MM[.]d[.]yyyy")))
+        
+        B3 = length(unlist(strsplit(topline,"dd[.]MM[.]yyyy")))
+        B4 = length(unlist(strsplit(topline,"d[.]M[.]yyyy")))
+        B5 = length(unlist(strsplit(topline,"d[.]MM[.]yyyy")))
+        B8 = length(unlist(strsplit(topline,"dd[.]M[.]yyyy")))
+        
+        B9 = length(unlist(strsplit(topline,"yyyy[.]MM[.]dd")))
+        B10 = length(unlist(strsplit(topline,"yyyy[.]M[.]d")))
+        B11 = length(unlist(strsplit(topline,"yyyy[.]MM[.]d")))
+        B12 = length(unlist(strsplit(topline,"yyyy[.]M[.]dd")))
+        
+        B13 = length(unlist(strsplit(topline,"yyyy[.]dd[.]MM")))
+        B14 = length(unlist(strsplit(topline,"yyyy[.]d[.]M")))
+        B15 = length(unlist(strsplit(topline,"yyyy[.]d[.]MM")))
+        B16 = length(unlist(strsplit(topline,"yyyy[.]dd[.]M")))
+        
+        if (B1 > 1 | B2 > 1 | B6 > 1 | B7 > 1) {
+          starttime0 = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%m-%d-%Y %H:%M:%S')
+          }
+        } else if (B3 > 1 | B4 > 1 | B5 > 1 | B8 > 1) {
+          starttime0 = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+          }
+        } else if (B9 > 1 | B10 > 1 | B11 > 1 | B12 > 1) {
+          starttime0 = as.POSIXlt(starttime,format='%Y/%m/%d %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+          }
+        } else if (B13 > 1 | B14 > 1 | B15 > 1 | B16 > 1) {
+          starttime0 = as.POSIXlt(starttime,format='%Y/%d/%m %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+          }
         }
-      } else if (B3 > 1 | B4 > 1 | B5 > 1 | B8 > 1) {
-        starttime0 = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
-        if(is.na(starttime0) == TRUE) {
-          starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
-        }
-      } else if (B9 > 1 | B10 > 1 | B11 > 1 | B12 > 1) {
-        starttime0 = as.POSIXlt(starttime,format='%Y/%m/%d %H:%M:%S')
-        if(is.na(starttime0) == TRUE) {
-          starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
-        }
-      } else if (B13 > 1 | B14 > 1 | B15 > 1 | B16 > 1) {
-        starttime0 = as.POSIXlt(starttime,format='%Y/%d/%m %H:%M:%S')
-        if(is.na(starttime0) == TRUE) {
-          starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
-        }
+        starttime = starttime0
+        lengthheader = 9
       }
-      starttime = starttime0
-      lengthheader = 9
     }
   }
   return(starttime)
