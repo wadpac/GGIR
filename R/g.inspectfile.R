@@ -11,10 +11,13 @@ g.inspectfile = function(datafile) {
     if (tmp1[length(tmp1)] == "v") { #this is a csv file
       dformat = 2 #2 = csv
       testcsv = read.csv(paste(datafile,sep=""),nrow=10,skip=10)
-      if (ncol(testcsv) == 2) { #it is a geneactivefile
+      testcsvtopline = read.csv(paste(datafile,sep=""),nrow=2,skip=1)
+      if (ncol(testcsv) == 2 & ncol(testcsvtopline) < 4) { #it is a geneactivefile
         mon = 2
-      } else if (ncol(testcsv) >= 3) {	#it is an actigraph file
+      } else if (ncol(testcsv) >= 3 & ncol(testcsvtopline) < 4) {	#it is an actigraph file
         mon = 3
+      } else if (ncol(testcsv) >= 4 & ncol(testcsvtopline) >= 4) { # it is an AX3 file
+        mon = 4
       }
     } else if (tmp2[length(tmp2)] == "in") { #this is a bin file
       dformat = 1 #1 = binary
@@ -119,6 +122,12 @@ g.inspectfile = function(datafile) {
         } else { #decimals seperated by dot
           sf = as.numeric(tmp3[1])			
         }
+      } else if (mon == 4) {
+        # sample frequency is not stored
+        tmp0 = read.csv(datafile,nrow=100000,skip=0)
+        tmp1 = as.numeric(as.POSIXlt(tmp0[,1]))
+        sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
+        sf = floor((sf) /5 ) *5 # round to nearest interget of 5
       }
     } else if (dformat == 3) { # wav
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
@@ -155,8 +164,9 @@ g.inspectfile = function(datafile) {
       H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
     } else if (mon == 3) { #geneactive
       H = read.csv(datafile,nrow=9,skip=0)
+    } else if (mon == 4) { #ax3 (axivity)
+      H = "file does not have header" # these files have no header
     }
-   
   } else if (dformat == 3) { #wav data
     header = c()
     try(expr={header = rownames(read.csv(datafile,nrow=15,header=TRUE))},silent=TRUE)

@@ -1,5 +1,5 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder,ws) {
+                         decn,dayborder,ws, desiredtz = c()) {
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -27,7 +27,6 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     dformat = I$dformc
     sf = I$sf
   }
-  
   P = c()
   
   if (mon == 1 & dformat == 1) { # genea binary
@@ -262,6 +261,51 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (blocknumber == 1) {
         filequality$filecorrupt = TRUE
       }
+      cat("\nEnd of file reached\n")
+    }
+  } else if (mon == 4 & dformat == 2) { # axivity (ax3) csv format
+    freadheader = FALSE
+    headerlength = 0
+    skiprows = (headerlength+(blocksize*300*(blocknumber-1)))
+    try(expr={
+      P = as.data.frame(
+        data.table::fread(filename,nrow = (blocksize*300), 
+                          skip=skiprows, 
+                          dec=decn,showProgress = FALSE, header = freadheader))
+    },silent=TRUE)
+    if (length(P) > 1) {
+      # P = as.matrix(P)
+      if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
+        P = c() ; switchoffLD = 1 #added 30-6-2012
+        cat("\nWarning (1): data in block too short for doing non-wear detection\n")
+        filequality$filetooshort = TRUE
+      }
+      if (nrow(P) < (blocksize*300)) { #last block
+        print("last block")
+        switchoffLD = 1
+      }
+      # resample the acceleration data, because AX3 data is stored at irregular time points
+      rawTime = vector(mode = "numeric", nrow(P))
+      if (length(desiredtz) == 0) {
+        cat("Forgot to specify argument desiredtz? Now Europe/London assumed")
+        desiredtz = "Europe/London"
+      }
+      rawTime = as.numeric(as.POSIXlt(P[,1],tz = desiredtz))
+      rawAccel = as.matrix(P[,2:4])
+      step = 1/sf
+      start = rawTime[1]
+      end = rawTime[length(rawTime)]
+      timeRes = seq(start, end, step)
+      nr = length(timeRes) - 1
+      timeRes = as.vector(timeRes[1:nr])
+      accelRes = matrix(0,nrow = nr, ncol = 3, dimnames = list(NULL, c("x", "y", "z")))
+      # at the moment the function is designed for reading the r3 acceleration channels only,
+      # because that is the situation of the use-case we had.
+      rawLast = nrow(rawAccel)
+      accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
+      P = cbind(timeRes,accelRes)
+    } else {
+      P = c()
       cat("\nEnd of file reached\n")
     }
   }
