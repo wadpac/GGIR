@@ -83,7 +83,7 @@ install.packages("GGIR", dependencies = TRUE)
     - [GENEActiv](https://www.geneactiv.org/) .bin and .csv
     - [ActiGraph](http://actigraphcorp.com/) .csv. Note for Actigraph users:
 In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absense of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
-    - [Axivity](http://axivity.com/) .wav and .cwa
+    - [Axivity](http://axivity.com/) .wav, .csv and .cwa
     - Genea (an accelerometer that is not available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
