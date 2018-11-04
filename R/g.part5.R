@@ -57,6 +57,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   # fnames_original= sort(fnames_original)
   if (f1 == 0) length(fnames.ms4)
   if (f1 > length(fnames.ms4)) f1 = length(fnames.ms4)
+  boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
+  boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
+  boutdur.in = sort(boutdur.in,decreasing = TRUE)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
