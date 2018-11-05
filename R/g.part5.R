@@ -175,11 +175,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               pr1 = pr0 + ((60/ws3)*1440*6)
               if (pr1 > pr2) pr1 = pr2
               if (pr0 > pr1) pr0 = pr1
-              s0 = which(time[pr0:pr1] == gik.ons[g])[1]
-              s1 = which(time[pr0:pr1] == gik.end[g])[1]
-              timebb = as.character(time[pr0:pr1]) 
-              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
+              #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
+              timebb = as.character(time[pr0:pr1])
+              if(length(unlist(strsplit(timebb[1],"[+]"))) < 2) { # only do this for ISO8601 format
+                timebb = POSIXtime2iso8601(timebb,tz=desiredtz)
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
