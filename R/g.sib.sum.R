@@ -8,10 +8,12 @@ g.sib.sum = function(SLE,M,ignorenonwear=FALSE,desiredtz="Europe/London") {
   }
   space = ifelse(length(unlist(strsplit(as.character(A$time[1])," "))) > 1,TRUE,FALSE)
   temptime = as.character(unlist(A$time))
+  #time stored as iso8601 what makes it sensitive to daylight saving days.
   if (space == FALSE) {
-    time = as.POSIXlt(temptime,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
+    time = temptime
   } else {
-    time = as.POSIXlt(temptime,tz=desiredtz)
+    time = as.POSIXlt(temptime, tz = desiredtz)
+    time = POSIXtime2iso8601(time, tz = desiredtz)
   }
   # time = as.POSIXlt(A$time,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
   night = A$night
