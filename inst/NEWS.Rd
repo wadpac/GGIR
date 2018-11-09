@@ -8,6 +8,8 @@
   \item Bug fixed that caused the date of the lates measurement day in part5 output
   to be one day ahead when dayborder=12.
   \item Part5 struggled to process measurement with more than 40 days, now fixed.
+  \item g.getstarttime can now also handle dates in Actigraph csv-file headers that are
+  dot separated, e.g. 20.05.2016, before it only handled 20-05-2016 and 20/05/2016.
   }
 }
 
