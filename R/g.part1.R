@@ -196,7 +196,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         print("investigate calibration of the sensors...")
         C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                         minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
-                        windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder)
+                        windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
+                        desiredtz=desiredtz)
       } else {
         C = list(cal.error.end=0,cal.error.start=0)
         C$scale=c(1,1,1)
