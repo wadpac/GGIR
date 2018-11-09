@@ -286,7 +286,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
       # resample the acceleration data, because AX3 data is stored at irregular time points
       rawTime = vector(mode = "numeric", nrow(P))
-      if (length(desiredtz) == 0) {
+      if (length(desiredtz) == 0 & blocknumber == 1) {
         cat("Forgot to specify argument desiredtz? Now Europe/London assumed")
         desiredtz = "Europe/London"
       }
