@@ -1,17 +1,20 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.6-? (release date:??-11-2018)}{
+\section{Changes in version 1.6-8 (release date:9-11-2018)}{
 \itemize{
   \item Order of Nbouts output in g.part5 was not consistent with bout duration, 
-  which is fixed now. Thanks Jairo for identifying the problem.
+  which is fixed now.
+  \item Bug fixed that caused the date of the lates measurement day in part5 output
+  to be one day ahead when dayborder=12.
+  \item Part5 struggled to process measurement with more than 40 days, now fixed.
   }
 }
 
 \section{Changes in version 1.6-7 (release date:23-9-2018)}{
 \itemize{
-  \item Link with Zenodo for doi generation removed
-  \item Broken url fixed in vignette
+  \item Link with Zenodo for doi generation removed.
+  \item Broken url fixed in vignette.
   }
 }
 \section{Changes in version 1.6-1 (release date:21-9-2018)}{
