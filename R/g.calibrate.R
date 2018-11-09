@@ -1,5 +1,6 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
-                       chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0) {
+                       chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
+                       desiredtz = c()) {
   
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
@@ -63,7 +64,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
-                            decn=decn,dayborder=dayborder,ws=ws)
+                            decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
