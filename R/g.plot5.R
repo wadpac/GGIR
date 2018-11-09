@@ -240,6 +240,8 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         }
         detection = rep(NA,length(time))
         S = sib.cla.sum #SLES$output
+        S$sib.onset.time = iso8601chartime2POSIX(S$sib.onset.time, tz = desiredtz)
+        S$sib.end.time = iso8601chartime2POSIX(S$sib.end.time, tz = desiredtz)
         def = unique(S$definition)[1]
         S = S[which(S$definition==def),] # simplify to one definition
         for (j in 1:length(unique(S$night))) { #nights
