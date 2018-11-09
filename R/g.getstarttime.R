@@ -128,21 +128,33 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
         starttime0 = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
         if(is.na(starttime0) == TRUE) {
           starttime0 = as.POSIXlt(starttime,format='%m-%d-%Y %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%m.%d.%Y %H:%M:%S')
+          }
         }
       } else if (B3 > 1 | B4 > 1 | B5 > 1 | B8 > 1) {
         starttime0 = as.POSIXlt(starttime,format='%d/%m/%Y %H:%M:%S')
         if(is.na(starttime0) == TRUE) {
           starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%d.%m.%Y %H:%M:%S')
+          }
         }
       } else if (B9 > 1 | B10 > 1 | B11 > 1 | B12 > 1) {
         starttime0 = as.POSIXlt(starttime,format='%Y/%m/%d %H:%M:%S')
         if(is.na(starttime0) == TRUE) {
           starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%d.%m.%Y %H:%M:%S')
+          }
         }
       } else if (B13 > 1 | B14 > 1 | B15 > 1 | B16 > 1) {
         starttime0 = as.POSIXlt(starttime,format='%Y/%d/%m %H:%M:%S')
         if(is.na(starttime0) == TRUE) {
           starttime0 = as.POSIXlt(starttime,format='%d-%m-%Y %H:%M:%S')
+          if(is.na(starttime0) == TRUE) {
+            starttime0 = as.POSIXlt(starttime,format='%d.%m.%Y %H:%M:%S')
+          }
         }
       }
       starttime = starttime0
