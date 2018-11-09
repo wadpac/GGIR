@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.6-8 (release date:9-11-2018)}{
+\itemize{
+  \item Functionality added to read AX3 Axivity csv files that have the following
+  characteristics: Raw data in g-units, not resampled, and with timestamps stored in
+  the first column.
+  }
+}
 \section{Changes in version 1.6-7 (release date:23-9-2018)}{
 \itemize{
   \item Link with Zenodo for doi generation removed
