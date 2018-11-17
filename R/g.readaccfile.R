@@ -229,7 +229,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         data.table::fread(filename,nrow = (blocksize*300), 
                           skip=skiprows, 
                           dec=decn,showProgress = FALSE, header = freadheader))
-      },silent=TRUE)
+    },silent=TRUE)
     if (length(P) > 1) {
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
@@ -242,27 +242,56 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       cat("\nEnd of file reached\n")
     }
   } else if (mon == 4 & dformat == 4) { # axivity cwa
-    try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)),
+    try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)), # try to read block first time
                             end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
     
-    if (length(P) > 1) {
-      if (length(P$data) == 0) {
+    if (length(P) > 1) { # data reading succesful
+      if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
         cat("\nWarning (1): data in block too short for doing non-wear detection\n")
         if (blocknumber == 1) filequality$filetooshort = TRUE
-      } else {
-        if (nrow(P$data) < ((sf*ws*2)+1)) { # & blocknumber == 1 #VvH 23/4/2017
+      } else { # too short for non-wear detection
+        if (nrow(P$data) < ((sf*ws*2)+1)) {
           P = c() ; switchoffLD = 1
           cat("\nError: data too short for doing non-wear detection 1\n")		
           if (blocknumber == 1) filequality$filetooshort = TRUE
         }
       }
-    } else {
-      P = c()
-      if (blocknumber == 1) {
-        filequality$filecorrupt = TRUE
+    } else { #data reading not succesful
+      # now only load the last page, to assess whether there may be something wrong with this block of data:
+      # I implemented this as a temporary fix, but it is probably better to fix this inside the g.cwaread function.
+      try(expr={P = g.cwaread(fileName=filename, start = (blocksize*blocknumber),
+                              end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
+      if (length(P) > 1) { # there is data, but somehow g.cwaread cannot read the entire block
+        # try again, but now by ignoring the first page of the block (the entire block is shifted one page forward in time)
+        try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+1,
+                                end = (blocksize*blocknumber)+1, progressBar = FALSE)},silent=TRUE)
+        if (length(P) > 1) { # data reading succesful
+          if (length(P$data) == 0) { # if this still does not work then
+            P = c() ; switchoffLD = 1
+            cat("\nWarning (1): data in block too short for doing non-wear detection\n")
+            if (blocknumber == 1) filequality$filetooshort = TRUE
+          } else {
+            if (nrow(P$data) < ((sf*ws*2)+1)) {
+              P = c() ; switchoffLD = 1
+              cat("\nError: data too short for doing non-wear detection 1\n")		
+              if (blocknumber == 1) filequality$filetooshort = TRUE
+            }
+          }
+        } else { # data reading still not succesful, so classify file as corrupt
+          P = c()
+          if (blocknumber == 1) {
+            filequality$filecorrupt = TRUE
+          }
+          cat("\nEnd of file reached\n")
+        }
+      } else { 
+        P = c()
+        if (blocknumber == 1) {
+          filequality$filecorrupt = TRUE
+        }
+        cat("\nEnd of file reached\n")
       }
-      cat("\nEnd of file reached\n")
     }
   }
   invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD))
