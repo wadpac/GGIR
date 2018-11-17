@@ -248,28 +248,42 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
-        cat("\nWarning (1): data in block too short for doing non-wear detection\n")
+        cat("\nWarning (1): Data in block too short for doing non-wear detection\n")
         if (blocknumber == 1) filequality$filetooshort = TRUE
       } else { # too short for non-wear detection
         if (nrow(P$data) < ((sf*ws*2)+1)) {
           P = c() ; switchoffLD = 1
-          cat("\nError: data too short for doing non-wear detection 1\n")		
+          cat("\nError: Data too short for doing non-wear detection 1\n")		
           if (blocknumber == 1) filequality$filetooshort = TRUE
         }
       }
     } else { #data reading not succesful
-      # now only load the last page, to assess whether there may be something wrong with this block of data:
-      # I implemented this as a temporary fix, but it is probably better to fix this inside the g.cwaread function.
-      try(expr={P = g.cwaread(fileName=filename, start = (blocksize*blocknumber),
-                              end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
-      if (length(P) > 1) { # there is data, but somehow g.cwaread cannot read the entire block
-        # try again, but now by ignoring the first page of the block (the entire block is shifted one page forward in time)
-        try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+1,
-                                end = (blocksize*blocknumber)+1, progressBar = FALSE)},silent=TRUE)
+      # Now only load the last page, to assess whether there may be something wrong with this block of data:
+      # I (VvH) implemented this as a temporary fix on 17Nov2018, but it would be better if we understood the source of this error
+      # and address it inside the g.cwaread function. For example, are the page corrupted, and if so then why?
+      PtestLastPage = c()
+      # try to read the last page of the block
+      try(expr={PtestLastPage = g.cwaread(fileName=filename, start = (blocksize*blocknumber),
+                                          end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
+      if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
+        jumppage = 0
+        PtestStartPage = c()
+        while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
+          jumppage = jumppage + 1 
+          try(expr={PtestStartPage = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)) + jumppage,
+                                               end = (blocksize*(blocknumber-1)) + jumppage, progressBar = FALSE)},silent=TRUE)
+          if (jumppage == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
+        }
+      }
+      if (length(PtestStartPage) > 1) { 
+        # Now we know on which page we can start and end the block, we can try again to
+        # read the entire block:
+        try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+jumppage,
+                                end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
-            cat("\nWarning (1): data in block too short for doing non-wear detection\n")
+            cat("\nWarning (3): data in block too short for doing non-wear detection\n")
             if (blocknumber == 1) filequality$filetooshort = TRUE
           } else {
             if (nrow(P$data) < ((sf*ws*2)+1)) {
@@ -278,7 +292,10 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
               if (blocknumber == 1) filequality$filetooshort = TRUE
             }
           }
-        } else { # data reading still not succesful, so classify file as corrupt
+          # Add replications of Ptest to the beginning of P to achieve same data length as under nuormal conditions
+          P$data = rbind(do.call("rbind",replicate(jumppage,PtestStartPage$data,simplify = FALSE)), P$data) 
+          
+        } else { # Data reading still not succesful, so classify file as corrupt
           P = c()
           if (blocknumber == 1) {
             filequality$filecorrupt = TRUE
