@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.6-8 (release date:9-11-2018)}{
+\section{Changes in version 1.6-8 (release date:19-11-2018)}{
 \itemize{
   \item Order of Nbouts output in g.part5 was not consistent with bout duration, 
   which is fixed now.
@@ -10,6 +10,9 @@
   \item Part5 struggled to process measurement with more than 40 days, now fixed.
   \item g.getstarttime can now also handle dates in Actigraph csv-file headers that are
   dot separated, e.g. 20.05.2016, before it only handled 20-05-2016 and 20/05/2016.
+  \item Part4 handling of clocktime 9am corrected.
+  \item Filename identification in part5 improved when saving raw level data.
+  \item Fixed ability to read wav files when they are shorter than expected.
   }
 }
 
