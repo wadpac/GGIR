@@ -363,7 +363,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.in = levels$bc.in
                   
                   if (save_ms5rawlevels == TRUE) {
-                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms5[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
+                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
                     if (length(time) == length(LEVELS)) {
                       ind = 1:length(time) #c(1,which(diff(LEVELS)!=0) + 1)
                       ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
