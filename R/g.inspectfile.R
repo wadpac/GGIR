@@ -234,7 +234,10 @@ g.inspectfile = function(datafile) {
     }
   }
   closeAllConnections()
-  if (dformat != 4) header = data.frame(value=H[,2],row.names=H[,1])
+
+  RowsWithData = which(is.na(H[,1]) == FALSE)
+  
+  if (dformat != 4) header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
   monc = mon
   monn = monnames[mon]
   dformc = dformat
