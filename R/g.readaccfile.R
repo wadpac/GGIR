@@ -266,19 +266,20 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       try(expr={PtestLastPage = g.cwaread(fileName=filename, start = (blocksize*blocknumber),
                                           end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
       if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
-        jumppage = 0
+        NFilePagesSkipped = 0
         PtestStartPage = c()
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
-          jumppage = jumppage + 1 
-          try(expr={PtestStartPage = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)) + jumppage,
-                                               end = (blocksize*(blocknumber-1)) + jumppage, progressBar = FALSE)},silent=TRUE)
-          if (jumppage == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
+          NFilePagesSkipped = NFilePagesSkipped + 1 
+          try(expr={PtestStartPage = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)) + NFilePagesSkipped,
+                                               end = (blocksize*(blocknumber-1)) + NFilePagesSkipped, progressBar = FALSE)},silent=TRUE)
+          if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
+        cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
       }
       if (length(PtestStartPage) > 1) { 
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
-        try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+jumppage,
+        try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+NFilePagesSkipped,
                                 end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
@@ -290,10 +291,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
               P = c() ; switchoffLD = 1
               cat("\nError: data too short for doing non-wear detection 1\n")		
               if (blocknumber == 1) filequality$filetooshort = TRUE
+            } else {
+              filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
             }
           }
           # Add replications of Ptest to the beginning of P to achieve same data length as under nuormal conditions
-          P$data = rbind(do.call("rbind",replicate(jumppage,PtestStartPage$data,simplify = FALSE)), P$data) 
+          P$data = rbind(do.call("rbind",replicate(NFilePagesSkipped,PtestStartPage$data,simplify = FALSE)), P$data) 
           
         } else { # Data reading still not succesful, so classify file as corrupt
           P = c()
