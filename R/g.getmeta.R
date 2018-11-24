@@ -54,7 +54,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   windowsizes = c(ws3,ws2,ws)
   start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour)
   monnames = c("genea","geneactive","actigraph","axivity") #monitor names
-  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE)
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE,NFilePagesSkipped = 0)
   # filecorrupt = FALSE
   # filetooshort = FALSE
   # filedoesnotholdday = FALSE
@@ -143,11 +143,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       filetooshort = filequality$filetooshort
       filecorrupt = filequality$filecorrupt
       filedoesnotholdday = filequality$filedoesnotholdday
+      NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
     } else {
       filetooshort = FALSE
       filecorrupt = FALSE
       filedoesnotholdday = FALSE
+      NFilePagesSkipped = 0
     }
     options(warn=0) #turn on warnings
     #============
@@ -745,6 +747,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   
   # detach(allmetrics,warn.conflicts = FALSE)
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
-  invisible(list(filecorrupt=filecorrupt,filetooshort=filetooshort,
+  invisible(list(filecorrupt=filecorrupt,filetooshort=filetooshort,NFilePagesSkipped=NFilePagesSkipped,
                  metalong=metalong, metashort=metashort,wday=wday,wdayname=wdayname,windowsizes=windowsizes,bsc_qc=bsc_qc))  
 }
