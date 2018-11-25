@@ -11,6 +11,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    M5L5res = 10,
                    overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE) {
   options(encoding = "UTF-8")
+  Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
@@ -57,6 +58,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   # fnames_original= sort(fnames_original)
   if (f1 == 0) length(fnames.ms4)
   if (f1 > length(fnames.ms4)) f1 = length(fnames.ms4)
+  boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
+  boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
+  boutdur.in = sort(boutdur.in,decreasing = TRUE)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
@@ -109,7 +113,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       idindex = which(summarysleep$filename == fnames.ms3[i])
       id = summarysleep$id[idindex[1]]
       ndays = nrow(summarysleep) #/ length(unique(summarysleep$acc_def))
-      dsummary = matrix("",(40*length(unique(summarysleep$acc_def))
+      dsummary = matrix("",((nrow(summarysleep)+10)*length(unique(summarysleep$acc_def))
                             *length(unique(threshold.lig))
                             *length(unique(threshold.mod))
                             *length(unique(threshold.vig))
@@ -172,11 +176,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               pr1 = pr0 + ((60/ws3)*1440*6)
               if (pr1 > pr2) pr1 = pr2
               if (pr0 > pr1) pr0 = pr1
-              s0 = which(time[pr0:pr1] == gik.ons[g])[1]
-              s1 = which(time[pr0:pr1] == gik.end[g])[1]
-              timebb = as.character(time[pr0:pr1]) 
-              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
+              #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
+              timebb = as.character(time[pr0:pr1])
+              if(length(unlist(strsplit(timebb[1],"[+]"))) < 2) { # only do this for ISO8601 format
+                timebb = POSIXtime2iso8601(timebb,tz=desiredtz)
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
@@ -213,6 +216,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           } else {
             nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
           }
+          
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -359,7 +363,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.in = levels$bc.in
                   
                   if (save_ms5rawlevels == TRUE) {
-                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms5[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
+                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
                     if (length(time) == length(LEVELS)) {
                       ind = 1:length(time) #c(1,which(diff(LEVELS)!=0) + 1)
                       ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
@@ -443,6 +447,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         if(wi>nrow(summarysleep_tmp2)+plusb) {
                           dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
                                                      as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
+                          remember_previous_weekday = dsummary[di,fi]
                           ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                           dsummary[di,fi] = j
                           ds_names[fi] = "acc_def";      fi = fi + 1
@@ -455,17 +460,23 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           
                         } else {
                           if(timewindowi == "MM" & wi == nrow(summarysleep_tmp2)+plusb) { # for the last day a ot of information is missing, so fill in defaults 
-                            dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
-                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
+                            dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")), #+1
+                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y"))) #+1
+                            addone = 0
+                            if (dsummary[di,fi] == remember_previous_weekday) {
+                              addone = 1
+                              dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1), #+1
+                                                         as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1)) #+1
+                            }
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
                             ds_names[fi] = "acc_def";      fi = fi + 1
-                            dsummary[di,fi] = summarysleep_tmp2$night[wi-1]+1
+                            dsummary[di,fi] = summarysleep_tmp2$night[wi-1] + addone
                             ds_names[fi] = "night number";      fi = fi + 1
                           } else {
-                            
                             dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi]),
                                                        as.character(as.Date(summarysleep_tmp2$calendardate[wi], format="%e/%m/%Y")))
+                            remember_previous_weekday = dsummary[di,fi]
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
                             ds_names[fi] = "acc_def";      fi = fi + 1
