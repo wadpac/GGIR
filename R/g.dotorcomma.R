@@ -17,6 +17,9 @@ g.dotorcomma = function(inputfile,dformat,mon) {
         decn = "." #dot
       }
     } else if (mon == 2 ){
+      if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
+        cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
+      }
       try(expr={deci = GENEAread::read.bin(binfile=inputfile,start=1,end=3,mmap.load=FALSE,calibrate=TRUE)},silent=TRUE)
       deci = as.matrix(deci$data.out)
       if(is.na(as.numeric(deci[2,2])) == T) {
