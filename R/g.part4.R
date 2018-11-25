@@ -317,9 +317,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               xHR = as.numeric(x[1])
               xMI = as.numeric(x[2])
               xSE = as.numeric(x[3])
-              if (xHR < 9) xHR = paste("0",xHR,sep="")
-              if (xMI < 9) xMI = paste("0",xMI,sep="")
-              if (xSE < 9) xSE = paste("0",xSE,sep="")
+              if (xHR < 10) xHR = paste("0",xHR,sep="")
+              if (xMI < 10) xMI = paste("0",xMI,sep="")
+              if (xSE < 10) xSE = paste("0",xSE,sep="")
               x = paste(xHR,":",xMI,":",xSE,sep="") 
               return(x)
             }

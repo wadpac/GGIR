@@ -1,5 +1,6 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
-                       chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0) {
+                       chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
+                       desiredtz = c()) {
   
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
@@ -38,7 +39,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz) 
   if (mon == 2 | (mon == 4 & dformat == 4)) {
     meta = matrix(99999,NR,8) #for meta data
-  } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3)){
+  } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2)){
     meta = matrix(99999,NR,7)
   }
   # setting size of blocks that are loaded (too low slows down the process)
@@ -47,6 +48,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   blocksizegenea = round((20608 * (sf/80)) * (chunksize*0.5))
   if (mon == 1) blocksize = blocksizegenea
   if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
+  if (mon == 4 & dformat == 2) blocksize = round(blocksize)
     #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
@@ -62,7 +64,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
-                            decn=decn,dayborder=dayborder,ws=ws)
+                            decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
@@ -110,10 +112,13 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           } else if (dformat == 4 & mon == 4) {
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
             use.temp = TRUE
+          } else if (dformat == 2 & mon == 4) {
+            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            use.temp = FALSE
           } else if (mon == 2 & dformat == 1) {
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4]); temperaturre = as.numeric(data[,7])
             temperature = as.numeric(data[,7])
-          } else if (dformat == 2) {
+          } else if (dformat == 2 & mon != 4) {
             data2 = matrix(NA,nrow(data),3)
             if (ncol(data) == 3) extra = 0
             if (ncol(data) >= 4) extra = 1
@@ -132,7 +137,8 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           } else if (mon == 1 | mon == 3) {
             use.temp = FALSE
           }
-          if ((mon == 2 | (mon == 4 & dformat == 4)) & use.temp == TRUE) { #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
+          if ((mon == 2 | (mon == 4 & dformat == 4)) & use.temp == TRUE) { 
+            #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               cat("\ntemperature is NA\n")
               use.temp = FALSE
@@ -325,7 +331,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
         if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4))) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4)))  {
+        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) | (mon == 4 & dformat == 2)))  {
           QC = "recalibration done, but temperature values not used"
         } else if (mon != 2 & dformat != 3)  {
           QC = "recalibration done, no problems detected"
