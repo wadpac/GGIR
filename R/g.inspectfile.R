@@ -30,6 +30,9 @@ g.inspectfile = function(datafile) {
     }
     if (dformat == 1) { # .bin
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
+      if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
+        cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
+      }
       suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile)},silent=TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
