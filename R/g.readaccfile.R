@@ -74,6 +74,9 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         stop(paste0("CLS error: there are zero or more than one files: ",
                     filename, "in the wearcodes file"))
       }
+      if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
+        cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
+      }
       hhr <- GENEAread::header.info(filename)
       tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
                     getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
