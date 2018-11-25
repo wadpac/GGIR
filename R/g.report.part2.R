@@ -142,6 +142,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       if (length(C$npoints) == 0) {
         C$npoints = " "
       }
+      if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
       QC = data.frame(filename=fnames[i],
                       file.corrupt=M$filecorrupt,
                       file.too.short=M$filetooshort,
@@ -154,7 +155,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
                       cal.error.end=C$cal.error.end,
                       n.10sec.windows=C$npoints,
                       n.hours.considered = C$nhoursused, QCmessage=C$QCmessage,mean.temp=tmean,
-                      device.serial.number=SN,stringsAsFactors=FALSE)
+                      device.serial.number=SN,stringsAsFactors=FALSE,NFilePagesSkipped=M$NFilePagesSkipped)
       if (i == 1 | i == f0) {
         QCout = QC
       } else {
