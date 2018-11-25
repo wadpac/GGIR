@@ -194,7 +194,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                                      dformat=dformat,desiredtz=desiredtz,selectdaysfile=selectdaysfile)
           #==================================================
           #inspection timezone
-          
           timezone = attr(unclass(as.POSIXlt(starttime[1])),which="tzone")
           starttimebefore = as.POSIXlt(starttime)
           # assuming that timestamps is good, but that timezone might be lost in conversion from string to POSIXct
