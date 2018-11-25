@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.7-0 (release date:25-11-2018)}{
+\section{Changes in version 1.7-1 (release date:25-11-2018)}{
 \itemize{
   \item Fixed order of Nbouts output in g.part5 was not consistent with bout duration.
   \item Functionality added to read AX3 Axivity csv files that have the following

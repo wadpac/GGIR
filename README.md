@@ -3,7 +3,7 @@
 The code in this repository is the development version for the code in R-package GGIR on CRAN
 
 ## Getting started:
-The package [vignette](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
+The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
 
 ## Contribution guidelines:
 We always welcome contributions to the package.
