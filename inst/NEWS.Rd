@@ -1,24 +1,22 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.6-8 (release date:19-11-2018)}{
+\section{Changes in version 1.7-0 (release date:25-11-2018)}{
 \itemize{
-  \item Order of Nbouts output in g.part5 was not consistent with bout duration,
-  which is fixed now.
+  \item Fixed order of Nbouts output in g.part5 was not consistent with bout duration.
   \item Functionality added to read AX3 Axivity csv files that have the following
   characteristics: Raw data in g-units, not resampled, and with timestamps stored in
   the first column.
-  \item Bug fixed that caused the date of the lates measurement day in part5 output
-  to be one day ahead when dayborder=12.
-  \item Part5 struggled to process measurement with more than 40 days, now fixed.
+  \item Fixed bug that caused the date of the last measurement day in part5 output
+  to be one day ahead if argument dayborder=12.
+  \item Part5 struggled to process measurements with more than 40 days, now fixed.
   \item g.getstarttime can now also handle dates in Actigraph csv-file headers that are
   dot separated, e.g. 20.05.2016, before it only handled 20-05-2016 and 20/05/2016.
   \item Part4 handling of clocktime 9am corrected.
   \item Filename identification in part5 improved when saving raw level data.
-  \item Fixed ability to read wav files when they are shorter than expected.
+  \item Fixed ability to read wav file header when shorter than expected.
   }
 }
-
 \section{Changes in version 1.6-7 (release date:23-9-2018)}{
 \itemize{
   \item Link with Zenodo for doi generation removed.
