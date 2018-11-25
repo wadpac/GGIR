@@ -6,7 +6,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
     starttime = P$data[1,1]
     lengthheader = nrow(header)
     starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
-    starttime = POSIXtime2iso8601(starttime,tz=desiredtz) 
+    starttime = POSIXtime2iso8601(starttime,tz=desiredtz)
   } else if (dformat == 3) { #wav
     starttime = c()
     #It seems that Axivity does not store timestamp in a consistent position
@@ -18,16 +18,16 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       if (length(which(rn == "Start")) > 0) {
         starttime = as.character(header$value[which(rn == "Start")])
         #in one of the files starttime is hidden in rowname
-        if (length(starttime) == 0) starttime = rownames(header)[2] 
+        if (length(starttime) == 0) starttime = rownames(header)[2]
       }
       #in one of the files start variable name is hidden in the values
       if (length(which(vl == "Start")) > 0) {
         starttime = header$value[2]
       }
-      
+
     }
     if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
-    if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")]) 
+    if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")])
     lengthheader = nrow(header)
   } else if (mon == 2 & dformat == 1) {
     if (length(desiredtz) > 0) {
@@ -40,7 +40,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       }
       if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
         #needed for MaM study where first timestamp does not have clock time in it
-        starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz) 
+        starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz)
       }
     } else {
       starttime = P$page.timestamps[1]
@@ -70,26 +70,31 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
         tmphi = tmphi + 1
       }
       startdate = unlist(strsplit(as.character(tmph[tmphi,1]),"Start Date"))[2]
-      startdate = as.character(unlist(strsplit(as.character(startdate)," "))) 
+      startdate = as.character(unlist(strsplit(as.character(startdate)," ")))
       starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
     }
-    
-    
-    #-----------------------------------------
-    #remove possible spaces in date or time
-    newstarttime = starttime #20-11-2014
-    newstartdate = startdate #20-11-2014
-    if (length(startdate) > 1) {
-      for (rpsi in 1:length(startdate)) {
-        if (length(unlist(strsplit(startdate[rpsi],"")))>1) {
-          newstartdate = startdate[rpsi]
+
+    if (mon == 4) {
+      starttime = P[1,1]
+      starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
+      # startdate = unlist(strsplit(as.character(starttime)," "))[1]
+    } else {
+      #-----------------------------------------
+      #remove possible spaces in date or time
+      newstarttime = starttime #20-11-2014
+      newstartdate = startdate #20-11-2014
+      if (length(startdate) > 1) {
+        for (rpsi in 1:length(startdate)) {
+          if (length(unlist(strsplit(startdate[rpsi],"")))>1) {
+            newstartdate = startdate[rpsi]
+          }
         }
       }
-    }
-    if (length(starttime) > 1) {
-      for (rpsi in 1:length(starttime)) {
-        if (length(unlist(strsplit(starttime[rpsi],"")))>1) {
-          newstarttime = starttime[rpsi]
+      if (length(starttime) > 1) {
+        for (rpsi in 1:length(starttime)) {
+          if (length(unlist(strsplit(starttime[rpsi],"")))>1) {
+            newstarttime = starttime[rpsi]
+          }
         }
       }
     }
@@ -108,22 +113,22 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       B2 = length(unlist(strsplit(topline,"M[.]d[.]yyyy")))
       B6 = length(unlist(strsplit(topline,"M[.]dd[.]yyyy")))
       B7 = length(unlist(strsplit(topline,"MM[.]d[.]yyyy")))
-      
+
       B3 = length(unlist(strsplit(topline,"dd[.]MM[.]yyyy")))
       B4 = length(unlist(strsplit(topline,"d[.]M[.]yyyy")))
       B5 = length(unlist(strsplit(topline,"d[.]MM[.]yyyy")))
       B8 = length(unlist(strsplit(topline,"dd[.]M[.]yyyy")))
-      
+
       B9 = length(unlist(strsplit(topline,"yyyy[.]MM[.]dd")))
       B10 = length(unlist(strsplit(topline,"yyyy[.]M[.]d")))
       B11 = length(unlist(strsplit(topline,"yyyy[.]MM[.]d")))
       B12 = length(unlist(strsplit(topline,"yyyy[.]M[.]dd")))
-      
+
       B13 = length(unlist(strsplit(topline,"yyyy[.]dd[.]MM")))
       B14 = length(unlist(strsplit(topline,"yyyy[.]d[.]M")))
       B15 = length(unlist(strsplit(topline,"yyyy[.]d[.]MM")))
       B16 = length(unlist(strsplit(topline,"yyyy[.]dd[.]M")))
-      
+
       if (B1 > 1 | B2 > 1 | B6 > 1 | B7 > 1) {
         starttime0 = as.POSIXlt(starttime,format='%m/%d/%Y %H:%M:%S')
         if(is.na(starttime0) == TRUE) {
@@ -157,6 +162,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
           }
         }
       }
+      rm(starttime)
       starttime = starttime0
       lengthheader = 9
     }

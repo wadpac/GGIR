@@ -14,7 +14,7 @@ g.calibrate(datafile, use.temp = TRUE, spherecrit = 0.3,
 minloadcrit = 72, 
 printsummary = TRUE,chunksize=c(),windowsizes=c(5,900,3600),
 selectdaysfile=c(),
-dayborder=0)
+dayborder=0, desiredtz = c())
 }
 \arguments{
   \item{datafile}{
@@ -49,6 +49,9 @@ below 1 is recommended.
   }
   \item{dayborder}{
   see \link{g.part1}
+  }
+   \item{desiredtz}{
+  see \link{g.getmeta}
   }
 }
 \value{
