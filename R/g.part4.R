@@ -159,6 +159,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
+        sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = desiredtz)
+        sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = desiredtz)
         #------------------------------------------------------
         # extract the identifier from accelerometer data
         if (idloc == 2) { #idloc is an argument to specify where the participant identifier can be found
@@ -315,9 +317,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               xHR = as.numeric(x[1])
               xMI = as.numeric(x[2])
               xSE = as.numeric(x[3])
-              if (xHR < 9) xHR = paste("0",xHR,sep="")
-              if (xMI < 9) xMI = paste("0",xMI,sep="")
-              if (xSE < 9) xSE = paste("0",xSE,sep="")
+              if (xHR < 10) xHR = paste("0",xHR,sep="")
+              if (xMI < 10) xMI = paste("0",xMI,sep="")
+              if (xSE < 10) xSE = paste("0",xSE,sep="")
               x = paste(xHR,":",xMI,":",xSE,sep="") 
               return(x)
             }

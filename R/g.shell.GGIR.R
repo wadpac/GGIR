@@ -239,7 +239,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             boutdur.in = boutdur.in,
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
-            overwrite=overwrite,desiredtz=desiredtz,save_ms5rawlevels = save_ms5rawlevels)
+            overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,save_ms5rawlevels = save_ms5rawlevels)
   }
   
   #==========================
