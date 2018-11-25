@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "September 21 2018"
+date: "November 25 2018"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## What is GGIR?
 
-[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ in raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per day of measurement or per measurement, including estimates of physical activity, inactivity and sleep.
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ in raw accelerometry refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per day of measurement or per measurement, including estimates of physical activity, inactivity and sleep. This vignette provides a general introduction to GGIR, additionally you can find a general [introduction video](https://youtu.be/RuFBCAqFJ2M) and a [mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube.
 
 ## Who has been using GGIR?
 
