@@ -42,7 +42,7 @@ identify_levels = function(time,diur,sibdetection,ACC,
   #-------------------------------------
   # NEW MVPA BOUTS
   LN = length(time)
-  boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
+  
   boutduration = boutdur.mvpa * (60/ws3) 
   NBL = length(boutduration) #number of bout lengths
   CL = 10 #current level
@@ -62,7 +62,6 @@ identify_levels = function(time,diur,sibdetection,ACC,
   #-------------------------------------
   # NEW INACTIVITY BOUTS
   LN = length(time)
-  boutdur.in = sort(boutdur.in,decreasing = TRUE)
   boutduration = boutdur.in * (60/ws3)
   NBL = length(boutduration) #number of bout lengths
   # refe = rep(0,LN)
@@ -81,7 +80,6 @@ identify_levels = function(time,diur,sibdetection,ACC,
   #-------------------------------------
   # NEW LIGHT BOUTS
   LN = length(time)
-  boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
   boutduration = boutdur.lig * (60/ws3)
   NBL = length(boutduration) #number of bout lengths
   bc.lig = c()
