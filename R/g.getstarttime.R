@@ -161,9 +161,10 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
             starttime0 = as.POSIXlt(starttime,format='%d.%m.%Y %H:%M:%S')
           }
         }
-        starttime = starttime0
-        lengthheader = 9
       }
+      rm(starttime)
+      starttime = starttime0
+      lengthheader = 9
     }
   }
   return(starttime)
