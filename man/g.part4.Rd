@@ -116,8 +116,8 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   instead. Here, L5 is hardcoded and will not change by changing
   argument winhr in function \link{g.part2}. If def.noc.sleep is filled
   with a single integer, e.g. def.noc.sleep=c(1) then the window
-  will be detected with a new method for which a manuscript is
-  currently in preparation.
+  will be detected with the method as described in van Hees et al.
+  2018 Scientific Reports.
   }
   \item{storefolderstructure}{
   Store folder structure of the accelerometer data
@@ -264,8 +264,9 @@ g.part4(metadatadir=metadatadir)
 }
 \references{
 \itemize{
+\item van Hees VT, Sabia S, et al. (2018) AEstimating sleep parameters
+using an accelerometer without sleep diary, Scientific Reports.
 \item van Hees VT, Sabia S, et al. (2015) A novel, open access method
-to assess sleep duration using a wrist-worn accelerometer, PLoS ONE,
-accepted for publication October 2015
+to assess sleep duration using a wrist-worn accelerometer, PLoS ONE.
 }
 }
