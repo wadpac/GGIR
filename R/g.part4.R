@@ -699,9 +699,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     HR = HR + 1; MI = 0
                   }
                   if (HR == 24) HR = 0
-                  if (HR < 9) HR = paste0("0",HR)
-                  if (MI < 9) MI = paste0("0",MI)
-                  if (SE < 9) SE = paste0("0",SE)
+                  if (HR < 10) HR = paste0("0",HR)
+                  if (MI < 10) MI = paste0("0",MI)
+                  if (SE < 10) SE = paste0("0",SE)
                   return(paste0(HR,":",MI,":",SE))
                 }
                 acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
