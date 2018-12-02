@@ -282,10 +282,21 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             sleeplog.t[nightj,1] = accid
             sleeplog.t[nightj,2] = j
             sleeplog.t[nightj,3] = defaultdur
-            minSptOnset = round((defaultSptOnset - floor(defaultSptOnset)) * 60)
-            minSptWake = round((defaultSptWake - floor(defaultSptWake)) * 60)
-            sleeplog.t[nightj,4] = paste(floor(defaultSptOnset),":",minSptOnset,":00",sep="")
-            sleeplog.t[nightj,5] = paste(floor(defaultSptWake),":",minSptWake,":00",sep="") #"08:00:00"
+            hrSptOnset = floor(defaultSptOnset)
+            hrSptWake = floor(defaultSptWake)
+            minSptOnset = round((defaultSptOnset - hrSptOnset) * 60)
+            minSptWake = round((defaultSptWake - hrSptWake) * 60)
+
+            if (minSptOnset == 60) {
+              hrSptOnset = hrSptOnset + 1; minSptOnset = 0
+            }
+
+            if (minSptWake == 60) {
+              hrSptWake = hrSptWake + 1; minSptWake = 0
+            }
+
+            sleeplog.t[nightj,4] = paste(hrSptOnset,":",minSptOnset,":00",sep="")
+            sleeplog.t[nightj,5] = paste(hrSptWake,":",minSptWake,":00",sep="") #"08:00:00"
             names(sleeplog.t) = c("id","night","duration","sleeponset","sleepwake")
             sleeplog_used[i] = FALSE
             cleaningcode = 1
@@ -699,9 +710,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     HR = HR + 1; MI = 0
                   }
                   if (HR == 24) HR = 0
-                  if (HR < 9) HR = paste0("0",HR)
-                  if (MI < 9) MI = paste0("0",MI)
-                  if (SE < 9) SE = paste0("0",SE)
+                  if (HR < 10) HR = paste0("0",HR)
+                  if (MI < 10) MI = paste0("0",MI)
+                  if (SE < 10) SE = paste0("0",SE)
                   return(paste0(HR,":",MI,":",SE))
                 }
                 acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
