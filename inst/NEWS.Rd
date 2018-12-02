@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.7-2 (release date:25-11-2018)}{
+\itemize{
+  \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
+  }
+}
 \section{Changes in version 1.7-1 (release date:25-11-2018)}{
 \itemize{
   \item Fixed order of Nbouts output in g.part5 was not consistent with bout duration.
@@ -15,6 +20,7 @@
   \item Part4 handling of clocktime 9am corrected.
   \item Filename identification in part5 improved when saving raw level data.
   \item Fixed ability to read wav file header when shorter than expected.
+  \item Fixed issue with CWA read functionality causing some files not to be completely read
   }
 }
 \section{Changes in version 1.6-7 (release date:23-9-2018)}{
