@@ -4,6 +4,7 @@
 \section{Changes in version 1.7-2 (release date:25-11-2018)}{
 \itemize{
   \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
+  \item Bug fixed for Actigraph csv header recognition when column 2 and 3 are NA (prevented processing before)
   }
 }
 \section{Changes in version 1.7-1 (release date:25-11-2018)}{
