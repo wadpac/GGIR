@@ -214,7 +214,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     # load rows 11:13  to investigate whether the file has a header
     testheader = as.data.frame(data.table::fread(filename,nrow = 2, 
                                                  skip=10, 
-                                                 dec=",",showProgress = FALSE, header = FALSE))
+                                                 dec=decn,showProgress = FALSE, header = FALSE))
     if (suppressWarnings(is.na(as.numeric(testheader[1,1]))) ==  FALSE) { # it has no header, first value is a number
       freadheader = FALSE
     } else { # it has a header, first value is a character
