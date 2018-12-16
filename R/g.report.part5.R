@@ -279,6 +279,13 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                                 "dur_night_min")]
                 foo34 = function(A,B,nameold,namenew,cval) {
                   # function to help with calculating additinal variables
+                  # related to counting how many days of measurement there are
+                  # that meet a certain criteria
+                  # cval is a vector with 0 and 1, indicating whether the criteria is met
+                  # B is the aggregate data (per individual)
+                  # A is the non-aggregated data (days across individuals
+                  # we want to extra the number of days per individuals that meet the
+                  # criteria in A, and make it allign with B.
                   df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
                   mmm = as.data.frame(aggregate.data.frame(A,by=list(A$filename),FUN = df2))
                   mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold])
@@ -292,20 +299,20 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
                 OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
                 OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
-                # criteria is that nonwear percentage needs to be below threshold unless the actual time in minutes
-                # of daypart (night or day) is less than 120 minutes
-                OF3tmp$validdays[which((OF3tmp$nonwear_perc_day < maxpernwday | OF3tmp$dur_day_min < 120) &
-                                         (OF3tmp$nonwear_perc_night < maxpernwnight | OF3tmp$dur_night_min < 120))] = 1
+                # criteria is that nonwear percentage needs to be below threshold for both day and night:
+                days2keep = which(OF3tmp$nonwear_perc_day < maxpernwday &
+                                        OF3tmp$nonwear_perc_night < maxpernwnight)
+                OF3tmp$validdays[days2keep] = 1
+                # now we have a label for the valid days, we can create a new variable in OF4 that is a count of the number of valid days
                 OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
+                # do the same for WE (weekend days):
                 OF3tmp$validdays = 0
-                OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
-                                         OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WE")] = 1
+                OF3tmp$validdays[days2keep[which(OF3tmp$daytype[days2keep] == "WE")]] = 1
                 OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
+                # do the same for WD (weekdays):
                 OF3tmp$validdays = 0
-                OF3tmp$validdays[which(OF3tmp$nonwear_perc_day < maxpernwday &
-                                         OF3tmp$nonwear_perc_night < maxpernwnight & OF3tmp$daytype == "WD")] = 1
-                OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1)
-                # OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="night number",namenew="Nnights",cval=99)
+                OF3tmp$validdays[days2keep[which(OF3tmp$daytype[days2keep] == "WD")]] = 1
+                OF4 = foo34(A=OF3tmp,B=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1) # create variable from it
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
                 OF4 = foo34(A=OF3tmp[validdaysi,],B=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
