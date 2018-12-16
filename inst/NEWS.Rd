@@ -5,6 +5,7 @@
 \itemize{
   \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
   \item Bug fixed for Actigraph csv header recognition when column 2 and 3 are NA (prevented processing before)
+  \item Fixed bug in g.report.part5 in the calculation of the total number of valid days per person.
   }
 }
 \section{Changes in version 1.7-1 (release date:25-11-2018)}{
