@@ -9,7 +9,7 @@ The function is used by \link{g.readaccfile} to assess how numeric data
 should be interpretted
 }
 \usage{
-g.dotorcomma(inputfile,dformat,mon)
+g.dotorcomma(inputfile,dformat,mon, desiredtz = c())
 }
 \arguments{
   \item{inputfile}{
@@ -21,6 +21,9 @@ g.dotorcomma(inputfile,dformat,mon)
   \item{mon}{
   Monitor code (accelorometer brand): 1=GENEA,2=GENEActiv,3=Actigraph,
   4=Axivity.
+  }
+  \item{desiredtz}{
+  Desired timezone, see documentation \link{g.getmeta}
   }
   
 }
