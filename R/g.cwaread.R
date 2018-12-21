@@ -1,4 +1,4 @@
-g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = "Europe/London") {
+g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = c()) {
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
   #========================================================================
   # fileName is namer of cwa file to read
