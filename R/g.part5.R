@@ -178,7 +178,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               if (pr0 > pr1) pr0 = pr1
               #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
               timebb = as.character(time[pr0:pr1])
-              if(length(unlist(strsplit(timebb[1],"[+]"))) < 2) { # only do this for ISO8601 format
+              if (is.ISO8601(timebb[1]) == FALSE) { # only do this for POSIX format
                 timebb = POSIXtime2iso8601(timebb,tz=desiredtz)
               }
               s0 = which(timebb == gik.ons[g])[1]
@@ -301,7 +301,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 s1 = which(as.character(time) == w1c)[1]
               }
               timebb = as.character(time) 
-              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
+              if (is.ISO8601(timebb[1]) == TRUE) { # only do this for ISO8601 format
                 timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
                 s0 = which(as.character(timebb) == w0c)[1]
                 s1 = which(as.character(timebb) == w1c)[1]
@@ -706,7 +706,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           if (ignore == FALSE) dsummary[di,fi] = M5VALUE
                           ds_names[fi] = paste("M",wini,"VALUE",sep="");      fi = fi + 1
                           if (ignore == FALSE) {
-                            if(length(unlist(strsplit(L5HOUR,"[+]"))) > 1) { # only do this for ISO8601 format
+                            if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
                               L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
                               M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight

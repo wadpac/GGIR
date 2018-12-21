@@ -165,7 +165,7 @@ g.inspectfile = function(datafile) {
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea
       H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
-    } else if (mon == 3) { #geneactive
+    } else if (mon == 3) { #actigraph
       H = read.csv(datafile,nrow=9,skip=0)
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
@@ -216,6 +216,11 @@ g.inspectfile = function(datafile) {
   }
   
   H = as.matrix(H)
+  if (ncol(H) == 3 & dformat == 2 & mon == 3) {
+    if (length(which(is.na(H[,2]) == FALSE)) == 0) {
+      H = as.matrix(H[,1])
+    }
+  }
   if (ncol(H) == 1 & dformat == 2) {
     if (mon == 3) {
       vnames = c("Number:","t Time","t Date",":ss)","d Time","d Date","Address:","Voltage:","Mode =")
