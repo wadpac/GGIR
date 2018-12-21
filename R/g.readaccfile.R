@@ -22,7 +22,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     useRDA = FALSE
   }
   if (useRDA == FALSE) {
-    I = g.inspectfile(filename) ## modified by JH
+    I = g.inspectfile(filename, desiredtz) ## modified by JH
     mon = I$monc
     dformat = I$dformc
     sf = I$sf

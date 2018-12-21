@@ -248,6 +248,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   ################################################################################################
   # Main function
 
+
   # Parse input arguments
   nargin = nargs()
   if (nargin < 1) {
