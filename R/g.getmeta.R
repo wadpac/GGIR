@@ -73,7 +73,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   }
   options(warn=-1)
   if (useRDA == FALSE) {
-    INFI = g.inspectfile(datafile)  # Check which file type and monitor brand it is
+    INFI = g.inspectfile(datafile, desiredtz=desiredtz)  # Check which file type and monitor brand it is
   } else {
     load(datafile)
     INFI = I
