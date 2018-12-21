@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile,dformat,mon) {
+g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c()) {
   if (dformat == 2) {
     deci = read.csv(inputfile,skip = 100,nrow=10)
     deci = as.matrix(deci)
@@ -39,7 +39,7 @@ g.dotorcomma = function(inputfile,dformat,mon) {
   } else if (dformat == 4) { #!decn is detect, but currently not used in the rest of the code!
     # Rcpp::sourceCpp('src/numUnpack.cpp')
     # Rcpp::sourceCpp('src/resample.cpp')
-    try(expr={deci = g.cwaread(inputfile,start = 1, end = 10)},silent=TRUE)
+    try(expr={deci = g.cwaread(inputfile,start = 1, end = 10, desiredtz = desiredtz)},silent=TRUE)
     deci = as.matrix(deci$data)
     if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T) {
       decn = "," #comma
