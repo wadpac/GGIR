@@ -1,4 +1,4 @@
-g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
+g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = c()) {
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
   #========================================================================
   # fileName is namer of cwa file to read
@@ -52,8 +52,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
       secs = bitwAnd(coded, 0x3fL)
       # Form string representation of date and convert it to number
       year = as.numeric(as.POSIXct(
-        paste0(year, "-", month, "-", day, " ", hours, ":", mins, ":", secs)
-      ))
+        paste0(year, "-", month, "-", day, " ", hours, ":", mins, ":", secs),
+      tz=desiredtz))
     }
     else{
       secs = bitwAnd(coded, 0x3fL)
@@ -117,7 +117,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     return(invisible(
       list(
         uniqueSerialCode = uniqueSerialCode, frequency = frequency,
-        start = as.POSIXct(datas$start, origin = "1970-01-01"),
+        start = as.POSIXct(datas$start, origin = "1970-01-01", tz=desiredtz),
         device = "Axivity", firmwareVersion = version, blocks = numDBlocks
       )
     ))
@@ -247,6 +247,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
 
   ################################################################################################
   # Main function
+
 
   # Parse input arguments
   nargin = nargs()
