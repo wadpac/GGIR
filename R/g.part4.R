@@ -116,6 +116,24 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     }
   }
   
+  convertHRsinceprevMN2Clocktime = function(x) {
+    # x = hours Since Previous Midnight
+    HR = floor(x)
+    MI = floor((x - floor(x)) * 60)
+    SE = round(((x - HR) - (MI/60)) * 3600)
+    if (SE == 60) {
+      MI = MI + 1; SE = 0
+    }
+    if (MI == 60) {
+      HR = HR + 1; MI = 0
+    }
+    if (HR == 24) HR = 0
+    if (HR < 10) HR = paste0("0",HR)
+    if (MI < 10) MI = paste0("0",MI)
+    if (SE < 10) SE = paste0("0",SE)
+    return(paste0(HR,":",MI,":",SE))
+  }
+
   #=================================================================
   #=================================================================
   # start of loop through the participants
@@ -282,21 +300,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             sleeplog.t[nightj,1] = accid
             sleeplog.t[nightj,2] = j
             sleeplog.t[nightj,3] = defaultdur
-            hrSptOnset = floor(defaultSptOnset)
-            hrSptWake = floor(defaultSptWake)
-            minSptOnset = round((defaultSptOnset - hrSptOnset) * 60)
-            minSptWake = round((defaultSptWake - hrSptWake) * 60)
-
-            if (minSptOnset == 60) {
-              hrSptOnset = hrSptOnset + 1; minSptOnset = 0
-            }
-
-            if (minSptWake == 60) {
-              hrSptWake = hrSptWake + 1; minSptWake = 0
-            }
-
-            sleeplog.t[nightj,4] = paste(hrSptOnset,":",minSptOnset,":00",sep="")
-            sleeplog.t[nightj,5] = paste(hrSptWake,":",minSptWake,":00",sep="") #"08:00:00"
+            sleeplog.t[nightj,4] = convertHRsinceprevMN2Clocktime(defaultSptOnset)
+            sleeplog.t[nightj,5] = convertHRsinceprevMN2Clocktime(defaultSptWake)
             names(sleeplog.t) = c("id","night","duration","sleeponset","sleepwake")
             sleeplog_used[i] = FALSE
             cleaningcode = 1
