@@ -482,7 +482,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                 }
                 #------------------------------------------------------------------------
-                # HERE THERE SHOULD BE A VARIABLE 'spo' with all the sleep periods FOR ONE SLEEP DEFINITION
+                # Variable 'spo' contains all the sleep periods FOR ONE SLEEP DEFINITION
+                # Variable 'spocum' contains all the sleep periods FOR MULTIPLE SLEEP DEFINITIONS
                 spo[,5] = k
                 if (spocumi == 1) {
                   spocum = spo
@@ -547,6 +548,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 if (is.matrix(spocum.t) == FALSE) {
                   spocum.t = t(as.matrix(spocum.t))
                 }
+                #remove double rows
+                spocum.t = spocum.t[!duplicated(spocum.t),]
+                
                 #------------------------------------
                 # ACCELEROMETER
                 if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
