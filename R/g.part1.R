@@ -176,7 +176,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     # Inspect file (and store output later on)
     options(warn=-1) #turn off warnings
     if (useRDA == FALSE) {
-      I = g.inspectfile(datafile)
+      I = g.inspectfile(datafile, desiredtz=desiredtz)
     } else {
       load(datafile) # to do: would be nice to only load the object I and not the entire datafile
       I$filename = fnames[j]

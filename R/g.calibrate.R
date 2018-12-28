@@ -25,14 +25,14 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   bsc_qc = data.frame(time=c(),size=c())
   #inspect file  
   options(warn=-1) #turn off warnings
-  INFI = g.inspectfile(datafile)  # Check which file type and monitor brand it is
+  INFI = g.inspectfile(datafile, desiredtz=desiredtz)  # Check which file type and monitor brand it is
   options(warn=0) #turn off warnings
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
   if (sf == 0) sf = 80 #assume 80Hertz in the absense of any other info
   options(warn=-1) #turn off warnings
-  suppressWarnings(expr={decn = g.dotorcomma(datafile,dformat,mon)}) #detect dot or comma dataformat
+  suppressWarnings(expr={decn = g.dotorcomma(datafile,dformat,mon, desiredtz = desiredtz)}) #detect dot or comma dataformat
   options(warn=0) #turn off warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data

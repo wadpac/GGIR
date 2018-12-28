@@ -7,7 +7,7 @@ Function to read .cwa-format files as produced by the accelerometer named 'Axivi
 For reading .cwa-format data, if you have .wav format data then see function \link{g.wavread}
 }
 \usage{
-g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE)
+g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = c())
 }
 \arguments{
   \item{fileName}{
@@ -25,6 +25,9 @@ end point for reading data, this can either be a timestamp
   Is trigger to switch on/off the text progress bar. If progressBar
   is TRUE then the function displays the progress bar but it works
   slightly slower
+}
+\item{desiredtz}{
+  Desired timezone, see documentation \link{g.getmeta}
 }
 }
 \value{
