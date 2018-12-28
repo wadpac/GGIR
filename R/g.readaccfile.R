@@ -22,7 +22,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     useRDA = FALSE
   }
   if (useRDA == FALSE) {
-    I = g.inspectfile(filename) ## modified by JH
+    I = g.inspectfile(filename, desiredtz) ## modified by JH
     mon = I$monc
     dformat = I$dformc
     sf = I$sf
@@ -245,7 +245,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     }
   } else if (mon == 4 & dformat == 4) { # axivity cwa
     try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)), # try to read block first time
-                            end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
+                            end = (blocksize*blocknumber), progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
     
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
@@ -266,14 +266,14 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       PtestLastPage = c()
       # try to read the last page of the block
       try(expr={PtestLastPage = g.cwaread(fileName=filename, start = (blocksize*blocknumber),
-                                          end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
+                                          end = (blocksize*blocknumber), progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
       if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         PtestStartPage = c()
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1 
           try(expr={PtestStartPage = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)) + NFilePagesSkipped,
-                                               end = (blocksize*(blocknumber-1)) + NFilePagesSkipped, progressBar = FALSE)},silent=TRUE)
+                                               end = (blocksize*(blocknumber-1)) + NFilePagesSkipped, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
         cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
@@ -282,7 +282,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
         try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+NFilePagesSkipped,
-                                end = (blocksize*blocknumber), progressBar = FALSE)},silent=TRUE)
+                                end = (blocksize*blocknumber), progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
