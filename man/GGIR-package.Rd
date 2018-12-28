@@ -90,8 +90,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.7-1\cr
-Date: \tab 2018-11-25\cr
+Version: \tab 1.7-2\cr
+Date: \tab 2018-12-28\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -126,7 +126,8 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \item Joe Heywood helped develop the functionality to process only specific days
 \item Evgeny Mirkes developed function \link{g.cwaread}
 \item Severine Sabia tested and provided feedback on various functions
-\item Jairo H Migueles <jairohm@ugr.es> co-developed some functions
+\item Joan Capdevila Pujol helped to improve various function
+\item Jairo H Migueles <jairohm@ugr.es> helped to improve various functions
 }
 }
 \references{
