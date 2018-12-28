@@ -1,4 +1,4 @@
-g.inspectfile = function(datafile) {
+g.inspectfile = function(datafile, desiredtz = c()) {
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename=c(),datafile=c()) {
@@ -136,7 +136,7 @@ g.inspectfile = function(datafile) {
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
       sf = H$sample.rate
     } else if (dformat == 4) { # cwa
-      PP = g.cwaread(datafile,start = 1, end = 10)
+      PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
       H = PP$header
       sf = H$frequency
     }
@@ -211,7 +211,7 @@ g.inspectfile = function(datafile) {
     }
     names(H) = c("hnames","hvalues")
   } else if (dformat == 4) { #cwa data
-    PP = g.cwaread(datafile,start = 1, end = 10)
+    PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
   }
   

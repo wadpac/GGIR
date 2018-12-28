@@ -73,7 +73,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   }
   options(warn=-1)
   if (useRDA == FALSE) {
-    INFI = g.inspectfile(datafile)  # Check which file type and monitor brand it is
+    INFI = g.inspectfile(datafile, desiredtz=desiredtz)  # Check which file type and monitor brand it is
   } else {
     load(datafile)
     INFI = I
@@ -86,7 +86,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (sf == 0) sf = 80 #assume 80Hertz in the absense of any other info
   header = INFI$header
   options(warn=-1)
-  if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon)
+  if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz)
   options(warn=0)
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 24 hours (modify if causing memory problems)
@@ -650,7 +650,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         #===================================================================
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
-        if (useRDA == FALSE) I = g.inspectfile(datafile)
+        if (useRDA == FALSE) I = g.inspectfile(datafile, desiredtz=desiredtz)
         hvars = g.extractheadervars(I)
         SN = hvars$SN
         SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
@@ -689,7 +689,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         #===================================================================
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
-        if (useRDA == FALSE) I = g.inspectfile(datafile)
+        if (useRDA == FALSE) I = g.inspectfile(datafile, desiredtz=desiredtz)
         hvars = g.extractheadervars(I)
         SN = hvars$SN
         SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
