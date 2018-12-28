@@ -71,6 +71,10 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
             SUM$summary$pdfpagecount = pdfpagecount
             if (ncol(SUMMARY) == ncol(SUM$summary)) {
             } else {
+              if (ncol(SUM$summary) > ncol(SUMMARY)) {
+                cat(" Error: Failed to merge output from incompatible analysis. Please 
+                    make sure you use a consistent set of parameters within a single analysis.")
+              }
               SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
                                   matrix(" ",1,(ncol(SUMMARY) - ncol(SUM$summary))),
                                   SUM$summary[(ncol(SUM$summary)-7):ncol(SUM$summary)])
