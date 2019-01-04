@@ -6,12 +6,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   #       which is page number. Page size is 300 of measurements with specified
   #       frequency.
   # end can be timestamp "year-month-day hr:min:sec" or non-negative integer
-  #       which is page number. End must be non less than start. If end is
-  #       less or equal to satrt then there is no data read. Page size is 300 of
+  #       which is page number. End must be not less than start. If end is
+  #       less or equal to start then there is no data read. Page size is 300 of
   #       measurements with specified frequency.
   # progressBar is trigger to switch on/off the text progress bar. If progressBar
   #       is TRUE then the function displays the progress bar but it works
   #       slightly slower
+  # desiredtz is desired time zone
   # Returned structure contains all data from start inclusive till end exclusive.
   # If start == end then data section of final structure is empty.
   # Page size is 300 observations per page
@@ -23,7 +24,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   #           for this frequency.
   #       start is timestamp in numeric form. To get text representation
   #           it is enough to use
-  #               as.POSIXct(start, origin = "1970-01-01", format = "")
+  #               as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
   #       device is "Axivity"
   #       firmwareVersion is version of firmware
   #       blocks is number of datablocks with 80 or 120 raw observations in each.
@@ -31,7 +32,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   #   data is data.frame with following columns
   #       time is timestamp in numeric form. To get text representation
   #           it is enough to use
-  #               as.POSIXct(time, origin = "1970-01-01", format = "")
+  #               as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
   #       x, y, z are three accelerations
   #       temperature is temperature for the block
   #       battery is battery charge for the block
@@ -77,7 +78,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     #       for this frequency.
     #   start is timestamp in numeric form. To get text representation
     #       it is enough to use
-    #           as.POSIXct(start, origin = "1970-01-01", format = "")
+    #           as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
     #   device is "Axivity"
     #   firmwareVersion is version of firmware
     #   blocks is number of datablocks with 80 or 120 observations in each
@@ -136,7 +137,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     #   frequency is frequency recorded in this block
     #   start is start time in nummeric form. To create string representation
     #       it is necesarry to use
-    #           as.POSIXct(start, origin = "1970-01-01", format = "")
+    #           as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
     #   temperature is temperature for the block
     #   battery is battery charge for the block
     #   light is light sensor measurement for the block
