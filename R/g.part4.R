@@ -565,12 +565,16 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 } else {
                   nightsummary[sumi,3:4] = 0
                 }
-                nightsummary[,3] = as.numeric(nightsummary[,3])
-                nightsummary[,4] = as.numeric(nightsummary[,4])
+                nightsummary[,3] = as.numeric(nightsummary[,3]) # onset
+                nightsummary[,4] = as.numeric(nightsummary[,4]) # wake
+                if (nightsummary[sumi,3] > nightsummary[sumi,4] & # onset after wake is impossible 
+                    nightsummary[sumi,4] < 36 & daysleeper[j] == TRUE) {  # even more impossible if wake occurs before none, while we previously labelled it as daysleep
+                  nightsummary[sumi,4] = nightsummary[sumi,4] + 12 # correction for overcorrection in waking time
+                }
                 if (nightsummary[sumi,3] > nightsummary[sumi,4]) {
                   nightsummary[sumi,5] = (36 - nightsummary[sumi,3]) + (nightsummary[sumi,4] - 12)
                 } else {
-                  nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3]
+                  nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3] #sleep duration within Spt
                 }
                 nightsummary[,5] = as.numeric(nightsummary[,5])
                 nightsummary[sumi,6] = defi #sleep definition
