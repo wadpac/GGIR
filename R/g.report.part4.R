@@ -26,40 +26,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       f1 = length(fnames)
     }
     if (length(f1) == 0 | f1 > length(fnames))  f1 = length(fnames)
-    if (storefolderstructure == TRUE) {
-      filelist = FALSE
-      if (length(datadir) == 1) { #could be a directory or one file
-        if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
-        if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
-      } else { #multiple files
-        filelist = TRUE    
-      }
-      if (filelist == FALSE) {
-        fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),dir(datadir,recursive=TRUE,pattern="[.]bin"))
-      } else {
-        fnamesfull = datadir
-      }
-      f16 = function(X) {
-        out = unlist(strsplit(X,"/"))
-        f16 = out[length(out)]
-      }
-      f17 = function(X) {
-        out = unlist(strsplit(X,"/"))
-        f17 = out[(length(out)-1)]
-      }
-      ffd = ffp = rep("",length(fnamesfull))
-      if (length(fnamesfull) > 0) {
-        fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-        foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-        for (i in 1:length(fnames)) { #
-          ff = as.character(unlist(strsplit(fnames[i],".RDa"))[1])
-          if (length(which(fnamesshort == ff)) > 0) {
-            ffd[i] = fnamesfull[which(fnamesshort == ff)]
-            ffp[i] = foldername[which(fnamesshort == ff)]
-          }
-        }
-      }
-    }
     #-----------------------------------------------------
     nightsummary2 = as.data.frame(matrix(0,0,29)) 
     colnames(nightsummary2) = c("id", "night","acc_onset", "acc_wake", "acc_SptDuration", "acc_def", 
@@ -310,7 +276,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             personSummarynames_backup = personSummarynames #if (length(personSummarynames) >= 29)
           }
         }
-        
         # replace matrix values "NA" and "NaN" by empty cells
         for (colli in 1:ncol(personSummary)) {
           missingv = which(is.na(personSummary[,colli]) == TRUE | personSummary[,colli] == "NA" |  personSummary[,colli] == "NaN")
@@ -318,7 +283,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             personSummary[missingv,colli] = ""
           }
         }
-        
         personSummary = as.data.frame(personSummary)
         if (length(personSummarynames) != ncol(personSummary)) {
           if (length(personSummarynames_backup) > 0) {
@@ -337,25 +301,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         emptycolumns = which(is.na(colnames(personSummary)) == TRUE)
         if (length(emptycolumns) > 0) {
           personSummary = personSummary[,-emptycolumns]
-        }
-        
-        if (storefolderstructure==TRUE) {
-          colnames(personSummary)[length(colnames(personSummary))-1] = "filename_dir"
-          colnames(personSummary)[length(colnames(personSummary))] = "foldername"
-          personSummary$filename_dir = as.character(personSummary$filename_dir)
-          personSummary$foldername = as.character(personSummary$foldername)
-          for (iii in 1:length(fnames)) { 
-            tyi = as.character(unlist(strsplit(as.character(ffd[iii]),"/")))
-            tyi = tyi[length(tyi)]
-            if (length(tyi) >0) {
-              indexx = which(as.character(personSummary$filename) == tyi)
-              if (length(indexx) > 0) {
-                personSummary$filename_dir[indexx] = ffd[iii]
-                personSummary$foldername[indexx] = ffp[iii]
-                
-              }
-            }
-          }
         }
       }
       #######################################################
