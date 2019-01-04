@@ -19,6 +19,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   spheredata=c()
   tempoffset=c()
   npoints=c()
+  PreviousEndPage = c() # needed for g.readaccfile
   scale = c(1,1,1)
   offset = c(0,0,0)
   bsc_cnt = 0
@@ -64,13 +65,15 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
-                            decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz)
+                            decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz,
+                            PreviousEndPage=PreviousEndPage)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
     filedoesnotholdday = filequality$filedoesnotholdday
     switchoffLD = accread$switchoffLD
+    PreviousEndPage = accread$endpage
     options(warn=0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
