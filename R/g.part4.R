@@ -56,6 +56,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                            "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts", "sleeplog_wake_ts",
                            "page","daysleeper","weekday","calendardate","filename",
                            "cleaningcode","sleeplog_used","acc_available")
+  if (storefolderstructure == TRUE) {
+    colnamesnightsummary  = c(colnamesnightsummary,"filename_dir","foldername")
+  }
   # initialize variable to hold sleeplog derived sleep duration
   # if not sleep log was used then the estimates of the sleep period time window
   # will be used instead
@@ -115,7 +118,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
     }
   }
-  
   convertHRsinceprevMN2Clocktime = function(x) {
     # x = hours Since Previous Midnight
     HR = floor(x)
