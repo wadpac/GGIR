@@ -48,12 +48,20 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         pdf(paste(path1,outputfolder,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf",sep=""),width=7,height=7)
       }
       M = c()
-      load(paste(path,fnames[i],sep="")) #reading RData-file
+      fname2read =paste0(path,fnames[i])
+      try(expr={load(fname2read)},silent=TRUE) #reading RData-file
+      if (length(M) == 0) {
+        cat(paste0("Error in g.report2: Struggling to read : ",fnames[i]))
+      }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
         selp = which(fnames.ms2 == fname)
         IMP=c()
-        load(file=paste(metadatadir,ms2.out,"/",fnames.ms2[selp],sep=""))
+        fname2read = paste0(metadatadir,ms2.out,"/",fnames.ms2[selp])
+        try(expr={load(file=fname2read)},silent=TRUE) 
+        if (length(IMP) == 0) {
+          cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
+        }
         Q = g.plot(IMP,M,I,durplot)
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
