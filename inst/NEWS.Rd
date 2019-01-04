@@ -8,6 +8,7 @@
   \item Fixed bug in g.report.part5 in the calculation of the total number of valid days per person.
   \item Bug fixed that caused part5 to struggle with timezones west of greenwhich time.
   \item desiredtz added as explicit argument to g.inspectfile, g.cwaread, and g.dotorcomma.
+  \item Fixed bug re. storefolderstructure=TRUE causing 2 variables to drop in g.report.part4
   }
 }
 \section{Changes in version 1.7-1 (release date:25-11-2018)}{
