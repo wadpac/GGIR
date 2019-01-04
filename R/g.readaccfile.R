@@ -1,5 +1,5 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder,ws, desiredtz = c()) {
+                         decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1) {
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -29,8 +29,25 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   }
   P = c()
   
+  updatepageindexing = function(startpage=c(), endpage=c(), deltapage=c(), blocknumber=c(),PreviousEndPage=c()) {
+    # this function makes that startpage is only specified once
+    # the next time (blocknumber > 1) the startpage will be derived from the previous
+    # endpage
+    if (blocknumber != 1 & length(PreviousEndPage) != 0) {
+      startpage = PreviousEndPage + 1
+      endpage = startpage + deltapage
+    }
+    return(list(startpage=startpage,endpage=endpage))
+  }
+  
   if (mon == 1 & dformat == 1) { # genea binary
-    try(expr={P = g.binread(binfile=filename,(blocksize*(blocknumber-1)),(blocksize*blocknumber))},silent=TRUE)
+    startpage = blocksize*(blocknumber-1)
+    endpage = blocksize*blocknumber
+    deltapage = blocksize
+    UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+    startpage = UPI$startpage;    endpage = UPI$endpage
+    try(expr={P = g.binread(binfile=filename,startpage,endpage)},silent=TRUE)
     if (length(P) > 1) {
       if (nrow(P$rawxyz) < ((sf*ws*2)+1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
@@ -45,7 +62,13 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       cat("\nEnd of file reached\n")
     }
   } else if (mon == 4 & dformat == 3) { # axivity wav
-    try(expr={P = g.wavread(wavfile=filename,(blocksize*(blocknumber-1)),(blocksize*blocknumber))},silent=TRUE)
+    startpage = blocksize*(blocknumber-1)
+    endpage = blocksize*blocknumber
+    deltapage = blocksize
+    UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+    startpage = UPI$startpage;    endpage = UPI$endpage
+    try(expr={P = g.wavread(wavfile=filename,startpage,endpage)},silent=TRUE)
     if (length(P) > 1) {
       if (nrow(P$rawxyz) < ((sf*ws*2)+1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
@@ -143,13 +166,25 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       # All of the above needed for Millenium cohort
       #======================================================================
     } else { 
-      try(expr={P = GENEAread::read.bin(binfile=filename,start=(blocksize*(blocknumber-1)),
-                                        end=(blocksize*blocknumber),calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+      startpage = blocksize*(blocknumber-1)
+      endpage = blocksize*blocknumber
+      deltapage = blocksize
+      UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                               blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+      startpage = UPI$startpage;    endpage = UPI$endpage
+      try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
+                                        end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
       if (length(P) <= 2) {
         cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
         #try again but now with mmap.load turned on
-        try(expr={P = GENEAread::read.bin(binfile=filename,start=(blocksize*(blocknumber-1)),
-                                          end=(blocksize*blocknumber),calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
+        startpage = blocksize*(blocknumber-1)
+        endpage = blocksize*blocknumber
+        deltapage = blocksize
+        UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                                 blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+        startpage = UPI$startpage;    endpage = UPI$endpage
+        try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
+                                          end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
         if (length(P) != 0) {
           cat("\ndata read succesfully\n")
           if (sf != P$freq) sf = P$freq
@@ -195,7 +230,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     #===============
   } else if (mon == 2 & dformat == 2) { # GENEActiv csv format
     cat("\nGeneactiv in csv-format\n")
-    try(expr={P = read.csv(filename,nrow = (blocksize*300), skip=(100+(blocksize*300*(blocknumber-1))),header = FALSE,dec=decn)},silent=TRUE)
+    startpage = (100+(blocksize*300*(blocknumber-1)))
+    deltapage = (blocksize*300)
+    UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+    startpage = UPI$startpage;    endpage = UPI$endpage
+    try(expr={P = read.csv(filename,nrow = deltapage, skip=startpage,header = FALSE,dec=decn)},silent=TRUE)
     if (length(P) > 1) {
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
@@ -210,7 +250,11 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   } else if (mon == 3 & dformat == 2) { # Actigraph csv format
     headerlength = 10
     #--------------
-    skiprows = (headerlength+(blocksize*300*(blocknumber-1)))
+    startpage = (headerlength+(blocksize*300*(blocknumber-1)))
+    deltapage = blocksize*300
+    UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+    startpage = UPI$startpage;    endpage = UPI$endpage
     # load rows 11:13  to investigate whether the file has a header
     testheader = as.data.frame(data.table::fread(filename,nrow = 2, 
                                                  skip=10, 
@@ -220,16 +264,16 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     } else { # it has a header, first value is a character
       freadheader = TRUE
       headerlength = 11
-      if (skiprows == 10) {
-        skiprows = 11
+      if (startpage == 10) {
+        startpage = 11
         freadheader = FALSE
       }
     }
     #--------------
     try(expr={
       P = as.data.frame(
-        data.table::fread(filename,nrow = (blocksize*300), 
-                          skip=skiprows, 
+        data.table::fread(filename,nrow = deltapage, 
+                          skip=startpage, 
                           dec=decn,showProgress = FALSE, header = freadheader))
     },silent=TRUE)
     if (length(P) > 1) {
@@ -244,8 +288,14 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       cat("\nEnd of file reached\n")
     }
   } else if (mon == 4 & dformat == 4) { # axivity cwa
-    try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)), # try to read block first time
-                            end = (blocksize*blocknumber), progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+    startpage = blocksize*(blocknumber-1)
+    endpage = blocksize*blocknumber
+    deltapage = (blocksize)
+    UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+    startpage = UPI$startpage;    endpage = UPI$endpage
+    try(expr={P = g.cwaread(fileName=filename, start = startpage, # try to read block first time
+                            end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
     
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
@@ -265,15 +315,27 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       # and address it inside the g.cwaread function. For example, are the page corrupted, and if so then why?
       PtestLastPage = c()
       # try to read the last page of the block
-      try(expr={PtestLastPage = g.cwaread(fileName=filename, start = (blocksize*blocknumber),
-                                          end = (blocksize*blocknumber), progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+      startpage = (blocksize*blocknumber)
+      endpage = blocksize*blocknumber
+      deltapage = (blocksize)
+      UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                               blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+      startpage = UPI$startpage;    endpage = UPI$endpage
+      try(expr={PtestLastPage = g.cwaread(fileName=filename, start = startpage,
+                                          end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
       if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         PtestStartPage = c()
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1 
-          try(expr={PtestStartPage = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1)) + NFilePagesSkipped,
-                                               end = (blocksize*(blocknumber-1)) + NFilePagesSkipped, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+          startpage = blocksize*(blocknumber-1) + NFilePagesSkipped
+          endpage = (blocksize*(blocknumber-1)) + NFilePagesSkipped
+          deltapage = blocksize
+          UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                                   blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+          startpage = UPI$startpage;    endpage = UPI$endpage
+          try(expr={PtestStartPage = g.cwaread(fileName=filename, start = startpage ,
+                                               end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
         cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
@@ -281,8 +343,14 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (length(PtestStartPage) > 1) { 
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
-        try(expr={P = g.cwaread(fileName=filename, start = (blocksize*(blocknumber-1))+NFilePagesSkipped,
-                                end = (blocksize*blocknumber), progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+        startpage = blocksize*(blocknumber-1)+NFilePagesSkipped
+        endpage = blocksize*blocknumber
+        deltapage = (blocksize)
+        UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
+                                 blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+        startpage = UPI$startpage;    endpage = UPI$endpage
+        try(expr={P = g.cwaread(fileName=filename, start = startpage,
+                                end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
@@ -318,11 +386,15 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   } else if (mon == 4 & dformat == 2) { # axivity (ax3) csv format
     freadheader = FALSE
     headerlength = 0
-    skiprows = (headerlength+(blocksize*300*(blocknumber-1)))
+    startpage = (headerlength+(blocksize*300*(blocknumber-1)))
+    deltapage = (blocksize*300)
+    UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
+    startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr={
       P = as.data.frame(
-        data.table::fread(filename,nrow = (blocksize*300), 
-                          skip=skiprows, 
+        data.table::fread(filename,nrow = deltapage, 
+                          skip=startpage, 
                           dec=decn,showProgress = FALSE, header = freadheader))
     },silent=TRUE)
     if (length(P) > 1) {
@@ -332,7 +404,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         cat("\nWarning (1): data in block too short for doing non-wear detection\n")
         filequality$filetooshort = TRUE
       }
-      if (nrow(P) < (blocksize*300)) { #last block
+      if (nrow(P) < (deltapage)) { #last block
         print("last block")
         switchoffLD = 1
       }
@@ -361,5 +433,5 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       cat("\nEnd of file reached\n")
     }
   }
-  invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD))
+  invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage))
 }
