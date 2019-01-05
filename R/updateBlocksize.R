@@ -22,15 +22,25 @@ updateBlocksize = function(blocksize=c(), bsc_qc=data.frame(time=c(),size=c())) 
     if (MemoryLimit < MemoryUsed) MemoryLimit = MemoryUsed
     bsc_qc = rbind(bsc_qc,c(as.character(Sys.time()),MemoryUsed))
     MemoryRatio = MemoryUsed / MemoryLimit
-    #cat(paste0("\nMemoryRatio ",MemoryRatio," (MemoryUsed: ",MemoryUsed,"/ MemoryLimit: ",MemoryLimit,")"))
-    if (MemoryRatio < 0.4) {
-        blocksize = blocksize * 1.1
-    } else if (MemoryRatio >= 0.65 & MemoryRatio < 0.70) {
-      blocksize = blocksize * 0.9
-    } else if (MemoryRatio >= 0.75) {
-      blocksize = blocksize * 0.8
-    }
-    blocksize = round(blocksize)
+
+      gco = gc()
+memuse = gco[2,2]
+bsc_qc = rbind(bsc_qc,c(memuse,as.character(Sys.time())))
+if (memuse > 4000) {
+if (nrow(bsc_qc) <5){
+blocksize = round(blocksize * 0.8)
+}
+}
+
+    cat(paste0("\nMemoryRatio ",MemoryRatio," (MemoryUsed: ",MemoryUsed,"/ MemoryLimit: ",MemoryLimit,") memuse ",memuse,"   "))
+#    if (MemoryRatio < 0.4) {
+ #       blocksize = blocksize * 1.1
+  #  } else if (MemoryRatio >= 0.8 & MemoryRatio < 0.9) {
+   #   blocksize = blocksize * 0.9
+   # } else if (MemoryRatio >= 0.9) {
+   #   blocksize = blocksize * 0.8
+   # }
+   # blocksize = round(blocksize)
   }
   
   return(list(blocksize=blocksize, bsc_qc=bsc_qc))
