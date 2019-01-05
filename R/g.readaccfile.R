@@ -252,7 +252,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     #--------------
     startpage = (headerlength+(blocksize*300*(blocknumber-1)))
     deltapage = blocksize*300
-    UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
+    endpage = startpage + deltapage
+    UPI = updatepageindexing(startpage=startpage,endpage=endpage,deltapage=deltapage,
                              blocknumber=blocknumber,PreviousEndPage=PreviousEndPage)
     startpage = UPI$startpage;    endpage = UPI$endpage
     # load rows 11:13  to investigate whether the file has a header
