@@ -22,12 +22,12 @@ updateBlocksize = function(blocksize=c(), bsc_qc=data.frame(time=c(),size=c())) 
     if (MemoryLimit < MemoryUsed) MemoryLimit = MemoryUsed
     bsc_qc = rbind(bsc_qc,c(as.character(Sys.time()),MemoryUsed))
     MemoryRatio = MemoryUsed / MemoryLimit
-    #cat(paste0("\nMemoryRatio ",MemoryRatio," (MemoryUsed: ",MemoryUsed,"/ MemoryLimit: ",MemoryLimit,")"))
+    cat(paste0("\nMemoryRatio ",MemoryRatio," (MemoryUsed: ",MemoryUsed,"/ MemoryLimit: ",MemoryLimit,")"))
     if (MemoryRatio < 0.4) {
         blocksize = blocksize * 1.1
-    } else if (MemoryRatio >= 0.65 & MemoryRatio < 0.70) {
+    } else if (MemoryRatio >= 0.8 & MemoryRatio < 0.9) {
       blocksize = blocksize * 0.9
-    } else if (MemoryRatio >= 0.75) {
+    } else if (MemoryRatio >= 0.9) {
       blocksize = blocksize * 0.8
     }
     blocksize = round(blocksize)
