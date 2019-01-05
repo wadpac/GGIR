@@ -63,7 +63,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (15 minutes or whatever is specified above)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
-  bsc_cnt = 0
   bsc_qc = data.frame(time=c(),size=c())
   # inspect file
   
@@ -137,7 +136,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                               selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
                               dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage)
-      
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -482,19 +480,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
         
         rm(Gx); rm(Gy); rm(Gz); rm(allmetrics)
-        # reduce blocksize if memory is getting higher
-        gco = gc()
-        memuse = gco[2,2] #memuse in mb
-        bsc_qc = rbind(bsc_qc,c(memuse,Sys.time()))
-        if (memuse > 4000) {
-          if (bsc_cnt < 5) {
-            if ((chunksize * (0.8 ^ bsc_cnt)) > 0.2) {
-              blocksize = round(blocksize * 0.8)
-              bsc_cnt = bsc_cnt + 1
-            }
-          }
-        }
-        
+        # update blocksize depending on available memory
+        BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
+        bsc_qc = BlocksizeNew$bsc_qc
+        blocksize = BlocksizeNew$blocksize
         ##==================================================
         # MODULE 2 - non-wear time & clipping
         #cat("\nmodule 2\n") #notice that windows overlap for non-wear detecting

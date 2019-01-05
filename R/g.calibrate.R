@@ -22,7 +22,6 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   PreviousEndPage = c() # needed for g.readaccfile
   scale = c(1,1,1)
   offset = c(0,0,0)
-  bsc_cnt = 0
   bsc_qc = data.frame(time=c(),size=c())
   #inspect file  
   options(warn=-1) #turn off warnings
@@ -188,19 +187,12 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           }
           count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
           rm(Gx); rm(Gy); rm(Gz)
-          # reduce blocksize if memory is getting higher
-          gco = gc()
-          memuse = gco[2,2] #memuse in mb
-          bsc_qc = rbind(bsc_qc,c(memuse,Sys.time()))
-          if (memuse > 4000) {
-            if (bsc_cnt < 5) {
-              if ((chunksize * (0.8 ^ bsc_cnt)) > 0.2) {
-                blocksize = round(blocksize * 0.8)
-                
-                bsc_cnt = bsc_cnt + 1
-              }
-            }
-          }
+          
+          # I have commented out the folling lines in g.calibrate because we want to control how much data is used for calibration
+          # Update blocksize depending on available memory:
+          # BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc) 
+          # bsc_qc = BlocksizeNew$bsc_qc
+          # blocksize = BlocksizeNew$blocksize
         }
         #--------------------------------------------
       }
