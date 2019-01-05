@@ -188,11 +188,10 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
           rm(Gx); rm(Gy); rm(Gz)
           
-          # I have commented out the folling lines in g.calibrate because we want to control how much data is used for calibration
           # Update blocksize depending on available memory:
-          # BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc) 
-          # bsc_qc = BlocksizeNew$bsc_qc
-          # blocksize = BlocksizeNew$blocksize
+          BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
+          bsc_qc = BlocksizeNew$bsc_qc
+          blocksize = BlocksizeNew$blocksize
         }
         #--------------------------------------------
       }
