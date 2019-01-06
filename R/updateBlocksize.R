@@ -6,11 +6,8 @@ updateBlocksize = function(blocksize=c(), bsc_qc=data.frame(time=c(),size=c())) 
   memuse = gco[2,2] #memuse in mb
   bsc_qc = rbind(bsc_qc,c(as.character(Sys.time()),memuse))
   if (memuse > 4000) {
-    if (bsc_cnt < 5) {
-      if ((chunksize * (0.8 ^ bsc_cnt)) > 0.2) {
-        blocksize = round(blocksize * 0.8)
-        bsc_cnt = bsc_cnt + 1
-      }
+    if (nrow(bsc_qc) < 5) {
+      blocksize = round(blocksize * 0.8)
     }
   }
   blocksize = round(blocksize)
