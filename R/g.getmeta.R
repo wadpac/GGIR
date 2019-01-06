@@ -24,7 +24,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                     do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                     do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa)
-  
+
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.2) chunksize = 0.2
@@ -52,6 +52,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     cat(paste("\nshort windowsize has now been automatically adjusted to: ",ws3," seconds in order to meet this criteria.\n",sep=""))
   }
   windowsizes = c(ws3,ws2,ws)
+  PreviousEndPage = c() # needed for g.readaccfile
   start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour)
   monnames = c("genea","geneactive","actigraph","axivity") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE,NFilePagesSkipped = 0)
@@ -62,10 +63,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (15 minutes or whatever is specified above)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
-  bsc_cnt = 0
   bsc_qc = data.frame(time=c(),size=c())
   # inspect file
-  
+
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
@@ -113,9 +113,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   } else if (temp.available == TRUE){
     metalong = matrix(" ",((nev/(sf*ws2))+100),7) #generating output matrix for 15 minutes summaries
   }
-  
+
   #------------------------------------------
-  
+
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
@@ -135,8 +135,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                               selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                              dayborder=dayborder,ws=ws,desiredtz=desiredtz)
-      
+                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -144,6 +143,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       filedoesnotholdday = filequality$filedoesnotholdday
       NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
+      PreviousEndPage = accread$endpage
     } else {
       filetooshort = FALSE
       filecorrupt = FALSE
@@ -169,11 +169,11 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         } else if (dformat == 2) {
           data = P #as.matrix(P,dimnames = list(rownames(P),colnames(P)))
         } else if (dformat == 3) {
-          data = P$rawxyz 
+          data = P$rawxyz
         } else if (dformat == 4) {
           data = P$data
         }
-        
+
         #add left over data from last time
         if (nrow(S) > 0) {
           data = rbind(S,data)
@@ -313,7 +313,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             S = matrix(0,0,ncol(data))
           }
           data = as.matrix(data[1:use,])
-          
+
           LD = nrow(data) #redefine LD because there is less data
           ##==================================================
           # Feature calculation
@@ -417,12 +417,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
         #extend out if it is expected to be too short
-        if (count > (nrow(metashort) - (2.5*(3600/ws3) *24))) {  
+        if (count > (nrow(metashort) - (2.5*(3600/ws3) *24))) {
           extension = matrix(" ",((3600/ws3) *24),ncol(metashort)) #add another day to metashort once you reach the end of it
           metashort = rbind(metashort,extension)
           extension2 = matrix(" ",((3600/ws2) *24),ncol(metalong)) #add another day to metashort once you reach the end of it
           metalong = rbind(metalong,extension2)
-          
+
           cat("\nvariable metashort extended\n")
         }
         col_msi = 2
@@ -478,21 +478,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           metashort[count:(count-1+length(ENMOa3b)),col_msi] = ENMOa3b; col_msi = col_msi + 1
         }
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
-        
+
         rm(Gx); rm(Gy); rm(Gz); rm(allmetrics)
-        # reduce blocksize if memory is getting higher
-        gco = gc()
-        memuse = gco[2,2] #memuse in mb
-        bsc_qc = rbind(bsc_qc,c(memuse,Sys.time()))
-        if (memuse > 4000) {
-          if (bsc_cnt < 5) {
-            if ((chunksize * (0.8 ^ bsc_cnt)) > 0.2) {
-              blocksize = round(blocksize * 0.8)
-              bsc_cnt = bsc_cnt + 1
-            }
-          }
-        }
-        
+        # update blocksize depending on available memory
+        BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
+        bsc_qc = BlocksizeNew$bsc_qc
+        blocksize = BlocksizeNew$blocksize
         ##==================================================
         # MODULE 2 - non-wear time & clipping
         #cat("\nmodule 2\n") #notice that windows overlap for non-wear detecting
@@ -547,7 +538,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                 clipthres = 7.5 # hard coded assumption that dynamic range is 8g
               }
             }
-            
+
             if (dformat == 1) {
               CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,(jj+(mon-1))])) > clipthres))
             } else if (dformat == 2 | dformat == 4) {
@@ -571,13 +562,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
               sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
               racriter = 0.15 #ADJUSTMENT NEEDED FOR Axivity???????????
             }
-            if (sdwacc < sdcriter) { 
-              if (abs(maxwacc - minwacc) < racriter) { 
+            if (sdwacc < sdcriter) {
+              if (abs(maxwacc - minwacc) < racriter) {
                 NW[h,jj] = 1
               }
             } else {
             }
-            
+
           }
           CW = CW / (window2) #changed 30-1-2012, was window*sf
           NWav[h,1] = (NW[h,1] + NW[h,2] + NW[h,3]) #indicator of non-wear
@@ -607,7 +598,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
         }
         #EN going from sample to ws2
-        
+
         ENc = cumsum(c(0,EN))
         select = seq(1,length(ENc),by=(ws2*sf))
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
@@ -656,7 +647,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
         dateday1 = as.character(SDF[SDFi,2])
         dateday2 = as.character(SDF[SDFi,3])
-        
+
         dtday1 = as.POSIXlt(paste0(dateday1," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
         dtday2 = as.POSIXlt(paste0(dateday2," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
         deltat = as.numeric(dtday2) - as.numeric(dtday1)
@@ -684,7 +675,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     if (nrow(metalong) > 2) {
       starttime4 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time1 = seq(starttime4,(starttime4+(nrow(metalong)*ws2)-1),by=ws2)
-      
+
       if (length(selectdaysfile) > 0 & round((24*(3600/ws2))+1) < length(time1)) { # (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
@@ -725,7 +716,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     for (ncolms in 2:ncol(metashort)) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    
+
     if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
     } else if (mon == 2 | (mon == 4 & dformat == 4)) {
@@ -736,15 +727,15 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     for (ncolml in 2:ncol(metalong)) {
       metalong[,ncolml] = as.numeric(metalong[,ncolml])
     }
-    
+
     closeAllConnections()
   } else {
     metalong=metashort=wday=wdayname=windowsizes = c()
   }
-  
-  
+
+
   # detach(allmetrics,warn.conflicts = FALSE)
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
   invisible(list(filecorrupt=filecorrupt,filetooshort=filetooshort,NFilePagesSkipped=NFilePagesSkipped,
-                 metalong=metalong, metashort=metashort,wday=wday,wdayname=wdayname,windowsizes=windowsizes,bsc_qc=bsc_qc))  
+                 metalong=metalong, metashort=metashort,wday=wday,wdayname=wdayname,windowsizes=windowsizes,bsc_qc=bsc_qc))
 }

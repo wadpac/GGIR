@@ -19,9 +19,9 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   spheredata=c()
   tempoffset=c()
   npoints=c()
+  PreviousEndPage = c() # needed for g.readaccfile
   scale = c(1,1,1)
   offset = c(0,0,0)
-  bsc_cnt = 0
   bsc_qc = data.frame(time=c(),size=c())
   #inspect file  
   options(warn=-1) #turn off warnings
@@ -64,13 +64,15 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
-                            decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz)
+                            decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz,
+                            PreviousEndPage=PreviousEndPage)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
     filedoesnotholdday = filequality$filedoesnotholdday
     switchoffLD = accread$switchoffLD
+    PreviousEndPage = accread$endpage
     options(warn=0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -185,19 +187,11 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           }
           count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
           rm(Gx); rm(Gy); rm(Gz)
-          # reduce blocksize if memory is getting higher
-          gco = gc()
-          memuse = gco[2,2] #memuse in mb
-          bsc_qc = rbind(bsc_qc,c(memuse,Sys.time()))
-          if (memuse > 4000) {
-            if (bsc_cnt < 5) {
-              if ((chunksize * (0.8 ^ bsc_cnt)) > 0.2) {
-                blocksize = round(blocksize * 0.8)
-                
-                bsc_cnt = bsc_cnt + 1
-              }
-            }
-          }
+          
+          # Update blocksize depending on available memory:
+          BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
+          bsc_qc = BlocksizeNew$bsc_qc
+          blocksize = BlocksizeNew$blocksize
         }
         #--------------------------------------------
       }

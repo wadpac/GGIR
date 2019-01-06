@@ -18,15 +18,15 @@ test_that("chainof5parts", {
   expect_that(dir.exists(dn),is_true())
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_that(round(C$scale,digits=5),equals(c(0.98472, 0.98387, 0.98435)))
+  expect_that(round(C$scale,digits=5),equals(c(0.98476, 0.98399, 0.98442)))
   expect_that(nrow(M$metalong),equals(47))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
   expect_that(nrow(M$metashort),equals(11280))
-  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.02894))
+  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.02898))
   expect_that(I$monc,equals(3))
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
-  expect_that(C$npoints,equals(9807))
+  expect_that(C$npoints,equals(9728))
   #--------------------------------------------
   # part 2 with strategy = 3
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
@@ -36,7 +36,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.00795))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.00796))
   expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=3),equals(0.417))
   # part 2 with strategy = 2
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
@@ -46,7 +46,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=4),equals(0.0289))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=3),equals(0.029))
   expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=2),equals(1))
   # part 2 with strategy = 1
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
@@ -62,7 +62,7 @@ test_that("chainof5parts", {
   expect_that(file.exists(summarycsv),is_true())
   expect_that(file.exists(daysummarycsv),is_true())
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02894))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
   #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
   #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
