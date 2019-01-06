@@ -4,13 +4,14 @@
  Generic functiont to read large blocks of accelerometer data
 }
 \description{
-The function is used by \link{g.getmeta} to read large blocks of the
-accelerometer file, which are processed and then deleted. This is needed
-for memory management.
+The function is used by \link{g.getmeta} and \link{g.calibrate} to
+read large blocks of the accelerometer file, which are processed and
+then deleted. This is needed for memory management.
 }
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,
-  selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz=c())
+  selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz=c(),
+  PreviousEndPage=1)
 }
 \arguments{
   \item{filename}{
@@ -43,6 +44,10 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
    \item{desiredtz}{
   Desired timezone, see documentation \link{g.getmeta}
   }
+  \item{PreviousEndPage}{
+   Page number on which previous block ended (automatically assigned within
+   g.getmeta and g.calibrate).
+  }
 
 }
 \value{
@@ -53,6 +58,8 @@ accelerometer brand
 \item \code{filequality} Same as in function arguments
 \item \code{switchoffLD} Boolean to indicate whether it is worth
 continueing to read the next block of data or not
+\item \code{endpage} Page number on which blocked ends, this will be
+used as input for argument PreviousEndPage when reading the next block.
 }
 
 }
@@ -63,7 +70,7 @@ filedoesnotholdday = FALSE)
 output = g.readaccfile(filename="C:/myfile.bin", 
 locksize=20000, blocknumber=1,
 selectdaysfile=c(), filequality=filequality,
-                         decn=".", dayborder=0) 
+                         decn=".", dayborder=0,PreviousEndPage=c()) 
 }
 }
 \author{
