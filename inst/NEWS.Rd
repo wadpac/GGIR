@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.8-0 (release date:05-01-2019)}{
+\section{Changes in version 1.8-0 (release date:06-01-2019)}{
 \itemize{
   \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
   \item Fixed bug for Actigraph csv header recognition when column 2 and 3 are NA (prevented processing before)
@@ -9,10 +9,10 @@
   \item Fixed bug that caused part5 to struggle with timezones west of greenwhich time.
   \item desiredtz added as explicit argument to g.inspectfile, g.cwaread, and g.dotorcomma.
   \item Fixed bug in pageindexing in g.readaccfile when machine runs out of memory.
+  \item Fixed bug in pageindexing in Actigraph csv files (10 rows in raw data skipped every block (day)) of data.
   \item Added more informative warning message in g.report.part2 if file cannot be read.
-  \item Fixed bug in scenario when person is daysleeper and wakingup time occurs before noon. Waking uptime was 12 hours too early.
-  \item Fixed bug re. storefolderstructure=TRUE causing 2 variables to drop in g.report.part4.
-  \item Added updateBlocksize function to optimize memory utilization.
+  \item Fixed bug in scenario when person is daysleeper and wakingup time occurs before noon, and 12 hours too early.
+  \item Fixed bug re. storefolderstructure=TRUE causing 2 variables to drop in g.report.part4 if storefolderstructure=TRUE.
   \item g.intensitygradient enabled to handle absense of data.
   }
 }
