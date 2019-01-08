@@ -266,7 +266,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   struc = list(0,0L)
   header = readHeader(fid, numDBlocks)
   # preprocess start and stop
-  origin = header$start
+  origin = as.numeric(header$start)
   step = 1/header$frequency
   if (is.numeric(start)) {
     if (start<0)
@@ -275,14 +275,11 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   }
   if (is.numeric(end)) {
     end = end * pageLength
-    if (end > numDBlocks * 120) {
-      end = numDBlocks * 120
+    if (end > numDBlocks * 150) {
+      end = numDBlocks * 150
     }
     end = origin + end * step
   }
-  # to prevent creation of too big arrays we can use this estimation
-  if (end > origin + numDBlocks * 150 * step)
-    end = origin + numDBlocks * 150 * step
   # If data is not necessary then stop work
   if (end <= start) {
     close(fid)
