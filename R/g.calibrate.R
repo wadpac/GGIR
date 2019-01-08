@@ -65,7 +65,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
                             decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz,
-                            PreviousEndPage=PreviousEndPage)
+                            PreviousEndPage=PreviousEndPage,inspectfileobject=INFI)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
