@@ -11,7 +11,7 @@ then deleted. This is needed for memory management.
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,
   selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz=c(),
-  PreviousEndPage=1)
+  PreviousEndPage=1,inspectfileobject=c())
 }
 \arguments{
   \item{filename}{
@@ -47,6 +47,9 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   \item{PreviousEndPage}{
    Page number on which previous block ended (automatically assigned within
    g.getmeta and g.calibrate).
+  }
+  \item{inspectfileobject}{
+  Output from the function \link{g.inspectfile}.
   }
 
 }
