@@ -249,7 +249,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   ################################################################################################
   # Main function
 
-
   # Parse input arguments
   nargin = nargs()
   if (nargin < 1) {
@@ -266,7 +265,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   struc = list(0,0L)
   header = readHeader(fid, numDBlocks)
   # preprocess start and stop
-  origin = header$start
+  origin = as.numeric(header$start)
   step = 1/header$frequency
   if (is.numeric(start)) {
     if (start<0)
@@ -275,14 +274,11 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   }
   if (is.numeric(end)) {
     end = end * pageLength
-    if (end > numDBlocks * 120) {
-      end = numDBlocks * 120
+    if (end > numDBlocks * 150) {
+      end = numDBlocks * 150
     }
     end = origin + end * step
   }
-  # to prevent creation of too big arrays we can use this estimation
-  if (end > origin + numDBlocks * 150 * step)
-    end = origin + numDBlocks * 150 * step
   # If data is not necessary then stop work
   if (end <= start) {
     close(fid)
@@ -353,16 +349,20 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
     # put result to specified position
     last = nrow(tmp) + pos - 1
-    accelRes[pos:last,] = tmp
+    if (last>=pos) {
+      accelRes[pos:last,] = tmp
+    }
 
     # Remove all rawdata exclude the last
     rawTime[1] = rawTime[rawLast]
     rawAccel[1,] = rawAccel[rawLast,]
     rawPos = 2
     # Fill light, temp and battery
-    light[pos:last] = prevRaw$light
-    temp[pos:last] = prevRaw$temperature
-    battery[pos:last] = prevRaw$battery
+    if (last>=pos) {
+      light[pos:last] = prevRaw$light
+      temp[pos:last] = prevRaw$temperature
+      battery[pos:last] = prevRaw$battery
+    }
     # Now current become previous
     prevRaw = raw
     pos = last + 1
@@ -376,7 +376,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   #############################################################################
   # Process the last block of data if necessary
   if (pos <= nr) { # & ignorelastblock == FALSE){ #ignorelastblock == FALSE added by VvH on 22-4-2017
-    print("last block of data")
+    # print("last block of data")
     # Calculate pseudo time for the "next" block
     newTimes = (prevRaw$start - prevStart) / prevLength * prevRaw$length + prevRaw$start
     prevLength = prevRaw$length
@@ -403,14 +403,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
     # put result to specified position
     last = nrow(tmp) + pos - 1
-    accelRes[pos:last,] = tmp
-    # Fill light, temp and battery
-    light[pos:last] = prevRaw$light
-    temp[pos:last] = prevRaw$temperature
-    battery[pos:last] = prevRaw$battery
-    # Now current become previous
-    prevRaw = raw
-    pos = last +1
+    if (last>=pos){
+      accelRes[pos:last,] = tmp
+      # Fill light, temp and battery
+      light[pos:last] = prevRaw$light
+      temp[pos:last] = prevRaw$temperature
+      battery[pos:last] = prevRaw$battery
+    }
   }
   close(fid)
   #===============================================================================
@@ -438,6 +437,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   # Form outcome
   return(invisible(list(
     header = header,
-    data = as.data.frame(cbind(time = timeRes, accelRes,temp,  battery, light))
+    data = as.data.frame(cbind(time = timeRes, accelRes, temp,  battery, light))
   )))
 }

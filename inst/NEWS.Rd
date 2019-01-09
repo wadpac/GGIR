@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.8-0 (release date:06-01-2019)}{
+\section{Changes in version 1.8-0 (release date:09-01-2019)}{
 \itemize{
   \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
   \item Fixed bug for Actigraph csv header recognition when column 2 and 3 are NA (prevented processing before)
@@ -14,6 +14,7 @@
   \item Fixed bug in scenario when person is daysleeper and wakingup time occurs before noon, and 12 hours too early.
   \item Fixed bug re. storefolderstructure=TRUE causing 2 variables to drop in g.report.part4 if storefolderstructure=TRUE.
   \item g.intensitygradient enabled to handle absense of data.
+  \item tidied up some of the redundant or even confusiong information printer to the console
   }
 }
 \section{Changes in version 1.7-1 (release date:25-11-2018)}{

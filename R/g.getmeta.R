@@ -63,7 +63,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (15 minutes or whatever is specified above)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
-  bsc_qc = data.frame(time=c(),size=c())
+  bsc_qc = data.frame(time=c(),size=c(), stringsAsFactors = FALSE)
   # inspect file
 
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
@@ -135,7 +135,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                               selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage)
+                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage,
+                              inspectfileobject=INFI)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
