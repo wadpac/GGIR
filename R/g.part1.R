@@ -121,7 +121,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   #=================================================================
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   if (length(fnames) == 0) {
-    cat("\nno files to analyse")
+    cat("\nNo files to analyse")
   }
   filelocationkey = matrix("",length(fnames),3)
   fnames = sort(fnames)
@@ -192,8 +192,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       }
       #--------------------------------------
       if (do.cal ==TRUE & useRDA == FALSE) {
-        cat("\n---------------------------------------------")
-        cat("\ninvestigate calibration of the sensors...")
+        # cat(paste0("\n",rep('-',options()$width),collapse=''))
+        cat("\n")
+        cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
         C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                         minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                         windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
@@ -247,20 +248,16 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
           C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
           C$tempoffset=  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
-          cat("\nNew offset correction:\n")
-          cat(paste0("\n",C$offset))
-          cat("\nNew scale correction:\n")
-          cat(paste0("\n",C$scale))
-          cat("\nNew tempoffset correction:\n")
-          cat(paste0("\n",C$tempoffset))
-          cat("\n----------------------------------------\n")
+          cat(paste0("\nNew offset correction ",c("x","y","z"),": ",C$offset))
+          cat(paste0("\nNew scale correction ",c("x","y","z"),": ",C$scale))
+          cat(paste0("\nNew tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
         } else {
           cat("\nNo matching filename found in backup.cal.coef\n")
           cat(paste0("\nCheck that filename ",fnames[j]," exists in the csv-file\n"))
         }
       }
       #------------------------------------------------
-      cat("\nget meta data...")
+      cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
       M = g.getmeta(datafile,                  
                     do.bfen=do.bfen,
                     do.enmo=do.enmo,
@@ -282,7 +279,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     outputfolder=outputfolder,
                     dayborder=dayborder,dynrange=dynrange)
       #------------------------------------------------
-      cat("\nSave .RData-file with: calibration report, file inspection report and all meta data...")
+      cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present
       filename = unlist(strsplit(fnames[j],"/"))
       if (length(filename) > 0) {
@@ -298,8 +295,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       SI = sessionInfo()
       save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
       rm(M); rm(I); rm(C)
-    } else {
-      #  print("file skipped because it was analysed before")
     }
     if(length(filelocationkey) > 0) {
       filelocationkey[,3] = datadir[j]
