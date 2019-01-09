@@ -65,7 +65,6 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (blocknumber == 1) {
         filequality$filecorrupt = TRUE
       }
-      cat("\nEnd of file reached\n")
     }
   } else if (mon == 4 & dformat == 3) { # axivity wav
     startpage = blocksize*(blocknumber-1)
@@ -85,7 +84,6 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (blocknumber == 1) {
         filequality$filecorrupt = TRUE
       }
-      cat("\nEnd of file reached\n")
     }
   } else if (mon == 2 & dformat == 1 & useRDA == FALSE) { # GENEActiv binary non-RDA format
     if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
@@ -119,10 +117,10 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
           if (sf != P$freq) sf = P$freq
         },silent=TRUE)
         if (length(P) <= 2) {
-          cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
+          # cat("\nInitial attempt to read data unsuccessful, try again with mmap turned on:\n")
           #try again but now with mmap.load turned on
           if (length(P) != 0) {
-            cat("\ndata read succesfully\n")
+            # cat("\nData read succesfully\n")
           } else {
             switchoffLD = 1
           }
@@ -131,12 +129,10 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (length(P) > 0) {
         if (length(selectdaysfile) > 0) {
           if (tint[blocknumber,1] == "0") {
-            print("last block")
             switchoffLD = 1
           }
         } else {
           if (nrow(P$data.out) < (blocksize*300)) { #last block
-            print("last block")
             switchoffLD = 1
           }
         }
@@ -176,12 +172,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
                                         end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
       if (length(P) <= 2) {
-        cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
+        # cat("\ninitial attempt to read data unsuccessful, try again with mmap turned on:\n")
         #try again but now with mmap.load turned on
         try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
                                           end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
         if (length(P) != 0) {
-          cat("\ndata read succesfully\n")
+          # cat("\ndata read succesfully\n")
           if (sf != P$freq) sf = P$freq
         } else {
           switchoffLD = 1
@@ -190,12 +186,10 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       if (length(P) > 0) {
         if (length(selectdaysfile) > 0) {
           if (tint[blocknumber,1] == "0") {
-            print("last block")
             switchoffLD = 1
           }
         } else {
           if (nrow(P$data.out) < (blocksize*300)) { #last block
-            print("last block")
             switchoffLD = 1
           }
         }
@@ -223,7 +217,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     }
     #===============
   } else if (mon == 2 & dformat == 2) { # GENEActiv csv format
-    cat("\nGeneactiv in csv-format\n")
+    # cat("\nGeneactiv in csv-format\n")
     startpage = (100+(blocksize*300*(blocknumber-1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
@@ -239,7 +233,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
     } else {
       P = c()
-      cat("\nEnd of file reached\n")
+      # cat("\nEnd of file reached\n")
     }
   } else if (mon == 3 & dformat == 2) { # Actigraph csv format
     headerlength = 10
@@ -279,7 +273,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
     } else {
       P = c()
-      cat("\nEnd of file reached\n")
+      # cat("\nEnd of file reached\n")
     }
   } else if (mon == 4 & dformat == 4) { # axivity cwa
     startpage = blocksize*(blocknumber-1)
@@ -290,15 +284,11 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     try(expr={P = g.cwaread(fileName=filename, start = startpage, # try to read block first time
                             end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
     if (length(P) > 1) { # data reading succesful
-      if (length(P$data) == 0) { # too short?
+      if (length(P$data) == 0 | nrow(P$data) < ((sf*ws*2)+1)) { # too short?
         P = c() ; switchoffLD = 1
-        cat("\nWarning (1): Data in block too short for doing non-wear detection\n")
-        if (blocknumber == 1) filequality$filetooshort = TRUE
-      } else { # too short for non-wear detection
-        if (nrow(P$data) < ((sf*ws*2)+1)) {
-          P = c() ; switchoffLD = 1
-          cat("\nError: Data too short for doing non-wear detection 1\n")
-          if (blocknumber == 1) filequality$filetooshort = TRUE
+        if (blocknumber == 1) {
+          filequality$filetooshort = TRUE
+          cat("\nWarning (1): Data in block too short for doing non-wear detection\n")
         }
       }
     } else { #data reading not succesful
@@ -326,34 +316,24 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         try(expr={P = g.cwaread(fileName=filename, start = startpage,
                                 end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
         if (length(P) > 1) { # data reading succesful
-          if (length(P$data) == 0) { # if this still does not work then
+          if (length(P$data) == 0 | nrow(P$data) < ((sf*ws*2)+1)) { # if this still does not work then
             P = c() ; switchoffLD = 1
-            cat("\nWarning (3): data in block too short for doing non-wear detection\n")
-            if (blocknumber == 1) filequality$filetooshort = TRUE
-          } else {
-            if (nrow(P$data) < ((sf*ws*2)+1)) {
-              P = c() ; switchoffLD = 1
-              cat("\nError: data too short for doing non-wear detection 1\n")
-              if (blocknumber == 1) filequality$filetooshort = TRUE
-            } else {
-              filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
+            if (blocknumber == 1) {
+              cat("\nWarning (3): data in block too short for doing non-wear detection\n")
+              filequality$filetooshort = TRUE
             }
+          } else {
+            filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
           }
           # Add replications of Ptest to the beginning of P to achieve same data length as under nuormal conditions
           P$data = rbind(do.call("rbind",replicate(NFilePagesSkipped,PtestStartPage$data,simplify = FALSE)), P$data)
         } else { # Data reading still not succesful, so classify file as corrupt
           P = c()
-          if (blocknumber == 1) {
-            filequality$filecorrupt = TRUE
-          }
-          cat("\nEnd of file reached\n")
+          if (blocknumber == 1) filequality$filecorrupt = TRUE
         }
       } else {
         P = c()
-        if (blocknumber == 1) {
-          filequality$filecorrupt = TRUE
-        }
-        cat("\nEnd of file reached\n")
+        if (blocknumber == 1) filequality$filecorrupt = TRUE
       }
     }
   } else if (mon == 4 & dformat == 2) { # axivity (ax3) csv format
@@ -377,7 +357,6 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         filequality$filetooshort = TRUE
       }
       if (nrow(P) < (deltapage)) { #last block
-        print("last block")
         switchoffLD = 1
       }
       # resample the acceleration data, because AX3 data is stored at irregular time points
@@ -402,7 +381,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       P = cbind(timeRes,accelRes)
     } else {
       P = c()
-      cat("\nEnd of file reached\n")
+      # cat("\nEnd of file reached\n")
     }
   }
   invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage))
