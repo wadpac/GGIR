@@ -1,6 +1,5 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
                          decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c()) {
-  options(warn=2) 
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -89,11 +88,9 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       #===================================================================
       # All of the below needed for Millenium cohort
       SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
-
       hvars = g.extractheadervars(I)
       SN = hvars$SN
       SDFi = which(basename(SDF$binFile) == basename(filename))
-
       if(length(SDFi) != 1) {
         save(SDF, SDFi, file = "debuggingFile.Rda")
         stop(paste0("CLS error: there are zero or more than one files: ",

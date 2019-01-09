@@ -54,13 +54,12 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading block: ",i,sep=""))
+      cat(paste("\nLoading block: ",i," ",sep=""))
     } else {
       cat(paste(" ",i,sep=""))
     }
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
-    
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
                             decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz,
@@ -243,7 +242,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           QC = "recalibration not done because not enough points on all sides of the sphere"
         }
       } else {
-        cat("\nno non-movement found\n")
+        cat("\nNo non-movement found\n")
         QC = "recalibration not done because no non-movement data available"
         meta_temp = c()
       }
@@ -357,27 +356,20 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   }
   QCmessage = QC
   if (printsummary == TRUE) {
-    cat("\n----------------------------------------\n")
-    cat("Summary of autocalibration procedure:\n")
-    cat("\nStatus:\n")
-    print(QCmessage)
-    cat("\nCalibration error (g) before:\n")
-    print(cal.error.start)
-    cat("\nCallibration error (g) after:\n")
-    print(cal.error.end)
-    cat("\nOffset correction:\n")
-    print(offset)
-    cat("\nScale correction:\n")
-    print(scale)
-    cat("\nNumber of hours used:\n")
-    print(nhoursused)
-    cat("\nNumber of 10 second windows around the sphere:\n")
-    print(npoints)
-    cat("\nTemperature used (if available):\n")
-    print(use.temp)
-    cat("\nTemperature offset (if temperature is available):\n")
-    print(tempoffset)
-    cat("\n----------------------------------------\n")
+    # cat(paste0(rep('_ ',options()$width),collapse=''))
+    cat("\nSummary of autocalibration procedure:")
+    cat("\n")
+    cat(paste0("\nStatus: ",QCmessage))
+    cat(paste0("\nCalibration error (g) before: ",cal.error.start))
+    cat(paste0("\nCallibration error (g) after: ",cal.error.end))
+    cat(paste0("\nOffset correction ",c("x","y","z"),": ",offset))
+    cat(paste0("\nScale correction ",c("x","y","z"),": ",scale))
+    cat(paste0("\nNumber of hours used: ",nhoursused))
+    cat(paste0("\nNumber of 10 second windows around the sphere: ",npoints))
+    cat(paste0("\nTemperature used (if available): ",use.temp))
+    cat(paste0("\nTemperature offset (if temperature is available) ",c("x","y","z"),": ",tempoffset))
+    cat("\n")
+    # cat(paste0(rep('_',options()$width),collapse=''))
   }
   if (use.temp==TRUE) {
     if (length(spheredata) > 0) {
