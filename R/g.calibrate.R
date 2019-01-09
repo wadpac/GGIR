@@ -54,7 +54,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading block: ",i," ",sep=""))
+      cat(paste("\nLoading block: ",i,sep=""))
     } else {
       cat(paste(" ",i,sep=""))
     }
@@ -195,7 +195,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       }
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
-      cat("\nstop reading because there is not enough data in this block\n")
+      # cat("\nstop reading because there is not enough data in this block\n")
     }
     spherepopulated = 0
     if (switchoffLD == 1) {
