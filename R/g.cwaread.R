@@ -376,7 +376,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   #############################################################################
   # Process the last block of data if necessary
   if (pos <= nr) { # & ignorelastblock == FALSE){ #ignorelastblock == FALSE added by VvH on 22-4-2017
-    print("last block of data")
+    # print("last block of data")
     # Calculate pseudo time for the "next" block
     newTimes = (prevRaw$start - prevStart) / prevLength * prevRaw$length + prevRaw$start
     prevLength = prevRaw$length

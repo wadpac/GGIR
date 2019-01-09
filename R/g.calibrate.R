@@ -1,7 +1,6 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
                        desiredtz = c()) {
-  
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.4) chunksize = 0.4
@@ -22,7 +21,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   PreviousEndPage = c() # needed for g.readaccfile
   scale = c(1,1,1)
   offset = c(0,0,0)
-  bsc_qc = data.frame(time=c(),size=c())
+  bsc_qc = data.frame(time=c(),size=c(),stringsAsFactors = FALSE)
   #inspect file  
   options(warn=-1) #turn off warnings
   INFI = g.inspectfile(datafile, desiredtz=desiredtz)  # Check which file type and monitor brand it is
