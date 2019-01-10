@@ -7,35 +7,26 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c()) {
-  # verify whether path1 is a directory or a list of files
-  outputfolder = unlist(strsplit(metadatadir,"/output_"))[2]
-  outputfolder = paste("/output_",outputfolder,sep="")
-  path1 = unlist(strsplit(metadatadir,"/output"))[1]
   snloc= 1
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames 
-  path = paste(path1,outputfolder,"/meta/basic/",sep="")  #values stored per long epoch, e.g. 15 minutes
+  path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
   fnames = dir(path)
   if (f1 > length(fnames)) f1 = length(fnames)
   # create output folders
   ffdone = c()
   ms2.out = "/meta/ms2.out"
-  if (file.exists(paste(metadatadir,ms2.out,sep=""))) {
-  } else {
+  if (file.exists(paste0(metadatadir,ms2.out)) == FALSE) {
     dir.create(file.path(metadatadir,ms2.out))
   }
-  
-
   csvfolder = "/meta/csv"
   if (epochvalues2csv==TRUE) {
-    if (file.exists(paste(metadatadir,csvfolder,sep=""))) {
-    } else {
+    if (file.exists(paste(metadatadir,csvfolder,sep="")) == FALSE) {
       dir.create(file.path(metadatadir,csvfolder))
     }
   }
   fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
   ffdone = fnames.ms2
-
   #---------------------------------
   # house keeping variables
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
@@ -63,11 +54,11 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
     }
     if (overwrite == TRUE) skip = 0
     if (skip ==0) {
-      cat(paste(" ",i,sep=""))
+      cat(paste0(" ",i))
       M = c()
       filename_dir = c()
       filefoldername = c()
-      load(paste(path,fnames[i],sep="")) #reading RData-file
+      load(paste0(path,fnames[i])) #reading RData-file
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
                        hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz)
@@ -81,18 +72,14 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                         window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                         desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
                         IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels)
-        # if (storefolderstructure == TRUE) {
-        #   SUMMARY = SUM$summary
-        #   SUM$summary = SUMMARY
-        # }
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
         if (epochvalues2csv==TRUE) {
           if (length(IMP$metashort) > 0) {
-            write.csv(IMP$metashort,paste(metadatadir,"/",csvfolder,"/",name,".csv",sep=""),row.names=FALSE)
+            write.csv(IMP$metashort,paste0(metadatadir,"/",csvfolder,"/",name,".csv"),row.names=FALSE)
           } 
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-          if (cnt78 == 1) { #i == 1 | i == f0 | 
+          if (cnt78 == 1) {
             SUMMARY = SUM$summary
             daySUMMARY = SUM$daysummary
             if (length(selectdaysfile) > 0) {
@@ -134,7 +121,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
           filename = paste0(name,".RData")
         }
-        save(SUM,IMP,file=paste(metadatadir,ms2.out,"/",name,sep="")) #IMP is needed for g.plot in g.report.part2
+        save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       
@@ -142,5 +129,5 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
     }
   }
   SI = sessionInfo()
-  save(SI,file=paste(path1,outputfolder,"/results/QC/sessioninfo_part2.RData",sep=""))
+  save(SI,file=paste0(metadatadir,"/results/QC/sessioninfo_part2.RData"))
 }

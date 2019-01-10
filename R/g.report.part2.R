@@ -1,7 +1,7 @@
 g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfile=c()) {
   ms2.out = "/meta/ms2.out"
-  if (file.exists(paste(metadatadir,ms2.out,sep=""))) {
-    if (length(dir(paste(metadatadir,ms2.out,sep=""))) == 0) {
+  if (file.exists(paste0(metadatadir,ms2.out))) {
+    if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
       try.generate.report = FALSE
     } else {
       try.generate.report = TRUE
@@ -10,9 +10,6 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     try.generate.report = FALSE
   }
   if (try.generate.report == TRUE) {
-    outputfolder = unlist(strsplit(metadatadir,"/output_"))[2]
-    outputfolder = paste("/output_",outputfolder,sep="")
-    path1 = unlist(strsplit(metadatadir,"/output"))[1]
     if (maxdur != 0) {
       durplot = maxdur
     } else {
@@ -20,13 +17,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     }
     #---------------------------------
     # Specifying directories with meta-data and extracting filenames 
-    path = paste(path1,outputfolder,"/meta/basic/",sep="")  #values stored per long epoch, e.g. 15 minutes
+    path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
     fnames = dir(path)
-
     if (f1 > length(fnames)) f1 = length(fnames)
     # create output folders
     ms2.out = "/meta/ms2.out"
-    fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
+    fnames.ms2 = dir(paste0(metadatadir,ms2.out))
     
     #---------------------------------
     # house keeping variables
@@ -38,14 +34,14 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
-      cat(paste(" ",i,sep=""))
+      cat(paste0(" ",i))
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
         dev.off()
       }
       if (pdfpagecount == 1) {
-        pdf(paste(path1,outputfolder,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf",sep=""),width=7,height=7)
+        pdf(paste0(metadatadir,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf"),width=7,height=7)
       }
       M = c()
       fname2read =paste0(path,fnames[i])
@@ -181,12 +177,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       #---------------------------------------------------------------
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
         #store matrix temporarily to keep track of process
-        write.csv(SUMMARY,paste(path1,outputfolder,"/results/part2_summary.csv",sep=""),row.names=F)
-        write.csv(daySUMMARY,paste(path1,outputfolder,"/results/part2_daysummary.csv",sep=""),row.names=F)
+        write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
+        write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
         if (length(selectdaysfile) > 0) {
-          write.csv(winSUMMARY,paste(path1,outputfolder,"/results/part2_windowsummary.csv",sep=""),row.names=F)
+          write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
         }
-        write.csv(QCout,paste(path1,outputfolder,"/results/QC/data_quality_report.csv",sep=""),row.names=F)
+        write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
       }
       pdfpagecount = pdfpagecount + 1
     }
@@ -198,13 +194,13 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     #----------------------------------------------------
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
-    write.csv(SUMMARY,paste(path1,outputfolder,"/results/part2_summary.csv",sep=""),row.names=F)
-    write.csv(daySUMMARY,paste(path1,outputfolder,"/results/part2_daysummary.csv",sep=""),row.names=F)
+    write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
+    write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
     if (length(selectdaysfile) > 0) {
-      write.csv(winSUMMARY,paste(path1,outputfolder,"/results/part2_windowsummary.csv",sep=""),row.names=F)
+      write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
     }
-    write.csv(QCout,paste(path1,outputfolder,"/results/QC/data_quality_report.csv",sep=""),row.names=F)
+    write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
     SI = sessionInfo()
-    save(SI,file=paste(path1,outputfolder,"/results/QC/sessioninfo_part2.RData",sep=""))
+    save(SI,file=paste0(metadatadir,"/results/QC/sessioninfo_part2.RData"))
   }
 }
