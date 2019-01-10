@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.8-0 (release date:09-01-2019)}{
+\section{Changes in version 1.8-0 (release date:10-01-2019)}{
 \itemize{
   \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
   \item Fixed bug for Actigraph csv header recognition when column 2 and 3 are NA (prevented processing before)
