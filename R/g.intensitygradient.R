@@ -7,8 +7,6 @@ g.intensitygradient = function(x,y) {
   y_intercept = NA
   gradient = NA
   rsquared = NA
-  print(length(which(is.na(lx) == FALSE)))
-  print(length(which(is.na(ly) == FALSE)))
   if (length(which(is.na(lx) == FALSE)) > 1 & length(which(is.na(ly) == FALSE)) > 1) {
     if (sd(lx,na.rm = TRUE) != 0 & sd(ly,na.rm = TRUE) != 0) {
       fitsum = summary(stats::lm(ly ~ lx))
