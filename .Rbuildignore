@@ -4,3 +4,4 @@
 .zenodo.json
 CITATION.cff
 buildignore
+prepareNewRelease.R
