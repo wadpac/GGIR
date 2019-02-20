@@ -155,7 +155,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         rm(sib.cla.sum)
         def = unique(S$definition)
         cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
-        
         if (length(cut) > 0) S = S[-cut,]
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)        
           #========================================================
@@ -373,7 +372,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       rm(ms5rawlevels)
                     }
                   }
-                  
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
                   # we want there to be one more nights in the accelerometer data than there are nights with sleep results
@@ -815,7 +813,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         }
         output = data.frame(dsummary,stringsAsFactors=FALSE)
         names(output) = ds_names
-        
         # This is not a good solution anymore: If excludefirstlast == TRUE then part4 does not generate sleep estimates for the first and last night,
         # therefore, part5 will also mis waking up time for the second and the beforelast day.
         # So, I think if we want to facilitate that the first and last day are excluded in part5 then this will have to be handled

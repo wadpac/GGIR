@@ -123,7 +123,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (length(fnames) == 0) {
     cat("\nNo files to analyse")
   }
-  filelocationkey = matrix("",length(fnames),3)
+  # filelocationkey = matrix("",length(fnames),3)
   fnames = sort(fnames)
   for (j in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
     if (print.filename == TRUE) {
@@ -139,7 +139,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     #by comparing filename to read with list of processed files
     fnames_without = as.character(unlist(strsplit(as.character(fnames[j]),".csv"))[1])
     # create list of both file name and full directory
-    filelocationkey[j,1] = fnames_without
+    # filelocationkey[j,1] = fnames_without
     #remove / if it was a list
     fnames_without2 = fnames_without
     teimp = unlist(strsplit(as.character(fnames_without),"/"))
@@ -296,11 +296,11 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
       rm(M); rm(I); rm(C)
     }
-    if(length(filelocationkey) > 0) {
-      filelocationkey[,3] = datadir[j]
-      filelocationkey = rbind(c("Filename with full path","Filename","data directory"),filelocationkey)
-      write.csv(filelocationkey,paste(path3,"/results/QC/filelocationkey.csv",sep=""),row.names=FALSE)
-    }
+    # if(length(filelocationkey) > 0) {
+    #   filelocationkey[,3] = datadir[j]
+    #   filelocationkey = rbind(c("Filename with full path","Filename","data directory"),filelocationkey)
+    #   write.csv(filelocationkey,paste(path3,"/results/QC/filelocationkey.csv",sep=""),row.names=FALSE)
+    # }
     closeAllConnections()
   }
 }
