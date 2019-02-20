@@ -200,7 +200,8 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
     }
     write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
-    SI = sessionInfo()
-    save(SI,file=paste0(metadatadir,"/results/QC/sessioninfo_part2.RData"))
+    # this code is now part of g.part4
+    # SI = sessionInfo()
+    # save(SI,file=paste0(metadatadir,"/results/QC/sessioninfo_part2.RData"))
   }
 }
