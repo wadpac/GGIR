@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.8-2 (release date:20-02-2019)}{
+\itemize{
+  \item functionality storefilestructure should now store filestructure in output of part 2, 4 and 5.
+  \item filelocationkey.csv that was previously written by storefilestructure was redundant and removed.
+  }
+}
 \section{Changes in version 1.8-1 (release date:11-01-2019)}{
 \itemize{
   \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
