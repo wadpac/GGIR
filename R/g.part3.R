@@ -81,7 +81,18 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
       }
     }
   }
-  SI = sessionInfo()
-  
-  save(SI,file=paste(metadatadir,"/results/QC/sessioninfo_part3.RData",sep=""))
+  # SI = sessionInfo()
+  # save(SI,file=paste(metadatadir,"/results/QC/sessioninfo_part3.RData",sep=""))
+  SI = sessionInfo() 
+  sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part3.RData",sep="")
+  if (file.exists(sessionInfoFile)) {
+    FI = file.info(sessionInfoFile)
+    timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
+    # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
+    if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
+      save(SI,file=sessionInfoFile)
+    }
+  } else {
+    save(SI,file=sessionInfoFile)
+  }
 }
