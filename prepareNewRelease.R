@@ -6,6 +6,7 @@ prepareNewRelease = function(version = c()) {
   # mistakes via messages in the console.
   # The function is not part of the package on CRAN, because it's name is
   # listed in the .RBuildignore file.
+  # Argument version: a character specifying the expected version number, e.g. "1.8-1"
   date = unlist(strsplit(as.character(Sys.time())," "))[1]
   dateReversed = unlist(strsplit(date,"-"))
   dateReversed = paste0(dateReversed[3],"-",dateReversed[2],"-",dateReversed[1])
