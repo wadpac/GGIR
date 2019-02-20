@@ -316,7 +316,8 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         }
       }
     }  
-    SI = sessionInfo() 
-    save(SI,file=paste(resultfolder,"/results/QC/sessioninfo_part4.RData",sep=""))
+    # this code is now part of g.part4
+    # SI = sessionInfo() 
+    # save(SI,file=paste(resultfolder,"/results/QC/sessioninfo_part4.RData",sep=""))
   }
 }
