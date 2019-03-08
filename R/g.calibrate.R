@@ -168,7 +168,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           #-----------------------------------------------------
           #expand 'out' if it is expected to be too short
           if (count > (nrow(meta) - (2.5*(3600/ws4) *24))) {  
-            extension = matrix(" ",((3600/ws4) *24),ncol(meta))
+            extension = matrix(99999,((3600/ws4) *24),ncol(meta))
             meta = rbind(meta,extension)
             cat("\nvariabel meta extended\n")
           }
@@ -202,15 +202,6 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       LD = 0
     }
     meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
-    if (class(meta_temp[,2]) != "numeric" | class(meta_temp[,3]) != "numeric" | class(meta_temp[,4]) != "numeric") {
-      for (xyz in 2:4) {
-        meta_temp[,xyz] = as.numeric(meta_temp[,xyz])
-        cut = c()
-        cut = which(is.na(meta_temp[,xyz]) == TRUE | meta_temp[,xyz] == 99999)
-        if (length(cut) > 0) meta_temp = meta_temp[-cut,]
-      }
-      
-    }
     cut = which(meta_temp[,1] == 99999)
     if (length(cut) > 0) {
       meta_temp = meta_temp[-cut,]
