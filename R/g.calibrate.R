@@ -201,14 +201,23 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     if (switchoffLD == 1) {
       LD = 0
     }
-    meta_temp = data.frame(V = meta)
+    meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
+    if (class(meta_temp[,2]) != "numeric" | class(meta_temp[,3]) != "numeric" | class(meta_temp[,4]) != "numeric") {
+      for (xyz in 2:4) {
+        meta_temp[,xyz] = as.numeric(meta_temp[,xyz])
+        cut = c()
+        cut = which(is.na(meta_temp[,xyz]) == TRUE | meta_temp[,xyz] == 99999)
+        if (length(cut) > 0) meta_temp = meta_temp[-cut,]
+      }
+      
+    }
     cut = which(meta_temp[,1] == 99999)
     if (length(cut) > 0) {
-      meta_temp = as.matrix(meta_temp[-cut,])
+      meta_temp = meta_temp[-cut,]
     }
     nhoursused = (nrow(meta_temp) * 10)/3600
     if (nrow(meta_temp) > (minloadcrit-21)) {  # enough data for the sphere?
-      meta_temp = as.matrix(meta_temp[-1,])
+      meta_temp = meta_temp[-1,]
       #select parts with no movement
       if (mon == 1) {
         sdcriter = 0.013 #0.003 (changed, because seemed to be too critical)
@@ -222,9 +231,9 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
                            abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
-      meta_temp = as.matrix(meta_temp[nomovement,])
+      meta_temp = meta_temp[nomovement,]
       if (min(dim(meta_temp)) > 1) {
-        meta_temp = as.matrix(meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),])
+        meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)
         cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)			
         cal.error.start = mean(abs(cal.error.start - 1))
@@ -271,7 +280,14 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       maxiter = 1000
       tol = 1e-10
       for (iter in 1:maxiter) {
-        curr = scale(input, center = -offset, scale = 1/scale) + scale(inputtemp, center = F, scale = 1/tempoffset)
+        curr = c()
+        try(expr={curr = scale(input, center = -offset, scale = 1/scale) +
+          scale(inputtemp, center = F, scale = 1/tempoffset)},silent=TRUE)
+        if (length(curr) == 0) {
+          # set coefficients to default, because it did not work.
+          cat("\nObject curr has length zero.")
+          break 
+        }
         closestpoint = curr/ sqrt(rowSums(curr^2))
         k = 1
         offsetch = rep(0, ncol(input))
