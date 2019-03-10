@@ -1,11 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.8-2 (release date:20-02-2019)}{
+\section{Changes in version 1.8-2 (release date:10-03-2019)}{
 \itemize{
   \item functionality storefilestructure should now store filestructure in output of part 2, 4 and 5.
   \item filelocationkey.csv that was previously written by storefilestructure was redundant and removed.
   \item sessioninfo storage improved.
+  \item person level aggregation by g.part5 now excludes days with day or night time duration of zero.
   }
 }
 \section{Changes in version 1.8-1 (release date:11-01-2019)}{
