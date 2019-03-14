@@ -387,16 +387,19 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       # Ignore qwindow values that are not possible for this day
       LENVAL_hours = length(val)/ (60*(60/ws3)) #11.2
       if (length(which(LENVAL_hours %in% 23:25 == TRUE)) == 0) {
-        # if (di == 1) { # turned off on June 5 2018 because first and last day are imputed
-        #   hours2delta = 24 - LENVAL_hours
-        #   qw_select = which(qwindow > hours2delta)
-        #   if(qw_select[1] > 1) qw_select = c(qw_select[1] - 1,qw_select)
-        #   qwindow = qwindow[qw_select]
-        #   qwindowindices = qwindow - hours2delta # - LENVAL_hours # because 1 is now different
-        #   if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
-        # } else if (di == ndays) {
-        qwindowindices = qwindow
-        # }
+        if (di == 1) { 
+          # Following 8 lines were turned off on June 5 2018 because first and last day are imputed,
+          # but urned on again on 14 March 2019 because this must have been a mistake, when the first
+          # day is half the relative start of the windows must be different.
+          hours2delta = 24 - LENVAL_hours
+          qw_select = which(qwindow > hours2delta)
+          if(qw_select[1] > 1) qw_select = c(qw_select[1] - 1,qw_select)
+          qwindow = qwindow[qw_select]
+          qwindowindices = qwindow - hours2delta # - LENVAL_hours # because 1 is now different
+          if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
+        } else if (di == ndays) {
+          qwindowindices = qwindow
+        }
       } else {
         hours2delta = 0
         qwindowindices = qwindow
