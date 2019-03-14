@@ -6,6 +6,8 @@
   \item functionality storefilestructure should now store filestructure in output of part 2, 4 and 5.
   \item filelocationkey.csv that was previously written by storefilestructure was redundant and removed.
   \item sessioninfo storage improved.
+  \item Fixed bug that cause part2 to provide incorrect window specific estimateses on first day
+  of measurement if day is incomplete (not 23, 24 or 25 hours).
   }
 }
 \section{Changes in version 1.8-1 (release date:11-01-2019)}{
