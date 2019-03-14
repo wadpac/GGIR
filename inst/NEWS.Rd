@@ -7,6 +7,10 @@
   \item filelocationkey.csv that was previously written by storefilestructure was redundant and removed.
   \item sessioninfo storage improved.
   \item person level aggregation by g.part5 now excludes days with day or night time duration of zero.
+  \item Fixed bug that cause part2 to provide incorrect window specific estimateses on first day
+  of measurement if day is incomplete (not 23, 24 or 25 hours).
+  \item Calibrate function now better able to handle files with more than a week of data, where
+  auto-calibration struggles to find enough sphere data in the first week.
   }
 }
 \section{Changes in version 1.8-1 (release date:11-01-2019)}{
