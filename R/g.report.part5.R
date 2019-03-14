@@ -195,9 +195,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 write.csv(outputfinal2[seluwi,],paste(metadatadir,"/results/part5_daysummary_",
                                                       uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",uacc_def[h4],".csv",sep=""),row.names=FALSE)
                 #------------------------------------------------------------------------------------
-                #also compute summary per person (we could modify this to also provide the weighted average)
+                #also compute summary per person
                 OF3 = outputfinal2[seluwi,]
-                # OF4 = aggregate.data.frame(OF3,by=list(OF3$filename),FUN = plain_mean) # plain average
                 agg_plainNweighted = function(df,filename="filename",daytype="daytype") {
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
@@ -269,10 +268,18 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3 = as.data.frame(OF3)
                 
                 # before processing OF3, first identify which days have enough monitor wear time
-                maxpernwnight = (1 - (includenightcrit / 24)) * 100
-                maxpernwday = (1 - (includedaycrit / 24)) * 100
-                validdaysi = which(OF3$nonwear_perc_day < maxpernwday & OF3$nonwear_perc_night < maxpernwnight &
-                                     OF3$dur_night_min > 0 &  OF3$dur_day_min > 0) # line added 10/3/2019 because missing days/nights were previously included
+                
+                getValidDayIndices = function(x, includenightcrit, includedaycrit) {
+                  maxpernwnight = (1 - (includenightcrit / 24)) * 100
+                  maxpernwday = (1 - (includedaycrit / 24)) * 100
+                  indices = which(x$nonwear_perc_day < maxpernwday &
+                                  x$nonwear_perc_night < maxpernwnight &
+                                    x$dur_night_min > 0 & x$dur_day_min > 0) # line added 10/3/2019 because missing days/nights were previously included
+                  return(indices)
+                }
+                validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit) 
+                
+                
                 # aggregate OF3 (days) to person summaries in OF4
                 OF4 = agg_plainNweighted(OF3[validdaysi,],filename="filename",day="daytype")
                 # calculate additional variables
@@ -302,9 +309,11 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
                 OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
                 # criteria is that nonwear percentage needs to be below threshold for both day and night:
-                days2keep = which(OF3tmp$nonwear_perc_day < maxpernwday &
-                                        OF3tmp$nonwear_perc_night < maxpernwnight &
-                                    OF3tmp$dur_night_min > 0 &  OF3tmp$dur_day_min > 0) # line added 10/3/2019 because missing days/nights were previously included
+                days2keep = getValidDayIndices(OF3tmp,includenightcrit, includedaycrit)
+                # days2keep = which(OF3tmp$nonwear_perc_day < maxpernwday &
+                #                         OF3tmp$nonwear_perc_night < maxpernwnight &
+                #                     (as.numeric(OF3tmp$dur_night_min) - (includenightcrit*60)) > 0 &
+                #                     (as.numeric(OF3tmp$dur_day_min) - (includedaycrit*60)) > 0) # line added 10/3/2019 because missing days/nights were previously included
                 OF3tmp$validdays[days2keep] = 1
                 # now we have a label for the valid days, we can create a new variable 
                 # in OF4 that is a count of the number of valid days
