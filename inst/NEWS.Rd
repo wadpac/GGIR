@@ -10,6 +10,7 @@
   of measurement if day is incomplete (not 23, 24 or 25 hours).
   \item Calibrate function now better able to handle files with more than a week of data, where
   auto-calibration struggles to find enough sphere data in the first week.
+  \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
   }
 }
 \section{Changes in version 1.8-1 (release date:11-01-2019)}{
