@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.9-1 (release date:31-03-2019)}{
+\itemize{
+  \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
+  }
+}
 \section{Changes in version 1.9-0 (release date:14-03-2019)}{
 \itemize{
   \item functionality storefilestructure should now store filestructure in output of part 2, 4 and 5.
