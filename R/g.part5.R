@@ -215,7 +215,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           } else {
             nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
           }
-          
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
@@ -392,6 +391,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
                       }
                     } else {
+                      startend_sleep = which(abs(diff(diur))==1)  # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
+                      nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                       plusrow = 1
                     }
                     for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)
@@ -430,6 +431,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq[2] = length(diur)
                         }
                       }
+
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
@@ -568,7 +570,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           }
                           dsummary[di, fi] = "WW"
                         }
-                        
+
                         ds_names[fi] = "window";      fi = fi + 1    
                         # keep track of threshold value
                         dsummary[di,fi] = TRLi
