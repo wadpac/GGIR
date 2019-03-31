@@ -268,84 +268,84 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3 = as.data.frame(OF3)
                 
                 # before processing OF3, first identify which days have enough monitor wear time
-                
                 getValidDayIndices = function(x, includenightcrit, includedaycrit) {
                   maxpernwnight = (1 - (includenightcrit / 24)) * 100
                   maxpernwday = (1 - (includedaycrit / 24)) * 100
                   indices = which(x$nonwear_perc_day < maxpernwday &
-                                  x$nonwear_perc_night < maxpernwnight &
+                                    x$nonwear_perc_night < maxpernwnight &
                                     x$dur_night_min > 0 & x$dur_day_min > 0) # line added 10/3/2019 because missing days/nights were previously included
                   return(indices)
                 }
                 validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit) 
                 
-                
-                # aggregate OF3 (days) to person summaries in OF4
-                OF4 = agg_plainNweighted(OF3[validdaysi,],filename="filename",day="daytype")
-                # calculate additional variables
-                OF3tmp = OF3[,c("filename","night_number","daysleeper","cleaningcode","sleeplog_used",
-                                "acc_available","nonwear_perc_day","nonwear_perc_night","daytype","dur_day_min",
-                                "dur_night_min")]
-                foo34 = function(df,aggPerIndividual,nameold,namenew,cval) {
-                  # function to help with calculating additinal variables
-                  # related to counting how many days of measurement there are
-                  # that meet a certain criteria
-                  # cval is a vector with 0 and 1, indicating whether the criteria is met
-                  # aggPerIndividual is the aggregate data (per individual)
-                  # df is the non-aggregated data (days across individuals
-                  # we want to extra the number of days per individuals that meet the
-                  # criteria in df, and make it allign with aggPerIndividual.
-                  df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
-                  mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2))
-                  mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold])
-                  aggPerIndividual = merge(aggPerIndividual,mmm2,by="filename")
-                  names(aggPerIndividual)[which(names(aggPerIndividual)=="cc")] = namenew
-                  foo34 = aggPerIndividual
+                if (length(validdaysi) >0) { # do not attempt to aggregate if there are no valid days
+                  # aggregate OF3 (days) to person summaries in OF4
+                  OF4 = agg_plainNweighted(OF3[validdaysi,],filename="filename",day="daytype")
+                  # calculate additional variables
+                  OF3tmp = OF3[,c("filename","night_number","daysleeper","cleaningcode","sleeplog_used",
+                                  "acc_available","nonwear_perc_day","nonwear_perc_night","daytype","dur_day_min",
+                                  "dur_night_min")]
+                  foo34 = function(df,aggPerIndividual,nameold,namenew,cval) {
+                    # function to help with calculating additinal variables
+                    # related to counting how many days of measurement there are
+                    # that meet a certain criteria
+                    # cval is a vector with 0 and 1, indicating whether the criteria is met
+                    # aggPerIndividual is the aggregate data (per individual)
+                    # df is the non-aggregated data (days across individuals
+                    # we want to extra the number of days per individuals that meet the
+                    # criteria in df, and make it allign with aggPerIndividual.
+                    df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
+                    mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2))
+                    mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold])
+                    aggPerIndividual = merge(aggPerIndividual,mmm2,by="filename")
+                    names(aggPerIndividual)[which(names(aggPerIndividual)=="cc")] = namenew
+                    foo34 = aggPerIndividual
+                  }
+                  # # calculate number of valid days (both night and day criteria met)
+                  OF3tmp$validdays = 0
+                  OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
+                  OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
+                  OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
+                  OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
+                  # criteria is that nonwear percentage needs to be below threshold for both day and night:
+                  days2keep = getValidDayIndices(OF3tmp,includenightcrit, includedaycrit)
+                  # days2keep = which(OF3tmp$nonwear_perc_day < maxpernwday &
+                  #                         OF3tmp$nonwear_perc_night < maxpernwnight &
+                  #                     (as.numeric(OF3tmp$dur_night_min) - (includenightcrit*60)) > 0 &
+                  #                     (as.numeric(OF3tmp$dur_day_min) - (includedaycrit*60)) > 0) # line added 10/3/2019 because missing days/nights were previously included
+                  OF3tmp$validdays[days2keep] = 1
+                  # now we have a label for the valid days, we can create a new variable 
+                  # in OF4 that is a count of the number of valid days
+                  OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
+                  # do the same for WE (weekend days):
+                  OF3tmp$validdays = 0
+                  OF3tmp$validdays[days2keep[which(OF3tmp$daytype[days2keep] == "WE")]] = 1
+                  OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
+                  # do the same for WD (weekdays):
+                  OF3tmp$validdays = 0
+                  OF3tmp$validdays[days2keep[which(OF3tmp$daytype[days2keep] == "WD")]] = 1
+                  OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1) # create variable from it
+                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
+                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
+                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
+                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
+                  
+                  OF4 = cbind(OF4[,1:4],OF4[,(ncol(OF4)-6):ncol(OF4)],OF4[,5:(ncol(OF4)-7)])
+                  nom = names(OF4)
+                  cut = which(nom == "acc_onset_ts" | nom == "acc_wake_ts" | 
+                                nom == "sleeplog_onset_ts" | nom == "sleeplog_wake_ts" | nom == "night_number"
+                              | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
+                              | nom == "sleeplog_used" | nom == "L5TIME" | nom == "M5TIME"
+                              | nom == "L10TIME" | nom == "M10TIME" | nom == "night_number" | nom == "acc_available")
+                  names(OF4)[which(names(OF4)=="weekday")] = "startday"
+                  OF4 = OF4[,-cut]
+                  OF4 = as.matrix(OF4)
+                  OF4[which(is.na(OF4) == TRUE)] = ""
+                  #-------------------------------------------------------------
+                  # store all summaries in csv files
+                  write.csv(OF4,paste(metadatadir,"/results/part5_personsummary_",
+                                      uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",uacc_def[h4],".csv",sep=""),row.names=FALSE)
                 }
-                # # calculate number of valid days (both night and day criteria met)
-                OF3tmp$validdays = 0
-                OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
-                OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
-                OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
-                OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
-                # criteria is that nonwear percentage needs to be below threshold for both day and night:
-                days2keep = getValidDayIndices(OF3tmp,includenightcrit, includedaycrit)
-                # days2keep = which(OF3tmp$nonwear_perc_day < maxpernwday &
-                #                         OF3tmp$nonwear_perc_night < maxpernwnight &
-                #                     (as.numeric(OF3tmp$dur_night_min) - (includenightcrit*60)) > 0 &
-                #                     (as.numeric(OF3tmp$dur_day_min) - (includedaycrit*60)) > 0) # line added 10/3/2019 because missing days/nights were previously included
-                OF3tmp$validdays[days2keep] = 1
-                # now we have a label for the valid days, we can create a new variable 
-                # in OF4 that is a count of the number of valid days
-                OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
-                # do the same for WE (weekend days):
-                OF3tmp$validdays = 0
-                OF3tmp$validdays[days2keep[which(OF3tmp$daytype[days2keep] == "WE")]] = 1
-                OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
-                # do the same for WD (weekdays):
-                OF3tmp$validdays = 0
-                OF3tmp$validdays[days2keep[which(OF3tmp$daytype[days2keep] == "WD")]] = 1
-                OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1) # create variable from it
-                OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
-                OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
-                OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
-                OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
-                
-                OF4 = cbind(OF4[,1:4],OF4[,(ncol(OF4)-6):ncol(OF4)],OF4[,5:(ncol(OF4)-7)])
-                nom = names(OF4)
-                cut = which(nom == "acc_onset_ts" | nom == "acc_wake_ts" | 
-                              nom == "sleeplog_onset_ts" | nom == "sleeplog_wake_ts" | nom == "night_number"
-                            | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
-                            | nom == "sleeplog_used" | nom == "L5TIME" | nom == "M5TIME"
-                            | nom == "L10TIME" | nom == "M10TIME" | nom == "night_number" | nom == "acc_available")
-                names(OF4)[which(names(OF4)=="weekday")] = "startday"
-                OF4 = OF4[,-cut]
-                OF4 = as.matrix(OF4)
-                OF4[which(is.na(OF4) == TRUE)] = ""
-                #-------------------------------------------------------------
-                # store all summaries in csv files
-                write.csv(OF4,paste(metadatadir,"/results/part5_personsummary_",
-                                    uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",uacc_def[h4],".csv",sep=""),row.names=FALSE)
               }
             }
             
