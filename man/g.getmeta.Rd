@@ -128,9 +128,9 @@ below 1 is recommended.
    see \link{g.part1}
   }
   \item{configtz}{
-  Timezone in which the accelerometer was configured. Only use this argument
-  if the timezone of configuration and timezone in which recording took place
-  are different.
+  Only functional for AX3 data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
   }
   \item{...}{
    Please ignore. Only used by the code internally when called from within
