@@ -128,7 +128,7 @@ below 1 is recommended.
    see \link{g.part1}
   }
   \item{configtz}{
-  Only functional for AX3 data at the moment. Timezone in which the accelerometer
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }
