@@ -188,7 +188,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
    6 g for GENEA and 8 g for other brands
   }
   \item{configtz}{
-  Only functional for AX3 data at the moment. Timezone in which the accelerometer
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }

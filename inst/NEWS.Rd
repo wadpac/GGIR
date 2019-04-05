@@ -5,7 +5,7 @@
 \itemize{
   \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
   \item Added functionality to work with studies where accelerometer is configured in one
-  timezone and used in other timezone. Only functional for AX3 data at the moment.
+  timezone and used in other timezone. Only functional for AX3 cwa data at the moment.
   }
 }
 \section{Changes in version 1.9-0 (release date:14-03-2019)}{
