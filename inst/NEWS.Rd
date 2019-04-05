@@ -4,6 +4,8 @@
 \section{Changes in version 1.9-1 (release date:31-03-2019)}{
 \itemize{
   \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
+  \item Added functionality to work with studies where accelerometer is configured in one
+  timezone and used in other timezone. Only functional for AX3 data at the moment.
   }
 }
 \section{Changes in version 1.9-0 (release date:14-03-2019)}{

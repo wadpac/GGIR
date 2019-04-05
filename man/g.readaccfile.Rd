@@ -52,9 +52,9 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   Output from the function \link{g.inspectfile}.
   }
   \item{configtz}{
-  Timezone in which the accelerometer was configured. Only use this argument
-  if the timezone of configuration and timezone in which recording took place
-  are different.
+  Only functional for AX3 data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
   }
 
 }
