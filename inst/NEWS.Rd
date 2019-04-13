@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-1 (release date:31-03-2019)}{
+\section{Changes in version 1.9-1 (release date:13-04-2019)}{
 \itemize{
   \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
   \item Added functionality to work with studies where accelerometer is configured in one
