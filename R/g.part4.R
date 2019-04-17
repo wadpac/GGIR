@@ -195,7 +195,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
           letter = apply(as.matrix(accid),MARGIN=c(1),FUN=getLastCharacterValue)
           for (h in 1:length(accid)) {
-            accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
+            options(warn=-1)
+            numletter = as.numeric(letter[h])
+            options(warn=0)
+            if (is.na(numletter) == TRUE) { # do not remove latest character if it is a number
+              accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
+            }
           } 
           accid = as.numeric(accid)
           #catch for files with only id in filename and for whom the above attempt to extract the id failed:
@@ -219,7 +224,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               } else {
                 cat(paste0("\nWarning: sleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
                            code expects format: ",as.character(accid[1])))
-                
               }
             }
           } else {
