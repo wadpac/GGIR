@@ -108,6 +108,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
     if (mon == 3) {
       options(warn=-1)
       topline = as.matrix(colnames(as.matrix(read.csv(datafile,nrow=1,skip=0))))
+      topline = topline[1]  #To avoid dots
       options(warn=0)
       B1 = length(unlist(strsplit(topline,"MM[.]dd[.]yyyy")))
       B2 = length(unlist(strsplit(topline,"M[.]d[.]yyyy")))
