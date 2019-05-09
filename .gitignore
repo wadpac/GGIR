@@ -6,3 +6,5 @@
 *.dll
 *.RData
 *.Rd2pdf*
+doc
+Meta
