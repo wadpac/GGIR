@@ -18,16 +18,28 @@ read.myacc.csv = function(file=c(), nrow=c(),  dec=c(),
   } else {
     # extract header information
     # ...
+    header_tmp = as.data.frame(data.table::fread(file,nrow = firstraw.acc-1, skip=firstrow.header-1,
+                                                  dec=dec, showProgress = FALSE, header = FALSE))
+    colnames(header_tmp) = NULL
+    validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
+    header_tmp = header_tmp[validrows,1:2]
+    header_tmp2 = as.data.frame(header_tmp[,2])
+    
+    row.names(header_tmp2) = header_tmp[,1]
+    colnames(header_tmp2) = NULL
+    header = header_tmp2
+    skip = firstraw.acc-1
+    freadheader = TRUE
   }
   P = as.data.frame(data.table::fread(file,nrow = nrow, skip=skip,
                         dec=dec, showProgress = FALSE, header = freadheader))
   P = P[,c(col.time,col.acc,col.temp)]
   if (length(col.time) > 0 & length(col.temp) > 0) {
     colnames(P) = c("timestamp","accx","accy","accz","temperature")
-    P$timestamp = as.POSIXlt(P[,col.time], origin=origin,tz = desiredtz)
+    P$timestamp = as.POSIXlt(P$timestamp, origin=origin,tz = desiredtz)
   } else if (length(col.time) > 0 & length(col.temp) == 0) {
     colnames(P) = c("timestamp","accx","accy","accz")
-    P$timestamp = as.POSIXlt(P[,col.time], origin=origin,tz = desiredtz)
+    P$timestamp = as.POSIXlt(P$timestamp, origin=origin,tz = desiredtz)
   } else if (length(col.time) == 0 & length(col.temp) > 0) {
     colnames(P) = c("accx","accy","accz","temperature")
   } else if (length(col.time) == 0 & length(col.temp) == 0) {
