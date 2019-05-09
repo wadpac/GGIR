@@ -5,3 +5,5 @@
 CITATION.cff
 buildignore
 prepareNewRelease.R
+^doc$
+^Meta$
