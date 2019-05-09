@@ -90,8 +90,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.9-0\cr
-Date: \tab 2019-03-14\cr
+Version: \tab 1.9-1\cr
+Date: \tab 2019-05-08\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
