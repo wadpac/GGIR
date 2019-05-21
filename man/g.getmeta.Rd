@@ -25,7 +25,7 @@ do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
 do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
 do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,
 meantempcal=c(),chunksize=c(),
-selectdaysfile=c(),dayborder=0,dynrange=c(),...)
+selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -126,6 +126,11 @@ below 1 is recommended.
   }
   \item{dynrange}{
    see \link{g.part1}
+  }
+  \item{configtz}{
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
   }
   \item{...}{
    Please ignore. Only used by the code internally when called from within

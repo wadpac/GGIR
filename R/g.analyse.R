@@ -200,7 +200,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         }
         qlevels_names = c(qlevels_names,qlevels_namestmp)
         #--------------------------------------
-        #M5L5
+        #M5L5 - (Note: averageday is relative to starttime of measurement, but so is firstmidnighti (index of midnights), so M5L5 are correct)
         avday = averageday[,quani]
         avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
         
