@@ -414,7 +414,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
                              blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr={P = read.myacc.csv(rmc.file=filename, rmc.nrow=5,
+    try(expr={P = read.myacc.csv(rmc.file=filename, 
                                  rmc.nrow=deltapage, rmc.skip=startpage,
                                  rmc.dec=rmc.dec,
                                  rmc.firstrow.acc = rmc.firstrow.acc, 

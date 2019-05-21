@@ -7,7 +7,7 @@
   Loads csv files with accelerometer data and helps with standardising the format (incl. unit of measurement, timestamp format, header format, and column locations) to make the data compatible with other GGIR functions.
 }
 \usage{
-  read.myacc.csv(rmc.file=c(), rmc.nrow=c(),  rmc.dec=".",
+  read.myacc.csv(rmc.file=c(), rmc.nrow=c(), rmc.skip = c(), rmc.dec=".",
                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), 
@@ -28,13 +28,16 @@
 }
 \arguments{
   \item{rmc.file}{
-    Filename
+    Filename of file to be read.
   }
   \item{rmc.nrow}{
-    Number of rows to read
+    Number of rows to read, same as nrow argument in read.csv and in fread.
+  }
+  \item{rmc.skip}{
+    Number of rows to skip, same as skip argument in read.csv and in fread.
   }
   \item{rmc.dec}{
-    Decimal used for numbers
+    Decimal used for numbers, same as skip argument in read.csv and in fread.
   }
   \item{rmc.firstrow.acc}{
     First row (number) of the acceleration data.
