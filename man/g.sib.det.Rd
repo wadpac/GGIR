@@ -8,9 +8,9 @@
   for direct use by package user
 }
 \usage{
-  g.sib.det(M,IMP,I,twd=c(-12,12),anglethreshold = 5, 
-                     timethreshold = c(5,10), acc.metric = "ENMO",
-                     desiredtz="Europe/London",constrain2range=TRUE)
+  g.sib.det(M, IMP, I, twd=c(-12,12), anglethreshold = 5, 
+              timethreshold = c(5,10), acc.metric = "ENMO",
+              desiredtz="Europe/London", constrain2range=TRUE)
 }
 \arguments{
   \item{M}{
@@ -33,8 +33,9 @@
     See \link{g.part3}
   }
   \item{acc.metric}{
-    Which one of the metrics do you want to consider to analyze L5. The metric of
-    interest need to be calculated in M (see \link{g.part1})
+    Which one of the metrics do you want to consider to analyze L5. 
+    The metric of interest need to be calculated in
+    M (see \link{g.part1})
   }
   \item{desiredtz}{
     See \link{g.part3}
@@ -52,5 +53,5 @@
 }
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <vincentvanhees@gmail.com>
 }
