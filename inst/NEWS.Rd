@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.9-2 (release date:21-05-2019)}{
+\itemize{
+  \item Sleep skipped if a day only has one sustained inactivity bout
+  }
+}
 \section{Changes in version 1.9-1 (release date:08-05-2019)}{
 \itemize{
   \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
