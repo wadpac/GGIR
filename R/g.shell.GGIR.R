@@ -61,7 +61,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   # obtain default parameter values if not provided:
   if (length(which(ls() == "selectdaysfile")) == 0)  selectdaysfile = c()
   if (length(which(ls() == "diaryfile")) == 0)  diaryfile = c()
-  
+
   if (length(which(ls() == "overwrite")) == 0)  overwrite = FALSE
   if (length(which(ls() == "strategy")) == 0)  strategy = 1
   if (length(which(ls() == "maxdur")) == 0)  maxdur = 7
@@ -77,6 +77,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "windowsizes")) == 0)  windowsizes = c(5,900,3600)
   if (length(which(ls() == "minloadcrit")) == 0)  minloadcrit = 72
   if (length(which(ls() == "desiredtz")) == 0)  desiredtz = "Europe/London"
+  if (length(which(ls() == "configtz")) == 0)  configtz = c()
   if (length(which(ls() == "chunksize")) == 0)  chunksize = 1
   if (length(which(ls() == "do.enmo")) == 0)  do.enmo = TRUE
   if (length(which(ls() == "do.lfenmo")) == 0)  do.lfenmo = FALSE
@@ -137,7 +138,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "acc.metric")) == 0) acc.metric = "ENMO"
   if (length(which(ls() == "constrain2range")) == 0) constrain2range = TRUE
   if (length(which(ls() == "do.part3.pdf")) == 0) do.part3.pdf = TRUE
-  
+
   # # specific for part 5
   if (length(which(ls() == "boutcriter.in")) == 0)  boutcriter.in = 0.9
   if (length(which(ls() == "boutcriter.lig")) == 0)  boutcriter.lig = 0.8
@@ -157,7 +158,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
-  
+
   # Related to (r)ead (m)yacc (c)sv file:
   if (length(which(ls() == "rmc.file")) == 0) rmc.file=c()
   if (length(which(ls() == "rmc.nrow")) == 0) rmc.nrow=c()
@@ -183,7 +184,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
-  
+
   cat("\n   Help sustain GGIR into the future \n")
   cat("   Check out: https://www.movementdata.nl/how-to-help-sustain-ggir \n")
   cat("   for more information. \n")
@@ -217,7 +218,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             rmc.header.length = rmc.header.length,
             rmc.col.acc = rmc.col.acc,
             rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-            rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp, 
+            rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
             rmc.unit.time = rmc.unit.time,
             rmc.format.time = rmc.format.time,
             rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
@@ -228,14 +229,14 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             rmc.headername.deviceserialnumber = rmc.headername.deviceserialnumber,
             rmc.headername.recordingid = rmc.headername.deviceserialnumber,
             rmc.header.structure = rmc.header.structure,
-            rmc.check4timegaps = rmc.check4timegaps)
+            rmc.check4timegaps = rmc.check4timegaps, configtz=configtz)
   }
   if (dopart2 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 2\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
-    g.part2(datadir =datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy = strategy, 
+    g.part2(datadir =datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy = strategy,
             hrs.del.start = hrs.del.start,hrs.del.end = hrs.del.end,
             maxdur =  maxdur, includedaycrit = includedaycrit,
             L5M5window = L5M5window, M5L5res = M5L5res, winhr = winhr,
@@ -277,7 +278,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     cat("\nPart 5\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
     g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
-            hrs.del.start=hrs.del.start, 
+            hrs.del.start=hrs.del.start,
             hrs.del.end=hrs.del.end,
             loglocation=loglocation,excludefirstlast.part5=excludefirstlast.part5, acc.metric=acc.metric,
             windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
@@ -291,7 +292,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             winhr = winhr,M5L5res = M5L5res,
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,save_ms5rawlevels = save_ms5rawlevels)
   }
-  
+
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
@@ -302,13 +303,13 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
       cat("before you can use argument visualreport or create a report for part 4\n")
       stop()
     }
-  }  
-  # if (visualreport==TRUE & length(do.report) == 0) { 
+  }
+  # if (visualreport==TRUE & length(do.report) == 0) {
   #   if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
   #   } else {
   #     do.report=c(2,4) #visual report is impossible without creating quantitative reports first
   #   }
-  # }  
+  # }
   if (length(which(do.report == 2)) > 0) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))

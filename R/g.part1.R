@@ -10,11 +10,12 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,dynrange=c(),
+                   configtz = c(),
                    rmc.nrow=c(), rmc.dec=".",
                    rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                    rmc.header.length = c(),
                    rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
-                   rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                   rmc.unit.acc = "g", rmc.unit.temp = "C",
                    rmc.unit.time = "POSIX",
                    rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                    rmc.bitrate = c(), rmc.dynamic_range = c(),
@@ -26,17 +27,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    rmc.headername.recordingid = c(),
                    rmc.header.structure = c(),
                    rmc.check4timegaps = FALSE) {
-  #get input variables
-  input = list(...)
-  if (length(input) > 0) {
-    for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
-      if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
-      }
-      eval(parse(text=txt))
-    }
-  }
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       cat("\nVariable datadir is not defined")
@@ -80,7 +70,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     dir.create(file.path(outputdir,paste(outputfolder,"/results",sep=""),"QC"))
   }
   path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
-  use.temp = TRUE; 
+  use.temp = TRUE;
   daylimit = FALSE
 
   #=================================================================
@@ -93,7 +83,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
 #     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
 #     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
 #   } else { #multiple files
-#     filelist = TRUE    
+#     filelist = TRUE
 #   }
   if (filelist == FALSE) {
     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
@@ -135,12 +125,12 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste(outputdir,outputfolder,"/meta/basic",sep=""))
-  
+
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
       tmp2 = unlist(strsplit(tmp[1],"meta_"))
-      ffdone[ij] = tmp2[2] 
+      ffdone[ij] = tmp2[2]
     }
   } else {
     ffdone = c()
@@ -186,7 +176,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       for (index in 1:length(ffdone)) {
         ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
       }
-      if (length(which(ffdone_without == fnames_without)) > 0) { 
+      if (length(which(ffdone_without == fnames_without)) > 0) {
         skip = 1 #skip this file because it was analysed before")
       } else {
         skip = 0 #do not skip this file
@@ -239,7 +229,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       if (turn.do.cal.back.on == TRUE) {
         do.cal = TRUE
       }
-      
+
       cal.error.end = C$cal.error.end
       cal.error.start = C$cal.error.start
       if (length(cal.error.start) == 0) {
@@ -263,7 +253,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       # three columns respectively named offset.x, offset.y, and offset.z
       # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
-      if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) { 
+      if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) {
         bcc.data = read.csv(backup.cal.coef)
         cat("\nTry to retrieve back-up calibration coefficients as provided by argument backup.cal.coef:\n")
         if (length(which(as.character(bcc.data$filename) == fnames[j])) > 0) {
@@ -285,7 +275,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       }
       #------------------------------------------------
       cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
-      M = g.getmeta(datafile,                  
+      M = g.getmeta(datafile,
                     do.bfen=do.bfen,
                     do.enmo=do.enmo,
                     do.lfenmo=do.lfenmo,
@@ -305,13 +295,14 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     outputdir=outputdir,
                     outputfolder=outputfolder,
                     dayborder=dayborder,dynrange=dynrange,
+<<<<<<< HEAD
                     rmc.nrow=rmc.nrow, rmc.dec=rmc.dec,
                     rmc.firstrow.acc = rmc.firstrow.acc,
                     rmc.firstrow.header = rmc.firstrow.header,
                     rmc.header.length = rmc.header.length,
                     rmc.col.acc = rmc.col.acc,
                     rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                    rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp, 
+                    rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                     rmc.unit.time = rmc.unit.time,
                     rmc.format.time = rmc.format.time,
                     rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
@@ -323,6 +314,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     rmc.headername.recordingid = rmc.headername.deviceserialnumber,
                     rmc.header.structure = rmc.header.structure,
                     rmc.check4timegaps = rmc.check4timegaps)
+=======
+                    configtz=configtz)
+>>>>>>> master
       #------------------------------------------------
       cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present
@@ -339,8 +333,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
       # SI = sessionInfo()
       # save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
-      
-      
+
+
       # as metadatdir is not known derive it:
       metadatadir = c()
       if (length(datadir) > 0) {
@@ -362,7 +356,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
       }
       if (length(metadatadir) > 0) {
-        SI = sessionInfo() 
+        SI = sessionInfo()
         sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part1.RData",sep="")
         if (file.exists(sessionInfoFile)) {
           FI = file.info(sessionInfoFile)

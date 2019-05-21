@@ -12,7 +12,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                      rmc.header.length = c(),
                      rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
-                     rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                     rmc.unit.acc = "g", rmc.unit.temp = "C",
                      rmc.unit.time = "POSIX",
                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                      rmc.bitrate = c(), rmc.dynamic_range = c(),
@@ -23,7 +23,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      rmc.headername.deviceserialnumber = c(),
                      rmc.headername.recordingid = c(),
                      rmc.header.structure = c(),
-                     rmc.check4timegaps = FALSE, ...) {
+                     rmc.check4timegaps = FALSE,
+                     dayborder=0,dynrange=c(),configtz=c(),...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -152,6 +153,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                               selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
                               dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage,
+<<<<<<< HEAD
                               inspectfileobject=INFI,
                               rmc.nrow=rmc.nrow, rmc.dec=rmc.dec,
                               rmc.firstrow.acc = rmc.firstrow.acc,
@@ -159,7 +161,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                               rmc.header.length = rmc.header.length,
                               rmc.col.acc = rmc.col.acc,
                               rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp, 
+                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                               rmc.unit.time = rmc.unit.time,
                               rmc.format.time = rmc.format.time,
                               rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
@@ -171,6 +173,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                               rmc.headername.recordingid = rmc.headername.deviceserialnumber,
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps)
+=======
+                              inspectfileobject=INFI,configtz=configtz)
+>>>>>>> master
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
