@@ -7,20 +7,28 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   sf = 30
   timestamps = as.POSIXlt(Sys.time()+((0:(N-1))/sf),origin="1970-1-1",tz = "Europe/London")
   testfile = matrix("",6,1)
+  set.seed(100)
+  accx = rnorm(N)
+  set.seed(200)
+  accy = rnorm(N)
+  set.seed(300)
+  accz = rnorm(N)
+  set.seed(400)
+  temp = rnorm(N)
   # create test file 1: No header, with temperature, with time
-  S1 = data.frame(x=rnorm(N), time=timestamps,y=rnorm(N),z=rnorm(N),temp=rnorm(N)+20)
+  S1 = data.frame(x=accx, time=timestamps,y=accy,z=accz,temp=temp+20)
   testfile[1] = "testcsv1.csv"
   write.csv(S1, file= testfile[1], row.names = FALSE)
   # create test file 2: No header, without temperature, with time
-  S2 = data.frame(x=rnorm(N), time=timestamps,y=rnorm(N),z=rnorm(N))
+  S2 = data.frame(x=accx, time=timestamps,y=accy,z=accz)
   testfile[2] = "testcsv2.csv"
   write.csv(S2, file= testfile[2], row.names = FALSE)
   # create test file 3: No header, without temperature, without time
-  S3 = data.frame(x=rnorm(N), y=rnorm(N), z=rnorm(N))
+  S3 = data.frame(x=accx, y=accy, z=accz)
   testfile[3] = "testcsv3.csv"
   write.csv(S3, file= testfile[3], row.names = FALSE)
   # create test file 4: With header, with temperature, with time
-  S4 = as.matrix(data.frame(x=rnorm(N), time=timestamps,y=rnorm(N),z=rnorm(N),temp=rnorm(N)+20))
+  S4 = as.matrix(data.frame(x=accx, time=timestamps,y=accy,z=accz,temp=temp+20))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S4))
   hd[1,1:2] = c("ID","12345")
@@ -38,10 +46,15 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   # create test file 5
   # With header, with temperature, with time, but bit-value acceleration unit
   bits = 8
+  set.seed(100)
   xb = sample(x = 1:(2^bits),size = N,replace = TRUE)
+  set.seed(200)
   yb = sample(x = 1:(2^bits),size = N,replace = TRUE)
+  set.seed(300)
   zb = sample(x = 1:(2^bits),size = N,replace = TRUE)
-  S5 = as.matrix(data.frame(x=xb, time=timestamps,y=yb, z=zb,temp=rnorm(N)+20))
+  set.seed(400)
+  temp3 = rnorm(N)
+  S5 = as.matrix(data.frame(x=xb, time=timestamps,y=yb, z=zb,temp=temp3+20))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S5))
   hd[1,1:2] = c("ID","12345")
@@ -64,8 +77,8 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   xb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
   yb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
   zb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
-  
-  S7 = as.matrix(data.frame(x=xb, time=timestamps_gap,y=yb, z=zb,temp=rnorm(N_withgap)+20))
+  temp2 = rnorm(N_withgap)
+  S7 = as.matrix(data.frame(x=xb, time=timestamps_gap,y=yb, z=zb,temp=temp2+20))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S5))
   hd[1,1:2] = c("ID","12345")
@@ -169,10 +182,11 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.headername.recordingid = "ID", 
                       rmc.bit = "bit", rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c(), rmc.check4timegaps = TRUE)
-  expect_that(nrow(D7$data),equals(170))
-  expect_that(ncol(D7$data),equals(5))
-  expect_that(nrow(D7$header),equals(5))
-  expect_that(ncol(D7$header),equals(1))
+
+  expect_that(nrow(D7$data), equals(170))
+  expect_that(ncol(D7$data), equals(5))
+  expect_that(nrow(D7$header), equals(5))
+  expect_that(ncol(D7$header), equals(1))
     
   for (i in 1:length(testfile)) {
     expect_true(file.exists(testfile[i]))
