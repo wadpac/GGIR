@@ -77,6 +77,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "windowsizes")) == 0)  windowsizes = c(5,900,3600)
   if (length(which(ls() == "minloadcrit")) == 0)  minloadcrit = 72
   if (length(which(ls() == "desiredtz")) == 0)  desiredtz = "Europe/London"
+  if (length(which(ls() == "configtz")) == 0)  configtz = c()
   if (length(which(ls() == "chunksize")) == 0)  chunksize = 1
   if (length(which(ls() == "do.enmo")) == 0)  do.enmo = TRUE
   if (length(which(ls() == "do.lfenmo")) == 0)  do.lfenmo = FALSE
@@ -178,7 +179,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
-            dynrange=dynrange)
+            dynrange=dynrange, configtz=configtz)
   }
   if (dopart2 == TRUE) {
     cat('\n')
