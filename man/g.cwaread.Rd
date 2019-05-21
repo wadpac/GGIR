@@ -7,7 +7,8 @@ Function to read .cwa-format files as produced by the accelerometer named 'Axivi
 For reading .cwa-format data, if you have .wav format data then see function \link{g.wavread}
 }
 \usage{
-g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = c())
+g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE, 
+  desiredtz = c(), configtz = c())
 }
 \arguments{
   \item{fileName}{
@@ -28,6 +29,11 @@ end point for reading data, this can either be a timestamp
 }
 \item{desiredtz}{
   Desired timezone, see documentation \link{g.getmeta}
+}
+\item{configtz}{
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
 }
 }
 \value{
