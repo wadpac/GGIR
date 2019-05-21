@@ -1,5 +1,21 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c()) {
+                         decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c(),
+                         rmc.nrow=c(), rmc.dec=".",
+                         rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                         rmc.header.length = c(),
+                         rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
+                         rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                         rmc.unit.time = "POSIX",
+                         rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                         rmc.bitrate = c(), rmc.dynamic_range = c(),
+                         rmc.unsignedbit = TRUE,
+                         rmc.origin = "1970-01-01",
+                         rmc.desiredtz = "Europe/London", rmc.samplefrequency = c(),
+                         rmc.headername.samplefrequency = c(),
+                         rmc.headername.deviceserialnumber = c(),
+                         rmc.headername.recordingid = c(),
+                         rmc.header.structure = c(),
+                         rmc.check4timegaps = FALSE) {
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -8,10 +24,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   # mon 2 = GENEACtiv
   # mon 3 = Actigraph
   # mon 4 = Axivity
+  # mon 5 = Other
   # dformat 1 = binary
   # dformat 2 = csv
   # dformat 3 = wav
   # dformat 4 = cwa
+  # dformat 5 = your own adhoc csv format
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
   switchoffLD = 0
