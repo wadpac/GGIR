@@ -192,6 +192,10 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }
+  \item{...}{
+   Any input arguments needed for function \link{read.myacc.csv} if you
+   are working with a non-standard csv formatted files.
+  }
 
 }
 \value{

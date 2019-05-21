@@ -34,6 +34,10 @@
   \item{selectdaysfile}{
     See \link{g.part1}
   }
+  \item{...}{
+   Any input arguments needed for function \link{read.myacc.csv} if you
+   are working with a non-standard csv formatted files.
+  }
 }
 \value{
   The starttime

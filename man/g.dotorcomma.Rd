@@ -25,6 +25,10 @@ g.dotorcomma(inputfile,dformat,mon, desiredtz = c(), ...)
   \item{desiredtz}{
   Desired timezone, see documentation \link{g.getmeta}
   }
+  \item{...}{
+   Any input arguments needed for function \link{read.myacc.csv} if you
+   are working with a non-standard csv formatted files.
+  }
   
 }
 \value{

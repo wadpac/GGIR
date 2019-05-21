@@ -210,7 +210,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             overwrite=overwrite, backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile, dayborder=dayborder,
             dynrange=dynrange,
-            rmc.nrow=rmc.nrow, rmc.dec=rmc.dec,
+            rmc.dec=rmc.dec,
             rmc.firstrow.acc = rmc.firstrow.acc,
             rmc.firstrow.header = rmc.firstrow.header,
             rmc.header.length = rmc.header.length,
