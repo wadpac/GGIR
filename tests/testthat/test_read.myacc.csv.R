@@ -6,7 +6,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   N = 30
   sf = 30
   timestamps = as.POSIXlt(Sys.time()+((0:(N-1))/sf),origin="1970-1-1",tz = "Europe/London")
-  testfile = matrix("",4,1)
+  testfile = matrix("",6,1)
   # create test file 1: No header, with temperature, with time
   S1 = data.frame(x=rnorm(N), time=timestamps,y=rnorm(N),z=rnorm(N),temp=rnorm(N)+20)
   testfile[1] = "testcsv1.csv"
@@ -33,10 +33,56 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   colnames(S4) = NULL
   testfile[4] = "~/testcsv4.csv"
   write.table(S4, file= testfile[4], col.names=FALSE, row.names = FALSE)
+  
+  
+  # create test file 5
+  # With header, with temperature, with time, but bit-value acceleration unit
+  bits = 8
+  xb = sample(x = 1:(2^bits),size = N,replace = TRUE)
+  yb = sample(x = 1:(2^bits),size = N,replace = TRUE)
+  zb = sample(x = 1:(2^bits),size = N,replace = TRUE)
+  S5 = as.matrix(data.frame(x=xb, time=timestamps,y=yb, z=zb,temp=rnorm(N)+20))
+  hd_NR = 10
+  hd = matrix("",hd_NR + 1,ncol(S5))
+  hd[1,1:2] = c("ID","12345")
+  hd[2,1:2] = c("sample_rate","30")
+  hd[3,1:2] = c("serial_number","30")
+  hd[4,1:2] = c("bit","8")
+  hd[5,1:2] = c("dynamic_range","6")
+  S5 = rbind(hd,S5)
+  S5[hd_NR+1,] = colnames(S5)
+  colnames(S5) = NULL
+  testfile[5] = "~/testcsv5.csv"
+  write.table(S5, file= testfile[5], col.names=FALSE, row.names = FALSE)
+  
+  # create test file 7
+  # With header, with temperature, with time, but bit-value acceleration unit, and gap in time
+  bits = 8
+  timestamps_gap = timestamps
+  timestamps_gap[10:length(timestamps_gap)] = timestamps_gap[10:length(timestamps_gap)] + 5 # add gap of 5 seconds
+  N_withgap = length(timestamps_gap)
+  xb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
+  yb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
+  zb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
+  
+  S7 = as.matrix(data.frame(x=xb, time=timestamps_gap,y=yb, z=zb,temp=rnorm(N_withgap)+20))
+  hd_NR = 10
+  hd = matrix("",hd_NR + 1,ncol(S5))
+  hd[1,1:2] = c("ID","12345")
+  hd[2,1:2] = c("sample_rate","30")
+  hd[3,1:2] = c("serial_number","30")
+  hd[4,1:2] = c("bit","8")
+  hd[5,1:2] = c("dynamic_range","6")
+  S7 = rbind(hd,S7)
+  S7[hd_NR+1,] = colnames(S7)
+  colnames(S7) = NULL
+  testfile[6] = "~/testcsv7.csv"
+  write.table(S7, file= testfile[6], col.names=FALSE, row.names = FALSE)
+  
   #------------------------
   # Try to read each of these files
   D1 = read.myacc.csv(file=testfile[1], nrow=20, dec=".",
-                      firstraw.acc = 1, firstrow.header=c(),
+                      firstrow.acc = 1, firstrow.header=c(),
                       col.acc = c(1,3,4), col.temp = 5, col.time=2,
                       unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
                       origin = "1970-01-01",
@@ -48,7 +94,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_that(ncol(D1$data),equals(5))
   expect_that(D1$header,equals("no header"))
   D2 = read.myacc.csv(file=testfile[2], nrow=20, dec=".",
-                      firstraw.acc = 1, firstrow.header=c(),
+                      firstrow.acc = 1, firstrow.header=c(),
                       col.acc = c(1,3,4), col.temp = c(), col.time=2,
                       unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
                       origin = "1970-01-01",
@@ -60,7 +106,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_that(ncol(D2$data),equals(4))
   expect_that(D2$header,equals("no header"))
   D3 = read.myacc.csv(file=testfile[3], nrow=20, dec=".",
-                      firstraw.acc = 1, firstrow.header=c(),
+                      firstrow.acc = 1, firstrow.header=c(),
                       col.acc = 1:3, col.temp = c(), col.time=c(),
                       unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
                       origin = "1970-01-01",
@@ -72,7 +118,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_that(ncol(D3$data),equals(3))
   expect_that(D3$header,equals("no header"))
   D4 = read.myacc.csv(file=testfile[4], nrow=20, dec=".",
-                      firstraw.acc = 11, firstrow.header=1,
+                      firstrow.acc = 11, firstrow.header=1,
                       col.acc = c(1,3,4), col.temp = 5, col.time=2,
                       unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
                       origin = "1970-01-01",
@@ -80,13 +126,45 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       headername.samplefrequency = "sample_frequency",
                       headername.deviceserialnumber = "serial_number",
                       headername.recordingid = "ID")
-  
   expect_that(nrow(D4$data),equals(20))
   expect_that(ncol(D4$data),equals(5))
   expect_that(nrow(D4$header),equals(5))
   expect_that(ncol(D4$header),equals(1))
+
+  D5 = read.myacc.csv(file=testfile[5], nrow=20, dec=".",
+                      firstrow.acc = 11, firstrow.header=1,
+                      col.acc = c(1,3,4), col.temp = 5, col.time=2,
+                      unit.acc = "bit", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
+                      origin = "1970-01-01",
+                      desiredtz = "Europe/London", samplefrequency = 100,
+                      headername.samplefrequency = "sample_rate",
+                      headername.deviceserialnumber = "serial_number",
+                      headername.recordingid = "ID", bit = "bit", dynamic_range = "dynamic_range",
+                      header.structure = c())
+  expect_that(nrow(D5$data),equals(20))
+  expect_that(ncol(D5$data),equals(5))
+  expect_that(nrow(D5$header),equals(5))
+  expect_that(ncol(D5$header),equals(1))
   
+  D7 = read.myacc.csv(file=testfile[6], nrow=20, dec=".",
+                      firstrow.acc = 11, firstrow.header=1,
+                      col.acc = c(1,3,4), col.temp = 5, col.time=2,
+                      unit.acc = "bit", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
+                      origin = "1970-01-01",
+                      desiredtz = "Europe/London", samplefrequency = 100,
+                      headername.samplefrequency = "sample_rate",
+                      headername.deviceserialnumber = "serial_number",
+                      headername.recordingid = "ID", bit = "bit", dynamic_range = "dynamic_range",
+                      header.structure = c(), check4timegaps = TRUE)
+  expect_that(nrow(D7$data),equals(170))
+  expect_that(ncol(D7$data),equals(5))
+  expect_that(nrow(D7$header),equals(5))
+  expect_that(ncol(D7$header),equals(1))
+    
   for (i in 1:length(testfile)) {
+    print(paste0("\n",i))
+    print("\n")
+    print(testfile[i])
     expect_true(file.exists(testfile[i]))
     if (file.exists(testfile[i])) file.remove(testfile[i])
   }
