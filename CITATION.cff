@@ -53,5 +53,5 @@ license: "LGPL-2.0-only"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/wadpac/GGIR"
 title: GGIR
-version: "1.9-1"
+version: "1.9-2"
 ...
