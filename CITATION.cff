@@ -1,7 +1,7 @@
 # YAML 1.2
 ---
 abstract: "Converts raw data from wearables into insightful reports for researchers investigating human daily physical activity and sleep."
-authors: 
+authors:
   -
     affiliation: "Netherlands eScience Center"
     family-names: Hees
@@ -43,7 +43,7 @@ authors:
 cff-version: "1.0.3"
 date-released: 2019-05-21
 doi: "10.5281/zenodo.1051064"
-keywords: 
+keywords:
   - "activity tracker"
   - health
   - fitness
