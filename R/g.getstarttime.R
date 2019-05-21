@@ -1,4 +1,4 @@
-g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile) {
+g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile, ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   if (length(input) > 0) {

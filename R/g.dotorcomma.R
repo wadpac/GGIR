@@ -36,7 +36,7 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c(), ...) {
   if (length(rmc.firstrow.acc) == 1) {
     dformat = 5
     mon = 5
-    Pusercsvformat = read.myacc.csv(rmc.file=filename, rmc.nrow=5, rmc.dec=rmc.dec,
+    Pusercsvformat = read.myacc.csv(rmc.file=inputfile, rmc.nrow=5, rmc.dec=rmc.dec,
                                     rmc.firstrow.acc = rmc.firstrow.acc,
                                     rmc.firstrow.header = rmc.firstrow.header,
                                     rmc.header.length = rmc.header.length,

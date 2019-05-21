@@ -56,7 +56,10 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }
-
+  \item{...}{
+   Any input arguments needed for function \link{read.myacc.csv} if you
+   are working with a non-standard csv formatted files.
+  }
 }
 \value{
 P=P,filequality=filequality, switchoffLD = switchoffLD

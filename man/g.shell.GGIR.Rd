@@ -68,7 +68,7 @@ viewingwindow=1,...)
   Centre the day as displayed around noon (value = 1) or around midnight (value = 2)
   }
   \item{...}{
-   Any input argument needed for functions g.part1, g.part2, g.part3
+   Any input arguments needed for functions g.part1, g.part2, g.part3
    or g.part4. See respective function documentation for further clarification.
   }  
 }
