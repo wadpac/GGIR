@@ -11,7 +11,7 @@ then deleted. This is needed for memory management.
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,
   selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz=c(),
-  PreviousEndPage=1,inspectfileobject=c())
+  PreviousEndPage=1,inspectfileobject=c(),configtz=c())
 }
 \arguments{
   \item{filename}{
@@ -50,6 +50,11 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   }
   \item{inspectfileobject}{
   Output from the function \link{g.inspectfile}.
+  }
+  \item{configtz}{
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
   }
 
 }
