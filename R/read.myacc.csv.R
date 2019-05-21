@@ -11,7 +11,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
                           rmc.origin = "1970-01-01",
                           rmc.desiredtz = "Europe/London", rmc.sf = c(),
                           rmc.headername.sf = c(),
-                          rmc.headername.deviceserialnumber = c(),
+                          rmc.headername.sn = c(),
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE) { # not included yet, optionally additonal columns
@@ -91,15 +91,15 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
     }
     # extract sample frequency:
     sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
-    sn = as.numeric(header[which(row.names(header) == rmc.headername.deviceserialnumber[1]),1])
+    sn = as.numeric(header[which(row.names(header) == rmc.headername.sn[1]),1])
     id = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
     
     # standardise key header names to ease use elsewhere in GGIR:
     if (length(rmc.headername.sf) > 0) {
       row.names(header)[which(row.names(header) == rmc.headername.sf[1])] = "sample_rate"
     }
-    if (length(rmc.headername.deviceserialnumber) > 0) {
-      row.names(header)[which(row.names(header) == rmc.headername.deviceserialnumber[1])] = "device_serial_number"
+    if (length(rmc.headername.sn) > 0) {
+      row.names(header)[which(row.names(header) == rmc.headername.sn[1])] = "device_serial_number"
     }
     if (length(rmc.headername.recordingid) > 0) {
       row.names(header)[which(row.names(header) == rmc.headername.recordingid[1])] = "recordingID"
