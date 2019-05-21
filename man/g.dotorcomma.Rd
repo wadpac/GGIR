@@ -9,7 +9,7 @@ The function is used by \link{g.readaccfile} to assess how numeric data
 should be interpretted
 }
 \usage{
-g.dotorcomma(inputfile,dformat,mon, desiredtz = c())
+g.dotorcomma(inputfile,dformat,mon, desiredtz = c(), ...)
 }
 \arguments{
   \item{inputfile}{

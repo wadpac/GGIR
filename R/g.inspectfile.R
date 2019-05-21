@@ -1,4 +1,39 @@
-g.inspectfile = function(datafile, desiredtz = c()) {
+g.inspectfile = function(datafile, desiredtz = c(),
+                         rmc.dec=".", ...) {
+  #get input variables (relevant when read.myacc.csv is used
+  input = list(...)
+  if (length(input) > 0) {
+    for (i in 1:length(names(input))) {
+      txt = paste(names(input)[i],"=",input[i],sep="")
+      if (class(unlist(input[i])) == "character") {
+        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+      }
+      eval(parse(text=txt))
+    }
+  }
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename=c(),datafile=c()) {
@@ -146,15 +181,41 @@ g.inspectfile = function(datafile, desiredtz = c()) {
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea","geneactive","actigraph","axivity") #monitor names
-  fornames = c("bin","csv","wav","cwa") #monitor names
+  monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
+  fornames = c("bin","csv","wav","cwa","csv") #format names
+  
+  
   if (length(filename) == 0) {
     print("no files to analyse")
   }
-  INFI = getbrand(filename,datafile)
-  mon = INFI$mon
-  dformat = INFI$dformat
-  sf = INFI$sf
+  if (length(rmc.firstrow.acc) == 1) {
+    dformat = 5
+    mon = 5
+    Pusercsvformat = read.myacc.csv(rmc.file=filename, rmc.nrow=5, rmc.dec=rmc.dec,
+                       rmc.firstrow.acc = rmc.firstrow.acc,
+                       rmc.firstrow.header = rmc.firstrow.header,
+                       rmc.header.length = rmc.header.length,
+                       rmc.col.acc = rmc.col.acc,
+                       rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                       rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                       rmc.unit.time = rmc.unit.time,
+                       rmc.format.time = rmc.format.time,
+                       rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                       rmc.unsignedbit = rmc.unsignedbit,
+                       rmc.origin = rmc.origin,
+                       rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                       rmc.headername.sf = rmc.headername.sf,
+                       rmc.headername.sn = rmc.headername.sn,
+                       rmc.headername.recordingid = rmc.headername.sn,
+                       rmc.header.structure = rmc.header.structure,
+                       rmc.check4timegaps = rmc.check4timegaps)
+    sf = Pusercsvformat$header$sample_rate
+  } else {
+    INFI = getbrand(filename,datafile)
+    mon = INFI$mon
+    dformat = INFI$dformat
+    sf = INFI$sf
+  }
   if (dformat == 1) { #binary data
     if (mon == 1) { #genea
       genea = g.binread(datafile,0,1)
@@ -213,6 +274,9 @@ g.inspectfile = function(datafile, desiredtz = c()) {
   } else if (dformat == 4) { #cwa data
     PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
+    
+  } else if (dformat == 5) { # csv data in a user-specified format
+    header = Pusercsvformat$header
   }
   
   H = as.matrix(H)
@@ -252,7 +316,7 @@ g.inspectfile = function(datafile, desiredtz = c()) {
     }
   }
   closeAllConnections()
-
+  
   RowsWithData = which(is.na(H[,1]) == FALSE)
   
   if (dformat != 4) header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])

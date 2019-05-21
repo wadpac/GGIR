@@ -32,7 +32,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,
-        dynrange=c(), configtz=c())
+        dynrange=c(), configtz=c(), ...)
 }
 \arguments{
   \item{datadir}{

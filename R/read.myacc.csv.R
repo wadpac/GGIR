@@ -1,4 +1,5 @@
 read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
+                          rmc.skip=c(),
                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
@@ -8,8 +9,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
                           rmc.bitrate = c(), rmc.dynamic_range = c(),
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
-                          rmc.desiredtz = "Europe/London", rmc.samplefrequency = c(),
-                          rmc.headername.samplefrequency = c(),
+                          rmc.desiredtz = "Europe/London", rmc.sf = c(),
+                          rmc.headername.sf = c(),
                           rmc.headername.deviceserialnumber = c(),
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
@@ -24,7 +25,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
       freadheader = FALSE
     }
     skip = rmc.firstrow.acc
-    sf = rmc.samplefrequency
+    sf = rmc.sf
     header = "no header"
   } else {
     # extract header information:
@@ -77,6 +78,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
       header = header_tmp2
     }
     skip = rmc.firstrow.acc-1
+    if (length(rmc.skip) > 0) skip = skip + rmc.skip
     freadheader = TRUE
     # assess whether accelerometer data conversion is needed
     if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
@@ -88,13 +90,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
       } 
     }
     # extract sample frequency:
-    sf = as.numeric(header[which(row.names(header) == rmc.headername.samplefrequency[1]),1])
+    sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
     sn = as.numeric(header[which(row.names(header) == rmc.headername.deviceserialnumber[1]),1])
     id = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
     
     # standardise key header names to ease use elsewhere in GGIR:
-    if (length(rmc.headername.samplefrequency) > 0) {
-      row.names(header)[which(row.names(header) == rmc.headername.samplefrequency[1])] = "sample_rate"
+    if (length(rmc.headername.sf) > 0) {
+      row.names(header)[which(row.names(header) == rmc.headername.sf[1])] = "sample_rate"
     }
     if (length(rmc.headername.deviceserialnumber) > 0) {
       row.names(header)[which(row.names(header) == rmc.headername.deviceserialnumber[1])] = "device_serial_number"
@@ -103,7 +105,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.dec=".",
       row.names(header)[which(row.names(header) == rmc.headername.recordingid[1])] = "recordingID"
     }
     if (length(sf) == 0) {
-      sf = rmc.samplefrequency # if sf not retrieved from header than use default
+      sf = rmc.sf # if sf not retrieved from header than use default
       header = rbind(header,1) # add it also to the header
       row.names(header)[nrow(header)] = "sample_rate"
     }

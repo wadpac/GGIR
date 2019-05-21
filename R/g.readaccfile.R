@@ -1,22 +1,40 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
                          decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c(),
-                         configtz=c(),
-                         rmc.nrow=c(), rmc.dec=".",
-                         rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                         rmc.header.length = c(),
-                         rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
-                         rmc.unit.acc = "g", rmc.unit.temp = "C",
-                         rmc.unit.time = "POSIX",
-                         rmc.format.time = "%Y-%m-%d %H:%M:%OS",
-                         rmc.bitrate = c(), rmc.dynamic_range = c(),
-                         rmc.unsignedbit = TRUE,
-                         rmc.origin = "1970-01-01",
-                         rmc.desiredtz = "Europe/London", rmc.samplefrequency = c(),
-                         rmc.headername.samplefrequency = c(),
-                         rmc.headername.deviceserialnumber = c(),
-                         rmc.headername.recordingid = c(),
-                         rmc.header.structure = c(),
-                         rmc.check4timegaps = FALSE) {
+                         configtz=c(), ...) {
+  #get input variables (relevant when read.myacc.csv is used
+  input = list(...)
+  if (length(input) > 0) {
+    for (i in 1:length(names(input))) {
+      txt = paste(names(input)[i],"=",input[i],sep="")
+      if (class(unlist(input[i])) == "character") {
+        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+      }
+      eval(parse(text=txt))
+    }
+  }
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -121,7 +139,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       hhr <- GENEAread::header.info(filename)
       tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
                     getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
-
+      
       if (blocknumber == nrow(tint)+1 | nrow(tint) == 0) {
         #all data read now make sure that it does not try to re-read it with mmap on
         switchoffLD = 1
@@ -390,6 +408,46 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     } else {
       P = c()
     }
+  } else if (mon == 5 & dformat == 5) { # user specified csv format
+    startpage = (100+(blocksize*300*(blocknumber-1)))
+    deltapage = (blocksize*300)
+    UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
+                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
+    startpage = UPI$startpage;    endpage = UPI$endpage
+    try(expr={P = read.myacc.csv(rmc.file=filename, rmc.nrow=5,
+                                 rmc.nrow=deltapage, rmc.skip=startpage,
+                                 rmc.dec=rmc.dec,
+                                 rmc.firstrow.acc = rmc.firstrow.acc, 
+                                 rmc.firstrow.header = rmc.firstrow.header,
+                                 rmc.header.length = rmc.header.length,
+                                 rmc.col.acc = rmc.col.acc,
+                                 rmc.col.temp = rmc.col.temp, 
+                                 rmc.col.time=rmc.col.time,
+                                 rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                                 rmc.unit.time = rmc.unit.time,
+                                 rmc.format.time = rmc.format.time,
+                                 rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                                 rmc.unsignedbit = rmc.unsignedbit,
+                                 rmc.origin = rmc.origin,
+                                 rmc.desiredtz = rmc.desiredtz, 
+                                 rmc.sf = rmc.sf,
+                                 rmc.headername.sf = rmc.headername.sf,
+                                 rmc.headername.sn = rmc.headername.sn,
+                                 rmc.headername.recordingid = rmc.headername.sn,
+                                 rmc.header.structure = rmc.header.structure,
+                                 rmc.check4timegaps = rmc.check4timegaps)
+    },silent=TRUE)
+    if (length(P) > 1) {
+      P = as.matrix(P)
+      if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
+        P = c() ; switchoffLD = 1 #added 30-6-2012
+        filequality$filetooshort = TRUE
+      }
+    } else {
+      P = c()
+    }
+    
+    
   }
   invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage))
 }

@@ -86,9 +86,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
-                      rmc.headername.samplefrequency = "sample_frequency",
-                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.headername.sf = "sample_frequency",
+                      rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
   expect_that(nrow(D1$data),equals(20))
   expect_that(ncol(D1$data),equals(5))
@@ -101,9 +101,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       rmc.desiredtz = "Europe/London", 
-                      rmc.samplefrequency = 100,
-                      rmc.headername.samplefrequency = "sample_frequency",
-                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.sf = 100,
+                      rmc.headername.sf = "sample_frequency",
+                      rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
   expect_that(nrow(D2$data),equals(20))
   expect_that(ncol(D2$data),equals(4))
@@ -115,9 +115,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.unit.acc = "g", rmc.unit.temp = "C", 
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
-                      rmc.headername.samplefrequency = "sample_frequency",
-                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.headername.sf = "sample_frequency",
+                      rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
   expect_that(nrow(D3$data),equals(20))
   expect_that(ncol(D3$data),equals(3))
@@ -129,9 +129,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       rmc.desiredtz = "Europe/London", 
-                      rmc.samplefrequency = 100,
-                      rmc.headername.samplefrequency = "sample_frequency",
-                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.sf = 100,
+                      rmc.headername.sf = "sample_frequency",
+                      rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
   expect_that(nrow(D4$data),equals(20))
   expect_that(ncol(D4$data),equals(5))
@@ -145,9 +145,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.unit.acc = "bit", rmc.unit.temp = "C", 
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
-                      rmc.headername.samplefrequency = "sample_rate",
-                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.headername.sf = "sample_rate",
+                      rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID", rmc.bit = "bit",
                       rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c())
@@ -163,9 +163,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.unit.acc = "bit", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
-                      rmc.headername.samplefrequency = "sample_rate",
-                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.headername.sf = "sample_rate",
+                      rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID", 
                       rmc.bit = "bit", rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c(), rmc.check4timegaps = TRUE)
