@@ -44,9 +44,9 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
     The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{ignorenonwear}{
-  If TRUEE then ignore detected monitor non-wear periods to avoid 
-  confusion between monitor non-wear time and sustained inactivity 
-  (default = TRUE)
+    If TRUE then ignore detected monitor non-wear periods to avoid 
+  confusion between monitor non-wear time and sustained inactivity. 
+  Set at FALSE by default, which means that we trust the imputation.
   }
   \item{overwrite}{
     Overwrite previously generated milestone data by this function for
