@@ -146,6 +146,8 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
   averageday = matrix(0,wpd,(ncol(metashort)-1))
   
   for (mi in 2:ncol(metashort)) {# generate 'average' day for each variable
+    # The average day is used for imputation and defined relative to the starttime of the measurement
+    # irrespective of dayborder as used in other parts of GGIR
     metrimp = metr = as.numeric(as.matrix(metashort[,mi]))
     is.na(metr[which(r5long == 1)]) = T #turn all values of metr to na if r5long is 1
     imp = matrix(NA,wpd,ceiling(length(metr)/wpd)) #matrix used for imputation of seconds
@@ -170,7 +172,7 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
         imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 # for those part of the data where there is no single data point for a certain part of the day (this is CRITICAL)
       }
       averageday[,(mi-1)] = imp3
-      for (j in 1:ndays) { # 1:(ndays-1)
+      for (j in 1:ndays) { 
         missing = which(is.na(imp[,j]) == T)
         if (length(missing) > 0) {
           imp[missing,j] = imp3[missing]
