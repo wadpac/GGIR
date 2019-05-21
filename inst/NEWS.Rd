@@ -6,6 +6,9 @@
   \item Added functionality to work with studies where accelerometer is configured in one
   timezone and used in other timezone. Only functional for AX3 cwa data at the moment.
   \item Sleep skipped if a day only has one sustained inactivity bout
+  \item Added functionality to handle accelerometer data from any accelerometer brand
+  stored in csv files via read.myacc.csv. Pass on the arguments of this function to
+  g.shell.GGIR to use this functionality.
   }
   }
 \section{Changes in version 1.9-1 (release date:08-05-2019)}{

@@ -4,7 +4,10 @@
   Read custom csv files with accelerometer data
 }
 \description{
-  Loads csv files with accelerometer data and helps with standardising the format (incl. unit of measurement, timestamp format, header format, and column locations) to make the data compatible with other GGIR functions.
+  Loads csv files with accelerometer data and standardises 
+  the output format (incl. unit of measurement, timestamp format,
+  header format, and column locations) to make the data compatible
+  with other GGIR functions.
 }
 \usage{
   read.myacc.csv(rmc.file=c(), rmc.nrow=c(), rmc.skip = c(), rmc.dec=".",
