@@ -9,7 +9,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,dynrange=c()) {
+                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,dynrange=c(),
+                   configtz = c()) {
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       cat("\nVariable datadir is not defined")
@@ -277,7 +278,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     selectdaysfile=selectdaysfile,
                     outputdir=outputdir,
                     outputfolder=outputfolder,
-                    dayborder=dayborder,dynrange=dynrange)
+                    dayborder=dayborder,dynrange=dynrange,
+                    configtz=configtz)
       #------------------------------------------------
       cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present

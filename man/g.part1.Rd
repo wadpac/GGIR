@@ -32,7 +32,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,
-        dynrange=c())
+        dynrange=c(), configtz=c())
 }
 \arguments{
   \item{datadir}{
@@ -186,6 +186,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{dynrange}{
    Optional, provide dynamic range for accelerometer data to overwrite hardcoded
    6 g for GENEA and 8 g for other brands
+  }
+  \item{configtz}{
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
   }
 
 }
