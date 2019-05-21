@@ -7,23 +7,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
-                     dayborder=0,dynrange=c(),
-                     rmc.nrow=c(), rmc.dec=".",
-                     rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                     rmc.header.length = c(),
-                     rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
-                     rmc.unit.acc = "g", rmc.unit.temp = "C",
-                     rmc.unit.time = "POSIX",
-                     rmc.format.time = "%Y-%m-%d %H:%M:%OS",
-                     rmc.bitrate = c(), rmc.dynamic_range = c(),
-                     rmc.unsignedbit = TRUE,
-                     rmc.origin = "1970-01-01",
-                     rmc.desiredtz = "Europe/London", rmc.samplefrequency = c(),
-                     rmc.headername.samplefrequency = c(),
-                     rmc.headername.deviceserialnumber = c(),
-                     rmc.headername.recordingid = c(),
-                     rmc.header.structure = c(),
-                     rmc.check4timegaps = FALSE,
                      dayborder=0,dynrange=c(),configtz=c(),...) {
   #get input variables
   input = list(...)
@@ -38,6 +21,28 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   }
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                     do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                     do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa)
@@ -151,11 +156,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
-                              selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage,
-<<<<<<< HEAD
-                              inspectfileobject=INFI,
-                              rmc.nrow=rmc.nrow, rmc.dec=rmc.dec,
+                              selectdaysfile = selectdaysfile,
+                              filequality=filequality,decn=decn,
+                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,
+                              PreviousEndPage=PreviousEndPage,
+                              inspectfileobject=INFI,inspectfileobject=INFI,
+                              configtz=configtz,
+                              rmc.dec=rmc.dec,
                               rmc.firstrow.acc = rmc.firstrow.acc,
                               rmc.firstrow.header = rmc.firstrow.header,
                               rmc.header.length = rmc.header.length,
@@ -167,15 +174,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                               rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
                               rmc.unsignedbit = rmc.unsignedbit,
                               rmc.origin = rmc.origin,
-                              rmc.desiredtz = rmc.desiredtz, rmc.samplefrequency = rmc.samplefrequency,
-                              rmc.headername.samplefrequency = rmc.headername.samplefrequency,
-                              rmc.headername.deviceserialnumber = rmc.headername.deviceserialnumber,
-                              rmc.headername.recordingid = rmc.headername.deviceserialnumber,
+                              rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                              rmc.headername.sf = rmc.headername.sf,
+                              rmc.headername.sn = rmc.headername.sn,
+                              rmc.headername.recordingid = rmc.headername.sn,
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps)
-=======
-                              inspectfileobject=INFI,configtz=configtz)
->>>>>>> master
+
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort

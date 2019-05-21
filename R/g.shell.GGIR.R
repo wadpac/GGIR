@@ -160,10 +160,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
 
   # Related to (r)ead (m)yacc (c)sv file:
-  if (length(which(ls() == "rmc.file")) == 0) rmc.file=c()
-  if (length(which(ls() == "rmc.nrow")) == 0) rmc.nrow=c()
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
-  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = 1
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
   if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
   if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
   if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
@@ -178,9 +176,9 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
   if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
   if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
-  if (length(which(ls() == "rmc.samplefrequency")) == 0) rmc.samplefrequency  = c()
-  if (length(which(ls() == "rmc.headername.samplefrequency")) == 0) rmc.headername.samplefrequency = c()
-  if (length(which(ls() == "rmc.headername.deviceserialnumber")) == 0) rmc.headername.deviceserialnumber = c()
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
@@ -224,10 +222,10 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
             rmc.unsignedbit = rmc.unsignedbit,
             rmc.origin = rmc.origin,
-            rmc.desiredtz = rmc.desiredtz, rmc.samplefrequency = rmc.samplefrequency,
-            rmc.headername.samplefrequency = rmc.headername.samplefrequency,
-            rmc.headername.deviceserialnumber = rmc.headername.deviceserialnumber,
-            rmc.headername.recordingid = rmc.headername.deviceserialnumber,
+            rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+            rmc.headername.sf = rmc.headername.sf,
+            rmc.headername.sn = rmc.headername.sn,
+            rmc.headername.recordingid = rmc.headername.sn,
             rmc.header.structure = rmc.header.structure,
             rmc.check4timegaps = rmc.check4timegaps, configtz=configtz)
   }

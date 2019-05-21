@@ -19,9 +19,9 @@
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
                           rmc.desiredtz = "Europe/London",
-                          rmc.samplefrequency = c(),
-                          rmc.headername.samplefrequency = c(),
-                          rmc.headername.deviceserialnumber = c(),
+                          rmc.sf = c(),
+                          rmc.headername.sf = c(),
+                          rmc.headername.sn = c(),
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE)	
@@ -95,15 +95,15 @@
     argument for the timezone in whcih the experiments took place and 
     argument configtz to specify where the device was configured (not implemented yet).
   }
-  \item{rmc.samplefrequency}{
+  \item{rmc.sf}{
     Sample rate in Hertz, if this is stored in the file header then the that will be used
     instead.
   }
-  \item{rmc.headername.samplefrequency}{
+  \item{rmc.headername.sf}{
     If file has a header: Row name (character) under which the sample
     frequency can be found.
   }
-  \item{rmc.headername.deviceserialnumber}{
+  \item{rmc.headername.sn}{
     If file has a header: Row name (character) under which the
     serial number can be found.
   }
