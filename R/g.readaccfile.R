@@ -1,5 +1,6 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c()) {
+                         decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c(),
+                         configtz=c()) {
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -264,7 +265,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                              blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr={P = g.cwaread(fileName=filename, start = startpage, # try to read block first time
-                            end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+                            end = endpage, progressBar = FALSE, desiredtz = desiredtz, 
+                            configtz = configtz)},silent=TRUE)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
@@ -282,14 +284,16 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       PtestLastPage = PtestStartPage = c()
       # try to read the last page of the block, because if it exists then there might be something wrong with the first page(s).
       try(expr={PtestLastPage = g.cwaread(fileName=filename, start = endpage, #note this is intentionally endpage
-                                          end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+                                          end = endpage, progressBar = FALSE, desiredtz = desiredtz,
+                                          configtz = configtz)},silent=TRUE)
       if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1
           startpage = startpage + NFilePagesSkipped
           try(expr={PtestStartPage = g.cwaread(fileName=filename, start = startpage , # note: end is intentionally startpage
-                                               end = startpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+                                               end = startpage, progressBar = FALSE, desiredtz = desiredtz,
+                                               configtz = configtz)},silent=TRUE)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
         cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
@@ -298,7 +302,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
         try(expr={P = g.cwaread(fileName=filename, start = startpage,
-                                end = endpage, progressBar = FALSE, desiredtz = desiredtz)},silent=TRUE)
+                                end = endpage, progressBar = FALSE, desiredtz = desiredtz,
+                                configtz = configtz)},silent=TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
