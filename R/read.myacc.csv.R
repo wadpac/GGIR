@@ -1,29 +1,31 @@
 read.myacc.csv = function(file=c(), nrow=c(),  dec=".",
-                          firstraw.acc = 1, firstrow.header=c(),
+                          firstrow.acc = 1, firstrow.header=c(),header.length = c(),
                           col.acc = 1:3, col.temp = c(), col.time=c(),
-                          unit.acc = "g", unit.temp = "C", unit.time = "POSIX", format.time = "%Y-%m-%d %H:%M:%OS",
+                          unit.acc = "g", unit.temp = "C", unit.time = "POSIX",
+                          format.time = "%Y-%m-%d %H:%M:%OS",
                           bitrate = c(), dynamic_range = c(), unsignedbit = TRUE,
                           origin = "1970-01-01",
-                          desiredtz = "Europe/London", samplefrequency = 100,
-                          headername.samplefrequency = "sample_frequency",
-                          headername.deviceserialnumber = "serial_number",
-                          headername.recordingid = "ID",
-                          header.length = c(),
-                          header.structure = c()) { # not included yet, optionally additonal columns
+                          desiredtz = "Europe/London", samplefrequency = c(),
+                          headername.samplefrequency = c(),
+                          headername.deviceserialnumber = c(),
+                          headername.recordingid = c(),
+                          header.structure = c(),
+                          check4timegaps = FALSE) { # not included yet, optionally additonal columns
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   if (length(firstrow.header) == 0) { # no header block
-    if (firstraw.acc == 2) {
+    if (firstrow.acc == 2) {
       freadheader = TRUE
     } else {
       freadheader = FALSE
     }
-    skip = firstraw.acc #- 1
+    skip = firstrow.acc
+    sf = samplefrequency
     header = "no header"
   } else {
     # extract header information:
     if (length(header.length) == 0) {
-      header.length = firstraw.acc-1
+      header.length = firstrow.acc-1
     }
     options(warn=-1) # fread complains about quote in first row for some file types
     header_tmp = as.data.frame(data.table::fread(file,nrow = header.length, skip=firstrow.header-1,
@@ -68,7 +70,7 @@ read.myacc.csv = function(file=c(), nrow=c(),  dec=".",
       colnames(header_tmp2) = NULL
       header = header_tmp2
     }
-    skip = firstraw.acc-1
+    skip = firstrow.acc-1
     freadheader = TRUE
     # assess whether accelerometer data conversion is needed
     if (length(bitrate) > 0 & length(dynamic_range) > 0 & unit.acc == "bit") {
@@ -78,6 +80,26 @@ read.myacc.csv = function(file=c(), nrow=c(),  dec=".",
       if (dynamic_range[1] == "dynamic_range") { # extract dynamic range if it is in the header
         dynamic_range = as.numeric(header[which(row.names(header) == dynamic_range[1]),1])
       } 
+    }
+    # extract sample frequency:
+    sf = as.numeric(header[which(row.names(header) == headername.samplefrequency[1]),1])
+    sn = as.numeric(header[which(row.names(header) == headername.deviceserialnumber[1]),1])
+    id = as.numeric(header[which(row.names(header) == headername.recordingid[1]),1])
+    
+    # standardise key header names to ease use elsewhere in GGIR:
+    if (length(headername.samplefrequency) > 0) {
+      row.names(header)[which(row.names(header) == headername.samplefrequency[1])] = "sample_rate"
+    }
+    if (length(headername.deviceserialnumber) > 0) {
+      row.names(header)[which(row.names(header) == headername.deviceserialnumber[1])] = "device_serial_number"
+    }
+    if (length(headername.recordingid) > 0) {
+      row.names(header)[which(row.names(header) == headername.recordingid[1])] = "recordingID"
+    }
+    if (length(sf) == 0) {
+      sf = samplefrequency # if sf not retrieved from header than use default
+      header = rbind(header,1) # add it also to the header
+      row.names(header)[nrow(header)] = "sample_rate"
     }
   }
   
@@ -139,6 +161,33 @@ read.myacc.csv = function(file=c(), nrow=c(),  dec=".",
     P$temperature = P$temperature + 272.15 # From Kelvin to Celsius
   } else if (unit.temp == "F") {
     P$temperature = (P$temperature - 32) * (5/9) # From Fahrenheit to Celsius
+  }
+  # check for jumps in time and impute
+  if (check4timegaps == TRUE) {
+    deltatime = abs(diff(P$timestamp))
+    gapsi = which(deltatime > 1) # gaps indices
+    newP = c()
+    if (length(gapsi) > 0) {
+      if (length(sf) == 0) { # estimate sample frequency if not given in header
+        sf = (P$timestamp[gapsi[jk]] - P$timestamp[1]) / (gapsi[1]-1)
+        print(sf)
+      }
+      newP = rbind(newP,P[1:gapsi[1],])
+      LG = length(gapsi)
+      for (jk in 1:LG) {
+        dt = P$timestamp[gapsi+1] - P$timestamp[gapsi] # difference in time
+        newblock = as.data.frame(matrix(0,dt*sf,ncol(P)))
+        colnames(newblock) = colnames(P)
+        newblock$timestamp = seq(P$timestamp[gapsi],(P$timestamp[gapsi+1])-(1/sf),by=1/sf)
+        newP = rbind(newP, newblock)
+        if (jk != LG) {
+          newP = rbind(newP,P[((gapsi[jk]+1):gapsi[jk+1]),])
+        } else {
+          newP = rbind(newP,P[((gapsi[jk]+1):nrow(P)),]) # last block
+        }
+      }
+      P = newP
+    }
   }
   
   return(list(data=P,header=header))
