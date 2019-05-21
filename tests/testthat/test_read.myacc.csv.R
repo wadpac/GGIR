@@ -175,9 +175,6 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_that(ncol(D7$header),equals(1))
     
   for (i in 1:length(testfile)) {
-    print(paste0("\n",i))
-    print("\n")
-    print(testfile[i])
     expect_true(file.exists(testfile[i]))
     if (file.exists(testfile[i])) file.remove(testfile[i])
   }
