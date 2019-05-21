@@ -81,81 +81,94 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   
   #------------------------
   # Try to read each of these files
-  D1 = read.myacc.csv(file=testfile[1], nrow=20, dec=".",
-                      firstrow.acc = 1, firstrow.header=c(),
-                      col.acc = c(1,3,4), col.temp = 5, col.time=2,
-                      unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
-                      origin = "1970-01-01",
-                      desiredtz = "Europe/London", samplefrequency = 100,
-                      headername.samplefrequency = "sample_frequency",
-                      headername.deviceserialnumber = "serial_number",
-                      headername.recordingid = "ID")
+  D1 = read.myacc.csv(rmc.file=testfile[1], rmc.nrow=20, rmc.dec=".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                      rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
+                      rmc.headername.samplefrequency = "sample_frequency",
+                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.headername.recordingid = "ID")
   expect_that(nrow(D1$data),equals(20))
   expect_that(ncol(D1$data),equals(5))
   expect_that(D1$header,equals("no header"))
-  D2 = read.myacc.csv(file=testfile[2], nrow=20, dec=".",
-                      firstrow.acc = 1, firstrow.header=c(),
-                      col.acc = c(1,3,4), col.temp = c(), col.time=2,
-                      unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
-                      origin = "1970-01-01",
-                      desiredtz = "Europe/London", samplefrequency = 100,
-                      headername.samplefrequency = "sample_frequency",
-                      headername.deviceserialnumber = "serial_number",
-                      headername.recordingid = "ID")
+  D2 = read.myacc.csv(rmc.file=testfile[2], rmc.nrow=20, rmc.dec=".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = c(),
+                      rmc.col.time=2,
+                      rmc.unit.acc = "g", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", 
+                      rmc.samplefrequency = 100,
+                      rmc.headername.samplefrequency = "sample_frequency",
+                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.headername.recordingid = "ID")
   expect_that(nrow(D2$data),equals(20))
   expect_that(ncol(D2$data),equals(4))
   expect_that(D2$header,equals("no header"))
-  D3 = read.myacc.csv(file=testfile[3], nrow=20, dec=".",
-                      firstrow.acc = 1, firstrow.header=c(),
-                      col.acc = 1:3, col.temp = c(), col.time=c(),
-                      unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
-                      origin = "1970-01-01",
-                      desiredtz = "Europe/London", samplefrequency = 100,
-                      headername.samplefrequency = "sample_frequency",
-                      headername.deviceserialnumber = "serial_number",
-                      headername.recordingid = "ID")
+  D3 = read.myacc.csv(rmc.file=testfile[3], rmc.nrow=20, 
+                      rmc.dec=".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                      rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
+                      rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
+                      rmc.headername.samplefrequency = "sample_frequency",
+                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.headername.recordingid = "ID")
   expect_that(nrow(D3$data),equals(20))
   expect_that(ncol(D3$data),equals(3))
   expect_that(D3$header,equals("no header"))
-  D4 = read.myacc.csv(file=testfile[4], nrow=20, dec=".",
-                      firstrow.acc = 11, firstrow.header=1,
-                      col.acc = c(1,3,4), col.temp = 5, col.time=2,
-                      unit.acc = "g", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
-                      origin = "1970-01-01",
-                      desiredtz = "Europe/London", samplefrequency = 100,
-                      headername.samplefrequency = "sample_frequency",
-                      headername.deviceserialnumber = "serial_number",
-                      headername.recordingid = "ID")
+  D4 = read.myacc.csv(rmc.file=testfile[4], rmc.nrow=20, rmc.dec=".",
+                      rmc.firstrow.acc = 11, rmc.firstrow.header=1,
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                      rmc.unit.acc = "g", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", 
+                      rmc.samplefrequency = 100,
+                      rmc.headername.samplefrequency = "sample_frequency",
+                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.headername.recordingid = "ID")
   expect_that(nrow(D4$data),equals(20))
   expect_that(ncol(D4$data),equals(5))
   expect_that(nrow(D4$header),equals(5))
   expect_that(ncol(D4$header),equals(1))
 
-  D5 = read.myacc.csv(file=testfile[5], nrow=20, dec=".",
-                      firstrow.acc = 11, firstrow.header=1,
-                      col.acc = c(1,3,4), col.temp = 5, col.time=2,
-                      unit.acc = "bit", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
-                      origin = "1970-01-01",
-                      desiredtz = "Europe/London", samplefrequency = 100,
-                      headername.samplefrequency = "sample_rate",
-                      headername.deviceserialnumber = "serial_number",
-                      headername.recordingid = "ID", bit = "bit", dynamic_range = "dynamic_range",
-                      header.structure = c())
+  D5 = read.myacc.csv(rmc.file=testfile[5], rmc.nrow=20, rmc.dec=".",
+                      rmc.firstrow.acc = 11, rmc.firstrow.header=1,
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
+                      rmc.col.time=2,
+                      rmc.unit.acc = "bit", rmc.unit.temp = "C", 
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
+                      rmc.headername.samplefrequency = "sample_rate",
+                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.headername.recordingid = "ID", rmc.bit = "bit",
+                      rmc.dynamic_range = "dynamic_range",
+                      rmc.header.structure = c())
   expect_that(nrow(D5$data),equals(20))
   expect_that(ncol(D5$data),equals(5))
   expect_that(nrow(D5$header),equals(5))
   expect_that(ncol(D5$header),equals(1))
   
-  D7 = read.myacc.csv(file=testfile[6], nrow=20, dec=".",
-                      firstrow.acc = 11, firstrow.header=1,
-                      col.acc = c(1,3,4), col.temp = 5, col.time=2,
-                      unit.acc = "bit", unit.temp = "C", format.time = "%Y-%m-%d %H:%M:%OS",
-                      origin = "1970-01-01",
-                      desiredtz = "Europe/London", samplefrequency = 100,
-                      headername.samplefrequency = "sample_rate",
-                      headername.deviceserialnumber = "serial_number",
-                      headername.recordingid = "ID", bit = "bit", dynamic_range = "dynamic_range",
-                      header.structure = c(), check4timegaps = TRUE)
+  D7 = read.myacc.csv(rmc.file=testfile[6], rmc.nrow=20, rmc.dec=".",
+                      rmc.firstrow.acc = 11, rmc.firstrow.header=1,
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
+                      rmc.col.time=2,
+                      rmc.unit.acc = "bit", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.samplefrequency = 100,
+                      rmc.headername.samplefrequency = "sample_rate",
+                      rmc.headername.deviceserialnumber = "serial_number",
+                      rmc.headername.recordingid = "ID", 
+                      rmc.bit = "bit", rmc.dynamic_range = "dynamic_range",
+                      rmc.header.structure = c(), rmc.check4timegaps = TRUE)
   expect_that(nrow(D7$data),equals(170))
   expect_that(ncol(D7$data),equals(5))
   expect_that(nrow(D7$header),equals(5))
