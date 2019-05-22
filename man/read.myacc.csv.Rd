@@ -27,7 +27,8 @@
                           rmc.headername.sn = c(),
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
-                          rmc.check4timegaps = FALSE)	
+                          rmc.check4timegaps = FALSE,
+                          rmc.noise=c())	
 }
 \arguments{
   \item{rmc.file}{
@@ -127,6 +128,9 @@
     Some sensing equipment provides accelerometer with gaps in time. The rest of 
     GGIR is not designed for this, by setting this argument to TRUE the the gaps
     in time will be filled with zeros.
+    }
+    \item{rmc.noise}{
+    Known noise level in g-units of the acceleration signal.
     }
 }
 \value{

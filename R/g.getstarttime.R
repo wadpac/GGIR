@@ -1,37 +1,5 @@
-g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile, ...) {
+g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile) { 
   #get input variables (relevant when read.myacc.csv is used)
-  input = list(...)
-  if (length(input) > 0) {
-    for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
-      if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
-      }
-      eval(parse(text=txt))
-    }
-  }
-  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
-  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
-  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
-  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
-  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
-  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
-  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
-  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
-  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
-  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
-  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
-  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
-  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
-  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
-  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
-  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
-  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
-  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
-  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
-  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
-  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   #------------------------------------------------------------
   if (mon  == 1 & dformat == 1) {
     starttime = P$timestamps2[1]

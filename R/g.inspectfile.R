@@ -190,7 +190,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
   if (length(rmc.firstrow.acc) == 1) {
     dformat = 5
     mon = 5
-    Pusercsvformat = read.myacc.csv(rmc.file=filename, rmc.nrow=5, rmc.dec=rmc.dec,
+    Pusercsvformat = read.myacc.csv(rmc.file=datafile, rmc.nrow=5, rmc.dec=rmc.dec,
                        rmc.firstrow.acc = rmc.firstrow.acc,
                        rmc.firstrow.header = rmc.firstrow.header,
                        rmc.header.length = rmc.header.length,
@@ -209,7 +209,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
                        rmc.header.structure = rmc.header.structure,
                        rmc.check4timegaps = rmc.check4timegaps)
     sf = Pusercsvformat$header$sample_rate
-  } else {
+  } else if (length(rmc.firstrow.acc) == 0) {
     INFI = getbrand(filename,datafile)
     mon = INFI$mon
     dformat = INFI$dformat
@@ -275,9 +275,10 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
     H = PP$header
     
   } else if (dformat == 5) { # csv data in a user-specified format
-    header = Pusercsvformat$header
+    H = header = Pusercsvformat$header
+    H = data.frame(name=row.names(header),value=header)
+    sf = rmc.sf
   }
-  
   H = as.matrix(H)
   if (ncol(H) == 3 & dformat == 2 & mon == 3) {
     if (length(which(is.na(H[,2]) == FALSE)) == 0) {
@@ -316,9 +317,10 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
   }
   closeAllConnections()
   
-  RowsWithData = which(is.na(H[,1]) == FALSE)
-  
-  if (dformat != 4) header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
+  if (dformat != 4) {
+    RowsWithData = which(is.na(H[,1]) == FALSE)
+    header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
+  }
   monc = mon
   monn = monnames[mon]
   dformc = dformat

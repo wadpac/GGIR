@@ -437,17 +437,16 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                                  rmc.header.structure = rmc.header.structure,
                                  rmc.check4timegaps = rmc.check4timegaps)
     },silent=TRUE)
-    if (length(P) > 1) {
-      P = as.matrix(P)
-      if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
+    if (length(sf) == 0) sf = rmc.sf
+    if (length(P) == 2) {
+      # P = as.matrix(P) # turned off 21-5-2019
+      if (nrow(P$data) < ((sf*ws*2)+1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
         filequality$filetooshort = TRUE
       }
     } else {
       P = c()
     }
-    
-    
   }
   invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage))
 }
