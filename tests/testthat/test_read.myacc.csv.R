@@ -74,9 +74,13 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   timestamps_gap = timestamps
   timestamps_gap[10:length(timestamps_gap)] = timestamps_gap[10:length(timestamps_gap)] + 5 # add gap of 5 seconds
   N_withgap = length(timestamps_gap)
+  set.seed(100)
   xb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
+  set.seed(200)
   yb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
+  set.seed(300)
   zb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
+  set.seed(400)
   temp2 = rnorm(N_withgap)
   S7 = as.matrix(data.frame(x=xb, time=timestamps_gap,y=yb, z=zb,temp=temp2+20))
   hd_NR = 10
