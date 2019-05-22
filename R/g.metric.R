@@ -141,23 +141,33 @@ g.metric= function(Gx,Gy,Gz,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
     Gxm[which(is.na(Gxm[1:1000]) ==T)] = Gxm[which(is.na(Gxm[1:1000]) ==F)[1]]
     Gym[which(is.na(Gym[1:1000]) ==T)] = Gym[which(is.na(Gym[1:1000]) ==F)[1]]
     Gzm[which(is.na(Gzm[1:1000]) ==T)] = Gzm[which(is.na(Gzm[1:1000]) ==F)[1]]
-    p1 = which(is.na(Gxm) ==F); Gxm[which(is.na(Gxm) ==T)] = Gxm[p1[length(p1)]]
-    p1 = which(is.na(Gym) ==F); Gym[which(is.na(Gym) ==T)] = Gym[p1[length(p1)]]
-    p1 = which(is.na(Gzm) ==F); Gzm[which(is.na(Gzm) ==T)] = Gzm[p1[length(p1)]]
-    if (ii == 11) { # angles
-      anglex = (atan(Gxm / (sqrt(Gym^2 + Gzm^2)))) / (pi/180)
-      angley = (atan(Gym / (sqrt(Gxm^2 + Gzm^2)))) / (pi/180)
-      anglez = (atan(Gzm / (sqrt(Gxm^2 + Gym^2)))) / (pi/180)
-      Gfil = cbind(anglex,angley,anglez)
-    }
-    if (ii == 13) { # rolling median
-      Gfil = cbind(Gxm,Gym,Gzm)
-    }
-    if (ii == 14) { # direction specific acceleration (experimental)
-      Accx = Gx - Gxm
-      Accy = Gy - Gym
-      Accz = Gz - Gzm
-      Gfil = cbind(Accx,Accy,Accz)
+    p1 = which(is.na(Gxm) ==F)
+    p2 = which(is.na(Gym) ==F)
+    p3 = which(is.na(Gzm) ==F)
+    if (length(p1) > 0 & length(p2) > 0 & length(p3) > 0) {
+      Gxm[which(is.na(Gxm) ==T)] = Gxm[p1[length(p1)]]
+      Gym[which(is.na(Gym) ==T)] = Gym[p2[length(p2)]]
+      Gzm[which(is.na(Gzm) ==T)] = Gzm[p3[length(p3)]]
+      
+      if (ii == 11) { # angles
+        anglex = (atan(Gxm / (sqrt(Gym^2 + Gzm^2)))) / (pi/180)
+        angley = (atan(Gym / (sqrt(Gxm^2 + Gzm^2)))) / (pi/180)
+        anglez = (atan(Gzm / (sqrt(Gxm^2 + Gym^2)))) / (pi/180)
+        Gfil = cbind(anglex,angley,anglez)
+      }
+      if (ii == 13) { # rolling median
+        Gfil = cbind(Gxm,Gym,Gzm)
+      }
+      if (ii == 14) { # direction specific acceleration (experimental)
+        Accx = Gx - Gxm
+        Accy = Gy - Gym
+        Accz = Gz - Gzm
+        Gfil = cbind(Accx,Accy,Accz)
+      }
+    } else {
+      warning("Only NA values in signal, impossible to calculate metric")
+      # this issue only occure in an ad-hoc data format, so far
+      Gfil = matrix(0,durexp,3)
     }
   } else if (ii == 12) { # vector magnitude minus one and then absolute
     Gfil[,1] = abs(sqrt((Gx^2) + (Gy^2) + (Gz^2)) - gravity)

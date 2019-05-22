@@ -40,7 +40,6 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     BFEN = g.metric(Gx,Gy,Gz,n,sf=sf,ii=7,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
     allmetrics$BFEN3b = averageperws3(x=BFEN,sf,ws3)
   }
-  
   #-----------------------------------------------------
   #deriving metric ENMO (Euclidean Norm Minus One)
   if (do.enmo == TRUE) {
@@ -87,7 +86,6 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     allmetrics$angle_y3b = averageperws3(x=angle_y,sf,ws3)
     allmetrics$angle_z3b = averageperws3(x=angle_z,sf,ws3)
   }
-  
   if (do.roll_med_acc_x == TRUE | do.roll_med_acc_y == TRUE | do.roll_med_acc_z == TRUE) { #rolling median of acceleration
     roll_med_acc_ = g.metric(Gx,Gy,Gz,n,sf=sf,ii=13,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
     roll_med_acc_x = roll_med_acc_[,1]; roll_med_acc_y = roll_med_acc_[,2]; roll_med_acc_z = roll_med_acc_[,3]

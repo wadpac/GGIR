@@ -1,5 +1,4 @@
 read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
-                          
                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
@@ -14,7 +13,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
                           rmc.headername.sn = c(),
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
-                          rmc.check4timegaps = FALSE) { # not included yet, optionally additonal columns
+                          rmc.check4timegaps = FALSE,
+                          rmc.noise = c()) { # not included yet, optionally additonal columns
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -32,8 +32,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     if (length(rmc.header.length) == 0) {
       rmc.header.length = rmc.firstrow.acc-1
     }
+    
     options(warn=-1) # fread complains about quote in first row for some file types
-    header_tmp = as.data.frame(data.table::fread(rmc.file,
+    header_tmp = as.data.frame(data.table::fread(file = rmc.file,
                                                  nrow = rmc.header.length, 
                                                  skip=rmc.firstrow.header-1,
                                                  dec=rmc.dec, showProgress = FALSE, header = FALSE))
@@ -110,7 +111,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       row.names(header)[nrow(header)] = "sample_rate"
     }
   }
-  
   # read data from file
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip=skip,
                                       dec=rmc.dec, showProgress = FALSE, header = freadheader))
@@ -164,6 +164,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       P$accz = (P$accz / ((2^rmc.bitrate)/2)) * rmc.dynamic_range
     }
   }
+  
   # Convert temperature units
   if (rmc.unit.temp == "K") {
     P$temperature = P$temperature + 272.15 # From Kelvin to Celsius
@@ -178,7 +179,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     if (length(gapsi) > 0) {
       if (length(sf) == 0) { # estimate sample frequency if not given in header
         sf = (P$timestamp[gapsi[jk]] - P$timestamp[1]) / (gapsi[1]-1)
-        print(sf)
       }
       newP = rbind(newP,P[1:gapsi[1],])
       LG = length(gapsi)
@@ -186,7 +186,18 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
         dt = P$timestamp[gapsi+1] - P$timestamp[gapsi] # difference in time
         newblock = as.data.frame(matrix(0,dt*sf,ncol(P)))
         colnames(newblock) = colnames(P)
-        newblock$timestamp = seq(P$timestamp[gapsi],(P$timestamp[gapsi+1])-(1/sf),by=1/sf)
+        cat("testing")
+        cat(length(newblock$timestamp))
+        if (jk != LG) {
+          seqi = seq(P$timestamp[gapsi],P$timestamp[gapsi[jk+1]] - (1/sf),by=1/sf)
+          cat(length(seqi))
+        } else {
+          seqi = seq(P$timestamp[gapsi],P$timestamp[nrow(P)], by=1/sf)
+          cat(length(seqi))
+        }
+        if (length(seqi) >= length(newblock$timestamp)) {
+          newblock$timestamp = seqi[1:length(newblock$timestamp)]
+        }
         newP = rbind(newP, newblock)
         if (jk != LG) {
           newP = rbind(newP,P[((gapsi[jk]+1):gapsi[jk+1]),])
