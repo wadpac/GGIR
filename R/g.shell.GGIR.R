@@ -182,6 +182,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
 
   cat("\n   Help sustain GGIR into the future \n")
   cat("   Check out: https://www.movementdata.nl/how-to-help-sustain-ggir \n")
@@ -209,7 +210,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             do.cal = do.cal, print.filename=print.filename,
             overwrite=overwrite, backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile, dayborder=dayborder,
-            dynrange=dynrange,
+            dynrange=dynrange, configtz=configtz,
             rmc.dec=rmc.dec,
             rmc.firstrow.acc = rmc.firstrow.acc,
             rmc.firstrow.header = rmc.firstrow.header,
@@ -227,7 +228,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             rmc.headername.sn = rmc.headername.sn,
             rmc.headername.recordingid = rmc.headername.sn,
             rmc.header.structure = rmc.header.structure,
-            rmc.check4timegaps = rmc.check4timegaps, configtz=configtz)
+            rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise)
   }
   if (dopart2 == TRUE) {
     cat('\n')

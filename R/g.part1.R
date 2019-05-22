@@ -44,6 +44,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   
   
   if (length(datadir) == 0 | length(outputdir) == 0) {
@@ -91,19 +92,19 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
   use.temp = TRUE;
   daylimit = FALSE
-
+  
   #=================================================================
   # Other parameters:
   #--------------------------------
   # get file path if requested:
   #   if (storefolderstructure == TRUE) {
-#   filelist = FALSE
-#   if (length(datadir) == 1) { #could be a directory or one file
-#     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
-#     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
-#   } else { #multiple files
-#     filelist = TRUE
-#   }
+  #   filelist = FALSE
+  #   if (length(datadir) == 1) { #could be a directory or one file
+  #     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
+  #     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
+  #   } else { #multiple files
+  #     filelist = TRUE
+  #   }
   if (filelist == FALSE) {
     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
                    dir(datadir,recursive=TRUE,pattern="[.]bin"),
@@ -144,7 +145,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste(outputdir,outputfolder,"/meta/basic",sep=""))
-
+  
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
@@ -189,7 +190,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     if (length(withoutRD) > 1) {
       fnames_without = withoutRD[1]
     }
-
+    
     if (length(ffdone) > 0) {
       ffdone_without = 1:length(ffdone) #dummy variable
       for (index in 1:length(ffdone)) {
@@ -204,15 +205,33 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       skip = 0
     }
     if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-        useRDA = TRUE
-      } else {
-        useRDA = FALSE
+      useRDA = TRUE
+    } else {
+      useRDA = FALSE
     }
     #================================================================
     # Inspect file (and store output later on)
     options(warn=-1) #turn off warnings
     if (useRDA == FALSE) {
-      I = g.inspectfile(datafile, desiredtz=desiredtz)
+      I = g.inspectfile(datafile, desiredtz=desiredtz,
+                        rmc.dec=rmc.dec,configtz=configtz,
+                        rmc.firstrow.acc = rmc.firstrow.acc,
+                        rmc.firstrow.header = rmc.firstrow.header,
+                        rmc.header.length = rmc.header.length,
+                        rmc.col.acc = rmc.col.acc,
+                        rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                        rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                        rmc.unit.time = rmc.unit.time,
+                        rmc.format.time = rmc.format.time,
+                        rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                        rmc.unsignedbit = rmc.unsignedbit,
+                        rmc.origin = rmc.origin,
+                        rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                        rmc.headername.sf = rmc.headername.sf,
+                        rmc.headername.sn = rmc.headername.sn,
+                        rmc.headername.recordingid = rmc.headername.sn,
+                        rmc.header.structure = rmc.header.structure,
+                        rmc.check4timegaps = rmc.check4timegaps)
     } else {
       load(datafile) # to do: would be nice to only load the object I and not the entire datafile
       I$filename = fnames[j]
@@ -234,7 +253,26 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                         minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                         windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                        desiredtz=desiredtz)
+                        desiredtz=desiredtz,
+                        rmc.dec=rmc.dec,configtz=configtz,
+                        rmc.firstrow.acc = rmc.firstrow.acc,
+                        rmc.firstrow.header = rmc.firstrow.header,
+                        rmc.header.length = rmc.header.length,
+                        rmc.col.acc = rmc.col.acc,
+                        rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                        rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                        rmc.unit.time = rmc.unit.time,
+                        rmc.format.time = rmc.format.time,
+                        rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                        rmc.unsignedbit = rmc.unsignedbit,
+                        rmc.origin = rmc.origin,
+                        rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                        rmc.headername.sf = rmc.headername.sf,
+                        rmc.headername.sn = rmc.headername.sn,
+                        rmc.headername.recordingid = rmc.headername.sn,
+                        rmc.header.structure = rmc.header.structure,
+                        rmc.check4timegaps = rmc.check4timegaps,
+                        rmc.noise=rmc.noise)
       } else {
         C = list(cal.error.end=0,cal.error.start=0)
         C$scale=c(1,1,1)
@@ -248,7 +286,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       if (turn.do.cal.back.on == TRUE) {
         do.cal = TRUE
       }
-
+      
       cal.error.end = C$cal.error.end
       cal.error.start = C$cal.error.start
       if (length(cal.error.start) == 0) {
@@ -348,8 +386,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
       # SI = sessionInfo()
       # save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
-
-
+      
+      
       # as metadatdir is not known derive it:
       metadatadir = c()
       if (length(datadir) > 0) {
