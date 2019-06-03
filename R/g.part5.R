@@ -580,6 +580,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = TRVi
                         ds_names[fi] = "TRVi";      fi = fi + 1
                         wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
+			if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
                         if (wlih > 30 & length(summarysleep_tmp2$night) > 1) { # scenario when day is missing and code reaches out to two days before this day
                           # if (summarysleep_tmp2$night[wi] - summarysleep_tmp2$night[wi-1] != 1) {
                           qqq1 = (qqq2 - (24* ((60/ws3)*60))) + 1 # code now uses only 24hours before waking up
@@ -765,8 +766,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         fi = fi + bci
                         #===============================================
                         # NUMBER OF WINDOWS
-                        for (levelsc in 0:(length(Lnames)-1)) {
-                          # dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2 #old code
+			for (levelsc in 0:(length(Lnames)-1)) {
                           dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2
                           if (dsummary[di,fi] == 0 & LEVELS[qqq1] == levelsc) dsummary[di,fi] = 1
                           ds_names[fi] = paste("Nblocks_",Lnames[levelsc+1],sep="");      fi = fi + 1
