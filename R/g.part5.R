@@ -662,9 +662,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # sse = qqq1:qqq2
                         WLH = ((qqq2-qqq1)+1)/((60/ws3)*60) #windowlength_hours = 
                         if (WLH <= 1) WLH = 1.001
-                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH))
+                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH),na.rm=TRUE)
                         ds_names[fi] = paste("quantile_mostactive60min_mg",sep="");      fi = fi + 1
-                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH))
+                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH),na.rm=TRUE)
                         ds_names[fi] = paste("quantile_mostactive30min_mg",sep="");      fi = fi + 1
                         #===============================================
                         # L5 M5, L10 M10...
