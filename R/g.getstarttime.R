@@ -73,11 +73,10 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       startdate = as.character(unlist(strsplit(as.character(startdate)," ")))
       starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
     }
-
     if (mon == 4) {
       starttime = P[1,1]
       starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
-      # startdate = unlist(strsplit(as.character(starttime)," "))[1]
+      startdate = unlist(strsplit(as.character(starttime)," "))[1]
     } else {
       #-----------------------------------------
       #remove possible spaces in date or time
@@ -97,9 +96,9 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
           }
         }
       }
+      starttime = newstarttime
+      startdate = newstartdate
     }
-    starttime = newstarttime
-    startdate = newstartdate
     #-----------------------------------------
     # flexible four date/time formats
     starttime = paste(startdate," ",starttime,sep="")
@@ -114,7 +113,6 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       B2 = length(unlist(strsplit(topline,"M[.]d[.]yyyy")))
       B6 = length(unlist(strsplit(topline,"M[.]dd[.]yyyy")))
       B7 = length(unlist(strsplit(topline,"MM[.]d[.]yyyy")))
-
       B3 = length(unlist(strsplit(topline,"dd[.]MM[.]yyyy")))
       B4 = length(unlist(strsplit(topline,"d[.]M[.]yyyy")))
       B5 = length(unlist(strsplit(topline,"d[.]MM[.]yyyy")))
