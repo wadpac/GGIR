@@ -1,11 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-2 (release date:21-05-2019)}{
+\section{Changes in version 1.9-2 (release date:18-06-2019)}{
 \itemize{
   \item Added functionality to work with studies where accelerometer is configured in one
   timezone and used in other timezone. Only functional for AX3 cwa data at the moment.
   \item Sleep skipped if a day only has one sustained inactivity bout
+  \item Fixed AX3 csv format starttimestamp recognition
   }
   }
 \section{Changes in version 1.9-1 (release date:08-05-2019)}{
