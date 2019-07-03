@@ -9,6 +9,7 @@
   \item Sleep estimation is now skipped if a day only has one sustained inactivity bout
   \item Arguments ignorenonwear default value changed to TRUE and def.noc.sleep default changed
   to 1 in line with literature.
+  \item Fixed AX3 csv format starttimestamp recognition
   }
   }
 \section{Changes in version 1.9-1 (release date:08-05-2019)}{
