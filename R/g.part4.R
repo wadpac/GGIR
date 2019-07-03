@@ -1,7 +1,7 @@
 g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation = c(),
                    colid = 1,coln1 = 9,nnights = 7,sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
                    excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
-                   relyonsleeplog=FALSE,def.noc.sleep=c(),
+                   relyonsleeplog=FALSE,def.noc.sleep=1,
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="Europe/London") {
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
