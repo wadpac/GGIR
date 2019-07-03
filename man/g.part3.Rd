@@ -12,7 +12,7 @@ Typical users should work with function g.shell.GGIR only.
 }
 \usage{
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
-  acc.metric="ENMO", ignorenonwear=FALSE,overwrite=FALSE,
+  acc.metric="ENMO", ignorenonwear=TRUE, overwrite=FALSE,
   desiredtz="Europe/London",constrain2range=TRUE,
   do.part3.pdf=TRUE)
 }
@@ -46,7 +46,7 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   \item{ignorenonwear}{
   If TRUE then ignore detected monitor non-wear periods to avoid 
   confusion between monitor non-wear time and sustained inactivity 
-  (default = FALSE)
+  (default = TRUE)
   }
   \item{overwrite}{
     Overwrite previously generated milestone data by this function for
