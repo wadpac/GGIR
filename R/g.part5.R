@@ -364,9 +364,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
                     if (length(time) == length(LEVELS)) {
                       ind = 1:length(time) #c(1,which(diff(LEVELS)!=0) + 1)
-                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
-                      ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
+                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind], class_name = rep("",length(time)),stringsAsFactors = FALSE)
+                      for (LNi in 1:length(Lnames)) {
+                        replacev = which(ms5rawlevels$class_id == (LNi-1))
+                        if (length(replacev) > 0) ms5rawlevels$class_name[replacev] = Lnames[LNi]
+                      }
+                      # ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
                       # ms5rawlevels$time[1]
+                      print(rawlevels_fname)
                       write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
                       rm(ms5rawlevels)
                     }
