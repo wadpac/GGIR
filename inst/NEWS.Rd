@@ -10,6 +10,7 @@
   \item Arguments ignorenonwear default value changed to TRUE and def.noc.sleep default changed
   to 1 in line with literature.
   \item Fixed AX3 csv format starttimestamp recognition
+  \item Part5 csv export now also include class labels (previously only numbers)
   }
   }
 \section{Changes in version 1.9-1 (release date:08-05-2019)}{
