@@ -26,6 +26,29 @@ g.metric= function(Gx,Gy,Gz,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
     Gyfil[,1] = signal::filter(bf,Gy)
     Gzfil[,1] = signal::filter(bf,Gz)
     Gfil[,1] = sqrt((Gxfil[,1]^2) + (Gyfil[,1]^2) + (Gzfil[,1]^2))
+    
+    
+    # x11()
+    # par(mfrow=c(2,2))
+    # snapshot = 3000:4000
+    # specB = spectrum(Gxfil[snapshot,1],log="no",plot=FALSE)
+    # Bx <- specB$freq * 100; By <- 2*specB$spec
+    # keep = which(Bx <= 50)
+    # Bx = Bx[keep]; By = By[keep]; By = By/mean(By)
+    # plot(Bx, By,xlab="frequency",ylab="spectral density",type="l", main="spectrum after HFEN x",col="blue")
+    # specB = spectrum(Gyfil[snapshot,1],log="no",plot=FALSE)
+    # Bx <- specB$freq * 100; By <- 2*specB$spec
+    # keep = which(Bx <= 50)
+    # Bx = Bx[keep]; By = By[keep]; By = By/mean(By)
+    # plot(Bx, By,xlab="frequency",ylab="spectral density",type="l", main="spectrum after HFEN y",col="blue")
+    # specB = spectrum(Gzfil[snapshot,1],log="no",plot=FALSE)
+    # Bx <- specB$freq * 100; By <- 2*specB$spec
+    # keep = which(Bx <= 50)
+    # Bx = Bx[keep]; By = By[keep]; By = By/mean(By)
+    # plot(Bx, By,xlab="frequency",ylab="spectral density",type="l", main="spectrum after HFEN z",col="blue")
+    # plot(Gfil[snapshot,1],xlab="index",ylab="HFEN",type="l", main="HFEN",col="blue")
+    
+    
   } else if (ii == 2) {
     # moving average
     for (j in 1:length(Gx)) {
@@ -161,10 +184,42 @@ g.metric= function(Gx,Gy,Gz,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
     }
   } else if (ii == 12) { # vector magnitude minus one and then absolute
     Gfil[,1] = abs(sqrt((Gx^2) + (Gy^2) + (Gz^2)) - gravity)
+  } else if (ii == 15) { #Low pass filtered followed by EN (LFEN)
+    bf = signal::butter(n,c(hb/(sf/2)),type=c("low")) #creating filter coefficients
+    Gxfil[,1] = signal::filter(bf,Gx)
+    Gyfil[,1] = signal::filter(bf,Gy)
+    Gzfil[,1] = signal::filter(bf,Gz)
+    Gfil[,1] = sqrt((Gxfil[,1]^2) + (Gyfil[,1]^2) + (Gzfil[,1]^2))
+    
+    
+    # snapshot = 3000:4000
+    # graphics.off()
+    # x11()
+    # par(mfrow=c(2,2))
+    # specB = spectrum(Gxfil[snapshot,1],log="no",plot=FALSE)
+    # Bx <- specB$freq * 100; By <- 2*specB$spec
+    # keep = which(Bx <= 50)
+    # Bx = Bx[keep]; By = By[keep]; By = By/mean(By)
+    # plot(Bx, By,xlab="frequency",ylab="spectral density",type="l", main="spectrum after LFEN x",col="blue")
+    # specB = spectrum(Gyfil[snapshot,1],log="no",plot=FALSE)
+    # Bx <- specB$freq * 100; By <- 2*specB$spec
+    # keep = which(Bx <= 50)
+    # Bx = Bx[keep]; By = By[keep]; By = By/mean(By)
+    # plot(Bx, By,xlab="frequency",ylab="spectral density",type="l", main="spectrum after LFEN y",col="blue")
+    # specB = spectrum(Gzfil[snapshot,1],log="no",plot=FALSE)
+    # Bx <- specB$freq * 100; By <- 2*specB$spec
+    # keep = which(Bx <= 50)
+    # Bx = Bx[keep]; By = By[keep]; By = By/mean(By)
+    # plot(Bx, By,xlab="frequency",ylab="spectral density",type="l", main="spectrum after LFEN z",col="blue")
+    # plot(Gfil[snapshot,1],xlab="index",ylab="LFEN",type="l", main="LFEN",col="blue")
+    
   }
+  
   if (ii == 11 | ii == 13 | ii == 14) {
     g.metric = Gfil
   } else {
     g.metric = Gfil[,1]
   }
+
+
 }

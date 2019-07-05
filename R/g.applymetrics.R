@@ -1,10 +1,4 @@
-g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
-  # globalVariables(c("do.enmo","do.lfenmo","do.en","do.bfen","do.hfen",
-                    # "do.hfenplus", "do.mad", "do.anglex","do.angley","do.anglez",
-                    # "do.roll_med_acc_x","do.roll_med_acc_y","do.roll_med_acc_z",
-                    # "do.dev_roll_med_acc_x","do.dev_roll_med_acc_y",
-                    # "do.dev_roll_med_acc_z","do.enmoa"))
-  # as R check complains about attach, I have just added them to the workspace manually:  
+g.applymetrics = function(Gx,Gy,Gz,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
   do.bfen = metrics2do$do.bfen
   do.enmo = metrics2do$do.enmo
   do.lfenmo = metrics2do$do.lfenmo
@@ -22,8 +16,8 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   do.dev_roll_med_acc_y = metrics2do$do.dev_roll_med_acc_y
   do.dev_roll_med_acc_z = metrics2do$do.dev_roll_med_acc_z
   do.enmoa = metrics2do$do.enmoa
+  do.lfen = metrics2do$do.lfen
   
-  # attach(metrics2do,warn.conflicts = FALSE)
   allmetrics = c()
   averageperws3 = function(x,sf,ws3) {
     x2 =cumsum(c(0,x))
@@ -32,7 +26,8 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   }
   #--------------------------------------------------
   # BFEN = band pass filtered signals followed by Euclidean norm
-  lb = 0.2; hb = 15; n = 4; TW = 1/lb
+  # lb = 0.2; hb = 15; n = 4
+  TW = 1/lb
   if (sf <= (hb *2)) { #avoid having a higher filter boundary higher than sf/2
     hb = round(sf/2) - 1
   }
@@ -59,9 +54,14 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   #------------------------------------------------------------
   # space for extra metrics
   if (do.lfenmo == TRUE) {
-    LFENMO =g.metric(Gx,Gy,Gz,n,sf=sf,ii=9,TW=TW,lb=lb,hb=3.5) #calling function metric.R to do the calculation
+    LFENMO =g.metric(Gx,Gy,Gz,n,sf=sf,ii=9,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
     LFENMO[which(LFENMO < 0)] = 0
     allmetrics$LFENMO3b = averageperws3(x=LFENMO,sf,ws3)
+  }
+  if (do.lfen == TRUE) {
+    LFEN =g.metric(Gx,Gy,Gz,n,sf=sf,ii=15,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
+    LFEN[which(LFEN < 0)] = 0
+    allmetrics$LFEN3b = averageperws3(x=LFEN,sf,ws3)
   }
   if (do.hfen == TRUE) {
     HFEN =g.metric(Gx,Gy,Gz,n,sf=sf,ii=1,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
@@ -104,10 +104,9 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     allmetrics$dev_roll_med_acc_z3b = averageperws3(x=dev_roll_med_acc_z,sf,ws3)
   }
   if (do.enmoa == TRUE) {
-    ENMOa =g.metric(Gx,Gy,Gz,n,sf=sf,ii=12,TW=TW,lb=lb,hb=3.5) #calling function metric.R to do the calculation
+    ENMOa =g.metric(Gx,Gy,Gz,n,sf=sf,ii=12,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
     ENMOa[which(ENMOa < 0)] = 0
     allmetrics$ENMOa3b = averageperws3(x=ENMOa,sf,ws3)
   }
-  # detach(metrics2do,warn.conflicts = FALSE)
   return(allmetrics)
 } 
