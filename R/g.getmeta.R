@@ -6,6 +6,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
                      do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
+                     do.lfen=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),...) {
   #get input variables
@@ -23,7 +24,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                     do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa)
+                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
 
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
@@ -31,7 +32,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                   do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa))
+                   do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen))
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -391,7 +392,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           LD = nrow(data)
         }
         EN = sqrt(Gx^2 + Gy^2 + Gz^2)
-        allmetrics = g.applymetrics(Gx,Gy,Gz,n,sf,ws3,metrics2do)
+        allmetrics = g.applymetrics(Gx=Gx,Gy=Gy,Gz=Gz,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
         # attach(allmetrics,warn.conflicts = FALSE)
         # globalVariables(c("BFEN3b","ENMO3b","LFENMO3b","EN3b","HFEN3b",
         #                   "HFENplus3b", "MAD3b", "angle_x3b","angle_y3b","angle_z3b",
@@ -414,6 +415,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         dev_roll_med_acc_x3b = allmetrics$dev_roll_med_acc_x3b
         dev_roll_med_acc_y3b = allmetrics$dev_roll_med_acc_y3b
         dev_roll_med_acc_z3b = allmetrics$dev_roll_med_acc_z3b
+        LFEN3b = allmetrics$LFEN3b
       }
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
@@ -477,6 +479,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         if (do.enmoa == TRUE) {
           metashort[count:(count-1+length(ENMOa3b)),col_msi] = ENMOa3b; col_msi = col_msi + 1
+        }
+        if (do.lfen == TRUE) {
+          metashort[count:(count-1+length(LFEN3b)),col_msi] = LFEN3b; col_msi = col_msi + 1
         }
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
 
@@ -706,12 +711,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     }
     metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
-                          "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa") #
+                          "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa","LFEN") #
     metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                                                          do.anglex,do.angley,do.anglez,
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
-                                                         do.enmoa)]) #
+                                                         do.enmoa,do.lfen)])
     metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
     for (ncolms in 2:ncol(metashort)) {
