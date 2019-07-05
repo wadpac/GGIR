@@ -28,10 +28,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE,
         do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE,
         do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
+        do.lfen = FALSE,
         do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
         use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-        backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,
+        backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
         dynrange=c(), configtz=c())
 }
 \arguments{
@@ -117,6 +118,8 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{do.dev_roll_med_acc_z}{see \link{g.getmeta}
   }
+  \item{do.lfen}{see \link{g.getmeta}
+  }
   \item{do.cal}{
   Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
   recommended setting is TRUE
@@ -159,18 +162,8 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     (default = FALSE).
   }
   \item{backup.cal.coef}{
-  If the auto-calibration fails then the user has the option to provide back-up
-  calibration coefficients via this argument. The value of the argument needs to
-  be the name and directory of a csv-spreadsheet with the following column names
-  and subsequent values: 'filename' with the names of accelerometer files on which
-  the calibration coefficients need to be applied in case auto-calibration fails;
-  'scale.x', 'scale.y', and 'scale.z' with the scaling coefficients; 'offset.x',
-  'offset.y', and 'offset.z' with the offset coefficients, and; 
-  'temperature.offset.x', 'temperature.offset.y', and 'temperature.offset.z'
-  with the temperature offset coefficients. The argument is intended for analysing
-  short lasting laboratory experiments with insufficient sphere data, but for which
-  calibration coefficients can be derived in an alternative way.
-  It is the users responsibility to compile the csv-spreadsheet.
+  Default "retrieve". Option to use backed-up calibration coefficient instead of
+  deriving the calibration coefficients when analysing the same file twice, see details.
   }
   \item{selectdaysfile}{
   Optional functionality. Character pointing at a csv file holding the relationship
@@ -193,6 +186,29 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   timezone in which recording took place are different.
   }
 
+}
+\details{
+ Argument backup.cal.coef has two usecase. Use case 1: If the auto-calibration fails
+ then the user has the option to provide back-up
+  calibration coefficients via this argument. The value of the argument needs to
+  be the name and directory of a csv-spreadsheet with the following column names
+  and subsequent values: 'filename' with the names of accelerometer files on which
+  the calibration coefficients need to be applied in case auto-calibration fails;
+  'scale.x', 'scale.y', and 'scale.z' with the scaling coefficients; 'offset.x',
+  'offset.y', and 'offset.z' with the offset coefficients, and; 
+  'temperature.offset.x', 'temperature.offset.y', and 'temperature.offset.z'
+  with the temperature offset coefficients. This can be useful for analysing
+  short lasting laboratory experiments with insufficient sphere data to perform
+  the auto-calibration, but for which calibration coefficients can be derived
+  in an alternative way.  It is the users responsibility to compile the
+  csv-spreadsheet. Instead of building this file the user can also
+  
+  Use case 2: The user wants to avoid performing the auto-calibration repeatedly
+  on the same file. If backup.cal.coef value is set to "retrieve" (default) then
+  GGIR will look out for the  data_quality_report.csv  file in the outputfolder
+  QC, which holds the previously generated calibration coefficients. If you
+  do not want this happen, then deleted the data_quality_report.csv from the 
+  QC folder or set it to value "redo".
 }
 \value{
  The function provides no values, it only ensures that the output from other
