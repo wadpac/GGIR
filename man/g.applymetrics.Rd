@@ -8,7 +8,7 @@
   for direct use by user
 }
 \usage{
-  g.applymetrics(Gx,Gy,Gz,n,sf,ws3,metrics2do)
+  g.applymetrics(Gx,Gy,Gz,n,sf,ws3,metrics2do,lb=0.2, hb=15)
 }
 \arguments{
   \item{Gx}{
@@ -35,6 +35,12 @@
     they should be extracted or not. For instance,
     metrics2do$do.bfen = TRUE, indicates that the bfen metric
     should be extracted
+  }
+  \item{lb}{
+    see \link{g.metric}
+  }
+  \item{hb}{
+    see \link{g.metric}
   }
   
 }

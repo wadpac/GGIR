@@ -6,10 +6,11 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.enmoa = FALSE,
                    do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                    do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
+                   do.lfen = FALSE,
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-                   backup.cal.coef=c(),selectdaysfile=c(),dayborder=0,dynrange=c(),
+                   backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
                    configtz = c()) {
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
@@ -56,19 +57,19 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
   use.temp = TRUE; 
   daylimit = FALSE
-
+  
   #=================================================================
   # Other parameters:
   #--------------------------------
   # get file path if requested:
   #   if (storefolderstructure == TRUE) {
-#   filelist = FALSE
-#   if (length(datadir) == 1) { #could be a directory or one file
-#     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
-#     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
-#   } else { #multiple files
-#     filelist = TRUE    
-#   }
+  #   filelist = FALSE
+  #   if (length(datadir) == 1) { #could be a directory or one file
+  #     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
+  #     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
+  #   } else { #multiple files
+  #     filelist = TRUE    
+  #   }
   if (filelist == FALSE) {
     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
                    dir(datadir,recursive=TRUE,pattern="[.]bin"),
@@ -124,7 +125,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (length(fnames) == 0) {
     cat("\nNo files to analyse")
   }
-  # filelocationkey = matrix("",length(fnames),3)
   fnames = sort(fnames)
   for (j in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
     if (print.filename == TRUE) {
@@ -139,8 +139,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     #check whether file has already been processed
     #by comparing filename to read with list of processed files
     fnames_without = as.character(unlist(strsplit(as.character(fnames[j]),".csv"))[1])
-    # create list of both file name and full directory
-    # filelocationkey[j,1] = fnames_without
     #remove / if it was a list
     fnames_without2 = fnames_without
     teimp = unlist(strsplit(as.character(fnames_without),"/"))
@@ -154,7 +152,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     if (length(withoutRD) > 1) {
       fnames_without = withoutRD[1]
     }
-
     if (length(ffdone) > 0) {
       ffdone_without = 1:length(ffdone) #dummy variable
       for (index in 1:length(ffdone)) {
@@ -169,9 +166,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       skip = 0
     }
     if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-        useRDA = TRUE
-      } else {
-        useRDA = FALSE
+      useRDA = TRUE
+    } else {
+      useRDA = FALSE
     }
     #================================================================
     # Inspect file (and store output later on)
@@ -185,14 +182,22 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     options(warn=0) #turn on warnings
     if (overwrite == TRUE) skip = 0
     if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
-      cat(paste0("\nP1 file",j))
+      cat(paste0("\nP1 file ",j))
       turn.do.cal.back.on = FALSE
       if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
         do.cal = FALSE
         turn.do.cal.back.on = TRUE
       }
+      data_quality_report_exists = file.exists(paste0(outputdir,"/",outputfolder,"/results/QC/data_quality_report.csv",sep=""))
+      if (data_quality_report_exists == TRUE & backup.cal.coef == "retrieve") {
+        backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+      } else if (length(backup.cal.coef) > 0 & backup.cal.coef != "retrieve") {
+        # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
+      } else  if (data_quality_report_exists == FALSE | backup.cal.coef == "redo"){
+        backup.cal.coef = c() #data_quality_report.csv does not exist, so g.calibrate needs to be applied.
+      }
       #--------------------------------------
-      if (do.cal ==TRUE & useRDA == FALSE) {
+      if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
         # cat(paste0("\n",rep('-',options()$width),collapse=''))
         cat("\n")
         cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
@@ -230,6 +235,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           check.backup.cal.coef = TRUE
         }
       }
+      if (length(backup.cal.coef) > 0) check.backup.cal.coef = TRUE
       #if calibration fails then check whether calibration coefficients are provided in a separate csv-spreadsheet
       # this csv spreadhseet needs to be created by the end-user and should contain:
       # column with names of the accelerometer files
@@ -239,9 +245,17 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
       if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) { 
         bcc.data = read.csv(backup.cal.coef)
-        cat("\nTry to retrieve back-up calibration coefficients as provided by argument backup.cal.coef:\n")
+        cat("\nRetrieving previously derived calibration coefficients stored in")
+        cat("\nresults/QC/data_quality_reports.csv or otherwise specified with backup.cal.coef:")
+        bcc.data$filename = as.character(bcc.data$filename)
+        for (nri in 1:nrow(bcc.data)) {
+          tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
+          if (length(tmp) > 1) { 
+            bcc.data$filename[nri] = tmp[2]
+            bcc.data$filename[nri] = unlist(strsplit(bcc.data$filename[nri],".RData"))[1]
+          }
+        }
         if (length(which(as.character(bcc.data$filename) == fnames[j])) > 0) {
-          cat("\nMatching filename found in backup.cal.coef\n")
           bcc.i = which(bcc.data$filename == fnames[j])
           bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
           bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
@@ -249,12 +263,21 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
           C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
           C$tempoffset=  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
-          cat(paste0("\nNew offset correction ",c("x","y","z"),": ",C$offset))
-          cat(paste0("\nNew scale correction ",c("x","y","z"),": ",C$scale))
-          cat(paste0("\nNew tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
+          cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
+          cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
+          cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
+          cat("\n")
         } else {
           cat("\nNo matching filename found in backup.cal.coef\n")
           cat(paste0("\nCheck that filename ",fnames[j]," exists in the csv-file\n"))
+          if (do.cal ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
+            cat("\n")
+            cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+            C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
+                            minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
+                            windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
+                            desiredtz=desiredtz)
+          }
         }
       }
       #------------------------------------------------
@@ -263,6 +286,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     do.bfen=do.bfen,
                     do.enmo=do.enmo,
                     do.lfenmo=do.lfenmo,
+                    do.lfen=do.lfen,
                     do.en=do.en,
                     do.hfen=do.hfen,
                     do.hfenplus=do.hfenplus,
@@ -280,6 +304,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                     outputfolder=outputfolder,
                     dayborder=dayborder,dynrange=dynrange,
                     configtz=configtz)
+      
       #------------------------------------------------
       cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present
@@ -294,10 +319,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         filename = paste0(filename,".RData")
       }
       save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
-      # SI = sessionInfo()
-      # save(SI,file=paste(path3,"/results/QC/sessioninfo_part1.RData",sep=""))
-      
-      
       # as metadatdir is not known derive it:
       metadatadir = c()
       if (length(datadir) > 0) {
@@ -334,11 +355,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       }
       rm(M); rm(I); rm(C)
     }
-    # if(length(filelocationkey) > 0) { # turned off on 20-2-2019, because information is already stored in part2, 4 and 5
-    #   filelocationkey[,3] = datadir[j]
-    #   filelocationkey = rbind(c("Filename with full path","Filename","data directory"),filelocationkey)
-    #   write.csv(filelocationkey,paste(path3,"/results/QC/filelocationkey.csv",sep=""),row.names=FALSE)
-    # }
     closeAllConnections()
   }
 }
