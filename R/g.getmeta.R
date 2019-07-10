@@ -149,7 +149,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (mon == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
   if (mon == 4 & dformat == 2) blocksize = round(blocksize)
   id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
-  
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
@@ -166,7 +165,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   } else if (temp.available == TRUE){
     metalong = matrix(" ",((nev/(sf*ws2))+100),7) #generating output matrix for 15 minutes summaries
   }
-
   #------------------------------------------
 
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
@@ -211,7 +209,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                               rmc.headername.recordingid = rmc.headername.sn,
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps)
-
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -236,6 +233,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         P = c()
       }
     }
+    
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (useRDA == FALSE) {
         if (mon == 1 & dformat == 1) {
@@ -253,6 +251,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
+    
         if (temp.available == TRUE) {
           use.temp = TRUE
         } else {
@@ -445,9 +444,14 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             Gx = as.numeric(data_col234[,1]); Gy = as.numeric(data_col234[,2]); Gz = as.numeric(data_col234[,3])
           } else if (dformat == 5 & mon == 5 & use.temp == TRUE) {
             yy = as.matrix(cbind(as.numeric(data[,5]),as.numeric(data[,5]),as.numeric(data[,5])))
-            data[,2:4] = scale(as.matrix(data[,2:4]),center = -offset, scale = 1/scale) +
+            data_col234 = data[,2:4]
+            storage.mode(data_col234) <- "numeric"
+            
+            data_col234 = scale(data_col234,center = -offset, scale = 1/scale) +
               scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            # data[,2:4] = scale(as.matrix(data[,2:4]),center = -offset, scale = 1/scale) +
+            #   scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
+            Gx = as.numeric(data_col234[,1]); Gy = as.numeric(data_col234[,2]); Gz = as.numeric(data_col234[,3])
           }
           #--------------------------------------------
           if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == TRUE)) {
