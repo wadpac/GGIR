@@ -410,7 +410,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             text(x=-700,y=285,labels=title,pos=4,font=2,cex=1)
             text(x=-700,y=180,labels="What we think you did:",pos=4,font=1.8,cex=0.9)
             text(x=-700,y=-120,labels="Your arm movement:",pos=4,font=1.8,cex=0.9)
-            text(x=-700,y=80,labels="Your arm angle (up or down):",pos=4,font=1.8,cex=0.9)
+            text(x=-700,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
             box("figure",col="black")
             if (I$monc == 2) {
               legend("topright",legend=c("sleep / rest", #"arm angle (top) / arm movement (bottom)",
