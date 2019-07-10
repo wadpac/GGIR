@@ -364,9 +364,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
                     if (length(time) == length(LEVELS)) {
                       ind = 1:length(time) #c(1,which(diff(LEVELS)!=0) + 1)
-                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
-                      ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
+                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind], class_name = rep("",length(time)),stringsAsFactors = FALSE)
+                      for (LNi in 1:length(Lnames)) {
+                        replacev = which(ms5rawlevels$class_id == (LNi-1))
+                        if (length(replacev) > 0) ms5rawlevels$class_name[replacev] = Lnames[LNi]
+                      }
+                      # ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
                       # ms5rawlevels$time[1]
+                      print(rawlevels_fname)
                       write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
                       rm(ms5rawlevels)
                     }
@@ -580,6 +585,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = TRVi
                         ds_names[fi] = "TRVi";      fi = fi + 1
                         wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
+			if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
                         if (wlih > 30 & length(summarysleep_tmp2$night) > 1) { # scenario when day is missing and code reaches out to two days before this day
                           # if (summarysleep_tmp2$night[wi] - summarysleep_tmp2$night[wi-1] != 1) {
                           qqq1 = (qqq2 - (24* ((60/ws3)*60))) + 1 # code now uses only 24hours before waking up
@@ -662,9 +668,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # sse = qqq1:qqq2
                         WLH = ((qqq2-qqq1)+1)/((60/ws3)*60) #windowlength_hours = 
                         if (WLH <= 1) WLH = 1.001
-                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH))
+                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH),na.rm=TRUE)
                         ds_names[fi] = paste("quantile_mostactive60min_mg",sep="");      fi = fi + 1
-                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH))
+                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH),na.rm=TRUE)
                         ds_names[fi] = paste("quantile_mostactive30min_mg",sep="");      fi = fi + 1
                         #===============================================
                         # L5 M5, L10 M10...
@@ -765,8 +771,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         fi = fi + bci
                         #===============================================
                         # NUMBER OF WINDOWS
-                        for (levelsc in 0:(length(Lnames)-1)) {
-                          # dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2 #old code
+			for (levelsc in 0:(length(Lnames)-1)) {
                           dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2
                           if (dsummary[di,fi] == 0 & LEVELS[qqq1] == levelsc) dsummary[di,fi] = 1
                           ds_names[fi] = paste("Nblocks_",Lnames[levelsc+1],sep="");      fi = fi + 1

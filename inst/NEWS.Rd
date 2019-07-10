@@ -1,14 +1,24 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-2 (release date:21-05-2019)}{
+\section{Changes in version 1.9-3 (release date:10-07-2019)}{
+\itemize{
+\item Added functionality to handle accelerometer data from any accelerometer brand
+stored in csv files via read.myacc.csv. Pass on the arguments of this function to
+g.shell.GGIR to use this functionality.
+  }
+  }
+
+\section{Changes in version 1.9-2 (release date:03-07-2019)}{
 \itemize{
   \item Added functionality to work with studies where accelerometer is configured in one
   timezone and used in other timezone. Only functional for AX3 cwa data at the moment.
-  \item Sleep skipped if a day only has one sustained inactivity bout
-  \item Added functionality to handle accelerometer data from any accelerometer brand
-  stored in csv files via read.myacc.csv. Pass on the arguments of this function to
-  g.shell.GGIR to use this functionality.
+  See argument 'configtz'.
+  \item Sleep estimation is now skipped if a day only has one sustained inactivity bout
+  \item Arguments ignorenonwear default value changed to TRUE and def.noc.sleep default changed
+  to 1 in line with literature.
+  \item Fixed AX3 csv format starttimestamp recognition
+  \item Part5 csv export now also includes class labels (previously only class numbers).
   }
   }
 \section{Changes in version 1.9-1 (release date:08-05-2019)}{
