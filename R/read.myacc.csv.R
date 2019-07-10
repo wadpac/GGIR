@@ -164,7 +164,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       P$accz = (P$accz / ((2^rmc.bitrate)/2)) * rmc.dynamic_range
     }
   }
-  
   # Convert temperature units
   if (rmc.unit.temp == "K") {
     P$temperature = P$temperature + 272.15 # From Kelvin to Celsius
@@ -176,30 +175,30 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     deltatime = abs(diff(P$timestamp))
     gapsi = which(deltatime > 1) # gaps indices
     newP = c()
-    if (length(gapsi) > 0) {
+    if (length(gapsi) > 0) { # if gaps exist
       if (length(sf) == 0) { # estimate sample frequency if not given in header
         sf = (P$timestamp[gapsi[jk]] - P$timestamp[1]) / (gapsi[1]-1)
       }
       newP = rbind(newP,P[1:gapsi[1],])
-      LG = length(gapsi)
-      for (jk in 1:LG) {
-        dt = P$timestamp[gapsi+1] - P$timestamp[gapsi] # difference in time
+      NumberOfGaps = length(gapsi)
+      for (jk in 1:NumberOfGaps) { # fill up gaps
+        dt = P$timestamp[gapsi[jk]+1] - P$timestamp[gapsi[jk]] # difference in time
         newblock = as.data.frame(matrix(0,dt*sf,ncol(P)))
         colnames(newblock) = colnames(P)
-        cat("testing")
-        cat(length(newblock$timestamp))
-        if (jk != LG) {
-          seqi = seq(P$timestamp[gapsi],P$timestamp[gapsi[jk+1]] - (1/sf),by=1/sf)
-          cat(length(seqi))
-        } else {
-          seqi = seq(P$timestamp[gapsi],P$timestamp[nrow(P)], by=1/sf)
-          cat(length(seqi))
-        }
+        # cat("testing")
+        # cat(length(newblock$timestamp))
+        # if (jk != NumberOfGaps) {
+        seqi = seq(P$timestamp[gapsi[jk]],P$timestamp[gapsi[jk]+1] - (1/sf),by=1/sf)
+        # cat(length(seqi))
+        # } else {
+        #   seqi = seq(P$timestamp[gapsi[jk]],P$timestamp[nrow(P)], by=1/sf)
+        #   cat(length(seqi))
+        # }
         if (length(seqi) >= length(newblock$timestamp)) {
           newblock$timestamp = seqi[1:length(newblock$timestamp)]
         }
         newP = rbind(newP, newblock)
-        if (jk != LG) {
+        if (jk != NumberOfGaps) {
           newP = rbind(newP,P[((gapsi[jk]+1):gapsi[jk+1]),])
         } else {
           newP = rbind(newP,P[((gapsi[jk]+1):nrow(P)),]) # last block
@@ -208,6 +207,5 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       P = newP
     }
   }
-  
   return(list(data=P,header=header))
 }
