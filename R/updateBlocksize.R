@@ -10,11 +10,16 @@ updateBlocksize = function(blocksize=c(), bsc_qc=data.frame(time=c(),size=c())) 
   } else {
     bsc_qc = rbind(bsc_qc,bsc_qc_new_row)
   }
-  if (memuse > 4000) {
-    if (nrow(bsc_qc) < 5) {
-      blocksize = round(blocksize * 0.8)
+  assumed_memory_R = 4000
+  memratio = (assumed_memory_R - memuse) / memuse
+  if (nrow(bsc_qc) < 10) {
+    if (memratio > 1.1) {
+      blocksize = round(blocksize * 0.8) # reduce blocksize
+      
+    } else if (memratio < 0.90) {
+      blocksize = round(blocksize * 1.1)  # increase blocksize
     }
-  }
+  } 
   blocksize = round(blocksize)
   return(list(blocksize=blocksize, bsc_qc=bsc_qc))
 }
