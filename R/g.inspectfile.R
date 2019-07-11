@@ -322,7 +322,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
     }
   }
   closeAllConnections()
-  if (dformat != 4 & length(H) > 1 & class(H) == "matrix") {
+  if (dformat != 4 & length(H) > 1 & (class(H) == "matrix" | class(H) == "data.frame")) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
     header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
   }
