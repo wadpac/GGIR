@@ -187,7 +187,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.bit = "bit", rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c(), rmc.check4timegaps = TRUE)
 
-  expect_that(nrow(D7$data), equals(170))
+  expect_that(nrow(D7$data), equals(171))
   expect_that(ncol(D7$data), equals(5))
   expect_that(nrow(D7$header), equals(5))
   expect_that(ncol(D7$header), equals(1))
