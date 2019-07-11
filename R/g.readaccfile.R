@@ -409,7 +409,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       P = c()
     }
   } else if (mon == 5 & dformat == 5) { # user specified csv format
-    startpage = (100+(blocksize*300*(blocknumber-1)))
+    startpage = (1+(blocksize*300*(blocknumber-1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
                              blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
