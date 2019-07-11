@@ -79,7 +79,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       header = header_tmp2
     }
     skip = rmc.firstrow.acc-1
-    if (length(rmc.skip) > 0) skip = skip + rmc.skip
     freadheader = TRUE
     # assess whether accelerometer data conversion is needed
     if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
@@ -111,6 +110,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       row.names(header)[nrow(header)] = "sample_rate"
     }
   }
+  if (length(rmc.skip) > 0) {
+    skip = skip + rmc.skip
+  }
+  
   # read data from file
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip=skip,
                                       dec=rmc.dec, showProgress = FALSE, header = freadheader))
@@ -185,15 +188,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
         dt = P$timestamp[gapsi[jk]+1] - P$timestamp[gapsi[jk]] # difference in time
         newblock = as.data.frame(matrix(0,dt*sf,ncol(P)))
         colnames(newblock) = colnames(P)
-        # cat("testing")
-        # cat(length(newblock$timestamp))
-        # if (jk != NumberOfGaps) {
         seqi = seq(P$timestamp[gapsi[jk]],P$timestamp[gapsi[jk]+1] - (1/sf),by=1/sf)
-        # cat(length(seqi))
-        # } else {
-        #   seqi = seq(P$timestamp[gapsi[jk]],P$timestamp[nrow(P)], by=1/sf)
-        #   cat(length(seqi))
-        # }
         if (length(seqi) >= length(newblock$timestamp)) {
           newblock$timestamp = seqi[1:length(newblock$timestamp)]
         }
