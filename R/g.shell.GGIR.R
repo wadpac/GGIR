@@ -119,7 +119,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
-
+  if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE
+  
   # PART 3
   if (length(which(ls() == "anglethreshold")) == 0)  anglethreshold = 5
   if (length(which(ls() == "timethreshold")) == 0)  timethreshold = 5
@@ -248,7 +249,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             qwindow=qwindow, qlevels = qlevels,
             ilevels = ilevels, mvpathreshold = mvpathreshold,
             boutcriter = boutcriter,ndayswindow=ndayswindow,idloc=idloc,do.imp=do.imp,
-            storefolderstructure=storefolderstructure,overwrite=overwrite,csv=epochvalues2csv,
+            storefolderstructure=storefolderstructure,overwrite=overwrite,epochvalues2csv=epochvalues2csv,
             mvpadur=mvpadur,selectdaysfile=selectdaysfile,bout.metric=bout.metric,window.summary.size=window.summary.size,
             dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz,
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
