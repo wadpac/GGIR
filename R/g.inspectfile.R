@@ -10,6 +10,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
       eval(parse(text=txt))
     }
   }
+  
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
   if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
@@ -32,7 +33,6 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
-  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename=c(),datafile=c()) {
@@ -183,7 +183,6 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
   monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
   fornames = c("bin","csv","wav","cwa","csv") #format names
   
-  
   if (length(filename) == 0) {
     print("no files to analyse")
   }
@@ -208,7 +207,11 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
                        rmc.headername.recordingid = rmc.headername.sn,
                        rmc.header.structure = rmc.header.structure,
                        rmc.check4timegaps = rmc.check4timegaps)
-    sf = Pusercsvformat$header$sample_rate
+    if (Pusercsvformat$header != "no header") {
+      sf = Pusercsvformat$header$sample_rate
+    } else {
+      sf = rmc.sf
+    }
   } else if (length(rmc.firstrow.acc) == 0) {
     INFI = getbrand(filename,datafile)
     mon = INFI$mon
@@ -275,8 +278,11 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
     H = PP$header
     
   } else if (dformat == 5) { # csv data in a user-specified format
+    
     H = header = Pusercsvformat$header
-    H = data.frame(name=row.names(header),value=header)
+    if (Pusercsvformat$header != "no header") {
+      H = data.frame(name=row.names(header),value=header)
+    }
     sf = rmc.sf
   }
   H = as.matrix(H)
@@ -311,13 +317,12 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
     if (mon == 2 & dformat == 1) {
       varname = rownames(as.matrix(H))
       H = data.frame(varname = varname,varvalue = as.character(H))
-    } else {    
-      H = data.frame(varname = H[,1],varvalue = H[,2])
+    } else {
+      if (length(H) > 1 & class(H) == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2])
     }
   }
   closeAllConnections()
-  
-  if (dformat != 4) {
+  if (dformat != 4 & length(H) > 1 & class(H) == "matrix") {
     RowsWithData = which(is.na(H[,1]) == FALSE)
     header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
   }
