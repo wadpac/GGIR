@@ -22,7 +22,7 @@ epochvalues2csv=FALSE, mvpadur=c(1,5,10),selectdaysfile=c(),
 window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
-iglevels = c())
+iglevels = c(), TimeSegments2ZeroFile = c())
 }
 \arguments{
 \item{datadir}{
@@ -165,6 +165,10 @@ iglevels = c())
   \item{iglevels}{
     see function \link{g.analyse}
   }
+  \item{TimeSegments2ZeroFile}{
+   Csv-file holding the data.frame used for argument TimeSegments2Zero in function \link{g.impute}
+  }
+  
 }
 \value{
  The function provides no values, it only ensures that other functions are called
