@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.9-3 (release date:17-07-2019)}{
+\itemize{
+  \item Now possible to specify time windows that need to be ignored for imputation
+  }
+  }
+
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{
 \itemize{
   \item Added functionality to work with studies where accelerometer is configured in one
