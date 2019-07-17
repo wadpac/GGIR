@@ -7,7 +7,7 @@ os:
   - linux
   - osx
 
-language: r: 3.6.0
+language: r: 3.6.1
 sudo: false
 cache: packages
 
