@@ -78,7 +78,7 @@ IVIS_epochsize_seconds = 3600, iglevels = c())
     There is no constriction to the number of levels.
   }
   \item{winhr}{
-    window size in hours of L5 and M5 analysis (dedault = 5 hours)
+    Vector of window size(s) (unit: hours) of L5 and M5 analysis (dedault = 5 hours)
   }
   \item{idloc}{
     If value = 1 (default) the code assumes that ID number is stored in the
