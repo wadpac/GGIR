@@ -76,7 +76,7 @@ iglevels = c())
     resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
   }
    \item{winhr}{
-    window size in hours of L5 and M5 analysis (dedault = 5 hours)
+    Vector of window size(s) (unit: hours) of L5 and M5 analysis (dedault = 5 hours)
   }
   \item{qwindow}{
    see \link{g.analyse}
