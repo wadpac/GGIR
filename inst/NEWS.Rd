@@ -5,6 +5,7 @@
 \itemize{
   \item Enabled multiple values for argument winhr, by which part2 can now calculated 
   for example L3M3, L5M5, L6M6, L10M10 all in one go.
+  \item Moved IVIS calculation to seperate function
   }
   }
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{

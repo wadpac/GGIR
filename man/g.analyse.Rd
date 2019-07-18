@@ -25,7 +25,7 @@ selectdaysfile=c(),window.summary.size=10,
 dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c(),
 IVIS_windowsize_minutes = 60,
-IVIS_epochsize_seconds = 3600, iglevels = c())
+IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1)
 }
 
 \arguments{
@@ -143,6 +143,10 @@ IVIS_epochsize_seconds = 3600, iglevels = c())
     the bins c(seq(0,4000,by=25),8000) or the user could specify their own
     distribution. There is no constriction to the number of levels.
   }
+   \item{IVIS.activity.metric}{
+    see function \link{g.IVIS}
+  }
+   
 }
 \value{
 \item{\code{summary}}{summary for the file that was analysed (see details)}
