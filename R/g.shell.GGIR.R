@@ -121,7 +121,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
   if (length(which(ls() == "TimeSegments2ZeroFile")) == 0) TimeSegments2ZeroFile = c()
   if (length(which(ls() == "IVIS.activity.metric")) == 0)  IVIS.activity.metric = 1
-
+  if (length(which(ls() == "qM5L5")) == 0)  qM5L5 = c()
+  
 
   # PART 3
   if (length(which(ls() == "anglethreshold")) == 0)  anglethreshold = 5
@@ -207,7 +208,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz,
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
-            IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile)
+            IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
+            qM5L5=qM5L5)
   }
   if (dopart3 == TRUE) {
     cat('\n')
