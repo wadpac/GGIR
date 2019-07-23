@@ -7,10 +7,10 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                   TimeSegments2ZeroFile=c()) {
+                   IVIS.activity.metric=1, TimeSegments2ZeroFile=c()) {
   snloc= 1
   #---------------------------------
-  # Specifying directories with meta-data and extracting filenames 
+  # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
   fnames = dir(path)
   if (f1 > length(fnames)) f1 = length(fnames)
@@ -53,12 +53,12 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
-  
+
   #---------------------------------------
   cnt78 = 1
   for (i in f0:f1) {
     if (length(ffdone) > 0) {
-      if (length(which(ffdone == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))) > 0) { 
+      if (length(which(ffdone == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))) > 0) {
         skip = 1 #skip this file because it was analysed before")
       } else {
         skip = 0 #do not skip this file
@@ -74,7 +74,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
       filefoldername = c()
       load(paste0(path,fnames[i])) #reading RData-file
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-        
+
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
         TimeSegments2Zero = c() # set defaul
@@ -85,7 +85,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))
           if (length(filei) > 0) {
             # If yes, load the timestamps that indicate the windows to be ignored
-            TimeSegments2Zero = TimeSegments2ZeroAll[filei,]  
+            TimeSegments2Zero = TimeSegments2ZeroAll[filei,]
             # Check that they fall withint the measurement
             TimeSegments2Zero$windowstart = as.POSIXlt(TimeSegments2Zero$windowstart,tz=desiredtz)
             TimeSegments2Zero$windowend = as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz)
@@ -97,7 +97,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             #                      as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz) < timespan1)
             if (length(validtimes) > 0) {
               TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
-              
+
             } else {
               TimeSegments2Zero = c()
             }
@@ -116,12 +116,13 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
                         window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                         desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
-                        IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels)
+                        IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
+                        IVIS.activity.metric= IVIS.activity.metric)
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
         if (epochvalues2csv==TRUE) {
           if (length(IMP$metashort) > 0) {
             write.csv(IMP$metashort,paste0(metadatadir,"/",csvfolder,"/",name,".csv"),row.names=FALSE)
-          } 
+          }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (cnt78 == 1) {
@@ -166,22 +167,22 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
           filename = paste0(name,".RData")
         }
-        
+
         if (storefolderstructure == TRUE) { # newly added 20-2-2019
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        
+
         save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
-      
+
       rm(M); rm(I)
     }
   }
   # SI = sessionInfo()
   # save(SI,file=paste0(metadatadir,"/results/QC/sessioninfo_part2.RData"))
-  SI = sessionInfo() 
+  SI = sessionInfo()
   sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part2.RData",sep="")
   if (file.exists(sessionInfoFile)) {
     FI = file.info(sessionInfoFile)
