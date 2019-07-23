@@ -6,7 +6,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
-                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c()) {
+                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
+                   IVIS.activity.metric=1) {
   snloc= 1
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames 
@@ -84,7 +85,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
                         window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                         desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
-                        IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels)
+                        IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
+                        IVIS.activity.metric= IVIS.activity.metric)
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
         if (epochvalues2csv==TRUE) {
           if (length(IMP$metashort) > 0) {
