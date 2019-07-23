@@ -22,7 +22,7 @@ epochvalues2csv=FALSE, mvpadur=c(1,5,10),selectdaysfile=c(),
 window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
-iglevels = c())
+iglevels = c(), IVIS.activity.metric=1)
 }
 \arguments{
 \item{datadir}{
@@ -76,7 +76,7 @@ iglevels = c())
     resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
   }
    \item{winhr}{
-    window size in hours of L5 and M5 analysis (dedault = 5 hours)
+    Vector of window size(s) (unit: hours) of L5 and M5 analysis (dedault = 5 hours)
   }
   \item{qwindow}{
    see \link{g.analyse}
@@ -155,16 +155,18 @@ iglevels = c())
   see \link{g.getmeta}
   }
     \item{IVIS_windowsize_minutes}{
-  Window size of the Intradaily Variability (IV) and Interdaily
-  Stability (IS) metrics in minutes
+  see function \link{g.IVIS}
   }
   \item{IVIS_epochsize_seconds}{
-  Epoch size of the Intradaily Variability (IV) and Interdaily
-  Stability (IS) metrics in seconds
+  see function \link{g.IVIS}
   }
   \item{iglevels}{
     see function \link{g.analyse}
   }
+  \item{IVIS.activity.metric}{
+    see function \link{g.IVIS}
+  }
+
 }
 \value{
  The function provides no values, it only ensures that other functions are called
