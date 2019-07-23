@@ -59,12 +59,12 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
   }
   # obtain default parameter values if not provided:
-  
+
   # GENERAL parameters:
   if (length(which(ls() == "overwrite")) == 0)  overwrite = FALSE
   if (length(which(ls() == "acc.metric")) == 0)  acc.metric = "ENMO"
   if (length(which(ls() == "storefolderstructure")) == 0)  storefolderstructure = FALSE
-  
+
   if (length(which(ls() == "ignorenonwear")) == 0)  ignorenonwear = TRUE
   if (length(which(ls() == "print.filename")) == 0)  print.filename = FALSE
   # PART 1
@@ -96,7 +96,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "dynrange")) == 0)  dynrange = c()
   if (length(which(ls() == "idloc")) == 0) idloc = 1
   if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = c()
-  
+
   # PART 2
   if (length(which(ls() == "strategy")) == 0)  strategy = 1
   if (length(which(ls() == "maxdur")) == 0)  maxdur = 7
@@ -119,15 +119,16 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
+  if (length(which(ls() == "TimeSegments2ZeroFile")) == 0) TimeSegments2ZeroFile = c()
   if (length(which(ls() == "IVIS.activity.metric")) == 0)  IVIS.activity.metric = 1
-  
-  
+
+
   # PART 3
   if (length(which(ls() == "anglethreshold")) == 0)  anglethreshold = 5
   if (length(which(ls() == "timethreshold")) == 0)  timethreshold = 5
   if (length(which(ls() == "constrain2range")) == 0) constrain2range = TRUE
   if (length(which(ls() == "do.part3.pdf")) == 0) do.part3.pdf = TRUE
-  
+
   # PART 4
   if (length(which(ls() == "loglocation")) == 0)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -143,7 +144,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "sleeplogidnum")) == 0)  sleeplogidnum=TRUE
   if (length(which(ls() == "def.noc.sleep")) == 0)  def.noc.sleep=1
   if (length(which(ls() == "do.visual")) == 0)  do.visual=FALSE
-  
+
   # PART 5
   if (length(which(ls() == "excludefirstlast.part5")) == 0)  excludefirstlast.part5=FALSE
   if (length(which(ls() == "includenightcrit")) == 0)  includenightcrit=16
@@ -160,12 +161,12 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "boutdur.in")) == 0)  boutdur.in = c(10,20,30)
   if (length(which(ls() == "boutdur.lig")) == 0)  boutdur.lig = c(1,5,10)
   if (length(which(ls() == "save_ms5rawlevels")) == 0) save_ms5rawlevels = FALSE
-  
+
   # VISUAL REPORT
   if (length(which(ls() == "viewingwindow")) == 0)  viewingwindow = 1
   if (length(which(ls() == "dofirstpage")) == 0)  dofirstpage = TRUE
   if (length(which(ls() == "visualreport")) == 0)  visualreport = FALSE
-  
+
 
   cat("\n   Help sustain GGIR into the future \n")
   cat("   Check out: https://www.movementdata.nl/how-to-help-sustain-ggir \n")
@@ -174,7 +175,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 1\n")
-    g.part1(datadir=datadir,outputdir=outputdir,f0=f0,f1=f1,windowsizes = windowsizes, 
+    g.part1(datadir=datadir,outputdir=outputdir,f0=f0,f1=f1,windowsizes = windowsizes,
             desiredtz = desiredtz,chunksize=chunksize,studyname=studyname,minloadcrit=minloadcrit,
             do.enmo = do.enmo,
             do.lfenmo = do.lfenmo,do.en = do.en,
@@ -194,7 +195,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 2\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
-    g.part2(datadir =datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy = strategy, 
+    g.part2(datadir =datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy = strategy,
             hrs.del.start = hrs.del.start,hrs.del.end = hrs.del.end,
             maxdur =  maxdur, includedaycrit = includedaycrit,
             M5L5res = M5L5res, winhr = winhr,
@@ -206,7 +207,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz,
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
-            IVIS.activity.metric=IVIS.activity.metric)
+            IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -237,7 +238,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     cat("\nPart 5\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
     g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
-            hrs.del.start=hrs.del.start, 
+            hrs.del.start=hrs.del.start,
             hrs.del.end=hrs.del.end,
             loglocation=loglocation,excludefirstlast.part5=excludefirstlast.part5, acc.metric=acc.metric,
             windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
@@ -251,7 +252,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             winhr = winhr,M5L5res = M5L5res,
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,save_ms5rawlevels = save_ms5rawlevels)
   }
-  
+
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
@@ -262,7 +263,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
       cat("before you can use argument visualreport or create a report for part 4\n")
       stop()
     }
-  }  
+  }
   if (length(which(do.report == 2)) > 0) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
