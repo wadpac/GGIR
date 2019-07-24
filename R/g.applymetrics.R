@@ -78,7 +78,6 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
     #averaging HFENplus per ws3 seconds
     allmetrics$HFENplus3b = averageperws3(x=HFENplus,sf,ws3)
   }
-  #teLindert code removed because never used, and never verified to be correct
   if (do.anglex == TRUE | do.angley == TRUE | do.anglez == TRUE) {
     angle = g.metric(Gx,Gy,Gz,n,sf=sf,ii=11,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
     angle_x = angle[,1]; angle_y = angle[,2]; angle_z = angle[,3]
