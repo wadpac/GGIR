@@ -1,6 +1,6 @@
 library(GGIR)
 context("g.binread")
-test_that("g.getmetric calculates the correct metric values", {
+test_that("g.binread reads data in file correctly", {
   
   binfile  = system.file("binfile/genea_testfile.bin", package = "GGIR")[1]
   GENEA = g.binread(binfile = binfile,start = 1,end=4)
