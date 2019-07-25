@@ -43,8 +43,8 @@ g.applymetrics = function(Gx,Gy,Gz,n,sf,ws3,metrics2do){
   
   #-----------------------------------------------------
   #deriving metric ENMO (Euclidean Norm Minus One)
+  EN = sqrt(Gx^2 + Gy^2 + Gz^2)
   if (do.enmo == TRUE) {
-    EN = sqrt(Gx^2 + Gy^2 + Gz^2)
     ENMO = EN - 1
     ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
     allmetrics$ENMO3b = averageperws3(x=ENMO,sf,ws3)
