@@ -84,16 +84,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   if (storefolderstructure == TRUE) {
     filelist = FALSE
     if (length(datadir) == 1) { #could be a directory or one file
-      if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
-      if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
-      if (length(unlist(strsplit(datadir,"[.]cw")))>1) filelist = TRUE
+      if (length(unlist(strsplit(datadir,split = "[.](cs|bi|cw)")))>1) filelist = TRUE
     } else { #multiple files
       filelist = TRUE    
     }
     if (filelist == FALSE) {
-      fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
-                     dir(datadir,recursive=TRUE,pattern="[.]bin"),
-                     dir(datadir,recursive=TRUE,pattern="[.]cwa"))
+      fnamesfull = dir(datadir,recursive=TRUE,pattern="[.](csv|bin|cwa)")
     } else {
       fnamesfull = datadir
     }
@@ -121,21 +117,16 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   convertHRsinceprevMN2Clocktime = function(x) {
     # x = hours Since Previous Midnight
     HR = floor(x)
-    MI = floor((x - floor(x)) * 60)
+    MI = floor((x - HR) * 60)
     SE = round(((x - HR) - (MI/60)) * 3600)
-    if (SE == 60) {
-      MI = MI + 1; SE = 0
-    }
-    if (MI == 60) {
-      HR = HR + 1; MI = 0
-    }
+    if (SE == 60) MI = MI + 1; SE = 0
+    if (MI == 60) HR = HR + 1; MI = 0
     if (HR == 24) HR = 0
     if (HR < 10) HR = paste0("0",HR)
     if (MI < 10) MI = paste0("0",MI)
     if (SE < 10) SE = paste0("0",SE)
     return(paste0(HR,":",MI,":",SE))
   }
-  
   #=================================================================
   #=================================================================
   # start of loop through the participants
@@ -303,11 +294,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             #-----------------------------------------------------------
             #If sleep log is not available available, use default values calculated above (with the heuristic algorithm HDCZA or if that fails L5+/-6hr.
             if (j == nnights.list[1]) sleeplog.t = data.frame(matrix(0,length(nnightlist),5))
-            sleeplog.t[nightj,1] = accid
-            sleeplog.t[nightj,2] = j
-            sleeplog.t[nightj,3] = defaultdur
-            sleeplog.t[nightj,4] = convertHRsinceprevMN2Clocktime(defaultSptOnset)
-            sleeplog.t[nightj,5] = convertHRsinceprevMN2Clocktime(defaultSptWake)
+            sleeplog.t[nightj,1:5] = c(accid, j, defaultdur, 
+                                       convertHRsinceprevMN2Clocktime(defaultSptOnset),
+                                       convertHRsinceprevMN2Clocktime(defaultSptWake))
             names(sleeplog.t) = c("id","night","duration","sleeponset","sleepwake")
             sleeplog_used[i] = FALSE
             cleaningcode = 1
@@ -839,16 +828,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           ##########################################################################
         } #nights
         if (length(nnights.list) == 0) { #if there were no nights to analyse
-          nightsummary[sumi,1] = accid
-          nightsummary[sumi,2] = 0 #night
-          nightsummary[sumi,3:25] = NA #night
+          nightsummary[sumi,1:2] = c(accid, 0)
+          nightsummary[sumi,3:25] = NA
           nightsummary[sumi,26] = fnames[i]
           nightsummary[sumi,27] = 4 #cleaningcode = 4 (no nights of accelerometer available)
-          nightsummary[sumi,28] = FALSE #sleeplog_used[i]
-          nightsummary[sumi,29] = TRUE #acc_available
+          nightsummary[sumi,28:29] = c(FALSE, TRUE) #sleeplog_used acc_available
           if (storefolderstructure == TRUE) {
-            nightsummary[sumi,30] = ffd[i] #full filename structure
-            nightsummary[sumi,31] = ffp[i] #use the lowest foldername as foldername name
+            nightsummary[sumi,30:31] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }
