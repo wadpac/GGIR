@@ -20,3 +20,8 @@ r_packages:
 
 after_success:
   - Rscript -e 'covr::codecov()'
+
+coverage:
+  range: 50..75
+  round: down
+  precision: 2
