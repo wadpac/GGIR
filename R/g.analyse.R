@@ -159,10 +159,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     cat("One day in this measurement is longer or shorter than 24 hours (probably related to day saving time)")
   }
   #--------------------------------------
-  # derivation of distribution characteristics of the average day: quantiles (percentiles) and L5M5 method
+  # Analysis of the average day
+  # Derivation of distribution characteristics of the average day: quantiles (percentiles) and L5M5 method
   # Note that this is done here before all the other analyses because it only relies on the average day
-  # The values and variablenames are, however, stored in the filesummary matrix towards the end (not here)
-  # create names for quantile variables
+  # The values and variablenames are, however, stored in the filesummary matrix towards the end (not here
+  # in function g.analyse.avday).
   output_avday = g.analyse.avday(qlevels,doquan, averageday, M, IMP, t_TWDI, quantiletype, winhr, L5M5window, M5L5res,
                                  ws3, IVIS_epochsize_seconds, 
                                  IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels, firstmidnighti, ws2,
@@ -177,7 +178,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ML5AD_names = output_avday$ML5AD_names
   
   #--------------------------------------------------------------
-  # Features per day
+  # Analysis per day
   if (doperday == TRUE) {
     output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
                                      window.summary.size, qwindow, midnightsi, metashort, averageday,
@@ -207,7 +208,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   LWp = length(which(r5[which(r4 == 0)] < 1)) * (ws2/60) #length wear in minutes (for protocol)
   LMp = length(which(r4 == 0)) * (ws2/60) #length protocol
   #====================================================================
-  # Summarise per recording (not per day)
+  # Analysis per recording (entire file), and merge in average day analysis results
   #====================================================================
   # Extract the average 24 hr but ignore angle metrics
   lookattmp = which(colnames(metashort) %in% c("angle","anglex", "angley", "anglez") ==  FALSE)
@@ -254,7 +255,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      IVIS_windowsize_minutes, IVIS_epochsize_seconds,qwindow)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
-  
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
     names(windowsummary) = ws_names
