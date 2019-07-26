@@ -12,7 +12,7 @@ g.analyse.avday(qlevels, doquan, averageday, M, IMP,
   t_TWDI, quantiletype, winhr, L5M5window, M5L5res, 
   ws3, IVIS_epochsize_seconds, 
   IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels,
-  firstmidnighti, ws2, midnightsi, iglevels)
+  firstmidnighti, ws2, midnightsi, iglevels, qM5L5)
 }
 
 \arguments{
@@ -35,6 +35,7 @@ g.analyse.avday(qlevels, doquan, averageday, M, IMP,
 \item{ws2}{see \link{g.weardec}}
 \item{midnightsi}{see \link{g.detecmidnight}}
 \item{iglevels}{see \link{g.analyse}}
+\item{qM5L5}{see \link{g.getM5L5}}
 }
 \value{
 \item{\code{InterdailyStability}}{}

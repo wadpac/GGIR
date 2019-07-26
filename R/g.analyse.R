@@ -167,7 +167,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   output_avday = g.analyse.avday(qlevels,doquan, averageday, M, IMP, t_TWDI, quantiletype, winhr, L5M5window, M5L5res,
                                  ws3, IVIS_epochsize_seconds,
                                  IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels, firstmidnighti, ws2,
-                                 midnightsi, iglevels)
+                                 midnightsi, iglevels, qM5L5)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
@@ -189,7 +189,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
                                      bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-                                     deviceSerialNumber)
+                                     deviceSerialNumber, qM5L5)
     daysummary= output_perday$daysummary
     ds_names=output_perday$ds_names
     windowsummary=output_perday$windowsummary
