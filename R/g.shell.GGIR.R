@@ -120,7 +120,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
   if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
   if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE
-  
+
   # PART 3
   if (length(which(ls() == "anglethreshold")) == 0)  anglethreshold = 5
   if (length(which(ls() == "timethreshold")) == 0)  timethreshold = 5

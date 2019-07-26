@@ -295,11 +295,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             t1 = length(time)
             if ((t1 - t0) < (6*(60/ws3)*60)) skip = TRUE
           }
-          if (((t1-t0) + 1) / (12*60) == 25) { # day with 25 hours, just pretend that 25th hour did not happen
-            t1 = t1 - (12*60)
+          if (((t1-t0) + 1) / (60*60/ws3) == 25) { # day with 25 hours, just pretend that 25th hour did not happen
+            t1 = t1 - (60*60/ws3)
           }
-          if (((t1-t0) + 1) / (12*60) == 23) { # day with 23 hours, just extend timeline with 1 hour
-            t1 = t1 + (12*60)
+          if (((t1-t0) + 1) / (60*60/ws3) == 23) { # day with 23 hours, just extend timeline with 1 hour
+            t1 = t1 + (60*60/ws3)
           }
           acc = ACC[t0:t1]
           mpa = MODPA[t0:t1]
