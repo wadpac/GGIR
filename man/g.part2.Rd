@@ -22,7 +22,8 @@ epochvalues2csv=FALSE, mvpadur=c(1,5,10),selectdaysfile=c(),
 window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
-iglevels = c(), IVIS.activity.metric=1, TimeSegments2ZeroFile = c())
+iglevels = c(), IVIS.activity.metric=1, TimeSegments2ZeroFile = c(),
+qM5L5=c())
 }
 \arguments{
 \item{datadir}{
@@ -169,6 +170,10 @@ iglevels = c(), IVIS.activity.metric=1, TimeSegments2ZeroFile = c())
   \item{IVIS.activity.metric}{
     see function \link{g.IVIS}
   }
+  \item{qM5L5}{
+    see function \link{g.getM5L5}
+  }
+  
 }
 \value{
  The function provides no values, it only ensures that other functions are called
