@@ -15,7 +15,7 @@ test_that("chainof5parts", {
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
                      studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE,
           windowsizes = c(15,3600,3600))
-  expect_that(dir.exists(dn),is_true())
+  expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_that(round(C$scale,digits=5),equals(c(0.98476, 0.98399, 0.98442)))
@@ -58,9 +58,9 @@ test_that("chainof5parts", {
   load(rn[1])
   summarycsv = "output_test/results/part2_summary.csv"
   daysummarycsv = "output_test/results/part2_daysummary.csv"
-  expect_that(dir.exists(dirname),is_true())
-  expect_that(file.exists(summarycsv),is_true())
-  expect_that(file.exists(daysummarycsv),is_true())
+  expect_true(dir.exists(dirname))
+  expect_true(file.exists(summarycsv))
+  expect_true(file.exists(daysummarycsv))
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
@@ -74,26 +74,26 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
 
-  expect_that(dir.exists(dirname),is_true())
+  expect_true(dir.exists(dirname))
   expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(2952))
 
   #--------------------------------------------
   # part 4
-  g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
+  expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
           excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
           relyonsleeplog=FALSE,desiredtz=desiredtz,
-          storefolderstructure=FALSE, overwrite=TRUE)
+          storefolderstructure=FALSE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
   g.report.part4(datadir=fn,metadatadir=metadatadir,loglocation = sleeplog_fn,f0=1,f1=1)
-  expect_that(dir.exists(dirname),is_true())
-  expect_that(file.exists(vis_sleep_file),is_true())
+  expect_true(dir.exists(dirname))
+  expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
-  expect_that(as.logical(nightsummary$acc_available[1]),is_true())
-  expect_that(as.logical(nightsummary$sleeplog_used[1]),is_true())
+  expect_true(as.logical(nightsummary$acc_available[1]))
+  expect_true(as.logical(nightsummary$sleeplog_used[1]))
   #--------------------------------------------
   #part 5
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
@@ -103,8 +103,8 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-  expect_that(dir.exists(dirname),is_true())
-  expect_that(file.exists(rn[1]),is_true())
+  expect_true(dir.exists(dirname))
+  expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(6)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958))
@@ -115,11 +115,11 @@ test_that("chainof5parts", {
                           do.report=c(2,4,5),overwrite=FALSE,visualreport=FALSE,viewingwindow=1))
   suppressWarnings(g.shell.GGIR(mode=c(),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
                                 do.report=c(),overwrite=FALSE,visualreport=TRUE,viewingwindow=1))
-  expect_that(file.exists("output_test/results/part2_daysummary.csv"),is_true())
-  expect_that(file.exists("output_test/results/part2_summary.csv"),is_true())
-  expect_that(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"),is_true())
-  expect_that(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"),is_true())
-  expect_that(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"),is_true())
+  expect_true(file.exists("output_test/results/part2_daysummary.csv"),is_true())
+  expect_true(file.exists("output_test/results/part2_summary.csv"),is_true())
+  expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
+  expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
+  expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
