@@ -25,7 +25,8 @@ selectdaysfile=c(),window.summary.size=10,
 dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c(),
 IVIS_windowsize_minutes = 60,
-IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1)
+IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1,
+qM5L5=c())
 }
 
 \arguments{
@@ -146,6 +147,10 @@ IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1)
    \item{IVIS.activity.metric}{
     see function \link{g.IVIS}
   }
+  \item{qM5L5}{
+    see function \link{g.getM5L5}
+  }
+  
    
 }
 \value{
