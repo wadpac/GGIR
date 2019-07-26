@@ -135,14 +135,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     if (overwrite == TRUE) {
       skip = 0 # this will make that analyses is done regardless of whether it was done before
     } else {
+      skip = 0 #do not skip this file
       if (length(ffdone) > 0) {
-        if (length(which(ffdone == fnames[i])) > 0) { 
-          skip = 1 #skip this file because it was analysed before")
-        } else {
-          skip = 0 #do not skip this file
-        }
-      } else {
-        skip = 0
+        if (length(which(ffdone == fnames[i])) > 0) skip = 1 #skip this file because it was analysed before")
       }
     }
     if (skip == 0) {
@@ -714,12 +709,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     HR = floor(x)
                     MI = floor((x - floor(x)) * 60)
                     SE = round(((x - HR) - (MI/60)) * 3600)
-                    if (SE == 60) {
-                      MI = MI + 1; SE = 0
-                    }
-                    if (MI == 60) {
-                      HR = HR + 1; MI = 0
-                    }
+                    if (SE == 60) MI = MI + 1; SE = 0
+                    if (MI == 60) HR = HR + 1; MI = 0
                     if (HR == 24) HR = 0
                     if (HR < 10) HR = paste0("0",HR)
                     if (MI < 10) MI = paste0("0",MI)
