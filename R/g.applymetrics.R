@@ -38,8 +38,8 @@ g.applymetrics = function(Gx,Gy,Gz,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
   
   #-----------------------------------------------------
   #deriving metric ENMO (Euclidean Norm Minus One)
+  EN = sqrt(Gx^2 + Gy^2 + Gz^2)
   if (do.enmo == TRUE) {
-    EN = sqrt(Gx^2 + Gy^2 + Gz^2)
     ENMO = EN - 1
     ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
     allmetrics$ENMO3b = averageperws3(x=ENMO,sf,ws3)
@@ -78,7 +78,6 @@ g.applymetrics = function(Gx,Gy,Gz,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
     #averaging HFENplus per ws3 seconds
     allmetrics$HFENplus3b = averageperws3(x=HFENplus,sf,ws3)
   }
-  #teLindert code removed because never used, and never verified to be correct
   if (do.anglex == TRUE | do.angley == TRUE | do.anglez == TRUE) {
     angle = g.metric(Gx,Gy,Gz,n,sf=sf,ii=11,TW=TW,lb=lb,hb=hb) #calling function metric.R to do the calculation
     angle_x = angle[,1]; angle_y = angle[,2]; angle_z = angle[,3]
