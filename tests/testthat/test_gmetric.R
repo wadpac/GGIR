@@ -32,7 +32,7 @@ test_that("g.getmetric calculates the correct metric values", {
   HH = g.applymetrics(Gx,Gy,Gz,n,sf,ws3=1,metrics2do)
   expect_equal(round(sum(HH$BFEN3b),digits=1),208.3)
   expect_equal(round(sum(HH$MAD3b),digits=1),89.1)
-  expect_equal(round(sum(HH$LFENMO3b),digits=1),107.4)
+  expect_equal(round(sum(HH$LFENMO3b),digits=1),117.9)
   expect_equal(round(sum(HH$HFEN3b),digits=1),234.2)
   expect_equal(round(sum(HH$EN3b),digits=1),282.0)
   expect_equal(round(sum(HH$HFENplus3b),digits=1),246.9)
