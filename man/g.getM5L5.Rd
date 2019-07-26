@@ -9,7 +9,7 @@ not intended for direct use by package user. Please see \link{g.analyse}
 for further clarification on functionalities
 }
 \usage{
-g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr)	
+g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr,qM5L5=c())	
 }
 \arguments{
   \item{varnum}{
@@ -32,6 +32,10 @@ Resolution of hte M5L5 analyses in minutes
 \item{winhr}{
 windowsize of M5L5 analyses, e.g. 5 hours
 }
+\item{qM5L5}{
+Percentiles (quantiles) to be calculated over L5 and M5 window.
+}
+
 }
 \value{
 \itemize{
