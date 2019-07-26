@@ -79,11 +79,11 @@ test_that("chainof5parts", {
 
   #--------------------------------------------
   # part 4
-  g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
+  expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
           excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
           relyonsleeplog=FALSE,desiredtz=desiredtz,
-          storefolderstructure=FALSE, overwrite=TRUE)
+          storefolderstructure=FALSE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])

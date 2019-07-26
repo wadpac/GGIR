@@ -1,5 +1,5 @@
 g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
-                    ndayswindow = 7,desiredtz="Europe/London") {
+                    ndayswindow = 7,desiredtz="Europe/London", TimeSegments2Zero=c()) {
   windowsizes = M$windowsizes #c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
@@ -24,6 +24,12 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
   # Generating time variable
   timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)	
   timeline = timeline[1:nrow(metalong)]
+  
+  #=================================
+  # TO DO: issue 199,
+  # Check whether object M has a column external-non-wear
+  # If yes, then use that instead of GGIR-based non-wear, unless external-nonwear = FALSE (default).
+  
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
   out = g.weardec(M,wearthreshold,ws2)
@@ -33,6 +39,36 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
   r4 = matrix(0,length(r3),1) #protocol based decisions on data removal
   LC = out$LC
   LC2 = out$LC2
+  
+  #========================================================
+  # Check whether TimeSegments2Zero exist, because this means that the
+  # user wants to ignore specific time windows. This feature is used
+  # for example if the accelerometer was not worn during the night and the user wants
+  # to include the nighttime acceleration in the analeses without imputation,
+  # but wants to use imputation for the rest of the day.
+  # So, those time windows should not be imputed.
+  # and acceleration metrics should have value zero during these windows.
+  if (length(TimeSegments2Zero) > 0) {
+    r1long = matrix(0,length(r1),(ws2/ws3)) #r5long is the same as r5, but with more values per period of time
+    r1long = replace(r1long,1:length(r1long),r1)
+    r1long = t(r1long)
+    dim(r1long) = c((length(r1)*(ws2/ws3)),1)
+    timelinePOSIX = iso8601chartime2POSIX(M$metashort$timestamp,tz= desiredtz)
+    # Combine r1Long with TimeSegments2Zero
+    for (kli in 1:nrow(TimeSegments2Zero)) {
+      startTurnZero = which(timelinePOSIX == TimeSegments2Zero$windowstart[kli])
+      endTurnZero = which(timelinePOSIX == TimeSegments2Zero$windowend[kli])
+      r1long[startTurnZero:endTurnZero] = 0
+      # Force ENMO and other acceleration metrics to be zero for these intervals
+      M$metashort[startTurnZero:endTurnZero,which(colnames(M$metahosrt) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
+    }
+    # collaps r1long (short epochs) back to r1 (long epochs)
+    r1longc = cumsum(c(0,r1long))
+    select = seq(1,length(r1longc),by=(ws2/ws3))
+    r1 = diff(r1longc[round(select)]) / abs(diff(round(select)))
+    r1 = round(r1)
+  }
+
   #======================================
   # detect first and last midnight and all midnights
   tooshort = 0
@@ -134,6 +170,7 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
   r5long = t(r5long)
   dim(r5long) = c((length(r5)*(ws2/ws3)),1)
   
+ 
   #------------------------------
   # detect which features have been calculated in part 1 and in what column they have ended up
   ENi = which(colnames(metashort) == "en")
