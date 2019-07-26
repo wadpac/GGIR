@@ -4,7 +4,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                      IVIS.activity.metric=1) {
+                      IVIS.activity.metric=1, qM5L5 = c()) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
@@ -201,28 +201,26 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
           if (mean(avday) > 0 & nrow(as.matrix(M$metashort)) > 1440*(60/ws3)) {
             # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
-            ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value)
-            ML5AD = c(ML5AD,c(ML5ADtmp$DAYL5HOUR, ML5ADtmp$DAYL5VALUE, ML5ADtmp$DAYM5HOUR, ML5ADtmp$DAYM5VALUE, ML5ADtmp$V5NIGHT))
+            ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value, qM5L5=qM5L5)
+            ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
           } else {
-            ML5AD = c(ML5AD," "," "," "," "," ")
+            ML5AD = as.data.frame(c(ML5AD,rep(" ",4+length(qM5L5))))
           }
-          ML5AD_namestmp = rep(" ",5)
-          ML5N = c(paste0("L",winhr_value,"hr"), paste0("L",winhr_value), paste0("M",winhr_value,"hr"), paste0("M",winhr_value),"1to6am")
-          for (ML5ADi in 1:5) {
-            ML5AD_namestmp[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
-                                           L5M5window[1],"-",L5M5window[2],"h",sep="")
-            if (ML5ADi == 5) {
-              ML5AD_namestmp[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg",sep="")
-            }
-          }
-          ML5AD_names = c(ML5AD_names,ML5AD_namestmp)
-          rm(ML5AD_namestmp)
+          ML5AD_namestmp = rep(" ",4+length(qM5L5))
         }
-        
+        ML5N = names(ML5AD)
+        for (ML5ADi in 1:length(ML5N)) {
+          ML5AD_namestmp[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
+                                         L5M5window[1],"-",L5M5window[2],"h",sep="")
+        }
+        ML5AD_names = ML5AD_namestmp
+        rm(ML5AD_namestmp)
       }
     }
+    # Acceleration 1-6am 
+    ML5AD_names = c(ML5AD_names, paste0("1to6am_",colnames(M$metashort)[(quani+1)],"_mg"))
+    ML5AD = c(ML5AD, mean(avday[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000)
   }
-  
   if (doiglevels == TRUE) { 
     # intensity gradient (as described by Alex Rowlands 2018)
     # applied to the averageday per metric (except from angle metrics)
@@ -441,7 +439,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
           }
         }
       }
-      
       #--------------------------------------
       weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
       weekdays = rep(weekdays,26) # hardcoded maximum number of weeks of 26, not ideal
@@ -555,44 +552,47 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                 # Starting filling output matrix daysummary with variables per day segment and full day.
                 if (mi == ENMOi | mi == LFENMOi | mi == BFENi | 
                     mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
-                  if (length(varnum) > ((60/ws3)*60*5.5)) {
+                  if (length(varnum) > ((60/ws3)*60*5.5)) { # Calculate values
                     exfi = 0
                     for (winhr_value in winhr) {
                       # Time window for L5 & M5 analysis
                       t0_LFMF = L5M5window[1] #start in 24 hour clock hours
                       t1_LFMF = L5M5window[2]+(winhr_value-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
-                      ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value)
+                      ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5)
+                      ML5colna = colnames(ML5)
+                      ML5 = as.numeric(ML5)
                       if (anwi_index > 1) {
                         L5M5shift = qwindow[anwi_index - 1]
                       } else {
                         L5M5shift = 0
                       }
-                      if (length(ML5$DAYL5HOUR) > 0) {
-                        daysummary[di,exfi+fi] = ML5$DAYL5HOUR + L5M5shift
-                        daysummary[di,exfi+fi+1] = ML5$DAYL5VALUE
-                        daysummary[di,exfi+fi+2] = ML5$DAYM5HOUR + L5M5shift
-                        daysummary[di,exfi+fi+3] = ML5$DAYM5VALUE
-                        if (anwi_index == 1) {
-                          daysummary[di,exfi+fi+4] = ML5$V5NIGHT
-                        } else {
-                          daysummary[di,exfi+fi+4] = ""
-                        }
+                      if (length(ML5) > 3) {
+                        ML5 = as.numeric(ML5)
+                        ML5[c(1,3)] = ML5[c(1,3)] + L5M5shift
+                        daysummary[di,(exfi+fi):(exfi+fi-1+length(ML5))] = ML5
                       } else {
-                        daysummary[di,(exfi+fi):(exfi+fi+4)] = ""
+                        daysummary[di,(exfi+fi):(exfi+fi+4+(length(qM5L5)*2))] = ""
                       }
-                      exfi = exfi+5
+                      exfi = exfi+length(ML5)
                     }
                     
                   } else {
-                    daysummary[di,(exfi+fi):(exfi+fi+4)] = ""
+                    daysummary[di,(exfi+fi):(exfi+fi+4+(length(qM5L5)*2))] = ""
                   }
-                  for (winhr_value in winhr) {
-                    ds_names[fi] = paste0("L",winhr_value,"hr_",colnames(metashort)[mi],"_mg",L5M5window_name); fi=fi+1
-                    ds_names[fi] = paste0("L",winhr_value,"_",colnames(metashort)[mi],"_mg", L5M5window_name); fi=fi+1
-                    ds_names[fi] = paste0("M",winhr_value,"hr_",colnames(metashort)[mi],"_mg",L5M5window_name); fi=fi+1
-                    ds_names[fi] = paste0("M",winhr_value,"_",colnames(metashort)[mi],"_mg",L5M5window_name); fi=fi+1
+                  for (winhr_value in winhr) { # Variable (column) names
+                    ML5colna = c(paste0("L",winhr_value,"hr"), paste0("L",winhr_value), 
+                                 paste0("M",winhr_value,"hr"), paste0("M",winhr_value))
+                    if (length(qM5L5) > 0) {
+                      ML5colna = c(ML5colna,
+                                   paste0("L",winhr_value,"_q",round(qM5L5 *100)), 
+                                   paste0("M",winhr_value,"_q",round(qM5L5 *100)))
+                    }
+                    # add metric name and timewindow name
+                    ds_names[fi:(fi-1+length(ML5colna))] = paste0(ML5colna,"_", colnames(metashort)[mi], "_mg",L5M5window_name)
+                    fi=fi+length(ML5colna)
                   }
-                  
+                  # Average acceleration between 1am and 6am (used to be part of g.getM5L5:
+                  daysummary[di,fi] = mean(varnum[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000#from 1am to 6am
                   ds_names[fi] = paste0("mean_",colnames(metashort)[mi],"_mg_1-6am"); fi=fi+1
                   if (anwi_nameindices[anwi_index] == "") { # for consistency with previous GGIR version
                     anwi_nameindices[anwi_index] = "_24hr"
@@ -617,7 +617,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                   } else if (mi == MADi) {
                     ds_names[fi] = paste0("mean_MAD_mg",anwi_nameindices[anwi_index]); fi=fi+1 #MAD
                   }
-                  
                   if (anwi_nameindices[anwi_index] == "_24hr") {
                     anwi_nameindices[anwi_index] = ""
                   }
@@ -856,7 +855,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_fullRecording")
     vi = vi + q1
     q1 = length(ML5AD)
-    filesummary[vi:((vi-1)+q1)] = ML5AD
+    filesummary[vi:((vi-1)+q1)] = as.numeric(ML5AD)
     s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_fullRecording")
     vi = vi + q1
   }

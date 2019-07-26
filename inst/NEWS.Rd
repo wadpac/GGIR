@@ -9,7 +9,8 @@
   \item part 1 now automatically uses previously generated calibration coefficients if the datafile
   was previously processed, see documentation g.part1 for further details.
   \item Enabled multiple values for argument winhr, by which part2 can now calculated
-  for example L3M3, L5M5, L6M6, L10M10 all in one go.
+  for example L3M3, L5M5, L6M6, L10M10 all in one go. Further, option added to extract
+  percentiles (quantiles) from the value distribution corresponding to these windows.
   \item Moved IVIS calculation to seperate function
   \item Now possible to specify time windows that need to be ignored for imputation
   }
