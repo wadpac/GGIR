@@ -195,6 +195,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
     write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
+    
     write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
     if (length(selectdaysfile) > 0) {
       write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)

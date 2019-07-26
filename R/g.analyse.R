@@ -4,7 +4,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                      IVIS.activity.metric=1) {
+                      IVIS.activity.metric=1, qM5L5 = c()) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
@@ -165,7 +165,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   # The values and variablenames are, however, stored in the filesummary matrix towards the end (not here
   # in function g.analyse.avday).
   output_avday = g.analyse.avday(qlevels,doquan, averageday, M, IMP, t_TWDI, quantiletype, winhr, L5M5window, M5L5res,
-                                 ws3, IVIS_epochsize_seconds, 
+                                 ws3, IVIS_epochsize_seconds,
                                  IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels, firstmidnighti, ws2,
                                  midnightsi, iglevels)
   InterdailyStability = output_avday$InterdailyStability
@@ -176,16 +176,16 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   qlevels_names = output_avday$qlevels_names
   ML5AD=output_avday$ML5AD
   ML5AD_names = output_avday$ML5AD_names
-  
+
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
     output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
                                      window.summary.size, qwindow, midnightsi, metashort, averageday,
                                      ENMOi, LFENMOi, BFENi, ENi,
-                                     HFENi, HFENplusi, MADi, doiglevels, nfulldays, lastmidnight, 
+                                     HFENi, HFENplusi, MADi, doiglevels, nfulldays, lastmidnight,
                                      ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
-                                     tooshort, includedaycrit, winhr,L5M5window, M5L5res, 
+                                     tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
                                      bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
