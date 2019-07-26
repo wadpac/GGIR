@@ -27,7 +27,7 @@ test_that("chainof5parts", {
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
   expect_that(C$npoints,equals(9728))
-  #--------------------------------------------
+  #-------------------------
   # part 2 with strategy = 3
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 3,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
@@ -38,10 +38,10 @@ test_that("chainof5parts", {
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.00796))
   expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=3),equals(0.417))
-  # part 2 with strategy = 2
+  # part 2 with strategy = 2 and iglevels = TRUE
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 2,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE)
+          maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels= TRUE)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -66,6 +66,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
   #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
   #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
+  
   #--------------------------------------------
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
@@ -121,6 +122,31 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
+  
+  
+  #--------------------------------------------
+  # create dummy selectdaysfile
+  selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016")
+  selectdaysfile = paste0(getwd(),"/selectdaysfile.csv")
+  write.csv(selectdays, file=selectdaysfile,row.names = FALSE,fileEncoding="UTF-8")
+  # we will now use it in g.part2, not sure whether g.part2 will actually be able to handle this.
+  # normally, g.part1 would use the file to cut up the measurement, but that only works for GENEActiv
+  # data and we do not have a multi-data GENEActiv test file in the package.
+  # Explorative code:
+  # basicfolder = paste0(metadatadir,"/basic")
+  # ms_file_part1 = dir(basicfolder, full.names = TRUE)
+  # load(ms_file_part1)
+  # I$dformn
+  # I$dformc
+  # I$monn
+  # I$monc
+  # save(C, filefoldername, filename_dir, I, M, file = ms_file_part1)
+  
+  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
+          strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
+          maxdur = Ndays, includedaycrit = 0, selectdaysfile=selectdaysfile)
+  
+  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
