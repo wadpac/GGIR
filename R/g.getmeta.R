@@ -644,8 +644,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) I = g.inspectfile(datafile, desiredtz=desiredtz)
         hvars = g.extractheadervars(I)
-        SN = hvars$SN
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
+        deviceSerialNumber = hvars$deviceSerialNumber
+        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
         dateday1 = as.character(SDF[SDFi,2])
         dateday2 = as.character(SDF[SDFi,3])
 
@@ -683,9 +683,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) I = g.inspectfile(datafile, desiredtz=desiredtz)
         hvars = g.extractheadervars(I)
-        SN = hvars$SN
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(SN))
-        if (length(SDFi) == 1) { # if SN is not in the file then this is skipped
+        deviceSerialNumber = hvars$deviceSerialNumber
+        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
           dateday1 = as.character(SDF[SDFi,2])
           dateday2 = as.character(SDF[SDFi,3])
           dtday1 = as.POSIXlt(paste0(dateday1," 01:00:00"),format="%d/%m/%Y %H:%M:%S")

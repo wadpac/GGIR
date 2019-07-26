@@ -90,7 +90,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       # All of the below needed for Millenium cohort
       SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
       hvars = g.extractheadervars(I)
-      SN = hvars$SN
+      deviceSerialNumber = hvars$deviceSerialNumber
       SDFi = which(basename(SDF$binFile) == basename(filename))
       if(length(SDFi) != 1) {
         save(SDF, SDFi, file = "debuggingFile.Rda")
