@@ -30,7 +30,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
   ds_names = rep("",nfeatures)
   windowsummary = ws_names = c()
   #=============================
-  
   if (length(selectdaysfile) > 0) {   # Millenium cohort related:
     ndays = ceiling(ndays)
     if (ndays > 2) ndays = 2 # this is now hardcoded to be a maximum of two days
@@ -349,22 +348,8 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 } else {
                   daysummary[di,fi] = ""
                 }
-                if (mi == ENMOi) {
-                  ds_names[fi] = paste0("mean_ENMO_mg",anwi_nameindices[anwi_index]); fi=fi+1 #ENMO
-                } else if (mi == LFENMOi) {
-                  ds_names[fi] = paste0("mean_LFENMO_mg",anwi_nameindices[anwi_index]); fi=fi+1 #LFENMO
-                } else if (mi == BFENi) {
-                  ds_names[fi] = paste0("mean_BFEN_mg",anwi_nameindices[anwi_index]); fi=fi+1 #BFEN
-                } else if (mi == ENi) {
-                  ds_names[fi] = paste0("mean_EN_mg",anwi_nameindices[anwi_index]); fi=fi+1 #EN
-                } else if (mi == HFENi) {
-                  ds_names[fi] = paste0("mean_HFEN_mg",anwi_nameindices[anwi_index]); fi=fi+1 #HFEN
-                } else if (mi == HFENplusi) {
-                  ds_names[fi] = paste0("mean_HFENplus_mg",anwi_nameindices[anwi_index]); fi=fi+1 #HFEN+
-                } else if (mi == MADi) {
-                  ds_names[fi] = paste0("mean_MAD_mg",anwi_nameindices[anwi_index]); fi=fi+1 #MAD
-                }
-                
+                cn_metashort = colnames(metashort)
+                ds_names[fi] = paste0("mean_",cn_metashort[mi],"_mg",anwi_nameindices[anwi_index]); fi=fi+1
                 if (anwi_nameindices[anwi_index] == "_24hr") {
                   anwi_nameindices[anwi_index] = ""
                 }

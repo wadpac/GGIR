@@ -16,11 +16,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
   switchoffLD = 0
-  if (length(unlist(strsplit(filename,"[.]RD"))) > 1) {
-    useRDA = TRUE
-  } else {
-    useRDA = FALSE
-  }
+  useRDA = TRUE
+  if (length(unlist(strsplit(filename,"[.]RD"))) <= 1) useRDA = FALSE
   if (useRDA == FALSE) {
     I = inspectfileobject
     mon = I$monc
@@ -80,9 +77,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
     } else {
       P = c()
-      if (blocknumber == 1) {
-        filequality$filecorrupt = TRUE
-      }
+      if (blocknumber == 1) filequality$filecorrupt = TRUE
     }
   } else if (mon == 2 & dformat == 1 & useRDA == FALSE) { # GENEActiv binary non-RDA format
     if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
@@ -124,9 +119,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
             switchoffLD = 1
           }
         } else {
-          if (nrow(P$data.out) < (blocksize*300)) { #last block
-            switchoffLD = 1
-          }
+          if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
         }
       }
       if (length(P) == 0) { #if first block doens't read then probably corrupt
@@ -148,8 +141,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         if (nrow(P$data.out) < ((sf*ws*2)+1) & blocknumber == 1) {
           P = c();  switchoffLD = 1
           cat("\nError code 2: data too short for doing non-wear detection\n")
-          filequality$filetooshort = TRUE
-          filequality$filedoesnotholdday = TRUE
+          filequality$filetooshort = filequality$filedoesnotholdday = TRUE
         }
       }
       # All of the above needed for Millenium cohort
@@ -174,13 +166,9 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
       if (length(P) > 0) {
         if (length(selectdaysfile) > 0) {
-          if (tint[blocknumber,1] == "0") {
-            switchoffLD = 1
-          }
+          if (tint[blocknumber,1] == "0") switchoffLD = 1
         } else {
-          if (nrow(P$data.out) < (blocksize*300)) { #last block
-            switchoffLD = 1
-          }
+          if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
         }
       }
       if (length(P) == 0) { #if first block doens't read then probably corrupt
