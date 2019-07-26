@@ -71,7 +71,7 @@ g.analyse.perfile = function(id, id2, idd, fname, deviceSerialNumber, BodyLocati
     s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_fullRecording")
     vi = vi + q1
     q1 = length(ML5AD)
-    filesummary[vi:((vi-1)+q1)] = ML5AD
+    filesummary[vi:((vi-1)+q1)] = as.numeric(ML5AD)
     s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_fullRecording")
     vi = vi + q1
   }
