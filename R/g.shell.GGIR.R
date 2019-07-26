@@ -93,9 +93,13 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "do.dev_roll_med_acc_y")) == 0)  do.dev_roll_med_acc_y=FALSE
   if (length(which(ls() == "do.dev_roll_med_acc_z")) == 0)  do.dev_roll_med_acc_z=FALSE
   if (length(which(ls() == "do.enmoa")) == 0)  do.enmoa = FALSE
+  if (length(which(ls() == "do.lfen")) == 0)  do.lfen = FALSE
   if (length(which(ls() == "dynrange")) == 0)  dynrange = c()
+  if (length(which(ls() == "hb")) == 0)  hb = 15
+  if (length(which(ls() == "lb")) == 0)  lb = 0.5
+  if (length(which(ls() == "n")) == 0)  n = 4
   if (length(which(ls() == "idloc")) == 0) idloc = 1
-  if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = c()
+  if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = "retrieve"
 
   # PART 2
   if (length(which(ls() == "strategy")) == 0)  strategy = 1
@@ -189,7 +193,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
-            dynrange=dynrange, configtz=configtz)
+            dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n)
   }
   if (dopart2 == TRUE) {
     cat('\n')
