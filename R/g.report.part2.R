@@ -132,14 +132,14 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       pp = which(hvalues == "")
       hvalues[pp] = c("not stored in header")
       if (mon == "genea") {
-        SN = hvalues[which(hnames == "Serial_Number")] #serial number
+        deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
       } else if (mon == "geneactive") {
-        SN = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
+        deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
         if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
-          SN = hvalues[which(hnames == "Device Unique Serial Code")] #serial number  		
+          deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number  		
         }
       } else if (mon == "actigraph" | mon == "axivity") { #todo: create automatic extraction of information from actigraph fileheader
-        SN = "not extracted" #gender
+        deviceSerialNumber = "not extracted" #gender
       }
       if (length(C$offset) == 0) {
         C$offset = C$translate
@@ -163,7 +163,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
                       cal.error.end=C$cal.error.end,
                       n.10sec.windows=C$npoints,
                       n.hours.considered = C$nhoursused, QCmessage=C$QCmessage,mean.temp=tmean,
-                      device.serial.number=SN,stringsAsFactors=FALSE,NFilePagesSkipped=M$NFilePagesSkipped)
+                      device.serial.number=deviceSerialNumber,stringsAsFactors=FALSE,NFilePagesSkipped=M$NFilePagesSkipped)
       if (i == 1 | i == f0) {
         QCout = QC
       } else {
