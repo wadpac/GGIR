@@ -18,7 +18,7 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti,
   ilevels, iglevels, domvpa,
   mvpathreshold, boutcriter, closedbout,
   bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-  deviceSerialNumber)
+  deviceSerialNumber, qM5L5)
 }
 
 \arguments{
@@ -76,7 +76,7 @@ holding the names for the six mvpa variables}
 \item{id2}{gnerated inside \link{g.analyse} either a copy of id, or
 as character string before the first hyphen}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
-
+\item{qM5L5}{see \link{g.getM5L5}}
 
 }
 \value{
