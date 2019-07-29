@@ -240,26 +240,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(5.2))
   expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(13.075))
-  #=======================
-  # Part 1 with all metrics
-  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
-          studyname="test",do.cal = FALSE, do.bfen=TRUE,do.enmo=TRUE,do.lfenmo=TRUE,
-  do.en=TRUE,do.hfen=TRUE,
-  do.hfenplus=TRUE, do.mad=TRUE,
-  do.anglex=TRUE,do.angley=TRUE,do.anglez=TRUE,
-  do.roll_med_acc_x=TRUE,do.roll_med_acc_y=TRUE,do.roll_med_acc_z=TRUE,
-  do.dev_roll_med_acc_x=TRUE,do.dev_roll_med_acc_y=TRUE,do.dev_roll_med_acc_z=TRUE,do.enmoa=TRUE,
-  do.lfen=TRUE, windowsizes = c(15,3600,3600))
-  rn = dir("output_test/meta/basic/",full.names = TRUE)
-  load(rn[1])
-  expect_that(ncol(M$metashort),equals(19))
-  expect_that(nrow(M$metashort),equals(11280))
-  expect_that(round(mean(M$metashort$BFEN),digits=4),equals(0.0297))
-  expect_that(round(mean(M$metashort$LFENMO),digits=4),equals(0.0283))
-  expect_that(round(mean(M$metashort$HFENplus),digits=4),equals(0.0626))
-  expect_that(round(mean(M$metashort$dev_roll_med_acc_x),digits=4),equals(0.0066))
-  expect_that(round(mean(M$metashort$MAD),digits=4),equals(0.0071))
-   
+  
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
