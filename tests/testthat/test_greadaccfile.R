@@ -16,6 +16,9 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_equal(IDH,binfile)
   EHV = g.extractheadervars(Icwa)
   expect_equal(EHV$deviceSerialNumber,"-26102")
+  Mcwa = g.getmeta(cwafile, desiredtz=desiredtz, windowsize = c(1,300,300))
+  expect_true(Mcwa$filetooshort)
+  expect_false(Mcwa$filecorrupt)
   
   Igenea = g.inspectfile(binfile, desiredtz = desiredtz)
   expect_equal(Igenea$monc,1)
@@ -25,6 +28,9 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_equal(IDH,"03")
   EHV = g.extractheadervars(Igenea)
   expect_equal(EHV$deviceSerialNumber,"01275")
+  Mgenea = g.getmeta(binfile, desiredtz=desiredtz, windowsize = c(1,300,300))
+  expect_true(Mgenea$filetooshort)
+  expect_false(Mgenea$filecorrupt)
   
   Iwav = expect_warning(g.inspectfile(wavfile, desiredtz = desiredtz))
   expect_equal(Iwav$monc,4)
@@ -34,6 +40,9 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_equal(IDH,wavfile)
   EHV = g.extractheadervars(Iwav)
   expect_equal(EHV$deviceSerialNumber,"not extracted")
+  Mwav = expect_warning(g.getmeta(wavfile, desiredtz=desiredtz, windowsize = c(1,300,300)))
+  expect_true(Mwav$filetooshort)
+  expect_false(Mwav$filecorrupt)
   
   IGA = expect_warning(g.inspectfile(GAfile, desiredtz = desiredtz))
   expect_equal(IGA$monc,2)
@@ -43,6 +52,9 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_equal(IDH,"")
   EHV = g.extractheadervars(IGA)
   expect_equal(EHV$deviceSerialNumber,"012967")
+  MGA = expect_warning(g.getmeta(GAfile, desiredtz=desiredtz, windowsize = c(1,300,300)))
+  expect_true(MGA$filetooshort)
+  expect_true(MGA$filecorrupt)
   
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat=4,mon=4, desiredtz = desiredtz)
