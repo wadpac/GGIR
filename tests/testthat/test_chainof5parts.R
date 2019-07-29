@@ -165,16 +165,16 @@ test_that("chainof5parts", {
   #----------------------------------------------------------------------
   # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonsleeplog=TRUE
   lightson = c(37,37) # turn into midday
-  row2copy = which(sib.cla.sum$sib.onset.time == "2016-06-23T23:40:15+0100")
+  row2copy = which(sib.cla.sum$sib.onset.time == "2016-06-24T05:10:15+0100")
   newrow = sib.cla.sum[row2copy,]
-  newrow$sib.onset.time = "2016-06-23T12:30:15+0100"
-  newrow$sib.end.time = "2016-06-23T12:45:15+0100"
+  newrow$sib.onset.time = "2016-06-24T12:30:15+0100"
+  newrow$sib.end.time = "2016-06-24T12:45:15+0100"
   sib.cla.sum = rbind(sib.cla.sum,newrow)
   sib.cla.sum = sib.cla.sum[order(sib.cla.sum$sib.onset.time),]
   sib.cla.sum$sib.period[1:11] = 1:11
   save(L5list, lightson, lightsout, sib.cla.sum, tib.threshold, file= rn3[1])
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-                         idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
+                         idloc=2,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
                          relyonsleeplog=TRUE,desiredtz=desiredtz,
                          storefolderstructure=TRUE, overwrite=TRUE))
@@ -185,10 +185,10 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(5.2))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(8))
+  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(6))
+  expect_that(round(nightsummary$acc_SptDuration[1],digits=2),equals(16))
   expect_true(as.logical(nightsummary$acc_available[1]))
-  expect_true(as.logical(nightsummary$sleeplog_used[1]))
+  expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------
   # Part 4 - DST+1
   load(rn3[1])
@@ -212,8 +212,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(6.1667))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(6.8292))
+  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(5.9167))
+  expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(7))
   
   #----------------------------------------------------------------------
   # Part 4 - DST-1
@@ -238,7 +238,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(5.2))
+  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
   expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(13.075))
   
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
