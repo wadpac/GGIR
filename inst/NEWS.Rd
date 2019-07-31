@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-3 (release date:26-07-2019)}{
+\section{Changes in version 1.9-3 (release date:29-07-2019)}{
 \itemize{
   \item metric lfen added
   \item issues fixed with passing on of hb and lb
