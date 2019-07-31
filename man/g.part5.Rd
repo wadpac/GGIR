@@ -184,7 +184,7 @@ Explaination of general terminology in the output of g.part5:\cr
 \item acc_onset = onset of sleep according to accelerometer (+ diary) method expressed
 in hours since the midnight in the night preceding the night of interest, e.g. 26 is 2am.
 \item acc_wake = waking up time according to accelerometer (+ diary) method expressed
-in hours since the midnight in the night preceding the night of interest, e.g. 38 is 8am
+in hours since the midnight in the night preceding the night of interest, e.g. 32 is 8am
 \item acc_onset_ts = onset of sleep according to accelerometer (+ diary) method expressed
 as a timestamp hours:minutes:seconds
 \item daysleep, if 0 then the person woke up before noon, if 1 then the person woke
