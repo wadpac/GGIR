@@ -257,12 +257,16 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         }
         if (length(which(as.character(bcc.data$filename) == fnames[j])) > 0) {
           bcc.i = which(bcc.data$filename == fnames[j])
+          bcc.cal.error.start = which(colnames(bcc.data) == "cal.error.start")
+          bcc.cal.error.end = which(colnames(bcc.data) == "cal.error.end")
           bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
           bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
           bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
           C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
           C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
           C$tempoffset=  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
+          cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
+          cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
           cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
           cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
           cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
