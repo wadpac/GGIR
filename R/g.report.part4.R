@@ -83,7 +83,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       NIDS = length(unique(nightsummary$id))
       NDEF = length(unique(nightsummary$acc_def))
       uuu = unique(nightsummary$acc_def)
-      
       rem = which(uuu == 0 | uuu == "0" | is.na(uuu) == TRUE)
       if (length(rem) > 0) {
         uuu = uuu[-rem]
@@ -95,7 +94,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         personSummary = matrix(0,NIDS,((NDEF*3*19)+11+(6*3)))
       }
       uid = unique(nightsummary$id)
-      
       if (nrow(nightsummary) > 0) {
         for (i in 1:length(uid)) {
           personSummarynames = c() #moved here on 3/12/2014
@@ -210,7 +208,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                   if (nrow(expansion) != nrow(personSummary)) expansion = t(expansion)
                   personSummary = cbind(personSummary,expansion)
                 }
-                
                 if (k == 1) {
                   TW = "AD"
                   Seli = 1:length(weekday)
