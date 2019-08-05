@@ -61,116 +61,116 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   # obtain default parameter values if not provided:
 
   # GENERAL parameters:
-  if (length(which(ls() == "overwrite")) == 0)  overwrite = FALSE
-  if (length(which(ls() == "acc.metric")) == 0)  acc.metric = "ENMO"
-  if (length(which(ls() == "storefolderstructure")) == 0)  storefolderstructure = FALSE
+  if (exists("overwrite") == FALSE)   overwrite = FALSE
+  if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
+  if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
 
-  if (length(which(ls() == "ignorenonwear")) == 0)  ignorenonwear = TRUE
-  if (length(which(ls() == "print.filename")) == 0)  print.filename = FALSE
+  if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
+  if (exists("print.filename") == FALSE)  print.filename = FALSE
   # PART 1
-  if (length(which(ls() == "selectdaysfile")) == 0)  selectdaysfile = c()
-  if (length(which(ls() == "do.cal")) == 0)  do.cal = TRUE
-  if (length(which(ls() == "printsummary")) == 0)  printsummary = FALSE
-  if (length(which(ls() == "windowsizes")) == 0)  windowsizes = c(5,900,3600)
-  if (length(which(ls() == "minloadcrit")) == 0)  minloadcrit = 72
-  if (length(which(ls() == "desiredtz")) == 0)  desiredtz = "Europe/London"
-  if (length(which(ls() == "configtz")) == 0)  configtz = c()
-  if (length(which(ls() == "chunksize")) == 0)  chunksize = 1
-  if (length(which(ls() == "do.enmo")) == 0)  do.enmo = TRUE
-  if (length(which(ls() == "do.lfenmo")) == 0)  do.lfenmo = FALSE
-  if (length(which(ls() == "do.en")) == 0)  do.en = FALSE
-  if (length(which(ls() == "do.bfen")) == 0)  do.bfen = FALSE
-  if (length(which(ls() == "do.hfen")) == 0)  do.hfen = FALSE
-  if (length(which(ls() == "do.hfenplus")) == 0)  do.hfenplus = FALSE
-  if (length(which(ls() == "do.mad")) == 0)  do.mad = FALSE
-  if (length(which(ls() == "do.anglex")) == 0)  do.anglex = FALSE
-  if (length(which(ls() == "do.angley")) == 0)  do.angley = FALSE
-  if (length(which(ls() == "do.anglez")) == 0)  do.anglez = FALSE
-  if (length(which(ls() == "do.roll_med_acc_x")) == 0)  do.roll_med_acc_x=FALSE
-  if (length(which(ls() == "do.roll_med_acc_y")) == 0)  do.roll_med_acc_y=FALSE
-  if (length(which(ls() == "do.roll_med_acc_z")) == 0)  do.roll_med_acc_z=FALSE
-  if (length(which(ls() == "do.dev_roll_med_acc_x")) == 0)  do.dev_roll_med_acc_x=FALSE
-  if (length(which(ls() == "do.dev_roll_med_acc_y")) == 0)  do.dev_roll_med_acc_y=FALSE
-  if (length(which(ls() == "do.dev_roll_med_acc_z")) == 0)  do.dev_roll_med_acc_z=FALSE
-  if (length(which(ls() == "do.enmoa")) == 0)  do.enmoa = FALSE
-  if (length(which(ls() == "do.lfen")) == 0)  do.lfen = FALSE
-  if (length(which(ls() == "dynrange")) == 0)  dynrange = c()
-  if (length(which(ls() == "hb")) == 0)  hb = 15
-  if (length(which(ls() == "lb")) == 0)  lb = 0.5
-  if (length(which(ls() == "n")) == 0)  n = 4
-  if (length(which(ls() == "idloc")) == 0) idloc = 1
-  if (length(which(ls() == "backup.cal.coef")) == 0)  backup.cal.coef = "retrieve"
+  if (exists("selectdaysfile") == FALSE)  selectdaysfile = c()
+  if (exists("do.cal") == FALSE)  do.cal = TRUE
+  if (exists("printsummary") == FALSE)  printsummary = FALSE
+  if (exists("windowsizes") == FALSE)  windowsizes = c(5,900,3600)
+  if (exists("minloadcrit") == FALSE)  minloadcrit = 72
+  if (exists("desiredtz") == FALSE)  desiredtz = "Europe/London"
+  if (exists("configtz") == FALSE)  configtz = c()
+  if (exists("chunksize") == FALSE)  chunksize = 1
+  if (exists("do.enmo") == FALSE)  do.enmo = TRUE
+  if (exists("do.lfenmo") == FALSE)  do.lfenmo = FALSE
+  if (exists("do.en") == FALSE)  do.en = FALSE
+  if (exists("do.bfen") == FALSE)  do.bfen = FALSE
+  if (exists("do.hfen") == FALSE)  do.hfen = FALSE
+  if (exists("do.hfenplus") == FALSE)  do.hfenplus = FALSE
+  if (exists("do.mad") == FALSE)  do.mad = FALSE
+  if (exists("do.anglex") == FALSE)  do.anglex = FALSE
+  if (exists("do.angley") == FALSE)  do.angley = FALSE
+  if (exists("do.anglez") == FALSE)  do.anglez = FALSE
+  if (exists("do.roll_med_acc_x") == FALSE)  do.roll_med_acc_x=FALSE
+  if (exists("do.roll_med_acc_y") == FALSE)  do.roll_med_acc_y=FALSE
+  if (exists("do.roll_med_acc_z") == FALSE)  do.roll_med_acc_z=FALSE
+  if (exists("do.dev_roll_med_acc_x") == FALSE)  do.dev_roll_med_acc_x=FALSE
+  if (exists("do.dev_roll_med_acc_y") == FALSE)  do.dev_roll_med_acc_y=FALSE
+  if (exists("do.dev_roll_med_acc_z") == FALSE)  do.dev_roll_med_acc_z=FALSE
+  if (exists("do.enmoa") == FALSE)  do.enmoa = FALSE
+  if (exists("do.lfen") == FALSE)  do.lfen = FALSE
+  if (exists("dynrange") == FALSE)  dynrange = c()
+  if (exists("hb") == FALSE)  hb = 15
+  if (exists("lb") == FALSE)  lb = 0.5
+  if (exists("n") == FALSE)  n = 4
+  if (exists("idloc") == FALSE) idloc = 1
+  if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
 
   # PART 2
-  if (length(which(ls() == "strategy")) == 0)  strategy = 1
-  if (length(which(ls() == "maxdur")) == 0)  maxdur = 7
-  if (length(which(ls() == "hrs.del.start")) == 0)  hrs.del.start = 0
-  if (length(which(ls() == "hrs.del.end")) == 0)  hrs.del.end = 0
-  if (length(which(ls() == "includedaycrit")) == 0)  includedaycrit = 16
-  if (length(which(ls() == "M5L5res")) == 0)  M5L5res = 10
-  if (length(which(ls() == "winhr")) == 0)  winhr = 5
-  if (length(which(ls() == "qwindow")) == 0)  qwindow = c(0,24)
-  if (length(which(ls() == "qlevels")) == 0)  qlevels = c()
-  if (length(which(ls() == "ilevels")) == 0)  ilevels = c()
-  if (length(which(ls() == "mvpathreshold")) == 0)  mvpathreshold = 100
-  if (length(which(ls() == "boutcriter")) == 0)  boutcriter = 0.8
-  if (length(which(ls() == "ndayswindow")) == 0)  ndayswindow = 7
-  if (length(which(ls() == "do.imp")) == 0) do.imp = TRUE
-  if (length(which(ls() == "IVIS_windowsize_minutes")) == 0)  IVIS_windowsize_minutes=60
-  if (length(which(ls() == "IVIS_epochsize_seconds")) == 0)  IVIS_epochsize_seconds=30
-  if (length(which(ls() == "mvpadur")) == 0)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
-  if (length(which(ls() == "epochvalues2csv")) == 0)  epochvalues2csv = FALSE
-  if (length(which(ls() == "window.summary.size")) == 0) window.summary.size = 10
-  if (length(which(ls() == "dayborder")) == 0)  dayborder = 0
-  if (length(which(ls() == "iglevels")) == 0)  iglevels = c()
-  if (length(which(ls() == "TimeSegments2ZeroFile")) == 0) TimeSegments2ZeroFile = c()
-  if (length(which(ls() == "IVIS.activity.metric")) == 0)  IVIS.activity.metric = 1
-  if (length(which(ls() == "qM5L5")) == 0)  qM5L5 = c()
+  if (exists("strategy") == FALSE)  strategy = 1
+  if (exists("maxdur") == FALSE)  maxdur = 7
+  if (exists("hrs.del.start") == FALSE)  hrs.del.start = 0
+  if (exists("hrs.del.end") == FALSE)  hrs.del.end = 0
+  if (exists("includedaycrit") == FALSE)  includedaycrit = 16
+  if (exists("M5L5res") == FALSE)  M5L5res = 10
+  if (exists("winhr") == FALSE)  winhr = 5
+  if (exists("qwindow") == FALSE)  qwindow = c(0,24)
+  if (exists("qlevels") == FALSE)  qlevels = c()
+  if (exists("ilevels") == FALSE)  ilevels = c()
+  if (exists("mvpathreshold") == FALSE)  mvpathreshold = 100
+  if (exists("boutcriter") == FALSE)  boutcriter = 0.8
+  if (exists("ndayswindow") == FALSE)  ndayswindow = 7
+  if (exists("do.imp") == FALSE) do.imp = TRUE
+  if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
+  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=30
+  if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
+  if (exists("epochvalues2csv") == FALSE)  epochvalues2csv = FALSE
+  if (exists("window.summary.size") == FALSE) window.summary.size = 10
+  if (exists("dayborder") == FALSE)  dayborder = 0
+  if (exists("iglevels") == FALSE)  iglevels = c()
+  if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
+  if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
+  if (exists("qM5L5") == FALSE)  qM5L5 = c()
   
 
   # PART 3
-  if (length(which(ls() == "anglethreshold")) == 0)  anglethreshold = 5
-  if (length(which(ls() == "timethreshold")) == 0)  timethreshold = 5
-  if (length(which(ls() == "constrain2range")) == 0) constrain2range = TRUE
-  if (length(which(ls() == "do.part3.pdf")) == 0) do.part3.pdf = TRUE
+  if (exists("anglethreshold") == FALSE)  anglethreshold = 5
+  if (exists("timethreshold") == FALSE)  timethreshold = 5
+  if (exists("constrain2range") == FALSE) constrain2range = TRUE
+  if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
 
   # PART 4
-  if (length(which(ls() == "loglocation")) == 0)  loglocation = c()
+  if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
    if (loglocation == "") loglocation = c() #inserted because some users mistakingly use this
   }
-  if (length(which(ls() == "coldid")) == 0)  colid=1
-  if (length(which(ls() == "coln1")) == 0)  coln1=1
-  if (length(which(ls() == "nnights")) == 0)  nnights=7
-  if (length(which(ls() == "outliers.only")) == 0)  outliers.only=FALSE
-  if (length(which(ls() == "excludefirstlast")) == 0)  excludefirstlast=FALSE
-  if (length(which(ls() == "criterror")) == 0)  criterror=3
-  if (length(which(ls() == "relyonsleeplog")) == 0)  relyonsleeplog=FALSE
-  if (length(which(ls() == "sleeplogidnum")) == 0)  sleeplogidnum=TRUE
-  if (length(which(ls() == "def.noc.sleep")) == 0)  def.noc.sleep=1
-  if (length(which(ls() == "do.visual")) == 0)  do.visual=FALSE
+  if (exists("coldid") == FALSE)  colid=1
+  if (exists("coln1") == FALSE)  coln1=1
+  if (exists("nnights") == FALSE)  nnights=7
+  if (exists("outliers.only") == FALSE)  outliers.only=FALSE
+  if (exists("excludefirstlast") == FALSE)  excludefirstlast=FALSE
+  if (exists("criterror") == FALSE)  criterror=3
+  if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=FALSE
+  if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
+  if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
+  if (exists("do.visual") == FALSE)  do.visual=FALSE
 
   # PART 5
-  if (length(which(ls() == "excludefirstlast.part5")) == 0)  excludefirstlast.part5=FALSE
-  if (length(which(ls() == "includenightcrit")) == 0)  includenightcrit=16
-  if (length(which(ls() == "bout.metric")) == 0)  bout.metric = 1
-  if (length(which(ls() == "closedbout")) == 0)  closedbout = FALSE
-  if (length(which(ls() == "boutcriter.in")) == 0)  boutcriter.in = 0.9
-  if (length(which(ls() == "boutcriter.lig")) == 0)  boutcriter.lig = 0.8
-  if (length(which(ls() == "boutcriter.mvpa")) == 0)  boutcriter.mvpa = 0.8
-  if (length(which(ls() == "threshold.lig")) == 0)  threshold.lig = 40
-  if (length(which(ls() == "threshold.mod")) == 0)  threshold.mod = 100
-  if (length(which(ls() == "threshold.vig")) == 0)  threshold.vig = 400
-  if (length(which(ls() == "timewindow")) == 0)  timewindow = c("MM","WW")
-  if (length(which(ls() == "boutdur.mvpa")) == 0)  boutdur.mvpa = c(1,5,10)
-  if (length(which(ls() == "boutdur.in")) == 0)  boutdur.in = c(10,20,30)
-  if (length(which(ls() == "boutdur.lig")) == 0)  boutdur.lig = c(1,5,10)
-  if (length(which(ls() == "save_ms5rawlevels")) == 0) save_ms5rawlevels = FALSE
+  if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
+  if (exists("includenightcrit") == FALSE)  includenightcrit=16
+  if (exists("bout.metric") == FALSE)  bout.metric = 1
+  if (exists("closedbout") == FALSE)  closedbout = FALSE
+  if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
+  if (exists("boutcriter.lig") == FALSE)  boutcriter.lig = 0.8
+  if (exists("boutcriter.mvpa") == FALSE)  boutcriter.mvpa = 0.8
+  if (exists("threshold.lig") == FALSE)  threshold.lig = 40
+  if (exists("threshold.mod") == FALSE)  threshold.mod = 100
+  if (exists("threshold.vig") == FALSE)  threshold.vig = 400
+  if (exists("timewindow") == FALSE)  timewindow = c("MM","WW")
+  if (exists("boutdur.mvpa") == FALSE)  boutdur.mvpa = c(1,5,10)
+  if (exists("boutdur.in") == FALSE)  boutdur.in = c(10,20,30)
+  if (exists("boutdur.lig") == FALSE)  boutdur.lig = c(1,5,10)
+  if (exists("save_ms5rawlevels") == FALSE) save_ms5rawlevels = FALSE
 
   # VISUAL REPORT
-  if (length(which(ls() == "viewingwindow")) == 0)  viewingwindow = 1
-  if (length(which(ls() == "dofirstpage")) == 0)  dofirstpage = TRUE
-  if (length(which(ls() == "visualreport")) == 0)  visualreport = FALSE
+  if (exists("viewingwindow") == FALSE)  viewingwindow = 1
+  if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
+  if (exists("visualreport") == FALSE)  visualreport = FALSE
 
 
   cat("\n   Help sustain GGIR into the future \n")
