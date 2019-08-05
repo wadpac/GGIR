@@ -189,8 +189,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         turn.do.cal.back.on = TRUE
       }
       data_quality_report_exists = file.exists(paste0(outputdir,"/",outputfolder,"/results/QC/data_quality_report.csv",sep=""))
-      if (data_quality_report_exists == TRUE & backup.cal.coef == "retrieve") {
-        backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+      if (data_quality_report_exists == TRUE & length(backup.cal.coef) > 0) {
+        if (backup.cal.coef == "retrieve") {
+          backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+        }
       } else if (length(backup.cal.coef) > 0 & backup.cal.coef != "retrieve") {
         # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
       } else  if (data_quality_report_exists == FALSE | backup.cal.coef == "redo"){
