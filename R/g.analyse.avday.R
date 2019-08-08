@@ -33,14 +33,19 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
           t1_LFMF = L5M5window[2]+(winhr_value-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
           avday = averageday[,quani]
           avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
-          if (mean(avday) > 0 & nrow(as.matrix(M$metashort)) > 1440*(60/ws3)) {
-            # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
-            ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value, qM5L5=qM5L5)
-            ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
-          } else {
-            ML5AD = as.data.frame(c(ML5AD,rep(" ",4+length(qM5L5))))
-          }
-          ML5AD_namestmp = rep(" ",4+length(qM5L5))
+          
+          
+          # if (mean(avday) > 0 & nrow(as.matrix(M$metashort)) > 1440*(60/ws3)) { # commented out, because g.getM5L5 now does the check internally
+          # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
+          ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value, qM5L5=qM5L5)
+          ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
+          # } else {
+          #   ML5ADtmp = data.frame(as.matrix(NA,1,4+length(qM5L5)))
+          #   colnames(ML5ADtmp) = paste0(winhr_value,1:length(4+length(qM5L5)))
+          #   ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
+          #   # ML5AD = as.data.frame(c(ML5AD,rep(" ",4+length(qM5L5))))
+          # }
+          ML5AD_namestmp = rep(NA,4+length(qM5L5))
         }
         ML5N = names(ML5AD)
         for (ML5ADi in 1:length(ML5N)) {
