@@ -1,18 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-3 (release date:29-07-2019)}{
+\section{Changes in version 1.9-4 (release date:08-08-2019)}{
 \itemize{
-  \item metric lfen added
-  \item issues fixed with passing on of hb and lb
-  \item backup.cal.coef now also works with data_quality_reports.csv files
+  \item metric lfen added (low-pass filter signels followed by Euclidean norm)
+  \item issues fixed with passing on of hb and lb arguments
+  \item argument backup.cal.coef can now also handle data_quality_reports.csv files
   \item part 1 now automatically uses previously generated calibration coefficients if the datafile
   was previously processed, see documentation g.part1 for further details.
   \item Enabled multiple values for argument winhr, by which part2 can now calculated
-  for example L3M3, L5M5, L6M6, L10M10 all in one go. Further, option added to extract
-  percentiles (quantiles) from the value distribution corresponding to these windows.
-  \item Moved IVIS calculation to seperate function
-  \item Now possible to specify time windows that need to be ignored for imputation
+  for example L3M3, L5M5, L6M6, L10M10 all in one go. Further, option added (qM5L5) to
+  extract percentiles (quantiles) from the value distribution corresponding to these windows.
+  \item Moved IVIS calculation to seperate function, and split up function g.analyse.
+  \item Now possible to specify time windows that need to be ignored for imputation.
   }
   }
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{
