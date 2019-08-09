@@ -14,11 +14,14 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    configtz = c()) {
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
-      cat("\nVariable datadir is not defined")
+      stop('\nVariable datadir is not defined')
     }
     if (length(outputdir) == 0) {
-      cat("\nVariable outputdir is not specified")
+      stop('\nVariable outputdir is not specified')
     }
+  }
+  if (grepl(datadir, outputdir)) {
+    stop('\nError: The file path specified by argument outputdir should NOT equal or be a subdirectory of the path specified by argument datadir')
   }
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
@@ -35,7 +38,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
       studyname = "mystudy"
-      cat("\nError: studyname not specified in part1. Needed for analysing lists of files")
+      stop('\nError: studyname not specified in part1. Needed for analysing lists of files')
     } else {
       outputfolder = paste("/output_",studyname,sep="")
     }
@@ -102,7 +105,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (length(f0) ==  0) f0 = 1
   if (length(f1) ==  0) f1 = length(fnames)
   if (is.na(fnames[1]) == TRUE) {
-    cat("\nError: File path not clearly identified. Check path name")
+    stop('\nError: File path not clearly identified. Check value of argument datadir')
   }
   if (f0 > length(fnames)) f0 = 1
   if (f1 > length(fnames)) f1 = length(fnames)
