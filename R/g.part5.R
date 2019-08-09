@@ -70,6 +70,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     fullfilenames = folderstructure$fullfilenames
     foldername = folderstructure$foldername
   }
+  if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3)
+  if (f0 > length(fnames.ms3)) f0 = 1
+  if (f1 == 0 | length(f1) == 0 | f1 > length(fnames.ms3))  f1 = length(fnames.ms3)
   #======================================================================
   # loop through milestone data-files (in case of store.ms=TRUE)
   # or filenames stored in output of g.part2 and g.part4 (in case of store.ms=FALSE)
@@ -359,7 +362,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.mvpa = levels$bc.mvpa
                   bc.lig = levels$bc.lig
                   bc.in = levels$bc.in
-                  
                   if (save_ms5rawlevels == TRUE) {
                     rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
                     if (length(time) == length(LEVELS)) {
@@ -369,9 +371,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         replacev = which(ms5rawlevels$class_id == (LNi-1))
                         if (length(replacev) > 0) ms5rawlevels$class_name[replacev] = Lnames[LNi]
                       }
-                      # ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
-                      # ms5rawlevels$time[1]
-                      print(rawlevels_fname)
                       write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
                       rm(ms5rawlevels)
                     }
@@ -383,7 +382,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   NNIGHTSACC = length(nightsi) #acc
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
-                  
                   FM = which(diff(diur) == -1)                  
                   nightsi_bu = nightsi
                   # now 0.5+6+0.5 midnights and 7 days
