@@ -192,15 +192,23 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         turn.do.cal.back.on = TRUE
       }
       data_quality_report_exists = file.exists(paste0(outputdir,"/",outputfolder,"/results/QC/data_quality_report.csv",sep=""))
-      if (data_quality_report_exists == TRUE & length(backup.cal.coef) > 0) {
+      assigned.backup.cal.coef = FALSE
+      if (length(backup.cal.coef) > 0) {
         if (backup.cal.coef == "retrieve") {
-          backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+          if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
+            backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+            assigned.backup.cal.coef = TRUE
+          }
+        } else if (backup.cal.coef == "redo") { #ignore the backup calibration coefficients, and derive them again
+          backup.cal.coef = c()
+          assigned.backup.cal.coef = TRUE
+        } else if (backup.cal.coef != "redo" & backup.cal.coef != "retrieve") {
+          # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
+          assigned.backup.cal.coef = TRUE
         }
-      } else if (length(backup.cal.coef) > 0 & backup.cal.coef != "retrieve") {
-        # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
-      } else  if (data_quality_report_exists == FALSE | backup.cal.coef == "redo"){
-        backup.cal.coef = c() #data_quality_report.csv does not exist, so g.calibrate needs to be applied.
       }
+      #data_quality_report.csv does not exist and there is also no other backup file, so g.calibrate needs to be applied.
+      if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
       #--------------------------------------
       if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
         # cat(paste0("\n",rep('-',options()$width),collapse=''))
