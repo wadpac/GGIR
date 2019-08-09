@@ -34,6 +34,7 @@ g.inspectfile = function(datafile, desiredtz = c()) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
       suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile)},silent=TRUE))
+      on.exit(closeAllConnections())
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
@@ -161,6 +162,7 @@ g.inspectfile = function(datafile, desiredtz = c()) {
       H = genea$header
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile=datafile)
+      on.exit(closeAllConnections())
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea
