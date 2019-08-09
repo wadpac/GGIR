@@ -294,7 +294,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         LD = nrow(data)
         if (LD < (ws*sf) & i == 1) {
-          cat("\nError: data too short for doing non-wear detection 3\n")
+          warning('\nWarning data too short for doing non-wear detection 3\n')
           switchoffLD = 1
           LD = 0 #ignore rest of the data and store what has been loaded so far.
         }
