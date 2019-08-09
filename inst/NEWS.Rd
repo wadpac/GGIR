@@ -1,8 +1,9 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-4 (release date:08-08-2019)}{
+\section{Changes in version 1.9-5 (release date:09-08-2019)}{
 \itemize{
+  \item Configuration file option now added to g.shell.GGIR and documented in vignette
   \item metric lfen added (low-pass filter signels followed by Euclidean norm)
   \item issues fixed with passing on of hb and lb arguments
   \item argument backup.cal.coef can now also handle data_quality_reports.csv files

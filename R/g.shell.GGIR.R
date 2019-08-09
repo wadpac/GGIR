@@ -1,5 +1,6 @@
 g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
-                        do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,...) {
+                        do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
+                        configfile =c(),...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -58,13 +59,65 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
     outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
     metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
   }
+  config_file_in_outputdir = paste0(metadatadir,"/config.csv")
+  # Load config file if it exists:
+  if (dir.exists(metadatadir) | length(configfile) > 0) { 
+    config = c()
+    # so if outputdir was not created (first time) and if configfile is no
+    # specified then we can safely assume that there is no configfile
+    if (length(configfile) > 0) {
+      if (file.exists(configfile)) {
+        config = read.csv(file = configfile, stringsAsFactors = FALSE)
+      } else {
+        stop("\nDo not supply argument configfile if the configfile does not exist yet")
+      }
+    } else if (length(configfile) == 0) { 
+      # Note that, if both exist, we prioritise configfile over the configfile
+      # stored in outputdir.
+      if (file.exists(config_file_in_outputdir)) config = read.csv(file = config_file_in_outputdir, stringsAsFactors = FALSE)
+    }
+    if (length(config) > 0) {
+      LS = ls()
+      LS = LS[-which(LS == c("config"))]
+      for (ci in 1:nrow(config)) { 
+        if (as.character(config[ci,1]) %in% LS == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR
+          conv2logical = conv2num = c()
+          try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE)
+          try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE)
+          if (length(conv2num) > 0) {
+            numi = is.na(conv2num) == FALSE
+          } else {
+            numi = FALSE
+          }
+          logi = FALSE
+          if (numi == FALSE & is.na(conv2logical) == FALSE) logi = TRUE
+          if (logi == TRUE) {
+            txt = paste(as.character(config[ci,1]),"=",as.logical(config[ci,2]),"",sep="")
+          } else if (numi == TRUE) {
+            txt = paste(as.character(config[ci,1]),"=",as.numeric(config[ci,2]),"",sep="")
+          } else if (numi == FALSE & logi == FALSE) {
+            if (length(config[ci,2]) > 0) {
+              if (config[ci,2] == 'c()') {
+                if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
+                # Note that we do not re-assign the c(), because they are the default for most arguments that
+                # can hold a c() anyway. def.noc.sleep is the only exception.
+              } else if (config[ci,2] != 'c()') {
+                txt = paste(as.character(config[ci,1]),"='",config[ci,2],"'",sep="")
+              }
+            }
+          }
+          eval(parse(text=txt))
+        }
+      }
+    }
+  }
   # obtain default parameter values if not provided:
-
+  
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
-
+  
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   # PART 1
@@ -100,7 +153,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (exists("n") == FALSE)  n = 4
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
-
+  
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
   if (exists("maxdur") == FALSE)  maxdur = 7
@@ -127,17 +180,17 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
   
-
+  
   # PART 3
   if (exists("anglethreshold") == FALSE)  anglethreshold = 5
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-
+  
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
-   if (loglocation == "") loglocation = c() #inserted because some users mistakingly use this
+    if (loglocation == "") loglocation = c() #inserted because some users mistakingly use this
   }
   if (exists("coldid") == FALSE)  colid=1
   if (exists("coln1") == FALSE)  coln1=1
@@ -149,7 +202,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE
-
+  
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -166,13 +219,13 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (exists("boutdur.in") == FALSE)  boutdur.in = c(10,20,30)
   if (exists("boutdur.lig") == FALSE)  boutdur.lig = c(1,5,10)
   if (exists("save_ms5rawlevels") == FALSE) save_ms5rawlevels = FALSE
-
+  
   # VISUAL REPORT
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
-
-
+  
+  
   cat("\n   Help sustain GGIR into the future \n")
   cat("   Check out: https://www.movementdata.nl/how-to-help-sustain-ggir \n")
   cat("   for more information. \n")
@@ -258,7 +311,16 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             winhr = winhr,M5L5res = M5L5res,
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,save_ms5rawlevels = save_ms5rawlevels)
   }
-
+  #--------------------------------------------------
+  # Store configuration parameters in config file
+  LS = ls()
+  LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
+                          "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
+                          "configfile", "filelist", "outputfoldername", "numi", "logi",
+                          "conv2logical", "conv2num") == FALSE)]
+  config.parameters = mget(LS) #lapply(mget(ls()), is.data.frame)
+  config.matrix = createConfigFile(config.parameters)
+  write.csv(config.matrix, file = paste0(metadatadir,"/config.csv"), row.names = FALSE)
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
