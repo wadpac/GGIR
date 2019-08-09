@@ -25,6 +25,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
+  if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
+
   #Extra code to handle raw accelerometer data in Raw data format:
   # list of all csv and bin files
   fnames = datadir2fnames(datadir,filelist)

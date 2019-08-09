@@ -15,6 +15,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
   if (length(which(ls() == "timewindow")) != 0) timewindow = input$timewindow
   # verify whether datadir is a directory or a list of files
   filelist = isfilelist(datadir)
+  if (dir.exists(outputdir) == FALSE) stop("\nDirectory specified by argument outputdir, does not exist")
   derivef0f1 = FALSE
   if (length(f0) == 0 | length(f1) == 0) {
     derivef0f1 = TRUE
@@ -82,8 +83,8 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
       for (ci in 1:nrow(config)) { 
         if (as.character(config[ci,1]) %in% LS == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR
           conv2logical = conv2num = c()
-          try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE)
-          try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE)
+          suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
+          suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
           if (length(conv2num) > 0) {
             numi = is.na(conv2num) == FALSE
           } else {
@@ -320,7 +321,13 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
                           "conv2logical", "conv2num") == FALSE)]
   config.parameters = mget(LS) #lapply(mget(ls()), is.data.frame)
   config.matrix = createConfigFile(config.parameters)
-  write.csv(config.matrix, file = paste0(metadatadir,"/config.csv"), row.names = FALSE)
+  if (dir.exists(metadatadir)) {
+    write.csv(config.matrix, file = paste0(metadatadir,"/config.csv"), row.names = FALSE)
+  } else {
+    if (dir.exists(datadir) == FALSE) {
+      warning("\nCould not write config file because studyname or datadir are not correctly specified.")
+    }
+  }
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
