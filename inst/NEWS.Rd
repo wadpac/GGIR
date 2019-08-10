@@ -14,6 +14,7 @@
   extract percentiles (quantiles) from the value distribution corresponding to these windows.
   \item Moved IVIS calculation to seperate function, and split up function g.analyse.
   \item Now possible to specify time windows that need to be ignored for imputation.
+  \item Default value for argument mode changed from mode =c(1,2) to mode = 1:5, to perform all the parts
   }
   }
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{
