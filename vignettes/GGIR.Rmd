@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "August 9 2019"
+date: "August 10 2019"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -230,12 +230,10 @@ g.shell.GGIR(datadir="C:/mystudy/mydata",
              outputdir="D:/myresults", configfile = "D:/myconfigfiles/config.csv")
 ```
 
-The practical value of this is that it eases the replication of analysis, because instead of having to share
-you R script, sharing your config.csv file will be sufficient. Further, the config.csv file contribute to the reproducibility
-of your data analysis.
+The practical value of this is that it eases the replication of analysis, because instead of having to share you R script, sharing your config.csv file will be sufficient. Further, the config.csv file contribute to the reproducibility of your data analysis.
 
-Note: When combining a configuration file with explicitely provided argument values, the explicitely provided argument values will overrule
-the argument values in the configuration file.
+Note 1: When combining a configuration file with explicitely provided argument values, the explicitely provided argument values will overrule the argument values in the configuration file.
+Note 2: The config.csv file in the root of the output folder will be overwritten every time you use g.shell.GGIR. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and explicitely point to it with `configfile` argument.
 
 # Time for action: How to run your analysis?
 
