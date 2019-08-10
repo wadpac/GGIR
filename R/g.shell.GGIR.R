@@ -1,4 +1,4 @@
-g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
+g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
                         do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
                         configfile =c(),...) {
   #get input variables
@@ -100,6 +100,7 @@ g.shell.GGIR = function(mode=c(1,2),datadir=c(),outputdir=c(),studyname=c(),f0=1
             if (length(config[ci,2]) > 0) {
               if (config[ci,2] == 'c()') {
                 if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
+                if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
                 # Note that we do not re-assign the c(), because they are the default for most arguments that
                 # can hold a c() anyway. def.noc.sleep is the only exception.
               } else if (config[ci,2] != 'c()') {
