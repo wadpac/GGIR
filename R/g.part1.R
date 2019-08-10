@@ -66,15 +66,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   #=================================================================
   # Other parameters:
   #--------------------------------
-  # get file path if requested:
-  #   if (storefolderstructure == TRUE) {
-  #   filelist = FALSE
-  #   if (length(datadir) == 1) { #could be a directory or one file
-  #     if (length(unlist(strsplit(datadir,"[.]bi")))>0) filelist = TRUE
-  #     if (length(unlist(strsplit(datadir,"[.]cs")))>0) filelist = TRUE
-  #   } else { #multiple files
-  #     filelist = TRUE    
-  #   }
   if (filelist == FALSE) {
     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
                    dir(datadir,recursive=TRUE,pattern="[.]bin"),
@@ -103,6 +94,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         tmp6[i] = phase[which(fnamesshort == ff)]
       }
     }
+  } else {
+    stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
+                "in the directory specified with argument datadir"))
   }
   if (length(f0) ==  0) f0 = 1
   if (length(f1) ==  0) f1 = length(fnames)
@@ -127,9 +121,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   #=================================================================
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
-  if (length(fnames) == 0) {
-    cat("\nNo files to analyse")
-  }
   fnames = sort(fnames)
   for (j in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
     if (print.filename == TRUE) {
