@@ -104,7 +104,21 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                 # Note that we do not re-assign the c(), because they are the default for most arguments that
                 # can hold a c() anyway. def.noc.sleep is the only exception.
               } else if (config[ci,2] != 'c()') {
-                txt = paste(as.character(config[ci,1]),"='",config[ci,2],"'",sep="")
+                if (grepl("c\\(", config[ci,2])) { # vector of numbers
+                  tmp =  unlist(strsplit(unlist(strsplit(config[ci,2],"\\("))[2],","))[1]
+                  isna = c()
+                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp))},silent=TRUE))
+                  if (length(isna) == 0) isna = FALSE
+                  if (isna == TRUE) { # it is a vector with characters
+                    vecchar = unlist(strsplit(unlist(strsplit(config[ci,2],"\\(|\\)"))[2],","))
+                    if (config[ci,1] == "timewindow") timewindow = vecchar
+                    
+                  } else {
+                    txt = paste(as.character(config[ci,1]),"=",config[ci,2],"",sep="")
+                  }
+                } else {
+                  txt = paste(as.character(config[ci,1]),"='",config[ci,2],"'",sep="")
+                }
               }
             }
           }
