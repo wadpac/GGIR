@@ -74,6 +74,24 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   } else {
     fnamesfull = datadir
   }
+  if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
+    warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
+                  "at the moment GGIR is not able to process this file format.",
+                  "Please convert to csv format with ActiLife software."))
+  }
+  # check access permissions
+  Nfile_without_readpermission = length(which(file.access(paste0(datadir,"/",fnamesfull), mode = 4) == -1))
+  if (Nfile_without_readpermission > 0) {
+    stop(paste0("\nThere are ",Nfile_without_readpermission,
+                " files in directory specified with argument datadir for which the user does not have read access permission"))
+  } else {
+    cat("\nChecking that user has read access permission for all files in data directory: Yes")
+  }
+  if (file.access(outputdir, mode = 2) == 0) {
+    cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes")
+  } else {
+    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.")
+  }
   f16 = function(X) {
     out = unlist(strsplit(X,"/"))
     f16 = out[length(out)]
