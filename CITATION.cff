@@ -41,7 +41,7 @@ authors:
     given-names: "Jairo H."
     orcid: "https://orcid.org/0000-0003-0366-6935"
 cff-version: "1.0.3"
-date-released: 2019-08-09
+date-released: 2019-08-10
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"

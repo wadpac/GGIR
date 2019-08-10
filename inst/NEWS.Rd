@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-5 (release date:09-08-2019)}{
+\section{Changes in version 1.9-5 (release date:10-08-2019)}{
 \itemize{
   \item Configuration file option now added to g.shell.GGIR and documented in vignette
   \item metric lfen added (low-pass filter signels followed by Euclidean norm)
@@ -15,6 +15,7 @@
   \item Moved IVIS calculation to seperate function, and split up function g.analyse.
   \item Now possible to specify time windows that need to be ignored for imputation.
   \item Default value for argument mode changed from mode =c(1,2) to mode = 1:5, to perform all the parts
+  \item Checks added for write and read access permission
   }
   }
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{
