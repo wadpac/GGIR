@@ -12,17 +12,20 @@ prepareNewRelease = function(version = c()) {
   dateReversed = paste0(dateReversed[3],"-",dateReversed[2],"-",dateReversed[1])
   # Check DESCRIPTION file
   D = read.csv(file = "./DESCRIPTION",sep="\n")
+  errorfound = FALSE
   i = 1
   while (i <= nrow(D)) {
     tmp = as.character(unlist(strsplit(as.character(D[i,]),": ")))
     if (tmp[1] == "Version") {
       if (tmp[2] != version) {
         cat("\nError: Version number is not correct in DESCRIPTION file")
+        errorfound = TRUE
       } 
     }
     if (tmp[1] == "Date") {
       if (tmp[2] != date) {
         cat("\nError: Date is not correct in DESCRIPTION file")
+        errorfound = TRUE
       } 
     }
     i = i + 1
@@ -35,11 +38,13 @@ prepareNewRelease = function(version = c()) {
     if (tmp[1] == "Version") {
       if (tmp[5] != version) {
         cat("\nError: Version number is not correct in GGIR-package.Rd file")
+        errorfound = TRUE
       } 
     }
     if (tmp[1] == "Date") {
       if (tmp[5] != date) {
         cat("\nError: Date is not correct in GGIR-package.Rd file")
+        errorfound = TRUE
       }
     }
     i = i + 1
@@ -52,11 +57,13 @@ prepareNewRelease = function(version = c()) {
     if (tmp[1] == "version") {
       if (tmp[2] != version) {
         cat("\nError: Version number is not correct in CITATION.cff file")
+        errorfound = TRUE
       } 
     }
     if (tmp[1] == "date-released") {
       if (tmp[2] != date) {
         cat("\nError: Date is not correct in CITATION.cff file")
+        errorfound = TRUE
       } 
     }
     i = i + 1
@@ -78,12 +85,15 @@ prepareNewRelease = function(version = c()) {
     if (length(versioninfile) > 0 & length(dateinfile) > 0) { 
       if (versioninfile != version) {
         cat("\nError: Version number is not correct in NEWS.Rd file")
+        errorfound = TRUE
       }
       if (dateinfile != dateReversed) {
-          cat("\nError: Date is not correct in NEWS.Rd file")
+        cat("\nError: Date is not correct in NEWS.Rd file")
+        errorfound = TRUE
       }
       break() # only check first date and version number
     }
     i = i + 1
   }
+  if (errorfound == FALSE) cat(paste0("\nNo problem found. Package consistently uses version ",version," and date ", dateReversed))
 }
