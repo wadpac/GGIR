@@ -82,8 +82,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(datadir,"/",fnamesfull), mode = 4) == -1))
   if (Nfile_without_readpermission > 0) {
-    stop(paste0("\nThere are ",Nfile_without_readpermission,
-                " files in directory specified with argument datadir for which the user does not have read access permission"))
+    warning(paste0("\nThere are/is ",Nfile_without_readpermission,
+                " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
   } else {
     cat("\nChecking that user has read access permission for all files in data directory: Yes")
   }
