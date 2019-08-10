@@ -13,9 +13,9 @@
   for example L3M3, L5M5, L6M6, L10M10 all in one go. Further, option added (qM5L5) to
   extract percentiles (quantiles) from the value distribution corresponding to these windows.
   \item Moved IVIS calculation to seperate function, and split up function g.analyse.
-  \item Now possible to specify time windows that need to be ignored for imputation.
-  \item Default value for argument mode changed from mode =c(1,2) to mode = 1:5, to perform all the parts
-  \item Checks added for write and read access permission
+  \item Now possible to specify time windows that need to be ignored for imputation, see TimeSegments2ZeroFile.
+  \item Default value for argument mode changed from mode = c(1,2) to mode = 1:5, to perform all the parts.
+  \item Checks added for user write and read access permission, and subsequent warnings given..
   }
   }
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{
