@@ -28,8 +28,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   # load summary spreadsheets for this study
   if (file.exists(paste(results,"/part2_daysummary.csv",sep=""))) {
   } else {
-    print("Warning: File daysummary.csv not generated yet")
-    stop()
+    stop("Warning: File daysummary.csv not generated yet")
   }
   daysummary = read.csv(paste(results,"/part2_daysummary.csv",sep=""))
   summary = read.csv(paste(results,"/part2_summary.csv",sep=""))
@@ -67,7 +66,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         if (length(unique(summarysleep_tmp$acc_def)) > 1) {
           if (length(which(unique(summarysleep_tmp$acc_def) == "T5A5")) == 1) {
             della = which(summarysleep_tmp$acc_def == "T5A5")
-
+            
           } else {
             della = which(summarysleep_tmp$acc_def == unique(summarysleep_tmp$acc_def)[1])
           }
@@ -96,7 +95,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             c45 = c(c45,i45)
           }
         }
-
+        
         c45 = c45[length(c45)]
         #######################
         # First page of the report
@@ -124,7 +123,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           lengthnight = summarysleep_tmp$acc_SptDuration #including wake periods
           nocsleepdur = summarysleep_tmp$acc_SleepDurationInSpt
           sleepefficiency = (nocsleepdur /lengthnight) * 100
-
+          
           f01 = daysummary_tmp[,c45]
           f02 = daysummary_tmp[,MainMetric]
           f05 = nocsleepdur #runif(length(days), 4, 10)
@@ -152,7 +151,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           B3 = barplot(as.matrix(f01),names.arg=days_PA,beside=TRUE,#axes=FALSE,
                        ylim=YXLIM,cex.names=CEXN,las=0,col=CLS_A,density = 20) #
           abline(h=30,lty=2,lwd=2)
-
+          
           topp = mean(as.matrix(round(f01)))*0.1
           text(y= as.matrix(round(f01))+topp+5, x= B3, labels=as.character(as.matrix(round(f01))), xpd=TRUE,cex=1)
           text(x=1,y=(max(YXLIM)*0.95),labels=vars[1],pos=4,font=2,cex=1.2)
@@ -273,166 +272,167 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           xaxislabels = c("noon","2pm","4pm","6pm","8pm","10pm","midnight",
                           "2am","4am","6am","8am","10am","noon")
         }
-
-        nplots = length(nightsi)+1
-        # plot
-        npointsperday = (60/ws3)*1440
-        x = 1:npointsperday
-        NGPP = 7 #number of graphs per page
-        par(mfcol=c(NGPP,1),mar=c(2,0.5,1,0.5)+0.1,omi=c(0,0,0.1,0),mgp=c(2,0.8,0))
-        daycount = 1
-        for (g in 1:nplots) { # 1:nplots
-          skip = FALSE
-          if (g == 1) {
-            t0 = 1
-            t1 = nightsi[g]-1
-            if ((t1 - t0) < (6*(60/ws3)*60)) skip = TRUE
-          } else if (g > 1 & g < nplots) {
-            t0 = nightsi[g-1]
-            t1 = nightsi[g]-1
-          }  else if (g == nplots) {
-            t0 = nightsi[g-1]
-            t1 = length(time)
-            if ((t1 - t0) < (6*(60/ws3)*60)) skip = TRUE
-          }
-          if (((t1-t0) + 1) / (60*60/ws3) == 25) { # day with 25 hours, just pretend that 25th hour did not happen
-            t1 = t1 - (60*60/ws3)
-          }
-          if (((t1-t0) + 1) / (60*60/ws3) == 23) { # day with 23 hours, just extend timeline with 1 hour
-            t1 = t1 + (60*60/ws3)
-          }
-          acc = ACC[t0:t1]
-          mpa = MODPA[t0:t1]
-          vpa = VIGPA[t0:t1]
-          ang = angle[t0:t1]
-          d = detection[t0:t1]
-
-          minutesvigorous = (length(which(vpa == 1))*5)/60
-          minutesmoderate = (length(which(mpa == 1))*5)/60
-          minutesMVPA = (length(which(mpa == 1 | vpa == 1))*5)/60
-          if (viewingwindow == 1) { #focus on day
-            if (length(d2exclude) > 0) {
-              if (length(which(d2exclude == g)) > 0) skip = TRUE
+        if (length(nightsi) > 0) { # Do not attempt to create a plot when there is no midnight in the data, because calculation of t1 will be complicated.
+          nplots = length(nightsi)+1
+          # plot
+          npointsperday = (60/ws3)*1440
+          x = 1:npointsperday
+          NGPP = 7 #number of graphs per page
+          par(mfcol=c(NGPP,1),mar=c(2,0.5,1,0.5)+0.1,omi=c(0,0,0.1,0),mgp=c(2,0.8,0))
+          daycount = 1
+          for (g in 1:nplots) { # 1:nplots
+            skip = FALSE
+            if (g == 1) {
+              t0 = 1
+              t1 = nightsi[g]-1
+              if ((t1 - t0) < (6*(60/ws3)*60)) skip = TRUE
+            } else if (g > 1 & g < nplots) {
+              t0 = nightsi[g-1]
+              t1 = nightsi[g]-1
+            }  else if (g == nplots) {
+              t0 = nightsi[g-1]
+              t1 = length(time)
+              if ((t1 - t0) < (6*(60/ws3)*60)) skip = TRUE
             }
-          } else { #focus on night
-            if (length(n2exclude) > 0) {
-              if (length(which(n2exclude == g)) > 0) skip = TRUE
+            if (((t1-t0) + 1) / (60*60/ws3) == 25) { # day with 25 hours, just pretend that 25th hour did not happen
+              t1 = t1 - (60*60/ws3)
             }
-          }
-          title = paste("Day ",daycount,": ",
-                        wdaynames[unclass(as.POSIXlt(time[t0]))$wday+1],
-                        "    ",
-                        unclass(as.POSIXlt(time[t0]))$mday,"/",
-                        unclass(as.POSIXlt(time[t0]))$mon+1,"/",
-                        unclass(as.POSIXlt(time[t0]))$year+1900,sep="")
-          if (((t1-t0)+1) != npointsperday & t0 == 1) {
-            extension = rep(NA,(npointsperday-((t1-t0)+1)))
-            acc = c(extension,acc)
-            if (length(acc) == (length(x)+1)) {
-              extension = extension[2:(length(extension))]
-              acc = acc[2:(length(acc))]
+            if (((t1-t0) + 1) / (60*60/ws3) == 23) { # day with 23 hours, just extend timeline with 1 hour
+              t1 = t1 + (60*60/ws3)
             }
-            mpa = c(extension,mpa)
-            vpa = c(extension,vpa)
-          }
-          if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
-            extension = rep(NA,(npointsperday-((t1-t0)+1)))
-            acc = c(acc,extension)
-            if (length(acc) == (length(x)+1)) {
-              extension = extension[1:(length(extension)-1)]
-              acc = acc[1:(length(acc)-1)]
+            acc = ACC[t0:t1]
+            mpa = MODPA[t0:t1]
+            vpa = VIGPA[t0:t1]
+            ang = angle[t0:t1]
+            d = detection[t0:t1]
+            
+            minutesvigorous = (length(which(vpa == 1))*5)/60
+            minutesmoderate = (length(which(mpa == 1))*5)/60
+            minutesMVPA = (length(which(mpa == 1 | vpa == 1))*5)/60
+            if (viewingwindow == 1) { #focus on day
+              if (length(d2exclude) > 0) {
+                if (length(which(d2exclude == g)) > 0) skip = TRUE
+              }
+            } else { #focus on night
+              if (length(n2exclude) > 0) {
+                if (length(which(n2exclude == g)) > 0) skip = TRUE
+              }
             }
-            mpa = c(mpa,extension)
-            vpa = c(vpa,extension)
-          }
-          acc = as.numeric(acc)
-          vpa = vpa * 143
-          mpa = mpa * 143
-          acc[which(acc >= 900)] = 900
-          acc = (acc/9) - 210
-          # sleep related
-          if (I$monc == 2) {
-            LPd = LP[t0:t1]
-          }
-          if (((t1-t0)+1) != npointsperday & t0 == 1) {
-            extension = rep(NA,(npointsperday-((t1-t0)+1)))
-            ang = c(extension,ang)
-            if (length(ang) == (length(x)+1)) {
-              extension = extension[2:(length(extension))]
-              ang = ang[2:(length(ang))]
+            title = paste("Day ",daycount,": ",
+                          wdaynames[unclass(as.POSIXlt(time[t0]))$wday+1],
+                          "    ",
+                          unclass(as.POSIXlt(time[t0]))$mday,"/",
+                          unclass(as.POSIXlt(time[t0]))$mon+1,"/",
+                          unclass(as.POSIXlt(time[t0]))$year+1900,sep="")
+            if (((t1-t0)+1) != npointsperday & t0 == 1) {
+              extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              acc = c(extension,acc)
+              if (length(acc) == (length(x)+1)) {
+                extension = extension[2:(length(extension))]
+                acc = acc[2:(length(acc))]
+              }
+              mpa = c(extension,mpa)
+              vpa = c(extension,vpa)
             }
-            d = c(extension,d)
-            if (I$monc == 2) LPd = c(extension,LPd)
-          }
-          if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
-            extension = rep(NA,(npointsperday-((t1-t0)+1)))
-            ang = c(ang,extension)
-            if (length(ang) == (length(x)+1)) {
-              extension = extension[1:(length(extension)-1)]
-              ang = ang[1:(length(ang)-1)]
+            if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
+              extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              acc = c(acc,extension)
+              if (length(acc) == (length(x)+1)) {
+                extension = extension[1:(length(extension)-1)]
+                acc = acc[1:(length(acc)-1)]
+              }
+              mpa = c(mpa,extension)
+              vpa = c(vpa,extension)
             }
-            d = c(d,extension)
-            if (I$monc == 2) LPd = c(LPd,extension)
-          }
-          d = d * 143
-
-          if (I$monc == 2) {
-            LPd_dark = as.numeric(LPd)
-            LPd_light = as.numeric(LPd)
-            is.na(LPd_light[which(LPd_light < 4)]) = TRUE
-            is.na(LPd_dark[which(LPd_dark >= 4)]) = TRUE
-            LPd_dark[which(is.na(LPd_dark) == FALSE)] = -220
-            LPd_light[which(is.na(LPd_light) == FALSE)] = -220
-          }
-          #=============
-          if (skip == FALSE) {
-            YXLIM = c(-230,300)
-            LJ = 2
-            # accelerometer
-            plot(x,acc, type="l",lwd=LWDA,bty="l",axes=FALSE,ylim=YXLIM,
-                 xlab="",ylab="",main="",cex.main=0.9,lend=LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
-            if (I$monc == 2) { ## dark and light
-              lines(x,LPd_light,type="l",lwd=LWDX,col="yellow",ylim=YXLIM,cex=0.3,lend=LJ)
-            }
-            # angle
-            lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
-            #sleep detection
-            lines(x,d,type="l",lwd=LWDX,col="red",lend=LJ)
-            # mvpa
-            lines(x,mpa,type="l",lwd=LWDX,col="skyblue",lend=LJ)
-            lines(x,vpa,type="l",lwd=LWDX,col="darkblue",lend=LJ)
-            # axes
-            axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
-            # grid
-            abline(h=0,untf = FALSE,lty=3,lwd=1,col="grey")
-            rect(xleft=-10,xright=(25*60*(60/ws3)),ybottom=160,
-                 ytop=220,col="white",border=NA)
-            text(x=-700,y=285,labels=title,pos=4,font=2,cex=1)
-            text(x=-700,y=180,labels="What we think you did:",pos=4,font=1.8,cex=0.9)
-            text(x=-700,y=-120,labels="Your arm movement:",pos=4,font=1.8,cex=0.9)
-            text(x=-700,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
-            box("figure",col="black")
+            acc = as.numeric(acc)
+            vpa = vpa * 143
+            mpa = mpa * 143
+            acc[which(acc >= 900)] = 900
+            acc = (acc/9) - 210
+            # sleep related
             if (I$monc == 2) {
-              legend("topright",legend=c("sleep / rest", #"arm angle (top) / arm movement (bottom)",
-                                         "light detected by light sensor",
-                                         "active period lasting at least 10 minutes",
-                                         "vigorous part of the activite period"), #"darkness (light sensor)",
-                     lty=c(1,1),col=c("red","yellow","skyblue","darkblue"), #"black",
-                     lwd=c(LWDX,LWDX,LWDX,LWDX,LWDX),bg="white",cex=0.7,ncol=2,box.lwd=BLX)
-            } else {
-              legend("topright",legend=c( "sleep /rest", #"arm angle (top) activity (bottom)",
-                                          "active period lasting at least 10 minutes",
-                                          "vigorous part of the activite period"),
-                     lty=c(1,1),col=c("red","skyblue","darkblue"),
-                     lwd=c(LWDX,LWDX,LWDX),bg="white",cex=0.6,ncol=3,box.lwd=BLX)
+              LPd = LP[t0:t1]
             }
-            if (daycount==1 | ((daycount-1)/NGPP) == (round((daycount-1)/NGPP))) {
-              mtext(paste("Filename: ",fnamesmeta[i],sep=""),side = 3,line=0,outer=TRUE,font=2,cex=0.6)
+            if (((t1-t0)+1) != npointsperday & t0 == 1) {
+              extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              ang = c(extension,ang)
+              if (length(ang) == (length(x)+1)) {
+                extension = extension[2:(length(extension))]
+                ang = ang[2:(length(ang))]
+              }
+              d = c(extension,d)
+              if (I$monc == 2) LPd = c(extension,LPd)
             }
+            if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
+              extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              ang = c(ang,extension)
+              if (length(ang) == (length(x)+1)) {
+                extension = extension[1:(length(extension)-1)]
+                ang = ang[1:(length(ang)-1)]
+              }
+              d = c(d,extension)
+              if (I$monc == 2) LPd = c(LPd,extension)
+            }
+            d = d * 143
+            
+            if (I$monc == 2) {
+              LPd_dark = as.numeric(LPd)
+              LPd_light = as.numeric(LPd)
+              is.na(LPd_light[which(LPd_light < 4)]) = TRUE
+              is.na(LPd_dark[which(LPd_dark >= 4)]) = TRUE
+              LPd_dark[which(is.na(LPd_dark) == FALSE)] = -220
+              LPd_light[which(is.na(LPd_light) == FALSE)] = -220
+            }
+            #=============
+            if (skip == FALSE) {
+              YXLIM = c(-230,300)
+              LJ = 2
+              # accelerometer
+              plot(x,acc, type="l",lwd=LWDA,bty="l",axes=FALSE,ylim=YXLIM,
+                   xlab="",ylab="",main="",cex.main=0.9,lend=LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
+              if (I$monc == 2) { ## dark and light
+                lines(x,LPd_light,type="l",lwd=LWDX,col="yellow",ylim=YXLIM,cex=0.3,lend=LJ)
+              }
+              # angle
+              lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
+              #sleep detection
+              lines(x,d,type="l",lwd=LWDX,col="red",lend=LJ)
+              # mvpa
+              lines(x,mpa,type="l",lwd=LWDX,col="skyblue",lend=LJ)
+              lines(x,vpa,type="l",lwd=LWDX,col="darkblue",lend=LJ)
+              # axes
+              axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
+              # grid
+              abline(h=0,untf = FALSE,lty=3,lwd=1,col="grey")
+              rect(xleft=-10,xright=(25*60*(60/ws3)),ybottom=160,
+                   ytop=220,col="white",border=NA)
+              text(x=-700,y=285,labels=title,pos=4,font=2,cex=1)
+              text(x=-700,y=180,labels="What we think you did:",pos=4,font=1.8,cex=0.9)
+              text(x=-700,y=-120,labels="Your arm movement:",pos=4,font=1.8,cex=0.9)
+              text(x=-700,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
+              box("figure",col="black")
+              if (I$monc == 2) {
+                legend("topright",legend=c("sleep / rest", #"arm angle (top) / arm movement (bottom)",
+                                           "light detected by light sensor",
+                                           "active period lasting at least 10 minutes",
+                                           "vigorous part of the activite period"), #"darkness (light sensor)",
+                       lty=c(1,1),col=c("red","yellow","skyblue","darkblue"), #"black",
+                       lwd=c(LWDX,LWDX,LWDX,LWDX,LWDX),bg="white",cex=0.7,ncol=2,box.lwd=BLX)
+              } else {
+                legend("topright",legend=c( "sleep /rest", #"arm angle (top) activity (bottom)",
+                                            "active period lasting at least 10 minutes",
+                                            "vigorous part of the activite period"),
+                       lty=c(1,1),col=c("red","skyblue","darkblue"),
+                       lwd=c(LWDX,LWDX,LWDX),bg="white",cex=0.6,ncol=3,box.lwd=BLX)
+              }
+              if (daycount==1 | ((daycount-1)/NGPP) == (round((daycount-1)/NGPP))) {
+                mtext(paste("Filename: ",fnamesmeta[i],sep=""),side = 3,line=0,outer=TRUE,font=2,cex=0.6)
+              }
+            }
+            daycount = daycount + 1
           }
-          daycount = daycount + 1
+          dev.off()
         }
-        dev.off()
       }
     }
   }
