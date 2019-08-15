@@ -11,7 +11,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c()) {
+                   configtz = c()) { #, do.parallel = TRUE
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -26,7 +26,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
-
+  
   #Extra code to handle raw accelerometer data in Raw data format:
   # list of all csv and bin files
   fnames = datadir2fnames(datadir,filelist)
@@ -76,21 +76,21 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
     warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
-                  "at the moment GGIR is not able to process this file format.",
-                  "Please convert to csv format with ActiLife software."))
+                   "at the moment GGIR is not able to process this file format.",
+                   "Please convert to csv format with ActiLife software."))
   }
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(datadir,"/",fnamesfull), mode = 4) == -1))
   if (Nfile_without_readpermission > 0) {
     warning(paste0("\nThere are/is ",Nfile_without_readpermission,
-                " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
+                   " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
   } else {
     cat("\nChecking that user has read access permission for all files in data directory: Yes")
   }
   if (file.access(outputdir, mode = 2) == 0) {
-    cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes")
+    cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
   } else {
-    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.")
+    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
   }
   f16 = function(X) {
     out = unlist(strsplit(X,"/"))
@@ -140,19 +140,36 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   #=================================================================
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   fnames = sort(fnames)
-  for (j in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
+  # if (do.parallel == TRUE) {
+  #   cores=parallel::detectCores()
+  #   if (cores[1] > 3) {
+  #     chunksize = 0.3
+  #     cl <- parallel::makeCluster(cores[1]-2) #not to overload your computer
+  #     doParallel::registerDoParallel(cl)
+  #   } else {
+  #     do.parallel = FALSE
+  #   }
+  # }
+  # t1 = Sys.time() # copied here
+  # if (do.parallel == TRUE) {
+  #   cat(paste0('\n parallel processing in progress...\n'))
+  # }
+  # `%myinfix%` = ifelse(do.parallel, `%dopar%`, `%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+  # output_list =foreach::foreach(i=f0:f1, .packages = c('GGIR','GENEAread','mmap', 'signal'), .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
+  #   tryCatchResult = tryCatch({
+  for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
     if (print.filename == TRUE) {
-      cat(paste0("\nFile name: ",fnames[j]))
+      cat(paste0("\nFile name: ",fnames[i]))
     }
     if (filelist == TRUE) {
-      datafile = as.character(fnames[j])
+      datafile = as.character(fnames[i])
     } else {
-      datafile = paste(datadir,"/",fnames[j],sep="")
+      datafile = paste(datadir,"/",fnames[i],sep="")
     }
     #=========================================================
     #check whether file has already been processed
     #by comparing filename to read with list of processed files
-    fnames_without = as.character(unlist(strsplit(as.character(fnames[j]),".csv"))[1])
+    fnames_without = as.character(unlist(strsplit(as.character(fnames[i]),".csv"))[1])
     #remove / if it was a list
     fnames_without2 = fnames_without
     teimp = unlist(strsplit(as.character(fnames_without),"/"))
@@ -191,12 +208,12 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       I = g.inspectfile(datafile, desiredtz=desiredtz)
     } else {
       load(datafile) # to do: would be nice to only load the object I and not the entire datafile
-      I$filename = fnames[j]
+      I$filename = fnames[i]
     }
     options(warn=0) #turn on warnings
     if (overwrite == TRUE) skip = 0
     if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
-      cat(paste0("\nP1 file ",j))
+      cat(paste0("\nP1 file ",i))
       turn.do.cal.back.on = FALSE
       if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
         do.cal = FALSE
@@ -269,8 +286,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
       if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) { 
         bcc.data = read.csv(backup.cal.coef)
-        cat("\nRetrieving previously derived calibration coefficients stored in")
-        cat("\nresults/QC/data_quality_reports.csv or otherwise specified with backup.cal.coef:")
+        cat("\nRetrieving previously derived calibration coefficients")
         bcc.data$filename = as.character(bcc.data$filename)
         for (nri in 1:nrow(bcc.data)) {
           tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
@@ -279,8 +295,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
             bcc.data$filename[nri] = unlist(strsplit(bcc.data$filename[nri],".RData"))[1]
           }
         }
-        if (length(which(as.character(bcc.data$filename) == fnames[j])) > 0) {
-          bcc.i = which(bcc.data$filename == fnames[j])
+        if (length(which(as.character(bcc.data$filename) == fnames[i])) > 0) {
+          bcc.i = which(bcc.data$filename == fnames[i])
           bcc.cal.error.start = which(colnames(bcc.data) == "cal.error.start")
           bcc.cal.error.end = which(colnames(bcc.data) == "cal.error.end")
           bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
@@ -296,8 +312,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
           cat("\n")
         } else {
-          cat("\nNo matching filename found in backup.cal.coef\n")
-          cat(paste0("\nCheck that filename ",fnames[j]," exists in the csv-file\n"))
+          # cat("\nNo matching filename found in backup.cal.coef\n")
+          # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
           if (do.cal ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
             cat("\n")
             cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
@@ -336,13 +352,13 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       #------------------------------------------------
       cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present
-      filename = unlist(strsplit(fnames[j],"/"))
+      filename = unlist(strsplit(fnames[i],"/"))
       if (length(filename) > 0) {
         filename = filename[length(filename)]
       } else {
-        filename = fnames[j]
+        filename = fnames[i]
       }
-      filename_dir=tmp5[j];filefoldername=tmp6[j]
+      filename_dir=tmp5[i];filefoldername=tmp6[i]
       if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
         filename = paste0(filename,".RData")
       }
@@ -367,22 +383,35 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
         metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
       }
-      if (length(metadatadir) > 0) {
-        SI = sessionInfo() 
-        sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part1.RData",sep="")
-        if (file.exists(sessionInfoFile)) {
-          FI = file.info(sessionInfoFile)
-          timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
-          # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
-          if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
-            save(SI,file=sessionInfoFile)
-          }
-        } else {
-          save(SI,file=sessionInfoFile)
-        }
-      }
+      
       rm(M); rm(I); rm(C)
     }
-    closeAllConnections()
+  }
+  # }) # END tryCatch
+  
+  # return(tryCatchResult) 
+  # }
+  # if (do.parallel == TRUE) {
+  #   stopCluster(cl)
+  #   for (oli in 1:length(output_list)) { # logged error and warning messages
+  #     if (is.null(unlist(output_list[oli])) == FALSE) {
+  #       cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
+  #       print(unlist(output_list[oli])) # print any error and warnings observed
+  #     }
+  #   }
+  # }
+  if (length(metadatadir) > 0) {
+    SI = sessionInfo() 
+    sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part1.RData",sep="")
+    if (file.exists(sessionInfoFile)) {
+      FI = file.info(sessionInfoFile)
+      timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
+      # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
+      if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
+        save(SI,file=sessionInfoFile)
+      }
+    } else {
+      save(SI,file=sessionInfoFile)
+    }
   }
 }
