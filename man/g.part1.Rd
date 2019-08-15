@@ -185,7 +185,6 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }
-
 }
 \details{
  Argument backup.cal.coef has two usecase. Use case 1: If the auto-calibration fails
