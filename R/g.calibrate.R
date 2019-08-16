@@ -103,29 +103,30 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           dur = nrow(data)	#duration of experiment in data points
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           # Initialization of variables
+          suppressWarnings(storage.mode(data) <- "numeric")
           if (mon == 1) {
-            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
           } else if (dformat == 3 & mon == 4) {
-            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
           } else if (dformat == 4 & mon == 4) {
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = TRUE
           } else if (dformat == 2 & mon == 4) {
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = FALSE
           } else if (mon == 2 & dformat == 1) {
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4]); temperaturre = as.numeric(data[,7])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperaturre = data[,7]
             temperature = as.numeric(data[,7])
           } else if (dformat == 2 & mon != 4) {
             data2 = matrix(NA,nrow(data),3)
             if (ncol(data) == 3) extra = 0
             if (ncol(data) >= 4) extra = 1
             for (jij in 1:3) {
-              data2[,jij] = as.numeric(data[,(jij+extra)])
+              data2[,jij] = data[,(jij+extra)]
             }
-            Gx = as.numeric(data2[,1]); Gy = as.numeric(data2[,2]); Gz = as.numeric(data2[,3])
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
           if (mon == 2 | (mon == 4 & dformat == 4)) {
             if (mon == 2) {
