@@ -27,7 +27,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                           do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
-  if (chunksize < 0.1) chunksize = 0.1
+  if (chunksize < 0.2) chunksize = 0.2
   nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
@@ -52,6 +52,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     cat(paste("\nshort windowsize has now been automatically adjusted to: ",ws3," seconds in order to meet this criteria.\n",sep=""))
   }
   windowsizes = c(ws3,ws2,ws)
+  data = c()
   PreviousEndPage = c() # needed for g.readaccfile
   start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour)
   monnames = c("genea","geneactive","actigraph","axivity") #monitor names
@@ -126,7 +127,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     } else {
       cat(paste(" ",i,sep=""))
     }
-    timer0 =Sys.time()
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
@@ -149,7 +149,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       NFilePagesSkipped = 0
     }
     options(warn=0) #turn on warnings
-    timer1 =Sys.time()
     #============
     #process data as read from binary file
     if (useRDA == TRUE) {
@@ -188,7 +187,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             meantemp = 0
           }
         }
-        timer2 =Sys.time()
         # extraction and modification of starting point of measurement
         if (i == 1 | (i != 1 & length(selectdaysfile) > 0)) { #only do this for first block of data
           starttime = g.getstarttime(datafile=datafile,P=P,header=header,mon=mon,
@@ -285,7 +283,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             starttime = as.POSIXlt(as.numeric(starttime) + (24*3600),origin="1970-01-01")
           }
         }
-        timer3 =Sys.time()
         if (i != 0 & length(selectdaysfile) == 0 & exists("P")) rm(P); gc()
         LD = nrow(data)
         if (LD < (ws*sf) & i == 1) {
@@ -296,7 +293,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       } else { # if useRDA == TRUE
         LD = nrow(data)
       }
-      timer4 =Sys.time()
       #store data that could not be used for this block, but will be added to next block
       if (LD >= (ws*sf)) { # LD != 0
         if (useRDA == FALSE) {
@@ -383,8 +379,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           #   dur = nrow(data)	#duration of experiment in data points
           #   durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           # }
-                                    
-          # kkk
           #####
           # STORE THE RAW DATA
           # data[,1], data[,2], data[,3], starttime, (temperature, light)
@@ -408,7 +402,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           data = cbind(rep(0,nrow(data)),data)
           LD = nrow(data)
         }
-        timer5 =Sys.time()
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2)
         allmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
         BFEN3b = allmetrics$BFEN3b
@@ -497,7 +490,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           metashort[count:(count-1+length(LFEN3b)),col_msi] = LFEN3b; col_msi = col_msi + 1
         }
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
-        timer6 =Sys.time()
         rm(allmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
@@ -608,6 +600,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         }
         metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = ENb; col_mli= col_mli + 1
         count2  = count2 + nmin
+        if (exists("data")) rm(data)
+        if (exists("light")) rm(light)
+        if (exists("temperature")) rm(temperature)
+        gc()
       } #end of section which is skipped when switchoff == 1
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
@@ -620,28 +616,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         cat(paste("\nstopped reading data because this analysis is limited to ",ceiling(daylimit)," days\n",sep=""))
       }
     }
-    timer7 =Sys.time()
-    if (exists("data")) rm(data)
-    if (exists("light")) rm(light)
-    if (exists("temperature")) rm(temperature)
-    gc()
-    # print("v!v!v!v!v!v!v!v!v!v")
-    # print("timer results 0 1")
-    # print(timer1 - timer0)
-    # print("timer results 1 2")
-    # print(timer2 - timer1)
-    # print("timer results 2 3")
-    # print(timer3 - timer2)
-    # print("timer results 3 4")
-    # print(timer4 - timer3)
-    # print("timer results 4 5")
-    # print(timer5 - timer4)
-    # print("timer results 5 6")
-    # print(timer6 - timer5)
-    # print("timer results 6 7")
-    # print(timer7 - timer6)
-    # print("^!^!^!^!^!^!^!^!^!v")
-    
     i = i + 1 #go to next block
   }
   # deriving timestamps
@@ -743,7 +717,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       metalong[,ncolml] = as.numeric(metalong[,ncolml])
     }
     
-    closeAllConnections()
+    # closeAllConnections()
   } else {
     metalong=metashort=wday=wdayname=windowsizes = c()
   }
