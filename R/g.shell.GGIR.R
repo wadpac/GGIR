@@ -170,6 +170,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("n") == FALSE)  n = 4
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
+  if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
   
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
@@ -263,7 +264,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
-            dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n) #do.parallel = do.parallel
+            dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n,
+            do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB)
   }
   if (dopart2 == TRUE) {
     cat('\n')

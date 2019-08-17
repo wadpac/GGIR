@@ -253,7 +253,7 @@ g.inspectfile = function(datafile, desiredtz = c()) {
       H = data.frame(varname = H[,1],varvalue = H[,2])
     }
   }
-  closeAllConnections()
+  # closeAllConnections()
 
   RowsWithData = which(is.na(H[,1]) == FALSE)
   
