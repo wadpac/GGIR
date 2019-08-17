@@ -247,7 +247,7 @@ or use the Source button in RStudio if you use RStudio.
 
 ## In a cluster
 
-It is possible to run GGIR on a computing cluster to process multiple files in parallel. The way we did it on a Sun Grid Engine cluster is shown below, please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specilist to tailor this to your situation. In our case, we had three files:
+GGIR by default uses multi-core processing, which can be turned off byseting argument do.parallel = FALSE. If this is still not fast enough then I advise using a GGIR on a computing cluster. The way I did it on a Sun Grid Engine cluster is shown below, please note that some of these commands are specific to the computing cluster you are working on. For example, I had to update the bash scripts when working on PBS cluster. Please consult your local cluster specilist to tailor this to your situation. In my case, I had three files:
 
 **submit.sh**
 

@@ -11,7 +11,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c()) { #, do.parallel = TRUE
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2) { #
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -20,6 +20,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       stop('\nVariable outputdir is not specified')
     }
   }
+
+
   if (grepl(datadir, outputdir)) {
     stop('\nError: The file path specified by argument outputdir should NOT equal or be a subdirectory of the path specified by argument datadir')
   }
@@ -74,6 +76,13 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   } else {
     fnamesfull = datadir
   }
+  if (useRDA == FALSE) {
+    filesizes = file.info(fnamesfull)$size # in bytes
+    toosmall = which(filesizes/1e6 > minimumFileSizeMB)
+    fnamesfull = fnamesfull[toosmall]
+    fnames = fnames[toosmall]
+  }
+  
   if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
     warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
                    "at the moment GGIR is not able to process this file format.",
@@ -140,278 +149,280 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   #=================================================================
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   fnames = sort(fnames)
-  # if (do.parallel == TRUE) {
-  #   cores=parallel::detectCores()
-  #   if (cores[1] > 3) {
-  #     chunksize = 0.3
-  #     cl <- parallel::makeCluster(cores[1]-2) #not to overload your computer
-  #     doParallel::registerDoParallel(cl)
-  #   } else {
-  #     do.parallel = FALSE
-  #   }
-  # }
-  # t1 = Sys.time() # copied here
-  # if (do.parallel == TRUE) {
-  #   cat(paste0('\n parallel processing in progress...\n'))
-  # }
-  # `%myinfix%` = ifelse(do.parallel, `%dopar%`, `%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  # output_list =foreach::foreach(i=f0:f1, .packages = c('GGIR','GENEAread','mmap', 'signal'), .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
-  #   tryCatchResult = tryCatch({
-  for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
-    if (print.filename == TRUE) {
-      cat(paste0("\nFile name: ",fnames[i]))
-    }
-    if (filelist == TRUE) {
-      datafile = as.character(fnames[i])
+  if (do.parallel == TRUE) {
+    cores=parallel::detectCores()
+    Ncores = cores[1]
+    if (Ncores > 3) {
+      if (chunksize > 0.7) chunksize = 0.7 # put limit to chunksize, because when processing in parallel memory constraints are critical
+      cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
+      doParallel::registerDoParallel(cl)
     } else {
-      datafile = paste(datadir,"/",fnames[i],sep="")
+      do.parallel = FALSE
     }
-    #=========================================================
-    #check whether file has already been processed
-    #by comparing filename to read with list of processed files
-    fnames_without = as.character(unlist(strsplit(as.character(fnames[i]),".csv"))[1])
-    #remove / if it was a list
-    fnames_without2 = fnames_without
-    teimp = unlist(strsplit(as.character(fnames_without),"/"))
-    if (length(teimp) > 1) {
-      fnames_without2 = teimp[length(teimp)]
-    } else {
+  }
+  t1 = Sys.time() # copied here
+  if (do.parallel == TRUE) {
+    cat(paste0('\n parallel processing in progress...',Sys.time(),'\n'))
+  }
+  `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+  #,'GENEAread','mmap', 'signal'
+  output_list =foreach::foreach(i=f0:f1, .packages = 'GGIR', .errorhandling='pass') %myinfix% {
+    tryCatchResult = tryCatch({
+      # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
+      if (print.filename == TRUE) {
+        cat(paste0("\nFile name: ",fnames[i]))
+      }
+      if (filelist == TRUE) {
+        datafile = as.character(fnames[i])
+      } else {
+        datafile = paste(datadir,"/",fnames[i],sep="")
+      }
+      #=========================================================
+      #check whether file has already been processed
+      #by comparing filename to read with list of processed files
+      fnames_without = as.character(unlist(strsplit(as.character(fnames[i]),".csv"))[1])
+      #remove / if it was a list
       fnames_without2 = fnames_without
-    }
-    fnames_without = fnames_without2
-    withoutRD = unlist(strsplit(fnames_without,"[.]RD"))
-    if (length(withoutRD) > 1) {
-      fnames_without = withoutRD[1]
-    }
-    if (length(ffdone) > 0) {
-      ffdone_without = 1:length(ffdone) #dummy variable
-      for (index in 1:length(ffdone)) {
-        ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
-      }
-      if (length(which(ffdone_without == fnames_without)) > 0) { 
-        skip = 1 #skip this file because it was analysed before")
+      teimp = unlist(strsplit(as.character(fnames_without),"/"))
+      if (length(teimp) > 1) {
+        fnames_without2 = teimp[length(teimp)]
       } else {
-        skip = 0 #do not skip this file
+        fnames_without2 = fnames_without
       }
-    } else {
-      skip = 0
-    }
-    if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-      useRDA = TRUE
-    } else {
-      useRDA = FALSE
-    }
-    #================================================================
-    # Inspect file (and store output later on)
-    options(warn=-1) #turn off warnings
-    if (useRDA == FALSE) {
-      I = g.inspectfile(datafile, desiredtz=desiredtz)
-    } else {
-      load(datafile) # to do: would be nice to only load the object I and not the entire datafile
-      I$filename = fnames[i]
-    }
-    options(warn=0) #turn on warnings
-    if (overwrite == TRUE) skip = 0
-    if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
-      cat(paste0("\nP1 file ",i))
-      turn.do.cal.back.on = FALSE
-      if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
-        do.cal = FALSE
-        turn.do.cal.back.on = TRUE
+      fnames_without = fnames_without2
+      withoutRD = unlist(strsplit(fnames_without,"[.]RD"))
+      if (length(withoutRD) > 1) {
+        fnames_without = withoutRD[1]
       }
-      data_quality_report_exists = file.exists(paste0(outputdir,"/",outputfolder,"/results/QC/data_quality_report.csv",sep=""))
-      assigned.backup.cal.coef = FALSE
-      if (length(backup.cal.coef) > 0) {
-        if (backup.cal.coef == "retrieve") {
-          if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
-            backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
-            assigned.backup.cal.coef = TRUE
-          }
-        } else if (backup.cal.coef == "redo") { #ignore the backup calibration coefficients, and derive them again
-          backup.cal.coef = c()
-          assigned.backup.cal.coef = TRUE
-        } else if (backup.cal.coef != "redo" & backup.cal.coef != "retrieve") {
-          # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
-          assigned.backup.cal.coef = TRUE
+      if (length(ffdone) > 0) {
+        ffdone_without = 1:length(ffdone) #dummy variable
+        for (index in 1:length(ffdone)) {
+          ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
         }
-      }
-      #data_quality_report.csv does not exist and there is also no other backup file, so g.calibrate needs to be applied.
-      if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
-      #--------------------------------------
-      if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
-        # cat(paste0("\n",rep('-',options()$width),collapse=''))
-        cat("\n")
-        cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-        C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
-                        minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
-                        windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                        desiredtz=desiredtz)
-      } else {
-        C = list(cal.error.end=0,cal.error.start=0)
-        C$scale=c(1,1,1)
-        C$offset=c(0,0,0)
-        C$tempoffset=  c(0,0,0)
-        C$QCmessage = "Autocalibration not done"
-        C$npoints = 0
-        C$nhoursused= 0
-        C$use.temp = use.temp
-      }
-      if (turn.do.cal.back.on == TRUE) {
-        do.cal = TRUE
-      }
-      
-      cal.error.end = C$cal.error.end
-      cal.error.start = C$cal.error.start
-      if (length(cal.error.start) == 0) {
-        #file too shortcorrupt to even calculate basic calibration value
-        cal.error.start = NA
-      }
-      check.backup.cal.coef = FALSE
-      if (is.na(cal.error.start) == T | length(cal.error.end) == 0) {
-        C$scale = c(1,1,1); C$offset = c(0,0,0);       C$tempoffset=  c(0,0,0)
-        check.backup.cal.coef = TRUE
-      } else {
-        if (cal.error.start < cal.error.end) {
-          C$scale = c(1,1,1); C$offset = c(0,0,0);       C$tempoffset=  c(0,0,0)
-          check.backup.cal.coef = TRUE
-        }
-      }
-      if (length(backup.cal.coef) > 0) check.backup.cal.coef = TRUE
-      #if calibration fails then check whether calibration coefficients are provided in a separate csv-spreadsheet
-      # this csv spreadhseet needs to be created by the end-user and should contain:
-      # column with names of the accelerometer files
-      # three columns respectively named scale.x, scale.y, and scale.z
-      # three columns respectively named offset.x, offset.y, and offset.z
-      # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
-      # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
-      if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) { 
-        bcc.data = read.csv(backup.cal.coef)
-        cat("\nRetrieving previously derived calibration coefficients")
-        bcc.data$filename = as.character(bcc.data$filename)
-        for (nri in 1:nrow(bcc.data)) {
-          tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
-          if (length(tmp) > 1) { 
-            bcc.data$filename[nri] = tmp[2]
-            bcc.data$filename[nri] = unlist(strsplit(bcc.data$filename[nri],".RData"))[1]
-          }
-        }
-        if (length(which(as.character(bcc.data$filename) == fnames[i])) > 0) {
-          bcc.i = which(bcc.data$filename == fnames[i])
-          bcc.cal.error.start = which(colnames(bcc.data) == "cal.error.start")
-          bcc.cal.error.end = which(colnames(bcc.data) == "cal.error.end")
-          bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
-          bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
-          bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
-          C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
-          C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
-          C$tempoffset=  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
-          cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
-          cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
-          cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
-          cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
-          cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
-          cat("\n")
+        if (length(which(ffdone_without == fnames_without)) > 0) { 
+          skip = 1 #skip this file because it was analysed before")
         } else {
-          # cat("\nNo matching filename found in backup.cal.coef\n")
-          # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
-          if (do.cal ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
-            cat("\n")
-            cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-            C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
-                            minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
-                            windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                            desiredtz=desiredtz)
-          }
+          skip = 0 #do not skip this file
         }
-      }
-      #------------------------------------------------
-      cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
-      M = g.getmeta(datafile,                  
-                    do.bfen=do.bfen,
-                    do.enmo=do.enmo,
-                    do.lfenmo=do.lfenmo,
-                    do.lfen=do.lfen,
-                    do.en=do.en,
-                    do.hfen=do.hfen,
-                    do.hfenplus=do.hfenplus,
-                    do.mad=do.mad,
-                    do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
-                    do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
-                    do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
-                    do.enmoa=do.enmoa,
-                    lb = lb, hb = hb,  n = n,
-                    desiredtz=desiredtz,daylimit=daylimit,windowsizes=windowsizes,
-                    tempoffset=C$tempoffset,scale=C$scale,offset=C$offset,
-                    meantempcal=C$meantempcal,chunksize=chunksize,
-                    selectdaysfile=selectdaysfile,
-                    outputdir=outputdir,
-                    outputfolder=outputfolder,
-                    dayborder=dayborder,dynrange=dynrange,
-                    configtz=configtz)
-      
-      #------------------------------------------------
-      cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
-      # remove directory in filename if present
-      filename = unlist(strsplit(fnames[i],"/"))
-      if (length(filename) > 0) {
-        filename = filename[length(filename)]
       } else {
-        filename = fnames[i]
+        skip = 0
       }
-      filename_dir=tmp5[i];filefoldername=tmp6[i]
-      if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
-        filename = paste0(filename,".RData")
-      }
-      save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
-      # as metadatdir is not known derive it:
-      metadatadir = c()
-      if (length(datadir) > 0) {
-        # list of all csv and bin files
-        fnames = datadir2fnames(datadir,filelist)
-        # check whether these are RDA
-        if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
-          useRDA = TRUE
-        } else {
-          useRDA = FALSE
-        }
+      if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
+        useRDA = TRUE
       } else {
         useRDA = FALSE
       }
-      if (filelist == TRUE | useRDA == TRUE) {
-        metadatadir = paste(outputdir,"/output_",studyname,sep="")
+      #================================================================
+      # Inspect file (and store output later on)
+      options(warn=-1) #turn off warnings
+      if (useRDA == FALSE) {
+        I = g.inspectfile(datafile, desiredtz=desiredtz)
       } else {
-        outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
-        metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
+        load(datafile) # to do: would be nice to only load the object I and not the entire datafile
+        I$filename = fnames[i]
       }
-      
-      rm(M); rm(I); rm(C)
-    }
+      options(warn=0) #turn on warnings
+      if (overwrite == TRUE) skip = 0
+      if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
+        cat(paste0("\nP1 file ",i))
+        turn.do.cal.back.on = FALSE
+        if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
+          do.cal = FALSE
+          turn.do.cal.back.on = TRUE
+        }
+        data_quality_report_exists = file.exists(paste0(outputdir,"/",outputfolder,"/results/QC/data_quality_report.csv",sep=""))
+        assigned.backup.cal.coef = FALSE
+        if (length(backup.cal.coef) > 0) {
+          if (backup.cal.coef == "retrieve") {
+            if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
+              backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+              assigned.backup.cal.coef = TRUE
+            }
+          } else if (backup.cal.coef == "redo") { #ignore the backup calibration coefficients, and derive them again
+            backup.cal.coef = c()
+            assigned.backup.cal.coef = TRUE
+          } else if (backup.cal.coef != "redo" & backup.cal.coef != "retrieve") {
+            # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
+            assigned.backup.cal.coef = TRUE
+          }
+        }
+        #data_quality_report.csv does not exist and there is also no other backup file, so g.calibrate needs to be applied.
+        if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
+        #--------------------------------------
+        if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
+          # cat(paste0("\n",rep('-',options()$width),collapse=''))
+          cat("\n")
+          cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+          C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
+                          minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
+                          windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
+                          desiredtz=desiredtz)
+        } else {
+          C = list(cal.error.end=0,cal.error.start=0)
+          C$scale=c(1,1,1)
+          C$offset=c(0,0,0)
+          C$tempoffset=  c(0,0,0)
+          C$QCmessage = "Autocalibration not done"
+          C$npoints = 0
+          C$nhoursused= 0
+          C$use.temp = use.temp
+        }
+        if (turn.do.cal.back.on == TRUE) {
+          do.cal = TRUE
+        }
+        
+        cal.error.end = C$cal.error.end
+        cal.error.start = C$cal.error.start
+        if (length(cal.error.start) == 0) {
+          #file too shortcorrupt to even calculate basic calibration value
+          cal.error.start = NA
+        }
+        check.backup.cal.coef = FALSE
+        if (is.na(cal.error.start) == T | length(cal.error.end) == 0) {
+          C$scale = c(1,1,1); C$offset = c(0,0,0);       C$tempoffset=  c(0,0,0)
+          check.backup.cal.coef = TRUE
+        } else {
+          if (cal.error.start < cal.error.end) {
+            C$scale = c(1,1,1); C$offset = c(0,0,0);       C$tempoffset=  c(0,0,0)
+            check.backup.cal.coef = TRUE
+          }
+        }
+        if (length(backup.cal.coef) > 0) check.backup.cal.coef = TRUE
+        #if calibration fails then check whether calibration coefficients are provided in a separate csv-spreadsheet
+        # this csv spreadhseet needs to be created by the end-user and should contain:
+        # column with names of the accelerometer files
+        # three columns respectively named scale.x, scale.y, and scale.z
+        # three columns respectively named offset.x, offset.y, and offset.z
+        # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
+        # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
+        if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) {
+          bcc.data = read.csv(backup.cal.coef)
+          cat("\nRetrieving previously derived calibration coefficients")
+          bcc.data$filename = as.character(bcc.data$filename)
+          for (nri in 1:nrow(bcc.data)) {
+            tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
+            if (length(tmp) > 1) {
+              bcc.data$filename[nri] = tmp[2]
+              bcc.data$filename[nri] = unlist(strsplit(bcc.data$filename[nri],".RData"))[1]
+            }
+          }
+          if (length(which(as.character(bcc.data$filename) == fnames[i])) > 0) {
+            bcc.i = which(bcc.data$filename == fnames[i])
+            bcc.cal.error.start = which(colnames(bcc.data) == "cal.error.start")
+            bcc.cal.error.end = which(colnames(bcc.data) == "cal.error.end")
+            bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
+            bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
+            bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
+            C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
+            C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
+            C$tempoffset=  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
+            cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
+            cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
+            cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
+            cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
+            cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
+            cat("\n")
+          } else {
+            # cat("\nNo matching filename found in backup.cal.coef\n")
+            # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
+            if (do.cal ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
+              cat("\n")
+              cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+              C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
+                              minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
+                              windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
+                              desiredtz=desiredtz)
+            }
+          }
+        }
+        #------------------------------------------------
+        cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
+        M = g.getmeta(datafile,
+                      do.bfen=do.bfen,
+                      do.enmo=do.enmo,
+                      do.lfenmo=do.lfenmo,
+                      do.lfen=do.lfen,
+                      do.en=do.en,
+                      do.hfen=do.hfen,
+                      do.hfenplus=do.hfenplus,
+                      do.mad=do.mad,
+                      do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
+                      do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
+                      do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
+                      do.enmoa=do.enmoa,
+                      lb = lb, hb = hb,  n = n,
+                      desiredtz=desiredtz,daylimit=daylimit,windowsizes=windowsizes,
+                      tempoffset=C$tempoffset,scale=C$scale,offset=C$offset,
+                      meantempcal=C$meantempcal,chunksize=chunksize,
+                      selectdaysfile=selectdaysfile,
+                      outputdir=outputdir,
+                      outputfolder=outputfolder,
+                      dayborder=dayborder,dynrange=dynrange,
+                      configtz=configtz)
+        #------------------------------------------------
+        cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
+        # remove directory in filename if present
+        filename = unlist(strsplit(fnames[i],"/"))
+        if (length(filename) > 0) {
+          filename = filename[length(filename)]
+        } else {
+          filename = fnames[i]
+        }
+        filename_dir=tmp5[i];filefoldername=tmp6[i]
+        if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
+          filename = paste0(filename,".RData")
+        }
+        save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
+        # as metadatdir is not known derive it:
+        metadatadir = c()
+        if (length(datadir) > 0) {
+          # list of all csv and bin files
+          fnames = datadir2fnames(datadir,filelist)
+          # check whether these are RDA
+          if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
+            useRDA = TRUE
+          } else {
+            useRDA = FALSE
+          }
+        } else {
+          useRDA = FALSE
+        }
+        if (filelist == TRUE | useRDA == TRUE) {
+          metadatadir = paste(outputdir,"/output_",studyname,sep="")
+        } else {
+          outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
+          metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
+        }
+        
+        rm(M); rm(I); rm(C)
+        # }
+      }
+    }) # END tryCatch
+    return(tryCatchResult)
   }
-  # }) # END tryCatch
-  
-  # return(tryCatchResult) 
-  # }
-  # if (do.parallel == TRUE) {
-  #   stopCluster(cl)
-  #   for (oli in 1:length(output_list)) { # logged error and warning messages
-  #     if (is.null(unlist(output_list[oli])) == FALSE) {
-  #       cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
-  #       print(unlist(output_list[oli])) # print any error and warnings observed
-  #     }
-  #   }
-  # }
-  if (length(metadatadir) > 0) {
-    SI = sessionInfo() 
-    sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part1.RData",sep="")
-    if (file.exists(sessionInfoFile)) {
-      FI = file.info(sessionInfoFile)
-      timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
-      # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
-      if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
+  if (do.parallel == TRUE) {
+    on.exit(parallel::stopCluster(cl))
+    # for (oli in 1:length(output_list)) { # logged error and warning messages
+    #   if (is.null(unlist(output_list[oli])) == FALSE) {
+    #     cat(paste0("\nErrors and warnings for ",fnames[oli]))
+    #     print(unlist(output_list[oli])) # print any error and warnings observed
+    #   }
+    # }
+  }
+  if (exists("metadatadir")) { # do this because foreach may not use all cores at the end of a loop and then metadatadir can be missing
+    if (length(metadatadir) > 0) {
+      SI = sessionInfo()
+      sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part1.RData",sep="")
+      if (file.exists(sessionInfoFile)) {
+        FI = file.info(sessionInfoFile)
+        timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
+        # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
+        if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
+          save(SI,file=sessionInfoFile)
+        }
+      } else {
         save(SI,file=sessionInfoFile)
       }
-    } else {
-      save(SI,file=sessionInfoFile)
     }
   }
 }
