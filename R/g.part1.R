@@ -20,8 +20,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       stop('\nVariable outputdir is not specified')
     }
   }
-
-
+  
+  
   if (grepl(datadir, outputdir)) {
     stop('\nError: The file path specified by argument outputdir should NOT equal or be a subdirectory of the path specified by argument datadir')
   }
@@ -69,10 +69,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # Other parameters:
   #--------------------------------
   if (filelist == FALSE) {
-    fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv"),
-                   dir(datadir,recursive=TRUE,pattern="[.]bin"),
-                   dir(datadir,recursive=TRUE,pattern="[.]wav"),
-                   dir(datadir,recursive=TRUE,pattern="[.]cwa"))
+    fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv", full.names = TRUE),
+                   dir(datadir,recursive=TRUE,pattern="[.]bin", full.names = TRUE),
+                   dir(datadir,recursive=TRUE,pattern="[.]wav", full.names = TRUE),
+                   dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
   } else {
     fnamesfull = datadir
   }
@@ -82,15 +82,15 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     fnamesfull = fnamesfull[toosmall]
     fnames = fnames[toosmall]
   }
-  
   if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
     warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
                    "at the moment GGIR is not able to process this file format.",
                    "Please convert to csv format with ActiLife software."))
   }
   # check access permissions
-  Nfile_without_readpermission = length(which(file.access(paste0(datadir,"/",fnamesfull), mode = 4) == -1))
+  Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
+    cat("\nChecking that user has read access permission for all files in data directory: No")
     warning(paste0("\nThere are/is ",Nfile_without_readpermission,
                    " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
   } else {
@@ -150,19 +150,36 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   fnames = sort(fnames)
   if (do.parallel == TRUE) {
+    closeAllConnections() # in case there is a still something running from last time, kill it.
     cores=parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
-      if (chunksize > 0.7) chunksize = 0.7 # put limit to chunksize, because when processing in parallel memory constraints are critical
+      Nmetrics2calc = do.bfen + do.enmo + do.lfenmo + do.lfen + do.en + do.hfen + do.hfenplus + do.mad +
+                          do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
+                          do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
+                          do.dev_roll_med_acc_z + do.enmoa
+      if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
+        warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
+                       " reducing the value for argument chunksize or setting do.parallel to FALSE"))
+      }
+      if (chunksize > 0.6 & Nmetrics2calc < 3) { # default ENMO and anglez
+        chunksize = 0.6 # put limit to chunksize, because when processing in parallel memory is more limited
+      } else if (chunksize > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
+        chunksize = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
+      } else if (chunksize > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
+        chunksize = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
+      } 
       cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
       doParallel::registerDoParallel(cl)
+
     } else {
+      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       do.parallel = FALSE
     }
   }
   t1 = Sys.time() # copied here
   if (do.parallel == TRUE) {
-    cat(paste0('\n parallel processing in progress...',Sys.time(),'\n'))
+    cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
   }
   `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   #,'GENEAread','mmap', 'signal'
@@ -377,7 +394,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         metadatadir = c()
         if (length(datadir) > 0) {
           # list of all csv and bin files
-          fnames = datadir2fnames(datadir,filelist)
+          fnames = GGIR::datadir2fnames(datadir,filelist)
           # check whether these are RDA
           if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
             useRDA = TRUE
@@ -402,12 +419,12 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
-    # for (oli in 1:length(output_list)) { # logged error and warning messages
-    #   if (is.null(unlist(output_list[oli])) == FALSE) {
-    #     cat(paste0("\nErrors and warnings for ",fnames[oli]))
-    #     print(unlist(output_list[oli])) # print any error and warnings observed
-    #   }
-    # }
+    for (oli in 1:length(output_list)) { # logged error and warning messages
+      if (is.null(unlist(output_list[oli])) == FALSE) {
+        cat(paste0("\nErrors and warnings for ",fnames[oli]))
+        print(unlist(output_list[oli])) # print any error and warnings observed
+      }
+    }
   }
   if (exists("metadatadir")) { # do this because foreach may not use all cores at the end of a loop and then metadatadir can be missing
     if (length(metadatadir) > 0) {
