@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "August 10 2019"
+date: "August 19 2019"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 GGIR is increasingly being used by a number of research groups acros the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list).
 
-A non-exhaustive list of academic institutes that have been using GGIR:
+A non-exhaustive list of academic institutes that have been using GGIR (I stopped updating it, because it is diffcut to keep track):
 
 **United Kingdom:** University College London, University of Oxford, Exeter University, Newcastle University, Edge Hill University, University of Cambridge, University of Chester, Edinburgh Napier University, University of Birmingham, Liverpool John Moores University | **United States:** University College San Diego, Iowa State University, University of Southern California, University of Michican, West Virginia University, Arizona State University, University of Utah, National Institute of Health, Johns Hopkins University, Harvard University | **The Netherlands:** Erasmus Medical Centre Rotterdam, VU University Medical Centre, Leiden University Medical Centre, University of Groningen | **France:** French Institute for Health and Medical Research, Institute of Myology, University  of Dijon, University of Montpellier | **Brazil:** Federal University of Pelotas | **Australia:** Newcastle University, Australian Catholic University, University of Sydney, Queensland University of Technology, University of Western Australia | **Spain:** University of Granada | **Norway:** University of Oslo | **Sweden:** University of Lund | **Switszerland:** Centre Hospitalier Universitaire Vaudois | **Germany:** Technische Universität Dresden, Technical University Munich.
 
@@ -38,13 +38,13 @@ R package GGIR would not have been possible without the support of the following
 **People:**
 
 - Dr. Vincent van Hees as main developer & maintainer.
-- Jairo Migueles helps maintain and improve the code.
+- Jairo Migueles has helped to improve sections of the code.
 - Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R.
 - Dr. Zhou Fang contributed to a part of the code for the auto-calibration functionality.
 - Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording.
 - Joan Capdevila Pujol contributed with a couple of bug fixes.
-- Dr. Severine Sabia tested and provided feedback on numerous aspects of the package
-- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR
+- Dr. Severine Sabia tested and provided feedback on numerous aspects of the package to make it research friendly.
+- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
 
 **Institutions:**
 
@@ -64,7 +64,7 @@ R package GGIR would not have been possible without the support of the following
 
 ## How can I contribute to the GGIR development?
 
-The development version of GGIR can be found on [github](https://github.com/wadpac/GGIR), which is also where you will find guidance on how to contribute to the package development. We welcome contributions to GGIR in time investment, constructive feedback, financially, or otherwise. 
+The development version of GGIR can be found on [github](https://github.com/wadpac/GGIR), which is also where you will find guidance on how to contribute to the package development. We welcome contributions to GGIR in time investment, constructive feedback, financially, or otherwise. Open source software may be for free, but the time investment to develop it is never for free.
 
 ## How can I get service and support?
 
@@ -247,7 +247,7 @@ or use the Source button in RStudio if you use RStudio.
 
 ## In a cluster
 
-GGIR by default uses multi-core processing, which can be turned off byseting argument do.parallel = FALSE. If this is still not fast enough then I advise using a GGIR on a computing cluster. The way I did it on a Sun Grid Engine cluster is shown below, please note that some of these commands are specific to the computing cluster you are working on. For example, I had to update the bash scripts when working on PBS cluster. Please consult your local cluster specilist to tailor this to your situation. In my case, I had three files:
+GGIR by default support multi-thread processing, which can be turned off byseting argument do.parallel = FALSE. If this is still not fast enough then I advise using a GGIR on a computing cluster. The way I did it on a Sun Grid Engine cluster is shown below, please note that some of these commands are specific to the computing cluster you are working on. For example, I had to update the bash scripts when working on PBS cluster, and the R package clustermq can be of value. Please consult your local cluster specilist to tailor this to your situation. In my case, I had three files for the SGE setting:
 
 **submit.sh**
 
@@ -525,7 +525,8 @@ In most studies we have been involved we used metric ENMO (Euclidean Norm Minus 
 1.	Has demonstrated value in describing variance in energy expenditure, correlated with questionnaire data, able to describe patterns in physical activity
 2.	Easy to describe mathematically and by that higher chances of reproducibility
 3.	Attempt to quantify the actual biomechanical acceleration in universal units. I prefer to avoid using abstract index for movement quantification
-4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN (which is essentially the same as the MAD metric recently used in literature). The few studies I am aware of who contested this, did not use auto-calibration by which ENMO was evalauted under unrealistic conditions. Metric ENMO depends by design on well calibrated acceleration signals, while metrics like HFEN and MAD are not affected by calibration offset.
+4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN (which is essentially the same as the MAD metric recently used in literature). The few studies I am aware of who contested this, did not use auto-calibration by which ENMO was evalauted under unrealistic conditions. Metric ENMO depends by design on well calibrated acceleration signals, while metrics like HFEN and MAD are not affected by calibration offset. The metric HFENplus proposed in the 2013 paper may actually be a better candidate, but is more computationally heavy and more difficult to describe and replicate.
+
 
 ## What does GGIR stand for?
 
