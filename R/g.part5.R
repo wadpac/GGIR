@@ -74,13 +74,20 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
   # setup parallel backend to use many processors
   if (do.parallel == TRUE) {
+    closeAllConnections() # in case there is a still something running from last time, kill it.
     cores=parallel::detectCores()
-    cl <- parallel::makeCluster(cores[1]-1) #not to overload your computer
-    doParallel::registerDoParallel(cl)
+    Ncores = cores[1]
+    if (Ncores > 3) {
+      cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
+      doParallel::registerDoParallel(cl)
+    } else {
+      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      do.parallel = FALSE
+    }
   }
   t0 = t1 = Sys.time() # copied here
   if (do.parallel == TRUE) {
-    cat(paste0('\n parallel processing in progress...\n'))
+    cat(paste0('\n Busy processing ... see ',metadatadir,'/ms5', ' for progress\n'))
   }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
@@ -874,7 +881,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     return(tryCatchResult) 
   }
   if (do.parallel == TRUE) {
-    parallel::stopCluster(cl)
+    on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
         cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
