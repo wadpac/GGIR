@@ -1,11 +1,11 @@
 library(GGIR)
 context("g.readaccfile")
 test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly", {
-  
-  cwafile  = system.file("binfile/ax3_testfile.cwa", package = "GGIR")[1]
-  binfile  = system.file("binfile/genea_testfile.bin", package = "GGIR")[1]
-  wavfile  = system.file("binfile/ax3test.wav", package = "GGIR")[1]
-  GAfile  = system.file("binfile/GENEActiv_testfile.bin", package = "GGIR")[1]
+  skip_on_cran()
+  cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
+  binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIR")[1]
+  wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]
+  GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIR")[1]
   desiredtz = "Europe/London"
   
   Icwa = g.inspectfile(cwafile, desiredtz = desiredtz)
@@ -63,9 +63,6 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_equal(decn,".")
   decn =  expect_warning(g.dotorcomma(GAfile,dformat=1,mon=2, desiredtz = desiredtz))
   expect_equal(decn,".")
-  
-  
-  
   filequality = list(filecorrupt = FALSE, filetooshort=FALSE)
   dayborder = 0
   cwa_read = g.readaccfile(cwafile,blocksize=10,blocknumber=1,filequality=filequality,
@@ -90,7 +87,7 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_equal(as.character(unlist(GA_read$P$header[3,1])),"216 Hours")
   
   #also test one small other function:
-  datadir  = system.file("binfile", package = "GGIR")[1]
+  datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir=datadir,filelist=FALSE)
   expect_equal(length(fnames),4)
   closeAllConnections()

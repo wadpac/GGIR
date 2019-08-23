@@ -1,6 +1,7 @@
 library(GGIR)
-context("Chainof5parts")
-test_that("chainof5parts", {
+context("g.part1")
+test_that("Part 1 can run with all metrics", {
+  skip_on_cran()
   #=======================
   # Part 1 with all metrics
   Ndays = 2
