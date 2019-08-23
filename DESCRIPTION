@@ -1,8 +1,8 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 1.9-5
-Date: 2019-08-10
+Version: 1.9-6
+Date: 2019-08-17
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                   email="vincentvanhees@gmail.com"),
                   person("Zhou","Fang",role="ctb"),
@@ -17,8 +17,8 @@ Description: A tool to process and analyse data collected with wearable raw acce
 URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/RpackageGGIR
 BugReports: https://github.com/wadpac/GGIR/issues
 License: LGPL (>= 2.0, < 3) | file LICENSE
-Suggests: MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR, testthat, covr, knitr, rmarkdown
-Imports: data.table, Rcpp (>= 0.12.10)
+Suggests: testthat, covr, knitr, rmarkdown
+Imports: data.table, Rcpp (>= 0.12.10), foreach, doParallel, MASS, signal, zoo, mmap, bitops, matlab, GENEAread, tuneR
 Depends: stats, utils, R (>= 3.1.2)
 NeedsCompilation: yes
 LinkingTo: Rcpp

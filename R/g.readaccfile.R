@@ -106,7 +106,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         try(expr= {
           P = GENEAread::read.bin(binfile=filename,start=tint[blocknumber,1],
                                   end=tint[blocknumber,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)
-          on.exit(closeAllConnections())
+          # on.exit(closeAllConnections())
           if (sf != P$freq) sf = P$freq
         },silent=TRUE)
         if (length(P) <= 2) {
@@ -127,7 +127,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         if (blocknumber == 1) {
           #try to read without specifying blocks (file too short)
           try(expr={P = GENEAread::read.bin(binfile=filename,start=1,end=10,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-          on.exit(closeAllConnections())
+          # on.exit(closeAllConnections())
           if (length(P) == 0) {
             warning('\nFile possibly corrupt\n')
             P= c(); switchoffLD = 1
@@ -156,12 +156,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       startpage = UPI$startpage;    endpage = UPI$endpage
       try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
                                         end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-      on.exit(closeAllConnections())
+      # on.exit(closeAllConnections())
       if (length(P) <= 2) {
         #try again but now with mmap.load turned on
         try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
                                           end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
-        on.exit(closeAllConnections())
+        # on.exit(closeAllConnections())
         if (length(P) != 0) {
           if (sf != P$freq) sf = P$freq
         } else {
@@ -179,7 +179,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         if (blocknumber == 1) {
           #try to read without specifying blocks (file too short)
           try(expr={P = GENEAread::read.bin(binfile=filename,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
-          on.exit(closeAllConnections())
+          # on.exit(closeAllConnections())
           if (length(P) == 0) {
             warning('\nFile possibly corrupt\n')
             P= c(); switchoffLD = 1

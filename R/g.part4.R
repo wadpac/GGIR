@@ -161,7 +161,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      lightson = lightsout = L5list = sib.cla.sum = c()
+      sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = sib.cla.sum = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
@@ -266,16 +266,16 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # get default onset and wake (based on sleeplog or on heuristic algorithms)
           # def.noc.sleep is an input argument the GGIR user can use
           # to specify what detection strategy is used in the absense of a sleep diary
-          if (length(def.noc.sleep) == 0 | length(lightsout) == 0) {
+          if (length(def.noc.sleep) == 0 | length(sptwindow_HDCZA_start) == 0) {
             # use L5+/-6hr algorithm if HDCZA fails OR if the user explicitely asks for it (length zero argument)
             if (length(L5list) > 0) {
               defaultSptOnset = L5list[j] - 6
               defaultSptWake = L5list[j] + 6
             }
-          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(lightsout) != 0) { 
+          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(sptwindow_HDCZA_start) != 0) { 
             # use HDCZA algorithm (inside the g.sib.det function) as backup for sleeplog OR if user explicitely asks for it
-            defaultSptOnset = lightsout[j]
-            defaultSptWake = lightson[j]
+            defaultSptOnset = sptwindow_HDCZA_start[j]
+            defaultSptWake = sptwindow_HDCZA_end[j]
           } else if (length(def.noc.sleep) == 2) {
             # use constant onset and waking time as specified with def.noc.sleep argument
             defaultSptOnset = def.noc.sleep[1] #onset
