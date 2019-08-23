@@ -70,8 +70,7 @@ The development version of GGIR can be found on [github](https://github.com/wadp
 
 GGIR is open source software and does not come with service or support guarantees. As user-community you will have to help each other via the google group and GitHub issues as much as possible.
 
-**However, if you need dedicated support with the use of GGIR or need someone to adapt GGIR** then Vincent van Hees is available as indpendent consultant, see also: https://movementdata.nl/.
-
+**However, if you need dedicated support with the use of GGIR or need someone to adapt GGIR** then Vincent van Hees is available as indpendent consultant, see also: https://www.movementdata.nl/.
 
 # Setting up your work environment
 
