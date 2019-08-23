@@ -23,7 +23,7 @@ window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
 iglevels = c(), IVIS.activity.metric=1, TimeSegments2ZeroFile = c(),
-qM5L5=c())
+qM5L5=c(), do.parallel = TRUE)
 }
 \arguments{
 \item{datadir}{
@@ -172,6 +172,9 @@ qM5L5=c())
   }
   \item{qM5L5}{
     see function \link{g.getM5L5}
+  }
+    \item{do.parallel}{
+    Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
   }
   
 }

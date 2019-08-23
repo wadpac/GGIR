@@ -26,7 +26,8 @@ test_that("chainof5parts", {
           # do.roll_med_acc_x=TRUE,do.roll_med_acc_y=TRUE,do.roll_med_acc_z=TRUE,
           # do.dev_roll_med_acc_x=TRUE,#do.dev_roll_med_acc_y=TRUE,do.dev_roll_med_acc_z=TRUE,
           # do.lfen = TRUE,
-   windowsizes = c(15,3600,3600))
+   windowsizes = c(15,3600,3600), do.parallel=FALSE,
+   minimumFileSizeMB=0)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_that(ncol(M$metashort),equals(6))

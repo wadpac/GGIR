@@ -136,6 +136,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
+  if (exists("do.parallel") == FALSE)  do.parallel = TRUE
   # PART 1
   if (exists("selectdaysfile") == FALSE)  selectdaysfile = c()
   if (exists("do.cal") == FALSE)  do.cal = TRUE
@@ -169,6 +170,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("n") == FALSE)  n = 4
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
+  if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
   
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
@@ -262,7 +264,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
-            dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n)
+            dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n,
+            do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -282,7 +285,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5)
+            qM5L5=qM5L5, do.parallel = do.parallel)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -292,7 +295,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     g.part3(metadatadir=metadatadir,f0=f0, acc.metric = acc.metric,
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
-            constrain2range=constrain2range)
+            constrain2range=constrain2range, do.parallel = do.parallel)
   }
   if (dopart4 == TRUE) {
     cat('\n')
@@ -325,7 +328,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             boutdur.in = boutdur.in,
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
-            overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,save_ms5rawlevels = save_ms5rawlevels)
+            overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
+            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
