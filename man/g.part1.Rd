@@ -33,7 +33,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
-        dynrange=c(), configtz=c())
+        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2)
 }
 \arguments{
   \item{datadir}{
@@ -185,7 +185,15 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }
-
+  \item{do.parallel}{
+    Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
+  }
+    \item{minimumFileSizeMB}{
+    Minimum File size in MB required to enter processing, default 2MB. This argument can help
+    to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
+    collects several MBs per hour, the default setting should only skip the very short files.
+  }
+  
 }
 \details{
  Argument backup.cal.coef has two usecase. Use case 1: If the auto-calibration fails
