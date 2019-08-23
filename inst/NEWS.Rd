@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.10-0 (release date:23-08-2019)}{
+\section{Changes in version 1.10-1 (release date:23-08-2019)}{
 \itemize{
   \item Configuration file option now added to g.shell.GGIR and documented in vignette
   \item metric lfen added (low-pass filter signels followed by Euclidean norm)
