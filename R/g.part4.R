@@ -119,8 +119,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     HR = floor(x)
     MI = floor((x - HR) * 60)
     SE = round(((x - HR) - (MI/60)) * 3600)
-    if (SE == 60) MI = MI + 1; SE = 0
-    if (MI == 60) HR = HR + 1; MI = 0
+    if (SE == 60) { MI = MI + 1; SE = 0 }
+    if (MI == 60) { HR = HR + 1; MI = 0 }
     if (HR == 24) HR = 0
     if (HR < 10) HR = paste0("0",HR)
     if (MI < 10) MI = paste0("0",MI)
@@ -709,19 +709,21 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (acc_wake > 24) acc_wake = acc_wake - 24
                   #--------------------------------------------
                   # convert into clocktime
-                  convertHRsinceprevMN2Clocktime = function(x) {
-                    # x = hours Since Previous Midnight
-                    HR = floor(x)
-                    MI = floor((x - floor(x)) * 60)
-                    SE = round(((x - HR) - (MI/60)) * 3600)
-                    if (SE == 60) MI = MI + 1; SE = 0
-                    if (MI == 60) HR = HR + 1; MI = 0
-                    if (HR == 24) HR = 0
-                    if (HR < 10) HR = paste0("0",HR)
-                    if (MI < 10) MI = paste0("0",MI)
-                    if (SE < 10) SE = paste0("0",SE)
-                    return(paste0(HR,":",MI,":",SE))
-                  }
+                  # convertHRsinceprevMN2Clocktime = function(x) {
+                  #   # x = hours Since Previous Midnight
+                  #   HR = floor(x)
+                  #   MI = floor((x - floor(x)) * 60)
+                  #   SE = round(((x - HR) - (MI/60)) * 3600)
+                  #   if (SE == 60) MI = MI + 1; SE = 0
+                  #   if (MI == 60) HR = HR + 1; MI = 0
+                  #   if (HR == 24) HR = 0
+                  #   if (HR < 10) HR = paste0("0",HR)
+                  #   if (MI < 10) MI = paste0("0",MI)
+                  #   if (SE < 10) SE = paste0("0",SE)
+                  #   cat(x)
+                  #   cat(paste0(HR,":",MI,":",SE))
+                  #   return(paste0(HR,":",MI,":",SE))
+                  # }
                   acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
                   acc_wakeTS = convertHRsinceprevMN2Clocktime(acc_wake)
                   nightsummary[sumi,18] = acc_onsetTS
