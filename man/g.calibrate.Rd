@@ -14,7 +14,7 @@ g.calibrate(datafile, use.temp = TRUE, spherecrit = 0.3,
 minloadcrit = 72, 
 printsummary = TRUE,chunksize=c(),windowsizes=c(5,900,3600),
 selectdaysfile=c(),
-dayborder=0, desiredtz = c())
+dayborder=0, desiredtz = c(), ...)
 }
 \arguments{
   \item{datafile}{
@@ -53,6 +53,10 @@ below 1 is recommended.
    \item{desiredtz}{
   see \link{g.getmeta}
   }
+  \item{...}{
+   Please ignore. Only used by the code internally when called from within
+   g.part1 with selectdaysfile specific.
+  }  
 }
 \value{
  \item{\code{scale}}{scaling correction values, e.g. c(1,1,1) }

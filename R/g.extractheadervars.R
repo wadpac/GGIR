@@ -40,6 +40,21 @@ g.extractheadervars = function(I) {
       seriali = which(hnames == "uniqueSerialCode")
       if (length(seriali) > 0) deviceSerialNumber = hvalues[seriali[1]] #serial number			
     }
+  } else if (mon == "unknown") {
+    if (length(which(hnames == "recordingID")) > 0) {
+      id = hvalues[which(hnames == "recordingID")]
+    } else {
+      id = "not extracted"
+    }
+    iid = "not extracted" #investigator id
+    HN = "not extracted" #handedness
+    BL = "not extracted" #body location
+    SX = "not extracted" #gender
+    if (length(which(hnames == "device_serial_number")) > 0) {
+      SN = hvalues[which(hnames == "device_serial_number")]			 #serial number
+    } else {
+      SN = "not extracted" #gender
+    }
   }
   invisible(list(id=id,iid=iid,HN=HN,BodyLocation=BodyLocation,SX=SX,deviceSerialNumber=deviceSerialNumber)) #  wdayname=wdayname,wdaycode=wdaycode,wday=wday,ws3=ws3,ws2=ws2
 }

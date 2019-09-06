@@ -1,6 +1,43 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
-                       desiredtz = c()) {
+                       desiredtz = c(), ...) {
+
+  #get input variables
+  input = list(...)
+  if (length(input) > 0) {
+    for (i in 1:length(names(input))) {
+      txt = paste(names(input)[i],"=",input[i],sep="")
+      if (class(unlist(input[i])) == "character") {
+        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+      }
+      eval(parse(text=txt))
+    }
+  }
+  if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
+  if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.4) chunksize = 0.4
@@ -22,33 +59,62 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   scale = c(1,1,1)
   offset = c(0,0,0)
   bsc_qc = data.frame(time=c(),size=c(),stringsAsFactors = FALSE)
-  #inspect file  
+  #inspect file
   options(warn=-1) #turn off warnings
-  INFI = g.inspectfile(datafile, desiredtz=desiredtz)  # Check which file type and monitor brand it is
+  INFI = g.inspectfile(datafile, desiredtz=desiredtz, rmc.dec=rmc.dec,
+                       rmc.firstrow.acc = rmc.firstrow.acc,
+                       rmc.firstrow.header = rmc.firstrow.header,
+                       rmc.header.length = rmc.header.length,
+                       rmc.col.acc = rmc.col.acc,
+                       rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                       rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                       rmc.unit.time = rmc.unit.time,
+                       rmc.format.time = rmc.format.time,
+                       rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                       rmc.unsignedbit = rmc.unsignedbit,
+                       rmc.origin = rmc.origin,
+                       rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                       rmc.headername.sf = rmc.headername.sf,
+                       rmc.headername.sn = rmc.headername.sn,
+                       rmc.headername.recordingid = rmc.headername.sn,
+                       rmc.header.structure = rmc.header.structure,
+                       rmc.check4timegaps = rmc.check4timegaps)  # Check which file type and monitor brand it is
   options(warn=0) #turn off warnings
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
-  if (sf == 0) sf = 80 #assume 80Hertz in the absense of any other info
+  if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
+    if (length(rmc.sf) == 0) {
+      stop("Could not identify sample frequency")
+    } else {
+      if (rmc.sf == 0) {
+        stop("Could not identify sample frequency")
+      } else {
+        sf = rmc.sf
+      }
+    }
+  }
+  if (sf == 0) stop("Sample frequency not recognised")
   options(warn=-1) #turn off warnings
-  suppressWarnings(expr={decn = g.dotorcomma(datafile,dformat,mon, desiredtz = desiredtz)}) #detect dot or comma dataformat
+  suppressWarnings(expr={decn = g.dotorcomma(datafile,dformat, mon, desiredtz = desiredtz, rmc.dec = rmc.dec)}) #detect dot or comma dataformat
   options(warn=0) #turn off warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-  NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz) 
-  if (mon == 2 | (mon == 4 & dformat == 4)) {
+  NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
+  if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
     meta = matrix(99999,NR,8) #for meta data
-  } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2)){
+  } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) |
+             (mon == 4 & dformat == 2) | (mon == 5 & length(rmc.col.temp) == 0)) {
     meta = matrix(99999,NR,7)
   }
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
-  blocksize = round((14512 * (sf/50)) * (chunksize*0.5)) 
+  blocksize = round((14512 * (sf/50)) * (chunksize*0.5))
   blocksizegenea = round((20608 * (sf/80)) * (chunksize*0.5))
   if (mon == 1) blocksize = blocksizegenea
   if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
   if (mon == 4 & dformat == 2) blocksize = round(blocksize)
-    #===============================================
+  #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
   while (LD > 1) {
@@ -63,8 +129,27 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
                             selectdaysfile = selectdaysfile,filequality=filequality,
                             decn=decn,dayborder=dayborder,ws=ws,desiredtz=desiredtz,
-                            PreviousEndPage=PreviousEndPage,inspectfileobject=INFI)
+                            PreviousEndPage=PreviousEndPage,inspectfileobject=INFI,
+                            rmc.dec=rmc.dec,
+                            rmc.firstrow.acc = rmc.firstrow.acc,
+                            rmc.firstrow.header = rmc.firstrow.header,
+                            rmc.header.length = rmc.header.length,
+                            rmc.col.acc = rmc.col.acc,
+                            rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                            rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                            rmc.unit.time = rmc.unit.time,
+                            rmc.format.time = rmc.format.time,
+                            rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                            rmc.unsignedbit = rmc.unsignedbit,
+                            rmc.origin = rmc.origin,
+                            rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                            rmc.headername.sf = rmc.headername.sf,
+                            rmc.headername.sn = rmc.headername.sn,
+                            rmc.headername.recordingid = rmc.headername.sn,
+                            rmc.header.structure = rmc.header.structure,
+                            rmc.check4timegaps = rmc.check4timegaps)
     P = accread$P
+
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -84,8 +169,10 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         data = as.matrix(P)
       } else if (dformat == 4) {
         data = P$data
+      } else if (dformat == 5) {
+        data = P$data
       }
-      #add left over data from last time 
+      #add left over data from last time
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
@@ -95,7 +182,8 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (length(use) > 0) {
         if (use > 0) {
           if (use != LD) {
-            S = as.matrix(data[(use+1):LD,]) #store left over
+            # S = as.matrix(data[(use+1):LD,]) #store left over # as.matrix removed on 22May2019 because redundant
+            S = data[(use+1):LD,] #store left over
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
@@ -117,8 +205,15 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
             Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = FALSE
           } else if (mon == 2 & dformat == 1) {
-            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperaturre = data[,7]
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperature = data[,7]
             temperature = as.numeric(data[,7])
+          } else if (mon == 5 & dformat == 5 & length(rmc.col.temp) > 0) {
+            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            temperature = as.numeric(data[,5])
+            use.temp = TRUE
+          } else if (mon == 5 & dformat == 5 & length(rmc.col.temp) == 0) {
+            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            use.temp = FALSE
           } else if (dformat == 2 & mon != 4) {
             data2 = matrix(NA,nrow(data),3)
             if (ncol(data) == 3) extra = 0
@@ -128,17 +223,17 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
             }
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
-          if (mon == 2 | (mon == 4 & dformat == 4)) {
+          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == TRUE)) {
             if (mon == 2) {
-              temperaturecolumn = 7; lightcolumn = 5
-            } else if (mon ==4) {
-              temperaturecolumn = 5; lightcolumn = 7
+              temperaturecolumn = 7
+            } else if (mon ==4 | mon == 5) {
+              temperaturecolumn = 5
             }
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == 1 | mon == 3) {
             use.temp = FALSE
           }
-          if ((mon == 2 | (mon == 4 & dformat == 4)) & use.temp == TRUE) { 
+          if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 5) & use.temp == TRUE) {
             #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               cat("\ntemperature is NA\n")
@@ -168,7 +263,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           dim(Gz) = c(sf*ws4,ceiling(length(Gz)/(sf*ws4))); 	GzSD2 = apply(Gz,2,sd)
           #-----------------------------------------------------
           #expand 'out' if it is expected to be too short
-          if (count > (nrow(meta) - (2.5*(3600/ws4) *24))) {  
+          if (count > (nrow(meta) - (2.5*(3600/ws4) *24))) {
             extension = matrix(99999,((3600/ws4) *24),ncol(meta))
             meta = rbind(meta,extension)
             cat("\nvariabel meta extended\n")
@@ -186,7 +281,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           }
           count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
           rm(Gx); rm(Gy); rm(Gz)
-          
+
           # Update blocksize depending on available memory:
           BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
           bsc_qc = BlocksizeNew$bsc_qc
@@ -219,6 +314,11 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         sdcriter = 0.013 # NO IDEA WHAT REST NOISE IS FOR ACTIGRAPH....test needed
       } else if (mon == 4) {
         sdcriter = 0.013 # NO IDEA WHAT REST NOISE IS FOR AXIVITY....test needed
+      } else if (mon == 5) {
+        sdcriter = rmc.noise * 1.2
+        if (length(rmc.noise) == 0) {
+          stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+        }
       }
       nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
@@ -227,7 +327,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (min(dim(meta_temp)) > 1) {
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)
-        cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)			
+        cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)
         cal.error.start = mean(abs(cal.error.start - 1))
         #check whether sphere is well populated
         tel = 0
@@ -278,7 +378,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         if (length(curr) == 0) {
           # set coefficients to default, because it did not work.
           cat("\nObject curr has length zero.")
-          break 
+          break
         }
         closestpoint = curr/ sqrt(rowSums(curr^2))
         k = 1
@@ -329,14 +429,15 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       cal.error.end = mean(abs(cal.error.end-1))
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
-        if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4))) {
+        if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == FALSE))) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) | (mon == 4 & dformat == 2)))  {
+        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) |
+                                        (mon == 4 & dformat == 2) | (mon == 5 & use.temp == TRUE)))  {
           QC = "recalibration done, but temperature values not used"
         } else if (mon != 2 & dformat != 3)  {
           QC = "recalibration done, no problems detected"
         }
-        LD = 0 #stop loading 
+        LD = 0 #stop loading
       } else { #continue loading data
         if (nhoursused > minloadcrit) {
           print(paste("new calibration error: ",cal.error.end," g",sep=""))

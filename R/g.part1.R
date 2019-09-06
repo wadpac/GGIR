@@ -11,7 +11,42 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2) { #
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
+  #get input variables (relevant when read.myacc.csv is used
+  input = list(...)
+  if (length(input) > 0) {
+    for (i in 1:length(names(input))) {
+      txt = paste(names(input)[i],"=",input[i],sep="")
+      if (class(unlist(input[i])) == "character") {
+        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+      }
+      eval(parse(text=txt))
+    }
+  }
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
+  
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -20,8 +55,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       stop('\nVariable outputdir is not specified')
     }
   }
-  
-  
   if (grepl(datadir, outputdir)) {
     stop('\nError: The file path specified by argument outputdir should NOT equal or be a subdirectory of the path specified by argument datadir')
   }
@@ -62,7 +95,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     dir.create(file.path(outputdir,paste(outputfolder,"/results",sep=""),"QC"))
   }
   path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
-  use.temp = TRUE; 
+  use.temp = TRUE;
   daylimit = FALSE
   
   #=================================================================
@@ -141,7 +174,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
       tmp2 = unlist(strsplit(tmp[1],"meta_"))
-      ffdone[ij] = tmp2[2] 
+      ffdone[ij] = tmp2[2]
     }
   } else {
     ffdone = c()
@@ -155,9 +188,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     Ncores = cores[1]
     if (Ncores > 3) {
       Nmetrics2calc = do.bfen + do.enmo + do.lfenmo + do.lfen + do.en + do.hfen + do.hfenplus + do.mad +
-                          do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
-                          do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
-                          do.dev_roll_med_acc_z + do.enmoa
+        do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
+        do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
+        do.dev_roll_med_acc_z + do.enmoa
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -168,10 +201,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         chunksize = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
       } else if (chunksize > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
         chunksize = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
-      } 
+      }
       cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
       doParallel::registerDoParallel(cl)
-
+      
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       do.parallel = FALSE
@@ -229,11 +262,29 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       } else {
         useRDA = FALSE
       }
-      #================================================================
+      #=============================================================
       # Inspect file (and store output later on)
       options(warn=-1) #turn off warnings
       if (useRDA == FALSE) {
-        I = g.inspectfile(datafile, desiredtz=desiredtz)
+        I = g.inspectfile(datafile, desiredtz=desiredtz,
+                          rmc.dec=rmc.dec,configtz=configtz,
+                          rmc.firstrow.acc = rmc.firstrow.acc,
+                          rmc.firstrow.header = rmc.firstrow.header,
+                          rmc.header.length = rmc.header.length,
+                          rmc.col.acc = rmc.col.acc,
+                          rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                          rmc.unit.time = rmc.unit.time,
+                          rmc.format.time = rmc.format.time,
+                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                          rmc.unsignedbit = rmc.unsignedbit,
+                          rmc.origin = rmc.origin,
+                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                          rmc.headername.sf = rmc.headername.sf,
+                          rmc.headername.sn = rmc.headername.sn,
+                          rmc.headername.recordingid = rmc.headername.sn,
+                          rmc.header.structure = rmc.header.structure,
+                          rmc.check4timegaps = rmc.check4timegaps)
       } else {
         load(datafile) # to do: would be nice to only load the object I and not the entire datafile
         I$filename = fnames[i]
@@ -263,17 +314,36 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
             assigned.backup.cal.coef = TRUE
           }
         }
-        #data_quality_report.csv does not exist and there is also no other backup file, so g.calibrate needs to be applied.
+        #data_quality_report.csv does not exist and there is also no ot
         if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
         #--------------------------------------
-        if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
+        if (do.cal ==TRUE & useRDA == FALSE) {
           # cat(paste0("\n",rep('-',options()$width),collapse=''))
           cat("\n")
           cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
           C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                           minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                           windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                          desiredtz=desiredtz)
+                          desiredtz=desiredtz,
+                          rmc.dec=rmc.dec,configtz=configtz,
+                          rmc.firstrow.acc = rmc.firstrow.acc,
+                          rmc.firstrow.header = rmc.firstrow.header,
+                          rmc.header.length = rmc.header.length,
+                          rmc.col.acc = rmc.col.acc,
+                          rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                          rmc.unit.time = rmc.unit.time,
+                          rmc.format.time = rmc.format.time,
+                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                          rmc.unsignedbit = rmc.unsignedbit,
+                          rmc.origin = rmc.origin,
+                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                          rmc.headername.sf = rmc.headername.sf,
+                          rmc.headername.sn = rmc.headername.sn,
+                          rmc.headername.recordingid = rmc.headername.sn,
+                          rmc.header.structure = rmc.header.structure,
+                          rmc.check4timegaps = rmc.check4timegaps,
+                          rmc.noise=rmc.noise)
         } else {
           C = list(cal.error.end=0,cal.error.start=0)
           C$scale=c(1,1,1)
@@ -287,7 +357,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         if (turn.do.cal.back.on == TRUE) {
           do.cal = TRUE
         }
-        
         cal.error.end = C$cal.error.end
         cal.error.start = C$cal.error.start
         if (length(cal.error.start) == 0) {
@@ -348,7 +417,25 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
               C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                               minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                               windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                              desiredtz=desiredtz)
+                              desiredtz=desiredtz,  rmc.dec=rmc.dec,configtz=configtz,
+                              rmc.firstrow.acc = rmc.firstrow.acc,
+                              rmc.firstrow.header = rmc.firstrow.header,
+                              rmc.header.length = rmc.header.length,
+                              rmc.col.acc = rmc.col.acc,
+                              rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                              rmc.unit.time = rmc.unit.time,
+                              rmc.format.time = rmc.format.time,
+                              rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                              rmc.unsignedbit = rmc.unsignedbit,
+                              rmc.origin = rmc.origin,
+                              rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                              rmc.headername.sf = rmc.headername.sf,
+                              rmc.headername.sn = rmc.headername.sn,
+                              rmc.headername.recordingid = rmc.headername.sn,
+                              rmc.header.structure = rmc.header.structure,
+                              rmc.check4timegaps = rmc.check4timegaps,
+                              rmc.noise=rmc.noise)
             }
           }
         }
@@ -375,7 +462,25 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       outputdir=outputdir,
                       outputfolder=outputfolder,
                       dayborder=dayborder,dynrange=dynrange,
-                      configtz=configtz)
+                      rmc.dec=rmc.dec,configtz=configtz,
+                      rmc.firstrow.acc = rmc.firstrow.acc,
+                      rmc.firstrow.header = rmc.firstrow.header,
+                      rmc.header.length = rmc.header.length,
+                      rmc.col.acc = rmc.col.acc,
+                      rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                      rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                      rmc.unit.time = rmc.unit.time,
+                      rmc.format.time = rmc.format.time,
+                      rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                      rmc.unsignedbit = rmc.unsignedbit,
+                      rmc.origin = rmc.origin,
+                      rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                      rmc.headername.sf = rmc.headername.sf,
+                      rmc.headername.sn = rmc.headername.sn,
+                      rmc.headername.recordingid = rmc.headername.sn,
+                      rmc.header.structure = rmc.header.structure,
+                      rmc.check4timegaps = rmc.check4timegaps,
+                      rmc.noise=rmc.noise)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
@@ -394,7 +499,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         metadatadir = c()
         if (length(datadir) > 0) {
           # list of all csv and bin files
-          fnames = GGIR::datadir2fnames(datadir,filelist)
+          fnames = datadir2fnames(datadir,filelist) #GGIR::
           # check whether these are RDA
           if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
             useRDA = TRUE
