@@ -16,14 +16,14 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       durplot = 7 #how many DAYS to plot? (only used if maxdur is not specified as a number above zero)
     }
     #---------------------------------
-    # Specifying directories with meta-data and extracting filenames 
+    # Specifying directories with meta-data and extracting filenames
     path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
     fnames = dir(path)
     if (f1 > length(fnames)) f1 = length(fnames)
     # create output folders
     ms2.out = "/meta/ms2.out"
     fnames.ms2 = dir(paste0(metadatadir,ms2.out))
-    
+
     #---------------------------------
     # house keeping variables
     pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
@@ -54,7 +54,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         selp = which(fnames.ms2 == fname)
         IMP=c()
         fname2read = paste0(metadatadir,ms2.out,"/",fnames.ms2[selp])
-        try(expr={load(file=fname2read)},silent=TRUE) 
+        try(expr={load(file=fname2read)},silent=TRUE)
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
@@ -76,7 +76,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
             if (ncol(SUMMARY) == ncol(SUM$summary)) {
             } else {
               if (ncol(SUM$summary) > ncol(SUMMARY)) {
-                cat(" Error: Failed to merge output from incompatible analysis. Please 
+                cat(" Error: Failed to merge output from incompatible analysis. Please
                     make sure you use a consistent set of parameters within a single analysis.")
               }
               SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
@@ -114,7 +114,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       #-----------------
       # create data quality report
       if (length(C$cal.error.end) == 0) C$cal.error.end = " "
-      if (M$filetooshort == TRUE | M$filecorrupt == TRUE) { 
+      if (M$filetooshort == TRUE | M$filecorrupt == TRUE) {
         C$cal.error.start = 0
         C$npoints = 0
       }
@@ -136,10 +136,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       } else if (mon == "geneactive") {
         deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
         if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
-          deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number  		
+          deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number
         }
       } else if (mon == "actigraph" | mon == "axivity") { #todo: create automatic extraction of information from actigraph fileheader
-        deviceSerialNumber = "not extracted" #gender
+        deviceSerialNumber = "not extracted"
+      } else if (I$monc == 5) { #todo: create automatic extraction of information from monc fileheader
+        deviceSerialNumber = "not extracted"
       }
       if (length(C$offset) == 0) {
         C$offset = C$translate
@@ -158,7 +160,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
                       scale.x=C$scale[1], scale.y=C$scale[2], scale.z=C$scale[3],
                       offset.x=C$offset[1], offset.y=C$offset[2], offset.z=C$offset[3],
                       temperature.offset.x=C$tempoffset[1],  temperature.offset.y=C$tempoffset[2],
-                      temperature.offset.z=C$tempoffset[3], 
+                      temperature.offset.z=C$tempoffset[3],
                       cal.error.start=C$cal.error.start,
                       cal.error.end=C$cal.error.end,
                       n.10sec.windows=C$npoints,
@@ -195,7 +197,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
     write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
-    
+
     write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
     if (length(selectdaysfile) > 0) {
       write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)

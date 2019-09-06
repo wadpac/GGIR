@@ -62,7 +62,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   }
   config_file_in_outputdir = paste0(metadatadir,"/config.csv")
   # Load config file if it exists:
-  if (dir.exists(metadatadir) | length(configfile) > 0) { 
+  if (dir.exists(metadatadir) | length(configfile) > 0) {
     config = c()
     # so if outputdir was not created (first time) and if configfile is no
     # specified then we can safely assume that there is no configfile
@@ -72,7 +72,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
       } else {
         stop("\nDo not supply argument configfile if the configfile does not exist yet")
       }
-    } else if (length(configfile) == 0) { 
+    } else if (length(configfile) == 0) {
       # Note that, if both exist, we prioritise configfile over the configfile
       # stored in outputdir.
       if (file.exists(config_file_in_outputdir)) config = read.csv(file = config_file_in_outputdir, stringsAsFactors = FALSE)
@@ -80,7 +80,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (length(config) > 0) {
       LS = ls()
       LS = LS[-which(LS == c("config"))]
-      for (ci in 1:nrow(config)) { 
+      for (ci in 1:nrow(config)) {
         if (as.character(config[ci,1]) %in% LS == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR
           conv2logical = conv2num = c()
           suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
@@ -112,7 +112,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                   if (isna == TRUE) { # it is a vector with characters
                     vecchar = unlist(strsplit(unlist(strsplit(config[ci,2],"\\(|\\)"))[2],","))
                     if (config[ci,1] == "timewindow") timewindow = vecchar
-                    
+
                   } else {
                     txt = paste(as.character(config[ci,1]),"=",config[ci,2],"",sep="")
                   }
@@ -128,12 +128,12 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
   }
   # obtain default parameter values if not provided:
-  
+
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
-  
+
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
@@ -171,7 +171,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
-  
+
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
   if (exists("maxdur") == FALSE)  maxdur = 7
@@ -197,14 +197,14 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
-  
-  
+
+
   # PART 3
   if (exists("anglethreshold") == FALSE)  anglethreshold = 5
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  
+
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -220,7 +220,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE
-  
+
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -237,35 +237,82 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("boutdur.in") == FALSE)  boutdur.in = c(10,20,30)
   if (exists("boutdur.lig") == FALSE)  boutdur.lig = c(1,5,10)
   if (exists("save_ms5rawlevels") == FALSE) save_ms5rawlevels = FALSE
-  
+  # Related to (r)ead (m)yacc (c)sv file:
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   # VISUAL REPORT
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
-  
+
   cat("\n   When using GGIR in your publications please report the version number \n")
   cat("   and cite Migueles et al. 2019 in JMPB.  For additional citation guidelines see: \n")
   cat("   https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#citing-ggir \n")
-  
+
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 1\n")
-    g.part1(datadir=datadir,outputdir=outputdir,f0=f0,f1=f1,windowsizes = windowsizes,
-            desiredtz = desiredtz,chunksize=chunksize,studyname=studyname,minloadcrit=minloadcrit,
+    g.part1(datadir = datadir, outputdir = outputdir,
+            f0 = f0, f1 = f1, windowsizes = windowsizes,
+            desiredtz = desiredtz, chunksize = chunksize,
+            studyname = studyname, minloadcrit = minloadcrit,
             do.enmo = do.enmo,
-            do.lfenmo = do.lfenmo,do.en = do.en,
-            do.bfen = do.bfen,do.hfen=do.hfen,
+            do.lfenmo = do.lfenmo, do.en = do.en,
+            do.bfen = do.bfen, do.hfen=do.hfen,
             do.hfenplus = do.hfenplus, do.mad=do.mad,
             do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
-            do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
-            do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
+            do.roll_med_acc_x=do.roll_med_acc_x,
+            do.roll_med_acc_y=do.roll_med_acc_y,
+            do.roll_med_acc_z=do.roll_med_acc_z,
+            do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,
+            do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,
+            do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
             do.enmoa = do.enmoa,printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
             dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n,
-            do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB)
+            do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB,
+            rmc.dec=rmc.dec,
+            rmc.firstrow.acc = rmc.firstrow.acc,
+            rmc.firstrow.header = rmc.firstrow.header,
+            rmc.header.length = rmc.header.length,
+            rmc.col.acc = rmc.col.acc,
+            rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+            rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+            rmc.unit.time = rmc.unit.time,
+            rmc.format.time = rmc.format.time,
+            rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+            rmc.unsignedbit = rmc.unsignedbit,
+            rmc.origin = rmc.origin,
+            rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+            rmc.headername.sf = rmc.headername.sf,
+            rmc.headername.sn = rmc.headername.sn,
+            rmc.headername.recordingid = rmc.headername.sn,
+            rmc.header.structure = rmc.header.structure,
+            rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise)
   }
   if (dopart2 == TRUE) {
     cat('\n')

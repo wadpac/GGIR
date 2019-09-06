@@ -33,7 +33,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
-        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2)
+        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2, ...)
 }
 \arguments{
   \item{datadir}{
@@ -65,7 +65,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   If the datadir is a folder then the study will be given the name of the
   data directory. If datadir is a list of filenames then the studyname will be used
   as name for the analysis
-  }  
+  }
   \item{do.bfen}{
   if TRUE, calculate metric BFEN with band-pass filter configuration set by
   \code{lb} and \code{hb}, see \link{g.getmeta}
@@ -90,7 +90,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{do.mad}{
   if TRUE, calculate metric MAD (Mean Amplitude Deviation), see \link{g.getmeta}
-  }  
+  }
   \item{do.anglex}{
   if TRUE, calculate the angle of the x-axis relative to the horizontal plane
   (degrees) utilizing all three axes
@@ -137,20 +137,20 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   see \link{g.calibrate} use temperature sensor data if available (Geneactive only)
   }
   \item{spherecrit}{
-  see \link{g.calibrate} the minimum required acceleration value (in g) on both 
-  sides of 0 g for each axis. Used to judge whether the sphere is sufficiently 
+  see \link{g.calibrate} the minimum required acceleration value (in g) on both
+  sides of 0 g for each axis. Used to judge whether the sphere is sufficiently
   populated
   }
   \item{minloadcrit}{
   see \link{g.calibrate} the minimum number of hours the code needs to read for the
-  autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs, 
-  other values will be ceiled). After loading these hours only extra data is loaded 
+  autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
+  other values will be ceiled). After loading these hours only extra data is loaded
   if calibration error has not be reduced to under 0.01 g.
   }
    \item{printsummary}{
   see \link{g.calibrate} if TRUE will print a summary when done
   }
-  
+
   \item{print.filename}{
   Whether to print the filename before before analysing it (default is FALSE).
   Printing the filename can be useful to investigate problems (e.g. to verify that
@@ -167,7 +167,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{selectdaysfile}{
   Optional functionality. Character pointing at a csv file holding the relationship
-  between device serial numbers (first column) and measurement dates of interest 
+  between device serial numbers (first column) and measurement dates of interest
   (second and third column). The date format should be dd/mm/yyyy. And the first row
   if the csv file is assumed to have a character variable names, e.g. "serialnumber"
   "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
@@ -193,7 +193,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
     collects several MBs per hour, the default setting should only skip the very short files.
   }
-  
+  \item{...}{
+   Any input arguments needed for function \link{read.myacc.csv} if you
+   are working with a non-standard csv formatted files.
+  }
+
 }
 \details{
  Argument backup.cal.coef has two usecase. Use case 1: If the auto-calibration fails
@@ -203,19 +207,19 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   and subsequent values: 'filename' with the names of accelerometer files on which
   the calibration coefficients need to be applied in case auto-calibration fails;
   'scale.x', 'scale.y', and 'scale.z' with the scaling coefficients; 'offset.x',
-  'offset.y', and 'offset.z' with the offset coefficients, and; 
+  'offset.y', and 'offset.z' with the offset coefficients, and;
   'temperature.offset.x', 'temperature.offset.y', and 'temperature.offset.z'
   with the temperature offset coefficients. This can be useful for analysing
   short lasting laboratory experiments with insufficient sphere data to perform
   the auto-calibration, but for which calibration coefficients can be derived
   in an alternative way.  It is the users responsibility to compile the
   csv-spreadsheet. Instead of building this file the user can also
-  
+
   Use case 2: The user wants to avoid performing the auto-calibration repeatedly
   on the same file. If backup.cal.coef value is set to "retrieve" (default) then
   GGIR will look out for the  data_quality_report.csv  file in the outputfolder
   QC, which holds the previously generated calibration coefficients. If you
-  do not want this happen, then deleted the data_quality_report.csv from the 
+  do not want this happen, then deleted the data_quality_report.csv from the
   QC folder or set it to value "redo".
 }
 \value{
@@ -238,13 +242,13 @@ g.part1(datadir,outputdir)
 Movement and Gravity Components in an Acceleration Signal and Implications for the
 Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
 doi:10.1371/journal.pone.0061691
-\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, 
+\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI,
 White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
-free-living physical activity assessment using local gravity and temperature: 
+free-living physical activity assessment using local gravity and temperature:
 an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
-\item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean 
-amplitude deviation calculated from raw acceleration data: a novel method for 
-classifying the intensity of adolescents physical activity irrespective of accelerometer 
+\item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean
+amplitude deviation calculated from raw acceleration data: a novel method for
+classifying the intensity of adolescents physical activity irrespective of accelerometer
 brand. BMC Sports Science, Medicine and Rehabilitation (2015).
 }
 }
