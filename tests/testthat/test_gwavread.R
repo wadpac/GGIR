@@ -1,8 +1,8 @@
 library(GGIR)
 context("g.wavread")
 test_that("g.wavread reads data in file correctly", {
-  
-  wavfile  = system.file("binfile/ax3test.wav", package = "GGIR")[1]
+  skip_on_cran()
+  wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]
   WAV = expect_warning(g.wavread(wavfile = wavfile,units="samples", start = 1, end = 100))
 
   expect_equal(nrow(WAV$rawxyz),100)

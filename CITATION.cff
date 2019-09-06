@@ -41,7 +41,7 @@ authors:
     given-names: "Jairo H."
     orcid: "https://orcid.org/0000-0003-0366-6935"
 cff-version: "1.0.3"
-date-released: 2019-07-03
+date-released: 2019-09-06
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"
@@ -53,5 +53,5 @@ license: "LGPL-2.0-only"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/wadpac/GGIR"
 title: GGIR
-version: "1.9-2"
+version: "1.10-3"
 ...

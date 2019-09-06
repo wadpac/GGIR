@@ -1,15 +1,33 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.9-3 (release date:26-07-2019)}{
+\section{Changes in version 1.10-3 (release date:06-09-2019)}{
 \itemize{
-  \item Enabled multiple values for argument winhr, by which part2 can now calculated
-  for example L3M3, L5M5, L6M6, L10M10 all in one go.
-  \item Moved IVIS calculation to seperate function
-  \item Now possible to specify time windows that need to be ignored for imputation
+  \item Fixed bug introduced in version 1.10-1 in the conversion from numeric to character sleep times
+  \item Dependencies of dependencies removed from the DESCRIPTION file
+  \item Fixed 1to6am variables, which was wrong in version 1.10-1
   \item Added functionality to handle accelerometer data from any accelerometer brand
   stored in csv files via read.myacc.csv. Pass on the arguments of this function to
   g.shell.GGIR to use this functionality.
+}
+}
+\section{Changes in version 1.10-1 (release date:23-08-2019)}{
+\itemize{
+  \item Configuration file option now added to g.shell.GGIR and documented in vignette
+  \item metric lfen added (low-pass filter signels followed by Euclidean norm)
+  \item issues fixed with passing on of hb and lb arguments
+  \item argument backup.cal.coef can now also handle data_quality_reports.csv files
+  \item part 1 now automatically uses previously generated calibration coefficients if the datafile
+  was previously processed, see documentation g.part1 for further details.
+  \item Enabled multiple values for argument winhr, by which part2 can now calculated
+  for example L3M3, L5M5, L6M6, L10M10 all in one go. Further, option added (qM5L5) to
+  extract percentiles (quantiles) from the value distribution corresponding to these windows.
+  \item Moved IVIS calculation to seperate function, and split up function g.analyse.
+  \item Now possible to specify time windows that need to be ignored for imputation, see TimeSegments2ZeroFile.
+  \item Default value for argument mode changed from mode = c(1,2) to mode = 1:5, to perform all the parts.
+  \item Checks added for user write and read access permission, and subsequent warnings given..
+  \item Parts 1, 2, 3, and 5 can now use multi CPU cores which speeds up the processing.
+  \item Argument minimumFileSizeMB added to g.part1 to aid filtering out too small data files.
   }
   }
 \section{Changes in version 1.9-2 (release date:03-07-2019)}{

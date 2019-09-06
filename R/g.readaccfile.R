@@ -52,11 +52,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
   switchoffLD = 0
-  if (length(unlist(strsplit(filename,"[.]RD"))) > 1) {
-    useRDA = TRUE
-  } else {
-    useRDA = FALSE
-  }
+  useRDA = TRUE
+  if (length(unlist(strsplit(filename,"[.]RD"))) <= 1) useRDA = FALSE
   if (useRDA == FALSE) {
     I = inspectfileobject
     mon = I$monc
@@ -116,9 +113,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
     } else {
       P = c()
-      if (blocknumber == 1) {
-        filequality$filecorrupt = TRUE
-      }
+      if (blocknumber == 1) filequality$filecorrupt = TRUE
     }
   } else if (mon == 2 & dformat == 1 & useRDA == FALSE) { # GENEActiv binary non-RDA format
     if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
@@ -126,7 +121,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       # All of the below needed for Millenium cohort
       SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
       hvars = g.extractheadervars(I)
-      SN = hvars$SN
+      deviceSerialNumber = hvars$deviceSerialNumber
       SDFi = which(basename(SDF$binFile) == basename(filename))
       if(length(SDFi) != 1) {
         save(SDF, SDFi, file = "debuggingFile.Rda")
@@ -147,6 +142,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         try(expr= {
           P = GENEAread::read.bin(binfile=filename,start=tint[blocknumber,1],
                                   end=tint[blocknumber,2],calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)
+          # on.exit(closeAllConnections())
           if (sf != P$freq) sf = P$freq
         },silent=TRUE)
         if (length(P) <= 2) {
@@ -160,17 +156,16 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
             switchoffLD = 1
           }
         } else {
-          if (nrow(P$data.out) < (blocksize*300)) { #last block
-            switchoffLD = 1
-          }
+          if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
         }
       }
       if (length(P) == 0) { #if first block doens't read then probably corrupt
         if (blocknumber == 1) {
           #try to read without specifying blocks (file too short)
           try(expr={P = GENEAread::read.bin(binfile=filename,start=1,end=10,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+          # on.exit(closeAllConnections())
           if (length(P) == 0) {
-            cat("\nError: file possibly corrupt\n")
+            warning('\nFile possibly corrupt\n')
             P= c(); switchoffLD = 1
             filequality$filecorrupt = TRUE
           } else { #if not then P is now filled with data, but we are not interested in readin this
@@ -184,8 +179,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         if (nrow(P$data.out) < ((sf*ws*2)+1) & blocknumber == 1) {
           P = c();  switchoffLD = 1
           cat("\nError code 2: data too short for doing non-wear detection\n")
-          filequality$filetooshort = TRUE
-          filequality$filedoesnotholdday = TRUE
+          filequality$filetooshort = filequality$filedoesnotholdday = TRUE
         }
       }
       # All of the above needed for Millenium cohort
@@ -198,10 +192,12 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       startpage = UPI$startpage;    endpage = UPI$endpage
       try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
                                         end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+      # on.exit(closeAllConnections())
       if (length(P) <= 2) {
         #try again but now with mmap.load turned on
         try(expr={P = GENEAread::read.bin(binfile=filename,start=startpage,
                                           end=endpage,calibrate=TRUE,do.temp=TRUE,mmap.load=TRUE)},silent=TRUE)
+        # on.exit(closeAllConnections())
         if (length(P) != 0) {
           if (sf != P$freq) sf = P$freq
         } else {
@@ -210,21 +206,18 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       }
       if (length(P) > 0) {
         if (length(selectdaysfile) > 0) {
-          if (tint[blocknumber,1] == "0") {
-            switchoffLD = 1
-          }
+          if (tint[blocknumber,1] == "0") switchoffLD = 1
         } else {
-          if (nrow(P$data.out) < (blocksize*300)) { #last block
-            switchoffLD = 1
-          }
+          if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
         }
       }
       if (length(P) == 0) { #if first block doens't read then probably corrupt
         if (blocknumber == 1) {
           #try to read without specifying blocks (file too short)
           try(expr={P = GENEAread::read.bin(binfile=filename,calibrate=TRUE,do.temp=TRUE,mmap.load=FALSE)},silent=TRUE)
+          # on.exit(closeAllConnections())
           if (length(P) == 0) {
-            cat("\nError: file possibly corrupt\n")
+            warning('\nFile possibly corrupt\n')
             P= c(); switchoffLD = 1
             filequality$filecorrupt = TRUE
           } #if not then P is now filled with data

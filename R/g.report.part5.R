@@ -12,7 +12,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     }
   } else {
     try.generate.report = FALSE #do not run this function if there is no milestone data from g.part5
-    cat("Error: No milestone data available from part 5")
+    warning('Cannot generate part5 report because no part 5 milestone data is available. First run part 5 with argument mode=5.')
   }
   if (try.generate.report == TRUE) {
     #======================================================================
