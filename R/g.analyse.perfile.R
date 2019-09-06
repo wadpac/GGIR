@@ -194,7 +194,7 @@ g.analyse.perfile = function(id, id2, idd, fname, deviceSerialNumber, BodyLocati
     GGIRversion = SI$otherPkgs$GGIR$Version
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
     filesummary[(vi+5)] = GGIRversion #"2014-03-14 12:14:00 GMT"
-    s_names[vi:(vi+5)] = as.character(c(paste("data exclusion stategy (value=1, ignore specific hours;",
+    s_names[vi:(vi+5)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
                                               " value=2, ignore all data before the first midnight and",
                                               " after the last midnight)"),
                                         "n hours ignored at start of meas (if strategy=1)",
