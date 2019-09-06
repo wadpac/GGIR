@@ -55,10 +55,11 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
         ML5AD_names = ML5AD_namestmp
         rm(ML5AD_namestmp)
       }	
+      # Acceleration 1-6am 
+      ML5AD_names = c(ML5AD_names, paste0("1to6am_",colnames(M$metashort)[(quani+1)],"_mg"))
+      ML5AD = c(ML5AD, mean(avday[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000)
     }	
-    # Acceleration 1-6am 
-    ML5AD_names = c(ML5AD_names, paste0("1to6am_",colnames(M$metashort)[(quani+1)],"_mg"))
-    ML5AD = c(ML5AD, mean(avday[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000)
+    
   }
   igfullr_names = igfullr = c()
   if (doiglevels == TRUE) { 
