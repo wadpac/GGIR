@@ -9,6 +9,7 @@
   \item Added functionality to handle accelerometer data from any accelerometer brand
   stored in csv files via read.myacc.csv. Pass on the arguments of this function to
   g.shell.GGIR to use this functionality.
+  \item Added reference to new GGIR paper to the documentation
 }
 }
 \section{Changes in version 1.10-1 (release date:23-08-2019)}{
