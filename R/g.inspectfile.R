@@ -10,7 +10,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
       eval(parse(text=txt))
     }
   }
-  
+
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
   if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
@@ -68,6 +68,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
       suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile)},silent=TRUE))
+      # on.exit(closeAllConnections())
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
@@ -78,9 +79,9 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
         if (length(tmp2) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp2[1])
-          sf = sf + (as.numeric(tmp2[2]))/10	
+          sf = sf + (as.numeric(tmp2[2]))/10
         } else { #decimals seperated by dot
-          sf = as.numeric(tmp[1])			
+          sf = as.numeric(tmp[1])
         }
         if (sf == 0 | is.na(sf) == T) {
           skip = 1 #reconsider decision to analyse this file as it is possibly corrupt
@@ -95,9 +96,9 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
           tmp2 = unlist(strsplit(as.character(tmp[1]),","))
           if (length(tmp2) > 1) { #decimals seperated by comma
             sf = as.numeric(tmp2[1])
-            sf = sf + (as.numeric(tmp2[2]))/10	
+            sf = sf + (as.numeric(tmp2[2]))/10
           } else { #decimals seperated by dot
-            sf = as.numeric(tmp[1])			
+            sf = as.numeric(tmp[1])
           }
           #also try to read sf from first page header
           sf_r = sf
@@ -141,23 +142,23 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
         if (length(tmp2) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp2[1])
-          sf = sf + (as.numeric(tmp2[2]))/10	
+          sf = sf + (as.numeric(tmp2[2]))/10
         } else { #decimals seperated by dot
-          sf = as.numeric(tmp[1])			
+          sf = as.numeric(tmp[1])
         }
       } else if (mon == 3) {
         tmp0 = read.csv(datafile,nrow=9,skip=0)
         tmp = colnames(tmp0)
         tmp2 = as.character(unlist(strsplit(tmp,".Hz"))[1])
-        # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2]) 
+        # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2])
         # following suggestion by XInyue on github https://github.com/wadpac/GGIR/issues/102 replaced by:
         tmp3 = as.character(unlist(strsplit(tmp2, ".at.",fixed = T))[2])
         tmp5 = unlist(strsplit(tmp3,","))
         if (length(tmp5) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp5[1])
-          sf = sf + (as.numeric(tmp5[2]))/10	
+          sf = sf + (as.numeric(tmp5[2]))/10
         } else { #decimals seperated by dot
-          sf = as.numeric(tmp3[1])			
+          sf = as.numeric(tmp3[1])
         }
       } else if (mon == 4) {
         # sample frequency is not stored
@@ -182,7 +183,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
   filename = filename[length(filename)]
   monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
   fornames = c("bin","csv","wav","cwa","csv") #format names
-  
+
   if (length(filename) == 0) {
     print("no files to analyse")
   }
@@ -224,6 +225,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
       H = genea$header
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile=datafile)
+      # on.exit(closeAllConnections())
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea
@@ -276,9 +278,9 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
   } else if (dformat == 4) { #cwa data
     PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
-    
+
   } else if (dformat == 5) { # csv data in a user-specified format
-    
+
     H = header = Pusercsvformat$header
     if (Pusercsvformat$header != "no header") {
       H = data.frame(name=row.names(header),value=header)
@@ -321,7 +323,6 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
       if (length(H) > 1 & class(H) == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2])
     }
   }
-  closeAllConnections()
   if (dformat != 4 & length(H) > 1 & (class(H) == "matrix" | class(H) == "data.frame")) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
     header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])

@@ -23,7 +23,7 @@ do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
 do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
 do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
 do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,
+do.enmoa = FALSE, do.lfen = FALSE, lb = 0.2,hb = 15, n = 4,
 meantempcal=c(),chunksize=c(),
 selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),...)
 }
@@ -102,6 +102,9 @@ selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),...)
   }
   \item{do.dev_roll_med_acc_z}{if TRUE, calculate deviations from rolling 
   median for the z axis
+  }
+  \item{do.lfen}{if TRUE, calculate metric EN with low-pass filtered
+  inputed signals using configuration set by \code{hb}
   }
   \item{lb}{lower boundary of the frequency filter (in Hertz)
   }
