@@ -97,6 +97,4 @@ g.metric= function(data,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
   } else {
     g.metric = Gfil[,1]
   }
-
-
 }

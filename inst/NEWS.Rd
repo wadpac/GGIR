@@ -6,6 +6,9 @@
   \item Fixed bug introduced in version 1.10-1 in the conversion from numeric to character sleep times
   \item Dependencies of dependencies removed from the DESCRIPTION file
   \item Fixed 1to6am variables, which was wrong in version 1.10-1
+  \item Added functionality to handle accelerometer data from any accelerometer brand
+  stored in csv files via read.myacc.csv. Pass on the arguments of this function to
+  g.shell.GGIR to use this functionality.
 }
 }
 \section{Changes in version 1.10-1 (release date:23-08-2019)}{

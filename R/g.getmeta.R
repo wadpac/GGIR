@@ -22,6 +22,29 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   }
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
+  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
+  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
+  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
+  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
+  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
+  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
+  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
+  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
+  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
+  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
+  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
+  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                           do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                           do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
@@ -70,7 +93,25 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   }
   options(warn=-1)
   if (useRDA == FALSE) {
-    INFI = g.inspectfile(datafile, desiredtz=desiredtz)  # Check which file type and monitor brand it is
+    INFI = g.inspectfile(datafile, desiredtz=desiredtz,
+                         rmc.dec=rmc.dec,configtz=configtz,
+                         rmc.firstrow.acc = rmc.firstrow.acc,
+                         rmc.firstrow.header = rmc.firstrow.header,
+                         rmc.header.length = rmc.header.length,
+                         rmc.col.acc = rmc.col.acc,
+                         rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                         rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                         rmc.unit.time = rmc.unit.time,
+                         rmc.format.time = rmc.format.time,
+                         rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                         rmc.unsignedbit = rmc.unsignedbit,
+                         rmc.origin = rmc.origin,
+                         rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                         rmc.headername.sf = rmc.headername.sf,
+                         rmc.headername.sn = rmc.headername.sn,
+                         rmc.headername.recordingid = rmc.headername.sn,
+                         rmc.header.structure = rmc.header.structure,
+                         rmc.check4timegaps = rmc.check4timegaps)  # Check which file type and monitor brand it is
   } else {
     load(datafile)
     INFI = I
@@ -80,10 +121,21 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
-  if (sf == 0) sf = 80 #assume 80Hertz in the absense of any other info
+  if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
+    if (length(rmc.sf) == 0) {
+      stop("Could not identify sample frequency")
+    } else {
+      if (rmc.sf == 0) {
+        stop("Could not identify sample frequency")
+      } else {
+        sf = rmc.sf
+      }
+    }
+  }
+  if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
   header = INFI$header
   options(warn=-1)
-  if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz)
+  if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 24 hours (modify if causing memory problems)
@@ -100,9 +152,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1+nmetrics)) #generating output matrix for acceleration signal
-  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2)) {
+  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & length(rmc.col.temp) == 0)) {
     temp.available = FALSE
-  } else if (mon == 2 | (mon == 4 & dformat == 4)){
+  } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & length(rmc.col.temp) > 0)){
     temp.available = TRUE
   }
   if (temp.available == FALSE) {
@@ -130,9 +182,30 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     if (useRDA == FALSE) {
       accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
-                              selectdaysfile = selectdaysfile,filequality=filequality,decn=decn,
-                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,PreviousEndPage=PreviousEndPage,
-                              inspectfileobject=INFI,configtz=configtz)
+                              selectdaysfile = selectdaysfile,
+                              filequality=filequality,decn=decn,
+                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,
+                              PreviousEndPage=PreviousEndPage,
+                              inspectfileobject=INFI,
+                              configtz=configtz,
+                              rmc.dec=rmc.dec,
+                              rmc.firstrow.acc = rmc.firstrow.acc,
+                              rmc.firstrow.header = rmc.firstrow.header,
+                              rmc.header.length = rmc.header.length,
+                              rmc.col.acc = rmc.col.acc,
+                              rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                              rmc.unit.time = rmc.unit.time,
+                              rmc.format.time = rmc.format.time,
+                              rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                              rmc.unsignedbit = rmc.unsignedbit,
+                              rmc.origin = rmc.origin,
+                              rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                              rmc.headername.sf = rmc.headername.sf,
+                              rmc.headername.sn = rmc.headername.sn,
+                              rmc.headername.recordingid = rmc.headername.sn,
+                              rmc.header.structure = rmc.header.structure,
+                              rmc.check4timegaps = rmc.check4timegaps)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -158,6 +231,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         P = c()
       }
     }
+
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (useRDA == FALSE) {
         if (mon == 1 & dformat == 1) {
@@ -168,23 +242,31 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           data = P #as.matrix(P,dimnames = list(rownames(P),colnames(P)))
         } else if (dformat == 3) {
           data = P$rawxyz
-        } else if (dformat == 4) {
+        } else if (dformat == 4  | dformat == 5) {
           data = P$data
         }
         #add left over data from last time
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
-        if (mon == 2 | (mon == 4 & dformat == 4)) {
+
+        if (temp.available == TRUE) {
+          use.temp = TRUE
+        } else {
+          use.temp = FALSE
+        }
+        if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & temp.available == TRUE)) {
           if (mon == 2) tempcolumn = 7
-          if (mon == 4) tempcolumn = 5
+          if (mon == 4 | mon == 5) tempcolumn = 5
           meantemp = mean(as.numeric(data[,tempcolumn]),na.rm=TRUE)
           if (is.na(meantemp) == T) { #mean(as.numeric(data[1:10,7]))
             cat("\ntemperature is NA\n")
             meantemp = 0
+            use.temp = FALSE
           } else if (mean(as.numeric(data[1:10,tempcolumn])) > 50) {
             cat("\ntemperature value is unreaslistically high (> 50 Celcius)\n")
             meantemp = 0
+            use.temp = FALSE
           }
         }
         # extraction and modification of starting point of measurement
@@ -294,11 +376,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         LD = nrow(data)
       }
       #store data that could not be used for this block, but will be added to next block
-      if (LD >= (ws*sf)) { # LD != 0
+      if (LD >= (ws*sf)) {
         if (useRDA == FALSE) {
           use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
           if (use != LD) {
-            S = as.matrix(data[(use+1):LD,]) #store left over
+            # S = as.matrix(data[(use+1):LD,]) #Note: as.matrix removed on 22May 2019 because redundant and introduced errors when
+            # reading csv files
+            S = data[(use+1):LD,] #store left over
             if (ncol(S) == 1) {
               S = t(S)
             }
@@ -358,28 +442,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           suppressWarnings(storage.mode(data) <- "numeric")
           ## resample experiment to see whehter processing time can be much improved if data is resampled
           sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
-          # if (sforiginal > 30) {
-          #   rawTime = seq(0,nrow(data),by=1) / sforiginal
-          #   sfnew = 30
-          #   step = 1/sfnew
-          #   start = rawTime[1]
-          #   end = rawTime[length(rawTime)]
-          #   timeRes = seq(start, end, step)
-          #   nr = length(timeRes) - 1
-          #   timeRes = as.vector(timeRes[1:nr])
-          #   rawLast=nrow(data)
-          #   # print("==========================")
-          #   # print(paste0("nrow before: ", nrow(data)))
-          #   data = GGIR::resample(data, rawTime, timeRes, rawLast)
-          #   # print(paste0("nrow before: ", nrow(data)))
-          #   sf = sfnew
-          #   # print(paste0("new sf: ",sfnew))
-          #   # print("==========================")
-          #   LD = nrow(data)
-          #   dur = nrow(data)	#duration of experiment in data points
-          #   durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
-          # }
-          #####
           # STORE THE RAW DATA
           # data[,1], data[,2], data[,3], starttime, (temperature, light)
           if (length(selectdaysfile) > 0) {
@@ -388,7 +450,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
             # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
-            if (mon == 2 | (mon == 4 & dformat == 4)) {
+            if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 5)) {
               I = INFI
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,light,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
@@ -431,7 +493,6 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           metashort = rbind(metashort,extension)
           extension2 = matrix(" ",((3600/ws2) *24),ncol(metalong)) #add another day to metashort once you reach the end of it
           metalong = rbind(metalong,extension2)
-          
           cat("\nvariable metashort extended\n")
         }
         col_msi = 2
@@ -535,22 +596,27 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                 clipthres = 7.5 # hard coded assumption that dynamic range is 8g
               } else if (mon == 4) {
                 clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+              } else if (mon == 5) {
+                clipthres = rmc.dynamic_range
               }
             }
             CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres))
             #non-wear criteria are monitor specific
+            racriter = 0.15 #very likely irrelevant parameters, but leave in for consistency
             if (mon == 1) {
               sdcriter = 0.003
               racriter = 0.05
             } else if (mon == 2) {
               sdcriter = 0.013 #0.0109 in rest test
-              racriter = 0.15 #0.1279 measured in rest test
             } else if (mon == 3) {
               sdcriter = 0.013 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
-              racriter = 0.15 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
             } else if (mon == 4) {
               sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
-              racriter = 0.15 #ADJUSTMENT NEEDED FOR Axivity???????????
+            } else if (mon == 5) {
+              sdcriter = rmc.noise * 1.2
+              if (length(rmc.noise) == 0) {
+                stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+              }
             }
             if (sdwacc < sdcriter) {
               if (abs(maxwacc - minwacc) < racriter) {
@@ -632,7 +698,27 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         #===================================================================
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
-        if (useRDA == FALSE) I = g.inspectfile(datafile, desiredtz=desiredtz)
+        if (useRDA == FALSE) {
+          I = g.inspectfile(datafile, desiredtz=desiredtz,
+                                               rmc.dec=rmc.dec,configtz=configtz,
+                                               rmc.firstrow.acc = rmc.firstrow.acc,
+                                               rmc.firstrow.header = rmc.firstrow.header,
+                                               rmc.header.length = rmc.header.length,
+                                               rmc.col.acc = rmc.col.acc,
+                                               rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                                               rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                                               rmc.unit.time = rmc.unit.time,
+                                               rmc.format.time = rmc.format.time,
+                                               rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                                               rmc.unsignedbit = rmc.unsignedbit,
+                                               rmc.origin = rmc.origin,
+                                               rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                                               rmc.headername.sf = rmc.headername.sf,
+                                               rmc.headername.sn = rmc.headername.sn,
+                                               rmc.headername.recordingid = rmc.headername.sn,
+                                               rmc.header.structure = rmc.header.structure,
+                                               rmc.check4timegaps = rmc.check4timegaps)
+        }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
         SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
@@ -665,12 +751,32 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     if (nrow(metalong) > 2) {
       starttime4 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time1 = seq(starttime4,(starttime4+(nrow(metalong)*ws2)-1),by=ws2)
-      
+
       if (length(selectdaysfile) > 0 & round((24*(3600/ws2))+1) < length(time1)) { # (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
-        if (useRDA == FALSE) I = g.inspectfile(datafile, desiredtz=desiredtz)
+        if (useRDA == FALSE) {
+          I = g.inspectfile(datafile, desiredtz=desiredtz,
+                            rmc.dec=rmc.dec,configtz=configtz,
+                            rmc.firstrow.acc = rmc.firstrow.acc,
+                            rmc.firstrow.header = rmc.firstrow.header,
+                            rmc.header.length = rmc.header.length,
+                            rmc.col.acc = rmc.col.acc,
+                            rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                            rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                            rmc.unit.time = rmc.unit.time,
+                            rmc.format.time = rmc.format.time,
+                            rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                            rmc.unsignedbit = rmc.unsignedbit,
+                            rmc.origin = rmc.origin,
+                            rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                            rmc.headername.sf = rmc.headername.sf,
+                            rmc.headername.sn = rmc.headername.sn,
+                            rmc.headername.recordingid = rmc.headername.sn,
+                            rmc.header.structure = rmc.header.structure,
+                            rmc.check4timegaps = rmc.check4timegaps)
+        }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
         SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
@@ -706,9 +812,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     for (ncolms in 2:ncol(metashort)) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2)) {
+    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & use.temp == FALSE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-    } else if (mon == 2 | (mon == 4 & dformat == 4)) {
+    } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & use.temp == TRUE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
     }
     metalong = data.frame(A = metalong,stringsAsFactors = FALSE)
@@ -716,7 +822,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     for (ncolml in 2:ncol(metalong)) {
       metalong[,ncolml] = as.numeric(metalong[,ncolml])
     }
-    
+
     # closeAllConnections()
   } else {
     metalong=metashort=wday=wdayname=windowsizes = c()

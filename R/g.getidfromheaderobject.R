@@ -14,5 +14,11 @@ g.getidfromheaderobject = function(filename,header,dformat,mon) {
     }
   } else if (dformat == 3 | dformat == 4) {
     id = filename # for now use filename as identifier
+  } else if (dformat == 5) {
+    if (length(which(row.names(header) == "recordingID")) > 0) {
+      id = header[which(row.names(header) == "recordingID"),1]
+    } else {
+      id = c()
+    }
   }
 }

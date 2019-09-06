@@ -1,4 +1,6 @@
-g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile) {
+g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile) { 
+  #get input variables (relevant when read.myacc.csv is used)
+  #------------------------------------------------------------
   if (mon  == 1 & dformat == 1) {
     starttime = P$timestamps2[1]
     lengthheader = nrow(header)
@@ -165,6 +167,9 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       starttime = starttime0
       lengthheader = 9
     }
+  } else if (dformat == 5 & mon == 5) {
+    starttime = P$data$timestamp[1]
+    lengthheader = nrow(P$header)
   }
   return(starttime)
 }

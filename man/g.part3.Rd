@@ -35,17 +35,17 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   default = 5
   }
   \item{timethreshold}{
-  Time threshold (minutes) for sustained inactivity periods detection, 
-  default = 5. This can be specified as multiple thresholds, each of 
+  Time threshold (minutes) for sustained inactivity periods detection,
+  default = 5. This can be specified as multiple thresholds, each of
   which will be implemented. For example, timethreshold = c(5,10)
   }
   \item{acc.metric}{
-    Which one of the metrics do you want to consider to analyze L5. 
+    Which one of the metrics do you want to consider to analyze L5.
     The metric of interest need to be calculated in M (see \link{g.part1})
   }
   \item{ignorenonwear}{
-  If TRUE then ignore detected monitor non-wear periods to avoid 
-  confusion between monitor non-wear time and sustained inactivity 
+  If TRUE then ignore detected monitor non-wear periods to avoid
+  confusion between monitor non-wear time and sustained inactivity
   (default = TRUE)
   }
   \item{overwrite}{
@@ -61,16 +61,16 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
    Sleep period time window detection
   }
   \item{do.part3.pdf}{
-   Whether to generate a pdf for part 3 (default is TRUE). Turning this off 
+   Whether to generate a pdf for part 3 (default is TRUE). Turning this off
    could speed up the processing.
   }
     \item{do.parallel}{
     Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
   }
-  
+
 }
 \value{
-The function provides no values, it only ensures that other functions 
+The function provides no values, it only ensures that other functions
 are called and that their output is stored in .RData files.
 \cr
 \itemize{
@@ -81,7 +81,7 @@ further explaination).
 \item \code{start.time.day} timestamp when the day started
 \item \code{nsib.periods} number of sustained inactivity bouts
 \item \code{tot.sib.dur.hrs} total duration of all sustained inactivity bouts
-\item \code{fraction.night.invalid} fraction of the night for which 
+\item \code{fraction.night.invalid} fraction of the night for which
 accelerometer data was invalid, e.g. monitor not worn
 \item \code{sib.period} number of sustained inactivity period
 \item \code{sib.onset.time} onset time of sustained inactivity period
@@ -92,7 +92,7 @@ accelerometer data was invalid, e.g. monitor not worn
 \dontrun{
 metadatadir = "C:/myfolder/meta" # assumes that there is a subfolder in
 # metadatadir named 'basic' containing the output from g.part1
-g.part3(metadatadir=metadatadir, anglethreshold=5, 
+g.part3(metadatadir=metadatadir, anglethreshold=5,
 timethreshold=5, overwrite=FALSE)
 }
 }
@@ -103,7 +103,7 @@ timethreshold=5, overwrite=FALSE)
 \itemize{
 \item van Hees VT, Sabia S, et al. (2015) A novel, open access method to
 assess sleep duration using a wrist-worn accelerometer, PLoS ONE, November 2015
-\item van Hees VT, Sabia S, et al. (2018) Estimating sleep parameters 
+\item van Hees VT, Sabia S, et al. (2018) Estimating sleep parameters
 using an accelerometer without sleep diary. Scientific Reports.
 
 }
