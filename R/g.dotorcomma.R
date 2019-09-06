@@ -1,6 +1,25 @@
-g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c()) {
+g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c(), ...) {
+  #get input variables (relevant when read.myacc.csv is used)
+  input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
   if (length(decn) == 0) decn = "." # assume . if not retrieved
+  if (length(input) > 0) {
+    for (i in 1:length(names(input))) {
+      txt = paste(names(input)[i],"=",input[i],sep="")
+      if (class(unlist(input[i])) == "character") {
+        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+      }
+      eval(parse(text=txt))
+    }
+  }
+  #------------------------------------------------------------
+  if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
+  if (exists("rmc.dec") == FALSE) rmc.dec = decn
+  if (length(rmc.firstrow.acc) == 1) {
+    dformat = 5
+    mon = 5
+    decn = rmc.dec
+  }
   if (dformat == 2) {
     deci = as.matrix(read.csv(inputfile,skip = 100,nrow=10))
     if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & getOption("OutDec") == ".") decn = ","
@@ -17,7 +36,7 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c()) {
       # on.exit(closeAllConnections())
       if(is.na(as.numeric(deci$data.out[2,2])) == T & getOption("OutDec") == ".") decn = ","
     }
-  } else if (dformat == 3) { 
+  } else if (dformat == 3) {
     try(expr={deci = g.wavread(wavfile=inputfile,start=1,end=10)},silent=TRUE)
     if(is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & getOption("OutDec") == ".") decn = ","
   } else if (dformat == 4) {

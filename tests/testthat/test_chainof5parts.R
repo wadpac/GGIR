@@ -73,14 +73,14 @@ test_that("chainof5parts", {
   expect_that(ncol(SUM$daysummary), equals(34))
   expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3),equals(88.992))
   expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3),equals(37.134))
-  
+
   #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
   #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
-  
+
   #--------------------------------------------
   # part 3
   g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
-                     timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE,do.part3.pdf=TRUE, 
+                     timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE,do.part3.pdf=TRUE,
           do.parallel = do.parallel)
   dirname = "output_test/meta/ms3.out/"
   rn3 = dir(dirname,full.names = TRUE)
@@ -106,7 +106,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
- 
+
   #--------------------------------------------
   #part 5
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
@@ -125,19 +125,19 @@ test_that("chainof5parts", {
  #--------------------------------------------
   #g.shell.GGIR
   suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
-                          do.report=c(2,4,5),overwrite=FALSE,visualreport=FALSE,viewingwindow=1, 
+                          do.report=c(2,4,5),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
                           do.parallel = do.parallel, minimumFileSizeMB=minimumFileSizeMB))
   suppressWarnings(g.shell.GGIR(mode=c(),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
                                 do.report=c(),overwrite=FALSE,visualreport=TRUE,viewingwindow=1,
                                 do.parallel = do.parallel, minimumFileSizeMB=minimumFileSizeMB))
-  expect_true(file.exists("output_test/results/part2_daysummary.csv"),is_true())
-  expect_true(file.exists("output_test/results/part2_summary.csv"),is_true())
+  expect_true(file.exists("output_test/results/part2_daysummary.csv"))
+  expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
-  
-  
+
+
   #--------------------------------------------
   # create dummy selectdaysfile
   selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016")
@@ -154,7 +154,7 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
-  
+
   #=======================
   # Different variations on part 4:
   #--------------------------------------------
@@ -171,7 +171,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(18.075))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
-  
+
   #----------------------------------------------------------------------
   # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonsleeplog=TRUE
   sptwindow_HDCZA_end = c(37,37) # turn into midday
@@ -192,7 +192,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-  
+
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(6))
@@ -224,7 +224,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(5.9167))
   expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(7))
-  
+
   #----------------------------------------------------------------------
   # Part 4 - DST-1
   load(rn3[1])
@@ -250,7 +250,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
   expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(13.075))
-  
+
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
