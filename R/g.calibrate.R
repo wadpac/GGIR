@@ -1,7 +1,7 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
                        desiredtz = c(), ...) {
-  
+
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -59,7 +59,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   scale = c(1,1,1)
   offset = c(0,0,0)
   bsc_qc = data.frame(time=c(),size=c(),stringsAsFactors = FALSE)
-  #inspect file  
+  #inspect file
   options(warn=-1) #turn off warnings
   INFI = g.inspectfile(datafile, desiredtz=desiredtz, rmc.dec=rmc.dec,
                        rmc.firstrow.acc = rmc.firstrow.acc,
@@ -94,13 +94,13 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       }
     }
   }
-  if (sf == 0) stop("Sample frequency not recognised") 
+  if (sf == 0) stop("Sample frequency not recognised")
   options(warn=-1) #turn off warnings
   suppressWarnings(expr={decn = g.dotorcomma(datafile,dformat, mon, desiredtz = desiredtz, rmc.dec = rmc.dec)}) #detect dot or comma dataformat
   options(warn=0) #turn off warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-  NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz) 
+  NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
   if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
     meta = matrix(99999,NR,8) #for meta data
   } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) |
@@ -109,7 +109,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   }
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
-  blocksize = round((14512 * (sf/50)) * (chunksize*0.5)) 
+  blocksize = round((14512 * (sf/50)) * (chunksize*0.5))
   blocksizegenea = round((20608 * (sf/80)) * (chunksize*0.5))
   if (mon == 1) blocksize = blocksizegenea
   if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
@@ -149,7 +149,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                             rmc.header.structure = rmc.header.structure,
                             rmc.check4timegaps = rmc.check4timegaps)
     P = accread$P
-  
+
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -172,7 +172,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       } else if (dformat == 5) {
         data = P$data
       }
-      #add left over data from last time 
+      #add left over data from last time
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
@@ -191,20 +191,21 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           dur = nrow(data)	#duration of experiment in data points
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           # Initialization of variables
+          suppressWarnings(storage.mode(data) <- "numeric")
           if (mon == 1) {
-            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
           } else if (dformat == 3 & mon == 4) {
-            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
           } else if (dformat == 4 & mon == 4) {
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = TRUE
           } else if (dformat == 2 & mon == 4) {
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = FALSE
           } else if (mon == 2 & dformat == 1) {
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperature = data[,7]
             temperature = as.numeric(data[,7])
           } else if (mon == 5 & dformat == 5 & length(rmc.col.temp) > 0) {
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
@@ -218,9 +219,9 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
             if (ncol(data) == 3) extra = 0
             if (ncol(data) >= 4) extra = 1
             for (jij in 1:3) {
-              data2[,jij] = as.numeric(data[,(jij+extra)])
+              data2[,jij] = data[,(jij+extra)]
             }
-            Gx = as.numeric(data2[,1]); Gy = as.numeric(data2[,2]); Gz = as.numeric(data2[,3])
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
           if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == TRUE)) {
             if (mon == 2) {
@@ -232,7 +233,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           } else if (mon == 1 | mon == 3) {
             use.temp = FALSE
           }
-          if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 5) & use.temp == TRUE) { 
+          if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 5) & use.temp == TRUE) {
             #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               cat("\ntemperature is NA\n")
@@ -262,7 +263,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           dim(Gz) = c(sf*ws4,ceiling(length(Gz)/(sf*ws4))); 	GzSD2 = apply(Gz,2,sd)
           #-----------------------------------------------------
           #expand 'out' if it is expected to be too short
-          if (count > (nrow(meta) - (2.5*(3600/ws4) *24))) {  
+          if (count > (nrow(meta) - (2.5*(3600/ws4) *24))) {
             extension = matrix(99999,((3600/ws4) *24),ncol(meta))
             meta = rbind(meta,extension)
             cat("\nvariabel meta extended\n")
@@ -280,7 +281,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           }
           count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
           rm(Gx); rm(Gy); rm(Gz)
-          
+
           # Update blocksize depending on available memory:
           BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
           bsc_qc = BlocksizeNew$bsc_qc
@@ -326,7 +327,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (min(dim(meta_temp)) > 1) {
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)
-        cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)			
+        cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)
         cal.error.start = mean(abs(cal.error.start - 1))
         #check whether sphere is well populated
         tel = 0
@@ -377,7 +378,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         if (length(curr) == 0) {
           # set coefficients to default, because it did not work.
           cat("\nObject curr has length zero.")
-          break 
+          break
         }
         closestpoint = curr/ sqrt(rowSums(curr^2))
         k = 1
@@ -430,13 +431,13 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
         if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == FALSE))) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) | 
+        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) |
                                         (mon == 4 & dformat == 2) | (mon == 5 & use.temp == TRUE)))  {
           QC = "recalibration done, but temperature values not used"
         } else if (mon != 2 & dformat != 3)  {
           QC = "recalibration done, no problems detected"
         }
-        LD = 0 #stop loading 
+        LD = 0 #stop loading
       } else { #continue loading data
         if (nhoursused > minloadcrit) {
           print(paste("new calibration error: ",cal.error.end," g",sep=""))
