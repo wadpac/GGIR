@@ -140,6 +140,8 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         }
       } else if (mon == "actigraph" | mon == "axivity") { #todo: create automatic extraction of information from actigraph fileheader
         deviceSerialNumber = "not extracted"
+      } else if (I$monc == 5) { #todo: create automatic extraction of information from monc fileheader
+        deviceSerialNumber = "not extracted"
       }
       if (length(C$offset) == 0) {
         C$offset = C$translate
