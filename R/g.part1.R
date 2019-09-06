@@ -394,7 +394,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         metadatadir = c()
         if (length(datadir) > 0) {
           # list of all csv and bin files
-          fnames = GGIR::datadir2fnames(datadir,filelist)
+          fnames = datadir2fnames(datadir,filelist) #GGIR::
           # check whether these are RDA
           if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
             useRDA = TRUE
