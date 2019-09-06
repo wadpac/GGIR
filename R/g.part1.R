@@ -10,8 +10,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
+                   backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -46,8 +46,7 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
-
-
+  
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -56,15 +55,13 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
       stop('\nVariable outputdir is not specified')
     }
   }
-
-
   if (grepl(datadir, outputdir)) {
     stop('\nError: The file path specified by argument outputdir should NOT equal or be a subdirectory of the path specified by argument datadir')
   }
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
-
+  
   #Extra code to handle raw accelerometer data in Raw data format:
   # list of all csv and bin files
   fnames = datadir2fnames(datadir,filelist)
@@ -100,7 +97,7 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
   path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
   use.temp = TRUE;
   daylimit = FALSE
-
+  
   #=================================================================
   # Other parameters:
   #--------------------------------
@@ -172,7 +169,7 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste(outputdir,outputfolder,"/meta/basic",sep=""))
-
+  
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
@@ -191,9 +188,9 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
     Ncores = cores[1]
     if (Ncores > 3) {
       Nmetrics2calc = do.bfen + do.enmo + do.lfenmo + do.lfen + do.en + do.hfen + do.hfenplus + do.mad +
-                          do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
-                          do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
-                          do.dev_roll_med_acc_z + do.enmoa
+        do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
+        do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
+        do.dev_roll_med_acc_z + do.enmoa
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -207,7 +204,7 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
       }
       cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
       doParallel::registerDoParallel(cl)
-
+      
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       do.parallel = FALSE
@@ -252,7 +249,7 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
         for (index in 1:length(ffdone)) {
           ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
         }
-        if (length(which(ffdone_without == fnames_without)) > 0) {
+        if (length(which(ffdone_without == fnames_without)) > 0) { 
           skip = 1 #skip this file because it was analysed before")
         } else {
           skip = 0 #do not skip this file
@@ -260,78 +257,34 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
       } else {
         skip = 0
       }
-    } else {
-      skip = 0
-    }
-    if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-      useRDA = TRUE
-    } else {
-      useRDA = FALSE
-    }
-    #================================================================
-    # Inspect file (and store output later on)
-    options(warn=-1) #turn off warnings
-    if (useRDA == FALSE) {
-      I = g.inspectfile(datafile, desiredtz=desiredtz,
-                        rmc.dec=rmc.dec,configtz=configtz,
-                        rmc.firstrow.acc = rmc.firstrow.acc,
-                        rmc.firstrow.header = rmc.firstrow.header,
-                        rmc.header.length = rmc.header.length,
-                        rmc.col.acc = rmc.col.acc,
-                        rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                        rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                        rmc.unit.time = rmc.unit.time,
-                        rmc.format.time = rmc.format.time,
-                        rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                        rmc.unsignedbit = rmc.unsignedbit,
-                        rmc.origin = rmc.origin,
-                        rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                        rmc.headername.sf = rmc.headername.sf,
-                        rmc.headername.sn = rmc.headername.sn,
-                        rmc.headername.recordingid = rmc.headername.sn,
-                        rmc.header.structure = rmc.header.structure,
-                        rmc.check4timegaps = rmc.check4timegaps)
-    } else {
-      load(datafile) # to do: would be nice to only load the object I and not the entire datafile
-      I$filename = fnames[j]
-    }
-    options(warn=0) #turn on warnings
-    if (overwrite == TRUE) skip = 0
-    if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
-      cat(paste0("\nP1 file",j))
-      turn.do.cal.back.on = FALSE
-      if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
-        do.cal = FALSE
-        turn.do.cal.back.on = TRUE
+      if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
+        useRDA = TRUE
+      } else {
+        useRDA = FALSE
       }
-      #--------------------------------------
-      if (do.cal ==TRUE & useRDA == FALSE) {
-        # cat(paste0("\n",rep('-',options()$width),collapse=''))
-        cat("\n")
-        cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-        C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
-                        minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
-                        windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                        desiredtz=desiredtz,
-                        rmc.dec=rmc.dec,configtz=configtz,
-                        rmc.firstrow.acc = rmc.firstrow.acc,
-                        rmc.firstrow.header = rmc.firstrow.header,
-                        rmc.header.length = rmc.header.length,
-                        rmc.col.acc = rmc.col.acc,
-                        rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                        rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                        rmc.unit.time = rmc.unit.time,
-                        rmc.format.time = rmc.format.time,
-                        rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                        rmc.unsignedbit = rmc.unsignedbit,
-                        rmc.origin = rmc.origin,
-                        rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                        rmc.headername.sf = rmc.headername.sf,
-                        rmc.headername.sn = rmc.headername.sn,
-                        rmc.headername.recordingid = rmc.headername.sn,
-                        rmc.header.structure = rmc.header.structure,
-                        rmc.check4timegaps = rmc.check4timegaps,
-                        rmc.noise=rmc.noise)
+      #=============================================================
+      # Inspect file (and store output later on)
+      options(warn=-1) #turn off warnings
+      if (useRDA == FALSE) {
+        I = g.inspectfile(datafile, desiredtz=desiredtz,
+                          rmc.dec=rmc.dec,configtz=configtz,
+                          rmc.firstrow.acc = rmc.firstrow.acc,
+                          rmc.firstrow.header = rmc.firstrow.header,
+                          rmc.header.length = rmc.header.length,
+                          rmc.col.acc = rmc.col.acc,
+                          rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                          rmc.unit.time = rmc.unit.time,
+                          rmc.format.time = rmc.format.time,
+                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                          rmc.unsignedbit = rmc.unsignedbit,
+                          rmc.origin = rmc.origin,
+                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                          rmc.headername.sf = rmc.headername.sf,
+                          rmc.headername.sn = rmc.headername.sn,
+                          rmc.headername.recordingid = rmc.headername.sn,
+                          rmc.header.structure = rmc.header.structure,
+                          rmc.check4timegaps = rmc.check4timegaps)
       } else {
         load(datafile) # to do: would be nice to only load the object I and not the entire datafile
         I$filename = fnames[i]
@@ -361,17 +314,36 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
             assigned.backup.cal.coef = TRUE
           }
         }
-        #data_quality_report.csv does not exist and there is also no other backup file, so g.calibrate needs to be applied.
+        #data_quality_report.csv does not exist and there is also no ot
         if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
         #--------------------------------------
-        if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
+        if (do.cal ==TRUE & useRDA == FALSE) {
           # cat(paste0("\n",rep('-',options()$width),collapse=''))
           cat("\n")
           cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
           C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                           minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                           windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                          desiredtz=desiredtz)
+                          desiredtz=desiredtz,
+                          rmc.dec=rmc.dec,configtz=configtz,
+                          rmc.firstrow.acc = rmc.firstrow.acc,
+                          rmc.firstrow.header = rmc.firstrow.header,
+                          rmc.header.length = rmc.header.length,
+                          rmc.col.acc = rmc.col.acc,
+                          rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                          rmc.unit.time = rmc.unit.time,
+                          rmc.format.time = rmc.format.time,
+                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                          rmc.unsignedbit = rmc.unsignedbit,
+                          rmc.origin = rmc.origin,
+                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                          rmc.headername.sf = rmc.headername.sf,
+                          rmc.headername.sn = rmc.headername.sn,
+                          rmc.headername.recordingid = rmc.headername.sn,
+                          rmc.header.structure = rmc.header.structure,
+                          rmc.check4timegaps = rmc.check4timegaps,
+                          rmc.noise=rmc.noise)
         } else {
           C = list(cal.error.end=0,cal.error.start=0)
           C$scale=c(1,1,1)
@@ -385,7 +357,6 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
         if (turn.do.cal.back.on == TRUE) {
           do.cal = TRUE
         }
-
         cal.error.end = C$cal.error.end
         cal.error.start = C$cal.error.start
         if (length(cal.error.start) == 0) {
@@ -446,7 +417,25 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
               C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
                               minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                               windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                              desiredtz=desiredtz)
+                              desiredtz=desiredtz,  rmc.dec=rmc.dec,configtz=configtz,
+                              rmc.firstrow.acc = rmc.firstrow.acc,
+                              rmc.firstrow.header = rmc.firstrow.header,
+                              rmc.header.length = rmc.header.length,
+                              rmc.col.acc = rmc.col.acc,
+                              rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                              rmc.unit.time = rmc.unit.time,
+                              rmc.format.time = rmc.format.time,
+                              rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                              rmc.unsignedbit = rmc.unsignedbit,
+                              rmc.origin = rmc.origin,
+                              rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                              rmc.headername.sf = rmc.headername.sf,
+                              rmc.headername.sn = rmc.headername.sn,
+                              rmc.headername.recordingid = rmc.headername.sn,
+                              rmc.header.structure = rmc.header.structure,
+                              rmc.check4timegaps = rmc.check4timegaps,
+                              rmc.noise=rmc.noise)
             }
           }
         }
@@ -473,7 +462,25 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
                       outputdir=outputdir,
                       outputfolder=outputfolder,
                       dayborder=dayborder,dynrange=dynrange,
-                      configtz=configtz)
+                      rmc.dec=rmc.dec,configtz=configtz,
+                      rmc.firstrow.acc = rmc.firstrow.acc,
+                      rmc.firstrow.header = rmc.firstrow.header,
+                      rmc.header.length = rmc.header.length,
+                      rmc.col.acc = rmc.col.acc,
+                      rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                      rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                      rmc.unit.time = rmc.unit.time,
+                      rmc.format.time = rmc.format.time,
+                      rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                      rmc.unsignedbit = rmc.unsignedbit,
+                      rmc.origin = rmc.origin,
+                      rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                      rmc.headername.sf = rmc.headername.sf,
+                      rmc.headername.sn = rmc.headername.sn,
+                      rmc.headername.recordingid = rmc.headername.sn,
+                      rmc.header.structure = rmc.header.structure,
+                      rmc.check4timegaps = rmc.check4timegaps,
+                      rmc.noise=rmc.noise)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
@@ -483,69 +490,22 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
         } else {
           filename = fnames[i]
         }
-      }
-      #------------------------------------------------
-      cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
-      M = g.getmeta(datafile,
-                    do.bfen=do.bfen,
-                    do.enmo=do.enmo,
-                    do.lfenmo=do.lfenmo,
-                    do.en=do.en,
-                    do.hfen=do.hfen,
-                    do.hfenplus=do.hfenplus,
-                    do.mad=do.mad,
-                    do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
-                    do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
-                    do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
-                    do.enmoa=do.enmoa,
-                    lb = lb, hb = hb,  n = n,
-                    desiredtz=desiredtz,daylimit=daylimit,windowsizes=windowsizes,
-                    tempoffset=C$tempoffset,scale=C$scale,offset=C$offset,
-                    meantempcal=C$meantempcal,chunksize=chunksize,
-                    selectdaysfile=selectdaysfile,
-                    outputdir=outputdir,
-                    outputfolder=outputfolder,
-                    dayborder=dayborder,dynrange=dynrange,
-                    rmc.dec=rmc.dec,configtz=configtz,
-                    rmc.firstrow.acc = rmc.firstrow.acc,
-                    rmc.firstrow.header = rmc.firstrow.header,
-                    rmc.header.length = rmc.header.length,
-                    rmc.col.acc = rmc.col.acc,
-                    rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                    rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                    rmc.unit.time = rmc.unit.time,
-                    rmc.format.time = rmc.format.time,
-                    rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                    rmc.unsignedbit = rmc.unsignedbit,
-                    rmc.origin = rmc.origin,
-                    rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                    rmc.headername.sf = rmc.headername.sf,
-                    rmc.headername.sn = rmc.headername.sn,
-                    rmc.headername.recordingid = rmc.headername.sn,
-                    rmc.header.structure = rmc.header.structure,
-                    rmc.check4timegaps = rmc.check4timegaps)
-      #------------------------------------------------
-      cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
-      # remove directory in filename if present
-      filename = unlist(strsplit(fnames[j],"/"))
-      if (length(filename) > 0) {
-        filename = filename[length(filename)]
-      } else {
-        filename = fnames[j]
-      }
-      filename_dir=tmp5[j];filefoldername=tmp6[j]
-      if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
-        filename = paste0(filename,".RData")
-      }
-      save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
-      # as metadatdir is not known derive it:
-      metadatadir = c()
-      if (length(datadir) > 0) {
-        # list of all csv and bin files
-        fnames = datadir2fnames(datadir,filelist)
-        # check whether these are RDA
-        if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
-          useRDA = TRUE
+        filename_dir=tmp5[i];filefoldername=tmp6[i]
+        if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
+          filename = paste0(filename,".RData")
+        }
+        save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
+        # as metadatdir is not known derive it:
+        metadatadir = c()
+        if (length(datadir) > 0) {
+          # list of all csv and bin files
+          fnames = GGIR::datadir2fnames(datadir,filelist)
+          # check whether these are RDA
+          if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
+            useRDA = TRUE
+          } else {
+            useRDA = FALSE
+          }
         } else {
           useRDA = FALSE
         }
@@ -555,7 +515,7 @@ configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
           outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
           metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
         }
-
+        
         rm(M); rm(I); rm(C)
         # }
       }
