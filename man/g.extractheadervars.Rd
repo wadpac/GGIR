@@ -19,9 +19,9 @@ g.extractheadervars(I)
 \item id = participant identifier
 \item iid = investigator identifier
 \item HN = handedness
-\item BL = body location
+\item BodyLocation = Attachement location of the sensor
 \item SX = sex
-\item SN = serial number
+\item deviceSerialNumber = serial number
 }
 }
 \examples{

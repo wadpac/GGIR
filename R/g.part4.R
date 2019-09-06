@@ -119,8 +119,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     HR = floor(x)
     MI = floor((x - HR) * 60)
     SE = round(((x - HR) - (MI/60)) * 3600)
-    if (SE == 60) MI = MI + 1; SE = 0
-    if (MI == 60) HR = HR + 1; MI = 0
+    if (SE == 60) { MI = MI + 1; SE = 0 }
+    if (MI == 60) { HR = HR + 1; MI = 0 }
     if (HR == 24) HR = 0
     if (HR < 10) HR = paste0("0",HR)
     if (MI < 10) MI = paste0("0",MI)
@@ -135,14 +135,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     if (overwrite == TRUE) {
       skip = 0 # this will make that analyses is done regardless of whether it was done before
     } else {
+      skip = 0 #do not skip this file
       if (length(ffdone) > 0) {
-        if (length(which(ffdone == fnames[i])) > 0) { 
-          skip = 1 #skip this file because it was analysed before")
-        } else {
-          skip = 0 #do not skip this file
-        }
-      } else {
-        skip = 0
+        if (length(which(ffdone == fnames[i])) > 0) skip = 1 #skip this file because it was analysed before")
       }
     }
     if (skip == 0) {
@@ -166,7 +161,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      lightson = lightsout = L5list = sib.cla.sum = c()
+      sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = sib.cla.sum = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
@@ -193,7 +188,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
             }
           } 
-          accid = as.numeric(accid)
+          accid = suppressWarnings(as.numeric(accid))
           #catch for files with only id in filename and for whom the above attempt to extract the id failed:
           if (is.na(accid) == TRUE) accid = accid_bu
         } else { # get id from filename
@@ -205,28 +200,33 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         }
         # get matching identifier from sleeplog
         if (dolog == TRUE) {
+          accid_num = suppressWarnings(as.numeric(accid))
           if (sleeplogidnum == FALSE) {
             wi = which(as.character(sleeplog$id) == as.character(accid))
             if (length(wi) == 0) {
-              wi_alternative = which(sleeplog$id == as.numeric(accid))
+              wi_alternative = which(sleeplog$id == accid_num)
               if (length(wi_alternative) > 0) {
-                cat("\nWarning: argument sleeplogidnum is set to FALSE, but it seems the identifiers are
+                warning("\nArgument sleeplogidnum is set to FALSE, but it seems the identifiers are
                     stored as numeric values, you may want to consider changing sleeplogidnum to TRUE")
               } else {
-                cat(paste0("\nWarning: sleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
+                warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
                            code expects format: ",as.character(accid[1])))
               }
             }
           } else {
-            wi = which(sleeplog$id == as.numeric(accid))
+            
+            wi = which(sleeplog$id == accid_num)
             if (length(wi) == 0) {
               wi_alternative = which(as.character(sleeplog$id) == as.character(accid))
               if (length(wi_alternative) > 0) {
-                cat("\nWarning: argument sleeplogidnum is set to TRUE, but it seems the identifiers are
-                    stored as characrter values, you may want to consider changing sleeplogidnum to TRUE")
+                warning("\nArgument sleeplogidnum is set to TRUE, but it seems the identifiers are
+                    stored as character values, you may want to consider changing sleeplogidnum to TRUE")
               } else {
-                cat(paste0("\nWarning: sleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
+                
+                if (is.na(accid_num) == TRUE) { # format probably incorrect
+                  warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
                            code expects format: ",as.character(accid[1])))
+                }
               }
             }
           }
@@ -266,16 +266,16 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # get default onset and wake (based on sleeplog or on heuristic algorithms)
           # def.noc.sleep is an input argument the GGIR user can use
           # to specify what detection strategy is used in the absense of a sleep diary
-          if (length(def.noc.sleep) == 0 | length(lightsout) == 0) {
+          if (length(def.noc.sleep) == 0 | length(sptwindow_HDCZA_start) == 0) {
             # use L5+/-6hr algorithm if HDCZA fails OR if the user explicitely asks for it (length zero argument)
             if (length(L5list) > 0) {
               defaultSptOnset = L5list[j] - 6
               defaultSptWake = L5list[j] + 6
             }
-          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(lightsout) != 0) { 
+          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(sptwindow_HDCZA_start) != 0) { 
             # use HDCZA algorithm (inside the g.sib.det function) as backup for sleeplog OR if user explicitely asks for it
-            defaultSptOnset = lightsout[j]
-            defaultSptWake = lightson[j]
+            defaultSptOnset = sptwindow_HDCZA_start[j]
+            defaultSptWake = sptwindow_HDCZA_end[j]
           } else if (length(def.noc.sleep) == 2) {
             # use constant onset and waking time as specified with def.noc.sleep argument
             defaultSptOnset = def.noc.sleep[1] #onset
@@ -709,23 +709,21 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (acc_wake > 24) acc_wake = acc_wake - 24
                   #--------------------------------------------
                   # convert into clocktime
-                  convertHRsinceprevMN2Clocktime = function(x) {
-                    # x = hours Since Previous Midnight
-                    HR = floor(x)
-                    MI = floor((x - floor(x)) * 60)
-                    SE = round(((x - HR) - (MI/60)) * 3600)
-                    if (SE == 60) {
-                      MI = MI + 1; SE = 0
-                    }
-                    if (MI == 60) {
-                      HR = HR + 1; MI = 0
-                    }
-                    if (HR == 24) HR = 0
-                    if (HR < 10) HR = paste0("0",HR)
-                    if (MI < 10) MI = paste0("0",MI)
-                    if (SE < 10) SE = paste0("0",SE)
-                    return(paste0(HR,":",MI,":",SE))
-                  }
+                  # convertHRsinceprevMN2Clocktime = function(x) {
+                  #   # x = hours Since Previous Midnight
+                  #   HR = floor(x)
+                  #   MI = floor((x - floor(x)) * 60)
+                  #   SE = round(((x - HR) - (MI/60)) * 3600)
+                  #   if (SE == 60) MI = MI + 1; SE = 0
+                  #   if (MI == 60) HR = HR + 1; MI = 0
+                  #   if (HR == 24) HR = 0
+                  #   if (HR < 10) HR = paste0("0",HR)
+                  #   if (MI < 10) MI = paste0("0",MI)
+                  #   if (SE < 10) SE = paste0("0",SE)
+                  #   cat(x)
+                  #   cat(paste0(HR,":",MI,":",SE))
+                  #   return(paste0(HR,":",MI,":",SE))
+                  # }
                   acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
                   acc_wakeTS = convertHRsinceprevMN2Clocktime(acc_wake)
                   nightsummary[sumi,18] = acc_onsetTS
