@@ -13,6 +13,8 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c(), ...) {
     }
   }
   #------------------------------------------------------------
+  if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
+  if (exists("rmc.dec") == FALSE) rmc.dec = decn
   if (length(rmc.firstrow.acc) == 1) {
     dformat = 5
     mon = 5
