@@ -95,7 +95,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       # It is correct header block read information from it
       # skip 3 bytes
       readChar(fid,3,useBytes = TRUE)
-      uniqueSerialCode = readBin(fid, integer(), size = 2)
+      uniqueSerialCode = readBin(fid, integer(), size = 2, signed = FALSE)
       # skip 29 bytes and read 36th byte as frequency of measurement
       readChar(fid, 29, useBytes = TRUE)
       frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(readBin(fid, integer(), size = 1), 15)))
