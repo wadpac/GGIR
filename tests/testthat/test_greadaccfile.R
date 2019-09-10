@@ -15,7 +15,7 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   IDH = g.getidfromheaderobject(binfile,Icwa$header,4,4)
   expect_equal(IDH,binfile)
   EHV = g.extractheadervars(Icwa)
-  expect_equal(EHV$deviceSerialNumber,"-26102")
+  expect_equal(EHV$deviceSerialNumber,"39434")
   Mcwa = g.getmeta(cwafile, desiredtz=desiredtz, windowsize = c(1,300,300))
   expect_true(Mcwa$filetooshort)
   expect_false(Mcwa$filecorrupt)
