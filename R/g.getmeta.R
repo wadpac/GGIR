@@ -146,6 +146,41 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (mon == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
   if (mon == 4 & dformat == 2) blocksize = round(blocksize)
   id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
+  
+  #Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
+  if (length(dynrange) > 0) {
+    clipthres = dynrange - 0.5
+  } else {
+    if (mon == 1) {
+      clipthres = 5.5
+    } else if (mon == 2) {
+      clipthres = 7.5
+    } else if (mon == 3) {
+      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+    } else if (mon == 4) {
+      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+    } else if (mon == 5) {
+      clipthres = rmc.dynamic_range
+    }
+  }
+  # Nonwear threshold: #non-wear criteria are monitor specific
+  racriter = 0.15 #very likely irrelevant parameters, but leave in for consistency
+  if (mon == 1) {
+    sdcriter = 0.003
+    racriter = 0.05
+  } else if (mon == 2) {
+    sdcriter = 0.013 #0.0109 in rest test
+  } else if (mon == 3) {
+    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
+  } else if (mon == 4) {
+    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
+  } else if (mon == 5) {
+    sdcriter = rmc.noise * 1.2
+    if (length(rmc.noise) == 0) {
+      stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+    }
+  }
+  
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
@@ -584,40 +619,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             sdwacc = sd(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             maxwacc = max(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
-            #estimate number of data points of clipping based on raw data at about 87 Hz
-            if (length(dynrange) > 0) {
-              clipthres = dynrange - 0.5
-            } else {
-              if (mon == 1) {
-                clipthres = 5.5
-              } else if (mon == 2) {
-                clipthres = 7.5
-              } else if (mon == 3) {
-                clipthres = 7.5 # hard coded assumption that dynamic range is 8g
-              } else if (mon == 4) {
-                clipthres = 7.5 # hard coded assumption that dynamic range is 8g
-              } else if (mon == 5) {
-                clipthres = rmc.dynamic_range
-              }
-            }
+            
             CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres))
-            #non-wear criteria are monitor specific
-            racriter = 0.15 #very likely irrelevant parameters, but leave in for consistency
-            if (mon == 1) {
-              sdcriter = 0.003
-              racriter = 0.05
-            } else if (mon == 2) {
-              sdcriter = 0.013 #0.0109 in rest test
-            } else if (mon == 3) {
-              sdcriter = 0.013 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
-            } else if (mon == 4) {
-              sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
-            } else if (mon == 5) {
-              sdcriter = rmc.noise * 1.2
-              if (length(rmc.noise) == 0) {
-                stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
-              }
-            }
+            
             if (sdwacc < sdcriter) {
               if (abs(maxwacc - minwacc) < racriter) {
                 NW[h,jj] = 1
