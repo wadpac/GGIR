@@ -52,7 +52,12 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = 'GGIR', .errorhandling='pass') %myinfix% { 
+  if (is.element('GGIR', installed.packages()[,1])) {  # perform check to see if GGIR is an installed package or not
+    pkg_check <- 'GGIR'
+  } else {
+    pkg_check <- 'NA'
+  }
+  output_list =foreach::foreach(i=f0:f1, .errorhandling='pass', eval(parse(text=pkg_check))) %myinfix% {  # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
       FI = file.info(paste(metadatadir,"/meta/basic/",fnames[i],sep=""))
