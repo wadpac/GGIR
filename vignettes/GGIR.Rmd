@@ -542,7 +542,7 @@ A correct citation of research software is important to make your research repro
 
 To do so, please report the GGIR version you used in the text. Additionally, please also cite:
 
-1. Migueles JH, Rowlands AV, et al. GGIR: A Research Community–Driven Open Source R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019. [link](https://doi.org/10.1123/jmpb.2018-0063)
+1. Migueles JH, Rowlands AV, et al. GGIR: A Research Community–Driven Open Source R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019. doi: 10.1123/jmpb.2018-0063.
 
 
 If your work depends on the quantification of **physical activity** then also cite:

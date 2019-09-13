@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.10-3 (release date:06-09-2019)}{
+\section{Changes in version 1.10-4 (release date:08-09-2019)}{
 \itemize{
   \item Fixed bug introduced in version 1.10-1 in the conversion from numeric to character sleep times
   \item Dependencies of dependencies removed from the DESCRIPTION file
