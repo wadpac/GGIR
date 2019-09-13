@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.10-5 (release date:13-09-2019)}{
+\itemize{
+  \item Device serial number recognition in Axivity cwa files fixed
+  \item New GitHub release, because previous version did not install.
+}
+}
+
 \section{Changes in version 1.10-4 (release date:08-09-2019)}{
 \itemize{
   \item Fixed bug introduced in version 1.10-1 in the conversion from numeric to character sleep times
