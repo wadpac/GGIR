@@ -48,11 +48,21 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   if (do.parallel == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir,'/ms3', ' for progress\n'))
   }
+  # check whether we are indevelopment mode:
+  GGIRinstalled = is.element('GGIR', installed.packages()[,1])
+  packages2passon = functions2passon = NULL
+  GGIRloaded = "GGIR" %in% .packages()
+  if (GGIRloaded) { #pass on package
+    packages2passon = 'GGIR'
+  } else { # pass on functions
+    functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX", "g.sib.plot", "g.sib.sum")
+  }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = 'GGIR', .errorhandling='pass') %myinfix% { 
+  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon, 
+                                .export=functions2passon, .errorhandling='pass') %myinfix% { 
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
       FI = file.info(paste(metadatadir,"/meta/basic/",fnames[i],sep=""))
@@ -79,10 +89,11 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
       if (skip == 0) {  
         # Load previously stored meta-data from part1.R
         cat(paste(" ",i,sep=""))
-        M = c()
+        IMP = M = c()
         load(paste(metadatadir,"/meta/basic/",fnames[i],sep=""))
+        load(paste(metadatadir,"/meta/ms2.out/",unlist(strsplit(fnames[i], "eta_"))[2],sep=""))
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-          IMP = g.impute(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0)
+          # IMP = g.impute(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0)
           SLE = g.sib.det(M,IMP,I,twd=c(-12,12),timethreshold=timethreshold,anglethreshold=anglethreshold,
                           acc.metric=acc.metric,desiredtz=desiredtz,constrain2range=constrain2range)
           L5list = SLE$L5list
