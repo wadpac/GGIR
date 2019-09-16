@@ -214,9 +214,22 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (do.parallel == TRUE) {
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
   }
+  # check whether we are indevelopment mode:
+  GGIRinstalled = is.element('GGIR', installed.packages()[,1])
+  packages2passon = functions2passon = NULL
+  GGIRloaded = "GGIR" %in% .packages()
+  if (GGIRloaded) { #pass on package
+    packages2passon = 'GGIR'
+  } else { # pass on functions
+    functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
+                         "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
+                         "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
+                         "iso8601chartime2POSIX", "g.metric", "datadir2fnames")
+  }
   `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   #,'GENEAread','mmap', 'signal'
-  output_list =foreach::foreach(i=f0:f1, .packages = 'GGIR', .errorhandling='pass') %myinfix% {
+  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon, 
+                                .export=functions2passon, .errorhandling='pass') %myinfix% {
     tryCatchResult = tryCatch({
       # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
       if (print.filename == TRUE) {

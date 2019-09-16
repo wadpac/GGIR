@@ -31,11 +31,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       dir.create(file.path(metadatadir,ms5.outraw))
     }
   }
-  SUM = nightsummary = M = sib.cla.sum= c()
+  SUM = nightsummary = M = IMP = sib.cla.sum= c()
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms1 = sort(dir(paste(metadatadir,"/meta/basic",sep="")))
-  # fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
+  fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
   fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
   fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
@@ -89,11 +89,21 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   if (do.parallel == TRUE) {
     cat(paste0('\n Busy processing ... see ',metadatadir,'/ms5', ' for progress\n'))
   }
+  # check whether we are indevelopment mode:
+  GGIRinstalled = is.element('GGIR', installed.packages()[,1])
+  packages2passon = functions2passon = NULL
+  GGIRloaded = "GGIR" %in% .packages()
+  if (GGIRloaded) { #pass on package
+    packages2passon = 'GGIR'
+  } else { # pass on functions
+    functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout")
+  }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = 'GGIR', .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
+  output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon, 
+                                .export=functions2passon, .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
     
     # for (i in f0:f1) {
@@ -123,8 +133,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         cat(paste(" ",i,sep=""))
       }
       # load output g.part2
-      # selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
-      # load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
+      selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
+      load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
       # daysummary = SUM$daysummary # commented out because not used
       # summary = SUM$summary # commented out  because not used
       # load output g.part4
@@ -154,8 +164,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         # load output g.part3
         load(paste0(metadatadir,"/meta/ms3.out/",fnames.ms3[i]))
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
-        IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
-                       hrs.del.end=hrs.del.end,maxdur=maxdur)
+        # IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
+        #                hrs.del.end=hrs.del.end,maxdur=maxdur)
         time = IMP$metashort[,1]
         ACC = IMP$metashort[,acc.metric] * 1000 #note that this is imputed ACCELERATION because we use this for describing behaviour
         
