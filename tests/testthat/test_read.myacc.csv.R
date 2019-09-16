@@ -1,7 +1,7 @@
 library(GGIR)
 context("read.myacc.csv")
 test_that("read.myacc.csv can read a variety of csv file formats", {
-  
+  skip_on_cran()
   # create test files
   N = 30
   sf = 30
