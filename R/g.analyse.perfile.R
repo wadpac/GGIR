@@ -124,6 +124,7 @@ g.analyse.perfile = function(id, id2, idd, fname, deviceSerialNumber, BodyLocati
         #check whether columns is empty:
         uncona = unique(daysummary[,dtwi])
         storevalue = !(length(uncona) == 1 & length(qwindow) > 2 & uncona[1] == "")
+        if (is.na(storevalue) == TRUE) storevalue = FALSE
         # Only do next 15-isch linges of code if:
         # - there is more than 1 day of data
         # - there are multiple daysegments (qwindow)
