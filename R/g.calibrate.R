@@ -1,7 +1,6 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
                        desiredtz = c(), ...) {
-
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -149,7 +148,6 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                             rmc.header.structure = rmc.header.structure,
                             rmc.check4timegaps = rmc.check4timegaps)
     P = accread$P
-
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -281,7 +279,6 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           }
           count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
           rm(Gx); rm(Gy); rm(Gz)
-
           # Update blocksize depending on available memory:
           BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
           bsc_qc = BlocksizeNew$bsc_qc
@@ -389,7 +386,8 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           #-----------------------------------------------------------------
           # Next few lines added 23 on april 2015 to deal with NaN values in
           # some of the sphere data for Actigraph monitor brand
-          if (mon == 3 & length(which(is.na(closestpoint[,k, drop = F]) == TRUE)) > 0 &
+          # Expanded on 17-Sep-2017 for the generic data format too
+          if ((mon == 3 | mon == 5) & length(which(is.na(closestpoint[,k, drop = F]) == TRUE)) > 0 &
               length(which(is.na(closestpoint[,k, drop = F]) == FALSE)) > 10) { #needed for some Actigraph data
             invi = which(is.na(closestpoint[,k, drop = F]) == TRUE)
             closestpoint = closestpoint[-invi,]
