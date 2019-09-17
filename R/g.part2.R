@@ -82,14 +82,14 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   } else { # pass on functions
     functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight", 
                          "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
-                         "g.analyse.perday", "g.getbout", "g.analyse.perfile")
+                         "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient")
   }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon, 
-                                .export=functions2passon, .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
+                                .export=functions2passon, .errorhandling='pass', .verbose = F) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
       if (length(ffdone) > 0) {

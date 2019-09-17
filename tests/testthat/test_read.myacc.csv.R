@@ -39,7 +39,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   S4 = rbind(hd,S4)
   S4[hd_NR+1,] = colnames(S4)
   colnames(S4) = NULL
-  testfile[4] = "~/testcsv4.csv"
+  testfile[4] = "testcsv4.csv"
   write.table(S4, file= testfile[4], col.names=FALSE, row.names = FALSE)
   
   
@@ -65,7 +65,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   S5 = rbind(hd,S5)
   S5[hd_NR+1,] = colnames(S5)
   colnames(S5) = NULL
-  testfile[5] = "~/testcsv5.csv"
+  testfile[5] = "testcsv5.csv"
   write.table(S5, file= testfile[5], col.names=FALSE, row.names = FALSE)
   
   # create test file 7
@@ -93,7 +93,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   S7 = rbind(hd,S7)
   S7[hd_NR+1,] = colnames(S7)
   colnames(S7) = NULL
-  testfile[6] = "~/testcsv7.csv"
+  testfile[6] = "testcsv7.csv"
   write.table(S7, file= testfile[6], col.names=FALSE, row.names = FALSE)
   
   #------------------------
@@ -187,10 +187,10 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.bit = "bit", rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c(), rmc.check4timegaps = TRUE)
   
-  expect_that(round(sum(D7$data[2:120,2]), digits=3), equals(27.609))
-  expect_that(round(sum(D7$data[2:120,3]), digits=3), equals(11.578))
-  expect_that(round(sum(D7$data[2:120,4]), digits=3), equals(-6.844))
-  expect_that(round(sum(D7$data[2:120,5]), digits=1), equals(161.1))
+  expect_that(round(mean(D7$data[2:120,2]), digits=3), equals(0.232))
+  expect_that(round(mean(D7$data[2:120,3]), digits=3), equals(0.097))
+  expect_that(round(mean(D7$data[2:120,4]), digits=3), equals(-0.058))
+  expect_that(round(mean(D7$data[2:120,5]), digits=1), equals(1.4))
   expect_that(round(D7$data[2,2], digits=3), equals(5.578))
   expect_that(ncol(D7$data), equals(5))
   expect_that(nrow(D7$header), equals(5))
