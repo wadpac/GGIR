@@ -330,7 +330,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         #data_quality_report.csv does not exist and there is also no ot
         if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
         #--------------------------------------
-        if (do.cal ==TRUE & useRDA == FALSE) {
+        if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
           # cat(paste0("\n",rep('-',options()$width),collapse=''))
           cat("\n")
           cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
