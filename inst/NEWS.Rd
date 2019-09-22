@@ -4,6 +4,8 @@
 \section{Changes in version 1.10-6 (release date:22-09-2019)}{
 \itemize{
   \item Fixed functionality to supply calibration coefficients file to backup.cal.coef.
+  \item Fix OSx flavor not being released on CRAN in previous version.
+  \item Upgrades to foreach loop to ease package maintenance
 }
 }
 \section{Changes in version 1.10-5 (release date:13-09-2019)}{
