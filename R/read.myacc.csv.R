@@ -14,7 +14,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
-                          rmc.noise = c(),
                           rmc.col.wear = c()) {
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
