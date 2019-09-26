@@ -45,6 +45,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.col.wear = c()
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                           do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                           do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
