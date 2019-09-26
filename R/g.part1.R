@@ -46,6 +46,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
+  if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
+  
   
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
@@ -358,7 +360,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                           rmc.headername.recordingid = rmc.headername.sn,
                           rmc.header.structure = rmc.header.structure,
                           rmc.check4timegaps = rmc.check4timegaps,
-                          rmc.noise=rmc.noise)
+                          rmc.noise=rmc.noise,
+                          rmc.col.wear=rmc.col.wear)
         } else {
           C = list(cal.error.end=0,cal.error.start=0)
           C$scale=c(1,1,1)
@@ -495,7 +498,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       rmc.headername.recordingid = rmc.headername.sn,
                       rmc.header.structure = rmc.header.structure,
                       rmc.check4timegaps = rmc.check4timegaps,
-                      rmc.noise=rmc.noise)
+                      rmc.noise=rmc.noise,
+                      rmc.col.wear=rmc.col.wear)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
