@@ -34,7 +34,6 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
-  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   
   # function wrapper to read blocks of accelerationd data from various brands
