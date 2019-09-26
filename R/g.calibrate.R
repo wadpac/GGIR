@@ -312,6 +312,9 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       } else if (mon == 4) {
         sdcriter = 0.013 # NO IDEA WHAT REST NOISE IS FOR AXIVITY....test needed
       } else if (mon == 5) {
+        if (length(rmc.noise) == 0) {
+          warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
+        }
         sdcriter = rmc.noise * 1.2
         if (length(rmc.noise) == 0) {
           stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")

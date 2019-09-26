@@ -23,7 +23,7 @@ importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm")
-importFrom("utils", "memory.limit", "memory.size")
+importFrom("utils", "memory.limit", "memory.size", "tail")
 import(data.table)
 useDynLib(GGIR, .registration=TRUE)
 importFrom(Rcpp, sourceCpp)
