@@ -35,7 +35,31 @@ g.report.part4(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),
 }
 \value{
 Function does not produce data, but only writes reports
-in csv format and a visual report in pdf
+in csv format and a visual report in pdf.
+
+The following files are stored in the root of the results folder:
+part4_nightsummary_sleep_cleaned.csv
+part4_summary_sleep_cleaned.csv
+
+The following files are stored in the folder results/QC:
+part4_nightsummary_sleep_full.csv
+part4_summary_sleep_full.csv
+
+If a sleeplog is used *_full.csv as stored in the QC folder includes estimates 
+for all nights in the data, and *_cleaned.csv in the results folder includes
+estimates for all nights in the data excluding the nights that did not had a
+sleeplog entry or had no valid accelerometer data.
+
+If a sleep log is not used then *_full.csv is the same, but now * _cleaned.csv
+now includes all nights with valid accelerometer data regardless of missing
+sleeplog.
+
+If you have a study where the sleeplog was available for a subset of the
+participants, but you want to include all individuals in your analysis, 
+then use the *_full.csv output and clean the data yourself by excluding 
+rows with cleaningcode > 1 which are the cases where no or invalid
+accelerometer data was present.
+
 }
 \author{
   Vincent T van Hees <vincentvanhees@gmail.com>
