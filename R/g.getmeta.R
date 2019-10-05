@@ -62,8 +62,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   filename = filename[length(filename)]
   #   #parameters
   ws3 = windowsizes[1] ; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
-  if ((ws2/300) != round(ws2/300)) {
-    ws2 = as.numeric(300 * round(ws2/300))
+  if ((ws2/60) != round(ws2/60)) {
+    ws2 = as.numeric(60 * round(ws2/60))
     cat("\nWARNING: The long windowsize needs to be a multitude of five minutes periods. The\n")
     cat(paste("\nlong windowsize has now been automatically adjusted to: ",ws2," seconds in order to meet this criteria.\n",sep=""))
   }

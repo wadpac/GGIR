@@ -7,6 +7,7 @@
   \item Fix OSx flavor not being released on CRAN in previous version.
   \item Upgrades to foreach loop to ease package maintenance
   \item Documentation part4 expanded to clarify difference between full and cleaned report.
+  \item Non-wear detection now possible at 1 minute resolution, previously 5 minute.
 }
 }
 \section{Changes in version 1.10-5 (release date:13-09-2019)}{
