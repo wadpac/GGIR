@@ -8,6 +8,7 @@
   \item Upgrades to foreach loop to ease package maintenance
   \item Documentation part4 expanded to clarify difference between full and cleaned report.
   \item Non-wear detection now possible at 1 minute resolution, previously 5 minute.
+  \item Function read.myacc.csv now able to utilize 3rd party wear detection.
 }
 }
 \section{Changes in version 1.10-5 (release date:13-09-2019)}{
