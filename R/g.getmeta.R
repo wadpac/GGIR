@@ -44,7 +44,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
-  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
+  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
+  if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                           do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                           do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
@@ -174,6 +175,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   } else if (mon == 4) {
     sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
   } else if (mon == 5) {
+    if (length(rmc.noise) == 0) {
+      warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
+    }
     sdcriter = rmc.noise * 1.2
     if (length(rmc.noise) == 0) {
       stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
@@ -238,7 +242,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                               rmc.headername.sn = rmc.headername.sn,
                               rmc.headername.recordingid = rmc.headername.sn,
                               rmc.header.structure = rmc.header.structure,
-                              rmc.check4timegaps = rmc.check4timegaps)
+                              rmc.check4timegaps = rmc.check4timegaps,
+                              rmc.col.wear=rmc.col.wear)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -348,8 +353,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
           #-----------
           minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
-          # minshift = minshift - 1 # Removed as suggested by E Mirkes
-          if (minshift == start_meas) minshift = 0; # Addition as suggested by E Mirkes: One of my files has the first record at 2016-02-11 13:14:55 but the resulting file contains data from 2016-02-11 13:30:00. It means that we lost 15 minutes.
+          if (minshift == start_meas) minshift = 0; 
           #-----------
           sampleshift = (minshift*60*sf) + (secshift*sf) #derive sample shift
           data = data[-c(1:floor(sampleshift)),] #delete data accordingly
@@ -438,6 +442,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             }
             if (mon != 5) {
               light = as.numeric(data[,lightcolumn])
+            } 
+            if (mon == 5 & length(rmc.col.wear) > 0) {
+              wearcol = as.character(data[, which(colnames(data) == "wear")])
+              suppressWarnings(storage.mode(wearcola) <- "logical")
             }
             temperature = as.numeric(data[,temperaturecolumn])
           }
@@ -605,23 +613,27 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         nmin = floor(LD/(window2)) #nmin = minimum number of windows that fit in this block of data
         CW = NW = matrix(0,nmin,3) #CW is clipping, NW is non-wear
         TS1W = TS2W = TS3W = TS4W = TS5W = TS6W = TS7W = CWav = NWav = matrix(0,nmin,1)
+        crit = ((window/window2)/2)+1
         for (h in 1: nmin) { #number of windows
           cliphoc1 = (((h-1)*window2)+ window2*0.5 ) - window2*0.5 #does not use "window"
           cliphoc2 = (((h-1)*window2)+ window2*0.5 ) + window2*0.5
+          if (h <= crit) {
+            hoc1 = 1
+            hoc2 = window
+          } else if (h >= (nmin - crit)) {
+            hoc1 = (nmin-crit)*window2
+            hoc2 = nmin*window2 #end of data
+          } else if (h > crit & h < (nmin - crit)) {
+            hoc1=(((h-1)*window2)+ window2*0.5 ) - window*0.5
+            hoc2=(((h-1)*window2)+ window2*0.5 ) + window*0.5
+          }
+          if (length(rmc.col.wear) > 0) {
+            wearTable = table(wearcol[(1+hoc1):hoc2], useNA = FALSE)
+            NWav[h,1] = as.logical(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
+          } 
           for (jj in  1:3) {
             #hoc1 & hoc2 = edges of windows
             #window is bigger& window2 is smaller one
-            crit = ((window/window2)/2)+1
-            if (h <= crit) {
-              hoc1 = 1
-              hoc2 = window
-            } else if (h >= (nmin - crit)) {
-              hoc1 = (nmin-crit)*window2
-              hoc2 = nmin*window2 #end of data
-            } else if (h > crit & h < (nmin - crit)) {
-              hoc1=(((h-1)*window2)+ window2*0.5 ) - window*0.5
-              hoc2=(((h-1)*window2)+ window2*0.5 ) + window*0.5
-            }
             sdwacc = sd(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             maxwacc = max(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
@@ -630,11 +642,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
               if (abs(maxwacc - minwacc) < racriter) {
                 NW[h,jj] = 1
               }
-            } else {
             }
           }
           CW = CW / (window2) #changed 30-1-2012, was window*sf
-          NWav[h,1] = (NW[h,1] + NW[h,2] + NW[h,3]) #indicator of non-wear
+          if (length(rmc.col.wear) == 0) {
+            NWav[h,1] = (NW[h,1] + NW[h,2] + NW[h,3]) #indicator of non-wear
+          }
           CWav[h,1] = max(c(CW[h,1],CW[h,2],CW[h,3])) #indicator of clipping
         }
         col_mli = 2
