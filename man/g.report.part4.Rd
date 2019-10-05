@@ -56,9 +56,21 @@ sleeplog.
 
 If you have a study where the sleeplog was available for a subset of the
 participants, but you want to include all individuals in your analysis, 
-then use the *_full.csv output and clean the data yourself by excluding 
-rows with cleaningcode > 1 which are the cases where no or invalid
-accelerometer data was present.
+then use the *_full.csv output and clean the night level data yourself
+by excluding  rows with cleaningcode > 1 which are the cases where no
+or invalid accelerometer data was present.
+
+The above means that for studies with missing sleeplog entries for some
+individuals and some nights using the *_full.csv output and excluding
+rows (nights) with cleaningcode > 1 will lead to the same as
+* _cleaned.csv plus sleep estimates for the nights with missing
+sleeplog, providing that there was enough accelerometer data for 
+those nights.
+
+In other words, *_cleaned.csv is perfect if you only want to rely on 
+nights with a sleeplog or if you do not use a sleeplog at all. For all
+other scenarios I advise using the *_full.csv report and to clean it 
+yourself.
 
 }
 \author{
