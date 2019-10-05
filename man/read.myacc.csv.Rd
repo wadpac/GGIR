@@ -28,7 +28,7 @@
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
-                          rmc.noise=c())	
+                          rmc.col.wear = c())	
 }
 \arguments{
   \item{rmc.file}{
@@ -128,10 +128,12 @@
     Some sensing equipment provides accelerometer with gaps in time. The rest of 
     GGIR is not designed for this, by setting this argument to TRUE the the gaps
     in time will be filled with zeros.
-    }
-    \item{rmc.noise}{
-    Known noise level in g-units of the acceleration signal.
-    }
+  }
+  \item{rmc.col.wear}{
+    If external wear detection outcome is stored as part of the data then this can be used by GGIR.
+    This argument specifies the column in which the wear detection (Boolean) is stored.
+  }
+
 }
 \value{
   List with objects data holding the time series of acceleration, and

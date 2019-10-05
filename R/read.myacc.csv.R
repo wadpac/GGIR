@@ -14,7 +14,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
-                          rmc.noise = c()) { # not included yet, optionally additonal columns
+                          rmc.col.wear = c()) {
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -117,6 +117,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   # read data from file
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip=skip,
                                       dec=rmc.dec, showProgress = FALSE, header = freadheader))
+  
+  if (length(rmc.col.wear) > 0) {
+    wearIndicator = P[, rmc.col.wear] # keep wear channel seperately and reinsert at the end
+  }
   # select relevant columns, add standard column names
   P = P[,c(rmc.col.time, rmc.col.acc, rmc.col.temp)]
   if (length(rmc.col.time) > 0 & length(rmc.col.temp) > 0) {
@@ -173,6 +177,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   } else if (rmc.unit.temp == "F") {
     P$temperature = (P$temperature - 32) * (5/9) # From Fahrenheit to Celsius
   }
+  
+  if (length(rmc.col.wear) > 0) { # reinsert the nonwear channel
+    P$wear = wearIndicator
+  }
+  
   # check for jumps in time and impute
   if (rmc.check4timegaps == TRUE) {
     deltatime = abs(diff(P$timestamp))
