@@ -39,7 +39,8 @@ selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),...)
   signal clipping are defined, default 900. However, window3 is the window length
   of data used for non-wear detection and by default 3600 seconds. So, when window3
   is larger than window2 we use overlapping windows, while if window2 equals window3
-  non-wear periods are assessed by non-overlapping windows.
+  non-wear periods are assessed by non-overlapping windows. Window2 is expected to be
+  a multitude of 60 seconds.
 }
   \item{daylimit}{number of days to limit (roughly), if set to FALSE no daylimit
   will be applied
