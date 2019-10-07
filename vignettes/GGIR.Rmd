@@ -45,6 +45,7 @@ R package GGIR would not have been possible without the support of the following
 - Joan Capdevila Pujol contributed with a couple of bug fixes.
 - Dr. Severine Sabia tested and provided feedback on numerous aspects of the package to make it research friendly.
 - Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
+- Dr. Matthew R Patterson contributed to updating visualizations and bug fixes
 
 **Institutions:**
 
@@ -101,7 +102,7 @@ In ActiLife you have the option to export data with timestamps. Please do not do
 
 GGIR comes with a large number of functions and optional settings (arguments) per functions. To ease interacting with GGIR there is one central function, named g.shell.GGIR, to talk to all the other functions. Being confronted with the amount of optional arguments might feel like stepping inside the cockpit of an airplane:
 
-`mode=c(1,2), f0=c(), f1=c(), selectdaysfile = c(), configfile=c(), overwrite = FALSE, strategy = 1, maxdur = 7, do.cal = TRUE,  hrs.del.start = 0, hrs.del.end = 0, loglocation = c(), , acc.metric = "ENMO", storefolderstructure = FALSE, windowsizes = c(5,900,3600), minloadcrit = 72, desiredtz = "Europe/London", chunksize = 1, do.enmo = TRUE, do.lfenmo = FALSE, do.en = FALSE,  do.bfen = FALSE, do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE, do.anglex = FALSE, do.angley = FALSE, do.anglez = FALSE, do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE, do.enmoa = FALSE, dynrange = c(), printsummary = FALSE, includedaycrit = 16, M5L5res = 10, winhr = 5, qwindow = c(0,24), qlevels = c(), ilevels = c(), mvpathreshold = 100, boutcriter = 0.8, ndayswindow = 7, idloc = 1, do.imp = TRUE, anglethreshold = 5, timethreshold = 5, ignorenonwear = TRUE, colid=1, coln1=1, nnights=7, outliers.only=FALSE, excludefirstlast=FALSE, excludefirstlast.part5=FALSE, criterror=3, includenightcrit=16, relyonsleeplog=FALSE, sleeplogidnum=TRUE, def.noc.sleep=c(), do.visual=FALSE, viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE, print.filename = FALSE, backup.cal.coef = c(), bout.metric = 1, closedbout = FALSE, IVIS_windowsize_minutes=60, IVIS_epochsize_seconds=30, constrain2range = TRUE, do.part3.pdf = TRUE, boutcriter.in = 0.9, boutcriter.lig = 0.8, boutcriter.mvpa = 0.8, threshold.lig = 40, threshold.mod = 100,   threshold.vig = 400, timewindow = c("MM","WW"), boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), boutdur.lig = c(1,5,10), save_ms5rawlevels = FALSE,  mvpadur = c(1,5,10), epochvalues2csv = FALSE, bout.metric = 1, window.summary.size = 10, dayborder = 0, iglevels = c()`
+`mode=c(1,2), f0=c(), f1=c(), selectdaysfile = c(), configfile=c(), overwrite = FALSE, strategy = 1, maxdur = 7, do.cal = TRUE,  hrs.del.start = 0, hrs.del.end = 0, loglocation = c(), , acc.metric = "ENMO", storefolderstructure = FALSE, windowsizes = c(5,900,3600), minloadcrit = 72, desiredtz = "Europe/London", chunksize = 1, do.enmo = TRUE, do.lfenmo = FALSE, do.en = FALSE,  do.bfen = FALSE, do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE, do.anglex = FALSE, do.angley = FALSE, do.anglez = FALSE, do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE, do.enmoa = FALSE, dynrange = c(), printsummary = FALSE, includedaycrit = 16, M5L5res = 10, winhr = 5, qwindow = c(0,24), qlevels = c(), ilevels = c(), mvpathreshold = 100, boutcriter = 0.8, ndayswindow = 7, idloc = 1, do.imp = TRUE, anglethreshold = 5, timethreshold = 5, ignorenonwear = TRUE, colid=1, coln1=1, nnights=7, outliers.only=FALSE, excludefirstlast=FALSE, excludefirstlast.part5=FALSE, criterror=3, includenightcrit=16, relyonsleeplog=FALSE, sleeplogidnum=TRUE, def.noc.sleep=c(), do.visual=FALSE, viewingwindow = 1, dofirstpage = TRUE, visualreport = 0, print.filename = FALSE, backup.cal.coef = c(), bout.metric = 1, closedbout = FALSE, IVIS_windowsize_minutes=60, IVIS_epochsize_seconds=30, constrain2range = TRUE, do.part3.pdf = TRUE, boutcriter.in = 0.9, boutcriter.lig = 0.8, boutcriter.mvpa = 0.8, threshold.lig = 40, threshold.mod = 100,   threshold.vig = 400, timewindow = c("MM","WW"), boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), boutdur.lig = c(1,5,10), save_ms5rawlevels = FALSE,  mvpadur = c(1,5,10), epochvalues2csv = FALSE, bout.metric = 1, window.summary.size = 10, dayborder = 0, iglevels = c()`
 
 In this paragraph we will guide you through the main arguments relevant for 99% of research. First of all, it is important to understand that GGIR is structured in five parts and that g.shell.GGIR controls each of these parts:
 
@@ -130,7 +131,7 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 ### Key general arguments
 
 - `mode` - which part of GGIR to run, GGIR is constructed in five parts.
-- `overwrite` - whether to overwrite previously produced milestone output. Between each GGIR part, GGIR stores milestone output to ease re-running parts of the pipeline. 
+- `overwrite` - whether to overwrite previously produced milestone output. Between each GGIR part, GGIR stores milestone output to ease re-running parts of the pipeline.
 - `idloc` - tells GGIR where to find the participant ID (default: inside file header)
 - `strategy` - informs GGIR how to consider the design of the experiment.
   - If `strategy` is set to value 1, then check out arguments `hrs.del.start` and `hrs.del.end`.
@@ -146,7 +147,7 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 - `dayborder` - to decide whether the edge of a day should be other than midnight.
 - `iglevels` - argument related to intensity gradient method proposed by A. Rowlands.
 - `do.report` - specify reports that need to be generated.
-- `viewingwindow` and `visualreport` - to create a visual report, this only works when all five parts of GGIR have succesfully run.
+- `viewingwindow` and `visualreport` - to create a visual report, this only works when all five parts of GGIR have succesfully run. If `visualreport` is set to 0, then no plots will be created. If `visualreport` is set to 1, the original plot will be created. If `visualreport` is set to 2, the new plot that contains all sleep and activity annotations will be created. If `visualreport` is set to 1 and 2 (c(1,2)), then both plots will be created.
 
 ### Key arguments related to sleep analysis
 
@@ -212,7 +213,7 @@ g.shell.GGIR(
              # Visual report
              #=====================
              timewindow = c("WW"),
-             visualreport=TRUE)
+             visualreport=c(1,2))
 ```
 
 Once you have used g.shell.GGIR and the output directory (outputdir) will be filled with milestone data and results.
@@ -538,7 +539,7 @@ I (Vincent) wanted a short name and not to spend too much time finding it. At th
 - For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
 
 # Citing GGIR
-A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of the software. 
+A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of the software.
 
 To do so, please report the GGIR version you used in the text. Additionally, please also cite:
 

@@ -1,5 +1,5 @@
 g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
-                        do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
+                        do.report=c(2),overwrite=FALSE,visualreport=0,viewingwindow=1,
                         configfile =c(),...) {
   #get input variables
   input = list(...)
@@ -261,12 +261,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
-  if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   # VISUAL REPORT
-  
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
-  if (exists("visualreport") == FALSE)  visualreport = FALSE
+  if (exists("visualreport") == FALSE)  visualreport = 0
 
   cat("\n   Please refer to GGIR by reporting the version number and citing\n")
   cat("   Migueles et al. 2019 J Meas Phys Beh. See also: \n")
@@ -314,8 +312,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.headername.sn = rmc.headername.sn,
             rmc.headername.recordingid = rmc.headername.sn,
             rmc.header.structure = rmc.header.structure,
-            rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
-            rmc.col.wear=rmc.col.wear)
+            rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -400,7 +397,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
-  if (length(which(do.report==4 | do.report==5)) > 0 | visualreport==TRUE) {
+  if (length(which(do.report==4 | do.report==5)) > 0 | visualreport>0) {
     if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
     } else {
       cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
@@ -440,12 +437,28 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit)
   }
-  if (visualreport == TRUE) {
+  if (visualreport > 0) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nGenerate visual reports\n")
     f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
-    g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
-            viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz)
-  }
+    if (1 %in% visualreport) {
+      g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
+              viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz)
+    }
+    if (2 %in% visualreport) {
+      if (do.enmo) {
+        g.plot6(metadatadir=metadatadir,dofirstpage=dofirstpage,
+                viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz,
+                threshold.lig,threshold.mod,threshold.vig)
+      } else {
+        cat("\ndo.enmo must be set to TRUE to generate plot6")
+      }
+    }
+    
+    
+      
+    }
+    
+  
 }
