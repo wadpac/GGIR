@@ -488,9 +488,6 @@ g.plot6 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               # accelerometer
               plot(x,acc, type="l",lwd=LWDA,bty="l",axes=FALSE,ylim=YXLIM,
                    xlab="",ylab="",main="",cex.main=0.9,lend=LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
-              if (I$monc == 2) { ## dark and light
-                lines(x,LPd_light,type="l",lwd=LWDX,col="yellow",ylim=YXLIM,cex=0.3,lend=LJ)
-              }
               # angle
               lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
               # add sleeponset annotation to plot:
