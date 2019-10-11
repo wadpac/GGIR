@@ -28,7 +28,8 @@
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
-                          rmc.col.wear = c())	
+                          rmc.col.wear = c(),
+                          rmc.doresample=FALSE)	
 }
 \arguments{
   \item{rmc.file}{
@@ -74,13 +75,13 @@
   }
   \item{rmc.unit.time}{
     Character with unit of timestamps: "POSIX",
-    "UNIXsec" (seconds since origin, see argument origin), or
+    "UNIXsec" (seconds since origin, see argument origin), "character", or
     "ActivPAL" (exotic timestamp format only used in the ActivPAL
     activity monitor).
     
   }
   \item{rmc.format.time}{
-    Format of timestamp (only needed when POSIX) is provided.
+    Format of timestamp, only used for rmc.unit.time: character and POSIX.
   }
   \item{rmc.bitrate}{
     Numeric: If unit of acceleration is a bit then provide bit rate, e.g. 12 bit.
@@ -132,6 +133,10 @@
   \item{rmc.col.wear}{
     If external wear detection outcome is stored as part of the data then this can be used by GGIR.
     This argument specifies the column in which the wear detection (Boolean) is stored.
+  }
+  \item{rmc.doresample}{
+    Boolean to indicate whether to resample the data based on the available timestamps and extracted 
+   sample rate from the file header
   }
 
 }
