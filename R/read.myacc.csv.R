@@ -14,7 +14,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
                           rmc.headername.recordingid = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
-                          rmc.col.wear = c()) {
+                          rmc.col.wear = c(),
+                          rmc.doresample=FALSE) {
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -140,7 +141,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin=rmc.origin,tz = rmc.desiredtz)
+      P$timestamp = as.POSIXlt(P$timestamp, origin=rmc.origin,tz = rmc.desiredtz, format = rmc.format.time)
+    } else if (rmc.unit.time == "character") {
+      P$timestamp = as.POSIXlt(P$timestamp,format= rmc.format.time,tz = rmc.desiredtz)
     } else if (rmc.unit.time == "UNIXsec") {
       P$timestamp = as.POSIXlt(P$timestamp, origin=rmc.origin,tz = rmc.desiredtz)
     } else if (rmc.unit.time == "ActivPAL") {
@@ -210,6 +213,26 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       }
       P = newP
     }
+  }
+  if (rmc.doresample == TRUE) { #resample
+    rawTime = vector(mode = "numeric", nrow(P))
+    rawTime = as.numeric(as.POSIXlt(P$timestamp,tz = rmc.desiredtz))
+    rawAccel = as.matrix(P[,-c(which(colnames(P)=="timestamp"))])
+    step = 1/sf
+    start = rawTime[1]
+    end = rawTime[length(rawTime)]
+    timeRes = seq(start, end, step)
+    nr = length(timeRes) - 1
+    timeRes = as.vector(timeRes[1:nr])
+    accelRes = matrix(0,nrow = nr, ncol = ncol(rawAccel), dimnames = list(NULL,colnames(rawAccel)))
+    rawLast = nrow(rawAccel)
+    accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
+    colnamesP = colnames(P)
+    timeRes = as.POSIXlt(timeRes, origin=rmc.origin, tz = rmc.desiredtz)
+    P = as.data.frame(accelRes)
+    P$timestamp = timeRes
+    P = P[,c(ncol(P),1:(ncol(P)-1))]
+    colnames(P) = colnamesP
   }
   return(list(data=P,header=header))
 }
