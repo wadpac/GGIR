@@ -78,7 +78,7 @@ GGIR is open source software and does not come with service or support guarantee
 
 [Download and install R](https://cran.r-project.org/)
 
-[Download and install RStudio](https://www.rstudio.com/products/rstudio/download2/) (optional, but recommended)
+[Download and install RStudio](https://www.rstudio.com/products/rstudio) (optional, but recommended)
 
 Download GGIR with its dependencies, you can do this with one command from the console command line:
 
