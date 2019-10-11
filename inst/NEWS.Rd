@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.10-8 (release date:11-10-2019)}{
+\itemize{
+  \item read.myacc.csv is now able to resample data with irregular sample rates
+  \item function resample can now handle any matrix size, previous only with 3 columns
+  \item read.myacc.csv can now handle timestamps in character format
+}
+}
 \section{Changes in version 1.10-7 (release date:06-10-2019)}{
 \itemize{
   \item Fixed functionality to supply calibration coefficients file to backup.cal.coef.
