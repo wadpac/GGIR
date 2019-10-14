@@ -1,6 +1,6 @@
 g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
                         do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
-                        configfile =c(),...) {
+                        configfile =c(),FUN=c(), ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -315,7 +315,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.headername.recordingid = rmc.headername.sn,
             rmc.header.structure = rmc.header.structure,
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
-            rmc.col.wear=rmc.col.wear)
+            rmc.col.wear=rmc.col.wear,
+            FUN=FUN)
   }
   if (dopart2 == TRUE) {
     cat('\n')
