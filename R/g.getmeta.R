@@ -8,7 +8,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
                      do.lfen=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
-                     dayborder=0,dynrange=c(),configtz=c(),...) {
+                     dayborder=0,dynrange=c(),configtz=c(),FUN=c(),...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -533,6 +533,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         dev_roll_med_acc_y3b = allmetrics$dev_roll_med_acc_y3b
         dev_roll_med_acc_z3b = allmetrics$dev_roll_med_acc_z3b
         LFEN3b = allmetrics$LFEN3b
+        
+        #--------------------------------------------------------------------
+        # under development, external function application to the raw data
+        if (length(FUN) != 0) { 
+          OutputExternalFunction = FUN(data)
+        }
+        #--------------------------------------------------------------------
       }
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
