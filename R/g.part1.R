@@ -11,7 +11,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,FUN=c(),...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -499,7 +499,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       rmc.header.structure = rmc.header.structure,
                       rmc.check4timegaps = rmc.check4timegaps,
                       rmc.noise=rmc.noise,
-                      rmc.col.wear=rmc.col.wear)
+                      rmc.col.wear=rmc.col.wear,
+                      FUN=FUN)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
