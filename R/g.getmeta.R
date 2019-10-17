@@ -350,7 +350,9 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           start_min = as.numeric(starttime2[2])
           start_sec = as.numeric(starttime2[3])
           secshift = 60 - start_sec #shift in seconds needed
-          start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
+          if (secshift != 60) {
+            start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
+          }
           #-----------
           minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
           if (minshift == start_meas) minshift = 0; 
