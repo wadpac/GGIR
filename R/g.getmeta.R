@@ -434,13 +434,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           data = as.matrix(data)
           #--------------------------------------------
-          if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5) {
+          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
             if (mon == 2) {
               temperaturecolumn = 7; lightcolumn = 5
             } else if (mon ==4) {
               temperaturecolumn = 5; lightcolumn = 7
             } else if (mon ==5) {
-              temperaturecolumn = 5 # because currently we do not extract light with read.myacc.csv
+              temperaturecolumn = 5
             }
             if (mon != 5) {
               light = as.numeric(data[,lightcolumn])
