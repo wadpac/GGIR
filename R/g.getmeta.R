@@ -414,7 +414,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       if (LD >= (ws*sf)) {
         if (useRDA == FALSE) {
           use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
-          if (use != LD) {
+          if ((LD - use) > 1) { #replacement of use != LD & (6-Nov-2019)
             # S = as.matrix(data[(use+1):LD,]) #Note: as.matrix removed on 22May 2019 because redundant and introduced errors when
             # reading csv files
             S = data[(use+1):LD,] #store left over
