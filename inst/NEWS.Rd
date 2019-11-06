@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.10-8 (release date:06-11-2019)}{
+\itemize{
+  \item Fixed issue that emerged in previous version with GENEActiv .bin data not
+  being processed by g.getmeta.
+  }
+}
+
 \section{Changes in version 1.10-7 (release date:06-10-2019)}{
 \itemize{
   \item Fixed functionality to supply calibration coefficients file to backup.cal.coef.
