@@ -405,7 +405,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     } else {
       cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
       cat("before you can use argument visualreport or create a report for part 4\n")
-      stop()
+      # stop()
     }
   }
   if (length(which(do.report == 2)) > 0) {
