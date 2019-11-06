@@ -5,7 +5,7 @@
 \section{Changes in version 1.10-8 (release date:06-11-2019)}{
 \itemize{
   \item Fixed issue that emerged in previous version with GENEActiv .bin data not
-  being processed by g.getmeta.
+  being processed by g.getmeta for all files.
   }
 }
 
