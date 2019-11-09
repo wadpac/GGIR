@@ -10,8 +10,9 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
   }
   QUAN = qlevels_names = c()
   ML5AD = ML5AD_names = c()
+  one2sixname = ""
   if (doquan == TRUE) {
-    for (quani in 1:ncol(averageday)) {
+    for (quani in 1:ncol(averageday)) { # these columns of averageday correspond to the metrics from part 1
       if (colnames(M$metashort)[(quani+1)] %in% c("anglex", "angley", "anglez") == FALSE) {
         #--------------------------------------
         # quantiles
@@ -33,33 +34,24 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
           t1_LFMF = L5M5window[2]+(winhr_value-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
           avday = averageday[,quani]
           avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
-          
-          
-          # if (mean(avday) > 0 & nrow(as.matrix(M$metashort)) > 1440*(60/ws3)) { # commented out, because g.getM5L5 now does the check internally
           # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
           ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value, qM5L5=qM5L5)
           ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
-          # } else {
-          #   ML5ADtmp = data.frame(as.matrix(NA,1,4+length(qM5L5)))
-          #   colnames(ML5ADtmp) = paste0(winhr_value,1:length(4+length(qM5L5)))
-          #   ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
-          #   # ML5AD = as.data.frame(c(ML5AD,rep(" ",4+length(qM5L5))))
-          # }
-          ML5AD_namestmp = rep(NA,4+length(qM5L5))
         }
         ML5N = names(ML5AD)
         for (ML5ADi in 1:length(ML5N)) {
-          ML5AD_namestmp[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
-                                         L5M5window[1],"-",L5M5window[2],"h",sep="")
+          if (length(grep(pattern = "1to6", ML5N[ML5ADi])) == 0) {
+            ML5AD_names[ML5ADi] = paste(ML5N[ML5ADi],"_",colnames(M$metashort)[(quani+1)],"_mg_",
+                                        L5M5window[1],"-",L5M5window[2],"h",sep="")
+          }
         }
-        ML5AD_names = ML5AD_namestmp
-        rm(ML5AD_namestmp)
+        # Acceleration 1-6am
+        one2sixname = paste0("1to6am_",colnames(M$metashort)[(quani+1)],"_mg")
+        ML5AD_names = c(ML5AD_names, one2sixname)
+        ML5AD$one2six = mean(avday[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000
+        colnames(ML5AD)[which(colnames(ML5AD) == "one2six")] = one2sixname
       }	
-      # Acceleration 1-6am 
-      ML5AD_names = c(ML5AD_names, paste0("1to6am_",colnames(M$metashort)[(quani+1)],"_mg"))
-      ML5AD = c(ML5AD, mean(avday[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000)
     }	
-    
   }
   igfullr_names = igfullr = c()
   if (doiglevels == TRUE) { 
