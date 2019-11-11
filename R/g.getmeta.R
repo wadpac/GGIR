@@ -537,13 +537,45 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         #--------------------------------------------------------------------
         # under development, external function application to the raw data
         if (length(myfun) != 0) {
-          print("using external function")
           # TO DO prepare the data object, based on
-          # - myfun$expected_sample_rate
           # - myfun$expected_unit
+          unitcorrection = 1 # default is g
+          if (myfun$expected_unit != "g") { 
+            if (myfun$expected_unit == "mg") {
+              unitcorrection = 1000
+            } else if (myfun$expected_unit == "ms2") {
+              unitcorrection = 9.81
+            }
+          }
           # - myfun$minlength
-          #
-          OutputExternalFunction = myfun$FUN(data, myfun$model_coefficients)
+          # TO DO: shorten data, and add to S object...
+          # Nminlength = nrow(data) / myfun$expected_unit
+          # if (Nminlength != round(Nminlength)) {
+          #   # shorten data to match length
+          # }
+          # - myfun$expected_sample_rate
+          if (sf != myfun$expected_sample_rate) {
+            resampleAcc = function(rawAccel, sf, myfun) {
+              step_old = 1/sf
+              step_new = 1/myfun$expected_sample_rate
+              start = 0
+              end = nrow(data)/sf
+              rawTime = seq(start, end, step_old)
+              timeRes = seq(start, end, step_new)
+              nr = length(timeRes) - 1
+              timeResNew = as.vector(timeRes[1:nr])
+              accelRes = matrix(0,nrow = nr, ncol = 3, dimnames = list(NULL, c("x", "y", "z")))
+              # at the moment the function is designed for reading the r3 acceleration channels only,
+              # because that is the situation of the use-case we had.
+              rawLast = nrow(rawAccel)
+              accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
+              return(accelRes)
+            }
+            print("apply function")
+            OutputExternalFunction = myfun$FUN(resampleAcc(data, sf, myfun) * unitcorrection, myfun$model_coefficients)
+          } else {
+            OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$model_coefficients)
+          }
           # TO DO: use the output and myfun$outputres to
           # integrate the output in the rest of the GGIR output
           
