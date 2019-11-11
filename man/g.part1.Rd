@@ -34,7 +34,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
         dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
-        FUN=c(), ...)
+        myfun=c(), ...)
 }
 \arguments{
   \item{datadir}{
@@ -194,7 +194,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
     collects several MBs per hour, the default setting should only skip the very short files.
   }
-  \item{FUN}{
+  \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
   \item{...}{
