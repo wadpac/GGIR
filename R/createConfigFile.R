@@ -9,10 +9,10 @@ createConfigFile = function(config.parameters = c()) {
     Value = config.parameters[[i]]
     if (length(Value) == 0) Value = 'c()'
     if (length(Value) > 1) Value = paste0("c(",paste(Value,collapse = ","),")")
-    if (is.function(Value) == FALSE) {
+    if (is.function(Value) == FALSE | is.list(Value) == FALSE) {
       out[i,2] = Value
     } else {
-      out[i,2] = 'c()' # functions are not stored in the config file, the user will have to provide this explicitely
+      out[i,2] = 'c()' # function or list objects are not stored in the config file, the user will have to provide these explicitely
     }
     out[i,3] = "General parameters"
     if (NM %in% c("windowsizes", "chunksize",
@@ -22,7 +22,7 @@ createConfigFile = function(config.parameters = c()) {
                   "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
                   "do.enmoa", "printsummary", "do.cal", "print.filename", 
                   "backup.cal.coef", "dayborder", "dynrange",
-                  "configtz", "do.lfen", "hb", "lb", "n", "FUN") ==  TRUE) {
+                  "configtz", "do.lfen", "hb", "lb", "n", "myfun") ==  TRUE) {
       out[i,3] = "Calibration, Feature extraction, Epoch size, Time zone"
     } else if (NM %in% c("strategy", "hrs.del.start", "hrs.del.end", "maxdur",
                          "includedaycrit", "M5L5res", "winhr", "qwindow", "qlevels",
