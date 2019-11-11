@@ -26,7 +26,7 @@ do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
 do.enmoa = FALSE, do.lfen = FALSE, lb = 0.2,hb = 15, n = 4,
 meantempcal=c(),chunksize=c(),
 selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),
-FUN=c(),...)
+myfun=c(),...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -137,7 +137,7 @@ below 1 is recommended.
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
   }
-  \item{FUN}{
+  \item{myfun}{
     External function object to be applied to raw data. See details.
   }
   \item{...}{
@@ -153,7 +153,7 @@ below 1 is recommended.
   \item{corrupt}{indicator of whether file was considered corrupt (TRUE or FALSE)}
 }
 \details{
- If object FUN is provided then this is applied to the raw data .... documentation to follow.
+ If object myfun is provided then this is applied to the raw data .... documentation to follow.
 }
 \examples{
 \dontrun{
