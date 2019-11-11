@@ -133,7 +133,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
-
+  if (exists("FUN") == FALSE)  FUN = c()
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
