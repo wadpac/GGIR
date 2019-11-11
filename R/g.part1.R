@@ -226,14 +226,14 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
                          "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
-                         "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv")
+                         "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv","FUN")
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
   }
   `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   #,'GENEAread','mmap', 'signal'
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
-                                .export=functions2passon, .errorhandling='pass') %myinfix% {
+                                .export=functions2passon, .errorhandling='stop') %myinfix% {
     tryCatchResult = tryCatch({
       # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
       if (print.filename == TRUE) {

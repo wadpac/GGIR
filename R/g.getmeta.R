@@ -536,8 +536,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         
         #--------------------------------------------------------------------
         # under development, external function application to the raw data
-        if (length(FUN) != 0) { 
-          OutputExternalFunction = FUN(data)
+        if (length(FUN) != 0) {
+          print("using external function")
+
+          OutputExternalFunction = FUN(data=data, sample.rate = sf, datafile=datafile)
         }
         #--------------------------------------------------------------------
       }
