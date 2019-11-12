@@ -8,6 +8,8 @@
   \item read.myacc.csv is now able to resample data with irregular sample rates
   \item function resample can now handle any matrix size, previous only 3 columns
   \item read.myacc.csv can now handle timestamps in character format
+  \item Fixes bug when using multiple non-angle metrics in part1 and trying to calculate
+  1to6am average metric value in part 2
   \item Expanded Actigraph date format recognition ability
 }
 }
