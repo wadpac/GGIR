@@ -2,10 +2,11 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 1.10-8 (release date:06-11-2019)}{
+\section{Changes in version 1.10-8 (release date:08-11-2019)}{
 \itemize{
   \item Fixed issue that emerged in previous version with GENEActiv .bin data not
   being processed by g.getmeta for some files.
+  \item Expanded Actigraph date format recognition ability
   }
 }
 
