@@ -1,13 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.10-8 (release date:07-11-2019)}{
+\section{Changes in version 1.10-10 (release date:12-11-2019)}{
 \itemize{
   \item Fixed issue that emerged in previous version with GENEActiv .bin data not
   being processed by g.getmeta for some files.
   \item read.myacc.csv is now able to resample data with irregular sample rates
-  \item function resample can now handle any matrix size, previous only with 3 columns
+  \item function resample can now handle any matrix size, previous only 3 columns
   \item read.myacc.csv can now handle timestamps in character format
+  \item Expanded Actigraph date format recognition ability
 }
 }
 \section{Changes in version 1.10-7 (release date:06-10-2019)}{
