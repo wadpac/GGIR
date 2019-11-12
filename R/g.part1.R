@@ -235,10 +235,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   #,'GENEAread','mmap', 'signal'
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
                                 .export=functions2passon, .errorhandling='stop') %myinfix% {
-                                  # library("Rcpp")
-                                  # pathR = "/home/vincent/GGIR"
-                                  # sourceCpp(paste0(pathR,"/src/numUnpack.cpp"))
-                                  # sourceCpp(paste0(pathR,"/src/resample.cpp"))
+                                  library("Rcpp")
+                                  pathR = "/home/vincent/GGIR"
+                                  sourceCpp(paste0(pathR,"/src/numUnpack.cpp"))
+                                  sourceCpp(paste0(pathR,"/src/resample.cpp"))
 
     tryCatchResult = tryCatch({
       # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
