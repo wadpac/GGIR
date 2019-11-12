@@ -1,14 +1,7 @@
-exampleExtFunction = function(data=c(), model_coefficients=c(), sf) {
-  # print(summary(data))
-  print(model_coefficients)
-  output = mean(data) * model_coefficients[1] + mean(data) * model_coefficients[2] + mean(data) * model_coefficients[3]
-  print(output)
-  print(dim(data))
-  
+exampleExtFunction = function(data=c(), parameters=c()) {
+  # parameters: In this function the parameters is just the sample rate.
   library("activityCounts")
-  mycounts = counts(data=data, hertz=model_coefficients,x_axis=1,y_axis=2,z_axis=3)
-  print(summary(mycounts))
-  
-  
-  return(output)
+  mycounts = counts(data=data, hertz=parameters,x_axis=1,y_axis=2,z_axis=3)
+  mycounts = mycounts[,2:4] #do not provide timestamps to GGIR
+  return(mycounts)
 }
