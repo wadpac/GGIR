@@ -416,6 +416,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       if (LD >= (ws*sf)) {
         if (useRDA == FALSE) {
           use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
+          if (length(myfun) != 0) { # if using external function, then check that use is a multitude of the expected windowlength
+            Nminlength = use / myfun$minlength
+            if (Nminlength != floor(Nminlength)) { # it is not a multitude
+              use = floor(Nminlength) * myfun$minlength # correct use accordingly
+            }
+          }
           if ((LD - use) > 1) {
             # reading csv files
             S = data[(use+1):LD,] #store left over
@@ -538,8 +544,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         #--------------------------------------------------------------------
         # under development, external function application to the raw data
         if (length(myfun) != 0) {
-          # TO DO prepare the data object, based on
-          # - myfun$expected_unit
+          # unit correction
           unitcorrection = 1 # default is g
           if (myfun$expected_unit != "g") { 
             if (myfun$expected_unit == "mg") {
@@ -548,13 +553,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
               unitcorrection = 9.81
             }
           }
-          # - myfun$minlength
-          # TO DO: shorten data, and add to S object...
-          # Nminlength = nrow(data) / myfun$expected_unit
-          # if (Nminlength != round(Nminlength)) {
-          #   # shorten data to match length
-          # }
-          # - myfun$expected_sample_rate
+          # sample rate correction
           if (sf != myfun$expected_sample_rate) {
             resampleAcc = function(rawAccel, sf, myfun) {
               step_old = 1/sf
@@ -576,28 +575,23 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           } else {
             OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
           }
-          # TO DO: use the output and myfun$outputres to
-          # integrate the output in the rest of the GGIR output as an extra data feature)
-          # agregate to epoch level
-          if (myfun$outputtype == "numeric") { # aggregation is possible with averaging
+          # output resolution correction (either aggregate or repeat)
+          if (myfun$outputtype == "numeric") { # aggregation is possible with averaging, possibly later also allow for character output
             if (is.null(dim(OutputExternalFunction))) { # if OutputExternalFunction is a simple vector then convert it to 1 column matrix
               OutputExternalFunction = as.matrix(OutputExternalFunction)
               if (ncol(OutputExternalFunction) != 1 & nrow(OutputExternalFunction) == 1) OutputExternalFunction = t(OutputExternalFunction)
             }
-            if (myfun$outputres < ws3) { # if function produces lower resolution output
-              # aggregate rows
+            if (myfun$outputres < ws3) { # if function produces lower resolution output aggregate rows
               agglevel = rep(1:nrow(OutputExternalFunction)+(3*(ws3/myfun$outputres)),each=ws3/myfun$outputres)
               agglevel = agglevel[1:nrow(OutputExternalFunction)]
               OEF = data.frame(OutputExternalFunction, agglevel=agglevel)
               OEFA = aggregate(OEF,by=list(OEF$agglevel),FUN=myfun$aggfunction)
               OutputExternalFunction = OEFA[,-c(1,ncol(OEFA))]
               # OutputExternalFunction is now aggregated to ws3 which will enable merging it with metashort
-            } else if (myfun$outputres < ws3) { # if function produces lower resolution output
-              # repeat rows
+            } else if (myfun$outputres < ws3) { # if function produces lower resolution output repeat rows
               OutputExternalFunction = OutputExternalFunction[rep(seq_len(nrow(OutputExternalFunction)), each = myfun$outputres/ws3), ] 
             }
           }
-          
         }
         #--------------------------------------------------------------------
       }
