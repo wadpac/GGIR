@@ -571,13 +571,27 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
               accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
               return(accelRes)
             }
-            print("apply function")
-            OutputExternalFunction = myfun$FUN(resampleAcc(data, sf, myfun) * unitcorrection, myfun$model_coefficients)
+            OutputExternalFunction = myfun$FUN(resampleAcc(data, sf, myfun) * unitcorrection, myfun$parameters)
           } else {
-            OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$model_coefficients)
+            OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
           }
           # TO DO: use the output and myfun$outputres to
-          # integrate the output in the rest of the GGIR output
+          # integrate the output in the rest of the GGIR output as an extra data feature)
+          # agregate to epoch level
+          if (myfun$outputres <= ws3) {
+            if (myfun$outputtype == "numeric") { # aggregation is possible with averaging
+              if (is.null(dim(OutputExternalFunction))) { # if OutputExternalFunction is a simple vector then convert it to 1 column matrix
+                OutputExternalFunction = as.matrix(OutputExternalFunction)
+                if (ncol(OutputExternalFunction) != 1 & nrow(OutputExternalFunction) == 1) OutputExternalFunction = t(OutputExternalFunction)
+              }
+              agglevel = rep(1:nrow(OutputExternalFunction)+(3*(ws3/myfun$outputres)),each=ws3/myfun$outputres)
+              agglevel = agglevel[1:nrow(OutputExternalFunction)]
+              OEF = data.frame(OutputExternalFunction, agglevel=agglevel)
+              OEFA = aggregate(OEF,by=list(OEF$agglevel),FUN=myfun$aggfunction)
+              OutputExternalFunction_aggregated = OEFA[,-c(1,ncol(OEFA))]
+              # OutputExternalFunction is now aggregated to ws3 which will enable merging it with metashort
+            }
+          }
           
         }
         #--------------------------------------------------------------------
