@@ -262,6 +262,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
+  if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
+  
   # VISUAL REPORT
   
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
@@ -315,7 +317,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.headername.recordingid = rmc.headername.sn,
             rmc.header.structure = rmc.header.structure,
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
-            rmc.col.wear=rmc.col.wear)
+            rmc.col.wear=rmc.col.wear,
+            rmc.doresample=rmc.doresample)
   }
   if (dopart2 == TRUE) {
     cat('\n')
