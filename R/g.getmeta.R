@@ -46,6 +46,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
+  if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
                           do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                           do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
@@ -243,7 +244,8 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                               rmc.headername.recordingid = rmc.headername.sn,
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps,
-                              rmc.col.wear=rmc.col.wear)
+                              rmc.col.wear=rmc.col.wear,
+                              rmc.doresample=rmc.doresample)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -337,9 +339,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
           } else {
             # first get char to POSIX
-            # temp = as.POSIXlt(starttime,format="%Y-%m-%dT%H:%M:%S%z",tz="Europe/London")
             temp = iso8601chartime2POSIX(starttime,tz=desiredtz)
-            # temp2 = format(temp,"%H:%M:%S") # extract time
             temp = unlist(strsplit(as.character(temp)," ")) # to keep it consistent with what we had
             starttime2 = as.numeric(unlist(strsplit(as.character(temp[2]),":")))
           }
@@ -350,12 +350,14 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           start_min = as.numeric(starttime2[2])
           start_sec = as.numeric(starttime2[3])
           secshift = 60 - start_sec #shift in seconds needed
-          start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
+          if (secshift != 60) {
+            start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
+          }
           #-----------
           minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
-          if (minshift == start_meas) minshift = 0; 
+          if (minshift == start_meas) minshift = 0;
           #-----------
-          sampleshift = (minshift*60*sf) + (secshift*sf) #derive sample shift
+          sampleshift = ((minshift)*60*sf) + (secshift*sf) #derive sample shift
           data = data[-c(1:floor(sampleshift)),] #delete data accordingly
           newmin = start_min+minshift #recalculate first timestamp
           newsec = 0
@@ -414,8 +416,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       if (LD >= (ws*sf)) {
         if (useRDA == FALSE) {
           use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
-          if ((LD - use) > 1) { #replacement of use != LD & (6-Nov-2019)
-            # S = as.matrix(data[(use+1):LD,]) #Note: as.matrix removed on 22May 2019 because redundant and introduced errors when
+          if ((LD - use) > 1) {
             # reading csv files
             S = data[(use+1):LD,] #store left over
             if (ncol(S) == 1) {
@@ -432,13 +433,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           data = as.matrix(data)
           #--------------------------------------------
-          if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5) {
+          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
             if (mon == 2) {
               temperaturecolumn = 7; lightcolumn = 5
             } else if (mon ==4) {
               temperaturecolumn = 5; lightcolumn = 7
             } else if (mon ==5) {
-              temperaturecolumn = 5 # because currently we do not extract light with read.myacc.csv
+              temperaturecolumn = 5
             }
             if (mon != 5) {
               light = as.numeric(data[,lightcolumn])
