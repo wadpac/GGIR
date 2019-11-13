@@ -57,6 +57,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen))
+  if (length(myfun) != 0) nmetrics = nmetrics + length(myfun$colnames)
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -547,7 +548,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
       }
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
-        #extend out if it is expected to be too short
+        #extend metashort and metalong if it is expected to be too short
         if (count > (nrow(metashort) - (2.5*(3600/ws3) *24))) {
           extension = matrix(" ",((3600/ws3) *24),ncol(metashort)) #add another day to metashort once you reach the end of it
           metashort = rbind(metashort,extension)
@@ -610,6 +611,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         if (do.lfen == TRUE) {
           metashort[count:(count-1+length(LFEN3b)),col_msi] = LFEN3b; col_msi = col_msi + 1
         }
+        
+        if (length(myfun) != 0) { # if an external function is applied.
+          NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
+          metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
+        }
+        
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
         rm(allmetrics)
         # update blocksize depending on available memory
@@ -838,6 +845,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa,do.lfen)])
+    if (length(myfun) != 0) metricnames_short = c(metricnames_short, myfun$colnames)
     metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
     for (ncolms in 2:ncol(metashort)) {
