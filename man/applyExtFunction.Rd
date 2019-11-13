@@ -40,7 +40,8 @@
   or the visa versa.
 }
 \details{
-    List object, in the form: list(FUN=exampleExtFunction,
+    myfun is expected to be a list object, in the form:
+    list(FUN=exampleExtFunction,
               parameters = c(0.2, -0.4), 
               expected_sample_rate= 30,
               expected_unit="mg",
@@ -53,8 +54,8 @@
     \item \code{FUN} the external function to be applied to the data.
     \item \code{parameters} The parameters used by the function, which 
     can be stored in any format (vector, matrix, list, data.frame). 
-    The user should make sure that the external
-    function can handle these.
+    The user should obviously make sure that the external function
+    can handle this object.
     \item \code{expected_unit} Expected unit of the acceleration by 
     external function: "mg", "g" or "ms2".
     \item \code{colnames} Character vector with the names of the
