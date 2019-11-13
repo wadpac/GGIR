@@ -44,6 +44,7 @@
               parameters = c(0.2, -0.4), 
               expected_sample_rate= 30,
               expected_unit="mg",
+              colnames = c("A","B","C"),
               minlength = 5,
               outputres = 1,
               outputtype="numeric",
@@ -56,6 +57,8 @@
     function can handle these.
     \item \code{expected_unit} Expected unit of the acceleration by 
     external function: "mg", "g" or "ms2".
+    \item \code{colnames} Character vector with the names of the
+    columns produced by the external function.
     \item \code{minlength} The minimum length (seconds) of data needed, 
     typically the window per which output is provided.
     \item \code{outputres} The resolution (seconds) of the output 
