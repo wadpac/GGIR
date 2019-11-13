@@ -1,0 +1,47 @@
+get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf, dformat,
+                                    rmc.dynamic_range) {
+  blocksize = round(14512 * (sf/50) * chunksize)
+  if (monc == 1) blocksize = round(21467 * (sf/80)  * chunksize)
+  if (monc == 3 & dformat == 2) blocksize = round(blocksize)#round(blocksize/5) # Actigraph
+  if (monc == 4 & dformat == 3) blocksize = round(1440 * chunksize)
+  if (monc == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
+  if (monc == 4 & dformat == 2) blocksize = round(blocksize)
+  
+  #Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
+  if (length(dynrange) > 0) {
+    clipthres = dynrange - 0.5
+  } else {
+    if (monc == 1) {
+      clipthres = 5.5
+    } else if (monc == 2) {
+      clipthres = 7.5
+    } else if (monc == 3) {
+      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+    } else if (monc == 4) {
+      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
+    } else if (monc == 5) {
+      clipthres = rmc.dynamic_range
+    }
+  }
+  # Nonwear threshold: #non-wear criteria are moncitor specific
+  racriter = 0.15 #very likely irrelevant parameters, but leave in for consistency
+  if (monc == 1) {
+    sdcriter = 0.003
+    racriter = 0.05
+  } else if (monc == 2) {
+    sdcriter = 0.013 #0.0109 in rest test
+  } else if (monc == 3) {
+    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
+  } else if (monc == 4) {
+    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
+  } else if (monc == 5) {
+    if (length(rmc.noise) == 0) {
+      warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
+    }
+    sdcriter = rmc.noise * 1.2
+    if (length(rmc.noise) == 0) {
+      stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+    }
+  }
+  invisible(list(clipthres=clipthres, blocksize=blocksize, sdcriter=sdcriter, racriter=racriter))
+}
