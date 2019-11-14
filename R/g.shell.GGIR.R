@@ -444,11 +444,16 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit)
   }
   if (visualreport == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nGenerate visual reports\n")
-    f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
-    g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
-            viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz)
+    if (do.enmo) {
+      cat('\n')
+      cat(paste0(rep('_',options()$width),collapse=''))
+      cat("\nGenerate visual reports\n")
+      f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
+      g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
+              viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz,
+              threshold.lig,threshold.mod,threshold.vig)  
+    } else {
+      cat("\ndo.enmo must be set to TRUE to generate report\n")
+    }
   }
 }
