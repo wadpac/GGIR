@@ -132,8 +132,8 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       if (fc$mdy == 1 & fc$bdy == 1) fc$mdy = 0 # not M(M) when MMM is also detected for yy
       fc$dmY = length(grep("d[.]M[.]yyyy|d[.]MM[.]yyyy",topline))
       fc$dmy = length(grep("d[.]M[.]yy|d[.]MM[.]yy",topline))
-      fc$dbY = length(grep("d[.]M[.]yyyy|d[.]MMM[.]yyyy",topline))
-      fc$dby = length(grep("d[.]M[.]yy|d[.]MMM[.]yy",topline))
+      fc$dbY = length(grep("d[.]MMM[.]yyyy",topline))
+      fc$dby = length(grep("d[.]MMM[.]yy",topline))
       if (fc$dmY == 1 & fc$dmy == 1) fc$dmy = 0 # not yy when yyyy is also detected
       if (fc$dbY == 1 & fc$dby == 1) fc$dby = 0 # not yy when yyyy is also detected
       if (fc$dmY == 1 & fc$dbY == 1) fc$dmY = 0 # not M(M) when MMM is also detected for yyyy
