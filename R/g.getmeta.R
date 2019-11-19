@@ -639,9 +639,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             maxwacc = max(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres))
-            if (length(sdwacc) > 0 & length(maxwacc) > 0 & length(minwacc) > 0) {
+            absrange = abs(maxwacc - minwacc)
+            if (is.numeric(absrange) == TRUE & is.numeric(sdwacc)) {
               if (sdwacc < sdcriter) {
-                if (abs(maxwacc - minwacc) < racriter) {
+                if (absrange < racriter) {
                   NW[h,jj] = 1
                 }
               }
