@@ -281,7 +281,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                           dec=decn,showProgress = FALSE, header = freadheader))
     },silent=TRUE)
     if (length(P) > 1) {
-      P = as.matrix(P)
+      P = data.matrix(P) # as.matrix turned num to char if there are missing values.
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
         filequality$filetooshort = TRUE
