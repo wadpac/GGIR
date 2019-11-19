@@ -345,7 +345,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
           QC = "recalibration not done because not enough points on all sides of the sphere"
         }
       } else {
-        cat("\nNo non-movement found\n")
+        cat(" No non-movement found\n")
         QC = "recalibration not done because no non-movement data available"
         meta_temp = c()
       }
