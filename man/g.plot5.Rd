@@ -16,9 +16,9 @@ part of a bout of light PA.
   for direct use by user
 }
 \usage{
-  g.plot5(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,
-  f0=c(),f1=c(),overwrite=FALSE,metric="ENMO",desiredtz = "Europe/London",
-  threshold.lig,threshold.mod,threshold.vig)
+  g.plot5(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
+  f0 = c(), f1 = c(), overwrite = FALSE, desiredtz = "Europe/London",
+  threshold.lig = 30, threshold.mod = 100, threshold.vig = 400)
 }
 \arguments{
   \item{metadatadir}{
@@ -40,11 +40,17 @@ part of a bout of light PA.
   \item{overwrite}{
     See \link{g.shell.GGIR}
   }
-  \item{metric}{
-    Which one of the metrics do you want to consider to describe behaviour. The metric of interest need to be calculated in M (see \link{g.part1})
-  }
   \item{desiredtz}{
     See \link{g.getmeta}
+  }
+  \item{threshold.lig}{
+    See \link{g.shell.GGIR}
+  }
+  \item{threshold.mod}{
+    See \link{g.shell.GGIR}
+  }
+  \item{threshold.vig}{
+    See \link{g.shell.GGIR}
   }
 }
 \value{
