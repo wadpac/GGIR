@@ -424,7 +424,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       }
                     } else {
                       startend_sleep = which(abs(diff(diur))==1)  # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
-                      nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
+                      Nepochsin12Hours =  (60/ws3)*60*12
+                      nightsi = nightsi[which(nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
+                                              nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours))]  # newly added on 25-11-2019
+                      #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                       plusrow = 1
                     }
                     for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)
