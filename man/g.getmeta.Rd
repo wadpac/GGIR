@@ -23,9 +23,9 @@ do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
 do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
 do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
 do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-do.enmoa = FALSE,lb = 0.2,hb = 15, n = 4,
+do.enmoa = FALSE, do.lfen = FALSE, lb = 0.2,hb = 15, n = 4,
 meantempcal=c(),chunksize=c(),
-selectdaysfile=c(),dayborder=0,dynrange=c(),...)
+selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -39,7 +39,8 @@ selectdaysfile=c(),dayborder=0,dynrange=c(),...)
   signal clipping are defined, default 900. However, window3 is the window length
   of data used for non-wear detection and by default 3600 seconds. So, when window3
   is larger than window2 we use overlapping windows, while if window2 equals window3
-  non-wear periods are assessed by non-overlapping windows.
+  non-wear periods are assessed by non-overlapping windows. Window2 is expected to be
+  a multitude of 60 seconds.
 }
   \item{daylimit}{number of days to limit (roughly), if set to FALSE no daylimit
   will be applied
@@ -103,6 +104,9 @@ selectdaysfile=c(),dayborder=0,dynrange=c(),...)
   \item{do.dev_roll_med_acc_z}{if TRUE, calculate deviations from rolling 
   median for the z axis
   }
+  \item{do.lfen}{if TRUE, calculate metric EN with low-pass filtered
+  inputed signals using configuration set by \code{hb}
+  }
   \item{lb}{lower boundary of the frequency filter (in Hertz)
   }
   \item{hb}{upper boundary of the frequency filter (in Hertz)
@@ -126,6 +130,11 @@ below 1 is recommended.
   }
   \item{dynrange}{
    see \link{g.part1}
+  }
+  \item{configtz}{
+  Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
+  was configured. Only use this argument if the timezone of configuration and
+  timezone in which recording took place are different.
   }
   \item{...}{
    Please ignore. Only used by the code internally when called from within
