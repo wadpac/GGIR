@@ -9,15 +9,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    boutdur.lig = c(1,5,10),
                    winhr = 5,
                    M5L5res = 10,
-                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE) {
+                   overwrite=FALSE,desiredtz="Europe/London",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE,
+                   do.parallel = TRUE) {
   options(encoding = "UTF-8")
+  Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
-  # if store.ms = TRUE then it will work with stored milestone data per accelerometer file
-  # if store.ms = FALSE then it will work with the stored spreadsheets from g.part2 and g.part4 and milestone data from part g.part1
-  # this distinction is needed to facilitate both parallel analyses of multiple files (set store.ms to TRUE) and to facilitate
-  # serial analysis of small data pools
   #======================================================================
   # create new folder (if not existent) for storing milestone data
   ms5.out = "/meta/ms5.out"
@@ -33,11 +31,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       dir.create(file.path(metadatadir,ms5.outraw))
     }
   }
-  SUM = nightsummary = M = sib.cla.sum= c()
+  SUM = nightsummary = M = IMP = sib.cla.sum= c()
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms1 = sort(dir(paste(metadatadir,"/meta/basic",sep="")))
-  # fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
+  fnames.ms2 = sort(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
   fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
   fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
@@ -69,12 +67,47 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     fullfilenames = folderstructure$fullfilenames
     foldername = folderstructure$foldername
   }
+  if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3)
+  if (f0 > length(fnames.ms3)) f0 = 1
+  if (f1 == 0 | length(f1) == 0 | f1 > length(fnames.ms3))  f1 = length(fnames.ms3)
   #======================================================================
-  # loop through milestone data-files (in case of store.ms=TRUE)
-  # or filenames stored in output of g.part2 and g.part4 (in case of store.ms=FALSE)
-  t0 = t1 = Sys.time()
-  for (i in f0:f1) {
-    if (length(ffdone) > 0) { #& store.ms == TRUE
+  # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
+  # setup parallel backend to use many processors
+  if (do.parallel == TRUE) {
+    closeAllConnections() # in case there is a still something running from last time, kill it.
+    cores=parallel::detectCores()
+    Ncores = cores[1]
+    if (Ncores > 3) {
+      cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
+      doParallel::registerDoParallel(cl)
+    } else {
+      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      do.parallel = FALSE
+    }
+  }
+  t0 = t1 = Sys.time() # copied here
+  if (do.parallel == TRUE) {
+    cat(paste0('\n Busy processing ... see ',metadatadir,'/ms5', ' for progress\n'))
+  }
+  # check whether we are indevelopment mode:
+  GGIRinstalled = is.element('GGIR', installed.packages()[,1])
+  packages2passon = functions2passon = NULL
+  GGIRloaded = "GGIR" %in% .packages()
+  if (GGIRloaded) { #pass on package
+    packages2passon = 'GGIR'
+  } else { # pass on functions
+    functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout")
+  }
+  fe_dopar = foreach::`%dopar%`
+  fe_do = foreach::`%do%`
+  i = 0 # declare i because foreach uses it, without declaring it
+  `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+  output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon, 
+                                .export=functions2passon, .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
+    tryCatchResult = tryCatch({
+    
+    # for (i in f0:f1) {
+    if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) { 
         skip = 1 #skip this file because it was analysed before")
       } else {
@@ -100,8 +133,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         cat(paste(" ",i,sep=""))
       }
       # load output g.part2
-      # selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
-      # load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
+      selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
+      load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
       # daysummary = SUM$daysummary # commented out because not used
       # summary = SUM$summary # commented out  because not used
       # load output g.part4
@@ -112,7 +145,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       idindex = which(summarysleep$filename == fnames.ms3[i])
       id = summarysleep$id[idindex[1]]
       ndays = nrow(summarysleep) #/ length(unique(summarysleep$acc_def))
-      dsummary = matrix("",(40*length(unique(summarysleep$acc_def))
+      dsummary = matrix("",((nrow(summarysleep)+10)*length(unique(summarysleep$acc_def))
                             *length(unique(threshold.lig))
                             *length(unique(threshold.mod))
                             *length(unique(threshold.vig))
@@ -131,8 +164,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         # load output g.part3
         load(paste0(metadatadir,"/meta/ms3.out/",fnames.ms3[i]))
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
-        IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
-                       hrs.del.end=hrs.del.end,maxdur=maxdur)
+        # IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
+        #                hrs.del.end=hrs.del.end,maxdur=maxdur)
         time = IMP$metashort[,1]
         ACC = IMP$metashort[,acc.metric] * 1000 #note that this is imputed ACCELERATION because we use this for describing behaviour
         
@@ -154,7 +187,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         rm(sib.cla.sum)
         def = unique(S$definition)
         cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
-        
         if (length(cut) > 0) S = S[-cut,]
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)        
           #========================================================
@@ -175,11 +207,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               pr1 = pr0 + ((60/ws3)*1440*6)
               if (pr1 > pr2) pr1 = pr2
               if (pr0 > pr1) pr0 = pr1
-              s0 = which(time[pr0:pr1] == gik.ons[g])[1]
-              s1 = which(time[pr0:pr1] == gik.end[g])[1]
-              timebb = as.character(time[pr0:pr1]) 
-              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
-                timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
+              #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
+              timebb = as.character(time[pr0:pr1])
+              if (is.ISO8601(timebb[1]) == FALSE) { # only do this for POSIX format
+                timebb = POSIXtime2iso8601(timebb,tz=desiredtz)
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
@@ -300,7 +331,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 s1 = which(as.character(time) == w1c)[1]
               }
               timebb = as.character(time) 
-              if(length(unlist(strsplit(timebb[1],"[+]"))) > 1) { # only do this for ISO8601 format
+              if (is.ISO8601(timebb[1]) == TRUE) { # only do this for ISO8601 format
                 timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
                 s0 = which(as.character(timebb) == w0c)[1]
                 s1 = which(as.character(timebb) == w1c)[1]
@@ -360,19 +391,19 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.mvpa = levels$bc.mvpa
                   bc.lig = levels$bc.lig
                   bc.in = levels$bc.in
-                  
                   if (save_ms5rawlevels == TRUE) {
-                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms5[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
+                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
                     if (length(time) == length(LEVELS)) {
                       ind = 1:length(time) #c(1,which(diff(LEVELS)!=0) + 1)
-                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind])
-                      ms5rawlevels[rep(seq_len(nrow(ms5rawlevels)), each=ws3),]
-                      # ms5rawlevels$time[1]
+                      ms5rawlevels = data.frame(date_time = time[ind],class_id = LEVELS[ind], class_name = rep("",length(time)),stringsAsFactors = FALSE)
+                      for (LNi in 1:length(Lnames)) {
+                        replacev = which(ms5rawlevels$class_id == (LNi-1))
+                        if (length(replacev) > 0) ms5rawlevels$class_name[replacev] = Lnames[LNi]
+                      }
                       write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
                       rm(ms5rawlevels)
                     }
                   }
-                  
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
                   # we want there to be one more nights in the accelerometer data than there are nights with sleep results
@@ -380,7 +411,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   NNIGHTSACC = length(nightsi) #acc
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
-                  
                   FM = which(diff(diur) == -1)                  
                   nightsi_bu = nightsi
                   # now 0.5+6+0.5 midnights and 7 days
@@ -393,6 +423,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
                       }
                     } else {
+                      startend_sleep = which(abs(diff(diur))==1)  # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
+                      nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                       plusrow = 1
                     }
                     for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)
@@ -431,6 +463,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq[2] = length(diur)
                         }
                       }
+                      
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
@@ -446,11 +479,12 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         if(wi>nrow(summarysleep_tmp2)+plusb) {
                           dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
                                                      as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
+                          remember_previous_weekday = dsummary[di,fi]
                           ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                           dsummary[di,fi] = j
                           ds_names[fi] = "acc_def";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$night[wi-1]+1
-                          ds_names[fi] = "night number";      fi = fi + 1
+                          ds_names[fi] = "night_number";      fi = fi + 1
                           dsummary[di,fi:(fi+11)] = NA  #Since this is data afte last night, we don't have sleep information here
                           ds_names[fi:(fi+11)] = c("acc_onset","acc_wake","sleeplog_onset","sleeplog_wake",
                                                    "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts","sleeplog_wake_ts",
@@ -458,22 +492,28 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           
                         } else {
                           if(timewindowi == "MM" & wi == nrow(summarysleep_tmp2)+plusb) { # for the last day a ot of information is missing, so fill in defaults 
-                            dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
-                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
+                            dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")), #+1
+                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y"))) #+1
+                            addone = 0
+                            if (dsummary[di,fi] == remember_previous_weekday) {
+                              addone = 1
+                              dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1), #+1
+                                                         as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1)) #+1
+                            }
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
                             ds_names[fi] = "acc_def";      fi = fi + 1
-                            dsummary[di,fi] = summarysleep_tmp2$night[wi-1]+1
-                            ds_names[fi] = "night number";      fi = fi + 1
+                            dsummary[di,fi] = summarysleep_tmp2$night[wi-1] + addone
+                            ds_names[fi] = "night_number";      fi = fi + 1
                           } else {
-                            
                             dsummary[di,fi:(fi+1)] = c(as.character(summarysleep_tmp2$weekday[wi]),
                                                        as.character(as.Date(summarysleep_tmp2$calendardate[wi], format="%e/%m/%Y")))
+                            remember_previous_weekday = dsummary[di,fi]
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
                             ds_names[fi] = "acc_def";      fi = fi + 1
                             dsummary[di,fi] = summarysleep_tmp2$night[wi]
-                            ds_names[fi] = "night number";      fi = fi + 1
+                            ds_names[fi] = "night_number";      fi = fi + 1
                           }
                           dsummary[di,fi] = summarysleep_tmp2$acc_onset[wi]
                           ds_names[fi] = "acc_onset";      fi = fi + 1
@@ -572,6 +612,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = TRVi
                         ds_names[fi] = "TRVi";      fi = fi + 1
                         wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
+                        if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
                         if (wlih > 30 & length(summarysleep_tmp2$night) > 1) { # scenario when day is missing and code reaches out to two days before this day
                           # if (summarysleep_tmp2$night[wi] - summarysleep_tmp2$night[wi-1] != 1) {
                           qqq1 = (qqq2 - (24* ((60/ws3)*60))) + 1 # code now uses only 24hours before waking up
@@ -654,9 +695,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # sse = qqq1:qqq2
                         WLH = ((qqq2-qqq1)+1)/((60/ws3)*60) #windowlength_hours = 
                         if (WLH <= 1) WLH = 1.001
-                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH))
+                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-1)/WLH),na.rm=TRUE)
                         ds_names[fi] = paste("quantile_mostactive60min_mg",sep="");      fi = fi + 1
-                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH))
+                        dsummary[di,fi] = quantile(ACC[sse],probs=((WLH-0.5)/WLH),na.rm=TRUE)
                         ds_names[fi] = paste("quantile_mostactive30min_mg",sep="");      fi = fi + 1
                         #===============================================
                         # L5 M5, L10 M10...
@@ -698,7 +739,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           if (ignore == FALSE) dsummary[di,fi] = M5VALUE
                           ds_names[fi] = paste("M",wini,"VALUE",sep="");      fi = fi + 1
                           if (ignore == FALSE) {
-                            if(length(unlist(strsplit(L5HOUR,"[+]"))) > 1) { # only do this for ISO8601 format
+                            if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
                               L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
                               M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
@@ -758,7 +799,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         #===============================================
                         # NUMBER OF WINDOWS
                         for (levelsc in 0:(length(Lnames)-1)) {
-                          # dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2 #old code
                           dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2
                           if (dsummary[di,fi] == 0 & LEVELS[qqq1] == levelsc) dsummary[di,fi] = 1
                           ds_names[fi] = paste("Nblocks_",Lnames[levelsc+1],sep="");      fi = fi + 1
@@ -807,16 +847,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         }
         output = data.frame(dsummary,stringsAsFactors=FALSE)
         names(output) = ds_names
-        
-        # This is not a good solution anymore: If excludefirstlast == TRUE then part4 does not generate sleep estimates for the first and last night,
-        # therefore, part5 will also mis waking up time for the second and the beforelast day.
-        # So, I think if we want to facilitate that the first and last day are excluded in part5 then this will have to be handled
-        # with a different input argument
-        if (excludefirstlast.part5 == TRUE) { #undesirable because it will slowly remove alchanged to TRUE on 20 May 2015
-          output = output[-c(which(output$night_number == min(output$night_number)),
-                             which(output$night_number == max(output$night_number))),] #Moved here, first, it analyzes the whole measurement, then it selects the days to show
+        if (excludefirstlast.part5 == TRUE) {
+          output$night_number = as.numeric(output$night_number)
+          cells2exclude = c(which(output$night_number == min(output$night_number,na.rm = TRUE)),
+                            which(output$night_number == max(output$night_number,na.rm = TRUE)))
+          if (length(cells2exclude) > 0) {
+            output = output[-cells2exclude,]
+          }
         }
-        
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW
@@ -848,6 +886,30 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         rm(output,dsummary)
       }
     }
+    }) # END tryCatch
+    
+    return(tryCatchResult) 
+  }
+  if (do.parallel == TRUE) {
+    on.exit(parallel::stopCluster(cl))
+    for (oli in 1:length(output_list)) { # logged error and warning messages
+      if (is.null(unlist(output_list[oli])) == FALSE) {
+        cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
+        print(unlist(output_list[oli])) # print any error and warnings observed
+      }
+    }
+  }
+  SI = sessionInfo() 
+  sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part5.RData",sep="")
+  if (file.exists(sessionInfoFile)) {
+    FI = file.info(sessionInfoFile)
+    timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
+    # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
+    if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
+      save(SI,file=sessionInfoFile)
+    }
+  } else {
+    save(SI,file=sessionInfoFile)
   }
 }
 

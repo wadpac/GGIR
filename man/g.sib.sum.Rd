@@ -8,7 +8,7 @@
   for direct use by package user
 }
 \usage{
-  g.sib.sum(SLE,M,ignorenonwear=FALSE,desiredtz="Europe/London")
+  g.sib.sum(SLE,M,ignorenonwear=TRUE,desiredtz="Europe/London")
 }
 \arguments{
   \item{SLE}{
