@@ -93,8 +93,6 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
       }
     }
   }
-  
-  # angle rotations are not needed, because
   #============================================================
   # insert 2 minute blocks of activity at the beginning of every 15 minutes
   actP1 = seq(1,Nrows,by=0.25*3600*sf) # starts at the 1st minutes and then everry 15 minutes

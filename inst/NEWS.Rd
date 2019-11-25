@@ -1,17 +1,134 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.6-? (release date:??-11-2018)}{
+\section{Changes in version 1.10-10 (release date:12-11-2019)}{
 \itemize{
-  \item Order of Nbouts output in g.part5 was not consistent with bout duration, 
-  which is fixed now. Thanks Jairo for identifying the problem.
-  }
+  \item Fixed issue that emerged in previous version with GENEActiv .bin data not
+  being processed by g.getmeta for some files.
+  \item read.myacc.csv is now able to resample data with irregular sample rates
+  \item function resample can now handle any matrix size, previous only 3 columns
+  \item read.myacc.csv can now handle timestamps in character format
+  \item Fixes bug when using multiple non-angle metrics in part1 and trying to calculate
+  1to6am average metric value in part 2
+  \item Expanded Actigraph date format recognition ability
+}
+}
+\section{Changes in version 1.10-7 (release date:06-10-2019)}{
+\itemize{
+  \item Fixed functionality to supply calibration coefficients file to backup.cal.coef.
+  \item Fix OSx flavor not being released on CRAN in previous version.
+  \item Upgrades to foreach loop to ease package maintenance
+  \item Documentation part4 expanded to clarify difference between full and cleaned report.
+  \item Non-wear detection now possible at 1 minute resolution, previously 5 minute.
+  \item Function read.myacc.csv now able to utilize 3rd party wear detection.
+}
+}
+\section{Changes in version 1.10-5 (release date:13-09-2019)}{
+\itemize{
+  \item Device serial number recognition in Axivity cwa files fixed
+  \item New GitHub release, because previous version did not install.
+}
 }
 
+\section{Changes in version 1.10-4 (release date:08-09-2019)}{
+\itemize{
+  \item Fixed bug introduced in version 1.10-1 in the conversion from numeric to character sleep times
+  \item Dependencies of dependencies removed from the DESCRIPTION file
+  \item Fixed 1to6am variables, which was wrong in version 1.10-1
+  \item Added functionality to handle accelerometer data from any accelerometer brand
+  stored in csv files via read.myacc.csv. Pass on the arguments of this function to
+  g.shell.GGIR to use this functionality.
+  \item Added reference to new GGIR paper to the documentation
+}
+}
+\section{Changes in version 1.10-1 (release date:23-08-2019)}{
+\itemize{
+  \item Configuration file option now added to g.shell.GGIR and documented in vignette
+  \item metric lfen added (low-pass filter signels followed by Euclidean norm)
+  \item issues fixed with passing on of hb and lb arguments
+  \item argument backup.cal.coef can now also handle data_quality_reports.csv files
+  \item part 1 now automatically uses previously generated calibration coefficients if the datafile
+  was previously processed, see documentation g.part1 for further details.
+  \item Enabled multiple values for argument winhr, by which part2 can now calculated
+  for example L3M3, L5M5, L6M6, L10M10 all in one go. Further, option added (qM5L5) to
+  extract percentiles (quantiles) from the value distribution corresponding to these windows.
+  \item Moved IVIS calculation to seperate function, and split up function g.analyse.
+  \item Now possible to specify time windows that need to be ignored for imputation, see TimeSegments2ZeroFile.
+  \item Default value for argument mode changed from mode = c(1,2) to mode = 1:5, to perform all the parts.
+  \item Checks added for user write and read access permission, and subsequent warnings given..
+  \item Parts 1, 2, 3, and 5 can now use multi CPU cores which speeds up the processing.
+  \item Argument minimumFileSizeMB added to g.part1 to aid filtering out too small data files.
+  }
+  }
+\section{Changes in version 1.9-2 (release date:03-07-2019)}{
+\itemize{
+  \item Added functionality to work with studies where accelerometer is configured in one
+  timezone and used in other timezone. Only functional for AX3 cwa data at the moment.
+  See argument 'configtz'.
+  \item Sleep estimation is now skipped if a day only has one sustained inactivity bout
+  \item Arguments ignorenonwear default value changed to TRUE and def.noc.sleep default changed
+  to 1 in line with literature.
+  \item Fixed AX3 csv format starttimestamp recognition
+  \item Part5 csv export now also includes class labels (previously only class numbers).
+  }
+  }
+\section{Changes in version 1.9-1 (release date:08-05-2019)}{
+\itemize{
+    \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
+    \item Fixed assumption that when using argument idloc=2 the ID has a letter at the end, and automatically
+    removes the last value in the index. The code now first checks for this assumption.
+    \item Update vignette with a more elaborate explanation of the optional arguments to g.shell.GGIR.
+  }
+}
+\section{Changes in version 1.9-0 (release date:14-03-2019)}{
+\itemize{
+  \item functionality storefilestructure should now store filestructure in output of part 2, 4 and 5.
+  \item filelocationkey.csv that was previously written by storefilestructure was redundant and removed.
+  \item sessioninfo storage improved.
+  \item Fixed bug that caused part2 to provide incorrect window specific estimates on first day.
+  of measurement if day is incomplete (not 23, 24 or 25 hours).
+  \item Calibrate function now better able to handle files with more than a week of data, where
+  auto-calibration struggles to find enough sphere data in the first week.
+  \item Fixed part5 output midnight-midnight window when monitor not worn during first days.
+  }
+}
+\section{Changes in version 1.8-1 (release date:11-01-2019)}{
+\itemize{
+  \item Part4 handling of clocktime 9am corrected in addition to fix from version 1.7-1.
+  \item Fixed bug for Actigraph csv header recognition when column 2 and 3 are NA (prevented processing before)
+  \item Fixed bug in g.report.part5 in the calculation of the total number of valid days per person.
+  \item Fixed bug that caused part5 to struggle with timezones west of greenwhich time.
+  \item desiredtz added as explicit argument to g.inspectfile, g.cwaread, and g.dotorcomma.
+  \item Fixed bug in pageindexing in g.readaccfile when machine runs out of memory.
+  \item Fixed bug in pageindexing in Actigraph csv files (10 rows in raw data skipped every block (day)) of data.
+  \item Added more informative warning message in g.report.part2 if file cannot be read.
+  \item Fixed bug in scenario when person is daysleeper and wakingup time occurs before noon, and 12 hours too early.
+  \item Fixed bug re. storefolderstructure=TRUE causing 2 variables to drop in g.report.part4 if storefolderstructure=TRUE.
+  \item g.intensitygradient enabled to handle absense of data.
+  \item tidied up some of the redundant or even confusiong information printer to the console
+  }
+}
+\section{Changes in version 1.7-1 (release date:25-11-2018)}{
+\itemize{
+  \item Fixed order of Nbouts output in g.part5 was not consistent with bout duration.
+  \item Functionality added to read AX3 Axivity csv files that have the following
+  characteristics: Raw data in g-units, not resampled, and with timestamps stored in
+  the first column.
+  \item Fixed bug that caused the date of the last measurement day in part5 output
+  to be one day ahead if argument dayborder=12.
+  \item Part5 struggled to process measurements with more than 40 days, now fixed.
+  \item g.getstarttime can now also handle dates in Actigraph csv-file headers that are
+  dot separated, e.g. 20.05.2016, before it only handled 20-05-2016 and 20/05/2016.
+  \item Part4 handling of clocktime 9am corrected.
+  \item Filename identification in part5 improved when saving raw level data.
+  \item Fixed ability to read wav file header when shorter than expected.
+  \item Fixed issue with CWA read functionality causing some files not to be completely read
+  }
+}
 \section{Changes in version 1.6-7 (release date:23-9-2018)}{
 \itemize{
-  \item Link with Zenodo for doi generation removed
-  \item Broken url fixed in vignette
+  \item Link with Zenodo for doi generation removed.
+  \item Broken url fixed in vignette.
   }
 }
 \section{Changes in version 1.6-1 (release date:21-9-2018)}{

@@ -4,16 +4,16 @@
 function to analyse and summarize pre-processed output from \link{g.part1}
 }
 \description{
-Loads the output from \link{g.part1} and then applies \link{g.impute} and 
+Loads the output from \link{g.part1} and then applies \link{g.impute} and
 \link{g.analyse}, after which the output is converted to .RData-format
-which will be used by \link{g.shell.GGIR} to generate reports. 
+which will be used by \link{g.shell.GGIR} to generate reports.
 The variables in these reports are the same variables as described in
 \link{g.analyse}.
 }
 \usage{
 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1,
-hrs.del.start = 0.5,hrs.del.end = 0.5, maxdur = 7, 
-includedaycrit = 16, L5M5window = c(0,24), M5L5res = 10, 
+hrs.del.start = 0.5,hrs.del.end = 0.5, maxdur = 7,
+includedaycrit = 16, L5M5window = c(0,24), M5L5res = 10,
 winhr = 5, qwindow=c(0,24), qlevels = c(0.1),
 ilevels = c(0,10), mvpathreshold = c(100),
 boutcriter = 0.8,ndayswindow=7,idloc=1,
@@ -22,7 +22,8 @@ epochvalues2csv=FALSE, mvpadur=c(1,5,10),selectdaysfile=c(),
 window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
-iglevels = c())
+iglevels = c(), IVIS.activity.metric=1, TimeSegments2ZeroFile = c(),
+qM5L5=c(), do.parallel = TRUE)
 }
 \arguments{
 \item{datadir}{
@@ -50,7 +51,7 @@ iglevels = c())
     See also \link{g.impute}
   }
   \item{hrs.del.start}{
-    how many HOURS after start of experiment did wearing of monitor start?, 
+    how many HOURS after start of experiment did wearing of monitor start?,
     see \link{g.impute}
   }
   \item{hrs.del.end}{
@@ -76,7 +77,7 @@ iglevels = c())
     resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
   }
    \item{winhr}{
-    window size in hours of L5 and M5 analysis (dedault = 5 hours)
+    Vector of window size(s) (unit: hours) of L5 and M5 analysis (dedault = 5 hours)
   }
   \item{qwindow}{
    see \link{g.analyse}
@@ -84,7 +85,7 @@ iglevels = c())
   \item{qlevels}{
     array of percentiles for which value needs to be extracted. These need to
     be expressed as a fraction of 1, e.g. c(0.1, 0.5, 0.75). There is no limit
-    to the number of percentiles. If left empty then percentiles will not be 
+    to the number of percentiles. If left empty then percentiles will not be
     extracted. Distribution will be derived from short epoch metric data, see
     \link{g.getmeta}.
   }
@@ -94,8 +95,8 @@ iglevels = c())
   }
   \item{mvpathreshold}{
     Threshold for MVPA estimation. Threshold needs to be based on metric ENMO.
-    This can be a single number or an array of numbers, e.g. c(100,120). In the 
-    later case the code will estimate MVPA seperately for each threshold. If 
+    This can be a single number or an array of numbers, e.g. c(100,120). In the
+    later case the code will estimate MVPA seperately for each threshold. If
     this variable is left blank c() then MVPA is not estimated
   }
   \item{boutcriter}{
@@ -155,16 +156,27 @@ iglevels = c())
   see \link{g.getmeta}
   }
     \item{IVIS_windowsize_minutes}{
-  Window size of the Intradaily Variability (IV) and Interdaily
-  Stability (IS) metrics in minutes
+  see function \link{g.IVIS}
   }
   \item{IVIS_epochsize_seconds}{
-  Epoch size of the Intradaily Variability (IV) and Interdaily
-  Stability (IS) metrics in seconds
+  see function \link{g.IVIS}
   }
   \item{iglevels}{
     see function \link{g.analyse}
   }
+  \item{TimeSegments2ZeroFile}{
+   Csv-file holding the data.frame used for argument TimeSegments2Zero in function \link{g.impute}
+  }
+  \item{IVIS.activity.metric}{
+    see function \link{g.IVIS}
+  }
+  \item{qM5L5}{
+    see function \link{g.getM5L5}
+  }
+    \item{do.parallel}{
+    Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
+  }
+  
 }
 \value{
  The function provides no values, it only ensures that other functions are called
@@ -185,9 +197,9 @@ g.part2(metadatadir)
 Movement and Gravity Components in an Acceleration Signal and Implications for the
 Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
 doi:10.1371/journal.pone.0061691
-\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, 
+\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI,
 White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
-free-living physical activity assessment using local gravity and temperature: 
+free-living physical activity assessment using local gravity and temperature:
 an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
 }
 }

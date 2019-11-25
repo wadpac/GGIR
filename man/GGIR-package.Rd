@@ -15,10 +15,10 @@ generation accelerometers which stored only processed summary measures.\cr
 For a tutorial and more background in formation on GGIR, please see the
 package vignette: Accelerometer data processing with GGIR\cr
 \cr
-The package has been developed with and for the accelerometer brands Genea and Geneactive.
-Additionally, it should work for .csv data from Geneactiv, .csv data from
-Actigraph, and .wav and .cwa format from Axivity. Although, I have tested this less thoroughly
-compared with the binary data formats from Genea and Geneactiv.\cr
+The package has been developed with and for the accelerometer brands Genea and GENEActive.
+Additionally, it should work for .csv data from GENEActiv, .csv data from
+Actigraph, and .wav, .csv () and .cwa format from AX3 (Axivity). Although, I have tested
+this less thoroughly compared with the binary data formats from Genea and Geneactiv.\cr
 Note for Actigraph users: please do not
 export timestamps to the csv-file as this causes memory issues. To cope with the
 absense of timestamps the code will re-caculate timestamps from the sample frequency
@@ -90,8 +90,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.6-7\cr
-Date: \tab 2018-9-23\cr
+Version: \tab 1.10-7\cr
+Date: \tab 2019-10-06\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -126,7 +126,8 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \item Joe Heywood helped develop the functionality to process only specific days
 \item Evgeny Mirkes developed function \link{g.cwaread}
 \item Severine Sabia tested and provided feedback on various functions
-\item Jairo H Migueles <jairohm@ugr.es> co-developed some functions
+\item Joan Capdevila Pujol helped to improve various function
+\item Jairo H Migueles <jairohm@ugr.es> helped to improve various functions
 }
 }
 \references{
