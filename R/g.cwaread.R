@@ -1,4 +1,6 @@
-g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
+g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = c(), configtz = c()) {
+
+  if (length(configtz) == 0) configtz = desiredtz
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
   #========================================================================
   # fileName is namer of cwa file to read
@@ -6,12 +8,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   #       which is page number. Page size is 300 of measurements with specified
   #       frequency.
   # end can be timestamp "year-month-day hr:min:sec" or non-negative integer
-  #       which is page number. End must be non less than start. If end is
-  #       less or equal to satrt then there is no data read. Page size is 300 of
+  #       which is page number. End must be not less than start. If end is
+  #       less or equal to start then there is no data read. Page size is 300 of
   #       measurements with specified frequency.
   # progressBar is trigger to switch on/off the text progress bar. If progressBar
   #       is TRUE then the function displays the progress bar but it works
   #       slightly slower
+  # desiredtz is desired time zone
   # Returned structure contains all data from start inclusive till end exclusive.
   # If start == end then data section of final structure is empty.
   # Page size is 300 observations per page
@@ -23,7 +26,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   #           for this frequency.
   #       start is timestamp in numeric form. To get text representation
   #           it is enough to use
-  #               as.POSIXct(start, origin = "1970-01-01", format = "")
+  #               as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
   #       device is "Axivity"
   #       firmwareVersion is version of firmware
   #       blocks is number of datablocks with 80 or 120 raw observations in each.
@@ -31,7 +34,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   #   data is data.frame with following columns
   #       time is timestamp in numeric form. To get text representation
   #           it is enough to use
-  #               as.POSIXct(time, origin = "1970-01-01", format = "")
+  #               as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
   #       x, y, z are three accelerations
   #       temperature is temperature for the block
   #       battery is battery charge for the block
@@ -52,8 +55,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
       secs = bitwAnd(coded, 0x3fL)
       # Form string representation of date and convert it to number
       year = as.numeric(as.POSIXct(
-        paste0(year, "-", month, "-", day, " ", hours, ":", mins, ":", secs)
-      ))
+        paste0(year, "-", month, "-", day, " ", hours, ":", mins, ":", secs),
+      tz=configtz))
     }
     else{
       secs = bitwAnd(coded, 0x3fL)
@@ -77,7 +80,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     #       for this frequency.
     #   start is timestamp in numeric form. To get text representation
     #       it is enough to use
-    #           as.POSIXct(start, origin = "1970-01-01", format = "")
+    #           as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
     #   device is "Axivity"
     #   firmwareVersion is version of firmware
     #   blocks is number of datablocks with 80 or 120 observations in each
@@ -92,7 +95,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
       # It is correct header block read information from it
       # skip 3 bytes
       readChar(fid,3,useBytes = TRUE)
-      uniqueSerialCode = readBin(fid, integer(), size = 2)
+      uniqueSerialCode = readBin(fid, integer(), size = 2, signed = FALSE)
       # skip 29 bytes and read 36th byte as frequency of measurement
       readChar(fid, 29, useBytes = TRUE)
       frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(readBin(fid, integer(), size = 1), 15)))
@@ -106,7 +109,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
       if (is.null(datas)){
         stop("Error in the first data block reading")
       }
-
       if (frequency != datas$frequency){
         warning("Inconsistent value of measurement frequency: there is ",
                 frequency, " in header and ", datas$frequency, " in the first data block ")
@@ -114,10 +116,12 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     } else {
       return(invisible(NULL))
     }
+    # start = as.POSIXct(datas$start, origin = "1970-01-01", tz=configtz)
+    start = as.POSIXct(datas$start, origin = "1970-01-01", tz=desiredtz)
     return(invisible(
       list(
         uniqueSerialCode = uniqueSerialCode, frequency = frequency,
-        start = as.POSIXct(datas$start, origin = "1970-01-01"),
+        start = start,
         device = "Axivity", firmwareVersion = version, blocks = numDBlocks
       )
     ))
@@ -136,7 +140,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     #   frequency is frequency recorded in this block
     #   start is start time in nummeric form. To create string representation
     #       it is necesarry to use
-    #           as.POSIXct(start, origin = "1970-01-01", format = "")
+    #           as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
     #   temperature is temperature for the block
     #   battery is battery charge for the block
     #   light is light sensor measurement for the block
@@ -264,7 +268,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   struc = list(0,0L)
   header = readHeader(fid, numDBlocks)
   # preprocess start and stop
-  origin = header$start
+  origin = as.numeric(header$start)
   step = 1/header$frequency
   if (is.numeric(start)) {
     if (start<0)
@@ -273,14 +277,11 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   }
   if (is.numeric(end)) {
     end = end * pageLength
-    if (end > numDBlocks * 120) {
-      end = numDBlocks * 120
+    if (end > numDBlocks * 150) {
+      end = numDBlocks * 150
     }
     end = origin + end * step
   }
-  # to prevent creation of too big arrays we can use this estimation
-  if (end > origin + numDBlocks * 150 * step)
-    end = origin + numDBlocks * 150 * step
   # If data is not necessary then stop work
   if (end <= start) {
     close(fid)
@@ -351,16 +352,20 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
     # put result to specified position
     last = nrow(tmp) + pos - 1
-    accelRes[pos:last,] = tmp
+    if (last>=pos) {
+      accelRes[pos:last,] = tmp
+    }
 
     # Remove all rawdata exclude the last
     rawTime[1] = rawTime[rawLast]
     rawAccel[1,] = rawAccel[rawLast,]
     rawPos = 2
     # Fill light, temp and battery
-    light[pos:last] = prevRaw$light
-    temp[pos:last] = prevRaw$temperature
-    battery[pos:last] = prevRaw$battery
+    if (last>=pos) {
+      light[pos:last] = prevRaw$light
+      temp[pos:last] = prevRaw$temperature
+      battery[pos:last] = prevRaw$battery
+    }
     # Now current become previous
     prevRaw = raw
     pos = last + 1
@@ -374,7 +379,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   #############################################################################
   # Process the last block of data if necessary
   if (pos <= nr) { # & ignorelastblock == FALSE){ #ignorelastblock == FALSE added by VvH on 22-4-2017
-    print("last block of data")
+    # print("last block of data")
     # Calculate pseudo time for the "next" block
     newTimes = (prevRaw$start - prevStart) / prevLength * prevRaw$length + prevRaw$start
     prevLength = prevRaw$length
@@ -401,14 +406,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
     tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
     # put result to specified position
     last = nrow(tmp) + pos - 1
-    accelRes[pos:last,] = tmp
-    # Fill light, temp and battery
-    light[pos:last] = prevRaw$light
-    temp[pos:last] = prevRaw$temperature
-    battery[pos:last] = prevRaw$battery
-    # Now current become previous
-    prevRaw = raw
-    pos = last +1
+    if (last>=pos){
+      accelRes[pos:last,] = tmp
+      # Fill light, temp and battery
+      light[pos:last] = prevRaw$light
+      temp[pos:last] = prevRaw$temperature
+      battery[pos:last] = prevRaw$battery
+    }
   }
   close(fid)
   #===============================================================================
@@ -436,6 +440,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE) {
   # Form outcome
   return(invisible(list(
     header = header,
-    data = as.data.frame(cbind(time = timeRes, accelRes,temp,  battery, light))
+    data = as.data.frame(cbind(time = timeRes, accelRes, temp,  battery, light))
   )))
 }

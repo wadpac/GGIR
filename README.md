@@ -1,24 +1,30 @@
 [![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
+[![](https://cranlogs.r-pkg.org/badges/GGIR)](https://cran.r-project.org/package=GGIR)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/GGIR)](https://cran.r-project.org/package=GGIR)
 
 The code in this repository is the development version for the code in R-package GGIR on CRAN
 
-## Contribution guidelines:
-Contributions are welcome.
+## Getting started:
+The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
 
-### For developers:
+## Contribution guidelines:
+We always welcome contributions to the package.
+
+### When you are familiar with GitHub:
 We work with [GitHub Flow](https://guides.github.com/introduction/flow/) branching model.
 
 Key steps:
-1. Create a GitHub issue in this repository.
-2. Assign yourself to the GitHub issue you are working on, to inform other develpers that you are workin on it.
-3. Create your own working branch.
-4. Make your changes in that branch.
-5. Commit your changes to your working branch as long as you are not finished with your development.
-6. Make sure the release notes in NEWS.Rd are up to date.
-7. Run the tests and checks as CRAN, make sure they pass.
-8. Once your work is finished, make a pull request, such that another developer can review your changes before merging them with the master branch.
+1. Create a GitHub issue in this repository with description of the work that you plan to do.
+2. Assign yourself to the GitHub issue you are working on, to inform other developers that you are working on it.
+3. Create your own working branch or fork.
+4. Make your changes in that branch or fork.
+5. Commit your changes to your working branch/fork as long as you are not finished with your development.
+6. Make sure the release notes in NEWS.Rd are updated.
+7. Add your name to the contributors list in the DESCRIPTION file.
+8. Run the tests and checks as CRAN, make sure they pass.
+9. Once your work is finished, make a pull request, such that another developer can review your changes before merging them with the master branch.
 
-### For end-users unfamiliar with GitHub:
+### When you are unfamiliar with GitHub:
 If you would like to propose additional functionalities or report an issue. Go to [issues](https://github.com/wadpac/GGIR/issues) and create a new issue.
 
 If you would like to propose changes to the text of the manual this is possible.

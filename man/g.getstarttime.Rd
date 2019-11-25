@@ -9,7 +9,8 @@
   for direct use by package user
 }
 \usage{
-  g.getstarttime(datafile,P,header,mon,dformat,desiredtz,selectdaysfile)
+  g.getstarttime(datafile, P, header, mon, dformat, desiredtz,
+  selectdaysfile)
 }
 \arguments{
   \item{datafile}{
