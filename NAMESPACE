@@ -14,10 +14,10 @@ export(g.analyse,g.calibrate,g.getmeta
         numUnpack,POSIXtime2iso8601,resample,is.ISO8601,updateBlocksize,
        g.IVIS, createConfigFile, identify_levels, g.sib.sum, datadir2fnames,
        read.myacc.csv)
-importFrom("grDevices", "colors", "dev.off", "pdf","rainbow")
+importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
-             "lines", "mtext", "text")
+             "lines", "mtext", "text", "arrows", "segments")
 importFrom("utils", "read.csv", "sessionInfo", "write.csv",  "installed.packages")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
