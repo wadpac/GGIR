@@ -372,7 +372,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
-              sleeponset_time = summarysleep_tmp$sleeplog_onset_ts[check_date]  # get the time of sleep_onset
+              sleeponset_time = summarysleep_tmp$acc_onset_ts[check_date]  # get the time of sleep_onset
               # find the first index that matches sleeponset_hour and _min
               sleeponset_hour = as.integer(substr(sleeponset_time,start=1,stop=2))
               sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
@@ -385,7 +385,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             wake_loc = 0
             check_date = match(prev_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
-              wake_time = summarysleep_tmp$sleeplog_wake_ts[check_date] # get wake time
+              wake_time = summarysleep_tmp$acc_wake_ts[check_date] # get wake time
               # find the first index that matches wake time hour and min
               wake_hour = as.integer(substr(wake_time,start=1,stop=2))
               wake_min = as.integer(substr(wake_time,start=4,stop=5))
