@@ -279,8 +279,11 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                                      perc = perc, inbedthreshold = inbedthreshold, 
                                      bedblocksize = bedblocksize, outofbedsize = outofbedsize)
           if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
-            sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end / (3600/ ws3)) + 12
-            sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start / (3600/ ws3)) + 12
+            if(j == 1 & midnightsi[j] == 1) {
+                                                        add = 0
+                                                } else {add = 12}
+            sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end / (3600/ ws3)) + add
+            sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start / (3600/ ws3)) + add
             sptwindow_HDCZA_end[j] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
                                                 tz=desiredtz,calc_sptwindow_HDCZA_end=sptwindow_HDCZA_end[j],
                                                 calc_sptwindow_HDCZA_start=sptwindow_HDCZA_start[j])
