@@ -7,4 +7,5 @@ buildignore
 prepareNewRelease.R
 ^doc$
 ^Meta$
-exampleExtFunction.R
+exampleExtFunction*
+^.*\.py
