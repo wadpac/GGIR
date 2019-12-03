@@ -283,13 +283,10 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3))
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3))
             } else if(j == 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time 
-              end_t = unlist(iso8601chartime2POSIX(time[inbedout$sptwindow_HDCZA_end], tz = desiredtz))
-              end = as.numeric(end_t["hour"]) + as.numeric(end_t["min"])/60 + as.numeric(end_t["sec"])/60/60
-              sptwindow_HDCZA_end[j] = end
-
-              start_t = unlist(iso8601chartime2POSIX(time[inbedout$sptwindow_HDCZA_start], tz = desiredtz))
-              start = as.numeric(start_t["hour"]) + as.numeric(start_t["min"])/60 + as.numeric(start_t["sec"])/60/60
-              sptwindow_HDCZA_start[j] = start
+              startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
+              startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
+              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord 
+              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord
             } else {
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12
