@@ -54,15 +54,17 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   GGIRloaded = "GGIR" %in% .packages()
   if (GGIRloaded) { #pass on package
     packages2passon = 'GGIR'
+    errhand = 'pass'
   } else { # pass on functions
     functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX", "g.sib.plot", "g.sib.sum")
+    errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon, 
-                                .export=functions2passon, .errorhandling='pass') %myinfix% { 
+                                .export=functions2passon, .errorhandling=errhand) %myinfix% { 
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
       FI = file.info(paste(metadatadir,"/meta/basic/",fnames[i],sep=""))
