@@ -2,9 +2,9 @@
 ^\.Rproj\.user$
 ^\.travis.yml$
 .zenodo.json
-.appveyor.yml
 CITATION.cff
 buildignore
 prepareNewRelease.R
 ^doc$
 ^Meta$
+^appveyor\.yml$
