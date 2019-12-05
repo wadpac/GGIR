@@ -20,8 +20,6 @@ before_install:
     export PATH="/usr/local/opt/llvm/bin:$PATH" &&
     export LDFLAGS="-L/usr/local/opt/llvm/lib" &&
     export CFLAGS="-I/usr/local/opt/llvm/include"; fi
-  - pip install --upgrade pip
-  - pip install numpy
 
 r_packages:
   - covr
