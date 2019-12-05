@@ -105,7 +105,7 @@ In this example we will use an external Python code to estimate the dominant sig
 
 Create **dominant_frequency.py** and insert the code shown below:
 
-```{python}
+```{python, eval=FALSE}
 import numpy
 
 def dominant_frequency(x, sf):
