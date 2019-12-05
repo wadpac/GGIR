@@ -7,6 +7,7 @@ output:
     toc: true
     toc_depth: 3
     number_sections: true
+urlcolor: blue
 
 vignette: >
   %\VignetteIndexEntry{Embedding external functions in GGIR}
@@ -86,7 +87,7 @@ g.shell.GGIR(datadir="~/myaccelerometerdata",
              myfun=myfun)
 ```
 
-Please see to GGIR [vignette](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) on what other arguments can be provided to the g.shell.GGIR.
+Please see to GGIR [\underline{vignette}](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) on what other arguments can be provided to the g.shell.GGIR.
 
 \pagebreak
 
@@ -135,7 +136,7 @@ dominant_frequency = function(data=c(), parameters=c()) {
 
 Create a new R script, e.g. myscript.R, and insert the following components.
 
-A specification of the Python environment to use, this can also be a conda environment or docker container (see documentation R package [reticulate](https://rstudio.github.io/reticulate/) for details on that). Make sure that that this Python environment has all the required dependencies.
+A specification of the Python environment to use, this can also be a conda environment or docker container (see documentation R package [\underline{reticulate}](https://rstudio.github.io/reticulate/) for details on that). Make sure that that this Python environment has all the required dependencies.
 
 ```{R,eval=FALSE}
   library("reticulate")
@@ -170,9 +171,9 @@ g.shell.GGIR(datadir="~/myaccelerometerdata",
 # Integration in GGIR output
 
 ## Part 1
-The external function output is included in the time series produced by function GGIR function g.part1 and stored in an RData-file in /output_nameofstudy/meta/basic.
-The resolution of these output in GGIR is set by g.shell.GGIR argument `windowsizes`, which is c(5,900,3600) by default. Here, the first element (5) specifics the short epoch size in seconds.
+The external function output is included in the time series produced by function GGIR function g.part1 and stored in an RData-file in `/output_nameofstudy/meta/basic`.
+The resolution of these output in GGIR is set by g.shell.GGIR argument `windowsizes`, which is `c(5,900,3600)` by default. Here, the first element `5` specifies the short epoch size in seconds.
 If the output of the external function is less then this resolution it will be aggregated with the function as specificied by aggfunction in the `myfun` object. In the count example we used the sum for this and for the dominant frequency example we used the median.
 
 ## Part 2
-Next, in part2 GGIR aims to detect non-wear periods and imputes those. The impute time series can be found in the part 2 milestone data in folder: /output_nameofstudy/meta/ms2.out. If you want these to be directly stored in a csv file then set argument `epochvalues2csv = TRUE`. Additionally, csv reports are created where the output is aggregated per day and per recording.
+Next, in part2 GGIR aims to detect non-wear periods and imputes those. The impute time series can be found in the part 2 milestone data in folder: `/output_nameofstudy/meta/ms2.out`. If you want these to be directly stored in a csv file then set argument `epochvalues2csv = TRUE`. Additionally, csv reports are created where the output is aggregated per day and per recording.
