@@ -99,7 +99,7 @@ Please see the [\underline{general GGIR vignette}](https://cran.r-project.org/pa
 
 # Example with external Python function
 
-In this example we will use an external Python code to estimate the dominant signal frequency per acceleration axis. Needless to say that this can also be done within R, but it only as an example of how to embed Python code.
+In this example we will use an external Python code to estimate the dominant signal frequency per acceleration axis.
 
 ## Write external function
 
