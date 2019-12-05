@@ -45,6 +45,7 @@ R package GGIR would not have been possible without the support of the following
 - Joan Capdevila Pujol contributed with a couple of bug fixes.
 - Dr. Severine Sabia tested and provided feedback on numerous aspects of the package to make it research friendly.
 - Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
+- Dr. Matthew R Patterson contributed with bug fixes and a visualization update.
 
 **Institutions:**
 
@@ -130,7 +131,7 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 ### Key general arguments
 
 - `mode` - which part of GGIR to run, GGIR is constructed in five parts.
-- `overwrite` - whether to overwrite previously produced milestone output. Between each GGIR part, GGIR stores milestone output to ease re-running parts of the pipeline. 
+- `overwrite` - whether to overwrite previously produced milestone output. Between each GGIR part, GGIR stores milestone output to ease re-running parts of the pipeline.
 - `idloc` - tells GGIR where to find the participant ID (default: inside file header)
 - `strategy` - informs GGIR how to consider the design of the experiment.
   - If `strategy` is set to value 1, then check out arguments `hrs.del.start` and `hrs.del.end`.
@@ -538,7 +539,7 @@ I (Vincent) wanted a short name and not to spend too much time finding it. At th
 - For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
 
 # Citing GGIR
-A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of the software. 
+A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of the software.
 
 To do so, please report the GGIR version you used in the text. Additionally, please also cite:
 
