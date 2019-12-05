@@ -56,13 +56,14 @@ calculateCounts = function(data=c(), parameters=c()) {
 Create a new R script for running the GGIR analysis, e.g. myscript.R, and insert:
 
 ```{R,eval=FALSE}
-myfun =  list(FUN="~/calculateCounts.R",
+source("~/calculateCounts.R")
+myfun =  list(FUN=calculateCounts,
               parameters= 30,
               expected_sample_rate= 30,
               expected_unit="g",
               colnames = c("countsX","countsY","countsZ"),
-              minlength = 1,
               outputres = 1,
+              minlength = 1,
               outputtype="numeric",
               aggfunction = sum)
 ```
@@ -71,12 +72,13 @@ The above code creates a list object `myfun` which is expected to come with the 
 
 - `FUN` A character string specifying the location of the external function you want to apply.
 - `parameters` The parameters used by the function, which can be stored in any format (vector, matrix, list, data.frame). The user should make sure that the external function can handle this object.
-- `expected_unit` Expected unit of the acceleration by external function: "mg", "g" or "ms2".
+- `expected_sample_rate` Expected sample rate, if the inputdata has a difference sample rate, then the data will be resampled.
+- `expected_unit` Expected unit of the acceleration by external function: "mg", "g" or "ms2". If input data is different it will be converted.
 - `colnames` Character vector with the names of the columns produced by the external function.
-- `minlength` The minimum length (seconds) of data needed, typically the window per which output is provided.
-- `outputres` The resolution (seconds) of the output produced by the external function. Note, that this needs to be equal to or a multitude of the short epoch size of the g.part1 output (5 seconds) or the short epoch size should be a multitude of this resolution. In this way GGIR can aggregate or repeate the external function output to be used inside GGIR.
-- `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any format).
-- `aggfunction` The function used for aggregation if the data needs to be aggregated to match the short epoch size of the g.part1 output (5 seconds).
+- `outputres` The resolution (seconds) of the output produced by the external function. Note, that this needs to be equal to or a multitude of the short epoch size of the g.part1 output (5 seconds) or the short epoch size should be a multitude of this resolution. In this way GGIR can aggregate or repeat the external function output to be used inside GGIR.
+- `minlength` The minimum length (seconds) of input data needed, typically the window per which output is provided.
+- `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any numeric format).
+- `aggfunction` The function used for aggregation if the data needs to be aggregated to match the short epoch size of the g.part1 output (5 seconds), see description outputres.
 
 Next, add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument:
 
@@ -84,6 +86,8 @@ Next, add a call to GGIR function g.shell.GGIR where `myfun` is provided as argu
 library(GGIR)
 g.shell.GGIR(datadir="~/myaccelerometerdata",
              outputdir="~/myresults",
+             mode=1:2,
+             do.report=2,
              myfun=myfun)
 ```
 
@@ -99,7 +103,7 @@ In this example we will use external Python code to estimate the dominant signal
 
 Create **dominant_frequency.py** with the Python code to estimate the dominant frequency:
 
-```{Python,eval=FALSE}
+```{python,eval=FALSE}
 import numpy
 
 def dominant_frequency(x, sf):
@@ -140,14 +144,15 @@ A specification of the Python environment to use, this can also be a conda envir
 
 ```{R,eval=FALSE}
   library("reticulate")
-  use_virtualenv("~/venv", required = TRUE) # Local Python environment
+  use_virtualenv("~/myvenv", required = TRUE) # Local Python environment
 
 ```
 
 Specify a `myfun` object
 
 ```{R,eval=FALSE}
-myfun =  list(FUN=exampleExtFunction,
+source("~/dominant_frequency.R")
+myfun =  list(FUN=dominant_frequency,
               parameters= 30,
               expected_sample_rate= 30,
               expected_unit="g",
@@ -164,6 +169,8 @@ Add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument a
 library(GGIR)
 g.shell.GGIR(datadir="~/myaccelerometerdata",
              outputdir="~/myresults",
+             mode=1:2,
+             do.report=2,
              myfun=myfun)
 ```
 
