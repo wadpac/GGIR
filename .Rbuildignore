@@ -9,3 +9,4 @@ prepareNewRelease.R
 ^Meta$
 exampleExtFunction*
 ^.*\.py
+^appveyor\.yml$
