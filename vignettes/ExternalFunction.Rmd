@@ -9,7 +9,7 @@ output:
     number_sections: true
 
 vignette: >
-  %\VignetteIndexEntry{Accelerometer data processing with GGIR}
+  %\VignetteIndexEntry{Embedding external functions in GGIR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introduction
 
 **Challenge**
-If you are developing an algorithm for processing raw accelerometer data you may be interested to pilot it on a large dataset. For example, the algorithm could be classification algorithm. However, to do it well you would have to build code to read, clean and aggregate the data in an efficient way. Developing such code takes a lot of time.
+If you are developing an algorithm for processing raw accelerometer data you may be interested to pilot it on a dataset with multi-day recordings. For example, the algorithm could be an activity type classifier developed with lab experiment data and you may be curious what percentage of the week it classifies as walking an epidemiology study. However, to do it well you would have to build code to read, clean and aggregate the data in an efficient way. Developing such code takes a lot of time.
 
 **Solution offered by GGIR**
 GGIR allows you to integrate external functions that are written in R or Python. This gives you the advantage that you can use the tested data handling infrastructure GGIR offers and plugin your own algorithm. This vignette explains how to do this.
