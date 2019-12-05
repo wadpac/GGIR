@@ -87,6 +87,7 @@ library(GGIR)
 g.shell.GGIR(datadir="~/myaccelerometerdata",
              outputdir="~/myresults",
              mode=1:2,
+             epochvalues2csv = TRUE,
              do.report=2,
              myfun=myfun)
 ```
@@ -170,6 +171,7 @@ library(GGIR)
 g.shell.GGIR(datadir="~/myaccelerometerdata",
              outputdir="~/myresults",
              mode=1:2,
+             epochvalues2csv = TRUE,
              do.report=2,
              myfun=myfun)
 ```
