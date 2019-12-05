@@ -17,6 +17,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
+library(reticulate)
 knitr::opts_chunk$set(
   echo = TRUE,
   python.reticulate = FALSE
@@ -25,9 +26,9 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Algorithms (e.g. machine learning models) are typically developed for a specific data format and do not necessarily include the necessary data cleaning steps involved in real life 'out of the lab' experiments of multiple days of data per participant. As a result, it is not easy to pilot or fully implement a new algorithm those datasets. Code will have to be written to read, clean, and aggregate the data in an efficient way.
+Algorithms (e.g. machine learning models) are typically developed for a specific data format and do not include the necessary data cleaning steps for real life 'out of the lab' experiments with multiple days of data per participant. As a result, it is not easy to pilot, let alone fully implement, a new algorithm on those datasets. Additional code will have to be written to read, clean, and aggregate the data in an efficient way.
 
-GGIR now allows you to apply your algorithm written in R or Python to raw accelerometer data, while taking care of all those other processing steps. 
+GGIR now allows you to apply your algorithm written in R or Python to raw accelerometer data, while taking care of all the other processing steps. 
 
 Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory and corrected for calibration error GGIR applies its own default algorithms, but now also the algorithm you provide via an external function file that you will have to write. The function is expected to take as input: A three-column matrix with the acceleration data, and an optional parameters argument. As output it is expected to produce a single time series.
 
@@ -55,7 +56,7 @@ calculateCounts = function(data=c(), parameters=c()) {
 ## Provide external function to GGIR
 
 Create a new .R file for running the GGIR analysis, e.g. named `myscript.R`, and insert the following code.
-Do not forget to update the filepath to the `calculateCounts.R` file.
+Do not forget to update the filepath on the first line to point to your `calculateCounts.R` file.
 
 ```{R,eval=FALSE}
 source("~/calculateCounts.R")
@@ -95,7 +96,7 @@ g.shell.GGIR(datadir="~/myaccelerometerdata",
              myfun=myfun)
 ```
 
-Please see to GGIR [\underline{vignette}](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) on what other arguments can be provided to the g.shell.GGIR function.
+Please see the [\underline{general GGIR vignette}](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) for more information about function g.shell.GGIR.
 
 # Example with external Python function
 
