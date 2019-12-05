@@ -517,10 +517,15 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
             maxwacc = max(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres))
-            if (sdwacc < sdcriter) {
-              if (abs(maxwacc - minwacc) < racriter) {
-                NW[h,jj] = 1
+            absrange = abs(maxwacc - minwacc)
+            if (is.numeric(absrange) == TRUE & is.numeric(sdwacc) == TRUE & is.na(sdwacc) == FALSE) {
+              if (sdwacc < sdcriter) {
+                if (absrange < racriter) {
+                  NW[h,jj] = 1
+                }
               }
+            } else {
+              NW[h,jj] = 1 # if sdwacc, maxwacc, or minwacc could not be derived then label as non-wear
             }
           }
           CW = CW / (window2) #changed 30-1-2012, was window*sf

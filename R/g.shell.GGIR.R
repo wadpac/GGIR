@@ -270,10 +270,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
 
-  cat("\n   Please refer to GGIR by reporting the version number and citing\n")
-  cat("   Migueles et al. 2019 J Meas Phys Beh. See also: \n")
-  cat("   https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
-
+  cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
+  cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
+  cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
+  
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
@@ -450,6 +450,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     cat("\nGenerate visual reports\n")
     f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
     g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
-            viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz)
+            viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz,
+            metric=acc.metric,threshold.lig,threshold.mod,threshold.vig)  
   }
 }

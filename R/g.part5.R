@@ -95,15 +95,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   GGIRloaded = "GGIR" %in% .packages()
   if (GGIRloaded) { #pass on package
     packages2passon = 'GGIR'
+    errhand = 'pass'
   } else { # pass on functions
     functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout")
+    errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon, 
-                                .export=functions2passon, .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
+                                .export=functions2passon, .errorhandling=errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
     
     # for (i in f0:f1) {
@@ -424,7 +426,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       }
                     } else {
                       startend_sleep = which(abs(diff(diur))==1)  # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
-                      nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
+                      Nepochsin12Hours =  (60/ws3)*60*12
+                      nightsi = nightsi[which(nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
+                                              nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours))]  # newly added on 25-11-2019
+                      #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                       plusrow = 1
                     }
                     for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)

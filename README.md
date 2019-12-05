@@ -1,7 +1,12 @@
-[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
+[![Build Status](https://travis-ci.org/wadpac/GGIR.svg?branch=master)](https://travis-ci.org/wadpac/GGIR) 
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wadpac/GGIR?branch=master&svg=true)](https://ci.appveyor.com/project/wadpac/GGIR)
+[![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
 [![](https://cranlogs.r-pkg.org/badges/GGIR)](https://cran.r-project.org/package=GGIR)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/GGIR)](https://cran.r-project.org/package=GGIR)
 
+  
+  
+  
 The code in this repository is the development version for the code in R-package GGIR on CRAN
 
 ## Getting started:
