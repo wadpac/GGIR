@@ -17,7 +17,6 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-library(reticulate)
 knitr::opts_chunk$set(
   echo = TRUE,
   python.reticulate = FALSE
