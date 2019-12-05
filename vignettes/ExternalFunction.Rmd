@@ -183,4 +183,4 @@ The resolution of these output in GGIR is set by g.shell.GGIR argument `windowsi
 If the output of the external function is less then this resolution it will be aggregated with the function as specificied by aggfunction in the `myfun` object. In the count example we used the sum for this and for the dominant frequency example we used the median.
 
 ## Part 2
-Next, in part2 GGIR aims to detect non-wear periods and imputes those. The impute time series can be found in the part 2 milestone data in folder: `/output_nameofstudy/meta/ms2.out`. If you want these to be directly stored in a csv file then set argument `epochvalues2csv = TRUE`. Additionally, csv reports are created where the output is aggregated per day and per recording.
+Next, in part2 GGIR aims to detect non-wear periods and imputes those. The impute time series can be found in the part 2 milestone data in folder: `/output_nameofstudy/meta/ms2.out`. If you want these to be directly stored in a csv file then set argument `epochvalues2csv = TRUE`.
