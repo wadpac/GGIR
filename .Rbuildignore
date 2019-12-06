@@ -7,6 +7,4 @@ buildignore
 prepareNewRelease.R
 ^doc$
 ^Meta$
-exampleExtFunction*
-^.*\.py
 ^appveyor\.yml$
