@@ -29,7 +29,7 @@ Algorithms (e.g. machine learning models) are typically developed for a specific
 
 GGIR now allows you to apply your algorithm written in R or Python to raw accelerometer data, while taking care of all the other processing steps. 
 
-Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory and corrected for calibration error GGIR applies its own default algorithms, but now also the algorithm you provide via an external function file that you will have to write. The function is expected to take as input: A three-column matrix with the acceleration data, and an optional parameters argument. As output it is expected to produce a single time series.
+Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory and corrected for calibration error GGIR applies its own default algorithms, but now also the algorithm you provide via an external function file that you will have to write. The function is expected to take as input: A three-column matrix with the acceleration data, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to one or multuple time series, respectively.
 
 # Example with external R function
 
