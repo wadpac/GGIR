@@ -49,7 +49,8 @@
               minlength = 5,
               outputres = 1,
               outputtype="numeric",
-              aggfunction = sum)
+              aggfunction = sum,
+              timestamp=c())
     \itemize{
     \item \code{FUN} the external function to be applied to the data.
     \item \code{parameters} The parameters used by the function, which 
@@ -73,6 +74,9 @@
     \item \code{aggfunction} The function used for aggregation if the
     data needs to be aggregated to match the short epoch size of the
     g.part1 output (5 seconds).
+    \item \code{timestamp} If value is larger than zero then numeric
+    timestamps will be passed on to the external fucntion as first columm
+    of the data matrix.
     }
 }
 \author{
