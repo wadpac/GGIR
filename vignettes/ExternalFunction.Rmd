@@ -67,7 +67,8 @@ myfun =  list(FUN=calculateCounts,
               outputres = 1,
               minlength = 1,
               outputtype="numeric",
-              aggfunction = sum)
+              aggfunction = sum,
+              timestamp=c())
 ```
 
 The above code creates object `myfun` of type `list` which is expected to come with the following elements:
@@ -82,6 +83,9 @@ The above code creates object `myfun` of type `list` which is expected to come w
 - `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any numeric format).
 - `aggfunction` If the data needs to be aggregated to match the short epoch size of the g.part1 output (5 seconds) then this element specifies what
 function should be used for the aggregation, e.g. mean, sum, median.
+- `timestamp` If value is larger than zero then numeric
+    timestamps will be passed on to the external fucntion as first columm
+    of the data matrix.
 
 Next, add a call to GGIR function g.shell.GGIR with `myfun` provided as one of its arguments:
 
@@ -162,7 +166,8 @@ myfun =  list(FUN=dominant_frequency,
               minlength = 5,
               outputres = 5,
               outputtype="numeric",
-              aggfunction = median)
+              aggfunction = median
+              timestamp=c())
 ```
 
 Add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument.

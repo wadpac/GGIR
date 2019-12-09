@@ -404,6 +404,10 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         LFEN3b = allmetrics$LFEN3b
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
+          #starttime
+          if (length(myfun$timestamp) > 0) {
+            myfun$timestamp = starttime
+          }
           OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3)
         }
       }
