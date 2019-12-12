@@ -74,9 +74,9 @@
     \item \code{aggfunction} The function used for aggregation if the
     data needs to be aggregated to match the short epoch size of the
     g.part1 output (5 seconds).
-    \item \code{timestamp} Boolean to indicated whether timestamps 
-    should be passed on to the external fucntion as first columm
-    of the data matrix.
+    \item \code{timestamp} Boolean to indicated whether timestamps
+    (seconds since 1-1-1970) should be passed on to the external 
+    function as first columm of the data matrix.
     }
 }
 \author{
