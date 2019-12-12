@@ -44,6 +44,7 @@ calculateCounts = function(data=c(), parameters=c()) {
   # data: 3 column matrix with acc data
   # parameters: the sample rate of data
   library("activityCounts")
+  if (ncol(data) == 4) data= data[,2:4]
   mycounts = counts(data=data, hertz=parameters, 
                     x_axis=1, y_axis=2, z_axis=3,
                     start_time = Sys.time())
@@ -68,7 +69,7 @@ myfun =  list(FUN=calculateCounts,
               minlength = 1,
               outputtype="numeric",
               aggfunction = sum,
-              timestamp=c())
+              timestamp=F)
 ```
 
 The above code creates object `myfun` of type `list` which is expected to come with the following elements:
@@ -83,9 +84,7 @@ The above code creates object `myfun` of type `list` which is expected to come w
 - `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any numeric format).
 - `aggfunction` If the data needs to be aggregated to match the short epoch size of the g.part1 output (5 seconds) then this element specifies what
 function should be used for the aggregation, e.g. mean, sum, median.
-- `timestamp` If value is larger than zero then numeric
-    timestamps will be passed on to the external fucntion as first columm
-    of the data matrix.
+- `timestamp` Boolean to indicated whether timestamps should be passed on to the external fucntion as first columm of the data matrix.
 
 Next, add a call to GGIR function g.shell.GGIR with `myfun` provided as one of its arguments:
 
@@ -132,6 +131,7 @@ dominant_frequency = function(data=c(), parameters=c()) {
   sf=parameters
   N = nrow(data)
   ws = 5 # windowsize
+  if (ncol(data) == 4) data= data[,2:4]
   data = data.frame(t= floor(seq(0,(N-1)/sf,by=1/sf)/ws),
                     x=data[,1], y=data[,2], z=data[,3])
   df = aggregate(data, by = list(data$t), 
@@ -167,7 +167,7 @@ myfun =  list(FUN=dominant_frequency,
               outputres = 5,
               outputtype="numeric",
               aggfunction = median
-              timestamp=c())
+              timestamp=F)
 ```
 
 Add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument.
