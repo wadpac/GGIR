@@ -28,14 +28,17 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
       return(accelRes)
     }
-    data = resampleAcc(data, sf, myfun)
+    if (myfun$timestamp == T) { #resample, but do not apply function yet, because timestamp also needs to be added
+        data = resampleAcc(data, sf, myfun)
+    } else { # resample and apply function, because timestamp is not needed
+      OutputExternalFunction = myfun$FUN(resampleAcc(data, sf, myfun) * unitcorrection, myfun$parameters)
+    }
   } 
-  # add timestamps to data
-  if (length(myfun$timestamp) > 0) {
+  if (myfun$timestamp == T) { # add timestamp and apply function
     st_num = as.numeric(myfun$timestamp) #numeric time but relative to the desiredtz
     data = cbind(seq(st_num, (st_num + ((nrow(data)-1)*ws3)),by=ws3), data)
+    OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   }
-  OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   # output resolution correction (either aggregate or repeat)
   if (myfun$outputtype == "numeric") { # aggregation is possible with averaging, possibly later also allow for character output
     if (is.null(dim(OutputExternalFunction))) { # if OutputExternalFunction is a simple vector then convert it to 1 column matrix
