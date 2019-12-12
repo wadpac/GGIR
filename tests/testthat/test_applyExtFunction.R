@@ -22,7 +22,8 @@ test_that("Function is applied to acceleration data results in expected output",
                 minlength = 1,
                 outputres = 1,
                 outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
-                aggfunction = mean)
+                aggfunction = mean,
+                timestamp=F)
   
   output = applyExtFunction(data, myfun, sf, ws3)
   
