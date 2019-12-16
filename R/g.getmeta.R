@@ -57,7 +57,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen))
-  if (length(myfun) != 0) nmetrics = nmetrics + length(myfun$colnames)
+  if (length(myfun) != 0) {
+    nmetrics = nmetrics + length(myfun$colnames)
+    # check myfun object already, because we do not want to discover
+    # bugs after waiting for the data to be load
+    check_myfun(myfun, windowsizes) 
+  }
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
