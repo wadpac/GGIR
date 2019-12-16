@@ -1,4 +1,6 @@
 applyExtFunction = function(data, myfun, sf, ws3) {
+  # check myfun object
+  check_myfun(myfun, windowsizes=ws3) 
   # unit correction
   unitcorrection = 1 # default is g
   if (myfun$expected_unit != "g") { 
