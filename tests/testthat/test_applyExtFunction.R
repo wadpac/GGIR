@@ -21,6 +21,7 @@ test_that("Function is applied to acceleration data results in expected output",
                 expected_unit="mg",
                 minlength = 1,
                 outputres = 1,
+                colnames=c("A","B","C"),
                 outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
                 timestamp=F)
