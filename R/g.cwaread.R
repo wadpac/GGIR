@@ -42,7 +42,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   #
   # Background info on data format:
   # https://github.com/digitalinteraction/openmovement/blob/master/Docs/ax3/ax3-technical.md
-  #############################################################################
+    #############################################################################
   
   # Internal functions
   timestampDecoder = function(coded, fraction, shift) {
@@ -91,37 +91,40 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     
     # Start from the file origin
     seek(fid,0)
-    # Read block header and check correcness of name
-    idstr = readChar(fid,2,useBytes = TRUE)
+    # Read block header and check correctness of name
+    idstr = readChar(fid,2,useBytes = TRUE) #offset 0 1
     if (idstr == "MD") {
       # It is correct header block read information from it
-      # skip 3 bytes
-      readChar(fid,2,useBytes = TRUE) #3
-      hwType = readBin(fid, raw(), size = 1)
+      readChar(fid,2,useBytes = TRUE) #offset 2 3
+      # hardware type: AX6 or AX3
+      hwType = readBin(fid, raw(), size = 1) #offset 4
       if (hwType == "64") {
         hardwareType = "AX6"
       } else {
         hardwareType = "AX3" 
       }
-      uniqueSerialCode = readBin(fid, integer(), size = 2, signed = FALSE)
-      sessionID = readBin(fid, integer(), size = 4)
-      # skip 24 bytes and read 35th byte as sensorConfig
-      readChar(fid, 24, useBytes = TRUE)
-      sensorConfig = readBin(fid, raw(), size = 1)
+      # session id and device id
+      lowerDeviceId = readBin(fid, integer(), size = 2, signed = FALSE) #offset 5 6
+      sessionID = readBin(fid, integer(), size = 4) #offset 7 8 9 10
+      upperDeviceId = readBin(fid, integer(), size = 2, signed = FALSE) #offset 11 12
+      if (upperDeviceId >= 65535) upperDeviceId = 0
+      uniqueSerialCode = upperDeviceId * 65536 + lowerDeviceId
+      # gyrorange
+      readChar(fid, 22, useBytes = TRUE) #offset 13..34
+      sensorConfig = readBin(fid, raw(), size = 1) #offset 35
       if (sensorConfig %in% c("00","ff") == TRUE) {
         gyrorange = 0
       } else {
         gyrorange = 8000/(2^as.numeric(substr(sensorConfig,start = 2, stop=2)))
       }
-      # read 36th byte as frequency of measurement
-      samplerate_dynrange = readBin(fid, integer(), size = 1)
+      # sample rate and dynamic range accelerometer
+      samplerate_dynrange = readBin(fid, integer(), size = 1) #offset 36
       frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
       accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
-      # skip 5 bytes and read 41th byte as firmware version
-      readChar(fid, 4, useBytes = TRUE)
-      version = readBin(fid, integer(), size = 1)
-      # Skip 983 bytes and go to the first data block
-      readChar(fid, 982, useBytes = TRUE)
+      readChar(fid, 4, useBytes = TRUE) #offset 37..40
+      version = readBin(fid, integer(), size = 1) #offset 41
+      # Skip 982 bytes and go to the first data block
+      readChar(fid, 982, useBytes = TRUE) #offset 42..1024
       # Read the first data block without data
       datas = readDataBlock(fid, complete = FALSE)
       if (is.null(datas)){
@@ -158,7 +161,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     else
       return(x)
   }
-  
+  unsigned16 = function(x) {
+    # Auxiliary function for normalisation of unsigned integers
+    if (x < 0)
+      return(x + 65536) #2^16
+    else
+      return(x)
+  }
   readDataBlock = function(fid, complete = TRUE){
     # Read one block of data and return list with following elements
     #   frequency is frequency recorded in this block
@@ -186,7 +195,16 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       readChar(fid, 8, useBytes = TRUE)
       timeStamp = readBin(fid, integer(), size = 4)
       # Get light u16 in offset 18
-      light = 2 ^ (3.0 * (readBin(fid, integer(), size = 2) / 512.0 + 1.0))
+      offset18 = unsigned16(readBin(fid, integer(), size = 2))
+
+      # light = 2 ^ (3.0 * (offset18 / 512.0 + 1.0)) # used for AX3, but this seems to have been incorrect
+      light = bitwAnd(offset18, 0x03ffL) # this seems to match better what is shown in OMGUI
+      accelScaleCode = bitwShiftR(offset18, 13)
+      accelScale = 1 / (2^(8+accelScaleCode)) # abs removed
+      gyroRangeCode = floor(offset18 / 1024) %% 8
+      gyroRange = 8000 / (2^gyroRangeCode)
+
+      
       # Read and recalculate temperature u16 in offset 20
       temperature = (150.0 * readBin(fid, integer(), size = 2) - 20500.0) / 1000.0;
       # Read and recalculate battery charge u8 in offset 23
@@ -239,7 +257,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       if (complete){
         if (packed){ #32 bit
           # Read 4 byte for three measurements
-          packedData = readBin(fid, integer(), size = 4, n = blockLength) #4
+          packedData = readBin(fid, integer(), size = 4, n = blockLength)
           # Unpack data
           data = numUnpack(packedData)
           # Calculate number of bytes to skip
@@ -254,17 +272,18 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         # Skip the rest of block
         readChar(fid, temp, useBytes = TRUE)
         # Set names and Normalize accelerations
-        if (is.na(accrange == TRUE)) {
-          accrange = 8 # needed for (old) AX3 when used at non-8g setting
+        if (is.na(header$accrange == TRUE)) {
+          header$accrange = 8
+          # header$accrange = 8 # needed for (old) AX3 when used at non-8g setting
         }
         if (Naxes == 3) {
           colnames(data)=c("x","y","z")
-          # data[,c("x","y","z")] = data[,c("x","y","z")] / (2^11 / accrange) # with 8g this works, but not with other range configurations
-          data[,c("x","y","z")] = data[,c("x","y","z")] / 256
+          data[,c("x","y","z")] = data[,c("x","y","z")] * accelScale  #/ 256
+          
         } else {
           colnames(data)=c("gx","gy","gz", "x","y","z")
-          data[,c("gx","gy","gz")] = (data[,c("gx","gy","gz")] / 2^15)* header$gyrorange
-          data[,c("x","y","z")] = data[,c("x","y","z")] / (2^15 / accrange)
+          data[,c("gx","gy","gz")] = (data[,c("gx","gy","gz")] / 2^15)* gyroRange #header$gyrorange
+          data[,c("x","y","z")] = data[,c("x","y","z")] * accelScale
         }
       } else {
         readChar(fid, 482, useBytes = TRUE)
