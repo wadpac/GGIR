@@ -26,6 +26,13 @@ test_that("Function is applied to acceleration data results in expected output",
                 aggfunction = mean,
                 timestamp=F)
   
+  # Note: If function applyExtFunction is used directly then object myfun 
+  # cannnot carry a logical value because the timestamp can only be added 
+  # in the g.getmeta function from which applyExtFunction is called. However,
+  # you can provide a numeric value to indicate start time in seconds since
+  # 1-1-1970 If the user nonetheless still tries to supply a logical value
+  # then applyExtFunction overwrites this.
+  
   output = applyExtFunction(data, myfun, sf, ws3)
   
   expect_that(ncol(output),equals(3))

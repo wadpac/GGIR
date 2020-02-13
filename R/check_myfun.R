@@ -90,11 +90,11 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
       stop("Element aggfunction is not a function object.")
     }
   }
-  if ("timestamp" %in% names(myfun)) { # If timestamp is available:
-    if (is.logical(myfun$timestamp) == F) {
-      status = 1
-      stop("Element timestamp is not of type logical.")
-    }
-  }
+  # if ("timestamp" %in% names(myfun)) { # If timestamp is available:
+  #   if (is.logical(myfun$timestamp) == F) {
+  #     status = 1
+  #     stop("Element timestamp is not of type logical.")
+  #   }
+  # }
   return(status)
 }
