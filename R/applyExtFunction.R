@@ -49,6 +49,8 @@ applyExtFunction = function(data, myfun, sf, ws3) {
     st_num = as.numeric(myfun$timestamp) #POSIX converted to numeric time but relative to the desiredtz
     data = cbind(seq(st_num, (st_num + ((nrow(data)-1)*ws3)),by=ws3), data)
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
+  } else if (length(myfun$timestamp) == 0  & sf == myfun$expected_sample_rate ){ # if no resampling and timestamp column was needed
+    OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   }
   # output resolution correction (either aggregate or repeat)
   if (myfun$outputtype == "numeric") { # aggregation is possible with averaging, possibly later also allow for character output
