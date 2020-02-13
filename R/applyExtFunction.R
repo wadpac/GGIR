@@ -10,6 +10,15 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       unitcorrection = 9.81
     }
   }
+  if (is.logical(myfun$timestamp) == TRUE) {
+    myfun$timestamp = c() 
+    warning(paste0("Note: If function applyExtFunction is used directly",
+                   " then object myfun cannnot carry a logical value",
+                   " because the timestamp can only be added in the g.getmeta function",
+                   " from which applyExtFunction is called. However,",
+                   " you can provide a numeric value to indicate",
+                   " start time in seconds since 1-1-1970"))
+  }
   # sample rate correction
   if (sf != myfun$expected_sample_rate) {
     resampleAcc = function(rawAccel, sf, myfun) {
@@ -30,14 +39,14 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
       return(accelRes)
     }
-    if (myfun$timestamp == T) { #resample, but do not apply function yet, because timestamp also needs to be added
+    if (length(myfun$timestamp) == 1) { #resample, but do not apply function yet, because timestamp also needs to be added
         data = resampleAcc(data, sf, myfun)
     } else { # resample and apply function, because timestamp is not needed
       OutputExternalFunction = myfun$FUN(resampleAcc(data, sf, myfun) * unitcorrection, myfun$parameters)
     }
   } 
-  if (myfun$timestamp == T) { # add timestamp and apply function
-    st_num = as.numeric(myfun$timestamp) #numeric time but relative to the desiredtz
+  if (length(myfun$timestamp) == 1) { # add timestamp and apply function
+    st_num = as.numeric(myfun$timestamp) #POSIX converted to numeric time but relative to the desiredtz
     data = cbind(seq(st_num, (st_num + ((nrow(data)-1)*ws3)),by=ws3), data)
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   }
@@ -47,14 +56,14 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       OutputExternalFunction = as.matrix(OutputExternalFunction)
       if (ncol(OutputExternalFunction) != 1 & nrow(OutputExternalFunction) == 1) OutputExternalFunction = t(OutputExternalFunction)
     }
-    if (myfun$outputres < ws3) { # if function produces lower resolution output aggregate rows
+    if (myfun$outputres < ws3) { # if function produces higher resolution output (shorter epoch length) then aggregate rows
       agglevel = rep(1:nrow(OutputExternalFunction)+(3*(ws3/myfun$outputres)),each=ws3/myfun$outputres)
       agglevel = agglevel[1:nrow(OutputExternalFunction)]
       OEF = data.frame(OutputExternalFunction, agglevel=agglevel)
       OEFA = aggregate(OEF,by=list(OEF$agglevel),FUN=myfun$aggfunction)
       OutputExternalFunction = OEFA[,-c(1,ncol(OEFA))]
       # OutputExternalFunction is now aggregated to ws3 which will enable merging it with metashort
-    } else if (myfun$outputres < ws3) { # if function produces lower resolution output repeat rows
+    } else if (myfun$outputres > ws3) { # if function produces longer epoch length then repeat rows
       OutputExternalFunction = OutputExternalFunction[rep(seq_len(nrow(OutputExternalFunction)), each = myfun$outputres/ws3), ] 
     }
   }

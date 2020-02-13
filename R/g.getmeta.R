@@ -63,6 +63,7 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
     # bugs after waiting for the data to be load
     check_myfun(myfun, windowsizes) 
   }
+
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -410,8 +411,12 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
-          if (length(myfun$timestamp) > 0) {
-            myfun$timestamp = starttime
+          if (is.logical(myfun$timestamp) == T) {
+            if (myfun$timestamp == TRUE) {
+              myfun$timestamp = starttime
+            } else {
+              myfun$timestamp = c()
+            }
           }
           OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3)
         }
