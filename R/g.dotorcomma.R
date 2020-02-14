@@ -21,7 +21,15 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c(), ...) {
     decn = rmc.dec
   }
   if (dformat == 2) {
-    deci = as.matrix(read.csv(inputfile,skip = 100,nrow=10))
+    skiprows = 100
+    # Note: I have added the below lines because some ActiGraph files start with a
+    # lot of zeros, which makes it impossible to detect decimal separator
+    # "." will then be the default, which is not correct for "," systems.
+    while (skiprows < 1000000) { #foundnonzero == FALSE & 
+      deci = as.matrix(read.csv(inputfile,skip = skiprows,nrow=10))
+      skiprows = skiprows + 1000
+      if (as.numeric(deci[2,2]) != 0) break()
+    }
     if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & getOption("OutDec") == ".") decn = ","
   } else if (dformat == 1) {
     if (mon == 1) {
