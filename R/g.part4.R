@@ -556,6 +556,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   
                   #------------------------------------
                   # ACCELEROMETER
+                  if (is.matrix(spocum.t) == FALSE) spocum.t = as.matrix(spocum.t) # seems needed in rare occasions
+                  if (ncol(spocum.t) < 4 & nrow(spocum.t) > 3) spocum.t = t(spocum.t) # seems needed in rare occasions
                   if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
                     rtl = which(spocum.t[,4] == 1)
                     nightsummary[sumi,3] =spocum.t[rtl[1],2]
