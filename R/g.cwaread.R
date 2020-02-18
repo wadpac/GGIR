@@ -109,14 +109,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       upperDeviceId = readBin(fid, integer(), size = 2, signed = FALSE) #offset 11 12
       if (upperDeviceId >= 65535) upperDeviceId = 0
       uniqueSerialCode = upperDeviceId * 65536 + lowerDeviceId
-      # gyrorange
-      readChar(fid, 22, useBytes = TRUE) #offset 13..34
-      sensorConfig = readBin(fid, raw(), size = 1) #offset 35
-      if (sensorConfig %in% c("00","ff") == TRUE) {
-        gyrorange = 0
-      } else {
-        gyrorange = 8000/(2^as.numeric(substr(sensorConfig,start = 2, stop=2)))
-      }
+      readChar(fid, 23, useBytes = TRUE) #offset 13..34
+      # sensorConfig = readBin(fid, raw(), size = 1) #offset 35
       # sample rate and dynamic range accelerometer
       samplerate_dynrange = readBin(fid, integer(), size = 1) #offset 36
       frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
@@ -146,9 +140,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       device = "Axivity", firmwareVersion = version, blocks = numDBlocks,
       accrange = accrange, hardwareType=hardwareType
     )
-    if (gyrorange != 0) {
-      returnobject[["gyrorange"]] = gyrorange
-    }
     return(invisible(
       returnobject
     ))
@@ -201,7 +192,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       xyz[(i - 1) * 3 + 3] = z
     }
     data = matrix(xyz, ncol=3, byrow=T)
-    data
+    return(data)
   }
   
   readDataBlock = function(fid, complete = TRUE){
@@ -320,7 +311,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           
         } else {
           colnames(data)=c("gx","gy","gz", "x","y","z")
-          data[,c("gx","gy","gz")] = (data[,c("gx","gy","gz")] / 2^15)* gyroRange #header$gyrorange
+          data[,c("gx","gy","gz")] = (data[,c("gx","gy","gz")] / 2^15)* gyroRange
           data[,c("x","y","z")] = data[,c("x","y","z")] * accelScale
         }
       } else {
