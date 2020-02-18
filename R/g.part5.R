@@ -107,7 +107,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon, 
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
-    
     # for (i in f0:f1) {
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) { 
@@ -121,7 +120,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     if (overwrite == TRUE) skip = 0
     # skip files from ms3 if there is no equivalent in ms4
     selp = which(fnames.ms4 == fnames.ms3[i])
-    if (file.exists(paste(metadatadir,"/meta/ms4.out/",fnames.ms4[selp],sep="")) == FALSE) {
+    if (length(selp) > 0) {
+      if (file.exists(paste(metadatadir,"/meta/ms4.out/",fnames.ms4[selp],sep="")) == FALSE) {
+        skip = 1
+      }
+    } else {
       skip = 1
     }
     if (skip == 0) {
@@ -892,7 +895,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       }
     }
     }) # END tryCatch
-    
     return(tryCatchResult) 
   }
   if (do.parallel == TRUE) {
