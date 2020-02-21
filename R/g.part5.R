@@ -95,15 +95,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   GGIRloaded = "GGIR" %in% .packages()
   if (GGIRloaded) { #pass on package
     packages2passon = 'GGIR'
+    errhand = 'pass'
   } else { # pass on functions
     functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout")
+    errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon, 
-                                .export=functions2passon, .errorhandling='pass') %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
+                                .export=functions2passon, .errorhandling=errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
     
     # for (i in f0:f1) {
