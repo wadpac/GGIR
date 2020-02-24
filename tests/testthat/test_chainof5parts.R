@@ -35,7 +35,7 @@ test_that("chainof5parts", {
   # part 2 with strategy = 3
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 3,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel)
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel,myfun=c())
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -46,7 +46,7 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 2,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels= TRUE,
-          do.parallel = do.parallel)
+          do.parallel = do.parallel,myfun=c())
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -57,7 +57,7 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0,qM5L5=c(0.2,0.4),winhr=c(3,10),
-          do.parallel = do.parallel)
+          do.parallel = do.parallel,myfun=c())
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -149,7 +149,7 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, selectdaysfile=selectdaysfile, storefolderstructure=TRUE,
-          do.parallel = do.parallel)
+          do.parallel = do.parallel,myfun=c())
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))

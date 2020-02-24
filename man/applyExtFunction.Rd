@@ -50,7 +50,8 @@
               outputres = 1,
               outputtype="numeric",
               aggfunction = sum,
-              timestamp=c())
+              timestamp=c(),
+              reporttype="event")
     \itemize{
     \item \code{FUN} the external function to be applied to the data.
     \item \code{parameters} The parameters used by the function, which 
@@ -77,6 +78,8 @@
     \item \code{timestamp} Boolean to indicated whether timestamps
     (seconds since 1-1-1970) should be passed on to the external 
     function as first columm of the data matrix.
+    \item \code{reporttype} Character to indicate type of reporting is
+    needed: "event" will sum the value in part2 report.
     }
 }
 \author{

@@ -339,7 +339,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel)
+            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun)
   }
   if (dopart3 == TRUE) {
     cat('\n')
