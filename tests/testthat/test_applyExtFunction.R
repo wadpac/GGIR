@@ -24,7 +24,7 @@ test_that("Function is applied to acceleration data results in expected output",
                 colnames=c("A","B","C"),
                 outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
-                timestamp=F)
+                timestamp=as.numeric(Sys.time())) # for unit test only
   
   # Note: If function applyExtFunction is used directly then object myfun 
   # cannnot carry a logical value because the timestamp can only be added 
@@ -35,8 +35,8 @@ test_that("Function is applied to acceleration data results in expected output",
   
   output = applyExtFunction(data, myfun, sf, ws3)
   
-  expect_that(ncol(output),equals(3))
+  expect_that(ncol(output),equals(4))
   expect_that(nrow(output),equals(4))
-  expect_that(sum(output),equals(66000))
+  expect_that(sum(output[,2:4]),equals(66000))
   expect_that(output[3,2],equals(7000))
 })

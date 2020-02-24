@@ -7,7 +7,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                             mvpathreshold, boutcriter, closedbout,
                             bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-                            deviceSerialNumber, qM5L5) {
+                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun) {
   if (length(selectdaysfile) > 0 & ndays == 2) {
     ndays = 1
     startatmidnight = endatmidnight  = 1
@@ -462,6 +462,15 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                       ds_names[fi] = paste(mvpanames[fillds,mvpai],"_",colnames(metashort)[mi] ,anwi_nameindices[anwi_index],sep=""); fi=fi+1
                     }
                   }
+                }
+              }
+              if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+                if (myfun$reporttype == "event") { # For the event report type we take the sum
+                  daysummary[di,fi] = sum(varnum)
+                  ds_names[fi] = paste0(colnames(metashort)[mi],"_sum",anwi_nameindices[anwi_index],sep=""); fi=fi+1
+                } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
+                  daysummary[di,fi] = mean(varnum)
+                  ds_names[fi] = paste0(colnames(metashort)[mi],"_mean",anwi_nameindices[anwi_index],sep=""); fi=fi+1
                 }
               }
             }
