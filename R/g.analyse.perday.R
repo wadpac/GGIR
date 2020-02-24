@@ -82,6 +82,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       }
     }
     if (qqq2 > nrow(metashort)) qqq2 = nrow(metashort)
+    if (qqq1 > qqq2) next()
     vari = as.matrix(metashort[qqq1:qqq2,])
     val = qcheck[qqq1:qqq2]
     nvalidhours_qwindow = rep(0,length(qwindow) - 1)
