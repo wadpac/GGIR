@@ -18,7 +18,7 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti,
   ilevels, iglevels, domvpa,
   mvpathreshold, boutcriter, closedbout,
   bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-  deviceSerialNumber, qM5L5)
+  deviceSerialNumber, qM5L5, ExtFunColsi, myfun)
 }
 
 \arguments{
@@ -77,6 +77,8 @@ holding the names for the six mvpa variables}
 as character string before the first hyphen}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
 \item{qM5L5}{see \link{g.getM5L5}}
+\item{ExtFunColsi}{column index of metahosrt where metric is stored}
+\item{myfun}{External function object to be applied to raw data, see \link{g.getmeta}.}
 
 }
 \value{
