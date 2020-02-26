@@ -118,7 +118,7 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(6)) # changed because part5 now gives also first and last day
+  expect_that(nrow(output),equals(5)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958))
 
