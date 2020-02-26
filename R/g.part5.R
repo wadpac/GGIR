@@ -39,9 +39,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   fnames.ms3 = sort(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
   fnames.ms4 = sort(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   fnames.ms5 = sort(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
-  # fnames.ms5raw = sort(dir(paste(metadatadir,"/meta/ms5.outraw",sep="")))
-  # results
+  # path results folder
   results = paste(metadatadir,"/results",sep="")
+  # path to sleeplog milestonedata, if it exists:
+  sleeplogRDA = paste(metadatadir,"/meta/sleeplog.RData",sep="")
+  if (file.exists(sleeplogRDA) == TRUE){
+    load(sleeplogRDA)
+  } else {
+    sleeplog = c()
+  }
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
@@ -52,7 +58,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   di = 1
   cnt = 1
   fnames.ms3 = sort(fnames.ms3)
-  # fnames_original= sort(fnames_original)
   if (f1 == 0) length(fnames.ms4)
   if (f1 > length(fnames.ms4)) f1 = length(fnames.ms4)
   boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
@@ -89,7 +94,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   if (do.parallel == TRUE) {
     cat(paste0('\n Busy processing ... see ',metadatadir,'/ms5', ' for progress\n'))
   }
-  # check whether we are indevelopment mode:
+  # check whether we are in development mode:
   GGIRinstalled = is.element('GGIR', installed.packages()[,1])
   packages2passon = functions2passon = NULL
   GGIRloaded = "GGIR" %in% .packages()
@@ -107,7 +112,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon, 
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
-    # for (i in f0:f1) {
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) { 
         skip = 1 #skip this file because it was analysed before")
@@ -140,8 +144,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       # load output g.part2
       selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
       load(file=paste(metadatadir,"/meta/ms2.out/",fnames.ms2[selp],sep=""))
-      # daysummary = SUM$daysummary # commented out because not used
-      # summary = SUM$summary # commented out  because not used
       # load output g.part4
       selp = which(fnames.ms4 == fnames.ms3[i])
       load(file=paste(metadatadir,"/meta/ms4.out/",fnames.ms4[selp],sep=""))
@@ -157,27 +159,27 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             *length(unique(timewindow))),nfeatures)
       di = 1
       fi = 1
+      sptwindow_HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
       if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
         summarysleep_tmp = summarysleep
         #======================================================================
         # load output g.part1
         selp = which(fnames.ms1 == paste("meta_",fnames.ms3[i],sep=""))
         if (length(selp) != 1) {
-          cat("Warning: File not processed with part1")
+          cat("Warning: Milestone data part 1 could not be retrieved")
         }
         load(paste0(metadatadir,"/meta/basic/",fnames.ms1[selp]))
         # load output g.part3
         load(paste0(metadatadir,"/meta/ms3.out/",fnames.ms3[i]))
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
-        # IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
-        #                hrs.del.end=hrs.del.end,maxdur=maxdur)
         time = IMP$metashort[,1]
-        ACC = IMP$metashort[,acc.metric] * 1000 #note that this is imputed ACCELERATION because we use this for describing behaviour
-        
+        #note that this is imputed ACCELERATION because we use this for describing behaviour:
+        ACC = IMP$metashort[,acc.metric] * 1000 
         if (length(which(names(IMP$metashort) == "anglez")) == 0) {
           cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
         }
-        angle = as.numeric(as.matrix(M$metashort[,which(names(IMP$metashort) == "anglez")])) #note that this is the non-imputed angle because we use this here only for the visualisation
+        #note that this is the non-imputed angle because we use this here only for the visualisation:
+        angle = as.numeric(as.matrix(M$metashort[,which(names(IMP$metashort) == "anglez")])) 
         nonwear = IMP$rout[,5]
         nonwear = rep(nonwear,each=(IMP$windowsizes[2]/IMP$windowsizes[1]))
         if (length(nonwear) > length(time)) {
@@ -196,18 +198,23 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)        
           #========================================================
           # SUSTAINED INACTIVITY BOUTS
-          Sbackup = S
+          # These are stored in part 3 milestone data as start- and end-times
+          # in the following code we convert the them into indices of the recording sequence
           S2 = S[which(S$definition==j),] # simplify to one definition
-          sibdetection = rep(0,length(time))
-          tmp = S2 #[which(S2$night==h),]
+          sibdetection = rep(0,length(time)) # initialize output vector that will hold the sibs
           s0s1 = c()
+          # pr0 and pr1 define the indices relative the start of the recording
+          # and specifying a 6 day time window 
+          # always relative to the most recently processed sustained inactivity bout
+          # s0 and s1 are the indices within that time window 
+          # that match the start and end of the next sustained inactivity bout 
           pr0 = 1
           pr1 = pr0 + ((60/ws3)*1440*6)
           pr2 = length(time)
           if (nrow(S2) > 0) {
             gik.ons = as.character(S2$sib.onset.time)
             gik.end = as.character(S2$sib.end.time)
-            for (g in 1:nrow(S2)) { # sleep periods
+            for (g in 1:nrow(S2)) { # sustained inactivity bouts
               lastpr0 = pr0
               pr1 = pr0 + ((60/ws3)*1440*6)
               if (pr1 > pr2) pr1 = pr2
@@ -219,15 +226,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
               s0 = which(timebb == gik.ons[g])[1]
               s1 = which(timebb == gik.end[g])[1]
-              #Change 1 - 03/10/2017
               if ( timebb[1] != as.character(timebb[1])){ #not s0 because s0 does not exist yet if classes differ
                 timebb = as.character(timebb)
                 s0 = which(timebb == gik.ons[g])[1]
                 s1 = which(timebb == gik.end[g])[1]
               }
-              #End of change 1
               if (is.na(s0) == TRUE) s0 = which(timebb == paste(gik.ons[g]," 00:00:00",sep=""))[1]
               if (is.na(s1) == TRUE) s1 = which(timebb == paste(gik.end[g]," 00:00:00",sep=""))[1]
+              # add pr0 to make s0 and s1 be relative to the start of the recording
               s0 = s0 + pr0 - 1
               s1 = s1 + pr0 - 1
               pr0 = s1
@@ -257,14 +263,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
           #           ignore last night because the following day is potentially not complete e.g. by reduce protocol compliance
           #=========
-          # SUSTAINED INACTIVITY BOUTS are normally not assessed for the time between the first midnight and the first noon
-          # because it is not used for sleep reports (first night is ignored)
+          # If excludefirstlast was set to TRUE in part 4 then 
+          # SUSTAINED INACTIVITY BOUTS are not assessed for the time between
+          # the first midnight and the first noon
+          # because it is not used for sleep reports (first night is ignored in this case).
           # Therefore, expand the SIB sibdetection to include this time segment.
+          #----------------------------------------------------------------------
           # Step 1: Identify time window that needs to be processed
-          redo1 = nightsi[1] - ((60/ws3)*60)
+          redo1 = nightsi[1] - ((60/ws3)*60) # 1 hour before first midnight
           if (redo1 < 1) redo1 = 1
-          redo2 = nightsi[1] + (14*(60/ws3)*60)
-          # specify defintion of sustained inactivity bout    
+          redo2 = nightsi[1] + (14*(60/ws3)*60) # 14 hours after first midngiht
+          # Specify defintion of sustained inactivity bout
           anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
           tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
           timethreshold = as.numeric(tempi[length(tempi)])
@@ -301,7 +310,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           }
           sibdetection[redo1:redo2] = sdl1
           #========================================================
-          # DIURNAL BINARY CLASSIFICATION INTO SLEEP OR WAKE PERIOD 
+          # DIURNAL BINARY CLASSIFICATION INTO NIGHT (onset-wake) OR DAY (wake-onset) PERIOD 
           # Note that the sleep date timestamp corresponds to day before night
           w0 = w1 = rep(0,length(summarysleep_tmp2$calendardate))
           diur = rep(0,length(time)) #diur is a variable to indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
@@ -310,11 +319,12 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             summarysleep_tmp2 = summarysleep_tmp2[-pko,]
           }
           if (nrow(summarysleep_tmp2) > 0) {
-            for (k in 1:length(summarysleep_tmp2$calendardate)){
+            for (k in 1:length(summarysleep_tmp2$calendardate)){ # loop through nights from part 4
+              # combine date (the tt object) and time (inside the _ts columns of summarysleep_tmp2)
               tt = unlist(strsplit(as.character(summarysleep_tmp2$calendardate[k]),"/"))
               w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$acc_onset_ts[k]),sep="")
               w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$acc_wake_ts[k]),sep="")
-              if (summarysleep_tmp2$acc_onset[k] >= 24) {
+              if (summarysleep_tmp2$acc_onset[k] >= 24) { # if time is beyond 24 then change the date
                 # I am making the hard assumption here that a day has 24 hours...future improvement needed
                 w0[k] = as.character(as.POSIXlt(w0[k],tz=desiredtz) + (24*3600))
               }
@@ -326,7 +336,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               w1c = as.character(as.POSIXlt(w1[k],tz=desiredtz))
               s0 = which(as.character(time) == w0c)[1]
               s1 = which(as.character(time) == w1c)[1]
-              
               if (length(s0) == 0) {
                 w0c = paste0(w0c," 00:00:00")
                 s0 = which(as.character(time) == w0c)[1]
@@ -366,24 +375,77 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 diur[s0:s1] = 1
               }
             }
+
+            # Note: if excludefirstlast == TRUE was used for part 4,
+            # then diur should lack the first and last night at this point.
             
-            if (diur[1] != 0 & (60/ws3)*60 < nightsi[1]) { # the statement with unique that was here results is ambiguous because it can have multiple values
-              # waketi = which(diff(detection) == -1)[1]
-              # onseti = which(diff(detection) == 1)[1] # added 20/4/2018 by VvH
-              waketi = which(diff(diur) == -1)[1]
-              onseti = which(diff(diur) == 1)[1] # added 20/4/2018 by VvH
-            } else {
-              waketi = 0
-              onseti = 0 # added 20/4/2018 by VvH
+            # # I cannot entirely remember what the following 10 lines do.
+            # # It seems waketi is the index of the first waking moment, which
+            # # is set to zero unless the first midnight is within the first
+            # # hour of the recording and the recording starts with night.
+            # # This sound like a very rare scenario, so in most situations
+            # # waketi will be zero.
+            # Turned off on 26-February 2020
+            # if (diur[1] != 0 & (60/ws3)*60 < nightsi[1]) {
+            #   waketi = which(diff(diur) == -1)[1]
+            #   onseti = which(diff(diur) == 1)[1]
+            # } else {
+            #   waketi = 0
+            #   onseti = 0
+            # }
+            # if (waketi > 0 & onseti == 0) {
+            #   diur[1:waketi] = 1
+            # } else if (waketi > 0 & onseti > 0) {
+            #   diur[onseti:waketi] = 1
+            # }
+
+            # nightsi has all the midnights, so it is possible to check here
+            # whether a wakeup time is missing on the first full day (this occurs
+            # when the first and last night were ignored in part 4).
+            # if it is missing, then impute it in order for part5 to the wake-to-wake
+            # analys on the second recording day,
+            # because at the moment we do this later for the day en recording aggregates,
+            # but not for the time series analysis.
+            
+            firstwake = which(diff(diur) == -1)[1]
+            if (firstwake > nightsi[2]) { # wake for second day is missing, this can happen when excludefirstlast was set to TRUE in part 4
+              Nepochsinhour = (60/ws3) * 60
+              if (length(sleeplog) > 0) {
+                # use sleeplog for waking up after first night
+                wake_night1 = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == 1)]
+                wake_night1_index =c()
+                if (length(wake_night1) != 0) {
+                  wake_night1_num = as.numeric(unlist(strsplit(wake_night1,":"))) / c(1,60,3600)
+                  wake_night1_hour = sum(wake_night1_num)
+                  wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
+                } else { # use HDCZA algorithm as plan B
+                  wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
+                }
+              }
+              if (length(sptwindow_HDCZA_end) > 0 & length(sleeplog) == 0) {
+                # use HDCZA algortihm for waking up after first night
+                # if there was no sleep log
+                wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
+              }
+              if (length(wake_night1_index) == 0) {
+                # use waking up from next day and subtract 24 hours,
+                # the final option if neither of the above routes works
+                wake_night1_index = (firstwake - (24* ((60/ws3)*60))) + 1
+              }
+              diur[nightsi[1]:wake_night1_index] = 1
             }
-            if (waketi > 0 & onseti == 0) {
-              diur[1:waketi] = 1
-            } else if (waketi > 0 & onseti > 0) { # added 20/4/2018 by VvH
-              diur[onseti:waketi] = 1
-            }
+            # waketi = which(diff(diur) == -1)[1]
+            # x11()
+            # plot(diur,type="l",lwd=3)
+            # lines(sibdetection,col="red")
+            # abline(v = nightsi,col="blue",lwd=5)
+            # kkkk
+            
+            
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
+                  # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
                   levels = identify_levels(time,diur,sibdetection,ACC,
                                            TRLi,TRMi,TRVi,
                                            boutdur.mvpa,boutcriter.mvpa,
@@ -428,7 +490,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
                       }
                     } else {
-                      startend_sleep = which(abs(diff(diur))==1)  # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
+                      # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
+                      startend_sleep = which(abs(diff(diur))==1) 
                       Nepochsin12Hours =  (60/ws3)*60*12
                       nightsi = nightsi[which(nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
                                               nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours))]  # newly added on 25-11-2019
@@ -436,12 +499,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       plusrow = 1
                     }
                     for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)
-                      #check that this is a meaningful day
+                      # Check that this is a meaningful day (that is all the qqq variable is used for),
+                      # before storing it.
                       qqq = rep(0,2)
-                      # check that it is possible to find both windows in the data for this day
-                      # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row. 
-                      # Also, it allows for the analysis of the first day for those studies in which the accelerometer is 
-                      # started during the morning and the first day is of interest.
+                      # Check that it is possible to find both windows (WW and MM)
+                      # in the data for this day.
                       if (timewindowi == "MM") {
                         if (wi==1) {
                           qqq[1] = 1
@@ -449,29 +511,27 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         } else if (wi<=nrow(summarysleep_tmp2)) {
                           qqq[1] = nightsi[wi-1] + 1
                           qqq[2] = nightsi[wi]
+                          qqq_backup = qqq
                         } else if (wi>nrow(summarysleep_tmp2)) {
-                          qqq[1] = qqq[2] + 1
-                          #qqq[2] = length(diur)
+                          qqq[1] = qqq_backup[2] + 1
                           qqq[2] = nightsi[wi]
                           if(is.na(qqq[2])==TRUE | length(diur) < qqq[2]) qqq[2] = length(diur)
                         }
                       } else if(timewindowi == "WW") {
-                        if (wi==1){
-                          if (waketi > 0) {
-                            qqq[1] = waketi +1
-                          } else {
-                            qqq[1] = 1
-                          }
+                        if (wi==1){ # start measurement till first waking up
+                          qqq[1] = 1
                           qqq[2]=which(diff(diur) == -1)[wi] + 1
-                        } else if (wi<=nrow(summarysleep_tmp2)) {
+                        } else if (wi<=nrow(summarysleep_tmp2)) { # all full wake to wake days
                           qqq[1] = which(diff(diur) == -1)[wi-1] + 1
                           qqq[2] = which(diff(diur) == -1)[wi]
                         } else if (wi>nrow(summarysleep_tmp2)) {
-                          qqq[1] = qqq[2] + 1
-                          qqq[2] = length(diur)
+                          # time after last reliable waking up (this can be more than 24 hours)
+                          # ignore this day, because if the night was ignored for sleep analysis
+                          # then the description of the day in part 5 including that night is
+                          # not informative.
+                          qqq = c(NA, NA)
                         }
                       }
-                      
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
@@ -499,14 +559,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                    "daysleeper","cleaningcode","sleeplog_used","acc_available"); fi = fi + 12
                           
                         } else {
-                          if(timewindowi == "MM" & wi == nrow(summarysleep_tmp2)+plusb) { # for the last day a ot of information is missing, so fill in defaults 
-                            dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")), #+1
-                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y"))) #+1
+                          if(timewindowi == "MM" & wi == nrow(summarysleep_tmp2)+plusb) { 
+                            # for the last day a ot of information is missing, so fill in defaults 
+                            options(encoding = "UTF-8")
+                            Sys.setlocale("LC_TIME", "C") # set language to English
+                            recDate = as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")
+                            dsummary[di,fi:(fi+1)] = c(weekdays(recDate), as.character(recDate))
                             addone = 0
                             if (dsummary[di,fi] == remember_previous_weekday) {
                               addone = 1
-                              dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1), #+1
-                                                         as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1)) #+1
+                              recDate = as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y") + 1
+                              dsummary[di,fi:(fi+1)] = c(weekdays(recDate), as.character(recDate))
                             }
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
@@ -573,44 +636,21 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi] = "acc_available";      fi = fi + 1
                         }
                         # 
-                        # define time windows
-                        # qqq definitions changed so we get acc_onset and acc_wake regarding to the same day of measurement in the same row.
+                        # define time windows:
+                        # We will get acc_onset and acc_wake 
+                        # regarding to the same day of measurement in the same row.
+                        # which differs between MM and WW
                         # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
+                        # qqq1 is the start of the day
+                        # qqq2 is the end of the day
+                        qqq1 = qqq[1] # added 26 Feb 2020
+                        qqq2 = qqq[2] # added 26 Feb 2020
+                       
                         if (timewindowi == "MM") {
-                          if (wi==1) {
-                            # if (waketi > 0) {
-                            #   qqq1 = waketi + 1
-                            # } else {
-                            qqq1 = 1
-                            # }
-                            qqq2 = nightsi[wi]
-                          } else if (wi<=nrow(summarysleep_tmp2)) {
-                            qqq1 = nightsi[wi-1] + 1
-                            qqq2 = nightsi[wi]
-                          } else if (wi>nrow(summarysleep_tmp2)) {
-                            qqq1 = qqq2 + 1
-                            #qqq2 = length(diur)
-                            qqq2 = nightsi[wi]
-                            if(is.na(qqq2)==TRUE | length(diur) < qqq2) qqq2 = length(diur)
-                          }
                           dsummary[di, fi] = "MM"
                         } else if (timewindowi == "WW") {
-                          if (wi==1){
-                            if (waketi > 0) qqq1 = waketi + 1
-                            else {qqq1 = 1}
-                            qqq2 = which(diff(diur) == -1)[wi] + 1
-                          } else if (wi<=nrow(summarysleep_tmp2)) {
-                            qqq1 = which(diff(diur) == -1)[wi-1] + 1
-                            qqq2 = which(diff(diur) == -1)[wi]
-                          } else if (wi>nrow(summarysleep_tmp2)) {
-                            qqq1 = qqq2 + 1
-                            # qqq2 = length(diur)
-                            qqq2 = nightsi[wi]
-                            if(is.na(qqq2)==TRUE | length(diur) < qqq2) qqq2 = length(diur)
-                          }
                           dsummary[di, fi] = "WW"
                         }
-                        
                         ds_names[fi] = "window";      fi = fi + 1    
                         # keep track of threshold value
                         dsummary[di,fi] = TRLi
@@ -621,13 +661,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         ds_names[fi] = "TRVi";      fi = fi + 1
                         wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
                         if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
-                        if (wlih > 30 & length(summarysleep_tmp2$night) > 1) { # scenario when day is missing and code reaches out to two days before this day
-                          # if (summarysleep_tmp2$night[wi] - summarysleep_tmp2$night[wi-1] != 1) {
-                          qqq1 = (qqq2 - (24* ((60/ws3)*60))) + 1 # code now uses only 24hours before waking up
-                          if (qqq1 < 1) qqq1 = 1
-                          wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
-                          # }
-                        }
+                        # # This part should be redundant now, so commented out (26-Feb 2020):
+                        # if (wlih > 30 & length(summarysleep_tmp2$night) > 1) { 
+                        #   # scenario when day is missing and code reaches out to two days before this day
+                        #   qqq1 = (qqq2 - (24* ((60/ws3)*60))) + 1 # code now uses only 24hours before waking up
+                        #   if (qqq1 < 1) qqq1 = 1
+                        #   wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
+                        # }
                         dsummary[di,fi] = wlih
                         ds_names[fi] = "window_length_in_hours";      fi = fi + 1
                         dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1)) * ws3) / 3600
