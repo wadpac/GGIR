@@ -375,40 +375,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 diur[s0:s1] = 1
               }
             }
-
-            # Note: if excludefirstlast == TRUE was used for part 4,
-            # then diur should lack the first and last night at this point.
-            
-            # # I cannot entirely remember what the following 10 lines do.
-            # # It seems waketi is the index of the first waking moment, which
-            # # is set to zero unless the first midnight is within the first
-            # # hour of the recording and the recording starts with night.
-            # # This sound like a very rare scenario, so in most situations
-            # # waketi will be zero.
-            # Turned off on 26-February 2020
-            # if (diur[1] != 0 & (60/ws3)*60 < nightsi[1]) {
-            #   waketi = which(diff(diur) == -1)[1]
-            #   onseti = which(diff(diur) == 1)[1]
-            # } else {
-            #   waketi = 0
-            #   onseti = 0
-            # }
-            # if (waketi > 0 & onseti == 0) {
-            #   diur[1:waketi] = 1
-            # } else if (waketi > 0 & onseti > 0) {
-            #   diur[onseti:waketi] = 1
-            # }
-
-            # nightsi has all the midnights, so it is possible to check here
-            # whether a wakeup time is missing on the first full day (this occurs
-            # when the first and last night were ignored in part 4).
-            # if it is missing, then impute it in order for part5 to the wake-to-wake
-            # analys on the second recording day,
-            # because at the moment we do this later for the day en recording aggregates,
-            # but not for the time series analysis.
-            
+            # Note related to if first and last night were ignored in part 4:
+            # - diur lack sthe first and last night at this point in the code.
+            # - nightsi has all the midnights, so it is possible to check here
+            # whether a wakeup time is missing on the first full day.
+            # - if it is missing, then we will impute it in order for part5 to
+            # the wake-to-wake analys on the second recording day.
+            # Previously we accounted only for this later on in the code, whcih
+            # did not benefit the experoted timeseries.
             firstwake = which(diff(diur) == -1)[1]
-            if (firstwake > nightsi[2]) { # wake for second day is missing, this can happen when excludefirstlast was set to TRUE in part 4
+            if (firstwake > nightsi[2]) { # test whether wake for second day is missing
               Nepochsinhour = (60/ws3) * 60
               if (length(sleeplog) > 0) {
                 # use sleeplog for waking up after first night
@@ -434,14 +410,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
               diur[nightsi[1]:wake_night1_index] = 1
             }
-            # waketi = which(diff(diur) == -1)[1]
-            # x11()
-            # plot(diur,type="l",lwd=3)
-            # lines(sibdetection,col="red")
-            # abline(v = nightsi,col="blue",lwd=5)
-            # kkkk
-            
-            
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
