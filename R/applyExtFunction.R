@@ -64,6 +64,7 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       OEF = data.frame(OutputExternalFunction, agglevel=agglevel)
       OEFA = aggregate(OEF,by=list(OEF$agglevel),FUN=myfun$aggfunction)
       OutputExternalFunction = OEFA[,-c(1,ncol(OEFA))]
+      OutputExternalFunction = as.matrix(OutputExternalFunction)
       # OutputExternalFunction is now aggregated to ws3 which will enable merging it with metashort
     } else if (myfun$outputres > ws3) { # if function produces longer epoch length then repeat rows
       OutputExternalFunction = OutputExternalFunction[rep(seq_len(nrow(OutputExternalFunction)), each = myfun$outputres/ws3), ] 
