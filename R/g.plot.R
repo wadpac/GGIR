@@ -32,7 +32,8 @@ g.plot = function(IMP,M,I,durplot) {
   if (length(fname2) > 1) fname = paste(fname2[1],fname2[2],sep="")
   plot.new()	
   par(fig=c(0,1,0,1),new=T)
-  plot(seq(0,durplot),seq(0,durplot),col="white",type="l",axes=F,xlab="",ylab="",main=paste("device: ",monn," | filename: ",fname,sep=""),cex.main=0.6)#dummy plot
+  plot(seq(0,durplot),seq(0,durplot),col="white",type="l",axes=F, 
+       xlab="",ylab="",main=paste("device: ",monn," | filename: ",fname,sep=""),cex.main=0.6)#dummy plot
   lim = par("usr")
   Y0 = c(-1)
   Y1 = c(durplot+1)
