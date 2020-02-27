@@ -60,7 +60,9 @@ g.plot = function(IMP,M,I,durplot) {
   if (length(which(colnames(M$metashort) == "ENMO")) > 0) {
     accel = as.numeric(as.matrix(M$metashort[,which(colnames(M$metashort) == "ENMO")]))
   } else {
-    accel = as.numeric(as.matrix(M$metashort[,which(colnames(M$metashort) == "BFEN")]))
+    # Index of first acceleration metric in metashort other than ENMO, timestamp, or angle-related
+    IndOtEnmo = which(colnames(M$metashort) %in% c("ENMO","timestamp","anglex","angley","anglez") == FALSE)[1]
+    accel = as.numeric(as.matrix(M$metashort[,IndOtEnmo]))
   }
   accel2 =cumsum(c(0,accel))
   select = seq(1,length(accel2),by=ws2/ws3)
