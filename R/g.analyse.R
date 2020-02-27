@@ -140,6 +140,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   HFENplusi = which(colnames(metashort) == "HFENplus")
   MADi = which(colnames(metashort) == "MAD")
   ENi = which(colnames(metashort) == "EN")
+  ENMOai = which(colnames(metashort) == "ENMOa")
   ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
   if (length(ANYANGLEi) == 0) ANYANGLEi = -1
   if (length(ENMOi) == 0) ENMOi = -1
@@ -149,6 +150,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(HFENplusi) == 0) HFENplusi = -1
   if (length(MADi) == 0) MADi = -1
   if (length(ENi) == 0) ENi = -1
+  if (length(ENMOai) == 0) ENMOai
+  
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -183,7 +186,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
                                      window.summary.size, qwindow, midnightsi, metashort, averageday,
                                      ENMOi, LFENMOi, BFENi, ENi,
-                                     HFENi, HFENplusi, MADi, doiglevels, nfulldays, lastmidnight,
+                                     HFENi, HFENplusi, MADi,  ENMOai, doiglevels, nfulldays, lastmidnight,
                                      ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
                                      tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
