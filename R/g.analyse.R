@@ -150,8 +150,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(HFENplusi) == 0) HFENplusi = -1
   if (length(MADi) == 0) MADi = -1
   if (length(ENi) == 0) ENi = -1
-  if (length(ENMOai) == 0) ENMOai
-  
+  if (length(ENMOai) == 0) ENMOai = -1
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -179,7 +178,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   qlevels_names = output_avday$qlevels_names
   ML5AD=output_avday$ML5AD
   ML5AD_names = output_avday$ML5AD_names
-
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
