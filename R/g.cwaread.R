@@ -1,4 +1,4 @@
-g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = c(), configtz = c()) {
+g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = "", configtz = c()) {
   
   if (length(configtz) == 0) configtz = desiredtz
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
