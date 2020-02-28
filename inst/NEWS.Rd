@@ -9,13 +9,20 @@
   HDCZA algorithm estimate, and last day is ignored if no sleep estimates are
   available. This also affects csv exports by argument save_ms5rawlevels.
   \item Added explanation to vignette on how to use published cut-points.
+  \item Axivity AX6 (acc + gyro) in cwa format now supported for file reading,
+  actually using the gyro data for feature calculation is future work.
+  In the mean time, gyro signal will be ignored by the rest of GGIR.
+  \item Axivity AX3 acc data in cwa format can now also be read if dynamic
+  range is not 8g. Previously this was not possible.
+  \item Fixed bug related to visual report generation when qwindow is set to
+  non-default value.
 }
 }
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
 \itemize{
   \item Fixed bug that emerged in previous version with GENEActiv .bin data not
   being processed by g.getmeta for some files.
-  \item read.myacc.csv is now able to resample data with irregular sample rates 
+  \item read.myacc.csv is now able to resample data with irregular sample rates
   and handle timestamps in character format.
   \item function resample can now handle any matrix size, previous only 3 columns.
   \item Fixed bug when using multiple non-angle metrics in part1 and trying to calculate
