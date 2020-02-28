@@ -196,7 +196,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(0))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=2),equals(24))
+  expect_that(round(nightsummary$acc_SptDuration[1],digits=2),equals(7))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------
