@@ -3,6 +3,12 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 1.11-1 (GitHub only, release date:28-02-2020)}{
 \itemize{
+  \item Metric ENMOa now facilitated for MVPA calculation
+  \item Bug fixed with part4 daysleeper handling
+  \item Part5 WW window calculation improved, first day now uses sleeplog or
+  HDCZA algorithm estimate, and last day is ignored if no sleep estimates are
+  available. This also affects csv exports by argument save_ms5rawlevels.
+  \item Added explanation to vignette on how to use published cut-points.
   \item Axivity AX6 (acc + gyro) in cwa format now supported for file reading,
   actually using the gyro data for feature calculation is future work.
   In the mean time, gyro signal will be ignored by the rest of GGIR.
