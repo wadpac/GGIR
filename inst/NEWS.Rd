@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.11-1 (GitHub only, release date:28-02-2020)}{
+\section{Changes in version 1.11-1 (GitHub-only-release date:28-02-2020)}{
 \itemize{
   \item Metric ENMOa now facilitated for MVPA calculation
   \item Bug fixed with part4 daysleeper handling
