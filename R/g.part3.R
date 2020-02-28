@@ -14,7 +14,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
     dir.create(file.path(paste(metadatadir,"/meta",sep=""),"sleep.qc"))
   }
   #------------------------------------------------------
-  fnames  =dir(paste(metadatadir,"/meta/basic",sep=""))
+  fnames  =dir(paste(metadatadir,"/meta/ms2.out",sep=""))
   if (f1 > length(fnames) | f1 == 0) f1 = length(fnames)
   if (f0 > length(fnames) | f0 == 0) f0 = 1
   #========================================================================
@@ -67,14 +67,14 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% { 
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
-      FI = file.info(paste(metadatadir,"/meta/basic/",fnames[i],sep=""))
+      FI = file.info(paste(metadatadir,"/meta/ms2.out/",fnames[i],sep=""))
       if (is.na(FI$size) == TRUE) FI$size = 0
       if (FI$size == 0 | is.na(FI$size) == TRUE | length(FI$size) == 0) {
         cat(paste("P3 file ",fnames[i],sep=""))
         cat("Filename not recognised")
       }
       fname = unlist(strsplit(fnames[i],".RData"))[1]
-      fname = unlist(strsplit(fname,"eta_"))[2]
+      # fname = unlist(strsplit(fname,"eta_"))[2]
       #=========================================================
       #check whether file has already been processed
       #by comparing filename to read with list of processed files
@@ -92,8 +92,8 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
         # Load previously stored meta-data from part1.R
         cat(paste(" ",i,sep=""))
         IMP = M = c()
-        load(paste(metadatadir,"/meta/basic/",fnames[i],sep=""))
-        load(paste(metadatadir,"/meta/ms2.out/",unlist(strsplit(fnames[i], "eta_"))[2],sep=""))
+        load(paste(metadatadir,"/meta/basic/meta_",fnames[i],sep=""))
+        load(paste(metadatadir,"/meta/ms2.out/",fnames[i],sep=""))
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           # IMP = g.impute(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0)
           SLE = g.sib.det(M,IMP,I,twd=c(-12,12),timethreshold=timethreshold,anglethreshold=anglethreshold,
