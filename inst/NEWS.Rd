@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.11-1 (GitHub only, release date:28-02-2020)}{
+\itemize{
+  \item Axivity AX6 acc + gyro now supported for file reading, actually using the gyro data is future work.
+  \item Axivity AX3 acc data can now also be read if dynamic range is not 8g.
+}
+}
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
 \itemize{
   \item Fixed bug that emerged in previous version with GENEActiv .bin data not
