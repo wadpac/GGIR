@@ -13,7 +13,7 @@ Typical users should work with function g.shell.GGIR only.
 \usage{
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   acc.metric="ENMO", ignorenonwear=TRUE, overwrite=FALSE,
-  desiredtz="Europe/London",constrain2range=TRUE,
+  desiredtz="",constrain2range=TRUE,
   do.part3.pdf=TRUE, do.parallel=TRUE)
 }
 \arguments{

@@ -1,4 +1,4 @@
-g.inspectfile = function(datafile, desiredtz = c(), ...) {
+g.inspectfile = function(datafile, desiredtz = "", ...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {

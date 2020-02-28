@@ -18,7 +18,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   threshold.vig = c(400), timewindow=c("MM","WW"), 
   boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), 
   boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
-  overwrite=FALSE, desiredtz="Europe/London", 
+  overwrite=FALSE, desiredtz="", 
   bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE)
 
 }
