@@ -1,4 +1,4 @@
-g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
+g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
                      do.bfen=FALSE,do.enmo=TRUE,do.lfenmo=FALSE,
                      do.en=FALSE,do.hfen=FALSE,
