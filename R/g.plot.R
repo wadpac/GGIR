@@ -32,7 +32,8 @@ g.plot = function(IMP,M,I,durplot) {
   if (length(fname2) > 1) fname = paste(fname2[1],fname2[2],sep="")
   plot.new()	
   par(fig=c(0,1,0,1),new=T)
-  plot(seq(0,durplot),seq(0,durplot),col="white",type="l",axes=F,xlab="",ylab="",main=paste("device: ",monn," | filename: ",fname,sep=""),cex.main=0.6)#dummy plot
+  plot(seq(0,durplot),seq(0,durplot),col="white",type="l",axes=F, 
+       xlab="",ylab="",main=paste("device: ",monn," | filename: ",fname,sep=""),cex.main=0.6)#dummy plot
   lim = par("usr")
   Y0 = c(-1)
   Y1 = c(durplot+1)
@@ -60,7 +61,9 @@ g.plot = function(IMP,M,I,durplot) {
   if (length(which(colnames(M$metashort) == "ENMO")) > 0) {
     accel = as.numeric(as.matrix(M$metashort[,which(colnames(M$metashort) == "ENMO")]))
   } else {
-    accel = as.numeric(as.matrix(M$metashort[,which(colnames(M$metashort) == "BFEN")]))
+    # Index of first acceleration metric in metashort other than ENMO, timestamp, or angle-related
+    IndOtEnmo = which(colnames(M$metashort) %in% c("ENMO","timestamp","anglex","angley","anglez") == FALSE)[1]
+    accel = as.numeric(as.matrix(M$metashort[,IndOtEnmo]))
   }
   accel2 =cumsum(c(0,accel))
   select = seq(1,length(accel2),by=ws2/ws3)
