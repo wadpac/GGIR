@@ -421,6 +421,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   calendardate[j] = DD$calendardate
                 }
                 spo = DD$spo
+                reversetime2 = reversetime3 = c()
                 if (daysleeper[j] == TRUE) {
                   if (loaddaysi == 1) {
                     w1 = which(spo[,3] >= 18) #only use periods ending after 6pm
@@ -461,14 +462,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     name2 = paste("spo_day2",k,sep="")
                     tmpCmd = paste("spo = rbind(",name1,",",name2,")",sep="")
                     eval(parse(text=tmpCmd))
-                    #reverse back the timestamps to remember that these timestamps were coming from different days
-                    spo[which(spo[,3] >= 36),3] =  spo[which(spo[,3] >= 36),3] - 24
-                    spo[which(spo[,2] >= 36),2] =  spo[which(spo[,2] >= 36),2] - 24
                   }
                 }
                 # spo is now a matrix of onset and wake for each sleep period (episode)
                 for (evi in 1:nrow(spo)) { #Now classify as being part of the SPT window or not
                   if (spo[evi,2] < SptWake & spo[evi,3] > SptOnset) { # = acconset < logwake  & accwake > logonset
+                    
                     spo[evi,4] = 1 #nocturnal = all acc periods that end after diary onset and start before diary wake
                     # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS
                     if (relyonsleeplog == TRUE) { #if TRUE then sleeplog value is assigned to accelerometer-based value for onset and wake up
@@ -480,6 +479,14 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       }
                     }
                   }
+                }
+                if (daysleeper[j] == TRUE) {
+                  # for the labelling above it was needed to have times > 36, but for the plotting 
+                  # time in the second day needs to be returned to a normal 24 hour scale. 
+                  reversetime2 = which(spo[,2] >= 36)
+                  reversetime3 = which(spo[,3] >= 36)
+                  if (length(reversetime2) > 0) spo[reversetime2,2] = spo[reversetime2,2] - 24
+                  if (length(reversetime3) > 0) spo[reversetime3,3] =  spo[reversetime3,3] - 24
                 }
                 #------------------------------------------------------------------------
                 # Variable 'spo' contains all the sleep periods FOR ONE SLEEP DEFINITION
@@ -556,6 +563,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   
                   #------------------------------------
                   # ACCELEROMETER
+                  if (is.matrix(spocum.t) == FALSE) spocum.t = as.matrix(spocum.t) # seems needed in rare occasions
+                  if (ncol(spocum.t) < 4 & nrow(spocum.t) > 3) spocum.t = t(spocum.t) # seems needed in rare occasions
                   if (length(which(as.numeric(spocum.t[,4]) == 1)) > 0) {
                     rtl = which(spocum.t[,4] == 1)
                     nightsummary[sumi,3] =spocum.t[rtl[1],2]
