@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 1.11-1 (GitHub only, release date:28-02-2020)}{
+\itemize{
+  \item Fixed bug related to visual report generation when qwindow is set to non-default value.
+}
+}
+
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
 \itemize{
   \item Fixed bug that emerged in previous version with GENEActiv .bin data not
