@@ -90,8 +90,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.11-0\cr
-Date: \tab 2019-12-03\cr
+Version: \tab 1.11-1\cr
+Date: \tab 2020-02-28\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -120,7 +120,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
 \author{
 \itemize{
-\item Vincent T van Hees <vincentvanhees@gmail.com> main developer
+\item Vincent T van Hees <v.vanhees@movementdata.nl> main developer
 \item Zhou Fang co-developed function \link{g.calibrate}
 \item Jing Hua Zhao <jinghua.zhao@mrc-epid.cam.ac.uk> co-developed function \link{g.binread}
 \item Joe Heywood helped develop the functionality to process only specific days
