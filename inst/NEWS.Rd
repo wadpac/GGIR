@@ -1,6 +1,16 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.11-1 (GitHub only, release date:28-02-2020)}{
+\itemize{
+  \item Metric ENMOa now facilitated for MVPA calculation
+  \item Bug fixed with part4 daysleeper handling
+  \item Part5 WW window calculation improved, first day now uses sleeplog or
+  HDCZA algorithm estimate, and last day is ignored if no sleep estimates are
+  available. This also affects csv exports by argument save_ms5rawlevels.
+  \item Added explanation to vignette on how to use published cut-points.
+}
+}
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
 \itemize{
   \item Fixed bug that emerged in previous version with GENEActiv .bin data not
