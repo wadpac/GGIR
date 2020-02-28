@@ -5,17 +5,6 @@
 
 using namespace Rcpp;
 
-// numUnpack
-IntegerMatrix numUnpack(IntegerVector pack);
-RcppExport SEXP _GGIR_numUnpack(SEXP packSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type pack(packSEXP);
-    rcpp_result_gen = Rcpp::wrap(numUnpack(pack));
-    return rcpp_result_gen;
-END_RCPP
-}
 // resample
 NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector time, int stop);
 RcppExport SEXP _GGIR_resample(SEXP rawSEXP, SEXP rawTimeSEXP, SEXP timeSEXP, SEXP stopSEXP) {

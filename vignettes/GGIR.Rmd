@@ -39,13 +39,15 @@ R package GGIR would not have been possible without the support of the following
 
 - Dr. Vincent van Hees as main developer & maintainer.
 - Jairo Migueles has helped to improve sections of the code.
-- Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R.
+- Dr. Evgeny Mirkes, Dr. Jing Hua Zhao, and Dr. Dan Jackson provided code to enable binary accelerometer data to be read in R.
 - Dr. Zhou Fang contributed to a part of the code for the auto-calibration functionality.
 - Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording.
 - Joan Capdevila Pujol contributed with a couple of bug fixes.
 - Dr. Severine Sabia tested and provided feedback on numerous aspects of the package to make it research friendly.
-- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
 - Dr. Matthew R Patterson contributed with bug fixes and a visualization update.
+- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
+
+
 
 **Institutions:**
 
