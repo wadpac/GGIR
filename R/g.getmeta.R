@@ -282,7 +282,13 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
         } else if (dformat == 3) {
           data = P$rawxyz
         } else if (dformat == 4  | dformat == 5) {
-          data = P$data
+          if (dformat == 4 & P$header$hardwareType == "AX6") { # cwa AX6
+            # Note 18-Feb-2020: For the moment GGIR ignores the AX6 gyroscope signals until robust sensor
+            # fusion algorithms and gyroscope metrics have been prepared
+            data = P$data[,-c(2:4)]
+          } else { # cwa AX3
+            data = P$data
+          }
         }
         #add left over data from last time
         if (nrow(S) > 0) {
