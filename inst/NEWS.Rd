@@ -16,6 +16,8 @@
   range is not 8g. Previously this was not possible.
   \item Fixed bug related to visual report generation when qwindow is set to
   non-default value.
+  \item Added way to handle Actigraph files which start with several days of 
+  zeros which complicates the auto-calibration.
 }
 }
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
