@@ -18,6 +18,7 @@
   non-default value.
   \item Added way to handle Actigraph files which start with several days of 
   zeros which complicates the auto-calibration.
+  \item Default for desiredtz to timezone of machine.
 }
 }
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
