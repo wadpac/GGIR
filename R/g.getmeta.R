@@ -725,10 +725,17 @@ g.getmeta = function(datafile,desiredtz = c(),windowsizes = c(5,900,3600),
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa,do.lfen)])
-    if (length(myfun) != 0) metricnames_short = c(metricnames_short, myfun$colnames)
+    # Following code is needed to make sure that algorithms that produce character value
+    # output are not assumed to be numeric
+    NbasicMetrics = length(metricnames_short) 
+    if (length(myfun) != 0) {
+      metricnames_short = c(metricnames_short, myfun$colnames)
+      if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
+    }
+    
     metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
-    for (ncolms in 2:ncol(metashort)) {
+    for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
     if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & use.temp == FALSE)) {
