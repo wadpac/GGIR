@@ -114,26 +114,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
-  dmidn = g.detecmidnight(time,desiredtz) #ND,
+  dmidn = g.detecmidnight(time,desiredtz,dayborder) #ND,
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-  if (dayborder != 0) {  #This solves the scenario when first defined midnight (dayborder) is previous to first identified midnight (0 am)
-    time = metalong[,1]
-    tempp = unclass(as.POSIXlt(iso8601chartime2POSIX(time,tz=desiredtz),tz=desiredtz))
-    if (is.na(tempp$sec[1]) == TRUE) {
-      tempp = unclass(as.POSIXlt(time,tz=desiredtz))
-    }
-    sec = tempp$sec
-    min = tempp$min
-    hour = tempp$hour
-    midnightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
-    firstmidnight = time[midnightsi[1]]
-    firstmidnighti = midnightsi[1]
-    lastmidnight = time[max(midnightsi)]
-    lastmidnighti = max(midnightsi)
-    midnights = time[midnightsi]
-  }
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
