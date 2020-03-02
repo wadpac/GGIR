@@ -1,4 +1,4 @@
-g.detecmidnight = function(time,desiredtz) {
+g.detecmidnight = function(time,desiredtz,dayborder) {
   # code in this function is able to deal with two types of timestamp format
   convert2clock = function(x) { #ISO format
     return(as.character(format(as.POSIXlt(x,format="%Y-%m-%dT%H:%M:%S%z",tz=desiredtz),"%H:%M:%S")))
@@ -18,7 +18,7 @@ g.detecmidnight = function(time,desiredtz) {
     time_clock = convert2clock(time)
     checkmidnight_out = unlist(lapply(time_clock,FUN=checkmidnight))
   }
-  midn = which(checkmidnight_out == 0)
+  midn = which(checkmidnight_out == dayborder) #replaced "== 0" for "== dayborder" to work in any scenario
   if (length(midn) == 0) { # measurement with no midnights, use last timestamp as dummy midnight for g.analyse() to work
     midnights = time[length(time)]
     midnightsi = length(time)
