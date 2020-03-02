@@ -53,11 +53,12 @@ applyExtFunction = function(data, myfun, sf, ws3) {
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   }
   # output resolution correction (either aggregate or repeat)
-  if (myfun$outputtype == "numeric") { # aggregation is possible with averaging, possibly later also allow for character output
+  if (myfun$outputtype == "numeric" | myfun$outputtype == "character") { # aggregation is possible with averaging, possibly later also allow for character output
     if (is.null(dim(OutputExternalFunction))) { # if OutputExternalFunction is a simple vector then convert it to 1 column matrix
       OutputExternalFunction = as.matrix(OutputExternalFunction)
       if (ncol(OutputExternalFunction) != 1 & nrow(OutputExternalFunction) == 1) OutputExternalFunction = t(OutputExternalFunction)
     }
+    
     if (myfun$outputres < ws3) { # if function produces higher resolution output (shorter epoch length) then aggregate rows
       agglevel = rep(1:nrow(OutputExternalFunction)+(3*(ws3/myfun$outputres)),each=ws3/myfun$outputres)
       agglevel = agglevel[1:nrow(OutputExternalFunction)]
@@ -67,7 +68,8 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       OutputExternalFunction = as.matrix(OutputExternalFunction)
       # OutputExternalFunction is now aggregated to ws3 which will enable merging it with metashort
     } else if (myfun$outputres > ws3) { # if function produces longer epoch length then repeat rows
-      OutputExternalFunction = OutputExternalFunction[rep(seq_len(nrow(OutputExternalFunction)), each = myfun$outputres/ws3), ] 
+      indx = rep(seq_len(nrow(OutputExternalFunction)), each = myfun$outputres/ws3)
+      OutputExternalFunction = as.matrix(OutputExternalFunction[indx, ])
     }
   }
   return(OutputExternalFunction)
