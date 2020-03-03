@@ -372,7 +372,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 }
               }
               if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
-                diur[s0:s1] = 1
+                diur[s0:(s1-1)] = 1
               }
             }
             # Note related to if first and last night were ignored in part 4:
@@ -408,7 +408,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 # the final option if neither of the above routes works
                 wake_night1_index = (firstwake - (24* ((60/ws3)*60))) + 1
               }
-              diur[nightsi[1]:wake_night1_index] = 1
+              diur[nightsi[1]:(wake_night1_index-1)] = 1
             }
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
