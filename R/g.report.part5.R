@@ -40,21 +40,21 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     }
     #-------------------------------------------
     # clean spreadsheet:
-    # if there is a sleeplog location then only use measurements with sleeplog
-    if (length(loglocation) > 0) { #do you want to fall back on generic assumptions about sleep if sleep log is not available?
-      only.use.sleeplog = TRUE
-    } else {
-      only.use.sleeplog = FALSE
-    }
-    # delete nights without diary, with limited or no acceleration:
-    if (only.use.sleeplog == TRUE) {
-      del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 0 |
-                    as.character(outputfinal$sleeplog_used) == "FALSE" | 
-                    as.character(outputfinal$acc_available) == "FALSE")
-    } else {
+    # # if there is a sleeplog location then only use measurements with sleeplog
+    # if (length(loglocation) > 0) { #do you want to fall back on generic assumptions about sleep if sleep log is not available?
+    #   only.use.sleeplog = TRUE
+    # } else {
+    #   only.use.sleeplog = FALSE
+    # }
+    # # delete nights without diary, with limited or no acceleration:
+    # if (only.use.sleeplog == TRUE) {
+    #   del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 0 |
+    #                 as.character(outputfinal$sleeplog_used) == "FALSE" | 
+    #                 as.character(outputfinal$acc_available) == "FALSE")
+    # } else {
       #only delete nights with no or no valid accelerometer data, but consider nigths with missing sleep log data
       del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 1 | as.character(outputfinal$acc_available) == "FALSE") 
-    }
+    # }
     if (length(del) > 0) {
       outputfinal = outputfinal[-del,]
     }
@@ -271,9 +271,12 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 getValidDayIndices = function(x, includenightcrit, includedaycrit) {
                   maxpernwnight = (1 - (includenightcrit / 24)) * 100
                   maxpernwday = (1 - (includedaycrit / 24)) * 100
-                  indices = which(x$nonwear_perc_day < maxpernwday &
-                                    x$nonwear_perc_night < maxpernwnight &
-                                    x$dur_night_min > 0 & x$dur_day_min > 0) # line added 10/3/2019 because missing days/nights were previously included
+                  # Temporarily replace 4 March 2020...
+                  # indices = which(x$nonwear_perc_day < maxpernwday &
+                  #                   x$nonwear_perc_night < maxpernwnight &
+                  #                   x$dur_night_min > 0 & x$dur_day_min > 0)
+                  # by ...
+                  indices = which(x$dur_night_min > 0 & x$dur_day_min > 0)
                   return(indices)
                 }
                 validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit) 
