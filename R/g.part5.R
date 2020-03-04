@@ -423,6 +423,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   # express hour relative to midnight within the noon-noon:
                   if (wake_night1_hour > 12) wake_night1_hour = wake_night1_hour - 24 # express hour relative to midnight
                   wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
+                  if (wake_night1_index > length(diur)) wake_night1_index = length(diur)
+                  if (wake_night1_index < 1) wake_night1_index = 1
                 } else { # use HDCZA algorithm as plan B
                   wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
                 }
