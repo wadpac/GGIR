@@ -27,7 +27,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     }
     if (length(f1) == 0 | f1 > length(fnames))  f1 = length(fnames)
     #-----------------------------------------------------
-    nightsummary2 = as.data.frame(matrix(0,0,29)) 
+    nightsummary2 = as.data.frame(matrix(0,0,30)) 
     colnames(nightsummary2) = c("id", "night","acc_onset", "acc_wake", "acc_SptDuration", "acc_def", 
                                 "sleeplog_onset", "sleeplog_wake", "sleeplog_SptDuration",
                                 "error_onset", "error_wake", "error_dur",
@@ -35,7 +35,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                                 "acc_SleepDurationInSpt","acc_dur_sibd","acc_n_noc","acc_n_sibd",
                                 "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts", "sleeplog_wake_ts",
                                 "page","daysleeper","weekday","calendardate","filename",
-                                "cleaningcode","sleeplog_used","acc_available")
+                                "cleaningcode","sleeplog_used","acc_available","sleepmethod_used")
     sumi = 1
     sleeplog_used = rep(" ",((f1-f0)+1))
     fnames.ms4 = list.files(paste0(metadatadir,ms4.out),full.names=TRUE)
