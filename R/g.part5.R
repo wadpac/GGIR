@@ -188,6 +188,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           nonwear = c(nonwear,rep(0,(length(time)-length(nonwear))))
         }
         rm(IMP,M,I)
+        clock2numtime = function(x) { # function used for converting sleeplog times to hour times
+          x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
+          return(sum(x2))
+        }
+        Nepochsinhour = (60/ws3) * 60
         #=======================
         # extract epoch by epoch classification of the entire measurement (day specific summaries will follow further down)
         S = sib.cla.sum
@@ -372,6 +377,30 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 }
               }
               if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
+                distance2midnight = abs(nightsi - s1) + abs(nightsi - s0)
+                closestmidnighti = which.min(distance2midnight)
+                closestmidnight = nightsi[closestmidnighti]
+                noon0 = closestmidnight - (12* (60/ws3) * 60)
+                noon1 = closestmidnight + (12* (60/ws3) * 60)
+                if (noon0 < 1) noon0 = 1
+                if (noon1 > length(nonwear)) noon1 = length(nonwear)
+                nonwearpercentage = mean(nonwear[noon0:noon1])
+                if (length(sleeplog) > 0 & nonwearpercentage > 0.33) {
+                  # If non-wear is high for this day and if sleeplog is available
+                  sleeplogonset = sleeplog$sleeponset[which(sleeplog$id == id & sleeplog$night == summarysleep_tmp2$night[k])]
+                  sleeplogwake = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == summarysleep_tmp2$night[k])]
+                  if (length(sleeplogonset) != 0 & length( sleeplogwake) != 0) {
+                    # ... and if there is sleeplog data for the relevant night
+                    # rely on sleeplog for defining the start and end of the night
+                    sleeplogonset_hr = clock2numtime(sleeplogonset)
+                    sleeplogwake_hr= clock2numtime(sleeplogwake)
+                    # express hour relative to midnight within the noon-noon:
+                    if (sleeplogonset_hr > 12) sleeplogonset_hr = sleeplogonset_hr - 24
+                    if (sleeplogwake_hr > 12) sleeplogwake_hr = sleeplogwake_hr - 24
+                    s0 = closestmidnight + round(sleeplogonset_hr * Nepochsinhour)
+                    s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
+                  }
+                }
                 diur[s0:(s1-1)] = 1
               }
             }
@@ -385,14 +414,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             # did not benefit the experoted timeseries.
             firstwake = which(diff(diur) == -1)[1]
             if (firstwake > nightsi[2]) { # test whether wake for second day is missing
-              Nepochsinhour = (60/ws3) * 60
               if (length(sleeplog) > 0) {
                 # use sleeplog for waking up after first night
                 wake_night1 = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == 1)]
                 wake_night1_index =c()
                 if (length(wake_night1) != 0) {
-                  wake_night1_num = as.numeric(unlist(strsplit(wake_night1,":"))) / c(1,60,3600)
-                  wake_night1_hour = sum(wake_night1_num)
+                  wake_night1_hour = clock2numtime(wake_night1)
+                  # express hour relative to midnight within the noon-noon:
+                  if (wake_night1_hour > 12) wake_night1_hour = wake_night1_hour - 24 # express hour relative to midnight
                   wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
                 } else { # use HDCZA algorithm as plan B
                   wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
