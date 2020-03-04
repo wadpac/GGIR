@@ -152,7 +152,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       idindex = which(summarysleep$filename == fnames.ms3[i])
       id = summarysleep$id[idindex[1]]
       ndays = nrow(summarysleep) #/ length(unique(summarysleep$acc_def))
-      dsummary = matrix("",((nrow(summarysleep)+10)*length(unique(summarysleep$acc_def))
+      dsummary = matrix("",((nrow(summarysleep)+12)*length(unique(summarysleep$acc_def))
                             *length(unique(threshold.lig))
                             *length(unique(threshold.mod))
                             *length(unique(threshold.vig))
@@ -670,7 +670,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = wlih
                         ds_names[fi] = "window_length_in_hours";      fi = fi + 1
                         dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1)) * ws3) / 3600
-                        ds_names[fi] = "nonwear_hours";      fi = fi + 1
+                        ds_names[fi] = "nonwear_total_hours";      fi = fi + 1
+                        dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 0)) * ws3) / 3600
+                        ds_names[fi] = "nonwear_waking_hours";      fi = fi + 1
+                        dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 1)) * ws3) / 3600
+                        ds_names[fi] = "nonwear_SPTwindow_hours";      fi = fi + 1
                         #===============================================
                         # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
                         test_remember = c(di,fi)
