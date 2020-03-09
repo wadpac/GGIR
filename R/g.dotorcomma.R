@@ -27,8 +27,15 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
     # "." will then be the default, which is not correct for "," systems.
     while (skiprows < 1000000) { #foundnonzero == FALSE & 
       deci = as.matrix(read.csv(inputfile,skip = skiprows,nrow=10))
-      skiprows = skiprows + 1000
-      if (as.numeric(deci[2,2]) != 0) break()
+      skiprows = skiprows + 10000
+      if (length(unlist(strsplit(as.character(deci[2,2]),","))) > 1) {
+        decn = ","
+        break() 
+      }
+      numtemp = as.numeric(deci[2,2])
+      if (is.na(numtemp) == FALSE) {
+        if (numtemp != 0) break()
+      }
     }
     if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & getOption("OutDec") == ".") decn = ","
   } else if (dformat == 1) {
