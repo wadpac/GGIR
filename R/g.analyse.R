@@ -114,13 +114,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
-  dmidn = g.detecmidnight(time,desiredtz) #ND,
+  dmidn = g.detecmidnight(time,desiredtz,dayborder) #ND,
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-  if (dayborder != 0) {
-    midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + (1/(ws2/ws3)) #shift the definition of midnight if required
-  }
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
