@@ -16,7 +16,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
     relyonsleeplog=FALSE,def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
-    desiredtz="Europe/London")
+    desiredtz="")
 }
 \arguments{
   \item{datadir}{

@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.11-1 (GitHub only, release date:28-02-2020)}{
+\section{Changes in version 1.11-1 (GitHub-only-release date:28-02-2020)}{
 \itemize{
   \item Metric ENMOa now facilitated for MVPA calculation
   \item Bug fixed with part4 daysleeper handling
@@ -16,6 +16,9 @@
   range is not 8g. Previously this was not possible.
   \item Fixed bug related to visual report generation when qwindow is set to
   non-default value.
+  \item Added way to handle Actigraph files which start with several days of 
+  zeros which complicates the auto-calibration.
+  \item Default for desiredtz to timezone of machine.
 }
 }
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{

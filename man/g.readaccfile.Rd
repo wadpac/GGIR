@@ -10,7 +10,7 @@ then deleted. This is needed for memory management.
 }
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,
-  selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz=c(),
+  selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz="",
   PreviousEndPage=1,inspectfileobject=c(),configtz=c(), ...)
 }
 \arguments{
