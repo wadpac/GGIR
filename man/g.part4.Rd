@@ -14,7 +14,7 @@ g.part4(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,
 loglocation = c(),colid = 1,coln1 = 9,nnights = 7,
 sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
-    relyonsleeplog=FALSE,def.noc.sleep=1,
+    relyonguider=FALSE,def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="")
 }
@@ -99,7 +99,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   \item{includenightcrit}{
   Minimum number of valid hours per night (24 hour window between noon and noon)
   }
-  \item{relyonsleeplog}{
+  \item{relyonguider}{
   If TRUE then sleep onset and waking time are defined based on
   timestamps derived from sleep log if FALSE (default) the sleep
   log is only used to guide the accelerometer-based detection.
@@ -141,22 +141,22 @@ with the following variables:\cr
 \itemize{
 \item \code{id} Participant id extracted from file
 \item \code{night} Night number
-\item \code{acc_onset} Detected onset of sleep expressed as hours
+\item \code{sleeponset} Detected onset of sleep expressed as hours
 since the midnight of the previous night, see details.
-\item \code{acc_wake} Detected waking time (after sleep period)
+\item \code{wakeup} Detected waking time (after sleep period)
 expressed as hours since the midnight of the previous night, see details.
 \item \code{acc_SptDuration} Difference between onset and waking time.
 \item \code{acc_def} Definition of sustained inactivity by accelerometer
-\item \code{sleeplog_onset} Start of Sleep Period Time window derived from
+\item \code{guider_onset} Start of Sleep Period Time window derived from
 (in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
 L5HR6 algorithm, or specified by researcher,
-\item \code{sleeplog_wake} End of Sleep Period Time window derived from
+\item \code{guider_wake} End of Sleep Period Time window derived from
 (in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
 L5HR6 algorithm, or specified by researcher.
-\item \code{sleeplog_SptDuration} Time in bed derived from
-sleeplog_wake and sleeplog_onset.
-\item \code{error_onset} Difference between acc_onset and sleeplog_onset
-\item \code{error_wake} Difference between acc_wake and sleeplog_wake
+\item \code{guider_SptDuration} Time in bed derived from
+guider_wake and guider_onset.
+\item \code{error_onset} Difference between sleeponset and guider_onset
+\item \code{error_wake} Difference between wakeup and guider_wake
 \item \code{fraction_night_invalid} Fraction of the night for which
 the data was invalid, e.g. monitor not worn or no accelerometer
 measurement started/ended within the night
@@ -171,10 +171,10 @@ motionless for a sustained period of time
 referring to the Sleep Period Time window.
 \item \code{acc_n_sibd} Number of sustained inactivity bouts during the day,
 with day referring to the time outside the Sleep Period Time window.
-\item \code{acc_onset_ts} acc_onset formatted as a timestamp
-\item \code{acc_wake_ts} acc_wake formatted as a timestamp
-\item \code{sleeplog_onset_ts} sleeplog_onset formatted as a timestamp
-\item \code{sleeplog_wake_ts} sleeplog_wake formatted as a timestamp
+\item \code{sleeponset_ts} sleeponset formatted as a timestamp
+\item \code{wakeup_ts} wakeup formatted as a timestamp
+\item \code{guider_onset_ts} guider_onset formatted as a timestamp
+\item \code{guider_wake_ts} guider_wake formatted as a timestamp
 \item \code{page} pdf page on which the visualisation can be found
 \item \code{daysleeper} If 0 then the person is a nightsleeper
 (sleep period did not overlap with noon) if value=1 then the person
@@ -216,21 +216,20 @@ the person slept until after noon
 bouts during the day (outside the sleep period duration). Calculated
 as acc_dur_sibd divided by acc_n_sibd per day, after which the mean
 and standard deviation are calculated across days.
-\item \code{sleeplog_dur_AD_mn} Mean sleep duration according to sleeplog
+\item \code{guider_dur_AD_mn} Mean sleep duration according to guider
 accros all days
-\item \code{sleeplog_dur_AD_sd} Standard deviation of sleep duration
-according to sleeplog accros all days
-\item \code{sleeplog_dur_WD_sd} Standard deviation of sleep duration
-according to sleeplog accros weekdays
-\item \code{sleeplog_dur_WE_sd} Standard deviation of sleep duration
-according to sleeplog accros weekend days
+\item \code{guider_dur_AD_sd} Standard deviation of sleep duration
+according to guider accros all days
+\item \code{guider_dur_WD_sd} Standard deviation of sleep duration
+according to guider accros weekdays
+\item \code{guider_dur_WE_sd} Standard deviation of sleep duration
+according to guider accros weekend days
 }
 }
 
 \details{
-The term sleeplog in variable names originates from the fact
-that the code was first developed in the presence of sleeplog data.
-Please interpret sleeplog as the method to derived the Sleep
+The term guider in variable names refers to the method 
+used to derived the Sleep
 Period Time  (SPT) window derived from (as applicable):
 sleeplog, HDCZA algorithm, L5R6 algorithm, or specified
 by researcher as a constant time interval.
@@ -241,15 +240,15 @@ the number of nights on which a sleep log was used, respectively.
 I know this is confusing, but so far I have kept the variable names
 as they are to facilitate consistency in terminology.
 
-If argument relyonsleeplog = FALSE, then the sleep parameter
-estimates from accelerometry, e.g. acc_onset, are guided by the sleeplog
+If argument relyonguider = FALSE, then the sleep parameter
+estimates from accelerometry, e.g. sleeponset, are guided by the sleeplog
 (or whichever method was used instead for SPT window estimation).
 In this example, the sleep onset time equals the start of the
 first sustained inactiviy bout that overlaps or follows the
 sleep onset time derived from the sleeplog (or whichever method
 was used instead for SPT window estimation).
 
-If argument relyonsleeplog = TRUE, then the sleep onset estimates
+If argument relyonguider = TRUE, then the sleep onset estimates
 from accelerometry equals the estimate from the sleeplog.
 }
 \examples{
