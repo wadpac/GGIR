@@ -1,4 +1,4 @@
-g.sib.plot = function(SLE,M,I,plottitle,nightsperpage=7,desiredtz="Europe/London") { #IMP,
+g.sib.plot = function(SLE,M,I,plottitle,nightsperpage=7,desiredtz="") { #IMP,
   A = SLE$output
   invalid = A$invalid
   night = A$night
