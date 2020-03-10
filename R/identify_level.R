@@ -11,14 +11,14 @@ identify_levels = function(time,diur,sibdetection,ACC,
   OLEVELS = rep(0,length(time)) #to capture moderate and vigorous seperately
   LEVELS[which(sibdetection == 1 & diur == 1)] = 0 #nocturnal sleep
   LEVELS[which(sibdetection == 0 & diur == 1)] = 1 #nocturnal waking
-  Lnames = c("nightsleep",paste("nightwak_and_IN",TRLi,sep=""))
+  Lnames = c("sleeperpiodsleep",paste("sleepperiodwak_and_IN",TRLi,sep=""))
   # activity during the night
   LEVELS[which(sibdetection == 0 & diur == 1 & ACC > TRLi & ACC <= TRMi)] = 2 #LIGHT
   LEVELS[which(sibdetection == 0 & diur == 1 & ACC > TRMi & ACC <= TRVi)] = 3 #MODERATE
   LEVELS[which(sibdetection == 0 & diur == 1 & ACC > TRVi)] = 4 #VIGOROUS
-  Lnames = c(Lnames,paste("nightwak_LIG",TRLi,"_",TRMi,sep=""),
-             paste("nightwak_MOD",TRMi,"_",TRVi,sep=""),
-             paste("nightwak_VIG",TRVi,sep=""))
+  Lnames = c(Lnames,paste("sleepperiodwak_LIG",TRLi,"_",TRMi,sep=""),
+             paste("sleepperiodwak_MOD",TRMi,"_",TRVi,sep=""),
+             paste("sleepperiodwak_VIG",TRVi,sep=""))
   # activity during the day
   LEVELS[which(sibdetection == 1 & diur == 0)] = 5 #daytime sustained inactivity
   #============================================================
@@ -29,10 +29,10 @@ identify_levels = function(time,diur,sibdetection,ACC,
   LEVELS[which(sibdetection == 0 & diur == 0 & ACC > TRLi & ACC <= TRMi)] = 7 #LIGHT
   LEVELS[which(sibdetection == 0 & diur == 0 & ACC > TRMi & ACC <= TRVi)] = 8 #MODERATE
   LEVELS[which(sibdetection == 0 & diur == 0 & ACC > TRVi)] = 9 #VIGOROUS
-  Lnames = c(Lnames,"day_SIB",paste("day_OIN",TRLi,sep=""),
-             paste("day_LIG",TRLi,"_",TRMi,sep=""),
-             paste("day_MOD",TRMi,"_",TRVi,sep=""),
-             paste("day_VIG",TRVi,sep=""))
+  Lnames = c(Lnames,"wakinghours_SIB",paste("wakinghours_OIN",TRLi,sep=""),
+             paste("wakinghours_LIG",TRLi,"_",TRMi,sep=""),
+             paste("wakinghours_MOD",TRMi,"_",TRVi,sep=""),
+             paste("wakinghours_VIG",TRVi,sep=""))
   # store separate copy of moderate and vigorous levels
   OLEVELS[which(LEVELS == 5)] = 1 #SIB
   OLEVELS[which(LEVELS == 6)] = 2 #OIN
