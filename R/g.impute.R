@@ -1,6 +1,5 @@
 g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
-                    ndayswindow = 7,desiredtz="Europe/London", dayborder = 0,
-                    TimeSegments2Zero=c()) {
+                    ndayswindow = 7,desiredtz="Europe/London", dayborder = 0, TimeSegments2Zero=c()) {
   windowsizes = M$windowsizes #c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
