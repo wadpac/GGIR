@@ -142,7 +142,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           }
           #------------
           
-          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
+          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start, dayborder = dayborder,
                          hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz, TimeSegments2Zero = TimeSegments2Zero)
           if (do.imp==FALSE) { #for those interested in sensisitivity analysis
             IMP$metashort = M$metashort
