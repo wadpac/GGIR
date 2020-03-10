@@ -216,7 +216,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("outliers.only") == FALSE)  outliers.only=FALSE
   if (exists("excludefirstlast") == FALSE)  excludefirstlast=FALSE
   if (exists("criterror") == FALSE)  criterror=3
-  if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=FALSE
+  if (exists("relyonguider") == FALSE)  relyonguider=FALSE
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE
@@ -359,7 +359,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f0=f0,f1=f1,idloc=idloc, colid = colid,coln1 = coln1,nnights = nnights,
             outliers.only = outliers.only,
             excludefirstlast=excludefirstlast,criterror = criterror,
-            includenightcrit=includenightcrit,relyonsleeplog=relyonsleeplog,
+            includenightcrit=includenightcrit,relyonguider=relyonguider,
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
             storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz)
   }

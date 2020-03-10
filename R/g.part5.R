@@ -151,8 +151,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       rm(nightsummary)
       idindex = which(summarysleep$filename == fnames.ms3[i])
       id = summarysleep$id[idindex[1]]
-      ndays = nrow(summarysleep) #/ length(unique(summarysleep$acc_def))
-      dsummary = matrix("",((nrow(summarysleep)+12)*length(unique(summarysleep$acc_def))
+      ndays = nrow(summarysleep) #/ length(unique(summarysleep$sleepparam))
+      dsummary = matrix("",((nrow(summarysleep)+12)*length(unique(summarysleep$sleepparam))
                             *length(unique(threshold.lig))
                             *length(unique(threshold.mod))
                             *length(unique(threshold.vig))
@@ -264,7 +264,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
           }
           # create copy of only relevant part of sleep summary dataframe
-          summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$acc_def == j),]
+          summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
           # following code was move to here, because otherwise it would repeated remove the last night in the loop          
           #           ignore last night because the following day is potentially not complete e.g. by reduce protocol compliance
           #=========
@@ -319,22 +319,22 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           # Note that the sleep date timestamp corresponds to day before night
           w0 = w1 = rep(0,length(summarysleep_tmp2$calendardate))
           diur = rep(0,length(time)) #diur is a variable to indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
-          pko = which(summarysleep_tmp2$acc_onset == 0 & summarysleep_tmp2$acc_wake == 0 & summarysleep_tmp2$acc_dur_noc == 0)
+          pko = which(summarysleep_tmp2$sleeponset == 0 & summarysleep_tmp2$wakeup == 0 & summarysleep_tmp2$SptDuration == 0)
           if (length(pko) > 0) {
             summarysleep_tmp2 = summarysleep_tmp2[-pko,]
           }
           if (nrow(summarysleep_tmp2) > 0) {
             for (k in 1:length(summarysleep_tmp2$calendardate)){ # loop through nights from part 4
-              # combine date (the tt object) and time (inside the _ts columns of summarysleep_tmp2)
-              tt = unlist(strsplit(as.character(summarysleep_tmp2$calendardate[k]),"/"))
-              w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$acc_onset_ts[k]),sep="")
-              w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$acc_wake_ts[k]),sep="")
-              if (summarysleep_tmp2$acc_onset[k] >= 24) { # if time is beyond 24 then change the date
-                # I am making the hard assumption here that a day has 24 hours...future improvement needed
+              # Load sleep onset and waking time from part 4 and convert them into timestamps
+              tt = unlist(strsplit(as.character(summarysleep_tmp2$calendardate[k]),"/")) # calendar date
+              w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$sleeponset_ts[k]),sep="")
+              w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$wakeup_ts[k]),sep="")
+              # if time is beyond 24 then change the date
+              if (summarysleep_tmp2$sleeponset[k] >= 24) { 
                 w0[k] = as.character(as.POSIXlt(w0[k],tz=desiredtz) + (24*3600))
               }
-              if (summarysleep_tmp2$acc_wake[k] >= 24 |
-                  (summarysleep_tmp2$daysleeper[k] == 1 & summarysleep_tmp2$acc_wake[k] < 18)) {
+              if (summarysleep_tmp2$wakeup[k] >= 24 |
+                  (summarysleep_tmp2$daysleeper[k] == 1 & summarysleep_tmp2$wakeup[k] < 18)) {
                 w1[k] = as.character(as.POSIXlt(w1[k],tz=desiredtz) + (24*3600))
               }
               w0c = as.character(as.POSIXlt(w0[k],tz=desiredtz))
@@ -396,7 +396,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     sleeplogwake_hr= clock2numtime(sleeplogwake)
                     # express hour relative to midnight within the noon-noon:
                     if (sleeplogonset_hr > 12) sleeplogonset_hr = sleeplogonset_hr - 24
-                    if (sleeplogwake_hr > 12) sleeplogwake_hr = sleeplogwake_hr - 24
+                    if (sleeplogwake_hr > 18 & summarysleep_tmp2$daysleeper[k] == 1) {
+                      sleeplogwake_hr = sleeplogwake_hr - 24 # 18 because daysleepers can wake up after 12
+                    } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
+                      sleeplogwake_hr = sleeplogwake_hr - 24
+                    }
                     s0 = closestmidnight + round(sleeplogonset_hr * Nepochsinhour)
                     s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
                   }
@@ -497,7 +501,12 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                       plusrow = 1
                     }
-                    for (wi in 1:(nrow(summarysleep_tmp2)+plusrow)) { #loop through 7 windows (+1 to include the data after last awakening)
+                    if (timewindowi == "MM") {
+                      Nwindows = nrow(summarysleep_tmp2)+plusrow
+                    } else {
+                      Nwindows = length(which(diff(diur) == -1))
+                    }
+                    for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Check that this is a meaningful day (that is all the qqq variable is used for),
                       # before storing it.
                       qqq = rep(0,2)
@@ -517,20 +526,20 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           if(is.na(qqq[2])==TRUE | length(diur) < qqq[2]) qqq[2] = length(diur)
                         }
                       } else if(timewindowi == "WW") {
-                        if (wi==1){ # start measurement till first waking up
-                          qqq[1] = 1
-                          qqq[2]=which(diff(diur) == -1)[wi] + 1
-                        } else if (wi<=nrow(summarysleep_tmp2)) { # all full wake to wake days
-                          qqq[1] = which(diff(diur) == -1)[wi-1] + 1
-                          qqq[2] = which(diff(diur) == -1)[wi]
-                        } else if (wi>nrow(summarysleep_tmp2)) {
+                        if (wi <=(Nwindows-1)) { # all full wake to wake days
+                          qqq[1] = which(diff(diur) == -1)[wi] + 1
+                          qqq[2] = which(diff(diur) == -1)[wi+1]
+                          
+                        } else {
                           # time after last reliable waking up (this can be more than 24 hours)
                           # ignore this day, because if the night was ignored for sleep analysis
                           # then the description of the day in part 5 including that night is
                           # not informative.
                           qqq = c(NA, NA)
                         }
+                        
                       }
+                      
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
@@ -545,16 +554,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         }
                         if(wi>nrow(summarysleep_tmp2)+plusb) {
                           dsummary[di,fi:(fi+1)] = c(weekdays(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1),
-                                                     as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
+                                                       as.character(as.Date(summarysleep_tmp2$calendardate[wi-1], format="%e/%m/%Y")+1))
                           remember_previous_weekday = dsummary[di,fi]
                           ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                           dsummary[di,fi] = j
-                          ds_names[fi] = "acc_def";      fi = fi + 1
+                          ds_names[fi] = "sleepparam";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$night[wi-1]+1
                           ds_names[fi] = "night_number";      fi = fi + 1
-                          dsummary[di,fi:(fi+11)] = NA  #Since this is data afte last night, we don't have sleep information here
-                          ds_names[fi:(fi+11)] = c("acc_onset","acc_wake","sleeplog_onset","sleeplog_wake",
-                                                   "acc_onset_ts","acc_wake_ts","sleeplog_onset_ts","sleeplog_wake_ts",
+                          dsummary[di,fi:(fi+11)] = NA  #Since this is data after last night, we don't have sleep information here
+                          ds_names[fi:(fi+11)] = c("sleeponset","wakeup","guider_onset","guider_wake",
+                                                   "sleeponset_ts","wakeup_ts","guider_onset_ts","guider_wake_ts",
                                                    "daysleeper","cleaningcode","sleeplog_used","acc_available"); fi = fi + 12
                           
                         } else {
@@ -572,7 +581,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             }
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
-                            ds_names[fi] = "acc_def";      fi = fi + 1
+                            ds_names[fi] = "sleepparam";      fi = fi + 1
                             dsummary[di,fi] = summarysleep_tmp2$night[wi-1] + addone
                             ds_names[fi] = "night_number";      fi = fi + 1
                           } else {
@@ -581,48 +590,48 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             remember_previous_weekday = dsummary[di,fi]
                             ds_names[fi:(fi+1)] = c("weekday","calendardate");  fi = fi + 2
                             dsummary[di,fi] = j
-                            ds_names[fi] = "acc_def";      fi = fi + 1
+                            ds_names[fi] = "sleepparam";      fi = fi + 1
                             dsummary[di,fi] = summarysleep_tmp2$night[wi]
                             ds_names[fi] = "night_number";      fi = fi + 1
                           }
-                          dsummary[di,fi] = summarysleep_tmp2$acc_onset[wi]
-                          ds_names[fi] = "acc_onset";      fi = fi + 1
+                          dsummary[di,fi] = summarysleep_tmp2$sleeponset[wi]
+                          ds_names[fi] = "sleeponset";      fi = fi + 1
                           if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$acc_wake[wi]
+                            dsummary[di,fi] = summarysleep_tmp2$wakeup[wi]
                           } else {
-                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$acc_wake[wi-1]
+                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$wakeup[wi-1]
                           }
-                          ds_names[fi] = "acc_wake";      fi = fi + 1
+                          ds_names[fi] = "wakeup";      fi = fi + 1
                           
-                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$guider_onset[wi]
                           
-                          ds_names[fi] = "sleeplog_onset";      fi = fi + 1
+                          ds_names[fi] = "guider_onset";      fi = fi + 1
                           if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake[wi]
+                            dsummary[di,fi] = summarysleep_tmp2$guider_wake[wi]
                           } else {
-                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake[wi-1]
+                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$guider_wake[wi-1]
                           }
-                          ds_names[fi] = "sleeplog_wake";      fi = fi + 1
+                          ds_names[fi] = "guider_wake";      fi = fi + 1
                           
-                          dsummary[di,fi] = summarysleep_tmp2$acc_onset_ts[wi]     
+                          dsummary[di,fi] = summarysleep_tmp2$sleeponset_ts[wi]     
                           
-                          ds_names[fi] = "acc_onset_ts";      fi = fi + 1
+                          ds_names[fi] = "sleeponset_ts";      fi = fi + 1
                           if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$acc_wake_ts[wi]
+                            dsummary[di,fi] = summarysleep_tmp2$wakeup_ts[wi]
                           } else {
-                            if (wi >1) dsummary[di,fi] = summarysleep_tmp2$acc_wake_ts[wi-1]
+                            if (wi >1) dsummary[di,fi] = summarysleep_tmp2$wakeup_ts[wi-1]
                           }
-                          ds_names[fi] = "acc_wake_ts";      fi = fi + 1
+                          ds_names[fi] = "wakeup_ts";      fi = fi + 1
                           
-                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_onset_ts[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$guider_onset_ts[wi]
                           
-                          ds_names[fi] = "sleeplog_onset_ts";      fi = fi + 1
+                          ds_names[fi] = "guider_onset_ts";      fi = fi + 1
                           if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake_ts[wi]
+                            dsummary[di,fi] = summarysleep_tmp2$guider_wake_ts[wi]
                           } else {
-                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$sleeplog_wake_ts[wi-1]
+                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$guider_wake_ts[wi-1]
                           }
-                          ds_names[fi] = "sleeplog_wake_ts";      fi = fi + 1
+                          ds_names[fi] = "guider_wake_ts";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$daysleeper[wi]
                           # if timewindowi is MM then the following variables are less informative,
                           # because they only refer to the evening and not the morning.
@@ -633,10 +642,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi] = "sleeplog_used";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$acc_available[wi]
                           ds_names[fi] = "acc_available";      fi = fi + 1
+                          dsummary[di,fi] = summarysleep_tmp2$guider[wi]
+                          ds_names[fi] = "guider";      fi = fi + 1
+                          
                         }
                         # 
                         # define time windows:
-                        # We will get acc_onset and acc_wake 
+                        # We will get acc_onset and wakeup 
                         # regarding to the same day of measurement in the same row.
                         # which differs between MM and WW
                         # Also, it allows for the analysis of the first day for those studies in which the accelerometer is started during the morning and the first day is of interest.
@@ -667,14 +679,32 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         #   if (qqq1 < 1) qqq1 = 1
                         #   wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
                         # }
-                        dsummary[di,fi] = wlih
-                        ds_names[fi] = "window_length_mins";      fi = fi + 1
-                        dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1)) * ws3) / 60
-                        ds_names[fi] = "nonwear_total_mins";      fi = fi + 1
-                        dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 0)) * ws3) / 60
-                        ds_names[fi] = "nonwear_waking_mins";      fi = fi + 1
-                        dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 1)) * ws3) / 60
-                        ds_names[fi] = "nonwear_SPTwindow_mins";      fi = fi + 1
+                        # dsummary[di,fi] = wlih
+                        # ds_names[fi] = "window_length_hours";      fi = fi + 1
+                        # dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1)) / ((qqq2-qqq1)+1) ) * 100
+                        # ds_names[fi] = "nonwear_perc_window";      fi = fi + 1
+                        # dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 0)) / length(which(diur[qqq1:qqq2] == 0)))  *100
+                        # ds_names[fi] = "nonwear_perc_waking";      fi = fi + 1
+                        # dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 1)) / length(which(diur[qqq1:qqq2] == 1))) * 100
+                        # ds_names[fi] = "nonwear_perc_SPT";      fi = fi + 1
+                        # if (summarysleep_tmp2$night[wi] > 6 & timewindowi == "WW") {
+                        #   x11();plot(nonwear[qqq1:qqq2],type="l")
+                        #   
+                        # }
+                        #============================================================
+                        # percentage of available data
+                        zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 0 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #day
+                        zt_hrs_total = (length(which(diur[qqq1:qqq2] == 0)) * ws3) / 3600 #day
+                        dsummary[di,fi] = (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
+                        ds_names[fi] = "nonwear_perc_wakinghours";      fi = fi + 1
+                        zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 1 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #night
+                        zt_hrs_total = (length(which(diur[qqq1:qqq2] == 1)) * ws3) / 3600 #night
+                        dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
+                        ds_names[fi] = "nonwear_perc_sleepperiod";      fi = fi + 1
+                        zt_hrs_nonwear = (length(which(nonwear[qqq1:qqq2] == 1)) * ws3) / 3600
+                        zt_hrs_total = (length(diur[qqq1:qqq2]) * ws3) / 3600 #night and day
+                        dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
+                        ds_names[fi] = "nonwear_perc_fulldaywindow";      fi = fi + 1
                         #===============================================
                         # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
                         test_remember = c(di,fi)
@@ -691,11 +721,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = (length(which(OLEVELS[qqq1:qqq2] == 1 | OLEVELS[qqq1:qqq2] == 2)) * ws3) / 60
                         ds_names[fi] = "dur_TINday_min";      fi = fi + 1 #total inactivity (SIB or OIN)
                         dsummary[di,fi] = (length(which(diur[qqq1:qqq2] == 0)) * ws3) / 60
-                        ds_names[fi] = "dur_day_min";      fi = fi + 1
+                        ds_names[fi] = "dur_wakinghours_min";      fi = fi + 1
                         dsummary[di,fi] = (length(which(diur[qqq1:qqq2] == 1)) * ws3) / 60
-                        ds_names[fi] = "dur_night_min";      fi = fi + 1
+                        ds_names[fi] = "dur_sleepperiod_min";      fi = fi + 1
                         dsummary[di,fi] = (length(c(qqq1:qqq2)) * ws3) / 60
-                        ds_names[fi] = "dur_nightandday_min";      fi = fi + 1
+                        ds_names[fi] = "dur_fulldaywindow_min";      fi = fi + 1
                         
                         #============================================
                         # Number of long wake periods (defined as > 5 minutes) during the night
@@ -703,20 +733,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         if (Nawake < 0) Nawake = 0
                         dsummary[di,fi] = Nawake
                         ds_names[fi] = "N_atleast5minwakenight";      fi = fi + 1
-                        #============================================================
-                        # percentage of available data
-                        zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 0 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #day
-                        zt_hrs_total = (length(which(diur[qqq1:qqq2] == 0)) * ws3) / 3600 #day
-                        dsummary[di,fi] = (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
-                        ds_names[fi] = "nonwear_perc_day";      fi = fi + 1
-                        zt_hrs_nonwear = (length(which(diur[qqq1:qqq2] == 1 & nonwear[qqq1:qqq2] == 1)) * ws3) / 3600 #night
-                        zt_hrs_total = (length(which(diur[qqq1:qqq2] == 1)) * ws3) / 3600 #night
-                        dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
-                        ds_names[fi] = "nonwear_perc_night";      fi = fi + 1
-                        zt_hrs_nonwear = (length(which(nonwear[qqq1:qqq2] == 1)) * ws3) / 3600
-                        zt_hrs_total = (length(diur[qqq1:qqq2]) * ws3) / 3600 #night and day
-                        dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
-                        ds_names[fi] = "nonwear_perc_nightandday";      fi = fi + 1
+                        
                         #=============================
                         # sleep efficiency
                         dsummary[di,fi] = length(which(sibdetection[qqq1:qqq2] == 1 & diur[qqq1:qqq2] == 1)) / length(which(diur[qqq1:qqq2] == 1))
@@ -736,11 +753,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         dsummary[di,fi] = mean(ACC[sse[which(OLEVELS[sse] == 1 | OLEVELS[sse] == 2)]])
                         ds_names[fi] = "ACC_TINday_min";      fi = fi + 1 #total inactivity (SIB or OIN)
                         dsummary[di,fi] = mean(ACC[sse[which(diur[sse] == 0)]])
-                        ds_names[fi] = "ACC_day_mg";      fi = fi + 1
+                        ds_names[fi] = "ACC_wakinghours_mg";      fi = fi + 1
                         dsummary[di,fi] = mean(ACC[sse[which(diur[sse] == 1)]])
-                        ds_names[fi] = "ACC_night_mg";      fi = fi + 1
+                        ds_names[fi] = "ACC_sleepperiod_mg";      fi = fi + 1
                         dsummary[di,fi] = mean(ACC[sse])
-                        ds_names[fi] = "ACC_nightandday_mg";      fi = fi + 1             
+                        ds_names[fi] = "ACC_fulldaywindow_mg";      fi = fi + 1             
                         #===============================================
                         # QUANTILES...
                         # sse = qqq1:qqq2

@@ -30,10 +30,11 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
       out = as.matrix(output)
     }
     outputfinal = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun)),stringsAsFactors=FALSE)
-    cut = which(outputfinal[1,] == "")
+    cut = which(outputfinal[1,] == "" & outputfinal[2,] == "")
     if (length(cut) > 0) {
       outputfinal = outputfinal[,-cut]
     }
+    cut = which(outputfinal[1,] == "")
     cut2 = which(outputfinal[,1] == "" & outputfinal[,2] == "")
     if (length(cut2) > 0) {
       outputfinal = outputfinal[-cut2,]
@@ -53,18 +54,18 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     #                 as.character(outputfinal$acc_available) == "FALSE")
     # } else {
       #only delete nights with no or no valid accelerometer data, but consider nigths with missing sleep log data
-      del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 1 | as.character(outputfinal$acc_available) == "FALSE") 
+      # del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 1 | as.character(outputfinal$acc_available) == "FALSE") 
     # }
-    if (length(del) > 0) {
-      outputfinal = outputfinal[-del,]
-    }
+    # if (length(del) > 0) {
+    #   outputfinal = outputfinal[-del,]
+    # }
     #-----------------------------------------------------------
     # split results to different spreadsheets in order to minimize individual filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
     uTRLi = as.character(unique(outputfinal$TRLi))
     uTRMi = as.character(unique(outputfinal$TRMi))
     uTRVi = as.character(unique(outputfinal$TRVi))
-    uacc_def = as.character(unique(outputfinal$acc_def))
+    usleepparam = as.character(unique(outputfinal$sleepparam))
     # replace NaN by empty cell value
     for (kra in 1:ncol(outputfinal)) {
       krad = which(as.character(outputfinal[,kra]) == "NaN")
@@ -78,13 +79,13 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
       for (h1 in 1:length(uTRLi)) {
         for (h2 in 1:length(uTRMi)) {
           for (h3 in 1:length(uTRVi)) {
-            for (h4 in 1:length(uacc_def)) {
-              cat(paste0(" ",uwi[j],"-",uTRLi[h1],"-",uTRMi[h2],"-",uTRVi[h3],"-",uacc_def[h4]))
+            for (h4 in 1:length(usleepparam)) {
+              cat(paste0(" ",uwi[j],"-",uTRLi[h1],"-",uTRMi[h2],"-",uTRVi[h3],"-",usleepparam[h4]))
               seluwi = which(as.character(outputfinal$window) == uwi[j] & 
                                as.character(outputfinal$TRLi) == uTRLi[h1] &
                                as.character(outputfinal$TRMi) == uTRMi[h2] &
                                as.character(outputfinal$TRVi) == uTRVi[h3] &
-                               as.character(outputfinal$acc_def) == uacc_def[h4])
+                               as.character(outputfinal$sleepparam) == usleepparam[h4])
               # store spreadsheet
               if (nrow(outputfinal[seluwi,]) == 0) {
                 cat("report not stored, because no results available")
@@ -188,12 +189,12 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 colnames(outputfinal2) = CN
                 delcol = which(colnames(outputfinal2) == "window" | colnames(outputfinal2) == "TRLi" |
                                  colnames(outputfinal2) == "TRMi" | colnames(outputfinal2) == "TRVi" |
-                                 colnames(outputfinal2) == "acc_def")
+                                 colnames(outputfinal2) == "sleepparam")
                 outputfinal2 = outputfinal2[,-delcol]
                 #-------------------------------------------------------------
                 # store all summaries in csv files
                 write.csv(outputfinal2[seluwi,],paste(metadatadir,"/results/part5_daysummary_",
-                                                      uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",uacc_def[h4],".csv",sep=""),row.names=FALSE)
+                                                      uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 #------------------------------------------------------------------------------------
                 #also compute summary per person
                 OF3 = outputfinal2[seluwi,]
@@ -272,11 +273,11 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   maxpernwnight = (1 - (includenightcrit / 24)) * 100
                   maxpernwday = (1 - (includedaycrit / 24)) * 100
                   # Temporarily replace 4 March 2020...
-                  # indices = which(x$nonwear_perc_day < maxpernwday &
-                  #                   x$nonwear_perc_night < maxpernwnight &
-                  #                   x$dur_night_min > 0 & x$dur_day_min > 0)
+                  # indices = which(x$nonwear_perc_wakinghours < maxpernwday &
+                  #                   x$nonwear_perc_sleepperiod < maxpernwnight &
+                  #                   x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0)
                   # by ...
-                  indices = which(x$dur_night_min > 0 & x$dur_day_min > 0)
+                  indices = which(x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0)
                   return(indices)
                 }
                 validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit) 
@@ -286,8 +287,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   OF4 = agg_plainNweighted(OF3[validdaysi,],filename="filename",day="daytype")
                   # calculate additional variables
                   OF3tmp = OF3[,c("filename","night_number","daysleeper","cleaningcode","sleeplog_used",
-                                  "acc_available","nonwear_perc_day","nonwear_perc_night","daytype","dur_day_min",
-                                  "dur_night_min")]
+                                  "acc_available","nonwear_perc_wakinghours","nonwear_perc_sleepperiod","daytype","dur_wakinghours_min",
+                                  "dur_sleepperiod_min")]
                   foo34 = function(df,aggPerIndividual,nameold,namenew,cval) {
                     # function to help with calculating additinal variables
                     # related to counting how many days of measurement there are
@@ -306,16 +307,16 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   }
                   # # calculate number of valid days (both night and day criteria met)
                   OF3tmp$validdays = 0
-                  OF3tmp$nonwear_perc_day = as.numeric(OF3tmp$nonwear_perc_day)
-                  OF3tmp$nonwear_perc_night = as.numeric(OF3tmp$nonwear_perc_night)
-                  OF3tmp$dur_night_min = as.numeric(OF3tmp$dur_night_min)
-                  OF3tmp$dur_day_min = as.numeric(OF3tmp$dur_day_min)
+                  OF3tmp$nonwear_perc_wakinghours = as.numeric(OF3tmp$nonwear_perc_wakinghours)
+                  OF3tmp$nonwear_perc_sleepperiod = as.numeric(OF3tmp$nonwear_perc_sleepperiod)
+                  OF3tmp$dur_sleepperiod_min = as.numeric(OF3tmp$dur_sleepperiod_min)
+                  OF3tmp$dur_wakinghours_min = as.numeric(OF3tmp$dur_wakinghours_min)
                   # criteria is that nonwear percentage needs to be below threshold for both day and night:
                   days2keep = getValidDayIndices(OF3tmp,includenightcrit, includedaycrit)
-                  # days2keep = which(OF3tmp$nonwear_perc_day < maxpernwday &
-                  #                         OF3tmp$nonwear_perc_night < maxpernwnight &
-                  #                     (as.numeric(OF3tmp$dur_night_min) - (includenightcrit*60)) > 0 &
-                  #                     (as.numeric(OF3tmp$dur_day_min) - (includedaycrit*60)) > 0) # line added 10/3/2019 because missing days/nights were previously included
+                  # days2keep = which(OF3tmp$nonwear_perc_wakinghours < maxpernwday &
+                  #                         OF3tmp$nonwear_perc_sleepperiod < maxpernwnight &
+                  #                     (as.numeric(OF3tmp$dur_sleepperiod_min) - (includenightcrit*60)) > 0 &
+                  #                     (as.numeric(OF3tmp$dur_wakinghours_min) - (includedaycrit*60)) > 0) # line added 10/3/2019 because missing days/nights were previously included
                   OF3tmp$validdays[days2keep] = 1
                   # now we have a label for the valid days, we can create a new variable 
                   # in OF4 that is a count of the number of valid days
@@ -335,10 +336,10 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   
                   OF4 = cbind(OF4[,1:4],OF4[,(ncol(OF4)-6):ncol(OF4)],OF4[,5:(ncol(OF4)-7)])
                   nom = names(OF4)
-                  cut = which(nom == "acc_onset_ts" | nom == "acc_wake_ts" | 
-                                nom == "sleeplog_onset_ts" | nom == "sleeplog_wake_ts" | nom == "night_number"
+                  cut = which(nom == "sleeponset_ts" | nom == "wakeup_ts" | 
+                                nom == "guider_onset_ts" | nom == "guider_wake_ts" | nom == "night_number"
                               | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
-                              | nom == "sleeplog_used" | nom == "L5TIME" | nom == "M5TIME"
+                              | nom == "guider_used" | nom == "L5TIME" | nom == "M5TIME"
                               | nom == "L10TIME" | nom == "M10TIME" | nom == "night_number" | nom == "acc_available")
                   names(OF4)[which(names(OF4)=="weekday")] = "startday"
                   OF4 = OF4[,-cut]
@@ -347,7 +348,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   #-------------------------------------------------------------
                   # store all summaries in csv files
                   write.csv(OF4,paste(metadatadir,"/results/part5_personsummary_",
-                                      uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",uacc_def[h4],".csv",sep=""),row.names=FALSE)
+                                      uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 }
               }
             }
