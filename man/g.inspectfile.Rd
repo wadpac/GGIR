@@ -7,7 +7,7 @@ function to inspect accelerometer file for brand, sample frequency and header
 Inspects accelerometer file for key information, including: monitor brand, sample frequency and file header
 }
 \usage{
-g.inspectfile(datafile, desiredtz = c(), ...)
+g.inspectfile(datafile, desiredtz = "", ...)
 }
 \arguments{
   \item{datafile}{
