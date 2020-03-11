@@ -37,3 +37,16 @@ If you would like to propose changes to the text of the manual this is possible.
 2. Go to the part of the manual you want to edit and click on edit button (little pencil symbol) and make your changes.
 3. Once you are finished, scroll down and describe you update and select the radio button "Create a new branch for this commit and start a pull request". One of the developers will then be able to review your changes and merge them in the master version of the code.
 4. Click the green button "Propose file changes"
+
+### Version numbers:
+For a number of years I created a new GGIR release on CRAN with every major improvement to GGIR. This resulted in 18 releases in just two years, which is not very practical.
+
+As of 2020 I am reducing the number of CRAN releases to only two or three per year, with intermediate releases on GitHub only. New features and bug fixes will first be released on GitHub, which creates a time window for extra testing before they end up in the next CRAN release. This will make the GGIR CRAN releases more stable and a good starting point for new GGIR users, while GitHub releases will become the place for the latest bug fixes and feature additions.
+
+If possible, please use the GitHub version whenever you can to help spot issues timely before they end up in a CRAN release.
+
+With this new release structure I will use the following version coding. **A.B-C**:
+
+- A increases with major changes that affect backward compatibility with previous releases like changes in function names, function arguments or file format.
+- B increases with every CRAN release.
+- C increases with every GitHub release.
