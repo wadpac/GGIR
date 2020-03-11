@@ -17,8 +17,7 @@ package vignette: Accelerometer data processing with GGIR\cr
 \cr
 The package has been developed with and for the accelerometer brands Genea and GENEActive.
 Additionally, it should work for .csv data from GENEActiv, .csv data from
-Actigraph, and .wav, .csv () and .cwa format from AX3 (Axivity). Although, I have tested
-this less thoroughly compared with the binary data formats from Genea and Geneactiv.\cr
+Actigraph, and .wav, .csv () and .cwa format from AX3 and AX6 (Axivity).\cr
 Note for Actigraph users: please do not
 export timestamps to the csv-file as this causes memory issues. To cope with the
 absense of timestamps the code will re-caculate timestamps from the sample frequency
@@ -83,15 +82,15 @@ Please note that there is google discussion group for this package (link below).
 \cr
 You can thank me for sharing the code in this package and for developing
 it as a generic purpose tool by citing the package name and by
-citing the supporting publications in your own scientific
+citing the supporting publications (e.g. Migueles et al. 2019) in your own 
 journal/conference publications.
 }
 \details{
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.11-0\cr
-Date: \tab 2019-12-03\cr
+Version: \tab 1.11-1\cr
+Date: \tab 2020-02-28\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -120,7 +119,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
 \author{
 \itemize{
-\item Vincent T van Hees <vincentvanhees@gmail.com> main developer
+\item Vincent T van Hees <v.vanhees@movementdata.nl> main developer
 \item Zhou Fang co-developed function \link{g.calibrate}
 \item Jing Hua Zhao <jinghua.zhao@mrc-epid.cam.ac.uk> co-developed function \link{g.binread}
 \item Joe Heywood helped develop the functionality to process only specific days

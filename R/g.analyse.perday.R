@@ -1,6 +1,6 @@
 g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatures, 
                             window.summary.size, qwindow, midnightsi, metashort, averageday,
-                            ENMOi, LFENMOi, BFENi, ENi, HFENi, HFENplusi, MADi,
+                            ENMOi, LFENMOi, BFENi, ENi, HFENi, HFENplusi, MADi, ENMOai,
                             doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
                             fname, idloc, BodyLocation, wdayname, tooshort, includedaycrit,
                             winhr, L5M5window, M5L5res,
@@ -300,7 +300,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
               }
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (mi == ENMOi | mi == LFENMOi | mi == BFENi |
-                  mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi) {
+                  mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi | mi == ENMOai) {
                 if (length(varnum) > ((60/ws3)*60*5.5)) { # Calculate values
                   exfi = 0
                   for (winhr_value in winhr) {

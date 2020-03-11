@@ -5,7 +5,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    ilevels = c(0,10), mvpathreshold = c(100),
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
-                   window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="Europe/London",
+                   window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
                    IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE) {
   snloc= 1
@@ -142,7 +142,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           }
           #------------
           
-          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
+          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start, dayborder = dayborder,
                          hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz, TimeSegments2Zero = TimeSegments2Zero)
           if (do.imp==FALSE) { #for those interested in sensisitivity analysis
             IMP$metashort = M$metashort

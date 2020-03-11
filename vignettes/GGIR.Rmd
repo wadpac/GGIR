@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "September 6 2019"
+date: "February 28 2020"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -39,13 +39,16 @@ R package GGIR would not have been possible without the support of the following
 
 - Dr. Vincent van Hees as main developer & maintainer.
 - Jairo Migueles has helped to improve sections of the code.
-- Dr. Evgeny Mirkes and Dr. Jing Hua Zhao provided code to enable binary accelerometer data to be read in R.
+- Dr. Evgeny Mirkes, Dr. Dan Jackson, and Dr. Jing Hua Zhao contributed to the binary data reading functionality.
 - Dr. Zhou Fang contributed to a part of the code for the auto-calibration functionality.
 - Joe Heywood contributed code to correctly extract specific time segments with correct timestamps from an GENEActiv recording.
 - Joan Capdevila Pujol contributed with a couple of bug fixes.
 - Dr. Severine Sabia tested and provided feedback on numerous aspects of the package to make it research friendly.
-- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
 - Dr. Matthew R Patterson contributed with bug fixes and a visualization update.
+- Dr. Soren Brage provided supervision for a number of studies that formed the basis for GGIR (2008-2013).
+
+
+
 
 **Institutions:**
 
@@ -54,6 +57,7 @@ R package GGIR would not have been possible without the support of the following
 - Netherlands eScience Center, Amsterdam, NL
 - University of Exeter, Exeter, UK
 - Centre for Longitudinal Studies, London, UK
+- Vincent van Hees as self-employed consultant
 
 **Funders:**
 
@@ -172,6 +176,61 @@ knitr::include_graphics("sleeplogexample.jpg")
 - Configure thresholds for acceleration levels (some may want to interpret this as intensity levels): `threshold.lig`, `threshold.mod`, `threshold.vig`.
 - `timewindow` to specify whether days should be defined from midnight to midnight, from waking-up to waking-up, or both (all output is generated twice).
 - Configure durations of bouts: `boutdur.mvpa`, `boutdur.in`, and `boutdur.lig`. Note that this can be a vector of multiple values indicating the minimum and maximum duration of subsequent bout types, e.g. 1-5 minutes MVPA, 5-10 minutes MVPA, and longer than 10 minutes MVPA.
+
+### Using published cut-points
+
+Cut-points to estimate time spent in acceleration levels that are roughly liked to levels of energy metabolism have been proposed by:
+
+- Esliger et al 2011: wrist and waist in adults. doi: 10.1249/MSS.0b013e31820513be.
+- Schaefer et al 2014: wrist in 6-11 year old children. doi: 10.1249/MSS.0000000000000150.
+- Roscoe et al 2017: wrist in 4-5 year old pre-school children. doi: 10.1007/s00431-017-2948-2.
+- Phillips et al 2013: wrist and hip in 8-14 year olds. doi: 10.1016/j.jsams.2012.05.013.
+- Vaha-Ypya et al 2015: hip in adults. 10.1371/journal.pone.0134813
+- Hildebrand et al 2014 and 2016: wrist and hip in 7-11 and 21-61 years old. in doi: 10.1111/sms.12795, 10.1249/MSS.0000000000000289.
+- Please let me know if you think I missed a publication.
+
+The first four publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: It is still possible to use those cut-points with a simple cut-point scaling trick and by selecting the right acceleration metric as detailed below.
+
+**Esliger 2011, Phillips 2013:**
+
+-	In GGIR use metric ENMOa instead of ENMO with arguments do.enmoa = TRUE, do.enmo = FALSE, and acc.metric=”ENMOa”.
+- `threshold.lig = (LightCutPointFromPaper/80) * 1000`
+- `threshold.mod = (ModerateCutPointFromPaper/80) * 1000`
+- `threshold.vig = (VigorousCutPointFromPaper/80) * 1000`
+- `mvpathreshold = (ModerateCutPointFromPaper/80) * 1000`
+-	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
+-	In the part 5 results everything will be based on the new cut-points.
+
+**Roscoe 2017**
+
+-	In GGIR use metric ENMOa instead of ENMO with arguments do.enmoa = TRUE, do.enmo = FALSE, and acc.metric=”ENMOa”.
+- `threshold.lig = (LightCutPointFromPaper/85.7) * 1000`
+- `threshold.mod = (ModerateCutPointFromPaper/85.7) * 1000`
+- `threshold.vig = (VigorousCutPointFromPaper/85.7) * 1000`
+- `mvpathreshold = (ModerateCutPointFromPaper/85.7) * 1000`
+-	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
+-	In the part 5 results everything will be based on the new cut-points.
+
+**Schaeffer 2014:**
+
+-	In GGIR use metric EN instead of ENMO with arguments do.en = TRUE, do.enmo = FALSE, and acc.metric=”EN”.
+-	Specify Schaeffer cut-points as:
+- `threshold.lig = (LightCutPointFromPaper/75) * 1000`
+- `threshold.mod = (ModerateCutPointFromPaper/75) * 1000`
+- `threshold.vig = (VigorousCutPointFromPaper/75) * 1000`
+- `mvpathreshold = (ModerateCutPointFromPaper/75) * 1000`-	In the part2 results you will need the MVPA estimates that are related to EN, not ENMO.
+-	In the part 5 results everything will be based on the new cut-points.
+
+**Vaha-Ypya et al 2015:**
+
+-	Use default setting do.mad= TRUE, acc.metric=”MAD”
+-	Use the cut-points as provided by Vaha-Ypya directly. No need for scaling.
+
+**Hildebrand 2014 and Hildebrand 2016:**
+
+-	Use default setting do.enmo= TRUE, acc.metric=”ENMO”
+-	Use the cut-points as provided by Hildebrand directly. No need for scaling.
+
 
 ### Example call
 
