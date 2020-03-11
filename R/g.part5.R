@@ -23,7 +23,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   } else {
     dir.create(file.path(metadatadir,ms5.out))
   }
-  
   if (save_ms5rawlevels == TRUE) {
     ms5.outraw = "/meta/ms5.outraw"
     if (file.exists(paste(metadatadir,ms5.outraw,sep=""))) {
@@ -395,11 +394,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     sleeplogonset_hr = clock2numtime(sleeplogonset)
                     sleeplogwake_hr= clock2numtime(sleeplogwake)
                     # express hour relative to midnight within the noon-noon:
-                    if (sleeplogonset_hr > 12) sleeplogonset_hr = sleeplogonset_hr - 24
+                    if (sleeplogonset_hr > 24) {
+                      sleeplogonset_hr = sleeplogonset_hr - 24
+                    }
                     if (sleeplogwake_hr > 18 & summarysleep_tmp2$daysleeper[k] == 1) {
                       sleeplogwake_hr = sleeplogwake_hr - 24 # 18 because daysleepers can wake up after 12
-                    } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
-                      sleeplogwake_hr = sleeplogwake_hr - 24
+                    # } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
+                    #   sleeplogwake_hr = sleeplogwake_hr - 24
                     }
                     s0 = closestmidnight + round(sleeplogonset_hr * Nepochsinhour)
                     s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
@@ -417,7 +418,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             # Previously we accounted only for this later on in the code, whcih
             # did not benefit the experoted timeseries.
             firstwake = which(diff(diur) == -1)[1]
-            if (firstwake > nightsi[2]) { # test whether wake for second day is missing
+            firstonset = which(diff(diur) == 1)[1]
+            # test whether wake for second day is missing
+            # if the full sleep period happens before midnights
+            if (firstwake > nightsi[2] | (summarysleep_tmp2$sleeponset[1] < 18 & summarysleep_tmp2$wakeup[1] < 18 & firstwake < nightsi[2])) { 
               if (length(sleeplog) > 0) {
                 # use sleeplog for waking up after first night
                 wake_night1 = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == 1)]
@@ -443,7 +447,20 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 # the final option if neither of the above routes works
                 wake_night1_index = (firstwake - (24* ((60/ws3)*60))) + 1
               }
-              diur[nightsi[1]:(wake_night1_index-1)] = 1
+              if (wake_night1_index < firstwake) {
+                diur[nightsi[1]:(wake_night1_index-1)] = 1
+              } else {
+                # Person slept only during the afternoon on day 2
+                # And there is no sleep data available for the first night
+                # Add 5 minutes of dummy waking time before it but consider this 
+                # non-wear
+                # We do this to make sure that the day numbering
+                # and merging of the sleep variables is still consistent with
+                # the other cases.
+                dummywake = max(firstonset - round(Nepochsinhour/12), nightsi[1])
+                diur[nightsi[1]:dummywake] = 1 
+                nonwear[nightsi[1]:firstonset] = 1
+              }
             }
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
@@ -537,9 +554,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           # not informative.
                           qqq = c(NA, NA)
                         }
-                        
                       }
-                      
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
@@ -594,55 +609,32 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             dsummary[di,fi] = summarysleep_tmp2$night[wi]
                             ds_names[fi] = "night_number";      fi = fi + 1
                           }
-                          dsummary[di,fi] = summarysleep_tmp2$sleeponset[wi]
-                          ds_names[fi] = "sleeponset";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$wakeup[wi]
-                          } else {
-                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$wakeup[wi-1]
+                          if (timewindowi == "WW" | wi == 1) {
+                            wi2 = wi
+                          } else if (timewindowi  == "MM" & wi > 1){
+                            wi2 = wi-1
                           }
-                          ds_names[fi] = "wakeup";      fi = fi + 1
-                          
-                          dsummary[di,fi] = summarysleep_tmp2$guider_onset[wi]
-                          
-                          ds_names[fi] = "guider_onset";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$guider_wake[wi]
-                          } else {
-                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$guider_wake[wi-1]
-                          }
-                          ds_names[fi] = "guider_wake";      fi = fi + 1
-                          
-                          dsummary[di,fi] = summarysleep_tmp2$sleeponset_ts[wi]     
-                          
-                          ds_names[fi] = "sleeponset_ts";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$wakeup_ts[wi]
-                          } else {
-                            if (wi >1) dsummary[di,fi] = summarysleep_tmp2$wakeup_ts[wi-1]
-                          }
-                          ds_names[fi] = "wakeup_ts";      fi = fi + 1
-                          
-                          dsummary[di,fi] = summarysleep_tmp2$guider_onset_ts[wi]
-                          
-                          ds_names[fi] = "guider_onset_ts";      fi = fi + 1
-                          if (timewindowi == "WW") {
-                            dsummary[di,fi] = summarysleep_tmp2$guider_wake_ts[wi]
-                          } else {
-                            if (wi > 1) dsummary[di,fi] = summarysleep_tmp2$guider_wake_ts[wi-1]
-                          }
-                          ds_names[fi] = "guider_wake_ts";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$daysleeper[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$sleeponset[wi2]
+                          dsummary[di,fi+1] = summarysleep_tmp2$wakeup[wi2]
+                          dsummary[di,fi+2] = summarysleep_tmp2$guider_onset[wi2]
+                          dsummary[di,fi+3] = summarysleep_tmp2$guider_wake[wi2]
+                          ds_names[fi:(fi+3)] = c("sleeponset","wakeup","guider_onset","guider_wake");      fi = fi + 4
+                          dsummary[di,fi] = summarysleep_tmp2$sleeponset_ts[wi2]  
+                          dsummary[di,fi+1] = summarysleep_tmp2$wakeup_ts[wi2]
+                          dsummary[di,fi+2] = summarysleep_tmp2$guider_onset_ts[wi2]
+                          dsummary[di,fi+3] = summarysleep_tmp2$guider_wake_ts[wi2]
+                          ds_names[fi:(fi+3)] = c("sleeponset_ts","wakeup_ts", "guider_onset_ts", "guider_wake_ts");      fi = fi + 4
+                          dsummary[di,fi] = summarysleep_tmp2$daysleeper[wi2]
                           # if timewindowi is MM then the following variables are less informative,
                           # because they only refer to the evening and not the morning.
                           ds_names[fi] = "daysleeper";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$cleaningcode[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$cleaningcode[wi2]
                           ds_names[fi] = "cleaningcode";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_used[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$sleeplog_used[wi2]
                           ds_names[fi] = "sleeplog_used";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$acc_available[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$acc_available[wi2]
                           ds_names[fi] = "acc_available";      fi = fi + 1
-                          dsummary[di,fi] = summarysleep_tmp2$guider[wi]
+                          dsummary[di,fi] = summarysleep_tmp2$guider[wi2]
                           ds_names[fi] = "guider";      fi = fi + 1
                           
                         }
