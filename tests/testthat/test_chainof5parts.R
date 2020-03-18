@@ -119,8 +119,8 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(4)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(133))
-  expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
+  expect_that(ncol(output),equals(130))
+  expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9917))
 
  #--------------------------------------------
   #g.shell.GGIR
@@ -136,8 +136,6 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
-
-
   #--------------------------------------------
   # create dummy selectdaysfile
   selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016")
