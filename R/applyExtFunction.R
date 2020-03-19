@@ -40,14 +40,22 @@ applyExtFunction = function(data, myfun, sf, ws3) {
       return(accelRes)
     }
     if (length(myfun$timestamp) == 1) { #resample, but do not apply function yet, because timestamp also needs to be added
-        data = resampleAcc(data, sf, myfun)
+      data = resampleAcc(data, sf, myfun)
     } else { # resample and apply function, because timestamp is not needed
       OutputExternalFunction = myfun$FUN(resampleAcc(data, sf, myfun) * unitcorrection, myfun$parameters)
     }
   } 
   if (length(myfun$timestamp) == 1) { # add timestamp and apply function
     st_num = as.numeric(myfun$timestamp) #POSIX converted to numeric time but relative to the desiredtz
-    data = cbind(seq(st_num, (st_num + ((nrow(data)-1)*ws3)),by=ws3), data)
+    time2beAdded = seq(st_num, (st_num + round(nrow(data)/sf)),by=1/sf) 
+    LEtim = length( time2beAdded)
+    NRda = nrow(data)
+    if (LEtim > NRda) {
+      time2beAdded = time2beAdded[1:NRda]
+    } else if (LEtim < NRda) {
+      time2beAdded = c(time2beAdded,time2beAdded[LEtim]+(c(1:(NRda-LEtim))/sf))
+    }
+    data = cbind(time2beAdded, data)
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   } else if (length(myfun$timestamp) == 0  & sf == myfun$expected_sample_rate ){ # if no resampling and timestamp column was needed
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
