@@ -382,6 +382,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 closestmidnight = nightsi[closestmidnighti]
                 noon0 = closestmidnight - (12* (60/ws3) * 60)
                 noon1 = closestmidnight + (12* (60/ws3) * 60)
+
                 if (noon0 < 1) noon0 = 1
                 if (noon1 > length(nonwear)) noon1 = length(nonwear)
                 nonwearpercentage = mean(nonwear[noon0:noon1])
@@ -407,7 +408,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
                   }
                 }
-              diur[s0:(s1-1)] = 1
+                diur[s0:(s1-1)] = 1
               }
             }
 
@@ -505,8 +506,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in timewindow) {
                     nightsi = nightsi_bu 
+                    plusrow = 1
                     if (timewindowi == "WW") {
-                      plusrow = 1
                       if (length(FM) > 0) {
                         # ignore first and last midnight because we did not do sleep detection on it
                         nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
@@ -518,13 +519,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       nightsi = nightsi[which(nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
                                               nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours))]  # newly added on 25-11-2019
                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
-                      plusrow = 1
                     }
                     if (timewindowi == "MM") {
                       Nwindows = nrow(summarysleep_tmp2)+plusrow
                     } else {
                       Nwindows = length(which(diff(diur) == -1))
                     }
+                    indjump = 1
                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Check that this is a meaningful day (that is all the qqq variable is used for),
                       # before storing it.
@@ -541,8 +542,22 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           qqq_backup = qqq
                         } else if (wi>nrow(summarysleep_tmp2)) {
                           qqq[1] = qqq_backup[2] + 1
-                          qqq[2] = nightsi[wi]
-                          if(is.na(qqq[2])==TRUE | length(diur) < qqq[2]) qqq[2] = length(diur)
+                          if (wi <= length(nightsi)) {
+                            qqq[2] = nightsi[wi]
+                          } else {
+                            qqq[2] = nightsi_bu[which(nightsi_bu == nightsi[wi-indjump]) + indjump]
+                            indjump = indjump + 1 # in case there are multiple days beyond nightsi
+                            if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
+                              qqq[2] = nightsi_bu[which(nightsi_bu == nightsi[wi-(indjump-1)]) + (indjump-1)] + (24*(60/ws3) * 60) -1
+                            }
+                            if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
+                              qqq[2] = qqq_backup[2] + (24*(60/ws3) * 60) -1
+                            }
+                            if (qqq[1] == qqq[2])  qqq[2] = qqq[2] + (24*(60/ws3) * 60) - 1
+                          }
+                          if(is.na(qqq[2])==TRUE | length(diur) < qqq[2]) {
+                            qqq[2] = length(diur)
+                          }
                         }
                       } else if(timewindowi == "WW") {
                         if (wi <=(Nwindows-1)) { # all full wake to wake days
@@ -947,19 +962,26 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         whoareWW = which(output$window == "WW") # look up WW
         if (length(loglocation) > 0) { #only do this if there is a sleep log
           if (length(whoareWW) > 0) {
-            whoareNOSL =which(output$sleeplog_used[whoareWW] == FALSE) #look up nights with no Sleeplog
+            whoareNOSL =which(output$sleeplog_used[whoareWW] == "0") #look up nights with no Sleeplog
             if (length(whoareNOSL) > 0) {
               for (k23 in 1:length(whoareNOSL)) {
                 k24 = whoareWW[(whoareNOSL[k23]-1)]
                 if (length(k24) > 0) {
                   if (k24 > 0) {
-                    output$sleeplog_used[k24] = FALSE
+                    output$sleeplog_used[k24] = "0"
                   }
                 }
               }
             }
           }
         }
+        # missing_sleeplog_used = which(is.logical(output$sleeplog_used) == "0")
+        # if (length(missing_sleeplog_used) > 0) {
+        #   print("replace missing value")
+        #   print( output$sleeplog_used[missing_sleeplog_used])
+        #   output$sleeplog_used[missing_sleeplog_used] = "0"
+        #   print(output$sleeplog_used[missing_sleeplog_used])
+        # }
         # tidy up output data frame, because it may have a lot of empty rows and columns
         emptyrows = which(output[,1] == "" & output[,2] == "")
         if (length(emptyrows) > 0) output = output[-emptyrows,]

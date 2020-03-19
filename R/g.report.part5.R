@@ -223,6 +223,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3$sleeplog_used = as.numeric(OF3$sleeplog_used)
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
+                
                 write.csv(OF3,paste(metadatadir,"/results/QC/part5_daysummary_full_",
                                     uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 # store all summaries in csv files with cleaning criteria
