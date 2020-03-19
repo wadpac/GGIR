@@ -195,7 +195,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
         # main script
         filename = unlist(strsplit(as.character(datafile),"/"))
         filename = filename[length(filename)]
-        monnames = c("unknown","genea","geneactive","actigraph","axivity","movisens") #monitor names
+        monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
         fornames = c("bin","csv","wav","cwa","csv") #format names
         
         if (length(filename) == 0) {
@@ -347,7 +347,7 @@ g.inspectfile = function(datafile, desiredtz = c(), ...) {
                 header = "no header"
         }
         monc = mon
-        monn = monnames[mon]
+        monn = ifelse(mon > 0, monnames[mon], "unknown")
         dformc = dformat
         dformn = fornames[dformat]
         invisible(list(header=header,monc=monc,monn=monn,
