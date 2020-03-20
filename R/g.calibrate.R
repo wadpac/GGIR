@@ -166,15 +166,13 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                                 data = P$rawxyz #change scalling for Axivity?
                         } else if (mon == 2  & dformat == 1) {
                                 data = P$data.out
-                        } else if (dformat == 2) {
+                        } else if (dformat == 2 | mon == 5) {
                                 data = as.matrix(P)
                         } else if (dformat == 4) {
                                 data = P$data
                         } else if (dformat == 5) {
                                 data = P$data
-                        } else if (mon == 5) {
-                                data = as.matrix(P)
-                        }
+                        } 
                         #add left over data from last time
                         if (min(dim(S)) > 1) {
                                 data = rbind(S,data)
