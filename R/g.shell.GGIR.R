@@ -281,7 +281,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     g.part1(datadir = datadir, outputdir = outputdir,
             f0 = f0, f1 = f1, windowsizes = windowsizes,
             desiredtz = desiredtz, chunksize = chunksize,
-            studyname = studyname, minloadcrit = minloadcrit,
+            studyname = studyname, minloadcrit = minloadcrit, use.temp = use.temp,
             do.enmo = do.enmo,
             do.lfenmo = do.lfenmo, do.en = do.en,
             do.bfen = do.bfen, do.hfen=do.hfen,
