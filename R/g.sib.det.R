@@ -1,5 +1,6 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
-                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="Europe/London",constrain2range = TRUE) {
+                     timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
+                      dayborder=0) {
   #==============================================================
   perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
 
@@ -186,7 +187,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     #-------------------------------------------------------------------
     # detect midnights
     
-    detemout = g.detecmidnight(time,desiredtz) # ND,
+    detemout = g.detecmidnight(time,desiredtz, dayborder) # ND,
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)

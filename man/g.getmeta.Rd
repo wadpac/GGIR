@@ -13,7 +13,7 @@ from GENEA and GENEActiv. Further, the function should be able to cope with csv-
 data procuded by GENEActiv and Actigraph
 }
 \usage{
-g.getmeta(datafile, desiredtz = c(), 
+g.getmeta(datafile, desiredtz = "", 
 windowsizes = c(5, 900, 3600),daylimit = FALSE, 
 offset = c(0,0,0), scale = c(1,1,1),
 tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,

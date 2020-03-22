@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c(), ...) {
+g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
@@ -21,7 +21,22 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = c(), ...) {
     decn = rmc.dec
   }
   if (dformat == 2) {
-    deci = as.matrix(read.csv(inputfile,skip = 100,nrow=10))
+    skiprows = 100
+    # Note: I have added the below lines because some ActiGraph files start with a
+    # lot of zeros, which makes it impossible to detect decimal separator
+    # "." will then be the default, which is not correct for "," systems.
+    while (skiprows < 1000000) { #foundnonzero == FALSE & 
+      deci = as.matrix(read.csv(inputfile,skip = skiprows,nrow=10))
+      skiprows = skiprows + 10000
+      if (length(unlist(strsplit(as.character(deci[2,2]),","))) > 1) {
+        decn = ","
+        break() 
+      }
+      numtemp = as.numeric(deci[2,2])
+      if (is.na(numtemp) == FALSE) {
+        if (numtemp != 0) break()
+      }
+    }
     if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & getOption("OutDec") == ".") decn = ","
   } else if (dformat == 1) {
     if (mon == 1) {
