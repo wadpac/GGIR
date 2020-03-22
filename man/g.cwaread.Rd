@@ -8,7 +8,7 @@ For reading .cwa-format data, if you have .wav format data then see function \li
 }
 \usage{
 g.cwaread(fileName, start = 0, end = 0, progressBar = FALSE, 
-  desiredtz = c(), configtz = c())
+  desiredtz = "", configtz = c())
 }
 \arguments{
   \item{fileName}{

@@ -1,5 +1,5 @@
 g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),filequality,
-                         decn,dayborder,ws, desiredtz = c(), PreviousEndPage = 1,inspectfileobject=c(),
+                         decn,dayborder,ws, desiredtz = "", PreviousEndPage = 1,inspectfileobject=c(),
                          configtz=c(), ...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
