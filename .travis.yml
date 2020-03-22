@@ -11,12 +11,12 @@ language: r
 sudo: false
 cache: packages
 
+before_install:	
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install framed titling; fi
+
 addons:
   apt:
     update: TRUE
-
-before_install:	
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install framed titling; fi
 
 r_packages:
   - covr
