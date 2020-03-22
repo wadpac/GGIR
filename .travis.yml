@@ -15,9 +15,13 @@ addons:
   apt:
     update: TRUE
 
+before_install:	
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install framed
+
 r_packages:
   - covr
   - rmarkdown
 
 after_success:
   - Rscript -e 'covr::codecov()'
+
