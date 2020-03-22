@@ -1,4 +1,4 @@
-g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="Europe/London") {
+g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   A = as.data.frame(SLE$output)
   invalid = A$invalid
   if (ignorenonwear == TRUE) {

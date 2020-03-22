@@ -1,5 +1,5 @@
 g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
-                   desiredtz = "Europe/London",chunksize=c(),studyname=c(),
+                   desiredtz = "",chunksize=c(),studyname=c(),
                    do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
                    do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE, do.mad = FALSE,
                    do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,

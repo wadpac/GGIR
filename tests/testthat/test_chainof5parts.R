@@ -118,7 +118,7 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(6)) # changed because part5 now gives also first and last day
+  expect_that(nrow(output),equals(5)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(134))
   expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958))
 
@@ -196,7 +196,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(0))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=2),equals(24))
+  expect_that(round(nightsummary$acc_SptDuration[1],digits=2),equals(7))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------

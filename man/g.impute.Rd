@@ -11,7 +11,7 @@ protocol to label impute invalid time segments in the data.
 }
 \usage{
 g.impute(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, 
-maxdur = 0, ndayswindow = 7,desiredtz="Europe/London", TimeSegments2Zero =c())
+maxdur = 0, ndayswindow = 7,desiredtz="", dayborder= 0, TimeSegments2Zero =c())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,6 +45,9 @@ maxdur = 0, ndayswindow = 7,desiredtz="Europe/London", TimeSegments2Zero =c())
   }
   \item{desiredtz}{
   see \link{g.getmeta}
+  }
+   \item{dayborder}{
+  see \link{g.analyse}
   }
   \item{TimeSegments2Zero}{
   Optional data.frame to specify which time segments need to be ignored for the imputation,

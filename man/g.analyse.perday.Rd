@@ -11,7 +11,7 @@ output matrix, \link{g.analyse}.
 g.analyse.perday(selectdaysfile, ndays, firstmidnighti, 
   time, nfeatures, window.summary.size, qwindow, midnightsi,
   metashort, averageday, ENMOi, LFENMOi, BFENi, ENi,
-  HFENi, HFENplusi, MADi, doiglevels, nfulldays, lastmidnight, 
+  HFENi, HFENplusi, MADi, ENMOai, doiglevels, nfulldays, lastmidnight, 
   ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
   tooshort, includedaycrit, winhr,L5M5window, M5L5res, 
   doquan, qlevels, quantiletype, doilevels, 
@@ -40,6 +40,7 @@ need to be stored in the output matrix}
 \item{HFENi}{column index of metahosrt where metric is stored}
 \item{HFENplusi}{column index of metahosrt where metric is stored}
 \item{MADi}{column index of metahosrt where metric is stored}
+\item{ENMOai}{column index of metahosrt where metric is stored}
 \item{doiglevels}{Boolean to indicate whether iglevels should be calculated}
 \item{nfulldays}{Number of days between the first and last midnight in the recording}
 \item{lastmidnight}{see \link{g.detecmidnight}}

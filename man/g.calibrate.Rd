@@ -14,7 +14,7 @@ g.calibrate(datafile, use.temp = TRUE, spherecrit = 0.3,
 minloadcrit = 72, 
 printsummary = TRUE,chunksize=c(),windowsizes=c(5,900,3600),
 selectdaysfile=c(),
-dayborder=0, desiredtz = c(), ...)
+dayborder=0, desiredtz = "", ...)
 }
 \arguments{
   \item{datafile}{

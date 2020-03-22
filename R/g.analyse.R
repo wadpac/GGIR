@@ -114,13 +114,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
-  dmidn = g.detecmidnight(time,desiredtz) #ND,
+  dmidn = g.detecmidnight(time,desiredtz,dayborder) #ND,
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-  if (dayborder != 0) {
-    midnightsi = ((midnightsi + (dayborder * (3600/ws2))) -1) + (1/(ws2/ws3)) #shift the definition of midnight if required
-  }
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
@@ -140,6 +137,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   HFENplusi = which(colnames(metashort) == "HFENplus")
   MADi = which(colnames(metashort) == "MAD")
   ENi = which(colnames(metashort) == "EN")
+  ENMOai = which(colnames(metashort) == "ENMOa")
   ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
   if (length(myfun) > 0) {
     ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
@@ -154,6 +152,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(HFENplusi) == 0) HFENplusi = -1
   if (length(MADi) == 0) MADi = -1
   if (length(ENi) == 0) ENi = -1
+  if (length(ENMOai) == 0) ENMOai = -1
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -187,7 +186,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
                                      window.summary.size, qwindow, midnightsi, metashort, averageday,
                                      ENMOi, LFENMOi, BFENi, ENi,
-                                     HFENi, HFENplusi, MADi, doiglevels, nfulldays, lastmidnight,
+                                     HFENi, HFENplusi, MADi,  ENMOai, doiglevels, nfulldays, lastmidnight,
                                      ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
                                      tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
