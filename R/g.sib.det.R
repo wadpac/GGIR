@@ -212,7 +212,23 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range, 
                                    perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize, 
                                    outofbedsize = outofbedsize)
-        if (length(inbedout$sptwindow_HDCZA_end) > 0 & length(inbedout$sptwindow_HDCZA_start) > 0) {
+       
+        if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
+          if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
+            # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
+            newqqq1 = qqq1+(6*(3600/ws3))
+            newqqq2 = qqq2+(6*(3600/ws3))
+            if (newqqq2 > length(angle)) newqqq2 = length(angle)
+            # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
+            if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) { 
+              inbedout = sptwindow_HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range, 
+                                         perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize, 
+                                         outofbedsize = outofbedsize)
+              if (inbedout$sptwindow_HDCZA_start+newqqq1 >= newqqq2) {
+                inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
+              }
+            }
+          }
           sptwindow_HDCZA_end[1] = inbedout$sptwindow_HDCZA_end
           sptwindow_HDCZA_start[1] = inbedout$sptwindow_HDCZA_start
           sptwindow_HDCZA_end[1] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
@@ -279,6 +295,21 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                                      perc = perc, inbedthreshold = inbedthreshold, 
                                      bedblocksize = bedblocksize, outofbedsize = outofbedsize)
           if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
+            if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
+              # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
+              newqqq1 = qqq1+(6*(3600/ws3))
+              newqqq2 = qqq2+(6*(3600/ws3))
+              if (newqqq2 > length(angle)) newqqq2 = length(angle)
+              # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
+              if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) { 
+                inbedout = sptwindow_HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range, 
+                                           perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize, 
+                                           outofbedsize = outofbedsize)
+                if (inbedout$sptwindow_HDCZA_start+newqqq1 >= newqqq2) {
+                  inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
+                }
+              }
+            }
             if(j == 1 & midnightsi[j] == 1) {
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3))
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3))

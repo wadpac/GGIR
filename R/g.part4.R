@@ -49,11 +49,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   #-----------------------------------------------------
   # initialize output variable names
   colnamesnightsummary = c("id", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
-                           "guider_onset", "guider_wake", "guider_SptDuration",
+                           "guider_onset", "guider_wakeup", "guider_SptDuration",
                            "error_onset", "error_wake", "error_dur",
                            "fraction_night_invalid",
                            "SleepDurationInSpt","duration_sib_wakinghours","number_sib_sleepperiod","number_sib_wakinghours",
-                           "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wake_ts",
+                           "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                            "page","daysleeper","weekday","calendardate","filename",
                            "cleaningcode","sleeplog_used","acc_available","guider")
   if (storefolderstructure == TRUE) {
@@ -389,7 +389,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           #now generate empty overview for this night / person
           dummyspo = matrix(0,1,5); dummyspo[1,1] = 1
           spo_day = c()
-          # cat(daysleeper[j])s
           #============================================================================================
           for (loaddaysi in 1:loaddays) { #load twice if daysleeper because we also need data from the afternoon on the next day
             # now get accelerometer sleep detection
@@ -495,6 +494,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     }
                   } 
                 }
+                
                 if (daysleeper[j] == TRUE) {
                   # for the labelling above it was needed to have times > 36, but for the plotting 
                   # time in the second day needs to be returned to a normal 24 hour scale. 
@@ -575,7 +575,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                   #remove double rows
                   spocum.t = spocum.t[!duplicated(spocum.t),]
-                  
                   #------------------------------------
                   # ACCELEROMETER
                   if (is.matrix(spocum.t) == FALSE) spocum.t = as.matrix(spocum.t) # seems needed in rare occasions
@@ -738,21 +737,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (acc_wake > 24) acc_wake = acc_wake - 24
                   #--------------------------------------------
                   # convert into clocktime
-                  # convertHRsinceprevMN2Clocktime = function(x) {
-                  #   # x = hours Since Previous Midnight
-                  #   HR = floor(x)
-                  #   MI = floor((x - floor(x)) * 60)
-                  #   SE = round(((x - HR) - (MI/60)) * 3600)
-                  #   if (SE == 60) MI = MI + 1; SE = 0
-                  #   if (MI == 60) HR = HR + 1; MI = 0
-                  #   if (HR == 24) HR = 0
-                  #   if (HR < 10) HR = paste0("0",HR)
-                  #   if (MI < 10) MI = paste0("0",MI)
-                  #   if (SE < 10) SE = paste0("0",SE)
-                  #   cat(x)
-                  #   cat(paste0(HR,":",MI,":",SE))
-                  #   return(paste0(HR,":",MI,":",SE))
-                  # }
                   acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
                   acc_wakeTS = convertHRsinceprevMN2Clocktime(acc_wake)
                   nightsummary[sumi,18] = acc_onsetTS
