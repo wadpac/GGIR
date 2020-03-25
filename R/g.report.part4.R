@@ -29,11 +29,11 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     #-----------------------------------------------------
     nightsummary2 = as.data.frame(matrix(0,0,30)) 
     colnames(nightsummary2) = c("id", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
-                                "guider_onset", "guider_wake", "guider_SptDuration",
+                                "guider_onset", "guider_wakeup", "guider_SptDuration",
                                 "error_onset", "error_wake", "error_dur",
                                 "fraction_night_invalid",
                                 "SleepDurationInSpt","duration_sib_wakinghours","number_sib_sleepperiod","number_sib_sleepperiod",
-                                "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wake_ts",
+                                "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                                 "page","daysleeper","weekday","calendardate","filename",
                                 "cleaningcode","guider_used","acc_available","guider")
     sumi = 1
@@ -92,9 +92,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             nightsummary = nightsummary_bu[-del,]
           }
           # ignore also all columns related to sleeplog and error, which were mainly used for methodological research
-          coldel = which(colnames(nightsummary) %in% c("guider_onset", "guider_wake", "guider_SptDuration",
+          coldel = which(colnames(nightsummary) %in% c("guider_onset", "guider_wakeup", "guider_SptDuration",
                                                     "error_onset", "error_wake", "error_dur",
-                                                    "guider_onset_ts", "guider_wake_ts") == TRUE)
+                                                    "guider_onset_ts", "guider_wakeup_ts") == TRUE)
           if (length(coldel) > 0) nightsummary = nightsummary[,-coldel]
         }
         NIDS = length(unique(nightsummary$id))
@@ -166,7 +166,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             if (dotwice == 1) {
               nightsummary.tmp$guider_SptDuration = as.numeric(nightsummary.tmp$guider_SptDuration)
               nightsummary.tmp$guider_onset = as.numeric(nightsummary.tmp$guider_onset)
-              nightsummary.tmp$guider_wake = as.numeric(nightsummary.tmp$guider_wake)
+              nightsummary.tmp$guider_wakeup = as.numeric(nightsummary.tmp$guider_wakeup)
             }
             nightsummary.tmp$SptDuration = as.numeric(nightsummary.tmp$SptDuration)
             nightsummary.tmp$sleeponset = as.numeric(nightsummary.tmp$sleeponset)
@@ -198,10 +198,10 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                 personSummary[i,cnt+4] = sd(nightsummary.tmp$guider_onset[which(nightsummary.tmp$sleepparam == udef[1])[Seli]],na.rm=TRUE)
                 personSummarynames = c(personSummarynames,paste("guider_onset_",TW,"_mn",sep=""),
                                        paste("guider_onset_",TW,"_sd",sep=""))
-                personSummary[i,cnt+5] = mean(nightsummary.tmp$guider_wake[which(nightsummary.tmp$sleepparam == udef[1])[Seli]],na.rm=TRUE)
-                personSummary[i,cnt+6] = sd(nightsummary.tmp$guider_wake[which(nightsummary.tmp$sleepparam == udef[1])[Seli]],na.rm=TRUE)
-                personSummarynames = c(personSummarynames,paste("guider_wake_",TW,"_mn",sep=""),
-                                       paste("guider_wake_",TW,"_sd",sep=""))
+                personSummary[i,cnt+5] = mean(nightsummary.tmp$guider_wakeup[which(nightsummary.tmp$sleepparam == udef[1])[Seli]],na.rm=TRUE)
+                personSummary[i,cnt+6] = sd(nightsummary.tmp$guider_wakeup[which(nightsummary.tmp$sleepparam == udef[1])[Seli]],na.rm=TRUE)
+                personSummarynames = c(personSummarynames,paste("guider_wakeup_",TW,"_mn",sep=""),
+                                       paste("guider_wakeup_",TW,"_sd",sep=""))
                 cnt = cnt + 6
               }
             }
