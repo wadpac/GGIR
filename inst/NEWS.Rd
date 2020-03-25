@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 1.11-2 (GitHub-only-release date:25-03-2020)}{
+\itemize{
+  \item HDCZA algorithm expanded to be able to detect daysleepers
+  \item Part 5 output variable names improved
+  \item Part 5 now also stores full and cleaned output
+  \item Part 5 now better handles missing days in part 4 output.}
+}
+
 \section{Changes in version 1.11-1 (GitHub-only-release date:28-02-2020)}{
 \itemize{
   \item Metric ENMOa now facilitated for MVPA calculation
