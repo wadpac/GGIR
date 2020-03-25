@@ -536,11 +536,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (skip == FALSE) {
               YXLIM = c(-230,300)
               LJ = 2
-              # accelerometer
+              # plot accelerometer data:
               if (length(x) == length(acc) & length(x) == length(ang)) {  # check to prevent x.y coords errors, show more useful error msg
                 plot(x,acc, type="l",lwd=LWDA,bty="l",axes=FALSE,ylim=YXLIM,
                      xlab="",ylab="",main="",cex.main=0.9,lend=LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
-                # angle
+                # plot z-angle:
                 lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
               } else {
                 print('plot5 error: index, acc and ang vectors are different lengths')   
@@ -549,28 +549,15 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               # add sleeponset time annotation to plot:
               if (sleeponset_loc != 0){
                 for (i in sleeponset_loc) { # allow for multiple sleeponset_loc
-                  if (i <= 10) { # check to see if wake_loc is at the start or end of the plot and adjust accordingly
-                    start_idx <- 1
-                    end_idx <- 20
-                    ar_idx <- 320
-                  } else if (i > (length(x)-10)) {
-                    start_idx <- length(x) - 20
-                    end_idx <- length(x)
-                    ar_idx <- start_idx - 300
-                  } else {
-                    start_idx <- i-10
-                    end_idx <- i+10
-                    ar_idx <- i + 300
-                  }
-                  set_pos = 4
-                  ar_start_idx <- end_idx
-                  ar_end_idx <- end_idx + 300
+                  set_pos = 4 # position of text in relation to arrow 
+                  ar_start_idx <- i
+                  ar_end_idx <- i + 300 # make arrow go to the right of the annotation line
                   if (i > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
                     set_pos = 2
-                    ar_start_idx <- start_idx
-                    ar_end_idx <- start_idx - 300
+                    ar_end_idx <- i - 300
                   }
-                  rect(start_idx,-290,end_idx,300,border="black",lwd=0.3,col='black')#,col="blue")
+                  # draw sleeponset annotation:
+                  segments(i,-230,i,210,col='black',lwd=1.5)
                   arrows(ar_start_idx,205,ar_end_idx,205,length=0.05,angle = 20,code=1,lwd=0.5)
                   segments(ar_start_idx,205,ar_end_idx,205,col="black",lwd=0.5)
                   text(ar_end_idx,205,labels="Sleep-onset",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
@@ -578,25 +565,16 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
               # add wake time annotation to plot:
               if (wake_loc != 0) {
-                if (wake_loc <= 10) { # check to see if wake_loc is at the start or end of the plot and adjust accordingly
-                  start_idx <- 1
-                  end_idx <- 20
-                } else if (wake_loc > (length(x)-10)) {
-                  start_idx <- length(x) - 20
-                  end_idx <- length(x)
-                } else {
-                  start_idx <- wake_loc-10
-                  end_idx <- wake_loc+10
-                }
-                set_pos <- 4
-                ar_start_idx <- end_idx
-                ar_end_idx <- end_idx + 300
+                set_pos <- 4 
+                ar_start_idx <- wake_loc
+                ar_end_idx <- wake_loc + 300
                 if (wake_loc > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
                   set_pos = 2
-                  ar_start_idx <- start_idx
-                  ar_end_idx <- start_idx - 300
+                  ar_start_idx <- wake_loc
+                  ar_end_idx <- wake_loc - 300
                 }
-                rect(start_idx,-290,end_idx,300,border="black",lwd=0.3,col='black')#,col="green")
+                # draw wake annotation:
+                segments(wake_loc,-230,wake_loc,210,col='black',lwd=1.5)
                 arrows(ar_start_idx,160,ar_end_idx,160,length=0.05,angle = 20,code=1,lwd=0.5)
                 segments(ar_start_idx,160,ar_end_idx,160,col="black",lwd=0.5)
                 text(ar_end_idx,160,labels="Wake",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
@@ -624,6 +602,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               pa_heights <- c(-220,-100)
               
               plot_rects <- function(vec,col_select,rect_heights) {
+                # use the rect function to highlight sleep and activity annotations on the plot
                 if (sum(vec) > 0) {
                   r_start_idx <- which(diff(c(0L, vec)) == 1L)
                   r_end_idx <- which(diff(c(vec, 0L)) == -1L)
@@ -646,10 +625,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
 
               axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
               abline(h=0,untf = FALSE,lty=3,lwd=1,col="grey")
-              #rect(xleft=-10,xright=(25*60*(60/ws3)),ybottom=160,
-              #     ytop=220,col="white",border=NA)
               text(x=-700,y=285,labels=title,pos=4,font=2,cex=1)
-              #text(x=-700,y=180,labels="Annotation:",pos=4,font=1.8,cex=0.9)
               text(x=-700,y=-120,labels="Arm movement:",pos=4,font=1.8,cex=0.9)
               text(x=-700,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
               box("figure",col="black")
