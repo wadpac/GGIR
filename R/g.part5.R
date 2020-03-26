@@ -407,8 +407,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               if (defSO >= 24) { 
                 w0[k] = as.character(as.POSIXlt(w0[k],tz=desiredtz) + (24*3600))
               }
-              if (wakeup_time >= 24 |
-                  (summarysleep_tmp2$daysleeper[k] == 1 & wakeup_time < 18)) {
+              if (defWA >= 24 |
+                  (summarysleep_tmp2$daysleeper[k] == 1 & defWA < 18)) {
                 w1[k] = as.character(as.POSIXlt(w1[k],tz=desiredtz) + (24*3600))
               }
               w0c = as.character(as.POSIXlt(w0[k],tz=desiredtz))
