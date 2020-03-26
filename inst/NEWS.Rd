@@ -11,6 +11,8 @@
   \item Part 5 now better handles missing days in part 4 output.
   \item Numunpack function moved to c++
   \item Various updates to visualreport (plot5 function)
+  \item Part 2 report now able to handle changing variable count due to missing data
+  \item L5M5 better able to handle small qwindow intervals
 }
 }
 

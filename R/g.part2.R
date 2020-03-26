@@ -9,6 +9,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
                    IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE) {
   snloc= 1
+  qwindow = qwindow[order(qwindow)]
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
@@ -109,9 +110,9 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         M = c()
         filename_dir = c()
         filefoldername = c()
-        load(paste0(path,fnames[i])) #reading RData-file
+        file2read = paste0(path,fnames[i])
+        load(file2read) #reading RData-file
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-          
           #-----------------------
           # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
           TimeSegments2Zero = c() # set defaul
@@ -171,20 +172,28 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
               }
               cnt78 = 2
             } else {
-              if (ncol(SUMMARY) != ncol(SUM$summary)) {
-                SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
-                                    matrix(" ",1,(ncol(SUMMARY) - ncol(SUM$summary))),
-                                    SUM$summary[(ncol(SUM$summary)-7):ncol(SUM$summary)])
-                colnames(SUM$summary) = colnames(SUMMARY)
-              }
-              # daysummary
-              if (ncol(daySUMMARY) != ncol(SUM$daysummary)) {
-                SUM$daysummary = cbind(SUM$daysummary,matrix(" ",1,(ncol(daySUMMARY) - ncol(SUM$daysummary))))
-                colnames(SUM$daysummary) = colnames(daySUMMARY)
-              }
-              if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
-                names(SUM$daysummary) =   colnames(daySUMMARY)
-              }
+              # if (ncol(SUMMARY) > ncol(SUM$summary)) { # if previous summary had more columns than current
+              #   SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
+              #                       matrix(" ",1,(ncol(SUMMARY) - ncol(SUM$summary))),
+              #                       SUM$summary[(ncol(SUM$summary)-7):ncol(SUM$summary)])
+              #   colnames(SUM$summary) = colnames(SUMMARY)
+              # } else if (ncol(SUMMARY) < ncol(SUM$summary)){  # if previous summary had less columns than current
+              #   SUMMARY = cbind(SUMMARY[1:(ncol(SUMMARY)-8)],
+              #                       matrix(" ",1,(ncol(SUM$summary) - ncol(SUMMARY))),
+              #                   SUMMARY[(ncol(SUMMARY)-7):ncol(SUMMARY)])
+              #   colnames(SUMMARY) = colnames(SUM$summary)
+              # }
+              # # daysummary
+              # if (ncol(daySUMMARY) > ncol(SUM$daysummary)) { # if previous summary had more columns than current
+              #   SUM$daysummary = cbind(SUM$daysummary,matrix(" ",1,(ncol(daySUMMARY) - ncol(SUM$daysummary))))
+              #   colnames(SUM$daysummary) = colnames(daySUMMARY)
+              # } else if (ncol(daySUMMARY) < ncol(SUM$daysummary)) { # if previous summary had less columns than current
+              #   daySUMMARY = cbind(daySUMMARY,matrix(" ",1,(ncol(SUM$daysummary) - ncol(daySUMMARY))))
+              #   colnames(daySUMMARY) = colnames(SUM$daysummary)
+              # }
+              # if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
+              #   names(SUM$daysummary) =   colnames(daySUMMARY)
+              # }
               if (length(selectdaysfile) > 0) {
                 # windowsummary
                 winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
@@ -209,7 +218,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
             SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
             SUM$daysummary$foldername = foldername[i] #store the lowest foldername
           }
-          
           save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
