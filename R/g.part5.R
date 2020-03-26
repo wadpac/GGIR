@@ -519,6 +519,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                 nonwear[nightsi[1]:firstonset] = 1
               }
             }
+            
+            # Optionally aggregate to 1 minute epoch (implemented for ANR project)
+            # print(length(time))
+            # print(length(diur))
+            # print(length(sibdetection))
+            # print(length(ACC))
+            
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
