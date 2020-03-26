@@ -1,12 +1,17 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 1.11-2 (GitHub-only-release date:25-03-2020)}{
+
+
+\section{Changes in version 1.11-2 (GitHub-only-release date:26-04-2020)}{
 \itemize{
   \item HDCZA algorithm expanded to be able to detect daysleepers
   \item Part 5 output variable names improved
   \item Part 5 now also stores full and cleaned output
-  \item Part 5 now better handles missing days in part 4 output.}
+  \item Part 5 now better handles missing days in part 4 output.
+  \item Numunpack function moved to c++
+  \item Various updates to visualreport (plot5 function)
+}
 }
 
 \section{Changes in version 1.11-1 (GitHub-only-release date:28-02-2020)}{
@@ -24,7 +29,7 @@
   range is not 8g. Previously this was not possible.
   \item Fixed bug related to visual report generation when qwindow is set to
   non-default value.
-  \item Added way to handle Actigraph files which start with several days of 
+  \item Added way to handle Actigraph files which start with several days of
   zeros which complicates the auto-calibration.
   \item Default for desiredtz to timezone of machine.
 }
