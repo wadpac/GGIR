@@ -301,32 +301,38 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (mi == ENMOi | mi == LFENMOi | mi == BFENi |
                   mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi | mi == ENMOai) {
-                if (length(varnum) > ((60/ws3)*60*5.5)) { # Calculate values
+                if (length(varnum) > ((60/ws3)*60*min(winhr)*1.2)) { # Calculate values
                   exfi = 0
                   for (winhr_value in winhr) {
-                    # Time window for L5 & M5 analysis
-                    t0_LFMF = L5M5window[1] #start in 24 hour clock hours
-                    t1_LFMF = L5M5window[2]+(winhr_value-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
-                    ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5)
-                    ML5colna = colnames(ML5)
-                    ML5 = as.numeric(ML5)
-                    if (anwi_index > 1) {
-                      L5M5shift = qwindow[anwi_index - 1]
-                    } else {
-                      L5M5shift = 0
-                    }
-                    if (length(ML5) > 3) {
+                    if (length(varnum) > (60/ws3)*60*winhr_value*3) { # Calculate values
+                      # Time window for L5 & M5 analysis
+                      t0_LFMF = L5M5window[1] #start in 24 hour clock hours
+                      t1_LFMF = L5M5window[2]+(winhr_value-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
+                      ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5)
+                      ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
-                      ML5[c(1,3)] = ML5[c(1,3)] + L5M5shift
-                      daysummary[di,(exfi+fi):(exfi+fi-1+length(ML5))] = ML5
+                      if (anwi_index > 1) {
+                        L5M5shift = qwindow[anwi_index - 1]
+                      } else {
+                        L5M5shift = 0
+                      }
+                      if (length(ML5) > 3) {
+                        ML5 = as.numeric(ML5)
+                        ML5[c(1,3)] = ML5[c(1,3)] + L5M5shift
+                        daysummary[di,(exfi+fi):(exfi+fi+length(ML5)-1)] = ML5
+                      } else {
+                        daysummary[di,(exfi+fi):(exfi+fi+length(ML5)-1)] = ""
+                      }
                     } else {
-                      daysummary[di,(exfi+fi):(exfi+fi+4+(length(qM5L5)*2))] = ""
+                      daysummary[di,(exfi+fi):(exfi+fi+(4*length(winhr))-1+(length(qM5L5)*2))] = ""
                     }
-                    exfi = exfi+length(ML5)
+                    # (Below) 4 is the length of ML5 and then 2 extra variables for every qM5L5 value
+                    # winhr is not considered because we are in the winhr loop:
+                    exfi = exfi+4+(length(qM5L5)*2) 
                   }
                   
                 } else {
-                  daysummary[di,(exfi+fi):(exfi+fi+4+(length(qM5L5)*2))] = ""
+                  daysummary[di,fi:(fi+(4*length(winhr))-1+(length(qM5L5)*2))] = ""
                 }
                 for (winhr_value in winhr) { # Variable (column) names
                   ML5colna = c(paste0("L",winhr_value,"hr"), paste0("L",winhr_value), 
