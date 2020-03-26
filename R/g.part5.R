@@ -384,14 +384,31 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             for (k in 1:length(summarysleep_tmp2$calendardate)){ # loop through nights from part 4
               # Load sleep onset and waking time from part 4 and convert them into timestamps
               tt = unlist(strsplit(as.character(summarysleep_tmp2$calendardate[k]),"/")) # calendar date
-              w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$sleeponset_ts[k]),sep="")
-              w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(summarysleep_tmp2$wakeup_ts[k]),sep="")
+              # if sleep onset is not available in from acc and/or sleep then us the following default
+              # in order to still have some beginning and end of the night, these days will be discared
+              # anyway, because typically this coincides with a lot of non-wear time:
+              if (is.na(summarysleep_tmp2$sleeponset[k]) == T) {
+                defSO = 22 
+                defSO_ts = "22:00:00"
+              } else {
+                defSO = summarysleep_tmp2$sleeponset[k]
+                defSO_ts = summarysleep_tmp2$sleeponset_ts[k]
+              }
+              if (is.na(summarysleep_tmp2$wakeup[k]) == T) {
+                defWA = 31
+                defWA_ts = "07:00:00"
+              } else {
+                defWA = summarysleep_tmp2$wakeup[k]
+                defWA_ts = summarysleep_tmp2$wakeup_ts[k]
+              }
+              w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(defSO_ts),sep="")
+              w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(defWA_ts),sep="")
               # if time is beyond 24 then change the date
-              if (summarysleep_tmp2$sleeponset[k] >= 24) { 
+              if (defSO >= 24) { 
                 w0[k] = as.character(as.POSIXlt(w0[k],tz=desiredtz) + (24*3600))
               }
-              if (summarysleep_tmp2$wakeup[k] >= 24 |
-                  (summarysleep_tmp2$daysleeper[k] == 1 & summarysleep_tmp2$wakeup[k] < 18)) {
+              if (wakeup_time >= 24 |
+                  (summarysleep_tmp2$daysleeper[k] == 1 & wakeup_time < 18)) {
                 w1[k] = as.character(as.POSIXlt(w1[k],tz=desiredtz) + (24*3600))
               }
               w0c = as.character(as.POSIXlt(w0[k],tz=desiredtz))
