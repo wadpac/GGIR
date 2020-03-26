@@ -66,7 +66,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         if (length(unique(summarysleep_tmp$acc_def)) > 1) {
           if (length(which(unique(summarysleep_tmp$acc_def) == "T5A5")) == 1) {
             della = which(summarysleep_tmp$acc_def == "T5A5")
-            
+
           } else {
             della = which(summarysleep_tmp$acc_def == unique(summarysleep_tmp$acc_def)[1])
           }
@@ -194,18 +194,18 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         #get variables - activity:
         ACC = as.numeric(as.matrix(M$metashort[,metric])) * 1000
         nonwearscore = as.numeric(as.matrix(M$metalong[,"nonwearscore"]))
-        
+
         time =  as.character(M$metashort[,1])
         nw_time = as.character(M$metalong[,1])
         if (length(unlist(strsplit(time[1],"T"))) > 1) { # ISO timestamp format
           time = as.character(iso8601chartime2POSIX(time,desiredtz))
           nw_time = as.character(iso8601chartime2POSIX(nw_time,desiredtz))
         }
-        
+
         sec = unclass(as.POSIXlt(time))$sec
-        min = unclass(as.POSIXlt(time))$min
+        min_vec = unclass(as.POSIXlt(time))$min
         hour = unclass(as.POSIXlt(time))$hour
-        
+
         # Prepare nonwear information for plotting
         NONWEAR = rep(NA,length(ACC))
         day = unclass(as.POSIXlt(time))$mday
@@ -222,7 +222,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         }
 
         INACT = LIGPA = MODPA = VIGPA = rep(NA,length(ACC))  # PA vectors for plotting
-        
+
         # Find bouts of light-PA (LPA):
         boutdur2 = 10 * (60/ws3)    # 10min bout duration
         boutcriter = 0.8            # 80% bout criteria
@@ -249,7 +249,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         }
         rr_lpa[which(rr1t == 2)] = 1
         LIGPA[which(rr_lpa == 1)] = 1 #moderate as part of 10 minute bouts of lpa
-        
+
         # Find bouts of MVPA
         rr = matrix(0,length(ACC),1)
         p = which(ACC >= threshold.mod)
@@ -308,17 +308,17 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         }
         night_wake_full <- rep(NA,length(detection)) # opposite of detection (sleep/inactivity detection)
         night_wake_full[is.na(detection)] <- 1 # for plotting wake during SPT window
-        
+
         # prepare to search for sleeplog_onst / sleeplog_wake
         sleep_dates = as.Date(summarysleep_tmp$calendardate,format='%d/%m/%Y')
-        
+
         # detect midnights
         if (viewingwindow == 1) {
-          nightsi = which(sec == 0 & min == 0 & hour == 0)
+          nightsi = which(sec == 0 & min_vec == 0 & hour == 0)
           xaxislabels = c("midnight","2am","4am","6am","8am","10am","noon",
                           "2pm","4pm","6pm","8pm","10pm","midnight")
         } else if (viewingwindow == 2) {
-          nightsi = which(sec == 0 & min == 0 & hour == 12)
+          nightsi = which(sec == 0 & min_vec == 0 & hour == 12)
           xaxislabels = c("noon","2pm","4pm","6pm","8pm","10pm","midnight",
                           "2am","4am","6am","8am","10am","noon")
         }
@@ -350,7 +350,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (((t1-t0) + 1) / (60*60/ws3) == 23) { # day with 23 hours, just extend timeline with 1 hour
               t1 = t1 + (60*60/ws3)
             }
-            
+
             # Initialize daily 'what we think you did' vectors:
             acc = abs(ACC[t0:t1])
             ang = angle[t0:t1]
@@ -361,21 +361,25 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             mod_pa <- MODPA[t0:t1]
             vig_pa <- VIGPA[t0:t1]
             non_wear <- NONWEAR[t0:t1]
-            
+
             # check to see if there is a sleeplog_onset on this day:
             sleeponset_loc = 0
+            # check for sleeponset time that occurred on this day before midnight
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
               sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
               # find the first index that matches sleeponset_hour and _min
               sleeponset_hour = as.integer(substr(sleeponset_time,start=1,stop=2))
-              sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
-              sleeponset_loc = which(hour[t0:t1] == sleeponset_hour & min[t0:t1] == sleeponset_min)
-              sleeponset_loc = sleeponset_loc[1]
-              if (is.na(sleeponset_loc)) sleeponset_loc = 0 
+              if (sleeponset_hour > 12) {   # only add the annotation here if sleeponset is before midnight, otherwise, check it next day
+                sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
+                sleeponset_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min) # will not find it, if it occurs after midnight, check prev day in next section
+                sleeponset_loc = sleeponset_loc[1]
+                if (is.na(sleeponset_loc)) sleeponset_loc = 0
+              }
             }
-            # check to see if there is a wake on this day (check prev day):
+
+            # check to see if there is a wake on this day (check prev day) or a late sleeponset from prev_day:
             prev_date = curr_date - 1
             wake_loc = 0
             check_date = match(prev_date,sleep_dates)
@@ -384,16 +388,35 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               # find the first index that matches wake time hour and min
               wake_hour = as.integer(substr(wake_time,start=1,stop=2))
               wake_min = as.integer(substr(wake_time,start=4,stop=5))
-              wake_loc = which(hour[t0:t1] == wake_hour & min[t0:t1] == wake_min)
+              wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
               wake_loc = wake_loc[1]
-              if (is.na(wake_loc)) wake_loc = 0 
+              if (is.na(wake_loc)) wake_loc = 0
+              # check for a late sleeponset time registered in previous day
+              sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
+              # find the first index that matches sleeponset_hour and _min
+              sleeponset_hour = as.integer(substr(sleeponset_time,start=1,stop=2))
+              sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
+              if (sleeponset_hour < 12) {  # the prev-day had a sleeponset time after midnight
+                if (sleeponset_loc > 0) {
+                # 2 sleep onsets in one day
+                  sleeponset_prev_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
+                  if (!is.na(sleeponset_prev_loc)) sleeponset_loc[2] = sleeponset_prev_loc[1]
+                } else if (sleeponset_loc == 0) {
+                  sleeponset_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min) # will not find it, if it occurs after midnight, check prev day in next section
+                  sleeponset_loc = sleeponset_loc[1]
+                  if (is.na(sleeponset_loc)) sleeponset_loc = 0
+                }
+              }
+              # problem here is sleeponset_ts is after midnight, because it isn't in hour[t0:t1] & min[t0:t1]
+               # 2 sleeponset in one midnight to midnight section
+
             }
-            
             # add extensions if <24hr of data
             if (((t1-t0)+1) != npointsperday & t0 == 1) {
               extension = rep(NA,(npointsperday-((t1-t0)+1)))
               acc = c(extension,acc)
               ang = c(extension,ang)
+              t1 = length(acc) # this was missing and causing x.y coords errors in some tests
               if (length(acc) == (length(x)+1)) {
                 extension = extension[2:(length(extension))]
                 acc = acc[2:(length(acc))]
@@ -426,10 +449,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               night_wake = c(night_wake,extension)
               non_wear = c(non_wear,extension)
             }
+
             acc = as.numeric(acc)
             acc[which(acc >= 900)] = 900
             acc = (acc/9) - 210
-            
+
             if (sleeponset_loc == 0 & wake_loc == 0){
               # no wake or sleeponset detected
             } else if (sleeponset_loc>0 & wake_loc==0) {
@@ -472,7 +496,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 mod_pa[sleeponset_loc:wake_loc] <- NA
                 vig_pa[sleeponset_loc:wake_loc] <- NA
               }
-              
+
             } else {
               #
             }
@@ -483,7 +507,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             light_pa[is.na(non_wear)==FALSE] <- NA
             mod_pa[is.na(non_wear)==FALSE] <- NA
             vig_pa[is.na(non_wear)==FALSE] <- NA
-            
+
             minutesvigorous = (length(which(vig_pa == 1))*5)/60
             minutesmoderate = (length(which(mod_pa == 1))*5)/60
             minutesMVPA = (length(which(mod_pa == 1 | vig_pa == 1))*5)/60
@@ -506,65 +530,50 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (skip == FALSE) {
               YXLIM = c(-230,300)
               LJ = 2
-              # accelerometer
-              plot(x,acc, type="l",lwd=LWDA,bty="l",axes=FALSE,ylim=YXLIM,
-                   xlab="",ylab="",main="",cex.main=0.9,lend=LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
-              # angle
-              lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
+              # plot accelerometer data:
+              if (length(x) == length(acc) & length(x) == length(ang)) {  # check to prevent x.y coords errors, show more useful error msg
+                plot(x,acc, type="l",lwd=LWDA,bty="l",axes=FALSE,ylim=YXLIM,
+                     xlab="",ylab="",main="",cex.main=0.9,lend=LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
+                # plot z-angle:
+                lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
+              } else {
+                print('plot5 error: index, acc and ang vectors are different lengths')
+              }
+
               # add sleeponset time annotation to plot:
               if (sleeponset_loc != 0){
-                if (sleeponset_loc <= 10) { # check to see if wake_loc is at the start or end of the plot and adjust accordingly
-                  start_idx <- 1
-                  end_idx <- 20
-                  ar_idx <- 320
-                } else if (sleeponset_loc > (length(x)-10)) {
-                  start_idx <- length(x) - 20
-                  end_idx <- length(x)
-                  ar_idx <- start_idx - 300
-                } else {
-                  start_idx <- sleeponset_loc-10
-                  end_idx <- sleeponset_loc+10
-                  ar_idx <- sleeponset_loc + 300
+                for (i in sleeponset_loc) { # allow for multiple sleeponset_loc
+                  set_pos = 4 # position of text in relation to arrow
+                  ar_start_idx <- i
+                  ar_end_idx <- i + 300 # make arrow go to the right of the annotation line
+                  if (i > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
+                    set_pos = 2
+                    ar_end_idx <- i - 300
+                  }
+                  # draw sleeponset annotation:
+                  segments(i,-230,i,210,col='black',lwd=1.5)
+                  arrows(ar_start_idx,205,ar_end_idx,205,length=0.05,angle = 20,code=1,lwd=0.5)
+                  segments(ar_start_idx,205,ar_end_idx,205,col="black",lwd=0.5)
+                  text(ar_end_idx,205,labels="Sleep-onset",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
                 }
-                set_pos = 4
-                ar_start_idx <- end_idx
-                ar_end_idx <- end_idx + 300
-                if (sleeponset_loc > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
-                  set_pos = 2
-                  ar_start_idx <- start_idx
-                  ar_end_idx <- start_idx - 300
-                }
-                rect(start_idx,-270,end_idx,300,border="black",lwd=0.3,col='black')#,col="blue")
-                arrows(ar_start_idx,180,ar_end_idx,180,length=0.05,angle = 20,code=1,lwd=0.5)
-                segments(ar_start_idx,180,ar_end_idx,180,col="black",lwd=0.5)
-                text(ar_end_idx,180,labels="Sleep-onset",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
               }
               # add wake time annotation to plot:
               if (wake_loc != 0) {
-                if (wake_loc <= 10) { # check to see if wake_loc is at the start or end of the plot and adjust accordingly
-                  start_idx <- 1
-                  end_idx <- 20
-                } else if (wake_loc > (length(x)-10)) {
-                  start_idx <- length(x) - 20
-                  end_idx <- length(x)
-                } else {
-                  start_idx <- wake_loc-10
-                  end_idx <- wake_loc+10
-                }
                 set_pos <- 4
-                ar_start_idx <- end_idx
-                ar_end_idx <- end_idx + 300
+                ar_start_idx <- wake_loc
+                ar_end_idx <- wake_loc + 300
                 if (wake_loc > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
                   set_pos = 2
-                  ar_start_idx <- start_idx
-                  ar_end_idx <- start_idx - 300
+                  ar_start_idx <- wake_loc
+                  ar_end_idx <- wake_loc - 300
                 }
-                rect(start_idx,-270,end_idx,300,border="black",lwd=0.3,col='black')#,col="green")
-                arrows(ar_start_idx,180,ar_end_idx,180,length=0.05,angle = 20,code=1,lwd=0.5)
-                segments(ar_start_idx,180,ar_end_idx,180,col="black",lwd=0.5)
-                text(ar_end_idx,180,labels="Wake",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
+                # draw wake annotation:
+                segments(wake_loc,-230,wake_loc,210,col='black',lwd=1.5)
+                arrows(ar_start_idx,160,ar_end_idx,160,length=0.05,angle = 20,code=1,lwd=0.5)
+                segments(ar_start_idx,160,ar_end_idx,160,col="black",lwd=0.5)
+                text(ar_end_idx,160,labels="Wake",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
               }
-              
+
               # rect for all annotations:
               # make everything 0/1
               inactive[is.na(inactive)] <- 0
@@ -574,10 +583,10 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               night_sleep[is.na(night_sleep)] <- 0
               night_wake[is.na(night_wake)] <- 0
               non_wear[is.na(non_wear)] <- 0
-              
+
               # colours for annotations:
               nonwear_col <- rgb(0,0.8,0,alpha=0.4)
-              inactive_col <- rgb(0.3,0.3,1,alpha=0.2) 
+              inactive_col <- rgb(0.3,0.3,1,alpha=0.2)
               light_pa_col <- rgb(1,1,0,alpha=0.2)
               mod_pa_col <- rgb(1,0.5,0,alpha=0.2)
               vig_pa_col <- rgb(1,0,0,alpha=0.2)
@@ -585,8 +594,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               night_wake_col <- rgb(0,0.8,0.6,alpha=0.2)
               spt_heights <- c(-80,110)
               pa_heights <- c(-220,-100)
-              
+
               plot_rects <- function(vec,col_select,rect_heights) {
+                # use the rect function to highlight sleep and activity annotations on the plot
                 if (sum(vec) > 0) {
                   r_start_idx <- which(diff(c(0L, vec)) == 1L)
                   r_end_idx <- which(diff(c(vec, 0L)) == -1L)
@@ -596,9 +606,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                   for (idx in 1:length(r_start_idx)) {
                     rect(r_start_idx[idx],rect_heights[1],r_end_idx[idx],rect_heights[2],col=col_select,border=NA)
                   }
-                }  
+                }
               }
-              
+
               plot_rects(vec=inactive,col_select=inactive_col,rect_heights=pa_heights)         # daytime inactivity annotations
               plot_rects(vec=light_pa,col_select=light_pa_col,rect_heights=pa_heights)         # light pa annotatoins
               plot_rects(vec=mod_pa,col_select=mod_pa_col,rect_heights=pa_heights)             # mod pa annotations
@@ -609,10 +619,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
 
               axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
               abline(h=0,untf = FALSE,lty=3,lwd=1,col="grey")
-              #rect(xleft=-10,xright=(25*60*(60/ws3)),ybottom=160,
-              #     ytop=220,col="white",border=NA)
               text(x=-700,y=285,labels=title,pos=4,font=2,cex=1)
-              #text(x=-700,y=180,labels="Annotation:",pos=4,font=1.8,cex=0.9)
               text(x=-700,y=-120,labels="Arm movement:",pos=4,font=1.8,cex=0.9)
               text(x=-700,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
               box("figure",col="black")
