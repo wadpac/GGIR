@@ -1,8 +1,12 @@
 #include <Rcpp.h>
 using namespace Rcpp;
-
+//--------------------------------
+// Function originally written by Evgeny Mirkes
+// and revised by translation of R code provided by Dan Jackson:
+//---------------------------------
 // [[Rcpp::export]]
 IntegerMatrix numUnpack(IntegerVector pack) {
+   
   // Get length
   int n = pack.size();
   // Create array for output
