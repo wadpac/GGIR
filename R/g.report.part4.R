@@ -147,9 +147,15 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             personSummarynames = c(personSummarynames,paste("n_nights_guider",sep=""))
             # total number of complete weekend and week nights
             th3 = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[1])]
-            personSummary[i,cntt+6] = length(which(nightsummary.tmp$cleaningcode[which(nightsummary.tmp$sleepparam == udef[1])] == 0 &
+            
+            if (only.use.sleeplog == TRUE) {
+              validcleaningcode = 0
+            } else if (only.use.sleeplog == FALSE) {
+              validcleaningcode = 1
+            }
+            personSummary[i,cntt+6] = length(which(nightsummary.tmp$cleaningcode[which(nightsummary.tmp$sleepparam == udef[1])] <= validcleaningcode &
                                                      (th3 == "Friday" | th3 == "Saturday")))
-            personSummary[i,cntt+7] = length(which(nightsummary.tmp$cleaningcode[which(nightsummary.tmp$sleepparam == udef[1])] == 0 &
+            personSummary[i,cntt+7] = length(which(nightsummary.tmp$cleaningcode[which(nightsummary.tmp$sleepparam == udef[1])] <= validcleaningcode &
                                                      (th3 == "Monday" | th3 == "Tuesday" | th3 == "Wednesday" | th3 == "Thursday" | th3 == "Sunday")))
             personSummarynames = c(personSummarynames,paste("n_WE_nights_complete",sep=""),
                                    paste("n_WD_nights_complete",sep=""))
