@@ -90,6 +90,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                 UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
                                          blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
                 startpage = UPI$startpage;    endpage = UPI$endpage
+          print(c(startpage, endpage))
                 try(expr={P = g.binread(binfile=filename,startpage,endpage)},silent=TRUE)
                 if (length(P) > 1) {
                         if (nrow(P$rawxyz) < ((sf*ws*2)+1) & blocknumber == 1) {
