@@ -407,6 +407,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         } else if (mon == 5 & dformat == 1){ #movisens
                 # startpage = 1
                 blocksize = blocksize * 300
+                print(blocksize)
                 # UPI = updatepageindexing(startpage = startpage, deltapage = deltapage, 
                 #                          blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, 
                 #                          mon = mon, dformat = dformat)
