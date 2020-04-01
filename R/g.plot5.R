@@ -88,14 +88,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         }
         # detect which column is mvpa
         n45 = names(daysummary_tmp)
-        c45 = c()
-        for (i45 in 1:length(n45)) {
-          s45 = unlist(strsplit(n45[i45],"VPA_"))
-          if (length(s45) > 1) {
-            c45 = c(c45,i45)
-          }
-        }
-        
+        varsVPA = grep(pattern = "VPA",x = n45)
+        vars02 = grep(pattern = "_0-2|_0.2|_24",x = n45)
+        c45 = varsVPA[which(varsVPA %in% vars02 == TRUE)]
         c45 = c45[length(c45)]
         #######################
         # First page of the report

@@ -13,8 +13,8 @@ Typical users should work with function g.shell.GGIR only.
 \usage{
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   acc.metric="ENMO", ignorenonwear=TRUE, overwrite=FALSE,
-  desiredtz="Europe/London",constrain2range=TRUE,
-  do.part3.pdf=TRUE, do.parallel=TRUE)
+  desiredtz="",constrain2range=TRUE,
+  do.part3.pdf=TRUE, do.parallel=TRUE, dayborder=0)
 }
 \arguments{
   \item{metadatadir}{
@@ -67,7 +67,9 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
     \item{do.parallel}{
     Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
   }
-
+  \item{dayborder}{
+    See \link{g.part1}
+  }
 }
 \value{
 The function provides no values, it only ensures that other functions
