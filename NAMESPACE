@@ -13,7 +13,9 @@ export(g.analyse,g.calibrate,g.getmeta
        g.weardec,isfilelist,iso8601chartime2POSIX,is_this_a_dst_night,
         POSIXtime2iso8601,resample,is.ISO8601,updateBlocksize,
        g.IVIS, createConfigFile, identify_levels, g.sib.sum, datadir2fnames,
-       read.myacc.csv)
+       read.myacc.csv, g.part5.addfirstwake, g.part5.addsib,
+       g.part5.definedays, g.part5.fixmissingnight,
+       g.part5.onsetwaketiming, g.part5.wakesleepwindows, g.part5.savetimeseries)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
