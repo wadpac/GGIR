@@ -15,11 +15,8 @@ addons:
   apt:
     update: TRUE
 
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm &&
-    export PATH="/usr/local/opt/llvm/bin:$PATH" &&
-    export LDFLAGS="-L/usr/local/opt/llvm/lib" &&
-    export CFLAGS="-I/usr/local/opt/llvm/include"; fi
+before_install:	
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install framed titling; fi
 
 r_packages:
   - covr

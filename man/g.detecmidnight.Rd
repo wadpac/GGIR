@@ -7,7 +7,7 @@
   Detect all midnights in a time series
 }
 \usage{
-  g.detecmidnight(time,desiredtz)
+  g.detecmidnight(time,desiredtz, dayborder)
 }
 \arguments{
   \item{time}{
@@ -15,6 +15,9 @@
   }
   \item{desiredtz}{
     See \link{g.part2}
+  }
+    \item{dayborder}{
+  see \link{g.analyse}
   }
   
 }
