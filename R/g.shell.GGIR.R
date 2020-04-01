@@ -263,6 +263,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
+  if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
+  
   
   # VISUAL REPORT
   
@@ -382,7 +384,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
-            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel)
+            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
+            part5_agg2_60seconds=part5_agg2_60seconds)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
