@@ -56,6 +56,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     if (length(cut2) > 0) {
       outputfinal = outputfinal[-cut2,]
     }
+
+    
     #-------------------------------------------
     # clean spreadsheet: => commented out, because part 5 should use all possible information
     # # if there is a sleeplog location then only use measurements with sleeplog
@@ -90,6 +92,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
         outputfinal[krad,kra] = ""
       }
     }
+    
     # loop to store varous variants of the analysis seperately
     cat(" generating output for every parameter configurations...\n")
     for (j in 1:length(uwi)) {
