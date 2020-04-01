@@ -173,7 +173,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         load(paste0(metadatadir,"/meta/ms3.out/",fnames.ms3[i]))
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
         #note that this is imputed ACCELERATION because we use this for describing behaviour:
-        ts = data.frame(time=IMP$metashort[,1],ACC = IMP$metashort[,acc.metric] * 1000 ) # sibdetection,
+        ts = data.frame(time=IMP$metashort[,1],ACC = IMP$metashort[,acc.metric] * 1000, guider=rep("unknown",nrow(IMP$metashort))) # sibdetection,
         
         if (length(which(names(IMP$metashort) == "anglez")) == 0) {
           cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
@@ -585,19 +585,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.mvpa = levels$bc.mvpa
                   bc.lig = levels$bc.lig
                   bc.in = levels$bc.in
-                  if (save_ms5rawlevels == TRUE) {
-                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
-                    if (length(ts$time) == length(LEVELS)) {
-                      ind = 1:length(ts$time) #c(1,which(diff(LEVELS)!=0) + 1)
-                      ms5rawlevels = data.frame(date_time = ts$time[ind],class_id = LEVELS[ind], class_name = rep("",length(ts$time)),stringsAsFactors = FALSE)
-                      for (LNi in 1:length(Lnames)) {
-                        replacev = which(ms5rawlevels$class_id == (LNi-1))
-                        if (length(replacev) > 0) ms5rawlevels$class_name[replacev] = Lnames[LNi]
-                      }
-                      write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
-                      rm(ms5rawlevels)
-                    }
-                  }
+                
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
                   # we want there to be one more nights in the accelerometer data than there are nights with sleep results
@@ -611,6 +599,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   for (timewindowi in timewindow) {
                     nightsi = nightsi_bu 
                     plusrow = 1
+                    ts$guider = "unknown"
                     if (timewindowi == "WW") {
                       if (length(FM) > 0) {
                         # ignore first and last midnight because we did not do sleep detection on it
@@ -774,6 +763,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           ds_names[fi] = "cleaningcode";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$guider[dayofinterst]
                           ds_names[fi] = "guider";      fi = fi + 1
+                          ts$guider[qqq[1]:qqq[2]] = summarysleep_tmp2$guider[dayofinterst] # add guider also to timeseries
                           dsummary[di,fi] = summarysleep_tmp2$sleeplog_used[dayofinterst]
                           ds_names[fi] = "sleeplog_used";      fi = fi + 1
                           dsummary[di,fi] = summarysleep_tmp2$acc_available[dayofinterst]
@@ -1034,6 +1024,22 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         }
                         di = di + 1
                       }
+                    }
+                  }
+                  if (save_ms5rawlevels == TRUE) { # I have move this bit of code to the end, because we want guider to be include
+                    rawlevels_fname = paste(metadatadir,ms5.outraw,"/",fnames.ms3[i],"_",TRLi,"_",TRMi,"_",TRVi,"raw.csv",sep="")
+                    if (length(ts$time) == length(LEVELS)) {
+                      ind = 1:length(ts$time) #c(1,which(diff(LEVELS)!=0) + 1)
+                      ms5rawlevels = data.frame(date_time = ts$time[ind],class_id = LEVELS[ind],
+                                                class_name = rep("",length(ts$time)),
+                                                guider= ts$guider[ind],
+                                                stringsAsFactors = FALSE)
+                      for (LNi in 1:length(Lnames)) {
+                        replacev = which(ms5rawlevels$class_id == (LNi-1))
+                        if (length(replacev) > 0) ms5rawlevels$class_name[replacev] = Lnames[LNi]
+                      }
+                      write.csv(ms5rawlevels,file = rawlevels_fname,row.names = FALSE)
+                      rm(ms5rawlevels)
                     }
                   }
                 }
