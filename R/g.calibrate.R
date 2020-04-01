@@ -1,6 +1,6 @@
 g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
-                       desiredtz = c(), ...) {
+                       desiredtz = "", ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -168,7 +168,13 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       } else if (dformat == 2) {
         data = as.matrix(P)
       } else if (dformat == 4) {
-        data = P$data
+        if (P$header$hardwareType == "AX6") { # cwa AX6
+          # Note 18-Feb-2020: For the moment GGIR ignores the AX6 gyroscope signals until robust sensor
+          # fusion algorithms and gyroscope metrics have been prepared
+          data = P$data[,-c(2:4)]
+        } else { # cwa AX3
+          data = P$data
+        }
       } else if (dformat == 5) {
         data = P$data
       }
@@ -176,6 +182,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
+      
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
       use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
