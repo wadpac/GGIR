@@ -13,6 +13,8 @@
   \item Various updates to visualreport (plot5 function)
   \item Part 2 report now able to handle changing variable count due to missing data
   \item L5M5 better able to handle small qwindow intervals
+  \item Revised part 5 save raw data to csv, to be more user-friendly.
+  \item Part 5 function code split up in 7 new seperate functions to ease navigation.
 }
 }
 
