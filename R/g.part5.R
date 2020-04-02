@@ -116,7 +116,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     packages2passon = 'GGIR'
     errhand = 'pass'
   } else { # pass on functions
-    functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout")
+    functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout",
+                         "g.part5.addfirstwake", "g.part5.addsib",
+                         "g.part5.definedays", "g.part5.fixmissingnight",
+                         "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
+                         "g.part5.savetimeseries")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
@@ -247,7 +251,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           }
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
-          S2 = S[which(S$definition==j),] # simplify to one definition
+          S2 = S[S$definition==j,] # simplify to one definition
           # Add sustained inactivity bouts (sib) to the time series
           ts = g.part5.addsib(ts,ws3new, Nts, S2, desiredtz, j,  nightsi)
           # Fix missing nights in part 4 data:
@@ -320,14 +324,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     if (timewindowi == "WW") {
                       if (length(FM) > 0) {
                         # ignore first and last midnight because we did not do sleep detection on it
-                        nightsi = nightsi[which(nightsi > FM[1] & nightsi < FM[length(FM)])]
+                        nightsi = nightsi[nightsi > FM[1] & nightsi < FM[length(FM)]]
                       }
                     } else {
                       # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
                       startend_sleep = which(abs(diff(ts$diur))==1) 
                       Nepochsin12Hours =  (60/ws3new)*60*12
-                      nightsi = nightsi[which(nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
-                                                nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours))]  # newly added on 25-11-2019
+                      nightsi = nightsi[nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
+                                                nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                     }
                     if (timewindowi == "MM") {
@@ -502,19 +506,19 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # AVERAGE ACC PER WINDOW
                         sse = qqq1:qqq2
                         for (levelsc in 0:(length(Lnames)-1)) {
-                          dsummary[di,fi] = mean(ts$ACC[sse[which(LEVELS[sse] == levelsc)]])
+                          dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]])
                           ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
                         }
                         for (g in 1:5) {
-                          dsummary[di,(fi+(g-1))] = mean(ts$ACC[sse[which(OLEVELS[sse] == g)]])
+                          dsummary[di,(fi+(g-1))] = mean(ts$ACC[sse[OLEVELS[sse] == g]])
                         }
                         ds_names[fi:(fi+4)] = c("ACC_TSIBday_mg","ACC_TOINday_mg","ACC_TLIGday_mg","ACC_TMODday_mg","ACC_TVIGday_mg")
                         fi = fi + 5
-                        dsummary[di,fi] = mean(ts$ACC[sse[which(OLEVELS[sse] == 1 | OLEVELS[sse] == 2)]])
+                        dsummary[di,fi] = mean(ts$ACC[sse[OLEVELS[sse] == 1 | OLEVELS[sse] == 2]])
                         ds_names[fi] = "ACC_TINday_min";      fi = fi + 1 #total inactivity (SIB or OIN)
-                        dsummary[di,fi] = mean(ts$ACC[sse[which(ts$diur[sse] == 0)]])
+                        dsummary[di,fi] = mean(ts$ACC[sse[ts$diur[sse] == 0]])
                         ds_names[fi] = "ACC_wakinghours_mg";      fi = fi + 1
-                        dsummary[di,fi] = mean(ts$ACC[sse[which(ts$diur[sse] == 1)]])
+                        dsummary[di,fi] = mean(ts$ACC[sse[ts$diur[sse] == 1]])
                         ds_names[fi] = "ACC_sleepperiod_mg";      fi = fi + 1
                         dsummary[di,fi] = mean(ts$ACC[sse])
                         ds_names[fi] = "ACC_fulldaywindow_mg";      fi = fi + 1             
@@ -572,7 +576,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
-                            
                             if (L5HOUR != "not detected") {
                               time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
                               if (time_num < 12) time_num = time_num + 24
@@ -705,9 +708,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         # tidy up output data frame, because it may have a lot of empty rows and columns
         emptyrows = which(output[,1] == "" & output[,2] == "")
         if (length(emptyrows) > 0) output = output[-emptyrows,]
-        
         lastcolumn = which(colnames(output) == "bout.metric")
-        
         if (ncol(output) > lastcolumn) {
           emptycols = sapply(output, function(x)all(x==""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
           emptycols = which(emptycols == TRUE)
