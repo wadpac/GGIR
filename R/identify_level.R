@@ -9,36 +9,36 @@ identify_levels = function(time,diur,sibdetection,ACC,
   # LABEL INSENTITY LEVELS
   LEVELS = rep(0,length(time))
   OLEVELS = rep(0,length(time)) #to capture moderate and vigorous seperately
-  LEVELS[which(sibdetection == 1 & diur == 1)] = 0 #nocturnal sleep
-  LEVELS[which(sibdetection == 0 & diur == 1)] = 1 #nocturnal waking
+  LEVELS[sibdetection == 1 & diur == 1] = 0 #nocturnal sleep
+  LEVELS[sibdetection == 0 & diur == 1] = 1 #nocturnal waking
   Lnames = c("sleeperpiodsleep",paste("sleepperiodwak_and_IN",TRLi,sep=""))
   # activity during the night
-  LEVELS[which(sibdetection == 0 & diur == 1 & ACC > TRLi & ACC <= TRMi)] = 2 #LIGHT
-  LEVELS[which(sibdetection == 0 & diur == 1 & ACC > TRMi & ACC <= TRVi)] = 3 #MODERATE
-  LEVELS[which(sibdetection == 0 & diur == 1 & ACC > TRVi)] = 4 #VIGOROUS
+  LEVELS[sibdetection == 0 & diur == 1 & ACC > TRLi & ACC <= TRMi] = 2 #LIGHT
+  LEVELS[sibdetection == 0 & diur == 1 & ACC > TRMi & ACC <= TRVi] = 3 #MODERATE
+  LEVELS[sibdetection == 0 & diur == 1 & ACC > TRVi] = 4 #VIGOROUS
   Lnames = c(Lnames,paste("sleepperiodwak_LIG",TRLi,"_",TRMi,sep=""),
              paste("sleepperiodwak_MOD",TRMi,"_",TRVi,sep=""),
              paste("sleepperiodwak_VIG",TRVi,sep=""))
   # activity during the day
-  LEVELS[which(sibdetection == 1 & diur == 0)] = 5 #daytime sustained inactivity
+  LEVELS[sibdetection == 1 & diur == 0] = 5 #daytime sustained inactivity
   #============================================================
   # newly added on 20 may 2015:
   if (length(sibdetection == 1) > 0) ACC[sibdetection == 1] = 0 #turn all acceleration to zero if sustained inactivity bouts are detected
   #======================================
-  LEVELS[which(sibdetection == 0 & diur == 0 & ACC <= TRLi)] = 6 #other inactivity
-  LEVELS[which(sibdetection == 0 & diur == 0 & ACC > TRLi & ACC <= TRMi)] = 7 #LIGHT
-  LEVELS[which(sibdetection == 0 & diur == 0 & ACC > TRMi & ACC <= TRVi)] = 8 #MODERATE
-  LEVELS[which(sibdetection == 0 & diur == 0 & ACC > TRVi)] = 9 #VIGOROUS
+  LEVELS[sibdetection == 0 & diur == 0 & ACC <= TRLi] = 6 #other inactivity
+  LEVELS[sibdetection == 0 & diur == 0 & ACC > TRLi & ACC <= TRMi] = 7 #LIGHT
+  LEVELS[sibdetection == 0 & diur == 0 & ACC > TRMi & ACC <= TRVi] = 8 #MODERATE
+  LEVELS[sibdetection == 0 & diur == 0 & ACC > TRVi] = 9 #VIGOROUS
   Lnames = c(Lnames,"wakinghours_SIB",paste("wakinghours_OIN",TRLi,sep=""),
              paste("wakinghours_LIG",TRLi,"_",TRMi,sep=""),
              paste("wakinghours_MOD",TRMi,"_",TRVi,sep=""),
              paste("wakinghours_VIG",TRVi,sep=""))
   # store separate copy of moderate and vigorous levels
-  OLEVELS[which(LEVELS == 5)] = 1 #SIB
-  OLEVELS[which(LEVELS == 6)] = 2 #OIN
-  OLEVELS[which(LEVELS == 7)] = 3 #LIGHT
-  OLEVELS[which(LEVELS == 8)] = 4 #MOD
-  OLEVELS[which(LEVELS == 9)] = 5 #VIG
+  OLEVELS[LEVELS == 5] = 1 #SIB
+  OLEVELS[LEVELS == 6] = 2 #OIN
+  OLEVELS[LEVELS == 7] = 3 #LIGHT
+  OLEVELS[LEVELS == 8] = 4 #MOD
+  OLEVELS[LEVELS == 9] = 5 #VIG
   #-------------------------------------
   # NEW MVPA BOUTS
   LN = length(time)
@@ -53,7 +53,7 @@ identify_levels = function(time,diur,sibdetection,ACC,
     p = which(sibdetection == 0 & ACC >= TRMi & refe == 0 & diur == 0); rr1[p] = 1
     out1 = g.getbout(x=rr1,boutduration=boutduration[BL],boutcriter=boutcriter.mvpa,
                      closedbout=FALSE,bout.metric=bout.metric,ws3=ws3)
-    LEVELS[which(diur == 0 & out1$x == 1)] = CL
+    LEVELS[diur == 0 & out1$x == 1] = CL
     bc.mvpa = rbind(bc.mvpa,out1$boutcount)
     refe = refe + out1$x
     Lnames = c(Lnames,paste0("MVPA_D",boutdur.mvpa[BL],"T",TRMi))
@@ -71,7 +71,7 @@ identify_levels = function(time,diur,sibdetection,ACC,
     p = which((sibdetection == 1 | ACC < TRLi) & refe == 0 & diur == 0); rr1[p] = 1
     out1 = g.getbout(x=rr1,boutduration=boutduration[BL],boutcriter=boutcriter.in,
                      closedbout=FALSE,bout.metric=bout.metric,ws3=ws3)
-    LEVELS[which(diur == 0 & out1$x == 1)] = CL
+    LEVELS[diur == 0 & out1$x == 1] = CL
     bc.in = rbind(bc.in,out1$boutcount)
     refe = refe + out1$x
     Lnames = c(Lnames,paste0("INB_D",boutdur.in[BL],"T",TRLi))
@@ -88,7 +88,7 @@ identify_levels = function(time,diur,sibdetection,ACC,
     p = which(sibdetection == 0 & ACC >= TRLi & refe ==0 & ACC < TRMi & diur == 0); rr1[p] = 1
     out1 = g.getbout(x=rr1,boutduration=boutduration[BL],boutcriter=boutcriter.lig,
                      closedbout=FALSE,bout.metric=bout.metric,ws3=ws3)                    
-    LEVELS[which(diur == 0 & out1$x == 1)] = CL
+    LEVELS[diur == 0 & out1$x == 1] = CL
     bc.lig = rbind(bc.lig,out1$boutcount)
     refe = refe + out1$x
     Lnames = c(Lnames,paste0("LIGB_D",boutdur.lig[BL],"T",TRLi,"_",TRMi))
