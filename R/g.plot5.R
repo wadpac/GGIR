@@ -362,9 +362,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             vig_pa <- VIGPA[t0:t1]
             non_wear <- NONWEAR[t0:t1]
             
-            # check to see if there is a sleeplog_onset on this day:
+            # check to see if there is a sleep onset or wake annotation on this day:
             sleeponset_loc = 0
-            # check for sleeponset time that occurred on this day before midnight
+            wake_loc = 0
+
+            # check for sleeponset & wake time that is logged on this day before midnight
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
@@ -377,11 +379,21 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 sleeponset_loc = sleeponset_loc[1]
                 if (is.na(sleeponset_loc)) sleeponset_loc = 0 
               }
+              # check to see if wake time is before midnight 
+              #browser()
+              wake_time = summarysleep_tmp$acc_wake_ts[check_date]
+              wake_hour = as.integer(substr(wake_time,start=1,stop=2))
+              if (wake_hour > 12) {
+                # wake annotation on the current days plot before midnight
+                wake_min = as.integer(substr(wake_time,start=4,stop=5))
+                wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
+                wake_loc = wake_loc[1]
+                if (is.na(wake_loc)) wake_loc = 0
+              }
             }
             
-            # check to see if there is a wake on this day (check prev day) or a late sleeponset from prev_day:
+            # check for sleeponset & wake time that is logged on the previous day after midnight
             prev_date = curr_date - 1
-            wake_loc = 0
             check_date = match(prev_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
               # wake time check
@@ -389,17 +401,24 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               # find the first index that matches wake time hour and min
               wake_hour = as.integer(substr(wake_time,start=1,stop=2))
               wake_min = as.integer(substr(wake_time,start=4,stop=5))
-              wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
-              wake_loc = wake_loc[1]
-              if (is.na(wake_loc)) wake_loc = 0 
+              if (wake_hour < 12) {
+                if (wake_loc > 0) { # check to see if there is already a wake loc on this day
+                  wake_prev_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)  
+                  if (!is.na(wake_prev_loc)) wake_loc[2] = wake_prev_loc[1]  
+                } else if (wake_loc == 0) { # two wake locations on this 24hr period
+                  wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)  
+                  wake_loc = wake_loc[1]
+                  if (is.na(wake_loc)) wake_loc = 0
+                }
+              }
               # check for a late sleeponset time registered in previous day
               sleeponset_time = summarysleep_tmp$acc_onset_ts[check_date]  # get the time of sleep_onset
               # find the first index that matches sleeponset_hour and _min
               sleeponset_hour = as.integer(substr(sleeponset_time,start=1,stop=2))
               sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
               if (sleeponset_hour < 12) {  # the prev-day had a sleeponset time after midnight
-                if (sleeponset_loc > 0) {
-                # 2 sleep onsets in one day
+                if (sleeponset_loc > 0) { # check to see if there is already a sleeponset on this day
+                # sleeponset found after midnight, reported on previous day
                   sleeponset_prev_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                   if (!is.na(sleeponset_prev_loc)) sleeponset_loc[2] = sleeponset_prev_loc[1]
                 } else if (sleeponset_loc == 0) {
@@ -560,19 +579,20 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
               # add wake time annotation to plot:
               if (wake_loc != 0) {
-                set_pos <- 4 
-                ar_start_idx <- wake_loc
-                ar_end_idx <- wake_loc + 300
-                if (wake_loc > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
-                  set_pos = 2
-                  ar_start_idx <- wake_loc
-                  ar_end_idx <- wake_loc - 300
+                for (i in wake_loc) {
+                  set_pos <- 4 
+                  ar_start_idx <- i
+                  ar_end_idx <- i + 300
+                  if (i > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
+                    set_pos = 2
+                    ar_end_idx <- i - 300
+                  }
+                  # draw wake annotation:
+                  segments(i,-230,i,210,col='black',lwd=1.5)
+                  arrows(ar_start_idx,160,ar_end_idx,160,length=0.05,angle = 20,code=1,lwd=0.5)
+                  segments(ar_start_idx,160,ar_end_idx,160,col="black",lwd=0.5)
+                  text(ar_end_idx,160,labels="Wake",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
                 }
-                # draw wake annotation:
-                segments(wake_loc,-230,wake_loc,210,col='black',lwd=1.5)
-                arrows(ar_start_idx,160,ar_end_idx,160,length=0.05,angle = 20,code=1,lwd=0.5)
-                segments(ar_start_idx,160,ar_end_idx,160,col="black",lwd=0.5)
-                text(ar_end_idx,160,labels="Wake",pos=set_pos,font=1.8,cex=0.8,col="darkgrey")
               }
               
               # rect for all annotations:
