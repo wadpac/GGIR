@@ -8,14 +8,12 @@
   Saves oart 5 time series to csv files as part of \link{g.part5}.
 }
 \usage{
-  g.part5.savetimeseries(ts, LEVELS, Lnames, desiredtz, rawlevels_fname)
+  g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname)
 }
 \arguments{
   \item{ts}{
   }
   \item{LEVELS}{
-  }
-  \item{Lnames}{
   }
   \item{desiredtz}{
   }

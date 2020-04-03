@@ -273,7 +273,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             if (length(L5list) > 0) {
               defaultSptOnset = L5list[j] - 6
               defaultSptWake = L5list[j] + 6
-              guider = "L5"
+              guider = "L512"
             }
           } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(sptwindow_HDCZA_start) != 0) { 
             # use HDCZA algorithm (inside the g.sib.det function) as backup for sleeplog OR if user explicitely asks for it
