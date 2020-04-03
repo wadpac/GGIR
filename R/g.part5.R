@@ -657,10 +657,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     }
                   }
                   if (save_ms5rawlevels == TRUE) { 
+                    
+                    legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
+                    if (file.exists(legendfile) == FALSE) {
+                      legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames)-1), stringsAsFactors = F)
+                      write.csv(legendtable, file = legendfile, row.names=F)
+                    }
+                    
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".csv")
                     # save time series to csv files
-                    g.part5.savetimeseries(ts, LEVELS, Lnames, desiredtz, rawlevels_fname)
+                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider")], LEVELS, desiredtz, rawlevels_fname)
                     
                   }
                 }
