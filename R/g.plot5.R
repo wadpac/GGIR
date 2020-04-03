@@ -637,12 +637,13 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               plot_rects(vec=night_sleep,col_select=night_sleep_col,rect_heights=spt_heights)  # night_sleep annotations on graph
               plot_rects(vec=night_wake,col_select=night_wake_col,rect_heights=spt_heights)    # night_wake annotations on graph
               plot_rects(vec=non_wear,col_select=nonwear_col,rect_heights=c(-240,130))         # non_wear annotations on graph
-
+              
               axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
               abline(h=0,untf = FALSE,lty=3,lwd=1,col="grey")
-              text(x=-700,y=285,labels=title,pos=4,font=2,cex=1)
-              text(x=-700,y=-120,labels="Arm movement:",pos=4,font=1.8,cex=0.9)
-              text(x=-700,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
+              plot_loc = -length(x)*0.05 # x-axis coordinate for plotting text on the plot
+              text(x=plot_loc,y=285,labels=title,pos=4,font=2,cex=1)
+              text(x=plot_loc,y=-120,labels="Arm movement:",pos=4,font=1.8,cex=0.9)
+              text(x=plot_loc,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
               box("figure",col="black")
               legend("topright",legend=c( "SPT Window: Sleep", "SPT Window: Wake", "Inactivity", #"arm angle (top) activity (bottom)",
                                             "Light PA","Moderate PA","Vigorous PA","Non-Wear"),
