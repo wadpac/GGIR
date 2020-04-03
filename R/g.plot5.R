@@ -561,14 +561,15 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
               
               # add sleeponset time annotation to plot:
+              arrow_line_length = length(x) * 0.01736 # make arrow line length adaptable to differnt short epochs
               if (sleeponset_loc != 0){
                 for (i in sleeponset_loc) { # allow for multiple sleeponset_loc
                   set_pos = 4 # position of text in relation to arrow 
                   ar_start_idx <- i
-                  ar_end_idx <- i + 300 # make arrow go to the right of the annotation line
+                  ar_end_idx <- i + arrow_line_length # make arrow go to the right of the annotation line
                   if (i > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
                     set_pos = 2
-                    ar_end_idx <- i - 300
+                    ar_end_idx <- i - arrow_line_length
                   }
                   # draw sleeponset annotation:
                   segments(i,-230,i,210,col='black',lwd=1.5)
@@ -582,10 +583,10 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 for (i in wake_loc) {
                   set_pos <- 4 
                   ar_start_idx <- i
-                  ar_end_idx <- i + 300
+                  ar_end_idx <- i + arrow_line_length
                   if (i > (0.8 * length(x))) {  # check to see if text should be placed on the left side of the line
                     set_pos = 2
-                    ar_end_idx <- i - 300
+                    ar_end_idx <- i - arrow_line_length
                   }
                   # draw wake annotation:
                   segments(i,-230,i,210,col='black',lwd=1.5)
@@ -640,7 +641,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               
               axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
               abline(h=0,untf = FALSE,lty=3,lwd=1,col="grey")
-              plot_loc = -length(x)*0.05 # x-axis coordinate for plotting text on the plot
+              plot_loc = -length(x)*0.05 # x-axis coordinate for plotting text on the plot adaptable to different short epoch lengths
               text(x=plot_loc,y=285,labels=title,pos=4,font=2,cex=1)
               text(x=plot_loc,y=-120,labels="Arm movement:",pos=4,font=1.8,cex=0.9)
               text(x=plot_loc,y=80,labels="Angle of sensor's z-axis relative to horizontal plane:",pos=4,font=1.8,cex=0.9)
