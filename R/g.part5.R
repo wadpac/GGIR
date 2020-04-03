@@ -716,14 +716,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         emptyrows = which(output[,1] == "" & output[,2] == "")
         if (length(emptyrows) > 0) output = output[-emptyrows,]
         lastcolumn = which(colnames(output) == "bout.metric")
-        if (ncol(output) > lastcolumn) {
-          emptycols = sapply(output, function(x)all(x==""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
-          emptycols = which(emptycols == TRUE)
-          if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
-          if (length(emptycols) > 0) output = output[-emptycols]
-        }
-        if (length(output) > 0) {
-          save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
+        if (length(lastcolumn) > 0) {
+          if (ncol(output) > lastcolumn) {
+            emptycols = sapply(output, function(x)all(x==""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
+            emptycols = which(emptycols == TRUE)
+            if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
+            if (length(emptycols) > 0) output = output[-emptycols]
+          }
+          if (length(output) > 0) {
+            save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
+          }
         }
         rm(output,dsummary)
       }
