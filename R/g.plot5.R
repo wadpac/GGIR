@@ -354,18 +354,18 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             # Initialize daily 'what we think you did' vectors:
             acc = abs(ACC[t0:t1])
             ang = angle[t0:t1]
-            night_sleep <- detection[t0:t1]
-            night_wake <- night_wake_full[t0:t1]
-            inactive <- INACT[t0:t1]
-            light_pa <- LIGPA[t0:t1]
-            mod_pa <- MODPA[t0:t1]
-            vig_pa <- VIGPA[t0:t1]
             non_wear <- NONWEAR[t0:t1]
+            annot_mat = matrix(NA,nrow=length(acc),ncol=6)
+            annot_mat[,1] <- detection[t0:t1]          # night sleep
+            annot_mat[,2] <- night_wake_full[t0:t1]    # nocturnal wake
+            annot_mat[,3] <- INACT[t0:t1]              # inactivity
+            annot_mat[,4] <- LIGPA[t0:t1]              # light pa
+            annot_mat[,5] <- MODPA[t0:t1]              # moderate pa
+            annot_mat[,6] <- VIGPA[t0:t1]              # vigorous pa
             
-            # check to see if there is a sleep onset or wake annotation on this day:
+            # check to see if there are any sleep onset or wake annotations on this day (only works for noon - noon detection style)
             sleeponset_loc = 0
             wake_loc = 0
-
             # check for sleeponset & wake time that is logged on this day before midnight
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
             check_date = match(curr_date,sleep_dates)
@@ -380,7 +380,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 if (is.na(sleeponset_loc)) sleeponset_loc = 0 
               }
               # check to see if wake time is before midnight 
-              #browser()
               wake_time = summarysleep_tmp$acc_wake_ts[check_date]
               wake_hour = as.integer(substr(wake_time,start=1,stop=2))
               if (wake_hour > 12) {
@@ -418,7 +417,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
               if (sleeponset_hour < 12) {  # the prev-day had a sleeponset time after midnight
                 if (sleeponset_loc > 0) { # check to see if there is already a sleeponset on this day
-                # sleeponset found after midnight, reported on previous day
+                  # sleeponset found after midnight, reported on previous day
                   sleeponset_prev_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                   if (!is.na(sleeponset_prev_loc)) sleeponset_loc[2] = sleeponset_prev_loc[1]
                 } else if (sleeponset_loc == 0) {
@@ -427,110 +426,132 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                   if (is.na(sleeponset_loc)) sleeponset_loc = 0 
                 }
               }
-              # problem here is acc_onset_ts is after midnight, because it isn't in hour[t0:t1] & min[t0:t1]
-               # 2 sleeponset in one midnight to midnight section
-              
             }
+            
             # add extensions if <24hr of data
+            first_day_adjust = 0 # hold adjustment amounts on first and last day plots
+            last_day_adjust = 0
             if (((t1-t0)+1) != npointsperday & t0 == 1) {
               extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              first_day_adjust = length(extension)
               acc = c(extension,acc)
               ang = c(extension,ang)
+              non_wear= c(extension,non_wear)
               t1 = length(acc) # this was missing and causing x.y coords errors in some tests
               if (length(acc) == (length(x)+1)) {
                 extension = extension[2:(length(extension))]
                 acc = acc[2:(length(acc))]
                 ang = ang[2:(length(ang))]
+                non_wear = non_wear[2:(length(non_wear))]
               }
-              inactive = c(extension,inactive)
-              light_pa = c(extension,light_pa)
-              mod_pa = c(extension,mod_pa)
-              vig_pa = c(extension,vig_pa)
-              night_sleep = c(extension,night_sleep)
-              night_wake = c(extension,night_wake)
-              non_wear = c(extension,non_wear)
-              if (sleeponset_loc != 0) sleeponset_loc = length(extension) + sleeponset_loc
-              if (wake_loc != 0) wake_loc = length(extension) + wake_loc
-            }
-            if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
+              extension_mat = matrix(NA,nrow=length(extension),ncol=6)
+              annot_mat = rbind(extension_mat,annot_mat)
+              # adjust any sleeponset / wake annotations if they exist:
+              if (sleeponset_loc[1] != 0) {
+                for (i in 1:length(sleeponset_loc)) {
+                  sleeponset_loc[i] = sleeponset_loc[i] + length(extension)
+                }
+              }
+              if (wake_loc[1] != 0) {
+                for (i in 1:length(wake_loc)) {
+                  wake_loc[i] = wake_loc[i] + length(extension)
+                }
+              }
+              
+            } else if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
               extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              last_day_adjust = length(acc)
               acc = c(acc,extension)
               ang = c(ang,extension)
+              non_wear = c(non_wear,extension)
               if (length(acc) == (length(x)+1)) {
                 extension = extension[1:(length(extension)-1)]
                 acc = acc[1:(length(acc)-1)]
                 ang = ang[1:(length(ang)-1)]
+                non_wear = non_wear[1:(length(non_wear)-1)]
               }
-              inactive = c(inactive,extension)
-              light_pa = c(light_pa,extension)
-              mod_pa = c(mod_pa,extension)
-              vig_pa = c(vig_pa,extension)
-              night_sleep = c(night_sleep,extension)
-              night_wake = c(night_wake,extension)
-              non_wear = c(non_wear,extension)
+              extension_mat = matrix(NA,nrow=length(extension),ncol=6)
+              annot_mat = rbind(annot_mat,extension_mat)
             }
-                        
+            
             acc = as.numeric(acc)
             acc[which(acc >= 900)] = 900
             acc = (acc/9) - 210
             
-            if (sleeponset_loc == 0 & wake_loc == 0){
-              # no wake or sleeponset detected
-            } else if (sleeponset_loc>0 & wake_loc==0) {
-              # awake then asleep
-              night_sleep[1:sleeponset_loc] <- NA
-              night_wake[1:sleeponset_loc] <- NA
-              inactive[sleeponset_loc:length(inactive)] <- NA
-              light_pa[sleeponset_loc:length(inactive)] <- NA
-              mod_pa[sleeponset_loc:length(inactive)] <- NA
-              vig_pa[sleeponset_loc:length(inactive)] <- NA
-            } else if (sleeponset_loc == 0 & wake_loc > 0) {
-              # asleep then awake
-              night_sleep[wake_loc:length(night_sleep)] <- NA
-              night_wake[wake_loc:length(night_wake)] <- NA
-              inactive[1:wake_loc] <- NA
-              light_pa[1:wake_loc] <- NA
-              mod_pa[1:wake_loc] <- NA
-              vig_pa[1:wake_loc] <- NA
-            } else if (sleeponset_loc > 0 & wake_loc > 0) {
-              if (wake_loc < sleeponset_loc) {
-                # wake is before sleep onset
-                night_sleep[wake_loc:sleeponset_loc] <- NA
-                night_wake[wake_loc:sleeponset_loc] <- NA
-                inactive[1:wake_loc] <- NA
-                inactive[sleeponset_loc:length(inactive)] <- NA
-                light_pa[1:wake_loc] <- NA
-                light_pa[sleeponset_loc:length(inactive)] <- NA
-                mod_pa[1:wake_loc] <- NA
-                mod_pa[sleeponset_loc:length(inactive)] <- NA
-                vig_pa[1:wake_loc] <- NA
-                vig_pa[sleeponset_loc:length(inactive)] <- NA
+            annot_mat[non_wear==1,] = 0   # no annotations in non-wear periods:
+            sleep_mat = annot_mat[,1:2]  # split annotation matrix
+            wake_mat = annot_mat[,3:6]
+            
+            # how many sleeponset and wake annotations are there?
+            if (sleeponset_loc != 0 | wake_loc != 0) {
+              # combine sleep and wake annotations and sort them
+              if (wake_loc == 0) {
+                # assume there is only one sleeponset loc
+                sleeponset_mat = matrix(nrow=length(sleeponset_loc),ncol=2)
+                sleeponset_mat[,1] = sleeponset_loc
+                sleeponset_mat[,2] = 0 # sleeponset = 0
+                sleep_wake_mat = sleeponset_mat
+              } else if (sleeponset_loc == 0) {
+                # assume there is only one wake loc
+                wake_time_mat = matrix(nrow=length(wake_loc),ncol=2)
+                wake_time_mat[,1] = wake_loc
+                wake_time_mat[,2] = 1 # wake = 1
+                sleep_wake_mat = wake_time_mat
               } else {
-                # sleeponset is before wake
-                night_sleep[1:sleeponset_loc] <- NA
-                night_sleep[wake_loc:length(night_sleep)] <- NA
-                night_wake[1:sleeponset_loc] <- NA
-                night_wake[wake_loc:length(night_sleep)] <- NA
-                inactive[sleeponset_loc:wake_loc] <- NA
-                light_pa[sleeponset_loc:wake_loc] <- NA
-                mod_pa[sleeponset_loc:wake_loc] <- NA
-                vig_pa[sleeponset_loc:wake_loc] <- NA
+                # there is both sleeponst and wake annotations
+                sleeponset_mat = matrix(nrow=length(sleeponset_loc),ncol=2)
+                sleeponset_mat[,1] = sleeponset_loc
+                sleeponset_mat[,2] = 0 # sleeponset = 0
+                wake_time_mat = matrix(nrow=length(wake_loc),ncol=2)
+                wake_time_mat[,1] = wake_loc
+                wake_time_mat[,2] = 1 # wake = 1
+                sleep_wake_mat = rbind(sleeponset_mat,wake_time_mat)
+                sleep_wake_mat = sleep_wake_mat[order(sleep_wake_mat[,1]),] # sort rows
+              }
+              
+              # create an annotation on the final data-point for the day that is opposite to the previous point
+              if (last_day_adjust != 0) {  # adjust end location if it is the final day of plotting and there is less than 24h
+                end_value = last_day_adjust
+              } else {
+                end_value = length(x)
+              }
+              if (sleep_wake_mat[length(sleep_wake_mat)] == 1) {    # add final location at end of 24h period
+                sleep_wake_mat = rbind(sleep_wake_mat,c(end_value,0))
+              } else {
+                sleep_wake_mat = rbind(sleep_wake_mat,c(end_value,1))
+              }
+              
+              # loop through each annotation and update data frames accordingly
+              if (first_day_adjust != 0) {
+                prev_loc = first_day_adjust  # start at adjusted start point on day one
+                if (first_day_adjust > sleep_wake_mat[1,1]) print('ERROR: sleep/wake annotation is before the recording begins')
+              } else {
+                prev_loc = 1  # otherwise, start from first sample
+              }
+
+              #for (i in sleep_wake_mat[,2]) {
+              for (i in 1:length(sleep_wake_mat[,1])) {
+                annot_type = sleep_wake_mat[i,2] # get if it is wake (1) or sleep (0)
+                curr_loc = sleep_wake_mat[i,1]
+                if (annot_type == 0) {
+                  # sleeponset annotation, previous data is wake  # turn off sleep_mat (NA)
+                  sleep_mat[prev_loc:curr_loc,] <- 0
+                } else {
+                  # wake annotation, previous data is sleep    # turn off wake_mat (NA)
+                  wake_mat[prev_loc:curr_loc,] <- 0
+                }   
+                prev_loc = curr_loc
               }
               
             } else {
-              #
+              # there are no sleeponset or wake annotations on this day. 
+              # plot both sleep and wake annotations for now ? 
+              # ? other suggestions welcome ?
             }
-            # no annotations in non-wear periods:
-            night_sleep[is.na(non_wear)==FALSE] <- NA
-            night_wake[is.na(non_wear)==FALSE] <- NA
-            inactive[is.na(non_wear)==FALSE] <- NA
-            light_pa[is.na(non_wear)==FALSE] <- NA
-            mod_pa[is.na(non_wear)==FALSE] <- NA
-            vig_pa[is.na(non_wear)==FALSE] <- NA
             
-            minutesvigorous = (length(which(vig_pa == 1))*5)/60
-            minutesmoderate = (length(which(mod_pa == 1))*5)/60
-            minutesMVPA = (length(which(mod_pa == 1 | vig_pa == 1))*5)/60
+  #          minutesvigorous = (length(which(vig_pa == 1))*5)/60
+  #          minutesmoderate = (length(which(mod_pa == 1))*5)/60
+  #          minutesMVPA = (length(which(mod_pa == 1 | vig_pa == 1))*5)/60
             if (viewingwindow == 1) { #focus on day
               if (length(d2exclude) > 0) {
                 if (length(which(d2exclude == g)) > 0) skip = TRUE
@@ -597,15 +618,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
               
               # rect for all annotations:
-              # make everything 0/1
-              inactive[is.na(inactive)] <- 0
-              light_pa[is.na(light_pa)] <- 0
-              mod_pa[is.na(mod_pa)] <- 0
-              vig_pa[is.na(vig_pa)] <- 0
-              night_sleep[is.na(night_sleep)] <- 0
-              night_wake[is.na(night_wake)] <- 0
+              # make everything 0 in case there are any NA's left:
+              sleep_mat[is.na(sleep_mat)] <- 0
+              wake_mat[is.na(wake_mat)] <- 0
               non_wear[is.na(non_wear)] <- 0
-              
+  
               # colours for annotations:
               nonwear_col <- rgb(0,0.8,0,alpha=0.4)
               inactive_col <- rgb(0.3,0.3,1,alpha=0.2) 
@@ -621,22 +638,23 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 # use the rect function to highlight sleep and activity annotations on the plot
                 if (sum(vec) > 0) {
                   r_start_idx <- which(diff(c(0L, vec)) == 1L)
-                  r_end_idx <- which(diff(c(vec, 0L)) == -1L)
-                  if (length(r_end_idx)+1 == length(r_start_idx)) {
-                    r_end_idx[length(r_start_idx)] <- length(vec)
+                  if (length(r_start_idx) != 0) {
+                    r_end_idx <- which(diff(c(vec, 0L)) == -1L)
+                    if (length(r_end_idx)+1 == length(r_start_idx)) {
+                      r_end_idx[length(r_start_idx)] <- length(vec)
+                    }
+                    for (idx in 1:length(r_start_idx)) {
+                      rect(r_start_idx[idx],rect_heights[1],r_end_idx[idx],rect_heights[2],col=col_select,border=NA)
+                    }
                   }
-                  for (idx in 1:length(r_start_idx)) {
-                    rect(r_start_idx[idx],rect_heights[1],r_end_idx[idx],rect_heights[2],col=col_select,border=NA)
-                  }
-                }  
+                }
               }
-              
-              plot_rects(vec=inactive,col_select=inactive_col,rect_heights=pa_heights)         # daytime inactivity annotations
-              plot_rects(vec=light_pa,col_select=light_pa_col,rect_heights=pa_heights)         # light pa annotatoins
-              plot_rects(vec=mod_pa,col_select=mod_pa_col,rect_heights=pa_heights)             # mod pa annotations
-              plot_rects(vec=vig_pa,col_select=vig_pa_col,rect_heights=pa_heights)             # vig pa annotations
-              plot_rects(vec=night_sleep,col_select=night_sleep_col,rect_heights=spt_heights)  # night_sleep annotations on graph
-              plot_rects(vec=night_wake,col_select=night_wake_col,rect_heights=spt_heights)    # night_wake annotations on graph
+              plot_rects(vec=wake_mat[,1],col_select=inactive_col,rect_heights=pa_heights)         # daytime inactivity annotations
+              plot_rects(vec=wake_mat[,2],col_select=light_pa_col,rect_heights=pa_heights)         # light pa annotatoins
+              plot_rects(vec=wake_mat[,3],col_select=mod_pa_col,rect_heights=pa_heights)             # mod pa annotations
+              plot_rects(vec=wake_mat[,4],col_select=vig_pa_col,rect_heights=pa_heights)             # vig pa annotations
+              plot_rects(vec=sleep_mat[,1],col_select=night_sleep_col,rect_heights=spt_heights)  # night_sleep annotations on graph
+              plot_rects(vec=sleep_mat[,2],col_select=night_wake_col,rect_heights=spt_heights)    # night_wake annotations on graph
               plot_rects(vec=non_wear,col_select=nonwear_col,rect_heights=c(-240,130))         # non_wear annotations on graph
               
               axis(side=1,at=seq(1,(((60/ws3)*60*24)+1),by=(2*(60/ws3)*60)),labels=xaxislabels,cex.axis=0.7)
