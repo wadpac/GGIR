@@ -15,9 +15,6 @@ addons:
   apt:
     update: TRUE
 
-before_install:	
-  - if [[ "$OSTYPE" == "osx" ]]; then sudo tlmgr install framed titling; fi
-
 r_packages:
   - covr
 
