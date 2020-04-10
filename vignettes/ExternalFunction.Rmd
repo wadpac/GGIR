@@ -25,11 +25,11 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Algorithms (e.g. machine learning models) are typically developed for a specific data format and do not include the necessary data cleaning steps for real life 'out of the lab' experiments with multiple days of data per participant. As a result, it is not easy to pilot, let alone fully implement, a new algorithm on those datasets. Additional code will have to be written to read, clean, and aggregate the data in an efficient way.
+Algorithms (e.g. machine learning models) are typically developed for a specific data format and do not include the necessary data cleaning and aggregation steps needed for real life 'out of the lab' experiments that come with multiple days of data per participant.
 
 GGIR now allows you to apply your algorithm written in R or Python to raw accelerometer data, while taking care of all the other processing steps. 
 
-Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory and corrected for calibration error GGIR applies its own default algorithms, but now also the algorithm you provide via an external function file that you will have to write. The function is expected to take as input: A three-column matrix with the acceleration data, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to one or multuple time series, respectively.
+Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory and corrected for calibration error GGIR applies its own default algorithms as well as an external function that you as user can provide. The function is expected to take as input: A three-column matrix with the acceleration data corresponding to the three acceleration axes, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to the output of your algorithm.
 
 # Example with external R function
 
@@ -69,7 +69,8 @@ myfun =  list(FUN=calculateCounts,
               minlength = 1,
               outputtype="numeric",
               aggfunction = sum,
-              timestamp=F)
+              timestamp=F,
+              reporttype="scalar")
 ```
 
 The above code creates object `myfun` of type `list` which is expected to come with the following elements:
@@ -81,11 +82,12 @@ The above code creates object `myfun` of type `list` which is expected to come w
 - `colnames` Character vector with the names of the columns produced by the external function.
 - `outputres` The resolution (seconds) of the output produced by the external function. Note, that this needs to be equal to or a multitude of the short epoch size of the g.part1 output (5 seconds) or the short epoch size should be a multitude of this resolution. In this way GGIR can aggregate or repeat the external function output to be used inside GGIR.
 - `minlength` The minimum length (seconds) of input data needed, typically the window per which output is provided.
-- `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any numeric format).
+- `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any numeric format), or "character" if it is a character string.
 - `aggfunction` If the data needs to be aggregated to match the short epoch size of the g.part1 output (5 seconds) then this element specifies what
 function should be used for the aggregation, e.g. mean, sum, median.
 - `timestamp` Boolean to indicated whether timestamps  (seconds since 1-1-1970) should be passed on to the external 
     function as first columm of the data matrix..
+- `reporttype` Character to indicate the type of reporting: "scalar" if it can be averaged per day, "event" if it should be summed per day, or "event", or "type" if it is categorical variable that can only be aggregated per day by tabulating it.
 
 Next, add a call to GGIR function g.shell.GGIR with `myfun` provided as one of its arguments:
 
@@ -96,14 +98,14 @@ g.shell.GGIR(datadir="~/myaccelerometerdata",
              mode=1:2,
              epochvalues2csv = TRUE,
              do.report=2,
-             myfun=myfun)
+             myfun=myfun) #<= this is where object myfun is provided to g.shell.GGIR
 ```
 
 Please see the [\underline{general GGIR vignette}](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) for more information about function g.shell.GGIR.
 
 # Example with external Python function
 
-In this example we will use an external Python code to estimate the dominant signal frequency per acceleration axis.
+In this example we will use an external Python function to estimate the dominant signal frequency per acceleration axis. Note this can also be done in R, but it shows that even Python functions can be provided.
 
 ## Write external function
 
@@ -152,6 +154,7 @@ Specification of Python environment to use, this can also be a conda environment
 ```{R,eval=FALSE}
   library("reticulate")
   use_virtualenv("~/myvenv", required = TRUE) # Local Python environment
+  py_install("numpy", pip = TRUE)
 
 ```
 
@@ -168,7 +171,8 @@ myfun =  list(FUN=dominant_frequency,
               outputres = 5,
               outputtype="numeric",
               aggfunction = median
-              timestamp=F)
+              timestamp=F,
+              reporttype="scalar")
 ```
 
 Add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument.
