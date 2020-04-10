@@ -393,7 +393,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         options(encoding = "UTF-8")
                         Sys.setlocale("LC_TIME", "C") # set language to English
                         # look up matching part4 entry:
-                        recDates = as.Date(summarysleep_tmp2$calendardate, format="%e/%m/%Y")
+                        recDates = as.Date(summarysleep_tmp2$calendardate, format="%e/%m/%Y", origin="1970-01-01")
                         dsummary[di,fi] = j
                         ds_names[fi] = "sleepparam";      fi = fi + 1
                         dayofinterst = which(recDates == date)
