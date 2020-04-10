@@ -4,7 +4,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                      IVIS.activity.metric=1, qM5L5 = c()) {
+                      IVIS.activity.metric=1, qM5L5 = c(), myfun=c()) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
@@ -139,6 +139,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ENi = which(colnames(metashort) == "EN")
   ENMOai = which(colnames(metashort) == "ENMOa")
   ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
+  if (length(myfun) > 0) {
+    ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
+  } else {
+    ExtFunColsi = c()
+  }
   if (length(ANYANGLEi) == 0) ANYANGLEi = -1
   if (length(ENMOi) == 0) ENMOi = -1
   if (length(LFENMOi) == 0) LFENMOi = -1
@@ -187,7 +192,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
                                      bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-                                     deviceSerialNumber, qM5L5)
+                                     deviceSerialNumber, qM5L5, ExtFunColsi, myfun)
     daysummary= output_perday$daysummary
     ds_names=output_perday$ds_names
     windowsummary=output_perday$windowsummary
