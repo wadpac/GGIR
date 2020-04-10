@@ -39,8 +39,6 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
     # re-oder columns
     naS = colnames(mdat)
     # mdat = mdat[,c(which(naS == "filename"),which(naS != "filename"))]
-    print(class(mdat$guider))
-    print(str(mdat))
     # save to csv file
     write.csv(mdat,rawlevels_fname, row.names = F)
     #===============================
