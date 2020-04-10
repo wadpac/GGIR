@@ -11,7 +11,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,...) {
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -48,7 +48,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  
+
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -63,7 +63,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
-  
+
   #Extra code to handle raw accelerometer data in Raw data format:
   # list of all csv and bin files
   fnames = datadir2fnames(datadir,filelist)
@@ -99,7 +99,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
   use.temp = TRUE;
   daylimit = FALSE
-  
+
   #=================================================================
   # Other parameters:
   #--------------------------------
@@ -171,7 +171,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste(outputdir,outputfolder,"/meta/basic",sep=""))
-  
+
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
@@ -206,7 +206,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       }
       cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
       doParallel::registerDoParallel(cl)
-      
+
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       do.parallel = FALSE
@@ -224,6 +224,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     packages2passon = 'GGIR'
     errhand = 'pass'
   } else { # pass on functions
+    # packages2passon = 'Rcpp'
     functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
                          "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
@@ -268,7 +269,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         for (index in 1:length(ffdone)) {
           ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
         }
-        if (length(which(ffdone_without == fnames_without)) > 0) { 
+        if (length(which(ffdone_without == fnames_without)) > 0) {
           skip = 1 #skip this file because it was analysed before")
         } else {
           skip = 0 #do not skip this file
@@ -503,7 +504,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       rmc.check4timegaps = rmc.check4timegaps,
                       rmc.noise=rmc.noise,
                       rmc.col.wear=rmc.col.wear,
-                      rmc.doresample=rmc.doresample)
+                      rmc.doresample=rmc.doresample,
+                      myfun=myfun)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
@@ -538,7 +540,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
           metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
         }
-        
+
         rm(M); rm(I); rm(C)
         # }
       }
