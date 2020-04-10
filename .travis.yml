@@ -5,7 +5,6 @@ env:
 
 os:
   - linux
-  - osx
 
 language: r
 sudo: false
