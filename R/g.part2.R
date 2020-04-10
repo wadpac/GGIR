@@ -7,7 +7,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                   IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE) {
+                   IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
+                   myfun=c()) {
   snloc= 1
   qwindow = qwindow[order(qwindow)]
   #---------------------------------
@@ -54,7 +55,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
-  
+
   #---------------------------------------
   cnt78 = 1
   if (do.parallel == TRUE) {
@@ -73,7 +74,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   if (do.parallel == TRUE) {
     cat(paste0('\n Busy processing ... see ',metadatadir,'/ms2', ' for progress\n'))
   }
-  
+
   # check whether we are indevelopment mode:
   GGIRinstalled = is.element('GGIR', installed.packages()[,1])
   packages2passon = functions2passon = NULL
@@ -82,7 +83,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
     packages2passon = 'GGIR'
     errhand = 'pass'
   } else { # pass on functions
-    functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight", 
+    functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight",
                          "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
                          "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient")
     errhand = 'stop'
@@ -91,7 +92,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon, 
+  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand, .verbose = F) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
@@ -113,6 +114,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
         file2read = paste0(path,fnames[i])
         load(file2read) #reading RData-file
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
+
           #-----------------------
           # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
           TimeSegments2Zero = c() # set defaul
@@ -135,27 +137,36 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
               #                      as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz) < timespan1)
               if (length(validtimes) > 0) {
                 TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
-                
+
               } else {
                 TimeSegments2Zero = c()
               }
             }
           }
           #------------
-          
-          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start, dayborder = dayborder,
+          if (length(myfun) > 0) {
+            if (myfun$outputtype == "character") {
+              # At the moment we do not have a strategy in place on how to impute categorical variables
+              # produced by external functions. Therefore, for the moment ignore these variables until
+              # there is a plan.
+              M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+            }
+          }
+          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
                          hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz, TimeSegments2Zero = TimeSegments2Zero)
           if (do.imp==FALSE) { #for those interested in sensisitivity analysis
             IMP$metashort = M$metashort
             IMP$metalong = M$metalong
           }
+          cat("\npart2 line 152 ready to apply g.analyse")
           SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
                           includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                           mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
                           window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                           desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
                           IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
-                          IVIS.activity.metric= IVIS.activity.metric, qM5L5  = qM5L5)
+                          IVIS.activity.metric= IVIS.activity.metric, qM5L5  = qM5L5, myfun=myfun)
+          cat("\npart2 line 160, g.analyse applied")
           name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
           if (epochvalues2csv==TRUE) {
             if (length(IMP$metashort) > 0) {
@@ -213,21 +224,22 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
             filename = paste0(name,".RData")
           }
-          
+
           if (storefolderstructure == TRUE) { # newly added 20-2-2019
             SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
             SUM$daysummary$foldername = foldername[i] #store the lowest foldername
           }
+
           save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
-        
+
         rm(M); rm(I)
       }
     }) # END tryCatch
-    return(tryCatchResult) 
+    return(tryCatchResult)
   }
-  
+
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages

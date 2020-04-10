@@ -1,6 +1,6 @@
 g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
                         do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
-                        configfile =c(),...) {
+                        configfile =c(),myfun=c(), ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -133,7 +133,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
-
+  if (exists("myfun") == FALSE)  myfun = c()
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
@@ -264,10 +264,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
-  
-  
+
+
   # VISUAL REPORT
-  
+
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
@@ -275,7 +275,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
   cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
-  
+
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
@@ -320,7 +320,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.header.structure = rmc.header.structure,
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
             rmc.col.wear=rmc.col.wear,
-            rmc.doresample=rmc.doresample)
+            rmc.doresample=rmc.doresample,
+            myfun=myfun)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -340,7 +341,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel)
+            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -453,6 +454,6 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
     g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
             viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz,
-            metric=acc.metric,threshold.lig,threshold.mod,threshold.vig)  
+            metric=acc.metric,threshold.lig,threshold.mod,threshold.vig)
   }
 }

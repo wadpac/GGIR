@@ -26,7 +26,7 @@ dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c(),
 IVIS_windowsize_minutes = 60,
 IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1,
-qM5L5=c())
+qM5L5=c(), myfun=c())
 }
 
 \arguments{
@@ -149,6 +149,9 @@ qM5L5=c())
   }
   \item{qM5L5}{
     see function \link{g.getM5L5}
+  }
+  \item{myfun}{
+    External function object to be applied to raw data, see \link{g.getmeta}.
   }
   
    

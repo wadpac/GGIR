@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
 
-\section{Changes in version 1.11-2 (GitHub-only-release date:26-04-2020)}{
+\section{Changes in version 2.0-0 (GitHub-only-release date:26-04-2020)}{
 \itemize{
   \item HDCZA algorithm expanded to be able to detect daysleepers
   \item Part 5 output variable names improved
@@ -15,6 +15,7 @@
   \item L5M5 better able to handle small qwindow intervals
   \item Revised part 5 save raw data to csv, to be more user-friendly.
   \item Part 5 function code split up in 7 new seperate functions to ease navigation.
+  \item GGIR now able to facilitate external function embedding
 }
 }
 

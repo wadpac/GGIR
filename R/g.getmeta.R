@@ -8,7 +8,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
                      do.lfen=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
-                     dayborder=0,dynrange=c(),configtz=c(),...) {
+                     dayborder=0,dynrange=c(),configtz=c(),myfun=c(),...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -57,6 +57,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen))
+  if (length(myfun) != 0) {
+    nmetrics = nmetrics + length(myfun$colnames)
+    # check myfun object already, because we do not want to discover
+    # bugs after waiting for the data to be load
+    check_myfun(myfun, windowsizes) 
+  }
+
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -77,14 +84,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     cat(paste("\nshort windowsize has now been automatically adjusted to: ",ws3," seconds in order to meet this criteria.\n",sep=""))
   }
   windowsizes = c(ws3,ws2,ws)
-  data = c()
-  PreviousEndPage = c() # needed for g.readaccfile
-  start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour)
-  monnames = c("genea","geneactive","actigraph","axivity") #monitor names
+  data = PreviousEndPage = starttime = wday = weekdays = wdayname = c()
+  
+  monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE,NFilePagesSkipped = 0)
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
-  count2 = 1 #count number of blocks read with length "ws2" (15 minutes or whatever is specified above)
+  count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
   bsc_qc = data.frame(time=c(),size=c(), stringsAsFactors = FALSE)
   # inspect file
@@ -139,51 +145,15 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   options(warn=-1)
   if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
-  # setting size of blocks that are loaded (too low slows down the process)
-  # the setting below loads blocks size of 24 hours (modify if causing memory problems)
-  blocksize = round(14512 * (sf/50) * chunksize)
-  if (mon == 1) blocksize = round(21467 * (sf/80)  * chunksize)
-  if (mon == 3 & dformat == 2) blocksize = round(blocksize)#round(blocksize/5) # Actigraph
-  if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
-  if (mon == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
-  if (mon == 4 & dformat == 2) blocksize = round(blocksize)
+  
   id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
-  #Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
-  if (length(dynrange) > 0) {
-    clipthres = dynrange - 0.5
-  } else {
-    if (mon == 1) {
-      clipthres = 5.5
-    } else if (mon == 2) {
-      clipthres = 7.5
-    } else if (mon == 3) {
-      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
-    } else if (mon == 4) {
-      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
-    } else if (mon == 5) {
-      clipthres = rmc.dynamic_range
-    }
-  }
-  # Nonwear threshold: #non-wear criteria are monitor specific
-  racriter = 0.15 #very likely irrelevant parameters, but leave in for consistency
-  if (mon == 1) {
-    sdcriter = 0.003
-    racriter = 0.05
-  } else if (mon == 2) {
-    sdcriter = 0.013 #0.0109 in rest test
-  } else if (mon == 3) {
-    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
-  } else if (mon == 4) {
-    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
-  } else if (mon == 5) {
-    if (length(rmc.noise) == 0) {
-      warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
-    }
-    sdcriter = rmc.noise * 1.2
-    if (length(rmc.noise) == 0) {
-      stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
-    }
-  }
+  # get now-wear, clip, and blocksize parameters (thresholds)
+  ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat)
+  clipthres = ncb_params$clipthres
+  blocksize = ncb_params$blocksize
+  sdcriter = ncb_params$sdcriter
+  racriter = ncb_params$racriter
+
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
@@ -294,120 +264,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
-        if (temp.available == TRUE) {
-          use.temp = TRUE
-        } else {
-          use.temp = FALSE
-        }
-        if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == TRUE)) {
-          if (mon == 2) tempcolumn = 7
-          if (mon == 4 | mon == 5) tempcolumn = 5
-          meantemp = mean(as.numeric(data[,tempcolumn]),na.rm=TRUE)
-          if (is.na(meantemp) == T) { #mean(as.numeric(data[1:10,7]))
-            cat("\ntemperature is NA\n")
-            meantemp = 0
-            use.temp = FALSE
-          } else if (mean(as.numeric(data[1:10,tempcolumn])) > 50) {
-            cat("\ntemperature value is unreaslistically high (> 50 Celcius)\n")
-            meantemp = 0
-            use.temp = FALSE
-          }
-        }
-        # extraction and modification of starting point of measurement
-        if (i == 1 | (i != 1 & length(selectdaysfile) > 0)) { #only do this for first block of data
-          starttime = g.getstarttime(datafile=datafile,P=P,header=header,mon=mon,
-                                     dformat=dformat,desiredtz=desiredtz,selectdaysfile=selectdaysfile)
-          if (exists("P")) rm(P); gc()
-          #==================================================
-          #inspection timezone
-          timezone = attr(unclass(as.POSIXlt(starttime[1])),which="tzone")
-          starttimebefore = as.POSIXlt(starttime)
-          # assuming that timestamps is good, but that timezone might be lost in conversion from string to POSIXct
-          if (dformat == 1) { #not sure whether this is required for csv-format (2)
-            if (length(which(timezone == "GMT")) > 0) {
-              if (length(desiredtz) == 0) {
-                print("desiredtz not specified, Europe/London used as default")
-                desiredtz = "Europe/London"
-              }
-              starttime = as.POSIXlt(starttime[1],tz=desiredtz)
-            }
-          }
-          #================================================
-          #assess weekday
-          wday = unclass(as.POSIXlt(starttime[1]))$wday #day of the week 0-6 and 0 is Sunday
-          wday = wday + 1
-          weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-          wdayname = weekdays[wday]
-          #======================================================
-          #assess how much data to delete till next 15 minute period
-          temp = unlist(strsplit(as.character(starttime)," "))
-          if (length(temp) > 1) {
-            starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
-          } else {
-            # first get char to POSIX
-            temp = iso8601chartime2POSIX(starttime,tz=desiredtz)
-            temp = unlist(strsplit(as.character(temp)," ")) # to keep it consistent with what we had
-            starttime2 = as.numeric(unlist(strsplit(as.character(temp[2]),":")))
-          }
-          if (length(which(is.na(starttime2) ==  TRUE)) > 0 | length(starttime2) ==0) { #modified on 5may2015
-            starttime2 = c(0,0,0)
-          }
-          start_hr = as.numeric(starttime2[1])
-          start_min = as.numeric(starttime2[2])
-          start_sec = as.numeric(starttime2[3])
-          secshift = 60 - start_sec #shift in seconds needed
-          if (secshift != 60) {
-            start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
-          }
-          #-----------
-          minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
-          if (minshift == start_meas) minshift = 0;
-          #-----------
-          sampleshift = ((minshift)*60*sf) + (secshift*sf) #derive sample shift
-          data = data[-c(1:floor(sampleshift)),] #delete data accordingly
-          newmin = start_min+minshift #recalculate first timestamp
-          newsec = 0
-          remem2add24 = FALSE
-          if (newmin >= 60) {
-            newmin = newmin - 60
-            start_hr = start_hr + 1
-            if (start_hr == 24) { #if measurement is started in 15 minutes before midnight
-              #there used to be a nasty hack here for measurements that start in the 15 minutes before midnight, now fixed
-              start_hr = 0
-              remem2add24 = TRUE #remember to add 24 hours because this is now the wrong day
-            }
-          }
-          starttime3 = paste(temp[1]," ",start_hr,":",newmin,":",newsec,sep="") #<<<====  changed 17-12-2013
-          #create timestamp from string (now desiredtz is added)
-          if (length(desiredtz) == 0) {
-            print("desiredtz not specified, Europe/London used as default")
-            desiredtz = "Europe/London"
-          }
-          starttime_a = as.POSIXct(starttime3,format="%d/%m/%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-          starttime_b = as.POSIXct(starttime3,format="%d-%m-%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-          starttime_c = as.POSIXct(starttime3,format="%Y/%m/%d %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-          starttime_d = as.POSIXct(starttime3,format="%Y-%m-%d %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-          if (is.na(starttime_a) == FALSE) {
-            starttime = starttime_a
-          } else {
-            if (is.na(starttime_b) == FALSE) {
-              starttime = starttime_b
-            } else {
-              if (is.na(starttime_c) == FALSE) {
-                starttime = starttime_c
-              } else {
-                if (is.na(starttime_d) == FALSE) {
-                  starttime = starttime_d
-                } else {
-                  cat("\ndate not recognized\n")
-                }
-              }
-            }
-          }
-          if (remem2add24 == TRUE) {
-            starttime = as.POSIXlt(as.numeric(starttime) + (24*3600),origin="1970-01-01")
-          }
-        }
+        SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat, 
+                                                        data, selectdaysfile,
+                                                            P, header, desiredtz,
+                                                        sf, i, datafile,  ws2,
+                                                        starttime, wday, weekdays, wdayname)
+        starttime=SWMT$starttime
+        meantemp=SWMT$meantemp
+        use.temp=SWMT$use.temp
+        wday=SWMT$wday; weekdays=SWMT$SWMT$weekdays; wdayname=SWMT$wdayname
+        desiredtz=SWMT$desiredtz; data=SWMT$data
+        rm(SWMT)
+        if (exists("P")) rm(P); gc()
         if (i != 0 & length(selectdaysfile) == 0 & exists("P")) rm(P); gc()
         LD = nrow(data)
         if (LD < (ws*sf) & i == 1) {
@@ -422,6 +290,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       if (LD >= (ws*sf)) {
         if (useRDA == FALSE) {
           use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
+          if (length(myfun) != 0) { # if using external function, then check that use is a multitude of the expected windowlength
+            Nminlength = use / myfun$minlength
+            if (Nminlength != floor(Nminlength)) { # it is not a multitude
+              use = floor(Nminlength) * myfun$minlength # correct use accordingly
+            }
+          }
           if ((LD - use) > 1) {
             # reading csv files
             S = data[(use+1):LD,] #store left over
@@ -540,10 +414,22 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         dev_roll_med_acc_y3b = allmetrics$dev_roll_med_acc_y3b
         dev_roll_med_acc_z3b = allmetrics$dev_roll_med_acc_z3b
         LFEN3b = allmetrics$LFEN3b
+        #--------------------------------------------------------------------
+        if (length(myfun) != 0) { # apply external function to the data to extract extra features
+          #starttime
+          if (is.logical(myfun$timestamp) == T) {
+            if (myfun$timestamp == TRUE) {
+              myfun$timestamp = starttime
+            } else {
+              myfun$timestamp = c()
+            }
+          }
+          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3)
+        }
       }
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
-        #extend out if it is expected to be too short
+        #extend metashort and metalong if it is expected to be too short
         if (count > (nrow(metashort) - (2.5*(3600/ws3) *24))) {
           extension = matrix(" ",((3600/ws3) *24),ncol(metashort)) #add another day to metashort once you reach the end of it
           metashort = rbind(metashort,extension)
@@ -606,6 +492,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (do.lfen == TRUE) {
           metashort[count:(count-1+length(LFEN3b)),col_msi] = LFEN3b; col_msi = col_msi + 1
         }
+        
+        if (length(myfun) != 0) { # if an external function is applied.
+          NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
+          metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
+        }
+        
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
         rm(allmetrics)
         # update blocksize depending on available memory
@@ -839,9 +731,17 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa,do.lfen)])
+    # Following code is needed to make sure that algorithms that produce character value
+    # output are not assumed to be numeric
+    NbasicMetrics = length(metricnames_short) 
+    if (length(myfun) != 0) {
+      metricnames_short = c(metricnames_short, myfun$colnames)
+      if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
+    }
+    
     metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
-    for (ncolms in 2:ncol(metashort)) {
+    for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
     if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & use.temp == FALSE)) {
