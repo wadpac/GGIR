@@ -55,7 +55,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
-
+  
   #---------------------------------------
   cnt78 = 1
   if (do.parallel == TRUE) {
@@ -74,7 +74,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   if (do.parallel == TRUE) {
     cat(paste0('\n Busy processing ... see ',metadatadir,'/ms2', ' for progress\n'))
   }
-
+  
   # check whether we are indevelopment mode:
   GGIRinstalled = is.element('GGIR', installed.packages()[,1])
   packages2passon = functions2passon = NULL
@@ -95,151 +95,124 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand, .verbose = F) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
     tryCatchResult = tryCatch({
-      # for (i in f0:f1) {
-      if (length(ffdone) > 0) {
-        if (length(which(ffdone == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))) > 0) {
-          skip = 1 #skip this file because it was analysed before")
-        } else {
-          skip = 0 #do not skip this file
-        }
+  # for (i in f0:f1) {
+    if (length(ffdone) > 0) {
+      if (length(which(ffdone == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))) > 0) {
+        skip = 1 #skip this file because it was analysed before")
       } else {
-        skip = 0
+        skip = 0 #do not skip this file
       }
-      if (overwrite == TRUE) skip = 0
-      if (skip ==0) {
-        cat(paste0(" ",i))
-        M = c()
-        filename_dir = c()
-        filefoldername = c()
-        file2read = paste0(path,fnames[i])
-        load(file2read) #reading RData-file
-        if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-
-          #-----------------------
-          # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
-          TimeSegments2Zero = c() # set defaul
-          # Check whether csv file exists with start-end end times of timewindows to be ignored (where 0 movement will be assumed)
-          if (length(TimeSegments2ZeroFile) > 0) {
-            TimeSegments2ZeroAll = read.csv(TimeSegments2ZeroFile)
-            # Check whether this individual is part of the file
-            filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))
-            if (length(filei) > 0) {
-              # If yes, load the timestamps that indicate the windows to be ignored
-              TimeSegments2Zero = TimeSegments2ZeroAll[filei,]
-              # Check that they fall withint the measurement
-              TimeSegments2Zero$windowstart = as.POSIXlt(TimeSegments2Zero$windowstart,tz=desiredtz)
-              TimeSegments2Zero$windowend = as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz)
-              timespan0 = iso8601chartime2POSIX(M$metashort$timestamp[1], tz= desiredtz)
-              timespan1 = iso8601chartime2POSIX(M$metashort$timestamp[nrow(M$metashort)], tz= desiredtz)
-              validtimes = which(TimeSegments2Zero$windowstart > timespan0 &
-                                   TimeSegments2Zero$windowend < timespan1)
-              # validtimes = which(as.POSIXlt(TimeSegments2Zero$windowstart,tz=desiredtz) > timespan0 &
-              #                      as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz) < timespan1)
-              if (length(validtimes) > 0) {
-                TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
-
-              } else {
-                TimeSegments2Zero = c()
-              }
-            }
-          }
-          #------------
-          if (length(myfun) > 0) {
-            if (myfun$outputtype == "character") {
-              # At the moment we do not have a strategy in place on how to impute categorical variables
-              # produced by external functions. Therefore, for the moment ignore these variables until
-              # there is a plan.
-              M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
-            }
-          }
-          IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
-                         hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz, TimeSegments2Zero = TimeSegments2Zero)
-          if (do.imp==FALSE) { #for those interested in sensisitivity analysis
-            IMP$metashort = M$metashort
-            IMP$metalong = M$metalong
-          }
-          cat("\npart2 line 152 ready to apply g.analyse")
-          SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
-                          includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
-                          mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
-                          window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
-                          desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
-                          IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
-                          IVIS.activity.metric= IVIS.activity.metric, qM5L5  = qM5L5, myfun=myfun)
-          cat("\npart2 line 160, g.analyse applied")
-          name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
-          if (epochvalues2csv==TRUE) {
-            if (length(IMP$metashort) > 0) {
-              write.csv(IMP$metashort,paste0(metadatadir,"/",csvfolder,"/",name,".csv"),row.names=FALSE)
-            }
-          }
-          if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-            if (cnt78 == 1) {
-              SUMMARY = SUM$summary
-              daySUMMARY = SUM$daysummary
-              if (length(selectdaysfile) > 0) {
-                winSUMMARY = SUM$windowsummary[,which(
-                  is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
-              }
-              cnt78 = 2
+    } else {
+      skip = 0
+    }
+    if (overwrite == TRUE) skip = 0
+    if (skip ==0) {
+      cat(paste0(" ",i))
+      M = c()
+      filename_dir = c()
+      filefoldername = c()
+      file2read = paste0(path,fnames[i])
+      load(file2read) #reading RData-file
+      if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
+        
+        #-----------------------
+        # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
+        TimeSegments2Zero = c() # set defaul
+        # Check whether csv file exists with start-end end times of timewindows to be ignored (where 0 movement will be assumed)
+        if (length(TimeSegments2ZeroFile) > 0) {
+          TimeSegments2ZeroAll = read.csv(TimeSegments2ZeroFile)
+          # Check whether this individual is part of the file
+          filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))
+          if (length(filei) > 0) {
+            # If yes, load the timestamps that indicate the windows to be ignored
+            TimeSegments2Zero = TimeSegments2ZeroAll[filei,]
+            # Check that they fall withint the measurement
+            TimeSegments2Zero$windowstart = as.POSIXlt(TimeSegments2Zero$windowstart,tz=desiredtz)
+            TimeSegments2Zero$windowend = as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz)
+            timespan0 = iso8601chartime2POSIX(M$metashort$timestamp[1], tz= desiredtz)
+            timespan1 = iso8601chartime2POSIX(M$metashort$timestamp[nrow(M$metashort)], tz= desiredtz)
+            validtimes = which(TimeSegments2Zero$windowstart > timespan0 &
+                                 TimeSegments2Zero$windowend < timespan1)
+            # validtimes = which(as.POSIXlt(TimeSegments2Zero$windowstart,tz=desiredtz) > timespan0 &
+            #                      as.POSIXlt(TimeSegments2Zero$windowend,tz=desiredtz) < timespan1)
+            if (length(validtimes) > 0) {
+              TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
+              
             } else {
-              # if (ncol(SUMMARY) > ncol(SUM$summary)) { # if previous summary had more columns than current
-              #   SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
-              #                       matrix(" ",1,(ncol(SUMMARY) - ncol(SUM$summary))),
-              #                       SUM$summary[(ncol(SUM$summary)-7):ncol(SUM$summary)])
-              #   colnames(SUM$summary) = colnames(SUMMARY)
-              # } else if (ncol(SUMMARY) < ncol(SUM$summary)){  # if previous summary had less columns than current
-              #   SUMMARY = cbind(SUMMARY[1:(ncol(SUMMARY)-8)],
-              #                       matrix(" ",1,(ncol(SUM$summary) - ncol(SUMMARY))),
-              #                   SUMMARY[(ncol(SUMMARY)-7):ncol(SUMMARY)])
-              #   colnames(SUMMARY) = colnames(SUM$summary)
-              # }
-              # # daysummary
-              # if (ncol(daySUMMARY) > ncol(SUM$daysummary)) { # if previous summary had more columns than current
-              #   SUM$daysummary = cbind(SUM$daysummary,matrix(" ",1,(ncol(daySUMMARY) - ncol(SUM$daysummary))))
-              #   colnames(SUM$daysummary) = colnames(daySUMMARY)
-              # } else if (ncol(daySUMMARY) < ncol(SUM$daysummary)) { # if previous summary had less columns than current
-              #   daySUMMARY = cbind(daySUMMARY,matrix(" ",1,(ncol(SUM$daysummary) - ncol(daySUMMARY))))
-              #   colnames(daySUMMARY) = colnames(SUM$daysummary)
-              # }
-              # if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
-              #   names(SUM$daysummary) =   colnames(daySUMMARY)
-              # }
-              if (length(selectdaysfile) > 0) {
-                # windowsummary
-                winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
-                if (ncol(winSUMMARY) != ncol(winSUMMARY2)) {
-                  winSUMMARY2 = cbind(winSUMMARY2,matrix(" ",1,(ncol(winSUMMARY) - ncol(winSUMMARY2))))
-                  colnames(winSUMMARY2) = colnames(winSUMMARY)
-                }
-                if (length(which(colnames(winSUMMARY) != names(winSUMMARY2)) ) > 0) {
-                  names(winSUMMARY2) =   colnames(winSUMMARY)
-                }
-                if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
-                  names(SUM$windowsummary) =   colnames(winSUMMARY2)
-                }
+              TimeSegments2Zero = c()
+            }
+          }
+        }
+        #------------
+        if (length(myfun) > 0) {
+          if (myfun$outputtype == "character") {
+            # At the moment we do not have a strategy in place on how to impute categorical variables
+            # produced by external functions. Therefore, for the moment ignore these variables until
+            # there is a plan.
+            M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+          }
+        }
+        IMP = g.impute(M,I,strategy=strategy,hrs.del.start=hrs.del.start,
+                       hrs.del.end=hrs.del.end,maxdur=maxdur,ndayswindow = ndayswindow,desiredtz=desiredtz, TimeSegments2Zero = TimeSegments2Zero)
+        if (do.imp==FALSE) { #for those interested in sensisitivity analysis
+          IMP$metashort = M$metashort
+          IMP$metalong = M$metalong
+        }
+        SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
+                        includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
+                        mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
+                        window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
+                        desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
+                        IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
+                        IVIS.activity.metric= IVIS.activity.metric, qM5L5  = qM5L5, myfun=myfun)
+        name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
+        if (epochvalues2csv==TRUE) {
+          if (length(IMP$metashort) > 0) {
+            write.csv(IMP$metashort,paste0(metadatadir,"/",csvfolder,"/",name,".csv"),row.names=FALSE)
+          }
+        }
+        if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
+          if (cnt78 == 1) {
+            SUMMARY = SUM$summary
+            daySUMMARY = SUM$daysummary
+            if (length(selectdaysfile) > 0) {
+              winSUMMARY = SUM$windowsummary[,which(
+                is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
+            }
+            cnt78 = 2
+          } else {
+            if (length(selectdaysfile) > 0) {
+              # windowsummary
+              winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
+              if (ncol(winSUMMARY) != ncol(winSUMMARY2)) {
+                winSUMMARY2 = cbind(winSUMMARY2,matrix(" ",1,(ncol(winSUMMARY) - ncol(winSUMMARY2))))
+                colnames(winSUMMARY2) = colnames(winSUMMARY)
+              }
+              if (length(which(colnames(winSUMMARY) != names(winSUMMARY2)) ) > 0) {
+                names(winSUMMARY2) =   colnames(winSUMMARY)
+              }
+              if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
+                names(SUM$windowsummary) =   colnames(winSUMMARY2)
               }
             }
           }
-          if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
-            filename = paste0(name,".RData")
-          }
-
-          if (storefolderstructure == TRUE) { # newly added 20-2-2019
-            SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
-            SUM$daysummary$foldername = foldername[i] #store the lowest foldername
-          }
-
-          save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
         }
-        if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
-
-        rm(M); rm(I)
+        if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
+          filename = paste0(name,".RData")
+        }
+        if (storefolderstructure == TRUE) { # newly added 20-2-2019
+          SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
+          SUM$daysummary$foldername = foldername[i] #store the lowest foldername
+        }
+        save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
       }
+      if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
+      rm(M); rm(I)
+    }
+  # } # end for loopp
     }) # END tryCatch
     return(tryCatchResult)
   }
-
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
