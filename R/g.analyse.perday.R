@@ -477,6 +477,8 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
                   daysummary[di,fi] = mean(varnum)
                   ds_names[fi] = paste0(colnames(metashort)[mi],"_mean",anwi_nameindices[anwi_index],sep=""); fi=fi+1
+                } else if (myfun$reporttype == "type") { # For type we calculate time spent in each class 
+                  # Not implemented yet
                 }
               }
             }
