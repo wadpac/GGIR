@@ -5,16 +5,20 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   # from parallel processed accelerometer files
   
   
-  getValidDayIndices = function(x, includenightcrit, includedaycrit) {
+  getValidDayIndices = function(x, includenightcrit, includedaycrit, window) {
     maxpernwnight = (1 - (includenightcrit / 24)) * 100
     maxpernwday = (1 - (includedaycrit / 24)) * 100
     # Temporarily replace 4 March 2020...
-    indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
-                      (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
-                      x$nonwear_perc_sleepperiod <= maxpernwnight & 
-                      x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0)
-    # by ...
-    # indices = which(x$dur_sleepperiodsleep_min > 0 & x$dur_wakinghours_min > 0)
+    if (window == "WW") {
+      indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
+                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < maxpernwnight)) &
+                        x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0)
+    } else if (window == "MM") {
+      indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
+                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < maxpernwnight)) &
+                        x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0&
+                        x$dur_fulldaywindow_min >= 1380) # for MM analysis only full days are interesting (23 hours for one day in the year)
+    }
     return(indices)
   }
   
@@ -56,7 +60,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     if (length(cut2) > 0) {
       outputfinal = outputfinal[-cut2,]
     }
-
+    
     
     #-------------------------------------------
     # clean spreadsheet: => commented out, because part 5 should use all possible information
@@ -72,8 +76,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     #                 as.character(outputfinal$sleeplog_used) == "FALSE" | 
     #                 as.character(outputfinal$acc_available) == "FALSE")
     # } else {
-      #only delete nights with no or no valid accelerometer data, but consider nigths with missing sleep log data
-      # del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 1 | as.character(outputfinal$acc_available) == "FALSE") 
+    #only delete nights with no or no valid accelerometer data, but consider nigths with missing sleep log data
+    # del = which(as.numeric(as.character(outputfinal$cleaningcode)) > 1 | as.character(outputfinal$acc_available) == "FALSE") 
     # }
     # if (length(del) > 0) {
     #   outputfinal = outputfinal[-del,]
@@ -230,9 +234,9 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 write.csv(OF3,paste(metadatadir,"/results/QC/part5_daysummary_full_",
                                     uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 # store all summaries in csv files with cleaning criteria
-                validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit) 
+                validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit, window = uwi[j]) 
                 write.csv(OF3[validdaysi,],paste(metadatadir,"/results/part5_daysummary_",
-                                                      uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
+                                                 uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 #------------------------------------------------------------------------------------
                 #also compute summary per person
                 agg_plainNweighted = function(df,filename="filename",daytype="daytype") {
@@ -299,7 +303,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 # Calculate, weighted and plain mean of all variables
                 # add column to define what are weekenddays and weekdays as needed for function agg_plainNweighted
                 # before processing OF3, first identify which days have enough monitor wear time
-               validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit) 
+                validdaysi = getValidDayIndices(OF3,includenightcrit, includedaycrit, window = uwi[j]) 
                 if (length(validdaysi) >0) { # do not attempt to aggregate if there are no valid days
                   # aggregate OF3 (days) to person summaries in OF4
                   OF4 = agg_plainNweighted(OF3[validdaysi,],filename="filename",day="daytype")
