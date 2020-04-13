@@ -195,7 +195,8 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     collects several MBs per hour, the default setting should only skip the very short files.
   }
   \item{myfun}{
-    External function object to be applied to raw data, see \link{g.getmeta}.
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
   }
   \item{...}{
    Any input arguments needed for function \link{read.myacc.csv} if you

@@ -222,6 +222,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("excludefirstlast") == FALSE)  excludefirstlast=FALSE
   if (exists("criterror") == FALSE)  criterror=3
   if (exists("relyonguider") == FALSE)  relyonguider=FALSE
+  if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=c()
+  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE

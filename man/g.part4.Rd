@@ -14,7 +14,7 @@ g.part4(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,
 loglocation = c(),colid = 1,coln1 = 9,nnights = 7,
 sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
-    relyonguider=FALSE,def.noc.sleep=1,
+    relyonguider=FALSE, relyonsleeplog=FALSE, def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="")
 }
@@ -106,6 +106,11 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   If participants were instructed NOT to wear the accelerometer
   during waking hours then set to TRUE, in all other scenarios
   set to FALSE (FALSE).
+  }
+   \item{relyonsleeplog}{
+    Now replaced by relyonguider. Values provided to argument
+    relyonsleeplog will be passed on to argument relyonguider to not
+    preserve functionality of old R script.
   }
   \item{def.noc.sleep}{
   The time window during which sustained inactivity will be assumed
