@@ -256,8 +256,8 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                                                 tempRes = matrix(0,nrow = nr, ncol = ncol(rawTemp), dimnames = list(NULL,colnames(rawTemp)))
                                                 rawLast = nrow(rawTemp)
                                                 tempRes = resample(rawTemp, rawTime, timeRes, rawLast) # this is now the resampled temp data
-                                                start_temp = round(PreviousEndPage * step) - round(blocksize*step) + 1
-                                                end_temp = round(PreviousEndPage * step)
+                                                start_temp = round(PreviousEndPage) - round(blocksize) + 1
+                                                end_temp = round(PreviousEndPage)
                                                 temperature = tempRes[start_temp:end_temp]
                                         }
                                         if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 0) & use.temp == TRUE) {
