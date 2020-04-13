@@ -471,5 +471,5 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                         P = c()
                 }
         }
-        invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage))
+        invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage, startpage = startpage))
 }
