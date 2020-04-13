@@ -5,23 +5,15 @@ getfolderstructure = function(datadir=c(),referencefnames=c()) {
   } else {
     fnamesfull = datadir
   }
-  f16 = function(X) {
-    out = unlist(strsplit(X,"/"))
-    f16 = out[length(out)]
-  }
-  f17 = function(X) {
-    out = unlist(strsplit(X,"/"))
-    f17 = out[(length(out)-1)]
-  }
-  fullfilenames = foldername = rep("",length(fnamesfull))
-
+  fullfilenames = foldername = rep("",length(referencefnames))
   if (length(fnamesfull) > 0) {
-    fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-    foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+    fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=function(X) basename(X))
+    foldername_new = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=function(X) basename(dirname(X)))
     for (i in 1:length(referencefnames)) {
-      if (length(which(fnamesshort == referencefnames[i])) > 0) {
-        fullfilenames[i] = fnamesfull[which(fnamesshort == referencefnames[i])]
-        foldername[i] = foldername[which(fnamesshort == referencefnames[i])]
+      index_match = which(fnamesshort == referencefnames[i] & referencefnames[i] %in% c("", " ",NA) == FALSE)
+      if (length(index_match) > 0) {
+        fullfilenames[i] = fnamesfull[index_match]
+        foldername[i] = foldername_new[index_match]
       }
     }
   }
