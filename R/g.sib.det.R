@@ -222,7 +222,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range, 
                                    perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize, 
                                    outofbedsize = outofbedsize)
-       
         if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
           if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
@@ -239,8 +238,11 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
               }
             }
           }
-          sptwindow_HDCZA_end[1] = inbedout$sptwindow_HDCZA_end
-          sptwindow_HDCZA_start[1] = inbedout$sptwindow_HDCZA_start
+          
+          startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
+          startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
+          sptwindow_HDCZA_end[1] = inbedout$sptwindow_HDCZA_end/(3600/ws3) + startTimeRecord 
+          sptwindow_HDCZA_start[1] = inbedout$sptwindow_HDCZA_start/(3600/ws3)  + startTimeRecord 
           sptwindow_HDCZA_end[1] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
                                               tz=desiredtz,calc_sptwindow_HDCZA_end=sptwindow_HDCZA_end[1],
                                               calc_sptwindow_HDCZA_start=sptwindow_HDCZA_start[1])
@@ -268,6 +270,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
         }
         L5list[1] = L5
+
       } else { #more than one midnight
         cut = which(as.numeric(midnightsi) == 0)
         if (length(cut) > 0) {
@@ -320,10 +323,11 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                 }
               }
             }
-            if(j == 1 & midnightsi[j] == 1) {
-              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3))
-              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3))
-            } else if(j == 1 & midnightsi[j] != 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time 
+            # if(j == 1 & midnightsi[j] == 1) {
+            #   sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3))
+            #   sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3))
+            # } else if(j == 1 & midnightsi[j] != 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time
+            if (j == 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time 
               startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
               startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord 
