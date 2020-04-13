@@ -283,7 +283,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                 temperature = tempRes[PreviousStartPage:PreviousEndPage]
                                 P = as.data.frame(P)
                                 P[, 4] = temperature
-                                colnames(P[,4]) = "temp"
+                                colnames(P)[4] = "temp"
                                 P = as.matrix(P)
                         }
                 } else {
