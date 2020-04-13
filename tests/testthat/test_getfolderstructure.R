@@ -13,7 +13,7 @@ test_that("getfolderstructure", {
   write.csv(matrix(0,4,4),file="A/B/testB.csv")
   write.csv(matrix(0,4,4),file="A/C/testC.csv")
   
-  folderstructure = getfolderstructure(datadir=dn,referencefnames=c("testB","testC"))
+  folderstructure = getfolderstructure(datadir=dn,referencefnames=c("testB.csv","testC.csv"))
   expect_that(  folderstructure$foldername[1],equals("B"))
   expect_that(  folderstructure$foldername[2],equals("C"))
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
