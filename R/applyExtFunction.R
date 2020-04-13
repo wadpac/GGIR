@@ -47,13 +47,14 @@ applyExtFunction = function(data, myfun, sf, ws3) {
   } 
   if (length(myfun$timestamp) == 1) { # add timestamp and apply function
     st_num = as.numeric(myfun$timestamp) #POSIX converted to numeric time but relative to the desiredtz
-    time2beAdded = seq(st_num, (st_num + round(nrow(data)/sf)),by=1/sf) 
+    # Note that sample rate is now the expected sample rate, not the original sample rate
+    time2beAdded = seq(st_num, (st_num + round(nrow(data)/myfun$expected_sample_rate)),by=1/myfun$expected_sample_rate) 
     LEtim = length( time2beAdded)
     NRda = nrow(data)
     if (LEtim > NRda) {
       time2beAdded = time2beAdded[1:NRda]
     } else if (LEtim < NRda) {
-      time2beAdded = c(time2beAdded,time2beAdded[LEtim]+(c(1:(NRda-LEtim))/sf))
+      time2beAdded = c(time2beAdded,time2beAdded[LEtim]+(c(1:(NRda-LEtim))/myfun$expected_sample_rate))
     }
     data = cbind(time2beAdded, data)
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
