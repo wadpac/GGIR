@@ -158,6 +158,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                 filedoesnotholdday = filequality$filedoesnotholdday
                 switchoffLD = accread$switchoffLD
                 PreviousEndPage = accread$endpage
+                PreviousStartPage = accread$startpage
                 options(warn=0) #turn on warnings
                 #process data as read from binary file
                 if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -256,9 +257,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                                                 tempRes = matrix(0,nrow = nr, ncol = ncol(rawTemp), dimnames = list(NULL,colnames(rawTemp)))
                                                 rawLast = nrow(rawTemp)
                                                 tempRes = resample(rawTemp, rawTime, timeRes, rawLast) # this is now the resampled temp data
-                                                start_temp = round(PreviousEndPage) - round(blocksize)
-                                                end_temp = round(PreviousEndPage) - 1
-                                                temperature = tempRes[start_temp:end_temp]
+                                                temperature = tempRes[PreviousStartPage:PreviousEndPage]
                                         }
                                         if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 0) & use.temp == TRUE) {
                                                 #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
