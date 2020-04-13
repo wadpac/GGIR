@@ -1,7 +1,7 @@
 ---
 title: "Embedding external functions in GGIR"
 author: "Vincent van Hees"
-date: "April 10 2020"
+date: "April 13 2020"
 output:
   pdf_document:
     toc: true
@@ -25,11 +25,9 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Algorithms (e.g. machine learning models) are typically developed for a specific data format and do not include the necessary data cleaning and aggregation steps needed for real life 'out of the lab' experiments that come with multiple days of data per participant.
+Algorithms (e.g. machine learning models) are typically developed for a specific data format without initially considering the data cleaning and aggregation steps needed for real life 'out of the lab' implementation. GGIR can take care of this by allowing you to provide your external function written in R or Python. GGIR applies your function to the the data and integrates the output it its own output.
 
-GGIR now allows you to apply your algorithm written in R or Python to raw accelerometer data, while taking care of all the other processing steps. 
-
-Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory and corrected for calibration error GGIR applies its own default algorithms as well as an external function that you as user can provide. The function is expected to take as input: A three-column matrix with the acceleration data corresponding to the three acceleration axes, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to the output of your algorithm.
+Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory, corrected for calibration error, and resampled to the sample rate required by your function, GGIR applies its own default algorithms as well as the external function provided by you. The external function is expected to take as input: A three-column matrix with the acceleration data corresponding to the three acceleration axes, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to the output of your external function.
 
 # Example with external R function
 
@@ -82,12 +80,12 @@ The above code creates object `myfun` of type `list` which is expected to come w
 - `colnames` Character vector with the names of the columns produced by the external function.
 - `outputres` The resolution (seconds) of the output produced by the external function. Note, that this needs to be equal to or a multitude of the short epoch size of the g.part1 output (5 seconds) or the short epoch size should be a multitude of this resolution. In this way GGIR can aggregate or repeat the external function output to be used inside GGIR.
 - `minlength` The minimum length (seconds) of input data needed, typically the window per which output is provided.
-- `outputtype` Type of external function output. Set to "numeric" if data is stored in numbers (any numeric format), or "character" if it is a character string.
+- `outputtype` Character to indicate the type of external function output. Set to "numeric" if data is stored in numbers (any numeric format), or "character" if it is a character string.
 - `aggfunction` If the data needs to be aggregated to match the short epoch size of the g.part1 output (5 seconds) then this element specifies what
 function should be used for the aggregation, e.g. mean, sum, median.
 - `timestamp` Boolean to indicated whether timestamps  (seconds since 1-1-1970) should be passed on to the external 
     function as first columm of the data matrix..
-- `reporttype` Character to indicate the type of reporting: "scalar" if it can be averaged per day, "event" if it should be summed per day, or "event", or "type" if it is categorical variable that can only be aggregated per day by tabulating it.
+- `reporttype` Character to indicate the type of reporting by GGIR: "scalar" if it should be averaged per day, "event" if it should be summed per day, or "type" if it is categorical variable that can only be aggregated per day by tabulating it.
 
 Next, add a call to GGIR function g.shell.GGIR with `myfun` provided as one of its arguments:
 
