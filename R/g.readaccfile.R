@@ -406,17 +406,15 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                         P = c()
                 }
         } else if (mon == 5 & dformat == 1){ #movisens
-                # startpage = 1
-                blocksize = blocksize
-                print(blocksize)
-                # UPI = updatepageindexing(startpage = startpage, deltapage = deltapage, 
-                #                          blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, 
-                #                          mon = mon, dformat = dformat)
-                # startpage = UPI$startpage
-                # endpage = UPI$endpage
+                startpage = blocksize*(blocknumber-1) + 1
+                deltapage = blocksize
+                UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
+                                         blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
+                startpage = UPI$startpage;    endpage = UPI$endpage
                 
                 P = unisensR::readUnisensSignalEntry(filename, "acc.bin",
-                                                     binReadChunkSize = blocksize)
+                                                     startIndex = startpage,
+                                                     endIndex = endpage)
                 P = as.matrix(P)
                 if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 
                     1) {
