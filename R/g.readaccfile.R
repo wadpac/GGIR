@@ -415,6 +415,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                 file_length = unisensR::getUnisensSignalSampleCount(filename, "acc.bin")
                 if (endpage > file_length){
                   endpage = file_length
+                  switchoffLD = 1
                   }
                 P = unisensR::readUnisensSignalEntry(filename, "acc.bin",
                                                      startIndex = startpage,
