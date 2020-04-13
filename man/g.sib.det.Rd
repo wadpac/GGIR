@@ -10,7 +10,8 @@
 \usage{
   g.sib.det(M, IMP, I, twd=c(-12,12), anglethreshold = 5, 
               timethreshold = c(5,10), acc.metric = "ENMO",
-              desiredtz="", constrain2range=TRUE, dayborder=0)
+              desiredtz="", constrain2range=TRUE, dayborder=0,
+              myfun=c())
 }
 \arguments{
   \item{M}{
@@ -46,7 +47,10 @@
    \item{dayborder}{
     See \link{g.part1}
   }
-  
+\item{myfun}{
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
+  }
 }
 \value{
 \itemize{

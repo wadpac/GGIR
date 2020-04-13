@@ -1,9 +1,12 @@
 g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation = c(),
                    colid = 1,coln1 = 9,nnights = 7,sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
                    excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
-                   relyonguider=FALSE,def.noc.sleep=1,
+                   relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="") {
+  
+  
+  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
   
