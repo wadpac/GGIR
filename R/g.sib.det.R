@@ -1,6 +1,6 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                      dayborder=0) {
+                      dayborder=0, myfun=c()) {
   #==============================================================
   perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
 
@@ -106,8 +106,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   }
   #==================================================
   # get variables  
-  D = IMP$metashort
-  nD = nrow(D)
+  nD = nrow(IMP$metashort)
   mon = I$monn
   ws3 = M$windowsizes[1]
   ws2 = M$windowsizes[2]
@@ -134,55 +133,65 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   if (ND > 0.2) {
     #========================================================================
     # timestamps
-    time = as.character(D[1:nD,1])
+    time = as.character(IMP$metashort[1:nD,1])
     # angle
-    if (length(which(colnames(D)=="anglez")) == 0) {
+    if (length(which(colnames(IMP$metashort)=="anglez")) == 0) {
       cat("metric anglez was not extracted, please make sure that anglez  is extracted")
     }
-    angle = as.numeric(as.matrix(D[1:nD,which(colnames(D)=="anglez")]))
-    ACC = as.numeric(as.matrix(D[1:nD,which(colnames(D)==acc.metric)]))
+    angle = as.numeric(as.matrix(IMP$metashort[1:nD,which(colnames(IMP$metashort)=="anglez")]))
+    ACC = as.numeric(as.matrix(IMP$metashort[1:nD,which(colnames(IMP$metashort)==acc.metric)]))
     night = rep(0,length(angle))
     if (length(which(is.na(angle) ==TRUE)) > 0) {
       if (which(is.na(angle) ==TRUE)[1] == length(angle)) {
         angle[length(angle)] = angle[length(angle)-1]
       }
     }
-    rm(D)
     #==================================================================
-    # sleep detection
-    angle[which(is.na(angle) == T)] = 0
-    cnt = 1
-    for (i in timethreshold) {
-      for (j in anglethreshold) {
-        sdl1 = rep(0,length(time))
-        postch = which(abs(diff(angle)) > j) #posture change of at least j degrees
-        # count posture changes that happen less than once per ten minutes
-        q1 = c()
-        if (length(postch) > 1) {
-          q1 = which(diff(postch) > (i*(60/ws3))) #less than once per i minutes
-        }
-        if (length(q1) > 0) {
-          for (gi in 1:length(q1)) {
-            sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
-          }
-        } else { #possibly a day without wearing
-          if (length(postch) < 10) {  #possibly a day without wearing
-            sdl1[1:length(sdl1)] = 1 #periods with no posture change
-          } else {  #possibly a day with constantly posture changes
-            sdl1[1:length(sdl1)] = 0 #periodsposture change
-          }
-        }
-        sleep[,cnt] = sdl1
-        cnt = cnt+ 1
+    # sleep detection if sleep is not provided by external function:
+    getSleepFromExternalFunction = FALSE
+    if (length(myfun) != 0) {
+      if (myfun$colnames == "wake_sleep" & myfun$outputtype =="character") {
+        getSleepFromExternalFunction = TRUE
       }
     }
-    cnt = 1
-    sleep = as.data.frame(sleep)
-    for (i in timethreshold) {
-      for (j in anglethreshold) {
-        colnames(sleep)[cnt] = paste("T",i,"A",j,sep="")
-        cnt = cnt + 1
+    
+    angle[which(is.na(angle) == T)] = 0
+    if (getSleepFromExternalFunction == FALSE) {
+      cnt = 1
+      for (i in timethreshold) {
+        for (j in anglethreshold) {
+          sdl1 = rep(0,length(time))
+          postch = which(abs(diff(angle)) > j) #posture change of at least j degrees
+          # count posture changes that happen less than once per ten minutes
+          q1 = c()
+          if (length(postch) > 1) {
+            q1 = which(diff(postch) > (i*(60/ws3))) #less than once per i minutes
+          }
+          if (length(q1) > 0) {
+            for (gi in 1:length(q1)) {
+              sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
+            }
+          } else { #possibly a day without wearing
+            if (length(postch) < 10) {  #possibly a day without wearing
+              sdl1[1:length(sdl1)] = 1 #periods with no posture change
+            } else {  #possibly a day with constantly posture changes
+              sdl1[1:length(sdl1)] = 0 #periodsposture change
+            }
+          }
+          sleep[,cnt] = sdl1
+          cnt = cnt+ 1
+        }
       }
+      cnt = 1
+      sleep = as.data.frame(sleep)
+      for (i in timethreshold) {
+        for (j in anglethreshold) {
+          colnames(sleep)[cnt] = paste("T",i,"A",j,sep="")
+          cnt = cnt + 1
+        }
+      }
+    } else { # getSleepFromExternalFunction == TRUE
+      sleep[which(M$metashort$wake_sleep == "Sleep" | M$metashort$wake_sleep == "Nonwear" )] = 1 # Code now uses the sleep estimates from the external function
     }
     #-------------------------------------------------------------------
     # detect midnights
