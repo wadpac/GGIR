@@ -115,7 +115,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
         if (mon == 1) blocksize = blocksizegenea
         if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
         if (mon == 4 & dformat == 2) blocksize = round(blocksize)
-        if (mon == 5) blocksize = (64 * 60 * 1440) / 2   #Around 12 hours of data for movisens
+        if (mon == 5) blocksize = (sf * 60 * 1440) / 2   #Around 12 hours of data for movisens
         #===============================================
         # Read file
         switchoffLD = 0 #dummy variable part of "end of loop mechanism"
@@ -476,9 +476,9 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                         }
                 }
                 i = i + 1 #go to next block (12 hours-isch)
-                if(mon == 5 & dformat == 1){ #movisens, not to go to the next block (unisens functions read the whole file in a row)
-                        LD = 1     #This stops the while loop
-                }
+                #if(mon == 5 & dformat == 1){ #movisens, not to go to the next block (unisens functions read the whole file in a row)
+                #        LD = 1     #This stops the while loop
+                #}
         }
         if (length(cal.error.end) > 0) {
                 if (cal.error.end > cal.error.start) {
