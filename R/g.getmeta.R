@@ -147,6 +147,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
         if (mon == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
         if (mon == 4 & dformat == 2) blocksize = round(blocksize)
+        if (mon == 5) blocksize = sf * 60 * 1440
         id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
         #Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
         if (length(dynrange) > 0) {
@@ -754,9 +755,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                         }
                 }
                 i = i + 1 #go to next block
-                if(mon == 5 & dformat == 1){ #movisens, not to go to the next block (unisens functions read the whole file in a row)
-                        LD = 1     #This stops the while loop
-                }
+                #if(mon == 5 & dformat == 1){ #movisens, not to go to the next block (unisens functions read the whole file in a row)
+                #        LD = 1     #This stops the while loop
+                #}
         }
         # deriving timestamps
         if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
