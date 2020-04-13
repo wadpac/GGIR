@@ -3,8 +3,8 @@
 ^\.travis.yml$
 .zenodo.json
 CITATION.cff
-buildignore
 prepareNewRelease.R
 ^doc$
 ^Meta$
 ^appveyor\.yml$
+^pdf_vignettes_for_github_only
