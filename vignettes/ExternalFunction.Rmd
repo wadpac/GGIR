@@ -1,7 +1,7 @@
 ---
 title: "Embedding external functions in GGIR"
 author: "Vincent van Hees"
-date: "December 12 2019"
+date: "April 10 2020"
 output:
   pdf_document:
     toc: true
