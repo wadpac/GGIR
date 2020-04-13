@@ -279,7 +279,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                 tempRes = matrix(0,nrow = nr, ncol = ncol(rawTemp), dimnames = list(NULL,colnames(rawTemp)))
                                 rawLast = nrow(rawTemp)
                                 tempRes = resample(rawTemp, rawTime, timeRes, rawLast) # this is now the resampled temp data
-                                temperature = tempRes
+                                start_temp = round(PreviousEndPage) - round(blocksize)
+                                end_temp = round(PreviousEndPage) - 1
+                                temperature = tempRes[start_temp:end_temp]
                                 P = as.data.frame(P)
                                 P[, 4] = temperature
                                 colnames(P[,4]) = "temp"
