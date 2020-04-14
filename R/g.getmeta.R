@@ -481,10 +481,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                 } else if (mon == 0) {
                                                         temperaturecolumn = 5
                                                 }
-                                                if (mon != 5) {
+                                                if (mon != 0) {
                                                         light = as.numeric(data[,lightcolumn])
                                                 } 
-                                                if (mon == 5 & length(rmc.col.wear) > 0) {
+                                                if (mon == 0 & length(rmc.col.wear) > 0) {
                                                         wearcol = as.character(data[, which(colnames(data) == "wear")])
                                                         suppressWarnings(storage.mode(wearcola) <- "logical")
                                                 }
