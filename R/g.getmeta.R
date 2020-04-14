@@ -271,7 +271,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                 rawTime = vector(mode = "numeric", nrow(temperature))
                                 rawTime = as.numeric(as.POSIXlt(temperature$timestamp,tz = desiredtz))
                                 rawTemp = as.matrix(temperature[,-c(which(colnames(temperature)=="timestamp"))])
-                                step = (nrow(temperature) - 1) / nrow(P)   #ratio of temp sf to acc sf in movisens data
+                                acc_length = unisensR::getUnisensSignalSampleCount(datafile, "acc.bin")
+                                step = (nrow(temperature) - 1) / acc_length   #ratio of temp sf to acc sf in movisens data
                                 start = rawTime[1]
                                 end = rawTime[length(rawTime)]
                                 timeRes = seq(start, end, step)
