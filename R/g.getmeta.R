@@ -757,9 +757,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                         }
                 }
                 i = i + 1 #go to next block
-                #if(mon == 5 & dformat == 1){ #movisens, not to go to the next block (unisens functions read the whole file in a row)
-                #        LD = 1     #This stops the while loop
-                #}
         }
         # deriving timestamps
         if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
