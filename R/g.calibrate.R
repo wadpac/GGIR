@@ -478,9 +478,6 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
                         }
                 }
                 i = i + 1 #go to next block (12 hours-isch)
-                #if(mon == 5 & dformat == 1){ #movisens, not to go to the next block (unisens functions read the whole file in a row)
-                #        LD = 1     #This stops the while loop
-                #}
         }
         if (length(cal.error.end) > 0) {
                 if (cal.error.end > cal.error.start) {
