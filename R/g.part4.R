@@ -271,8 +271,10 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # get default onset and wake (based on sleeplog or on heuristic algorithms)
           # def.noc.sleep is an input argument the GGIR user can use
           # to specify what detection strategy is used in the absense of a sleep diary
+          
           if (length(def.noc.sleep) == 0 | length(sptwindow_HDCZA_start) == 0) {
             # use L5+/-6hr algorithm if HDCZA fails OR if the user explicitely asks for it (length zero argument)
+            guider = "notavailable"
             if (length(L5list) > 0) {
               defaultSptOnset = L5list[j] - 6
               defaultSptWake = L5list[j] + 6
@@ -283,6 +285,26 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             defaultSptOnset = sptwindow_HDCZA_start[j]
             defaultSptWake = sptwindow_HDCZA_end[j]
             guider = "HDCZA"
+            if (is.na(defaultSptOnset) == TRUE) { # If HDCZA was not derived for this night, use average estimate for other nights
+              availableestimate = which(is.na(sptwindow_HDCZA_start) == FALSE)
+              cleaningcode = 6
+              if (length(availableestimate) > 0) {
+                defaultSptOnset = mean(sptwindow_HDCZA_start[availableestimate])
+              } else {
+                defaultSptOnset = L5list[j] - 6
+                guider = "L512"
+              }
+            }
+            if (is.na(defaultSptWake) == TRUE) { # If HDCZA was not derived for this night, use average estimate for other nights
+              availableestimate = which(is.na(sptwindow_HDCZA_end) == FALSE)
+              cleaningcode = 6
+              if (length(availableestimate) > 0) {
+                defaultSptWake = mean(sptwindow_HDCZA_end[availableestimate])
+              } else {
+                defaultSptWake = L5list[j] + 6
+                guider = "L512"
+              }
+            }
           } else if (length(def.noc.sleep) == 2) {
             # use constant onset and waking time as specified with def.noc.sleep argument
             defaultSptOnset = def.noc.sleep[1] #onset
