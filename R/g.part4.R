@@ -551,6 +551,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               cat(" NEW ")
               pagei = pagei + 1
               # add y-axis before starting new page
+              if (length(idlabels) < nnpp) {
+                idlabels = c(idlabels, rep(" ",length(idlabels) - nnpp))
+              } else if (length(idlabels) > nnpp) {
+                idlabels = idlabels[1:nnpp]
+              }
               axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.6)
               idlabels = rep(0,nnpp)
               plot(c(0,0),c(1,1),xlim=c(12,36),ylim=c(0,nnpp),col="white",axes=FALSE,xlab="time",ylab="",
@@ -882,7 +887,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   } #end of loop through acc files
   if (cnt67 == 2 & do.visual == TRUE) {
     if (cnt-1 != (nnpp+1)) {
-      idlabels[which(idlabels == 0)] = " "
+      zerolabel = which(idlabels == 0)
+      if (length(zerolabel) > 0) idlabels[zerolabel] = " "
       axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.5)
     }
     dev.off()
