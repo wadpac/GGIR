@@ -11,7 +11,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     # Temporarily replace 4 March 2020...
     if (window == "WW") {
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
-                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < maxpernwnight)) &
+                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
+                        x$nonwear_perc_sleepperiod  <= maxpernwnight &
                         x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0)
     } else if (window == "MM") {
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
