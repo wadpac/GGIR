@@ -57,6 +57,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       e5 = which(diff(c(0,inbedtime2,0)) == -1) #end blocks out of bed?
       inbeddurations = e5 - s5
       longestinbed = which(inbeddurations == max(inbeddurations))
+      if (length(longestinbed) > 1) longestinbed = longestinbed[ceiling(length(longestinbed)/2)]
       sptwindow_HDCZA_start = s5[longestinbed] - 1
       sptwindow_HDCZA_end = e5[longestinbed] - 1
       if (sptwindow_HDCZA_start == 0) sptwindow_HDCZA_start = 1
@@ -201,7 +202,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
     
-    tib.threshold = sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = rep(0,countmidn)
+    tib.threshold = sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = rep(NA,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
         tooshort = 1
