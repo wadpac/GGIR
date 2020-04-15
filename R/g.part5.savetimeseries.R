@@ -22,9 +22,9 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
       dayindices = wakeup[di]:(wakeup[di+1]-1)
       wake = which(mdat$SleepPeriodTime[dayindices] == 0)
       sleep = which(mdat$SleepPeriodTime[dayindices] == 1)
-      mdat$invalid_wakinghours[dayindices] = mean(mdat$invalidepoch[dayindices[wake]])
-      mdat$invalid_sleepperiod[dayindices] = mean(mdat$invalidepoch[dayindices[sleep]])
-      mdat$invalid_fullwindow[dayindices] = mean(mdat$invalidepoch[dayindices])
+      mdat$invalid_wakinghours[dayindices] = round(mean(mdat$invalidepoch[dayindices[wake]])*100)
+      mdat$invalid_sleepperiod[dayindices] = round(mean(mdat$invalidepoch[dayindices[sleep]])*100)
+      mdat$invalid_fullwindow[dayindices] = round(mean(mdat$invalidepoch[dayindices])*100)
     }
     # round acceleration values to 3 digits to reduce storage space
     mdat$ACC = round(mdat$ACC, digits= 3)
@@ -35,14 +35,14 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
                                      no =  ifelse(mdat$guider == 'setwindow', yes = 3,
                                                   no = ifelse(mdat$guider == 'L512', yes = 4,
                                                               no = 0))))
-    mdat = mdat[,-which(names(mdat) %in% c("timestamp","time","invalidepoch"))]
+    mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))] #,"invalidepoch"
     # re-oder columns
     naS = colnames(mdat)
     # mdat = mdat[,c(which(naS == "filename"),which(naS != "filename"))]
     # save to csv file
     write.csv(mdat,rawlevels_fname, row.names = F)
     #===============================
-    rm(ms5rawlevels, mdat)
+    rm(mdat)
   }
   return()
 }
