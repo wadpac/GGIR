@@ -150,8 +150,8 @@ with the following variables:\cr
 since the midnight of the previous night, see details.
 \item \code{wakeup} Detected waking time (after sleep period)
 expressed as hours since the midnight of the previous night, see details.
-\item \code{acc_SptDuration} Difference between onset and waking time.
-\item \code{acc_def} Definition of sustained inactivity by accelerometer
+\item \code{SptDuration} Difference between onset and waking time.
+\item \code{sleepparam} Definition of sustained inactivity by accelerometer
 \item \code{guider_onset} Start of Sleep Period Time window derived from
 (in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
 L5HR6 algorithm, or specified by researcher,
@@ -160,21 +160,23 @@ L5HR6 algorithm, or specified by researcher,
 L5HR6 algorithm, or specified by researcher.
 \item \code{guider_SptDuration} Time in bed derived from
 guider_wake and guider_onset.
-\item \code{error_onset} Difference between sleeponset and guider_onset
-\item \code{error_wake} Difference between wakeup and guider_wake
+\item \code{error_onset} Only in full report in the QC folder. 
+Difference between sleeponset and guider_onset
+\item \code{error_wake} Only in full report in the QC folder. 
+Difference between wakeup and guider_wake
 \item \code{fraction_night_invalid} Fraction of the night for which
 the data was invalid, e.g. monitor not worn or no accelerometer
 measurement started/ended within the night
-\item \code{acc_SleepDurationInSpt} Total sleep duration, which equals the
+\item \code{SleepDurationInSpt} Total sleep duration, which equals the
 accumulated nocturnal sustained inactivity bouts within the Sleep Period Time.
-\item \code{acc_dur_sibd} Accumulated sustained inactivty bouts
+\item \code{duration_sib_wakinghours} Accumulated sustained inactivty bouts
 during the day. These are the periods we would label during the night
 as sleep, but during the day they form a subclass of inactivity,
 which may represent day time sleep or wakefulness while being
 motionless for a sustained period of time
-\item \code{acc_n_noc} Number of noturnal sleep periods, with nocturnal
+\item \code{number_sib_sleepperiod} Number of noturnal sleep periods, with nocturnal
 referring to the Sleep Period Time window.
-\item \code{acc_n_sibd} Number of sustained inactivity bouts during the day,
+\item \code{number_sib_wakinghours} Number of sustained inactivity bouts during the day,
 with day referring to the time outside the Sleep Period Time window.
 \item \code{sleeponset_ts} sleeponset formatted as a timestamp
 \item \code{wakeup_ts} wakeup formatted as a timestamp
@@ -184,12 +186,17 @@ with day referring to the time outside the Sleep Period Time window.
 \item \code{daysleeper} If 0 then the person is a nightsleeper
 (sleep period did not overlap with noon) if value=1 then the person
 is a daysleeper (sleep period did overlap with noon)
+\item \code{guider} guider used, see details
 \item \code{weekday} Day of the week on which the night started
 \item \code{calendardate} Calendar date on which the night started
 \item \code{filename} Name of the accelerometer file
 \item \code{cleaningcode} 0: no problem; 1: sleeplog not available,
-2: not enough valid accelerometer data, 3: no accelerometer data available,
-4: there were no nights to be analysed for this person
+2: not enough valid accelerometer data, 3: no accelerometer data 
+available, 4: there were no nights to be analysed for this person,
+5: no sib during entire guider window, which complicates defining
+the start and end of the SPT, therefore we use sleeplog or if not
+available HDCZA (if not then L512), 6: no sleeplog available 
+and HDCZA also failed
 \item \code{sleeplog_used} Whether a sleep log was used (TRUE/FALSE)
 \item \code{acc_available} Whether accelerometer data was available
 (TRUE/FALSE).
@@ -205,7 +212,9 @@ of the variable names for which the meaning may not be obvious:\cr
 or not (FALSE)
 \item \code{acc_eff} Accelerometer detrive sleep efficiency within
 the sleep period time calculatd as the ratio between
-acc_SleepDurationInSpt and acc_SptDuration (denominator).
+acc_SleepDurationInSpt and acc_SptDuration (denominator). Only available
+at person level, because at night level the user can calculate this from
+existing variables.
 \item \code{n_nights_acc} Number of nights of accelerometer data
 \item \code{n_nights_sleeplog} Number of nights of sleeplog
 data, see details
@@ -221,14 +230,6 @@ the person slept until after noon
 bouts during the day (outside the sleep period duration). Calculated
 as acc_dur_sibd divided by acc_n_sibd per day, after which the mean
 and standard deviation are calculated across days.
-\item \code{guider_dur_AD_mn} Mean sleep duration according to guider
-accros all days
-\item \code{guider_dur_AD_sd} Standard deviation of sleep duration
-according to guider accros all days
-\item \code{guider_dur_WD_sd} Standard deviation of sleep duration
-according to guider accros weekdays
-\item \code{guider_dur_WE_sd} Standard deviation of sleep duration
-according to guider accros weekend days
 }
 }
 

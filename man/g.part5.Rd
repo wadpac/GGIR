@@ -187,17 +187,20 @@ Therefore, you may not want/need to work with part5 directly.
 Explaination of general terminology in the output of g.part5:\cr
 \cr
 \itemize{
-\item acc_onset = onset of sleep according to accelerometer (+ diary) method expressed
+\item sleeponset = onset of sleep according to accelerometer (+ diary) method expressed
 in hours since the midnight in the night preceding the night of interest, e.g. 26 is 2am.
-\item acc_wake = waking up time according to accelerometer (+ diary) method expressed
+\item wakeup = waking up time according to accelerometer (+ diary) method expressed
 in hours since the midnight in the night preceding the night of interest, e.g. 32 is 8am
-\item acc_onset_ts = onset of sleep according to accelerometer (+ diary) method expressed
+\item sleeponset_ts = onset of sleep according to accelerometer (+ diary) method expressed
 as a timestamp hours:minutes:seconds
-\item daysleep, if 0 then the person woke up before noon, if 1 then the person woke
+\item daysleeper, if 0 then the person woke up before noon, if 1 then the person woke
 up after noon
 \item cleaningcode, 0: no problem; 1: sleeplog not available, 2: not enough valid
 accelerometer data, 3: no accelerometer data available, 4: there were no nights
-to be analysed for this person
+to be analysed for this person, 5: no sib during entire guider window, which 
+complicates defining the start and end of the SPT, therefore we use 
+sleeplog or if not available HDCZA (if not then L512), 6: no sleeplog available 
+and HDCZA also failed
 \item window_length_in_hours, this relates to the definition of a day either from 
 waking up till waking up the next day or from midnight to midnight
 \item dur = duration
