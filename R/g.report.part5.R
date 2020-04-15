@@ -243,7 +243,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 agg_plainNweighted = function(df,filename="filename",daytype="daytype") {
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
-                  ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","id","acc_available","window_number")
+                  ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number")
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30

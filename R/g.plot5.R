@@ -310,7 +310,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         night_wake_full[is.na(detection)] <- 1 # for plotting wake during SPT window
 
         # prepare to search for sleeplog_onst / sleeplog_wake
-        sleep_dates = as.Date(summarysleep_tmp$calendardate,format='%d/%m/%Y')
+        sleep_dates = as.Date(summarysleep_tmp$calendar_date,format='%d/%m/%Y')
 
         # detect midnights
         if (viewingwindow == 1) {
@@ -382,12 +382,16 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               # check to see if wake time is before midnight
               wake_time = summarysleep_tmp$acc_wake_ts[check_date]
               wake_hour = as.integer(substr(wake_time,start=1,stop=2))
-              if (wake_hour > 12) {
-                # wake annotation on the current days plot before midnight
-                wake_min = as.integer(substr(wake_time,start=4,stop=5))
-                wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
-                wake_loc = wake_loc[1]
-                if (is.na(wake_loc)) wake_loc = 0
+              if (length(wake_hour) > 0) {
+                if (wake_hour > 12) {
+                  # wake annotation on the current days plot before midnight
+                  wake_min = as.integer(substr(wake_time,start=4,stop=5))
+                  wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
+                  wake_loc = wake_loc[1]
+                  if (is.na(wake_loc)) wake_loc = 0
+                }
+              } else {
+                wake_loc = 0
               }
             }
 

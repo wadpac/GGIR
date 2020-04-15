@@ -6,7 +6,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             winhr, L5M5window, M5L5res,
                             doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                             mvpathreshold, boutcriter, closedbout,
-                            bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
+                            bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
                             deviceSerialNumber, qM5L5, ExtFunColsi, myfun) {
   if (length(selectdaysfile) > 0 & ndays == 2) {
     ndays = 1
@@ -154,22 +154,22 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     if (idloc == 2) {
       daysummary[di,fi] = unlist(strsplit(fname,"_"))[1] #id
     } else if (idloc == 4) {
-      daysummary[di,fi] = idd
+      daysummary[di,fi] = IDd
     } else if (idloc == 1) {
-      daysummary[di,fi] = id
+      daysummary[di,fi] = ID
     } else if (idloc == 3) {
-      daysummary[di,fi] = id2
+      daysummary[di,fi] = ID2
     }
     idremember = daysummary[di,fi]
-    ds_names[fi] = "id";      fi = fi + 1
+    ds_names[fi] = "ID";      fi = fi + 1
     daysummary[di,fi] = fname
     ds_names[fi] = "filename";  fi = fi + 1
-    calenderdate = unlist(strsplit(as.character(vari[1,1])," "))[1]
-    daysummary[di,fi] = calenderdate
+    calendardate = unlist(strsplit(as.character(vari[1,1])," "))[1]
+    daysummary[di,fi] = calendardate
     daysummary[di,(fi+1)] =BodyLocation
     daysummary[di,(fi+2)] = nvalidhours
     daysummary[di,(fi+3)] = nhours
-    ds_names[fi:(fi+3)] = c("calender_date","bodylocation","N valid hours","N hours")
+    ds_names[fi:(fi+3)] = c("calendar_date","bodylocation","N valid hours","N hours")
     fi = fi + 4
     if (length(qwindow > 0)) {
       if (length(qwindow) > 2 | qwindow[1] != 0 | qwindow[2] != 24) {
@@ -225,7 +225,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
           }
         }
       }
-      ws_names = c("id","serial number","filename","time","Nhoursvalid")
+      ws_names = c("ID","serial number","filename","time","Nhoursvalid")
       if (ncol(vari) >= 3) {
         for (columnvari in 2:ncol(vari)) {
           metricname_end = colnames(vari)[columnvari]

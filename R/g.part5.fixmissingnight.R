@@ -1,4 +1,4 @@
-g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), id) {
+g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
   #========================================================
   # Added 24 March 2020, for the rare situation when part 4 does misses a night.
   # This is possible when the accelerometer was not worn the entire day and
@@ -15,17 +15,17 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), id) {
     for (mi in missingnight) {
       missingNight = potentialnight[mi]
       newnight = summarysleep_tmp2[1,]
-      newnight[which(names(newnight) %in% c("id","night", "sleepparam","filename","filename_dir","foldername") == FALSE)] = NA
+      newnight[which(names(newnight) %in% c("ID","night", "sleepparam","filename","filename_dir","foldername") == FALSE)] = NA
       newnight$wakeup = newnight$guider_wakeup = newnight$sleeponset = newnight$guider_onset = NA
       newnight$night = missingNight
-      newnight$calendardate = format(as.Date(as.POSIXlt(summarysleep_tmp2$calendardate[mi-1],format="%d/%m/%Y") + (36*3600)), "%d/%m/%Y")
-      timesplit = as.numeric(unlist(strsplit(as.character(newnight$calendardate),"/"))) # remove leading zeros
-      newnight$calendardate = paste0(timesplit[1],"/",timesplit[2],"/",timesplit[3])
+      newnight$calendar_date = format(as.Date(as.POSIXlt(summarysleep_tmp2$calendar_date[mi-1],format="%d/%m/%Y") + (36*3600)), "%d/%m/%Y")
+      timesplit = as.numeric(unlist(strsplit(as.character(newnight$calendar_date),"/"))) # remove leading zeros
+      newnight$calendar_date = paste0(timesplit[1],"/",timesplit[2],"/",timesplit[3])
       newnight$daysleeper = 0
       newnight$acc_available = 0
       if (length(sleeplog) > 0) { # we impute with sleeplog (TO DO: Also implement catch for if sleeplog is not available)
-        sleeplogonset = sleeplog$sleeponset[which(sleeplog$id == id & sleeplog$night == missingNight)]
-        sleeplogwake = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == missingNight)]
+        sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == missingNight)]
+        sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == missingNight)]
         if (length(sleeplogonset) != 0 & length( sleeplogwake) != 0) {
           sleeplogonset_hr = clock2numtime(sleeplogonset)
           sleeplogwake_hr= clock2numtime(sleeplogwake)

@@ -56,5 +56,5 @@ g.extractheadervars = function(I) {
       SN = "not extracted" #gender
     }
   }
-  invisible(list(id=id,iid=iid,HN=HN,BodyLocation=BodyLocation,SX=SX,deviceSerialNumber=deviceSerialNumber)) #  wdayname=wdayname,wdaycode=wdaycode,wday=wday,ws3=ws3,ws2=ws2
+  invisible(list(ID=id,iid=iid,HN=HN,BodyLocation=BodyLocation,SX=SX,deviceSerialNumber=deviceSerialNumber)) #  wdayname=wdayname,wdaycode=wdaycode,wday=wday,ws3=ws3,ws2=ws2
 }

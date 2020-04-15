@@ -6,6 +6,6 @@ create_test_sleeplog_csv = function(Nnights=7,storagelocation=c()) {
   Nnights= 7
   sleeplog = as.data.frame(t(c("123",rep(c("23:00:00","07:00:00"),Nnights))))
   sleeplog[,4:5]=c("03:00:00","17:00:00") # let's add one night where the person slept untill the afternoon
-  colnames(sleeplog) = c("id",rep(c("onset","wakeup"),Nnights))
+  colnames(sleeplog) = c("ID",rep(c("onset","wakeup"),Nnights))
   write.table(sleeplog,file=paste0(storagelocation,"/testsleeplogfile.csv"),row.names = FALSE,col.names = TRUE,sep=",",fileEncoding="UTF-8")
 }
