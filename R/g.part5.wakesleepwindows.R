@@ -1,4 +1,4 @@
-g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, sleeplog, ws3new, Nts, id,
+g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, sleeplog, ws3new, Nts, ID,
                                     Nepochsinhour) {
   #========================================================
   # DIURNAL BINARY CLASSIFICATION INTO NIGHT (onset-wake) OR DAY (wake-onset) PERIOD 
@@ -6,10 +6,10 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
     return(sum(x2))
   }
-  w0 = w1 = rep(0,length(summarysleep_tmp2$calendardate))
-  for (k in 1:length(summarysleep_tmp2$calendardate)){ # loop through nights from part 4
+  w0 = w1 = rep(0,length(summarysleep_tmp2$calendar_date))
+  for (k in 1:length(summarysleep_tmp2$calendar_date)){ # loop through nights from part 4
     # Load sleep onset and waking time from part 4 and convert them into timestamps
-    tt = unlist(strsplit(as.character(summarysleep_tmp2$calendardate[k]),"/")) # calendar date
+    tt = unlist(strsplit(as.character(summarysleep_tmp2$calendar_date[k]),"/")) # calendar date
     # if sleep onset is not available in from acc and/or sleep then us the following default
     # in order to still have some beginning and end of the night, these days will be discared
     # anyway, because typically this coincides with a lot of non-wear time:
@@ -87,8 +87,8 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])
       if (length(sleeplog) > 0 & nonwearpercentage > 0.33) {
         # If non-wear is high for this day and if sleeplog is available
-        sleeplogonset = sleeplog$sleeponset[which(sleeplog$id == id & sleeplog$night == summarysleep_tmp2$night[k])]
-        sleeplogwake = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == summarysleep_tmp2$night[k])]
+        sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
+        sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
         if (length(sleeplogonset) != 0 & length( sleeplogwake) != 0) {
           # ... and if there is sleeplog data for the relevant night
           # rely on sleeplog for defining the start and end of the night

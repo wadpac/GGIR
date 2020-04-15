@@ -47,7 +47,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   \item{loglocation}{
   Location of the spreadsheet (csv) with sleep log information.
   The spreadsheet needs to have the following structure: one column
-  for participant id, and then followed by alternatingly one column
+  for participant ID, and then followed by alternatingly one column
   for onset time and one column for waking time. There can be multiple
   sleeplogs in the same spreadsheet. The first raw of the spreadsheet
   needs to be filled with column names, it does not matter what these
@@ -144,7 +144,7 @@ named \code{nightsummary}. This dataframe is used in g.report.part4 to create
 two reports one per night and one per person. \code{nightsummary} comes
 with the following variables:\cr
 \itemize{
-\item \code{id} Participant id extracted from file
+\item \code{ID} Participant ID extracted from file
 \item \code{night} Night number
 \item \code{sleeponset} Detected onset of sleep expressed as hours
 since the midnight of the previous night, see details.

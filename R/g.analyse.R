@@ -75,7 +75,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   wearthreshold = 2 #needs to be 0, 1 or 2 (hard coded to avoid inconsistency in literature)
   # Extracting basic information about the file
   hvars = g.extractheadervars(I)
-  id = hvars$id;              iid =hvars$iid; idd =hvars$idd
+  ID = hvars$ID;              iID =hvars$iID; IDd =hvars$IDd
   HN = hvars$HN;              BodyLocation = hvars$BodyLocation
   SX=hvars$SX;                deviceSerialNumber = hvars$deviceSerialNumber
   n_ws2_perday = (1440*60) / ws2
@@ -85,8 +85,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #----------------------
   # Pelotas specific
-  id2 = id
-  iid2 = iid
+  ID2 = ID
+  iID2 = iID
   if (idloc == 3) { #remove hyphen in id-name for Pelotas id-numbers
     get_char_before_hyphen = function(x) {
       for (j in 1:length(x)) {
@@ -99,8 +99,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
       return(x2)
     }
-    id2 = get_char_before_hyphen(id)
-    iid2 = get_char_before_hyphen(iid)
+    ID2 = get_char_before_hyphen(ID)
+    iID2 = get_char_before_hyphen(iID)
   }
   #---------------------
   # detect first and last midnight and all midnights
@@ -191,7 +191,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
-                                     bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
+                                     bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
                                      deviceSerialNumber, qM5L5, ExtFunColsi, myfun)
     daysummary= output_perday$daysummary
     ds_names=output_perday$ds_names
@@ -247,9 +247,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     cat("file skipped for general average caculation because not enough data")
   }
   rm(metalong); rm(metashort)
-  id[which(id == "NA")] =iid[which(id == "NA")]
-  id2[which(id2 == "NA")] =iid2[which(id2 == "NA")]
-  output_perfile = g.analyse.perfile(id, id2, idd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+  ID[which(ID == "NA")] =iID[which(ID == "NA")]
+  ID2[which(ID2 == "NA")] =iID2[which(ID2 == "NA")]
+  output_perfile = g.analyse.perfile(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
                                      LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                                      ML5AD_names, igfullr, igfullr_names,
                                      daysummary, ds_names, includedaycrit, strategy, hrs.del.start,

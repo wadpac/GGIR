@@ -16,7 +16,7 @@ g.extractheadervars(I)
 }
 \value{
 \itemize{
-\item id = participant identifier
+\item ID = participant identifier
 \item iid = investigator identifier
 \item HN = handedness
 \item BodyLocation = Attachement location of the sensor

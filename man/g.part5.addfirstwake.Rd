@@ -10,7 +10,7 @@
 }
 \usage{
   g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog,
-  id, Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new)
+  ID, Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new)
 }
 \arguments{
   \item{ts}{
@@ -21,7 +21,7 @@
   }
   \item{sleeplog}{
   }
-  \item{id}{
+  \item{ID}{
   }
   \item{Nepochsinhour}{
   }
