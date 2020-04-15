@@ -146,7 +146,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
   
-  id = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
+  ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat)
   clipthres = ncb_params$clipthres

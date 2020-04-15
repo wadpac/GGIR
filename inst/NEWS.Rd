@@ -16,6 +16,7 @@
   \item Revised part 5 save raw data to csv, to be more user-friendly.
   \item Part 5 function code split up in 7 new seperate functions to ease navigation.
   \item GGIR now able to facilitate external function embedding
+  \item We now consistently refer to ID (not id) and calendar_date to ease merging
 }
 }
 

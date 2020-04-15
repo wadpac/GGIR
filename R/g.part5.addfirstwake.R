@@ -1,4 +1,4 @@
-g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, id, Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new) {
+g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new) {
   # Note related to if first and last night were ignored in part 4:
   # - diur lacks the first and last night at this point in the code.
   # - nightsi has all the midnights, so it is possible to check here
@@ -19,7 +19,7 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, id, Nep
     wake_night1_index =c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
-      wake_night1 = sleeplog$sleepwake[which(sleeplog$id == id & sleeplog$night == 1)]
+      wake_night1 = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == 1)]
       if (length(wake_night1) != 0) {
         wake_night1_hour = clock2numtime(wake_night1)
         # express hour relative to midnight within the noon-noon:

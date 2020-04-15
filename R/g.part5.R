@@ -169,7 +169,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       summarysleep = nightsummary
       rm(nightsummary)
       idindex = which(summarysleep$filename == fnames.ms3[i])
-      id = summarysleep$id[idindex[1]]
+      ID = summarysleep$ID[idindex[1]]
       ndays = nrow(summarysleep) #/ length(unique(summarysleep$sleepparam))
       dsummary = matrix("",((nrow(summarysleep)+12)*length(unique(summarysleep$sleepparam))
                             *length(unique(threshold.lig))
@@ -255,15 +255,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
           # Add sustained inactivity bouts (sib) to the time series
           ts = g.part5.addsib(ts,ws3new, Nts, S2, desiredtz, j,  nightsi)
           # Fix missing nights in part 4 data:
-          summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog=sleeplog, id)
+          summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog=sleeplog, ID)
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0 
           if (nrow(summarysleep_tmp2) > 0) {
             # Add defenition of wake and sleep windows in diur column of data.frame ts
             ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, desiredtz, nightsi,
-                                          sleeplog, ws3new, Nts, id, Nepochsinhour)
+                                          sleeplog, ws3new, Nts, ID, Nepochsinhour)
             # Add first waking up time, if it is missing:
-            ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, id, 
+            ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID, 
                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new)
             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = round(as.numeric(as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)) / 60) * 60
@@ -310,7 +310,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
                   # we want there to be one more nights in the accelerometer data than there are nights with sleep results
-                  NNIGHTSSLEEP = length(unique(summarysleep_tmp2$calendardate)) # nights with sleep results
+                  NNIGHTSSLEEP = length(unique(summarysleep_tmp2$calendar_date)) # nights with sleep results
                   NNIGHTSACC = length(nightsi) #acc
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
@@ -351,8 +351,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       if (length(which(is.na(qqq)==TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         fi = 1
                         # START STORING BASIC INFORMATION
-                        dsummary[di,fi:(fi+2)] = c(id, fnames.ms3[i], wi)
-                        ds_names[fi:(fi+2)] = c("id", "filename", "window_number"); fi = fi + 3
+                        dsummary[di,fi:(fi+2)] = c(ID, fnames.ms3[i], wi)
+                        ds_names[fi:(fi+2)] = c("ID", "filename", "window_number"); fi = fi + 3
                         if (timewindowi == "WW") {
                           plusb = 0
                         } else {
@@ -368,7 +368,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         date = as.Date(as.POSIXlt(ts$time[qqq[1]+1],tz=desiredtz))
                         weekday = weekdays(date)
                         dsummary[di,fi:(fi+1)] = c(weekday, as.character(date))
-                        ds_names[fi:(fi+1)] = c("weekday","calendardate");fi = fi + 2
+                        ds_names[fi:(fi+1)] = c("weekday","calendar_date");fi = fi + 2
                         # Get onset and waking timing, both as timestamp and as index
                         onsetwaketiming = g.part5.onsetwaketiming(qqq,ts, min, sec, hour, timewindowi, skiponset, skipwake)
                         onset = onsetwaketiming$onset; wake = onsetwaketiming$wake
@@ -393,7 +393,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         options(encoding = "UTF-8")
                         Sys.setlocale("LC_TIME", "C") # set language to English
                         # look up matching part4 entry:
-                        recDates = as.Date(summarysleep_tmp2$calendardate, format="%e/%m/%Y", origin="1970-01-01")
+                        recDates = as.Date(summarysleep_tmp2$calendar_date, format="%e/%m/%Y", origin="1970-01-01")
                         dsummary[di,fi] = j
                         ds_names[fi] = "sleepparam";      fi = fi + 1
                         dayofinterst = which(recDates == date)

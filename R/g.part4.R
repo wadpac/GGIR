@@ -51,13 +51,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   cnt67 = 1 # counter used to decide whether to create a new pdf file for the plots
   #-----------------------------------------------------
   # initialize output variable names
-  colnamesnightsummary = c("id", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
+  colnamesnightsummary = c("ID", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
                            "guider_onset", "guider_wakeup", "guider_SptDuration",
                            "error_onset", "error_wake", "error_dur",
                            "fraction_night_invalid",
                            "SleepDurationInSpt","duration_sib_wakinghours","number_sib_sleepperiod","number_sib_wakinghours",
                            "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
-                           "page","daysleeper","weekday","calendardate","filename",
+                           "page","daysleeper","weekday","calendar_date","filename",
                            "cleaningcode","sleeplog_used","acc_available","guider")
   if (storefolderstructure == TRUE) {
     colnamesnightsummary  = c(colnamesnightsummary,"filename_dir","foldername")
@@ -260,7 +260,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
         }
         # initialize variables calendardate and daysleeper from the nnights.list variable
-        calendardate = wdayname = rep("",length(nnights.list))
+        calendar_date = wdayname = rep("",length(nnights.list))
         # daysleeper variable to keep track of whether the person woke up after noon or a certain day
         daysleeper = rep(FALSE,length(nnights.list))
         ###########################################################
@@ -329,7 +329,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             #If sleep log is not available available, use default values calculated above (with the heuristic algorithm HDCZA or if that fails L5+/-6hr.
             if (j == nnights.list[1] & dolog == FALSE) { 
               sleeplog.t = data.frame(matrix(0,length(nnightlist),5))
-              names(sleeplog.t) = c("id","night","duration","sleeponset","sleepwake")
+              names(sleeplog.t) = c("ID","night","duration","sleeponset","sleepwake")
             }
             sleeplog.t[j,1:5] = c(accid, j, defaultdur, 
                                        convertHRsinceprevMN2Clocktime(defaultSptOnset),
@@ -453,7 +453,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 DD = g.create.sp.mat(nsp,spo,sleepdet.t,daysleep=daysleeper[j])
                 if (loaddaysi == 1) { # newly added 25/11/2015
                   wdayname[j] = DD$wdayname
-                  calendardate[j] = DD$calendardate
+                  calendar_date[j] = DD$calendar_date
                 }
                 spo = DD$spo
                 reversetime2 = reversetime3 = c()
@@ -567,8 +567,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             }
           }
           # Fill matrix 'nightsummary' with key sleep parameters
-          if (length(spocum) > 0 & class(spocum) == "matrix" & length(calendardate) >= j) {
-            if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendardate[j] != "") {
+          if (length(spocum) > 0 & class(spocum) == "matrix" & length(calendar_date) >= j) {
+            if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendar_date[j] != "") {
               undef = unique(spocum[,5])
               for (defi in undef) {
                 #------------------------------------------------------------------------
@@ -686,7 +686,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                   #======================================================================================================
                   # check whether it is day saving time (DST) the next day (= the night connected to the present day)
-                  is_this_a_dst_night_output = is_this_a_dst_night(calendardate=calendardate[j],tz=desiredtz)
+                  is_this_a_dst_night_output = is_this_a_dst_night(calendar_date=calendar_date[j],tz=desiredtz)
                   dst_night_or_not = is_this_a_dst_night_output$dst_night_or_not
                   dsthour = is_this_a_dst_night_output$dsthour
                   # if yes, then check whether any of the sleep episodes overlaps
@@ -772,7 +772,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,22] = pagei
                   nightsummary[sumi,23] = daysleeper[j]
                   nightsummary[sumi,24] = wdayname[j]
-                  nightsummary[sumi,25] = calendardate[j]
+                  nightsummary[sumi,25] = calendar_date[j]
                   nightsummary[sumi,26] = fnames[i]
                   # nightsummary
                   #------------------------------------------------------------------------
@@ -799,7 +799,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       cleaningcriterion = 2
                     }
                     if (doplot == TRUE & cleaningcode < cleaningcriterion) {
-                      idlabels[cnt] = paste("id",accid," night",j,sep="")
+                      idlabels[cnt] = paste("ID",accid," night",j,sep="")
                       den = 20
                       defii = which(undef == defi)              
                       qtop = ((defii / length(undef))*0.6) - 0.3

@@ -9,7 +9,7 @@
   tries to fix as part of \link{g.part5}.
 }
 \usage{
-  g.part5.fixmissingnight(summarysleep_tmp2, sleeplog=c(), id)
+  g.part5.fixmissingnight(summarysleep_tmp2, sleeplog=c(), ID)
 }
 \arguments{
   \item{summarysleep_tmp2}{
@@ -17,7 +17,7 @@
   }
   \item{sleeplog}{
   }
-  \item{id}{
+  \item{ID}{
   }
 }
 \value{

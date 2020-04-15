@@ -9,7 +9,7 @@
 }
 \usage{
   g.part5.wakesleepwindows(ts, summarysleep_tmp2, desiredtz,
-  nightsi, sleeplog, ws3new, Nts, id, Nepochsinhour)
+  nightsi, sleeplog, ws3new, Nts, ID, Nepochsinhour)
 }
 \arguments{
 
@@ -29,7 +29,7 @@
   }
   \item{Nts}{
   }
-  \item{id}{
+  \item{ID}{
   }
   \item{Nepochsinhour}{
   }
