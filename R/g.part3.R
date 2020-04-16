@@ -64,8 +64,8 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon, 
-                                .export=functions2passon, .errorhandling=errhand) %myinfix% { 
+  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
+                                .export=functions2passon, .errorhandling=errhand) %myinfix% {
     tryCatchResult = tryCatch({
       # for (i in f0:f1) {
       FI = file.info(paste(metadatadir,"/meta/ms2.out/",fnames[i],sep=""))
@@ -106,11 +106,12 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           tib.threshold = SLE$tib.threshold
           if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
             id = as.character(unlist(strsplit(I$filename,"_"))[1])
+            print(paste0("id ",id))
             datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
             plottitle = " " #datename#"blablbalbal"# paste("File: ",i," | date: ",datename," | filename: ",fna2," | night: ",j,sep="")
             if (do.part3.pdf == TRUE) {
               pdf(paste(metadatadir,"/meta/sleep.qc/graphperday_id_",id,"_",I$filename,".pdf",sep=""),width=8.2,height=11.7)
-              g.sib.plot(SLE,M,I,plottitle,nightsperpage=nightsperpage)
+              g.sib.plot(SLE,M,I,plottitle,nightsperpage=nightsperpage,desiredtz=desiredtz)
               dev.off()
             }
             sib.cla.sum = c()
@@ -120,9 +121,9 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           }
         }
       }
-    }) # END tryCatch
-    
-    return(tryCatchResult) 
+      # } # for loop
+  }) # END tryCatch
+  return(tryCatchResult)
   }
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
