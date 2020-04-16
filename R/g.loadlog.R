@@ -61,7 +61,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidn
     sleeplog_times = sleeplog_times[-c(which(sleeplog[,1] == 0)),]
   }
   sleeplog= as.data.frame(sleeplog)
-  names(sleeplog) = c("id","night","duration")
+  names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]
   invisible(list(sleeplog=sleeplog))
