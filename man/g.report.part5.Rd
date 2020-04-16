@@ -9,7 +9,8 @@ Creates report from milestone data produced by \link{g.part5}. Not intended
 }
 \usage{
 g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
-                          includenightcrit=c(),includedaycrit=c())
+                          includenightcrit=c(),includedaycrit=c(),
+                          data_cleaning_file=c())
 }
 \arguments{
   \item{metadatadir}{
@@ -29,6 +30,9 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   }
   \item{includedaycrit}{
   see \link{g.part2}
+  }
+  \item{data_cleaning_file}{
+  see \link{g.part4}
   }
 }
 \value{

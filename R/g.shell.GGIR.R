@@ -227,7 +227,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE
-
+  if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -372,7 +372,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             excludefirstlast=excludefirstlast,criterror = criterror,
             includenightcrit=includenightcrit,relyonguider=relyonguider,
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
-            storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz)
+            storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
+            data_cleaning_file=data_cleaning_file)
   }
   if (dopart5 == TRUE) {
     cat('\n')
@@ -453,7 +454,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
-                   includenightcrit=includenightcrit,includedaycrit=includedaycrit)
+                   includenightcrit=includenightcrit,includedaycrit=includedaycrit,
+                   data_cleaning_file=data_cleaning_file)
   }
   if (visualreport == TRUE) {
     cat('\n')
