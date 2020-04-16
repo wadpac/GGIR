@@ -3,7 +3,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
                    relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
-                   overwrite=FALSE,desiredtz="") {
+                   overwrite=FALSE,desiredtz="",data_cleaning_file=c()) {
   
   
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
@@ -130,6 +130,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     if (MI < 10) MI = paste0("0",MI)
     if (SE < 10) SE = paste0("0",SE)
     return(paste0(HR,":",MI,":",SE))
+  }
+  if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
+    DaCleanFile = read.csv(data_cleaning_file)
   }
   #=================================================================
   #=================================================================
@@ -504,12 +507,31 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (SptWake < 21 & SptWake > 12 &  SptOnset > SptWake) # waking up in the afternoon should have value above 36
                   SptWake = SptWake + 24
                 }
+                
+                # If user supplies data_cleaning_file 
+                # and this instructs that for this person the night should rely on guider
+                # then the following adds two 1-minute sustained inactivity bouts at the 
+                # beginning and the end of the SPT window defined by guider.
+                # Next, relyonguider will be used and ensure that those 1-minute
+                # define the beginning and end of the SPT window.
+                relyonguider_thisnight = FALSE
+                if (length(data_cleaning_file) > 0 & nrow(spo) > 1) { # allow for forced relying on guider based on external data_cleaning_file
+                  relyonguider_thisnight = length(which(DaCleanFile$relyonguider_part4 == j & DaCleanFile$ID == accid)) > 0
+                  if (relyonguider_thisnight == TRUE) { 
+                    newlines = spo[1:2,]
+                    newlines[1,1:4] = c(nrow(spo)+1, SptOnset, SptOnset + 1/60, 1)
+                    newlines[2,1:4] = c(nrow(spo)+1, SptWake - 1/60, SptWake, 1)
+                    spo = rbind(spo, newlines)
+                    spo = spo[order(spo[,2]),]
+                    spo[,1] = 1:nrow(spo)
+                  }
+                }
                 # spo is now a matrix of onset and wake for each sleep period (episode)
                 for (evi in 1:nrow(spo)) { #Now classify as being part of the SPT window or not
                   if (spo[evi,2] < SptWake & spo[evi,3] > SptOnset) { # = acconset < logwake  & accwake > logonset
                     spo[evi,4] = 1 #nocturnal = all acc periods that end after diary onset and start before diary wake
                     # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS
-                    if (relyonguider == TRUE) { #if TRUE then sleeplog value is assigned to accelerometer-based value for onset and wake up
+                    if (relyonguider == TRUE | relyonguider_thisnight == TRUE) { #if TRUE then sleeplog value is assigned to accelerometer-based value for onset and wake up
                       if ((spo[evi,2] < SptWake & spo[evi,3] > SptWake) | (spo[evi,2] < SptWake & spo[evi,3] < spo[evi,2])) {
                         spo[evi,3] = SptWake   
                       }
@@ -517,9 +539,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                         spo[evi,2] = SptOnset
                       }
                     }
+                 
                   } 
                 }
-                
                 if (daysleeper[j] == TRUE) {
                   # for the labelling above it was needed to have times > 36, but for the plotting 
                   # time in the second day needs to be returned to a normal 24 hour scale. 
