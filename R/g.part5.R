@@ -366,6 +366,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # from the new time series
                         # Note that this means that for MM windows there can be multiple or no wake or onsets
                         date = as.Date(as.POSIXlt(ts$time[qqq[1]+1],tz=desiredtz))
+                        Sys.setlocale("LC_TIME", "C")
                         weekday = weekdays(date)
                         dsummary[di,fi:(fi+1)] = c(weekday, as.character(date))
                         ds_names[fi:(fi+1)] = c("weekday","calendar_date");fi = fi + 2
