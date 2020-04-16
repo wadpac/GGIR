@@ -103,6 +103,10 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
           } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
             sleeplogwake_hr = sleeplogwake_hr - 24
           }
+          if (sleeplogwake_hr > 36 &  sleeplogonset_hr > 36) {
+            sleeplogwake_hr = sleeplogwake_hr - 24
+            sleeplogonset_hr = sleeplogonset_hr - 24
+          }
           s0 = closestmidnight + round(sleeplogonset_hr * Nepochsinhour)
           s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
         }
