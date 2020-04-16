@@ -209,28 +209,28 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         if (dolog == TRUE) {
           accid_num = suppressWarnings(as.numeric(accid))
           if (sleeplogidnum == FALSE) {
-            wi = which(as.character(sleeplog$id) == as.character(accid))
+            wi = which(as.character(sleeplog$ID) == as.character(accid))
             if (length(wi) == 0) {
-              wi_alternative = which(sleeplog$id == accid_num)
+              wi_alternative = which(sleeplog$ID == accid_num)
               if (length(wi_alternative) > 0) {
                 warning("\nArgument sleeplogidnum is set to FALSE, but it seems the identifiers are
                     stored as numeric values, you may want to consider changing sleeplogidnum to TRUE")
               } else {
-                warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
+                warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
                            code expects format: ",as.character(accid[1])))
               }
             }
           } else {
-            wi = which(sleeplog$id == accid_num)
+            wi = which(sleeplog$ID == accid_num)
             if (length(wi) == 0) {
-              wi_alternative = which(as.character(sleeplog$id) == as.character(accid))
+              wi_alternative = which(as.character(sleeplog$ID) == as.character(accid))
               if (length(wi_alternative) > 0) {
                 warning("\nArgument sleeplogidnum is set to TRUE, but it seems the identifiers are
                     stored as character values, you may want to consider changing sleeplogidnum to TRUE")
               } else {
                 
                 if (is.na(accid_num) == TRUE) { # format probably incorrect
-                  warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$id[1]),", while
+                  warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
                            code expects format: ",as.character(accid[1])))
                 }
               }
