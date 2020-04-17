@@ -217,6 +217,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           for (j in 1:length(nonwear_elements)) {
             # could add try/catch in here in case 'which' fails..
             match_loc = which(nw_time[nonwear_elements[j]]==time)
+            match_loc = match_loc[1]  
             NONWEAR[match_loc:(match_loc+(ws2/ws3)-1)] <- 1
           }
         }
@@ -403,7 +404,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               if (wake_hour < 12) {
                 if (wake_loc > 0) { # check to see if there is already a wake loc on this day
                   wake_prev_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)  
-                  if (!is.na(wake_prev_loc)) wake_loc[2] = wake_prev_loc[1]  
+                  if (!is.na(wake_prev_loc[1])) wake_loc[2] = wake_prev_loc[1]  
                 } else if (wake_loc == 0) { # two wake locations on this 24hr period
                   wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)  
                   wake_loc = wake_loc[1]
@@ -419,7 +420,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 if (sleeponset_loc > 0) { # check to see if there is already a sleeponset on this day
                   # sleeponset found after midnight, reported on previous day
                   sleeponset_prev_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
-                  if (!is.na(sleeponset_prev_loc)) sleeponset_loc[2] = sleeponset_prev_loc[1]
+                  if (!is.na(sleeponset_prev_loc[1])) sleeponset_loc[2] = sleeponset_prev_loc[1]
                 } else if (sleeponset_loc == 0) {
                   sleeponset_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min) # will not find it, if it occurs after midnight, check prev day in next section
                   sleeponset_loc = sleeponset_loc[1]
@@ -483,15 +484,15 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             wake_mat = annot_mat[,3:6]
             
             # how many sleeponset and wake annotations are there?
-            if (sleeponset_loc != 0 | wake_loc != 0) {
+            if (sleeponset_loc[1] != 0 | wake_loc[1] != 0) {
               # combine sleep and wake annotations and sort them
-              if (wake_loc == 0) {
+              if (wake_loc[1] == 0) {
                 # assume there is only one sleeponset loc
                 sleeponset_mat = matrix(nrow=length(sleeponset_loc),ncol=2)
                 sleeponset_mat[,1] = sleeponset_loc
                 sleeponset_mat[,2] = 0 # sleeponset = 0
                 sleep_wake_mat = sleeponset_mat
-              } else if (sleeponset_loc == 0) {
+              } else if (sleeponset_loc[1] == 0) {
                 # assume there is only one wake loc
                 wake_time_mat = matrix(nrow=length(wake_loc),ncol=2)
                 wake_time_mat[,1] = wake_loc
@@ -583,7 +584,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               
               # add sleeponset time annotation to plot:
               arrow_line_length = length(x) * 0.01736 # make arrow line length adaptable to differnt short epochs
-              if (sleeponset_loc != 0){
+              if (sleeponset_loc[1] != 0){
                 for (i in sleeponset_loc) { # allow for multiple sleeponset_loc
                   set_pos = 4 # position of text in relation to arrow 
                   ar_start_idx <- i
@@ -600,7 +601,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 }
               }
               # add wake time annotation to plot:
-              if (wake_loc != 0) {
+              if (wake_loc[1] != 0) {
                 for (i in wake_loc) {
                   set_pos <- 4 
                   ar_start_idx <- i
