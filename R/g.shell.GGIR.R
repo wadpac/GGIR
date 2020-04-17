@@ -212,7 +212,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   }
   if (exists("coldid") == FALSE)  colid=1
   if (exists("coln1") == FALSE)  coln1=1
-  if (exists("nnights") == FALSE)  nnights=7
+  if (exists("nnights") == FALSE)  nnights=c()
   if (exists("outliers.only") == FALSE)  outliers.only=FALSE
   if (exists("excludefirstlast") == FALSE)  excludefirstlast=FALSE
   if (exists("criterror") == FALSE)  criterror=3
