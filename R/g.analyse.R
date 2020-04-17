@@ -61,9 +61,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(qwindow) > 0) NVARS = NVARS + 2 # for qwindow non-wear time
   nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels
   if (length(qwindow) > 0) {
-    if (qwindow[1] != 0 | qwindow[2] != 24) {
-      nfeatures = 50+NVARS*(2*(20+(length(qlevels)+length(ilevels))))
-    }
+    nfeatures = 50+NVARS*(length(qwindow)*(20+(length(qlevels)+length(ilevels))))
   }
   i = 1
   #---------------
