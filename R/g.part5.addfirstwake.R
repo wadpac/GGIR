@@ -33,8 +33,10 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, Nep
     } else if (length(sptwindow_HDCZA_end) > 0 & length(sleeplog) == 0) {
       # use HDCZA algortihm for waking up after first night
       # if there was no sleep log
-      if (sptwindow_HDCZA_end[1] != 0) {
-        wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
+      if (is.na(sptwindow_HDCZA_end[1]) == FALSE) {
+        if (sptwindow_HDCZA_end[1] != 0) {
+          wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
+        }
       }
     }
     if (length(wake_night1_index) == 0) {
