@@ -32,7 +32,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                                 "guider_onset", "guider_wakeup", "guider_SptDuration",
                                 "error_onset", "error_wake", "error_dur",
                                 "fraction_night_invalid",
-                                "SleepDurationInSpt","duration_sib_wakinghours","number_sib_sleepperiod","number_sib_sleepperiod",
+                                "SleepDurationInSpt","duration_sib_wakinghours","number_sib_sleepperiod","number_sib_wakinghours",
                                 "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                                 "page","daysleeper","weekday","calendar_date","filename",
                                 "cleaningcode","guider_used","acc_available","guider")
