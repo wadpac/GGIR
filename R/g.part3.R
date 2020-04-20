@@ -106,7 +106,6 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           tib.threshold = SLE$tib.threshold
           if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
             id = as.character(unlist(strsplit(I$filename,"_"))[1])
-            print(paste0("id ",id))
             datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
             plottitle = " " #datename#"blablbalbal"# paste("File: ",i," | date: ",datename," | filename: ",fna2," | night: ",j,sep="")
             if (do.part3.pdf == TRUE) {
