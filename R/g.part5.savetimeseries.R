@@ -22,9 +22,9 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
       dayindices = wakeup[di]:(wakeup[di+1]-1)
       wake = which(mdat$SleepPeriodTime[dayindices] == 0)
       sleep = which(mdat$SleepPeriodTime[dayindices] == 1)
-      mdat$invalid_wakinghours[dayindices] = round(mean(mdat$invalidepoch[dayindices[wake]])*100)
-      mdat$invalid_sleepperiod[dayindices] = round(mean(mdat$invalidepoch[dayindices[sleep]])*100)
-      mdat$invalid_fullwindow[dayindices] = round(mean(mdat$invalidepoch[dayindices])*100)
+      mdat$invalid_wakinghours[dayindices] = round(mean(mdat$invalidepoch[dayindices[wake]])*100, digits=2)
+      mdat$invalid_sleepperiod[dayindices] = round(mean(mdat$invalidepoch[dayindices[sleep]])*100, digits=2)
+      mdat$invalid_fullwindow[dayindices] = round(mean(mdat$invalidepoch[dayindices])*100, digits=2)
     }
     # round acceleration values to 3 digits to reduce storage space
     mdat$ACC = round(mdat$ACC, digits= 3)

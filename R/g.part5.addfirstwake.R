@@ -28,7 +28,7 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, Nep
         if (wake_night1_index > Nts) wake_night1_index = Nts
         if (wake_night1_index < 1) wake_night1_index = 1
       } else { # use HDCZA algorithm as plan B
-        wake_night1_index = round(sptwindow_HDCZA_end[1] * Nepochsinhour)
+        wake_night1_index = nightsi[1] + round((sptwindow_HDCZA_end[1]-24) * Nepochsinhour)
       }
     } else if (length(sptwindow_HDCZA_end) > 0 & length(sleeplog) == 0) {
       # use HDCZA algortihm for waking up after first night

@@ -10,13 +10,39 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     maxpernwday = (1 - (includedaycrit / 24)) * 100
     
     if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
+      # data_cleaning_file = "/media/vincent/projects/exeterwh_data_backup/data_cleaning_file_v1.csv"
       DaCleanFile = read.csv(data_cleaning_file)
-      include_window = !(x$window_number %in% DaCleanFile$day_part5 & x$ID %in% DaCleanFile$ID)
+      
+      days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
+      
+      if (length(days2exclude) > 0) {
+        include_window = rep(TRUE, nrow(x))
+        for (ri in 1:length(days2exclude)) {
+          id2remove = DaCleanFile$ID[days2exclude[ri]]
+          window2remove = DaCleanFile$day_part5[days2exclude[ri]]
+          include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
+        }
+      }
+      # matching_windows = which(x$window_number %in% DaCleanFile$day_part5==TRUE)
+      # exclude_window1 = which(x$ID[matching_windows] %in% DaCleanFile$ID == TRUE) # ids for which windows match
+      # print(length(exclude_window1))
+      # 
+      # matching_ids = which(x$ID %in% DaCleanFile$ID == TRUE)
+      # exclude_window2 = which(x$window_number[matching_ids] %in% DaCleanFile$day_part5 == TRUE) #windows for which ids match
+      # print(length(exclude_window2))
+      # exclude_window = exclude_window1[which(exclude_window1 %in% exclude_window2==TRUE)] # matching windows and ids
+      # print(length(exclude_window))
+      # 
+      # include_window = rep(TRUE, nrow(x))
+      # if (length(exclude_window) > 0) {
+      #   include_window[exclude_window] = FALSE
+      # }
     } else {
       include_window = rep(TRUE,nrow(x))
     }
     
     if (window == "WW") {
+      print(include_window[which(x$ID == 140291)])
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
                         (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
                         x$nonwear_perc_sleepperiod  <= maxpernwnight &
