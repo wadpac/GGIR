@@ -777,8 +777,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (length(sibds) > 0) {
                     spocum.t.dur_sibd = sum(sibds)
                     atleast15min = which(sibds >= 1/4)
-                    if (length(atleast15min) > 0) sibds_atleast15min = sibds[atleast15min]
-                    spocum.t.dur_sibd_atleast15min = sum(sibds_atleast15min)
+                    if (length(atleast15min) > 0) {
+                      sibds_atleast15min = sibds[atleast15min]
+                      spocum.t.dur_sibd_atleast15min = sum(sibds_atleast15min)
+                    } else {
+                      spocum.t.dur_sibd_atleast15min = 0
+                    }
                   } else {
                     spocum.t.dur_sibd = 0
                     spocum.t.dur_sibd_atleast15min = 0
