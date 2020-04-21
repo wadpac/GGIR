@@ -23,35 +23,18 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
           include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
         }
       }
-      # matching_windows = which(x$window_number %in% DaCleanFile$day_part5==TRUE)
-      # exclude_window1 = which(x$ID[matching_windows] %in% DaCleanFile$ID == TRUE) # ids for which windows match
-      # print(length(exclude_window1))
-      # 
-      # matching_ids = which(x$ID %in% DaCleanFile$ID == TRUE)
-      # exclude_window2 = which(x$window_number[matching_ids] %in% DaCleanFile$day_part5 == TRUE) #windows for which ids match
-      # print(length(exclude_window2))
-      # exclude_window = exclude_window1[which(exclude_window1 %in% exclude_window2==TRUE)] # matching windows and ids
-      # print(length(exclude_window))
-      # 
-      # include_window = rep(TRUE, nrow(x))
-      # if (length(exclude_window) > 0) {
-      #   include_window[exclude_window] = FALSE
-      # }
     } else {
       include_window = rep(TRUE,nrow(x))
     }
-    
+    # Note: Below we intentionally only sets a criteria on daytime, because for
+    # the night time we only need start and end of the SPT window.
     if (window == "WW") {
-      print(include_window[which(x$ID == 140291)])
-      indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
-                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
-                        x$nonwear_perc_sleepperiod  <= maxpernwnight &
+      indices = which(x$nonwear_perc_wakinghours <= maxpernwday & 
                         x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0 & include_window == TRUE)
     } else if (window == "MM") {
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
-                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < maxpernwnight)) &
                         x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0&
-                        x$dur_fulldaywindow_min >= 1380 & include_window == TRUE) # for MM analysis only full days are interesting (23 hours for one day in the year)
+                        x$dur_fulldaywindow_min >= 1380 & include_window == TRUE)  # for MM analysis only full days are interesting (23 hours for one day in the year)
     }
     return(indices)
   }
@@ -94,8 +77,6 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     if (length(cut2) > 0) {
       outputfinal = outputfinal[-cut2,]
     }
-    
-    
     #-------------------------------------------
     # clean spreadsheet: => commented out, because part 5 should use all possible information
     # # if there is a sleeplog location then only use measurements with sleeplog
