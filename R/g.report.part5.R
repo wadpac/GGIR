@@ -8,15 +8,12 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   getValidDayIndices = function(x, includenightcrit, includedaycrit, window) {
     maxpernwnight = (1 - (includenightcrit / 24)) * 100
     maxpernwday = (1 - (includedaycrit / 24)) * 100
-    
+    include_window = rep(TRUE, nrow(x))
     if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
       # data_cleaning_file = "/media/vincent/projects/exeterwh_data_backup/data_cleaning_file_v1.csv"
       DaCleanFile = read.csv(data_cleaning_file)
-      
       days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
-      
       if (length(days2exclude) > 0) {
-        include_window = rep(TRUE, nrow(x))
         for (ri in 1:length(days2exclude)) {
           id2remove = DaCleanFile$ID[days2exclude[ri]]
           window2remove = DaCleanFile$day_part5[days2exclude[ri]]
@@ -369,6 +366,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode3",cval=3)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode4",cval=4)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode5",cval=5)
+                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode6",cval=6)
+                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode7",cval=7)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
                   # Move valid day count variables to beginning of dataframe

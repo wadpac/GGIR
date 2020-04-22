@@ -33,14 +33,14 @@ g.part5.onsetwaketiming = function(qqq,ts, min, sec, hour, timewindowi, skiponse
       skipwake = FALSE
     }
   }
-  if (wake > 12 & wake < 18) { # daysleeper and onset in the morning or afternoon
+  if (wake >= 12 & wake < 18) { # daysleeper and onset in the morning or afternoon
     if (onset < 18 & skiponset == FALSE) onset = onset + 24
     if (wake < 18 & skipwake == FALSE) wake = wake + 24
   } else if (wake <= 12) { # no daysleeper, but onset before noon
-    if (onset < 12 & skiponset == FALSE) onset = onset + 24
-    if (wake < 12 & skipwake == FALSE) wake = wake + 24
+    if (wake <= 12 & skipwake == FALSE) wake = wake + 24
+    if (onset <= 12 & skiponset == FALSE) onset = onset + 24
   }
-  if (wake > 12 & onset < 18 & skiponset == FALSE) onset = onset + 24
+  if (wake >= 12 & onset <= 12 & skiponset == FALSE) onset = onset + 24
   if (wake > 36 & onset > 36) {
     # both on the next afternoon is not possible,
     # so this was an overcorrection and reverse this:
