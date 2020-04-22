@@ -48,12 +48,12 @@ g.extractheadervars = function(I) {
     }
     iID = "not extracted" #investigator ID
     HN = "not extracted" #handedness
-    BL = "not extracted" #body location
+    BodyLocation = "not extracted" #body location
     SX = "not extracted" #gender
     if (length(which(hnames == "device_serial_number")) > 0) {
-      SN = hvalues[which(hnames == "device_serial_number")]			 #serial number
+      deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]			 #serial number
     } else {
-      SN = "not extracted" #gender
+      deviceSerialNumber = "not extracted" #gender
     }
   }
   invisible(list(ID=ID,iID=iID,HN=HN,BodyLocation=BodyLocation,SX=SX,deviceSerialNumber=deviceSerialNumber)) #  wdayname=wdayname,wdaycode=wdaycode,wday=wday,ws3=ws3,ws2=ws2
