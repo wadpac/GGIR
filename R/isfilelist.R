@@ -5,6 +5,7 @@ isfilelist = function(datadir) {
     if (length(unlist(strsplit(datadir,"[.]bi")))>1) filelist = TRUE
     if (length(unlist(strsplit(datadir,"[.]cs")))>1) filelist = TRUE
     if (length(unlist(strsplit(datadir,"[.]wa")))>1) filelist = TRUE
+    if (length(unlist(strsplit(datadir,"[.]cw")))>1) filelist = TRUE #XD added this line to make it possible to process single cwa file
   } else { #multiple files
     filelist = TRUE    
   }

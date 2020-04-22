@@ -3,9 +3,11 @@
 #include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
 
+extern SEXP _GGIR_numUnpack(SEXP);
 extern SEXP _GGIR_resample(SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_GGIR_numUnpack", (DL_FUNC) &_GGIR_numUnpack, 1},
     {"_GGIR_resample",  (DL_FUNC) &_GGIR_resample,  4},
     {NULL, NULL, 0}
 };
