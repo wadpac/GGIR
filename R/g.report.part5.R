@@ -367,7 +367,6 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode4",cval=4)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode5",cval=5)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode6",cval=6)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode7",cval=7)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
                   # Move valid day count variables to beginning of dataframe
