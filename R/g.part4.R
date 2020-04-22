@@ -509,23 +509,37 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   SptWake = SptWake + 24
                 }
                 
-                # If user supplies data_cleaning_file 
-                # and this instructs that for this person the night should rely on guider
-                # then the following adds two 1-minute sustained inactivity bouts at the 
-                # beginning and the end of the SPT window defined by guider.
-                # Next, relyonguider will be used and ensure that those 1-minute
-                # define the beginning and end of the SPT window.
+                
+                # Detect whether none of the SIBs overlaps with the SPT, if this is the case
+                # then probably the night is not going to be very useful for sleep analysis
+                # however, for part 5 we may still want to have some estimate to define the
+                # waking-up to waking windows.
+                # So, we will now add two tiny artificial sibs (1-minute) at the beginning and end
+                # of the guider-based SPT to make that the SPT is still detected guided entirely by the guider.
+                # and add cleaningcode = 7, this means that the night 
+                # will be omitted from the part 4 cleaned results,
+                # but is still available for inspection in the full part 4
+                # results and available
+                # for part 5, because in part 5 we are only interested in the edges of the SPT and not what
+                # happens in it.
                 relyonguider_thisnight = FALSE
-                if (length(data_cleaning_file) > 0 & nrow(spo) > 1) { # allow for forced relying on guider based on external data_cleaning_file
-                  relyonguider_thisnight = length(which(DaCleanFile$relyonguider_part4 == j & DaCleanFile$ID == accid)) > 0
-                  if (relyonguider_thisnight == TRUE) { 
-                    newlines = spo[1:2,]
-                    newlines[1,1:4] = c(nrow(spo)+1, SptOnset, SptOnset + 1/60, 1)
-                    newlines[2,1:4] = c(nrow(spo)+1, SptWake - 1/60, SptWake, 1)
-                    spo = rbind(spo, newlines)
-                    spo = spo[order(spo[,2]),]
-                    spo[,1] = 1:nrow(spo)
+                
+                if (length(data_cleaning_file) > 0) {
+                  if (length(which(DaCleanFile$relyonguider_part4 == j & DaCleanFile$ID == accid)) > 0) {
+                    relyonguider_thisnight = TRUE
                   }
+                }
+                
+                if (length(which(spo[,2] < SptWake & spo[,3] > SptOnset)) == 0 | # If no SIBs overlap with the SPT window
+                    relyonguider_thisnight == TRUE ) { # If night is explicitely listed 
+                  newlines = spo[1:2,]
+                  newlines[1,1:4] = c(nrow(spo)+1, SptOnset, SptOnset + 1/60, 1)
+                  newlines[2,1:4] = c(nrow(spo)+1, SptWake - 1/60, SptWake, 1)
+                  spo = rbind(spo, newlines)
+                  spo = spo[order(spo[,2]),]
+                  spo[,1] = 1:nrow(spo)
+                  cleaningcode = 7
+                  relyonguider_thisnight = TRUE
                 }
                 # spo is now a matrix of onset and wake for each sleep period (episode)
                 for (evi in 1:nrow(spo)) { #Now classify as being part of the SPT window or not
