@@ -192,7 +192,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         }
       }
     } else { # getSleepFromExternalFunction == TRUE
-      sleep[which(M$metashort$wake_sleep == "Sleep" | M$metashort$wake_sleep == "Nonwear" )] = 1 # Code now uses the sleep estimates from the external function
+      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 # Code now uses the sleep estimates from the external function
     }
     #-------------------------------------------------------------------
     # detect midnights
