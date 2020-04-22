@@ -516,7 +516,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 # waking-up to waking windows.
                 # So, we will now add two tiny artificial sibs (1-minute) at the beginning and end
                 # of the guider-based SPT to make that the SPT is still detected guided entirely by the guider.
-                # and add cleaningcode = 7, this means that the night 
+                # and add cleaningcode = 5, this means that the night 
                 # will be omitted from the part 4 cleaned results,
                 # but is still available for inspection in the full part 4
                 # results and available
@@ -532,13 +532,15 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 
                 if (length(which(spo[,2] < SptWake & spo[,3] > SptOnset)) == 0 | # If no SIBs overlap with the SPT window
                     relyonguider_thisnight == TRUE ) { # If night is explicitely listed 
+                  
+                  cleaningcode = 5
                   newlines = spo[1:2,]
                   newlines[1,1:4] = c(nrow(spo)+1, SptOnset, SptOnset + 1/60, 1)
                   newlines[2,1:4] = c(nrow(spo)+1, SptWake - 1/60, SptWake, 1)
                   spo = rbind(spo, newlines)
                   spo = spo[order(spo[,2]),]
                   spo[,1] = 1:nrow(spo)
-                  cleaningcode = 7
+                  
                   relyonguider_thisnight = TRUE
                 }
                 # spo is now a matrix of onset and wake for each sleep period (episode)
