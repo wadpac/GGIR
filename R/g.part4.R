@@ -445,7 +445,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               # now get sleep periods
               nsp = length(unique(sleepdet.t$sib.period)) #number of sleep periods
               spo = matrix(0,nsp,5) # overview of sleep periods
-              if (nsp == 1 & unique(sleepdet.t$sib.period)[1] == 0) { # no sleep periods
+              if (nsp <= 1 & unique(sleepdet.t$sib.period)[1] == 0) { # no sleep periods
                 spo[1,1] = 1
                 spo[1,2:4] = 0
                 spo[1,5] = k
@@ -478,7 +478,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       tmpCmd = paste("spo_day",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
                     }
-                    
                   } else if (loaddaysi == 2 & length(eval(parse(text = paste0("spo_day",k)))) > 0) { #length check added because day may have been skipped
                     w2 = which(spo[,2] < 18) #only use periods starting before 6pm
                     if (length(w2) > 0) {
@@ -508,8 +507,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (SptWake < 21 & SptWake > 12 &  SptOnset > SptWake) # waking up in the afternoon should have value above 36
                   SptWake = SptWake + 24
                 }
-                
-                
                 # Detect whether none of the SIBs overlaps with the SPT, if this is the case
                 # then probably the night is not going to be very useful for sleep analysis
                 # however, for part 5 we may still want to have some estimate to define the
@@ -523,24 +520,20 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 # for part 5, because in part 5 we are only interested in the edges of the SPT and not what
                 # happens in it.
                 relyonguider_thisnight = FALSE
-                
                 if (length(data_cleaning_file) > 0) {
                   if (length(which(DaCleanFile$relyonguider_part4 == j & DaCleanFile$ID == accid)) > 0) {
                     relyonguider_thisnight = TRUE
                   }
                 }
-                
                 if (length(which(spo[,2] < SptWake & spo[,3] > SptOnset)) == 0 | # If no SIBs overlap with the SPT window
                     relyonguider_thisnight == TRUE ) { # If night is explicitely listed 
-                  
                   cleaningcode = 5
-                  newlines = spo[1:2,]
+                  newlines = rbind(spo[1,],spo[1,])
                   newlines[1,1:4] = c(nrow(spo)+1, SptOnset, SptOnset + 1/60, 1)
                   newlines[2,1:4] = c(nrow(spo)+1, SptWake - 1/60, SptWake, 1)
                   spo = rbind(spo, newlines)
                   spo = spo[order(spo[,2]),]
                   spo[,1] = 1:nrow(spo)
-                  
                   relyonguider_thisnight = TRUE
                 }
                 # spo is now a matrix of onset and wake for each sleep period (episode)
@@ -556,7 +549,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                         spo[evi,2] = SptOnset
                       }
                     }
-                 
                   } 
                 }
                 if (daysleeper[j] == TRUE) {
