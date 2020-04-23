@@ -732,11 +732,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       }
     }
   # } # For the for loop
-  
   }) # END tryCatch
   return(tryCatchResult)
   }
-
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
