@@ -38,6 +38,19 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
 \value{
 Function does not produce data, but only writes reports
 in csv format
+
+The following files are stored in the root of the results folder:
+part5_daysummary_*
+part5_personsummary_*
+
+The following files are stored in the folder results/QC:
+part5_daysummary_full_*
+
+
+See package vignette paragraph "Sleep and full day time-use analysis 
+in GGIR" and "Output part 5" for a more elaborative description of
+the full day time-use and analysis and reporting.
+
 }
 \author{
   Vincent T van Hees <vincentvanhees@gmail.com>

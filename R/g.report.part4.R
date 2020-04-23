@@ -145,7 +145,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
             # total number of nights with sleep log
             TOTALNIGHTS = length(nightsummary.tmp$night[which(nightsummary.tmp$sleepparam == udef[1] & nightsummary.tmp$cleaningcode != 1 )]) # number of total nights
             personSummary[i,cntt+5] = TOTALNIGHTS
-            personSummarynames = c(personSummarynames,paste("n_nights_guider",sep=""))
+            personSummarynames = c(personSummarynames,paste("n_nights_sleeplog",sep=""))
             # total number of complete weekend and week nights
             th3 = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[1])]
             
