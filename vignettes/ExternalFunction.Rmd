@@ -103,7 +103,7 @@ Please see the [\underline{general GGIR vignette}](https://cran.r-project.org/pa
 
 # Example with external Python function
 
-In this example we will use an external Python function to estimate the dominant signal frequency per acceleration axis. Note this can also be done in R, but it shows that even Python functions can be provided.
+In this example we will use an external Python function to estimate the dominant signal frequency per acceleration axis. Note this can also be done in R, but it shows that even Python functions can be provided. 
 
 ## Write external function
 
@@ -174,6 +174,7 @@ myfun =  list(FUN=dominant_frequency,
 ```
 
 Add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument.
+Note that, do.parallel is set to FALSE. Unfortunately Python embedding with R package reticulate and multi-threading with R package foreach as used in GGIR do not combine well.
 
 ```{R,eval=FALSE}
 library(GGIR)
@@ -182,7 +183,8 @@ g.shell.GGIR(datadir="~/myaccelerometerdata",
              mode=1:2,
              epochvalues2csv = TRUE,
              do.report=2,
-             myfun=myfun)
+             myfun=myfun,
+             do.parallel = FALSE)
 ```
 
 
