@@ -2,12 +2,12 @@
 \alias{g.part4}
 \title{
  Labels detected sustained inactivity periods by g.part3 as either
- nocturnal sleep or daytime sustained inactivity
+ part of the Sleep Period Time window or not
 }
 \description{
-Loads output from g.part3 as stored in milestone data and sleep log
-information (if available) and then uses these information sources
-to define nocturnal sleep and daytime sustained inactivity.
+Combines output from g.part3 and guider information to estimate
+sleep variables. See vignette paragraph "Sleep and full day
+time-use analysis in GGIR" for an elaborate descript of the sleep detection.
 }
 \usage{
 g.part4(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,
@@ -101,11 +101,9 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   }
   \item{relyonguider}{
   If TRUE then sleep onset and waking time are defined based on
-  timestamps derived from sleep log if FALSE (default) the sleep
-  log is only used to guide the accelerometer-based detection.
-  If participants were instructed NOT to wear the accelerometer
+  timestamps derived from the guider. If participants were instructed NOT to wear the accelerometer
   during waking hours then set to TRUE, in all other scenarios
-  set to FALSE (FALSE).
+  set to FALSE (default).
   }
    \item{relyonsleeplog}{
     Now replaced by relyonguider. Values provided to argument
@@ -149,122 +147,11 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
 The function does not produce values but generates an RData file
 in the milestone subfolder ms4.out which incudes a dataframe
 named \code{nightsummary}. This dataframe is used in g.report.part4 to create
-two reports one per night and one per person. \code{nightsummary} comes
-with the following variables:\cr
-\itemize{
-\item \code{ID} Participant ID extracted from file
-\item \code{night} Night number
-\item \code{sleeponset} Detected onset of sleep expressed as hours
-since the midnight of the previous night, see details.
-\item \code{wakeup} Detected waking time (after sleep period)
-expressed as hours since the midnight of the previous night, see details.
-\item \code{SptDuration} Difference between onset and waking time.
-\item \code{sleepparam} Definition of sustained inactivity by accelerometer
-\item \code{guider_onset} Start of Sleep Period Time window derived from
-(in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
-L5HR6 algorithm, or specified by researcher,
-\item \code{guider_wake} End of Sleep Period Time window derived from
-(in order of priority) sleeplog, detected by the HDCZA algorithm, detected by
-L5HR6 algorithm, or specified by researcher.
-\item \code{guider_SptDuration} Time in bed derived from
-guider_wake and guider_onset.
-\item \code{error_onset} Only in full report in the QC folder. 
-Difference between sleeponset and guider_onset
-\item \code{error_wake} Only in full report in the QC folder. 
-Difference between wakeup and guider_wake
-\item \code{fraction_night_invalid} Fraction of the night for which
-the data was invalid, e.g. monitor not worn or no accelerometer
-measurement started/ended within the night
-\item \code{SleepDurationInSpt} Total sleep duration, which equals the
-accumulated nocturnal sustained inactivity bouts within the Sleep Period Time.
-\item \code{duration_sib_wakinghours} Accumulated sustained inactivty bouts
-during the day. These are the periods we would label during the night
-as sleep, but during the day they form a subclass of inactivity,
-which may represent day time sleep or wakefulness while being
-motionless for a sustained period of time
-\item \code{number_sib_sleepperiod} Number of noturnal sleep periods, with nocturnal
-referring to the Sleep Period Time window.
-\item \code{number_sib_wakinghours} Number of sustained inactivity bouts during the day,
-with day referring to the time outside the Sleep Period Time window.
-\item \code{sleeponset_ts} sleeponset formatted as a timestamp
-\item \code{wakeup_ts} wakeup formatted as a timestamp
-\item \code{guider_onset_ts} guider_onset formatted as a timestamp
-\item \code{guider_wake_ts} guider_wake formatted as a timestamp
-\item \code{page} pdf page on which the visualisation can be found
-\item \code{daysleeper} If 0 then the person is a nightsleeper
-(sleep period did not overlap with noon) if value=1 then the person
-is a daysleeper (sleep period did overlap with noon)
-\item \code{guider} guider used, see details
-\item \code{weekday} Day of the week on which the night started
-\item \code{calendardate} Calendar date on which the night started
-\item \code{filename} Name of the accelerometer file
-\item \code{cleaningcode} 0: no problem; 1: sleeplog not available,
-2: not enough valid accelerometer data, 3: no accelerometer data 
-available, 4: there were no nights to be analysed for this person,
-5: no sib during entire guider window, which complicates defining
-the start and end of the SPT, therefore we use sleeplog or if not
-available HDCZA (if not then L512), 6: no sleeplog available 
-and HDCZA also failed
-\item \code{sleeplog_used} Whether a sleep log was used (TRUE/FALSE)
-\item \code{acc_available} Whether accelerometer data was available
-(TRUE/FALSE).
+two reports one per night and one per person. See package vignette 
+paragraph "Output part 4" for description of all the variables.
+
 }
 
-Note that function g.shell.GGIR comes with the option for report
-generation. In relation to function g.part4 it is important to mention
-that these reports are effectively the variable names mentioned above
-or derivatives. Please fine below extra clarification on a few
-of the variable names for which the meaning may not be obvious:\cr
-\itemize{
-\item \code{sleeplog_used} Whether a sleeplog was available (TRUE)
-or not (FALSE)
-\item \code{acc_eff} Accelerometer detrive sleep efficiency within
-the sleep period time calculatd as the ratio between
-acc_SleepDurationInSpt and acc_SptDuration (denominator). Only available
-at person level, because at night level the user can calculate this from
-existing variables.
-\item \code{n_nights_acc} Number of nights of accelerometer data
-\item \code{n_nights_sleeplog} Number of nights of sleeplog
-data, see details
-\item \code{n_WE_nights_complete} Number of weekend nights complete
-which means both accelerometer and sleeplog data
-\item \code{n_WD_nights_complete} Number of weekday nights complete
-which means both accelerometer and sleeplog data
-\item \code{n_WEnights_daysleeper} Number of weekend nights on which
-the person slept until after noon
-\item \code{n_WDnights_daysleeper} Number of weekday nights on which
-the person slept until after noon
-\item \code{acc_dur_msibd} Average duration of the sustained inactivity
-bouts during the day (outside the sleep period duration). Calculated
-as acc_dur_sibd divided by acc_n_sibd per day, after which the mean
-and standard deviation are calculated across days.
-}
-}
-
-\details{
-The term guider in variable names refers to the method 
-used to derived the Sleep
-Period Time  (SPT) window derived from (as applicable):
-sleeplog, HDCZA algorithm, L5R6 algorithm, or specified
-by researcher as a constant time interval.
-
-There are, however, two exceptions: Variable sleeplog_used and
-n_nights_sleeplog truly refer to whether a sleep log was used and
-the number of nights on which a sleep log was used, respectively.
-I know this is confusing, but so far I have kept the variable names
-as they are to facilitate consistency in terminology.
-
-If argument relyonguider = FALSE, then the sleep parameter
-estimates from accelerometry, e.g. sleeponset, are guided by the sleeplog
-(or whichever method was used instead for SPT window estimation).
-In this example, the sleep onset time equals the start of the
-first sustained inactiviy bout that overlaps or follows the
-sleep onset time derived from the sleeplog (or whichever method
-was used instead for SPT window estimation).
-
-If argument relyonguider = TRUE, then the sleep onset estimates
-from accelerometry equals the estimate from the sleeplog.
-}
 \examples{
 \dontrun{
 metadatadir = "C:/myfolder/meta" # assumes that there is a subfolder in
