@@ -539,6 +539,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             maxwacc = max(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
             CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres))
+            if (length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres*1.5)) > 0) {
+              CW[h,jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
+            }
             absrange = abs(maxwacc - minwacc)
             if (is.numeric(absrange) == TRUE & is.numeric(sdwacc) == TRUE & is.na(sdwacc) == FALSE) {
               if (sdwacc < sdcriter) {
