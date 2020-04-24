@@ -381,7 +381,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 if (is.na(sleeponset_loc)) sleeponset_loc = 0
               }
               # check to see if wake time is before midnight
-              wake_time = summarysleep_tmp$acc_wake_ts[check_date]
+              wake_time = summarysleep_tmp$wakeup_ts[check_date]
               wake_hour = as.integer(substr(wake_time,start=1,stop=2))
               if (length(wake_hour) > 0) {
                 if (wake_hour > 12) {
