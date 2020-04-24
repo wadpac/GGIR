@@ -6,6 +6,12 @@
 A package to process multi-day raw accelerometer data
 }
 \description{
+Disclaimer: If you are a new GGIR user then please see \href{https://cran.r-project.org/web/package=GGIR/vignettes/GGIR.html}{package vignette} for an introduction to GGIR. The vignette provides a narrative tutorial of the package, including key
+functions and description of csv output files.
+
+The function documentation (this document should be seen as a complimentary
+documentation.
+
 GGIR is an R-package to process multi-day raw accelerometer data. It was developed
 in the context of research on human daily physical activity with wearable
 tri-axial acceleration sensors. The term raw accelerometry refers to data being
@@ -89,8 +95,8 @@ journal/conference publications.
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 1.11-1\cr
-Date: \tab 2020-02-28\cr
+Version: \tab 2.0-0\cr
+Date: \tab 2020-04-26\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -127,10 +133,17 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \item Severine Sabia tested and provided feedback on various functions
 \item Joan Capdevila Pujol helped to improve various function
 \item Jairo H Migueles <jairohm@ugr.es> helped to improve various functions
+\item Dan Jackson helped with unpack function for AX3 data.
+\item Matthew R Patterson helped with enhancing the visual report.
 }
 }
 \references{
 \itemize{
+
+\item Migueles JH, Rowlands AV, et al. GGIR: A Research Community–Driven Open Source
+R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw 
+Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019.
+doi: 10.1123/jmpb.2018-0063.
 \item van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating
 Movement and Gravity Components in an Acceleration Signal and Implications for the
 Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.

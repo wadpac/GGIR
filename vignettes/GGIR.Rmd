@@ -142,13 +142,13 @@ knitr::include_graphics("sleeplogexample.jpg")
 
 Cut-points to estimate time spent in acceleration levels that are roughly liked to levels of energy metabolism have been proposed by:
 
-- Esliger et al 2011: wrist and waist in adults. doi: 10.1249/MSS.0b013e31820513be.
-- Schaefer et al 2014: wrist in 6-11 year old children. doi: 10.1249/MSS.0000000000000150.
-- Roscoe et al 2017: wrist in 4-5 year old pre-school children. doi: 10.1007/s00431-017-2948-2.
-- Phillips et al 2013: wrist and hip in 8-14 year olds. doi: 10.1016/j.jsams.2012.05.013.
-- Vaha-Ypya et al 2015: hip in adults. 10.1371/journal.pone.0134813
-- Hildebrand et al 2014 and 2016: wrist and hip in 7-11 and 21-61 years old. in doi: 10.1111/sms.12795, 10.1249/MSS.0000000000000289.
-- Please let me know if you think I missed a publication.
+- [Esliger et al 2011](https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx): wrist and waist in adults.
+- [Schaefer et al 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/): wrist in 6-11 year old children.
+- [Roscoe et al 2017](https://link.springer.com/article/10.1007/s00431-017-2948-2): wrist in 4-5 year old pre-school children.
+- [Phillips et al 2013](https://europepmc.org/article/med/22770768): wrist and hip in 8-14 year olds.
+- [Vaha-Ypya et al 2015](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813): hip in adults.
+- [Hildebrand et al 2014](https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx) and [2016](https://onlinelibrary.wiley.com/doi/abs/10.1111/sms.12795): wrist and hip in 7-11 and 21-61 years old.
+- If you are aware of any additional publications then let us know.
 
 The first four publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: It is still possible to use those cut-points with a simple cut-point scaling trick and by selecting the right acceleration metric as detailed below.
 
@@ -162,7 +162,7 @@ The first four publications make use of acceleration metrics that sum their valu
 -	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
-**Roscoe 2017**
+**Roscoe 2017:**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments do.enmoa = TRUE, do.enmo = FALSE, and acc.metric=”ENMOa”.
 - `threshold.lig = (LightCutPointFromPaper/85.7) * 1000`
@@ -322,14 +322,14 @@ knitr::include_graphics("reportexample.jpg")
 
 ## Output part 2
 
-Part 2 generates:
+Part 2 generates the following output:
 
-- part2_summary.csv
-- part2_daysummary.csv
-- QC/data_quality_report.csv
-- QC/plots to check data quality 1.pdf
+- part2_summary.csv: Person level summary (see below)
+- part2_daysummary.csv: Day level summary (see below)
+- QC/data_quality_report.csv: Overview of calibration results and whether or not a file was corrupt or too short to be procesed,
+- QC/plots to check data quality 1.pdf: A pdf with visualisation of the acceleration time series in 15 minute resolution and with invalid data segments highlighted in colours (yellow: non-wear based on standard deviation threshold, brown: non-wear after extra filtering step (introduced in 2013), and purple: clipping)
 
-### Dictionary of variables in part2_summary.csv
+### Person level summary
 
 Variable   |   Description
 ------------------------ | ------------------------------------------------------
@@ -337,23 +337,26 @@ ID | Participant id
 device_sn | Device serial number
 bodylocation | Body location extracted from file header
 filename | Name of the data file
-start_time | Start time experiment
-startday |	Day of the week on which measurement started
+start_time | Timestamp when recording started
+startday |	Day of the week on which recording started
 samplefreq |	Sample frequency (Hz)
 device | Accelerometer brand, e.g. GENEACtiv
 clipping_score | The Clipping score: Fraction of 15 minute windows per file for which the acceleration in one of the three axis was close to the maximum for at least 80\% of the time. This should be 0.
-Measurement duration (days) |	-
+meas_dur_dys} | Measurement duration (days)
 complete_24hcycle | Completeness score: Fraction of 15 minute windows per 24 hours for which no valid data is available at any day of the measurement.
 meas_dur_def_proto_day | measurement duration according to protocol (days):	Measurement duration (days) minus the hours that are ignored at the beginning and end of the measurement motived by protocol design
 wear_dur_def_proto_day | wear duration duration according to protocol (days): So, if the protocol was seven days of measurement then wearing the accelerometer for 8 days and recording data for 8 days will still makethat the wear duration is 7 days
 calib_err | Calibration error (static estimate)	Estimated based on all ‘non-movement’ periods in the measurement after applying the autocalibration.
 calib_status | Calibration status: Summary statement about the status of the calibration error minimisation
+ENMO_fullRecordingMean | ENMO is the main summary measure of acceleration. The value presented is the average ENMO over all the available data normalised per 24 hour cycles (diurnal balanced), with invalid data imputed by the average at similar time points on different days of the week. In addition to ENMO it is possible to extract other acceleration metrics (i.e. BFEN, HFEN, HFENplus). We emphasize that it is calculated over the full recording because the alternative is that a variable is only calculated overmeasurement days with sufficient valid hours of data.
 ENMO | (only available if set to true in part1.R)	ENMO is the main summary measure of acceleration. The value presented is the average ENMO over all the available data normalised per 24 hour cycles, with invalid data imputed by the average at similar timepoints on different days of the week. In addition to ENMO it is possible to extract other acceleration metrics in part1.R (i.e. BFEN, HFEN, HFENplus)	See also [van Hees PLoSONE April 2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691) for a detailed description and comparison of these techniques.
-pX_A_mg_0-24h |	This variable represents the Xth percentile in the distribution of short epoch metric value A of the average day. The average day may not be ideal. Therefore, the code also extracts similar variables per day and then takes the averages over days (see daysummary)
-L5_A_mg_0-24 | Average of metric A during the least active five* hours in the day that is the lowest rolling average value of metric A. (* window size is modifiable in part2.R)
-M5_A_mg_0-24 |  Average of metric A during the most active five* hours in the day that is the lowest rolling average value of metric A. (* window size is modifiable in part2.R)
+pX_A_mg_0-24h_fullRecording |	This variable represents the Xth percentile in the distribution of short epoch metric value A of the average day. The average day may not be ideal for describing the distirbution. Therefore, the code also extracts the following variable.
+AD_pX_A_mg_0-24h |	This variable represents the Xth percentile in the distribution of short epoch metric value A per day averaged across all days.
+L5_A_mg_0-24 | Average of metric A during the least active five* hours in the day that is the lowest rolling average value of metric A. (* window size is modifiable by argument winhr)
+M5_A_mg_0-24 |  Average of metric A during the most active five* hours in the day that is the lowest rolling average value of metric A. (* window size is modifiable by argument winhr)
 L5hr_A_mg_0-24 | Starting time in hours and fractions of hours of L5_A_mg_0-24
 M5hr_A_mg_0-24 | Starting time in hours and fractions of hours of M5_A_mg_0-24
+ig_gradient_ENMO_0-24hr_fullRecording | Intensity gradient calculated over the full recording.
 1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am
 N valid WEdays | Number of valid weekend days
 N valid WKdays | Number of valid week days
@@ -369,6 +372,9 @@ WWD_... | Week days (weighted average)	The variable ... was calculated per day a
 WWD_MVPA_E5S_T100_ENMO | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100
 `WWE_MVPA_E5S_B1M80%_T100_ENMO` | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 based on a bout criteria of 100
 `WE_[100,150)_mg_0-24h_ENMO` | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight) |	A log of decision made in part2.R
+..._MVPA_E5S_B1M80_T100 | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent. This is only done for metric ENMO at the moment, and only if mvpathreshold is not left blank
+..._ENMO_mg... | ENMO or other metric was first calcualte per day and then average according to AD, WD, WWE, WWD
+data exclusion strategy | A log of the decision made when calling  g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight
 n hours ignored at start of meas (if strategy=1) | number of hours ignored at the start of the measurement (if strategy = 1)	A log of decision made in part2.R
 n hours ignored at end of meas (if strategy=1) | number of hours ignored at the end of the measurement (if strategy = 1).	A log of decision made in part2.R
 n hours ignored at end of meas (if strategy=1) | number of days of measurement after which all data is ignored (if strategy = 1)	A log of decision made in part2.R
@@ -377,9 +383,9 @@ pdffilenumb |	Indicator of in which pdf-file the plot was stored
 pdfpagecount |	Indicator of in which pdf-page the plot was stored
 
 
-### Dictionary of variables in part2_daysummary.csv
+### Day level summary
 
-Tis is a non-exhaustive list, because most concepts have been explained in summary.csv
+This is a non-exhaustive list, because most concepts have been explained in summary.csv
 
 Variables	| Description
 ------------------------ | ---------------------------------------------
@@ -392,8 +398,12 @@ N hours	| Number of hours of measurement in a day, which typically is 24, unless
 weekday | Name of weekday
 measurement | Day of measurement	Day number relative to start of the measurement
 L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO)
-L5_ENMO_mg_0-24h | Average acceleration for L5 (defined with metric ENMO)
+L5_ENMO_mg_0-24h | Average acceleration for L5 (defined with metric ENMO) 
 `[A,B)_mg_0-24h_ENMO` |	Time spent in minutes between (and including) acceleration value A in mg and (excluding) acceleration value B in mg based on metric ENMO
+ig_gradient_ENMO_0-24hr | Gradient from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
+ig_intercept_ENMO_0-24hr | Intercept from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
+ig_rsquared_ENMO_0-24hr | r squared from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
+
 
 ## Output part 4
 
