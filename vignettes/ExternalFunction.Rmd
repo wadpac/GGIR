@@ -1,7 +1,7 @@
 ---
 title: "Embedding external functions in GGIR"
 author: "Vincent van Hees"
-date: "April 13 2020"
+date: "April 24 2020"
 output:
   pdf_document:
     toc: true
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Algorithms (e.g. machine learning models) are typically developed for a specific data format without initially considering the data cleaning and aggregation steps needed for real life 'out of the lab' implementation. GGIR can take care of this by allowing you to provide your external function written in R or Python. GGIR applies your function to the the data and integrates the output it its own output.
+Algorithms (e.g. machine learning models) are typically developed initially for a specific data format and without the data cleaning and aggregation steps needed for real life 'out of the lab' implementation. GGIR can take care of this by allowing you to provide your prototype external function written in R or Python. GGIR applies your function to the the data and integrates the output it its own output.
 
 Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory, corrected for calibration error, and resampled to the sample rate required by your function, GGIR applies its own default algorithms as well as the external function provided by you. The external function is expected to take as input: A three-column matrix with the acceleration data corresponding to the three acceleration axes, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to the output of your external function.
 
