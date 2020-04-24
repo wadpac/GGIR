@@ -8,10 +8,10 @@ Tests whether the night that follows the input calendar date is a
 night with day saving time (DST) and on what hour the time moved.
 }
 \usage{
-  is_this_a_dst_night(calendardate=c(),tz="Europe/London")
+  is_this_a_dst_night(calendar_date=c(),tz="Europe/London")
 }
 \arguments{
-  \item{calendardate}{
+  \item{calendar_date}{
     Character in the format dd/mm/yyyy 
   }
   \item{tz}{

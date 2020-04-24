@@ -1,6 +1,6 @@
 g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
                         do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
-                        configfile =c(),...) {
+                        configfile =c(),myfun=c(), ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -133,6 +133,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
+  if (exists("myfun") == FALSE)  myfun = c()
 
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
@@ -172,6 +173,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
 
+  if (length(myfun) != 0) { # Run check on myfun object
+    check_myfun(myfun, windowsizes)
+  }
+  
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
   if (exists("maxdur") == FALSE)  maxdur = 7
@@ -216,15 +221,17 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("outliers.only") == FALSE)  outliers.only=FALSE
   if (exists("excludefirstlast") == FALSE)  excludefirstlast=FALSE
   if (exists("criterror") == FALSE)  criterror=3
-  if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=FALSE
+  if (exists("relyonguider") == FALSE)  relyonguider=FALSE
+  if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=c()
+  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE
-
+  if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
-  if (exists("bout.metric") == FALSE)  bout.metric = 1
+  if (exists("bout.metric") == FALSE)  bout.metric = 4 # changed on 13-04-2020, because it is what we have been recommending all the time
   if (exists("closedbout") == FALSE)  closedbout = FALSE
   if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
   if (exists("boutcriter.lig") == FALSE)  boutcriter.lig = 0.8
@@ -263,9 +270,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  
+  if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
+
+
   # VISUAL REPORT
-  
+
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
@@ -273,7 +282,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
   cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
-  
+
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
@@ -318,7 +327,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.header.structure = rmc.header.structure,
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
             rmc.col.wear=rmc.col.wear,
-            rmc.doresample=rmc.doresample)
+            rmc.doresample=rmc.doresample,
+            myfun=myfun)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -338,7 +348,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel)
+            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -348,7 +358,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     g.part3(metadatadir=metadatadir,f0=f0, acc.metric = acc.metric,
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
-            constrain2range=constrain2range, do.parallel = do.parallel, dayborder=dayborder)
+            constrain2range=constrain2range, do.parallel = do.parallel, dayborder=dayborder,
+            myfun=myfun)
   }
   if (dopart4 == TRUE) {
     cat('\n')
@@ -359,9 +370,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f0=f0,f1=f1,idloc=idloc, colid = colid,coln1 = coln1,nnights = nnights,
             outliers.only = outliers.only,
             excludefirstlast=excludefirstlast,criterror = criterror,
-            includenightcrit=includenightcrit,relyonsleeplog=relyonsleeplog,
+            includenightcrit=includenightcrit,relyonguider=relyonguider,
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
-            storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz)
+            storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
+            data_cleaning_file=data_cleaning_file)
   }
   if (dopart5 == TRUE) {
     cat('\n')
@@ -382,7 +394,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
-            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel)
+            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
+            part5_agg2_60seconds=part5_agg2_60seconds)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -441,7 +454,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
-                   includenightcrit=includenightcrit,includedaycrit=includedaycrit)
+                   includenightcrit=includenightcrit,includedaycrit=includedaycrit,
+                   data_cleaning_file=data_cleaning_file)
   }
   if (visualreport == TRUE) {
     cat('\n')
@@ -450,6 +464,6 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
     g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
             viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz,
-            metric=acc.metric,threshold.lig,threshold.mod,threshold.vig)  
+            metric=acc.metric,threshold.lig,threshold.mod,threshold.vig)
   }
 }

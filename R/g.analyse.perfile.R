@@ -1,4 +1,4 @@
-g.analyse.perfile = function(id, id2, idd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
                   LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                   ML5AD_names, igfullr, igfullr_names,
                   daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
@@ -12,11 +12,11 @@ g.analyse.perfile = function(id, id2, idd, fname, deviceSerialNumber, BodyLocati
   if (idloc == 2) {
     filesummary[vi] = unlist(strsplit(fname,"_"))[1] #id
   } else if (idloc == 4) {
-    filesummary[vi] = idd
+    filesummary[vi] = IDd
   } else if (idloc == 1) {
-    filesummary[vi] = id
+    filesummary[vi] = ID
   } else if (idloc == 3) {
-    filesummary[vi] = id2
+    filesummary[vi] = ID2
   }
   # Serial number
   if (snloc == 1) {
@@ -205,7 +205,7 @@ g.analyse.perfile = function(id, id2, idd, fname, deviceSerialNumber, BodyLocati
                                         "GGIR version"))
     vi = vi + 5
   }
-  rm(LD); rm(id)
+  rm(LD); rm(ID)
   # tidy up daysummary object
   mw = which(is.na(daysummary)==T)
   if (length(mw) > 0) {

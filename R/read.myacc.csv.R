@@ -93,7 +93,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     # extract sample frequency:
     sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
     sn = as.numeric(header[which(row.names(header) == rmc.headername.sn[1]),1])
-    id = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
+    ID = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
     
     # standardise key header names to ease use elsewhere in GGIR:
     if (length(rmc.headername.sf) > 0) {
