@@ -27,11 +27,11 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     # the night time we only need start and end of the SPT window.
     if (window == "WW") {
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday & 
-                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
+                       # (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
                         x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0 & include_window == TRUE)
     } else if (window == "MM") {
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
-                        (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
+                       # (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
                         x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0&
                         x$dur_fulldaywindow_min >= 1380 & include_window == TRUE)  # for MM analysis only full days are interesting (23 hours for one day in the year)
     }
