@@ -346,7 +346,7 @@ start_time | Timestamp when recording started
 startday |	Day of the week on which recording started
 samplefreq |	Sample frequency (Hz)
 device | Accelerometer brand, e.g. GENEACtiv
-clipping_score | The Clipping score: Fraction of 15 minute windows per file for which the acceleration in one of the three axis was close to the maximum for at least 80\% of the time. This should be 0.
+clipping_score | The Clipping score: Fraction of 15 minute windows per file for which the acceleration in one of the three axis was close to the maximum for at least 80% of the time. This should be 0.
 meas_dur_dys} | Measurement duration (days)
 complete_24hcycle | Completeness score: Fraction of 15 minute windows per 24 hours for which no valid data is available at any day of the measurement.
 meas_dur_def_proto_day | measurement duration according to protocol (days):	Measurement duration (days) minus the hours that are ignored at the beginning and end of the measurement motived by protocol design
@@ -728,7 +728,8 @@ A distinction is made between the full results stored in the results/QC folder a
 
 The default exclusion criteria for days in part 5 that leads to the cleaned results are:
 
--	For both MM and WW defined days: is that tThe invalid time percentage during waking hours needs to be below a certain percentage, defined as: 100 x (1 – (the value of argument includedaycrit divided by 24)), with default 100 x (1-(16/24)) = 33%.
+-	For both MM and WW defined days: The invalid (non-wear) time percentage during waking hours needs to be below a certain percentage, defined as: 100 x (1 – (the value of argument includedaycrit divided by 24)), with default 100 x (1-(16/24)) = 33.33%.
+- For both MM and WW defined days: The invalid (non-wear) time percentage during sleep period time hours needs to be below 66% if no sleeplog is used. The 66% is currently not modifiable by the user.
 -	For MM defined days only: The day needs to last at least 23 hours.
 
 Note, no criteria is set for the amount of valid data during the SPT window, because all we are interested in part 5 is knowing the borders of the night and we trust that this was sufficiently estimated by part 4. If you disagree then please note that these all days are included in the full report available in results/QC folder.
