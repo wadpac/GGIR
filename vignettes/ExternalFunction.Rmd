@@ -8,8 +8,6 @@ output:
     toc_depth: 3
     number_sections: true
 urlcolor: blue
-
-
 vignette: >
   %\VignetteIndexEntry{Embedding external functions in GGIR}
   %\VignetteEngine{knitr::rmarkdown}
