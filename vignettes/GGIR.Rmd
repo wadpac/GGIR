@@ -687,14 +687,8 @@ Although many data points are collected we decide to only work with aggregated v
 
 ## Sleep and full day time-use analysis in GGIR
 
-### Sleep analysis: Summary
 
-1. Get sustained inactivity Bouts (SIBs) on all data.
-2. Define Sleep Period Time (SPT) window as the start of the first SIB and the end of the last SIB that overlap with a guider method. The guider method is can be a sleep log or an algorithm as detailed below.
-3. Consider SIB during SPT window as sleep time.
-4. Consider non-SIB during SPT window as nocturnal wake time.
-
-### Sleep analysis: Detail
+### Sleep analysis
 
 In GGIR sleep analysis has been implemented in part 3 and 4. Here the objective is to detect the Sleep Period Time window (often in bed at night). To do so, **sustained inactivity bouts (abbreviated as SIB)** are detected with the heuristic algorithm proposed in 2015 [link](https://doi.org/10.1371/journal.pone.0142533) which looks for periods of time where the z-angle does not change by more than 5 degrees for at least 5 minutes. SIBs can occur anytime in the day. In order to differentiate SIBs that correspond to daytime rest/naps from SIBs that correspond to the main Sleep Period Time window (abbreviated as SPT), a guiding method referred as **guider** is used. All SIBs that overlap with the window defined by guider are considered as sleep within the SPT window. The start of the first SIB identified as sleep period and the end of the last SIB identified as sleep period define the beginning and the end of the SPT window. In this way the classification relies on the accelerometer for detecting the timing of sleep onset and waking up time, but the guider tells it in what part of the day it should look, as SPT window will be defined only if SIB is detected during the guider specified window. The guiding method can be one of the following methods:
 
