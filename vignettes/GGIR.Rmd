@@ -7,6 +7,7 @@ output:
     toc : true
     number_sections: true
     toc_depth: 3
+urlcolor: blue
 vignette: >
   %\VignetteIndexEntry{Accelerometer data processing with GGIR}
   %\VignetteEngine{knitr::rmarkdown}
