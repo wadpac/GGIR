@@ -6,7 +6,9 @@
 A package to process multi-day raw accelerometer data
 }
 \description{
-Disclaimer: If you are a new GGIR user then please see \href{https://cran.r-project.org/web/package=GGIR/vignettes/GGIR.html}{package vignette} for an introduction to GGIR. The vignette provides a narrative tutorial of the package, including key
+Disclaimer: If you are a new GGIR user then please see 
+\href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{package vignette} 
+or an introduction to GGIR. The vignette provides a narrative tutorial of the package, including key
 functions and description of csv output files.
 
 The function documentation (this document should be seen as a complimentary
@@ -140,10 +142,10 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \references{
 \itemize{
 
-\item Migueles JH, Rowlands AV, et al. GGIR: A Research Community–Driven Open Source
+\item Migueles JH, Rowlands AV, et al. GGIR: A Research Community-Driven Open Source
 R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw 
 Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019.
-doi: 10.1123/jmpb.2018-0063.
+doi:10.1123/jmpb.2018-0063.
 \item van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating
 Movement and Gravity Components in an Acceleration Signal and Implications for the
 Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
