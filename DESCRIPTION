@@ -1,10 +1,10 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 1.11-1
-Date: 2020-02-28
+Version: 2.0-0
+Date: 2020-04-24
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
-                  email="v.vanhees@movementdata.nl"),
+                  email="vincentvanhees@gmail.com"),
                   person("Zhou","Fang",role="ctb"),
                   person("Jing Hua","Zhao",role="ctb"),
                   person("Joe","Heywood",role="ctb"),
