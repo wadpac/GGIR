@@ -8,7 +8,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
                    do.lfen = FALSE,
                    do.cal = TRUE,
-                   lb = 0.2, hb = 15,  n = 4,use.temp=TRUE,spherecrit=0.3,
+                   lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
                    configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),...) {
@@ -342,7 +342,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           # cat(paste0("\n",rep('-',options()$width),collapse=''))
           cat("\n")
           cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-          C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
+          C = g.calibrate(datafile, spherecrit=spherecrit,
                           minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                           windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
                           desiredtz=desiredtz,
@@ -437,7 +437,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
             if (do.cal ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
               cat("\n")
               cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-              C = g.calibrate(datafile,use.temp=use.temp,spherecrit=spherecrit,
+              C = g.calibrate(datafile, spherecrit=spherecrit,
                               minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
                               windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
                               desiredtz=desiredtz,  rmc.dec=rmc.dec,configtz=configtz,
