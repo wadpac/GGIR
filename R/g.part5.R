@@ -10,7 +10,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    winhr = 5,
                    M5L5res = 10,
                    overwrite=FALSE,desiredtz="",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE,
-                   do.parallel = TRUE, part5_agg2_60seconds = FALSE) {
+                   do.parallel = TRUE, part5_agg2_60seconds = FALSE,
+                   save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -77,6 +78,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
   boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
   boutdur.in = sort(boutdur.in,decreasing = TRUE)
+  if (save_ms5raw_format != "RData" & save_ms5raw_format != "csv") {
+    save_ms5raw_format = "csv"# specify as csv if user does not clearly specify format
+  }
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
@@ -666,9 +670,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     }
                     
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
-                    rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".csv")
+                    
+                    rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
                     # save time series to csv files
-                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider")], LEVELS, desiredtz, rawlevels_fname)
+                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider")], LEVELS, 
+                                           desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid)
                     
                   }
                 }

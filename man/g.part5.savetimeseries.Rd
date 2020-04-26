@@ -8,7 +8,9 @@
   Saves oart 5 time series to csv files as part of \link{g.part5}.
 }
 \usage{
-  g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname)
+  g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
+  save_ms5raw_format="csv",
+  save_ms5raw_without_invalid=TRUE)
 }
 \arguments{
   \item{ts}{
@@ -18,6 +20,12 @@
   \item{desiredtz}{
   }
   \item{rawlevels_fname}{
+  }
+  \item{save_ms5raw_format}{
+  See \link{g.part5}
+  }
+  \item{save_ms5raw_without_invalid}{
+  See \link{g.part5}
   }
 }
 \value{
