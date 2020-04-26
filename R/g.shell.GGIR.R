@@ -244,6 +244,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("boutdur.in") == FALSE)  boutdur.in = c(10,20,30)
   if (exists("boutdur.lig") == FALSE)  boutdur.lig = c(1,5,10)
   if (exists("save_ms5rawlevels") == FALSE) save_ms5rawlevels = FALSE
+  if (exists("save_ms5raw_format") == FALSE) save_ms5raw_format = "csv"
+  if (exists("save_ms5raw_without_invalid") == FALSE) save_ms5raw_without_invalid = TRUE
   # Related to (r)ead (m)yacc (c)sv file:
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
@@ -395,7 +397,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             winhr = winhr,M5L5res = M5L5res,
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
-            part5_agg2_60seconds=part5_agg2_60seconds)
+            part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
+            save_ms5raw_without_invalid=save_ms5raw_without_invalid)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
