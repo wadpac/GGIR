@@ -1,4 +1,5 @@
-g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
+g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
+                                  save_ms5raw_format="csv", save_ms5raw_without_invalid=TRUE) {
   Nts = nrow(ts)
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
@@ -28,8 +29,10 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
     }
     # round acceleration values to 3 digits to reduce storage space
     mdat$ACC = round(mdat$ACC, digits= 3)
-    # remove irrelevant columns and rows
-    mdat = mdat[-which(mdat$invalid_fullwindow == 1),] # remove days from which we already know that they are not going to be included (first and last day)
+    if (save_ms5raw_without_invalid == TRUE) {
+      # remove irrelevant columns and rows
+      mdat = mdat[-which(mdat$invalid_fullwindow == 1),] # remove days from which we already know that they are not going to be included (first and last day)
+    }
     mdat$guider = ifelse(mdat$guider =='sleeplog', yes = 1, # digitize guider to save storage space
                          no = ifelse(mdat$guider == 'HDCZA', yes = 2,
                                      no =  ifelse(mdat$guider == 'setwindow', yes = 3,
@@ -39,8 +42,15 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname) {
     # re-oder columns
     naS = colnames(mdat)
     # mdat = mdat[,c(which(naS == "filename"),which(naS != "filename"))]
-    # save to csv file
-    write.csv(mdat,rawlevels_fname, row.names = F)
+    if (save_ms5raw_format == "csv") {
+      # save to csv file
+      write.csv(mdat,rawlevels_fname, row.names = F)
+    } else if (save_ms5raw_format == "RData"){
+      # only doing this for RData output, because it would affect file size too much in csv,
+      # remember that this function can create many files: sample sizes times all combinations of thresholds.
+      mdat$timestamp = as.POSIXlt(mdat$timenum, origin="1970-01-01",tz="Europe/London") 
+      save(mdat,rawlevels_fname)
+    }
     #===============================
     rm(mdat)
   }

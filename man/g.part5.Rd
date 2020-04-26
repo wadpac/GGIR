@@ -20,7 +20,8 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
   overwrite=FALSE, desiredtz="", 
   bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE,
-  part5_agg2_60seconds = FALSE)
+  part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
+  save_ms5raw_without_invalid=TRUE)
 
 }
 \arguments{
@@ -168,6 +169,14 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
   \item{part5_agg2_60seconds}{
     Boolean whether to use aggregate epochs to 60 seconds as part of the part 5 analysis.
+  }
+   \item{save_ms5raw_format}{
+    Character string to specify how data should be stored: either "csv" (default) or "RData".
+    Only used if save_ms5rawlevels is set to TRUE. 
+  }
+  \item{save_ms5raw_without_invalid}{
+  Boolean to indicate whether to remove invalid days from the time series output files.
+  Only used if save_ms5rawlevels is set to TRUE. 
   }
 }
 \value{
