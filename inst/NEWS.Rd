@@ -1,12 +1,9 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-
-\section{Changes in version 1.11-2 (GitHub-only-release date:26-04-2020)}{
+\section{Changes in version 2.1-0 (GitHub-only-release date:26-04-2020)}{
 \itemize{
-  \item Numunpack function moved to c++
-  \item Various updates to visualreport (plot5 function)
+  \item Now able o read gzipped csv files
 }
 }
 

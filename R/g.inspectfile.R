@@ -42,10 +42,10 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
     tmp5 = unlist(strsplit(filename,"[.]cw"))
-    if (tmp1[length(tmp1)] == "v") { #this is a csv file
+    if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
-      testcsv = read.csv(paste(datafile,sep=""),nrow=10,skip=10)
-      testcsvtopline = read.csv(paste(datafile,sep=""),nrow=2,skip=1)
+      testcsv = read.csv(checkgz(datafile),nrow=10,skip=10)
+      testcsvtopline = read.csv(checkgz(datafile),nrow=2,skip=1)
       if (ncol(testcsv) == 2 & ncol(testcsvtopline) < 4) { #it is a geneactivefile
         mon = 2
       } else if (ncol(testcsv) >= 3 & ncol(testcsvtopline) < 4) {	#it is an actigraph file
@@ -104,7 +104,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
           sf_r = sf
           csvr = c()
           suppressWarnings(expr={
-            try(expr={csvr = as.matrix(read.csv(datafile,nrow=10,skip=200,sep=""))},silent=TRUE)
+            try(expr={csvr = as.matrix(read.csv(checkgz(datafile),nrow=10,skip=200,sep=""))},silent=TRUE)
           })
           if (length(csvr) > 1) {
             for (ii in 1:nrow(csvr)) {
@@ -136,7 +136,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
       if (mon == 2) {
-        tmp = read.csv(datafile,nrow=50,skip=0)
+        tmp = read.csv(checkgz(datafile),nrow=50,skip=0)
         sf = as.character(tmp[which(as.character(tmp[,1]) == "Measurement Frequency"),2])
         tmp = as.numeric(unlist(strsplit(sf," "))[1])
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
@@ -147,7 +147,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
           sf = as.numeric(tmp[1])
         }
       } else if (mon == 3) {
-        tmp0 = read.csv(datafile,nrow=9,skip=0)
+        tmp0 = read.csv(checkgz(datafile),nrow=9,skip=0)
         tmp = colnames(tmp0)
         tmp2 = as.character(unlist(strsplit(tmp,".Hz"))[1])
         # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2])
@@ -162,7 +162,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
         }
       } else if (mon == 4) {
         # sample frequency is not stored
-        tmp0 = read.csv(datafile,nrow=100000,skip=0)
+        tmp0 = read.csv(checkgz(datafile),nrow=100000,skip=0)
         tmp1 = as.numeric(as.POSIXlt(tmp0[,1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
         sf = floor((sf) /5 ) *5 # round to nearest interget of 5
@@ -229,9 +229,9 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea
-      H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
+      H = read.csv(checkgz(datafile),nrow=20,skip=0) #note that not the entire header is copied
     } else if (mon == 3) { #actigraph
-      H = read.csv(datafile,nrow=9,skip=0)
+      H = read.csv(checkgz(datafile),nrow=9,skip=0)
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
     }
@@ -331,6 +331,9 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   monn = monnames[mon]
   dformc = dformat
   dformn = fornames[dformat]
+  if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
+    closeAllConnections()
+  }
   invisible(list(header=header,monc=monc,monn=monn,
                  dformc=dformc,dformn=dformn,sf=sf,filename=filename))
 }
