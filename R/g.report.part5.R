@@ -32,7 +32,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     } else if (window == "MM") {
       indices = which(x$nonwear_perc_wakinghours <= maxpernwday &
                        # (x$guider == "sleeplog" | (x$guider != "sleeplog" & x$nonwear_perc_sleepperiod < 66)) &
-                        x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0&
+                        x$dur_sleepperiod_min > 0 & x$dur_wakinghours_min > 0 &
                         x$dur_fulldaywindow_min >= 1380 & include_window == TRUE)  # for MM analysis only full days are interesting (23 hours for one day in the year)
     }
     return(indices)
@@ -111,6 +111,21 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
       }
     }
     
+    outputfinal$daytype = 0
+    outputfinal$daytype[which(outputfinal$weekday == "Sunday" | outputfinal$weekday == "Saturday")] = "WE"
+    outputfinal$daytype[which(outputfinal$weekday == "Monday" | outputfinal$weekday == "Tuesday" |
+                        outputfinal$weekday == "Wednesday" | outputfinal$weekday == "Thursday" |
+                        outputfinal$weekday == "Friday")] = "WD"
+    
+    outputfinal$nonwear_perc_wakinghours = as.numeric(outputfinal$nonwear_perc_wakinghours)
+    outputfinal$nonwear_perc_sleepperiod = as.numeric(outputfinal$nonwear_perc_sleepperiod)
+    outputfinal$dur_sleepperiod_min = as.numeric(outputfinal$dur_sleepperiod_min)
+    outputfinal$dur_wakinghours_min = as.numeric(outputfinal$dur_wakinghours_min)
+    outputfinal$guider = as.character(outputfinal$guider)
+    outputfinal$sleeplog_used = as.numeric(outputfinal$sleeplog_used)
+    outputfinal$dur_sleepperiod_min = as.numeric(outputfinal$dur_sleepperiod_min)
+    outputfinal$dur_wakinghours_min = as.numeric(outputfinal$dur_wakinghours_min)
+    outputfinal$dur_fulldaywindow_min = as.numeric(outputfinal$dur_fulldaywindow_min)
     # loop to store varous variants of the analysis seperately
     cat(" generating output for every parameter configurations...\n")
     for (j in 1:length(uwi)) {
@@ -230,18 +245,26 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 outputfinal2 = outputfinal2[,-delcol]
                 OF3 = outputfinal2[seluwi,]
                 
-                OF3$daytype = 0
-                OF3$daytype[which(OF3$weekday == "Sunday" | OF3$weekday == "Saturday")] = "WE"
-                OF3$daytype[which(OF3$weekday == "Monday" | OF3$weekday == "Tuesday" |
-                                    OF3$weekday == "Wednesday" | OF3$weekday == "Thursday" |
-                                    OF3$weekday == "Friday")] = "WD"
                 OF3 = as.data.frame(OF3)
-                OF3$nonwear_perc_wakinghours = as.numeric(OF3$nonwear_perc_wakinghours)
-                OF3$nonwear_perc_sleepperiod = as.numeric(OF3$nonwear_perc_sleepperiod)
-                OF3$dur_sleepperiod_min = as.numeric(OF3$dur_sleepperiod_min)
-                OF3$dur_wakinghours_min = as.numeric(OF3$dur_wakinghours_min)
-                OF3$guider = as.character(OF3$guider)
-                OF3$sleeplog_used = as.numeric(OF3$sleeplog_used)
+                
+                # I moved the following lines to the top,
+                # because it is not logical to do this conversion
+                # at every iteration of the loop.
+                
+                # OF3$daytype = 0
+                # OF3$daytype[which(OF3$weekday == "Sunday" | OF3$weekday == "Saturday")] = "WE"
+                # OF3$daytype[which(OF3$weekday == "Monday" | OF3$weekday == "Tuesday" |
+                #                     OF3$weekday == "Wednesday" | OF3$weekday == "Thursday" |
+                #                     OF3$weekday == "Friday")] = "WD"
+                # OF3$nonwear_perc_wakinghours = as.numeric(OF3$nonwear_perc_wakinghours)
+                # OF3$nonwear_perc_sleepperiod = as.numeric(OF3$nonwear_perc_sleepperiod)
+                # OF3$dur_sleepperiod_min = as.numeric(OF3$dur_sleepperiod_min)
+                # OF3$dur_wakinghours_min = as.numeric(OF3$dur_wakinghours_min)
+                # OF3$guider = as.character(OF3$guider)
+                # OF3$sleeplog_used = as.numeric(OF3$sleeplog_used)
+                # OF3$dur_sleepperiod_min = as.numeric(OF3$dur_sleepperiod_min)
+                # OF3$dur_wakinghours_min = as.numeric(OF3$dur_wakinghours_min)
+                # OF3$dur_fulldaywindow_min = as.numeric(OF3$dur_fulldaywindow_min)
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 
