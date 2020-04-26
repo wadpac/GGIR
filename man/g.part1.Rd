@@ -30,7 +30,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
         do.lfen = FALSE,
         do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
-        use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
+        spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
         dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
@@ -133,9 +133,6 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{n}{
   order of the frequency filter, see \link{g.getmeta}
-  }
-  \item{use.temp}{
-  see \link{g.calibrate} use temperature sensor data if available (Geneactive only)
   }
   \item{spherecrit}{
   see \link{g.calibrate} the minimum required acceleration value (in g) on both
