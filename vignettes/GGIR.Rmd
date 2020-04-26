@@ -716,6 +716,8 @@ All the information for each night is stored in the results/QC folder allowing t
 -	If the study proposed a sleep log to the individuals, then nights are excluded for which the sleep log was not used as a guider (i.o.w. nights with cleaningcode not equal to 0 or variable sleep log used equals FALSE).
 -	If the study did not propose a sleep log to the individuals, then all nights are removed with cleaningcode higher than 1.
 
+Notice that part 4 is focussed on sleep research, by which the cleaned reported is the way it is. In the next section we will discuss the analysis done by part 5. There, the choice of guider may be considered less important, by which we use different cirtier for including nights. So, you may see that a night that is excluded from the cleaned results in part 4 still appears in the cleaned results for part 5.
+
 The package allows some adjustments to be made after data quality check. The _data_cleaning_file_ argument allows you to specify individuals and nights for whom part4 should entirely rely on the guider (for example if we decide to use sleep log only information).
 
 ### Waking-waking or 24 hour time-use analysis
@@ -724,8 +726,9 @@ In part 5 the sleep estimates from part 4 are used to describe 24-hour time use.
 
 If WW is used in combination with ignoring the first and last midnight, argument excludefirstlast, then the first wake-up time (on the second recording day) needs to be extracted for the first WW day. This is done with the guider method. This also means that the last WW window ends on the before last morning of the recording.
 
-If you want to inspect the time series corresponding to these windows then see argument save_ms5rawlevels, which allows you to export the time series including behavioral classes and non-wear information to csv files.
+If you want to inspect the time series corresponding to these windows then see argument save_ms5rawlevels, which allows you to export the time series including behavioral classes and non-wear information to csv files. The behavioral classess are included as numbers, the legend for these classes is stored as a separate legend file in the meta/ms5.outraw folder named "behavioralcodes2020-04-26.csv" where the date will correspond to the date of analysis.
 A distinction is made between the full results stored in the results/QC folder and the cleaned results stored in the results folder.
+
 
 The default exclusion criteria for days in part 5 that leads to the cleaned results are:
 
