@@ -694,8 +694,8 @@ In GGIR sleep analysis has been implemented in part 3 and 4. Here the objective 
 
 -	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533). 
 -	**Guider = HDCZA**: As presented in [our 2018 article](http://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, designed for studies where no sleep log is avialable. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
--	**Guider = L5+/-12**: As presented in [our 2018 article](http://dx.doi.org/10.1038/s41598-018-31266-z). Twelve hour window centered around the least active 5 hours of the day.
-- **Guider = setwindow**: Window times are specificed by user, constant at specific clock times with argument def.noc.sleep.
+-	**Guider = L5+/-12**: As presented in [our 2018 article](http://dx.doi.org/10.1038/s41598-018-31266-z). Twelve hour window centred around the least active 5 hours of the day.
+- **Guider = setwindow**: Window times are specified by user, constant at specific clock times with argument def.noc.sleep.
 
 GGIR uses by default the sleep log if available, if the sleep log is not available it falls back on the HDCZA algorithm, if this is not available it will falls back on the L5+/-12 definition, and if this is not available it will use the setwindow. The user can specify the priority with argument def.noc.sleep. So, when we refer to guider then we refer to one of these four methods.
 
@@ -705,9 +705,9 @@ To monitor possible problems with the sleep assessment, the variable **cleaningc
 
 -	0: no problem, sleep log available and SPT is identified;
 -	1: sleep log not available, thus HDCZA is used and SPT is identified,
--	2: not enough valid accelerometer data based on the non-wear and clipping detection from part summarized over the present night where the argument includenightcrit indicates the minimum number of hours of valid data needed within those 24 hours.
+-	2: not enough valid accelerometer data based on the non-wear and clipping detection from part summarised over the present night where the argument includenightcrit indicates the minimum number of hours of valid data needed within those 24 hours.
 -	3: no accelerometer data available,
--	4: there were no nights to be analyzed for this person,
+-	4: there were no nights to be analysed for this person,
 -	5: SPT estimated based on guider only, because either no SIB was found during the entire guider window, which complicates defining the start and end of the SPT, or the user specified the ID number of the recording and the night number in the _data_cleaning_file_ to tell GGIR to rely on the guider and not rely on the accelerometer data for this particular night
 -	6: no sleep log available and HDCZA also failed for this specific night then use average of HDCZA estimates from other nights in the recording as guider for this night. If HDCZA estimates are not available during the entire recording then use L5+/-12 estimate for this night. The last scenario seems highly unlikely in a recording where the accelerometer was worn for at least one day.
 
@@ -716,7 +716,7 @@ All the information for each night is stored in the results/QC folder allowing t
 -	If the study proposed a sleep log to the individuals, then nights are excluded for which the sleep log was not used as a guider (i.o.w. nights with cleaningcode not equal to 0 or variable sleep log used equals FALSE).
 -	If the study did not propose a sleep log to the individuals, then all nights are removed with cleaningcode higher than 1.
 
-Notice that part 4 is focussed on sleep research, by which the cleaned reported is the way it is. In the next section we will discuss the analysis done by part 5. There, the choice of guider may be considered less important, by which we use different cirtier for including nights. So, you may see that a night that is excluded from the cleaned results in part 4 still appears in the cleaned results for part 5.
+Notice that part 4 is focused on sleep research, by which the cleaned reported is the way it is. In the next section we will discuss the analysis done by part 5. There, the choice of guider may be considered less important, by which we use different criteria for including nights. So, you may see that a night that is excluded from the cleaned results in part 4 still appears in the cleaned results for part 5.
 
 The package allows some adjustments to be made after data quality check. The _data_cleaning_file_ argument allows you to specify individuals and nights for whom part4 should entirely rely on the guider (for example if we decide to use sleep log only information).
 
