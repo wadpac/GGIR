@@ -603,7 +603,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             }
           }
           # Fill matrix 'nightsummary' with key sleep parameters
-          if (length(spocum) > 0 & class(spocum) == "matrix" & length(calendar_date) >= j) {
+          if (length(spocum) > 0 & class(spocum)[1] == "matrix" & length(calendar_date) >= j) {
             if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendar_date[j] != "") {
               undef = unique(spocum[,5])
               for (defi in undef) {
