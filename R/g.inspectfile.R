@@ -320,10 +320,10 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       varname = rownames(as.matrix(H))
       H = data.frame(varname = varname,varvalue = as.character(H))
     } else {
-      if (length(H) > 1 & class(H) == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2])
+      if (length(H) > 1 & class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2])
     }
   }
-  if (dformat != 4 & length(H) > 1 & (class(H) == "matrix" | class(H) == "data.frame")) {
+  if (dformat != 4 & length(H) > 1 & (class(H)[1] == "matrix" | class(H)[1] == "data.frame")) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
     header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
   }
