@@ -4,12 +4,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c()) {
-  
-  
+
+
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
-  
+
   nnpp = 40 # number of nights to be displayed in the report (hard-coded not a critical parameter for most scenarios)
   #------------------------------------------------
   # check whether milestone 3 data exists, if not give warning
@@ -32,7 +32,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   } else {
     dolog = FALSE
   }
-  if (dolog == TRUE) {         
+  if (dolog == TRUE) {
     LL = g.loadlog(loglocation,coln1,colid,nnights,sleeplogidnum)
     sleeplog = LL$sleeplog
     save(sleeplog,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))
@@ -43,7 +43,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > length(fnames)) f0 = 1
   if (f1 == 0 | length(f1) == 0 | f1 > length(fnames))  f1 = length(fnames)
-  #-----------------------------------------------------  
+  #-----------------------------------------------------
   # related to plotting
   cnt = 1 #counter to keep track of how many nights have been plotted in the visual report
   idlabels = rep(0,nnpp) # initialize vaiable for plot labels
@@ -51,7 +51,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   cnt67 = 1 # counter used to decide whether to create a new pdf file for the plots
   #-----------------------------------------------------
   # initialize output variable names
-  colnamesnightsummary = c("ID", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
+  colnamesnightsummary = c("ID", "night","sleeponset", "wakeup", "SptDuration", "sleepparam",
                            "guider_onset", "guider_wakeup", "guider_SptDuration",
                            "error_onset", "error_wake", "error_dur",
                            "fraction_night_invalid",
@@ -66,14 +66,14 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   # initialize variable to hold sleeplog derived sleep duration
   # if not sleep log was used then the estimates of the sleep period time window
   # will be used instead
-  logdur = rep(0,length(fnames)) 
+  logdur = rep(0,length(fnames))
   # initialize variable to keep whether sleeplog was used
   # if ((f1-f0) > 0) {
   #   sleeplog_used = rep(" ",((f1-f0)+1))
   # } else {
   #   sleeplog_used = " "
   # }
-  
+
   #========================================================================
   # check which files have already been processed, such that no double work is done
   ffdone = c()
@@ -90,7 +90,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     if (length(datadir) == 1) { #could be a directory or one file
       if (length(unlist(strsplit(datadir,split = "[.](cs|bi|cw)")))>1) filelist = TRUE
     } else { #multiple files
-      filelist = TRUE    
+      filelist = TRUE
     }
     if (filelist == FALSE) {
       fnamesfull = dir(datadir,recursive=TRUE,pattern="[.](csv|bin|cwa)")
@@ -163,9 +163,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         cnt67 = 2
       }
       if (storefolderstructure == FALSE) { # initialize part4 output matrix per recording (file)
-        nightsummary = as.data.frame(matrix(0,0,31)) 
+        nightsummary = as.data.frame(matrix(0,0,31))
       } else {
-        nightsummary = as.data.frame(matrix(0,0,33)) 
+        nightsummary = as.data.frame(matrix(0,0,33))
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
@@ -195,7 +195,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             if (is.na(numletter) == TRUE) { # do not remove latest character if it is a number
               accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
             }
-          } 
+          }
           accid = suppressWarnings(as.numeric(accid))
           #catch for files with only id in filename and for whom the above attempt to extract the id failed:
           if (is.na(accid) == TRUE) accid = accid_bu
@@ -229,7 +229,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 warning("\nArgument sleeplogidnum is set to TRUE, but it seems the identifiers are
                     stored as character values, you may want to consider changing sleeplogidnum to TRUE")
               } else {
-                
+
                 if (is.na(accid_num) == TRUE) { # format probably incorrect
                   warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
                            code expects format: ",as.character(accid[1])))
@@ -237,10 +237,10 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               }
             }
           }
-          
+
         } else {
           wi = 1
-        } 
+        }
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
         if (length(nnights) == 0) {
@@ -275,7 +275,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # get default onset and wake (based on sleeplog or on heuristic algorithms)
           # def.noc.sleep is an input argument the GGIR user can use
           # to specify what detection strategy is used in the absense of a sleep diary
-          
+
           if (length(def.noc.sleep) == 0 | length(sptwindow_HDCZA_start) == 0) {
             # use L5+/-6hr algorithm if HDCZA fails OR if the user explicitely asks for it (length zero argument)
             guider = "notavailable"
@@ -284,7 +284,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               defaultSptWake = L5list[j] + 6
               guider = "L512"
             }
-          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(sptwindow_HDCZA_start) != 0) { 
+          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(sptwindow_HDCZA_start) != 0) {
             # use HDCZA algorithm (inside the g.sib.det function) as backup for sleeplog OR if user explicitely asks for it
             defaultSptOnset = sptwindow_HDCZA_start[j]
             defaultSptWake = sptwindow_HDCZA_end[j]
@@ -320,7 +320,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           defaultdur = defaultSptWake - defaultSptOnset #default sleep duration based on sleeplog, L5+/-6hr, or HDCZA algorithm
           sleeplog_used = FALSE
           if (dolog == TRUE) {
-            if (is.na(sleeplog[wi[j],3]) == FALSE) {  #length(wi)  > 0 & 
+            if (is.na(sleeplog[wi[j],3]) == FALSE) {  #length(wi)  > 0 &
               #-----------------------------------------------------------
               #If sleep log is available for a specific night then use it
               sleeplog_used =  TRUE
@@ -331,11 +331,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           if (sleeplog_used == FALSE) {
             #-----------------------------------------------------------
             #If sleep log is not available available, use default values calculated above (with the heuristic algorithm HDCZA or if that fails L5+/-6hr.
-            if (j == nnights.list[1] & dolog == FALSE) { 
+            if (j == nnights.list[1] & dolog == FALSE) {
               sleeplog.t = data.frame(matrix(0,length(nnightlist),5))
               names(sleeplog.t) = c("ID","night","duration","sleeponset","sleepwake")
             }
-            sleeplog.t[j,1:5] = c(accid, j, defaultdur, 
+            sleeplog.t[j,1:5] = c(accid, j, defaultdur,
                                        convertHRsinceprevMN2Clocktime(defaultSptOnset),
                                        convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
@@ -370,7 +370,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               if (xHR < 10) xHR = paste("0",xHR,sep="")
               if (xMI < 10) xMI = paste("0",xMI,sep="")
               if (xSE < 10) xSE = paste("0",xSE,sep="")
-              x = paste(xHR,":",xMI,":",xSE,sep="") 
+              x = paste(xHR,":",xMI,":",xSE,sep="")
               return(x)
             }
             tmp1 = doubleDigitClocktime(tmp1)
@@ -491,7 +491,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       spo[,2:3] = spo[,2:3]+ 24 # + 24 to create continues timelines for day 2 relative to day 1
                       tmpCmd = paste("spo_day2",k,"= spo",sep="") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
-                      
+
                     } else {
                       tmpCmd = paste("spo_day2",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
@@ -513,7 +513,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 # waking-up to waking windows.
                 # So, we will now add two tiny artificial sibs (1-minute) at the beginning and end
                 # of the guider-based SPT to make that the SPT is still detected guided entirely by the guider.
-                # and add cleaningcode = 5, this means that the night 
+                # and add cleaningcode = 5, this means that the night
                 # will be omitted from the part 4 cleaned results,
                 # but is still available for inspection in the full part 4
                 # results and available
@@ -526,7 +526,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                 }
                 if (length(which(spo[,2] < SptWake & spo[,3] > SptOnset)) == 0 | # If no SIBs overlap with the SPT window
-                    relyonguider_thisnight == TRUE ) { # If night is explicitely listed 
+                    relyonguider_thisnight == TRUE ) { # If night is explicitely listed
                   cleaningcode = 5
                   newlines = rbind(spo[1,],spo[1,])
                   newlines[1,1:4] = c(nrow(spo)+1, SptOnset, SptOnset + 1/60, 1)
@@ -543,17 +543,17 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS
                     if (relyonguider == TRUE | relyonguider_thisnight == TRUE) { #if TRUE then sleeplog value is assigned to accelerometer-based value for onset and wake up
                       if ((spo[evi,2] < SptWake & spo[evi,3] > SptWake) | (spo[evi,2] < SptWake & spo[evi,3] < spo[evi,2])) {
-                        spo[evi,3] = SptWake   
+                        spo[evi,3] = SptWake
                       }
                       if ((spo[evi,2] < SptOnset & spo[evi,3] > SptOnset) | (spo[evi,3] > SptOnset & spo[evi,3] < spo[evi,2])) {
                         spo[evi,2] = SptOnset
                       }
                     }
-                  } 
+                  }
                 }
                 if (daysleeper[j] == TRUE) {
-                  # for the labelling above it was needed to have times > 36, but for the plotting 
-                  # time in the second day needs to be returned to a normal 24 hour scale. 
+                  # for the labelling above it was needed to have times > 36, but for the plotting
+                  # time in the second day needs to be returned to a normal 24 hour scale.
                   reversetime2 = which(spo[,2] >= 36)
                   reversetime3 = which(spo[,3] >= 36)
                   if (length(reversetime2) > 0) spo[reversetime2,2] = spo[reversetime2,2] - 24
@@ -612,7 +612,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 rowswithdefi = which(spocum[,5] == defi)
                 if(length(rowswithdefi) > 1) { # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi,]
-                  
+
                   # in DST it can be that a double hour is not recognized as part of the SPT
                   correct01010pattern = function(x) {
                     x = as.numeric(x)
@@ -626,7 +626,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                   #sbefore = spocum.t[,4]
                   delta_t1 = diff(as.numeric(spocum.t[,3]))
-                  
+
                   spocum.t[,4] = correct01010pattern(spocum.t[,4])
                   #----------------------------
                   nightsummary[sumi,1] = accid
@@ -651,7 +651,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                   nightsummary[,3] = as.numeric(nightsummary[,3]) # onset
                   nightsummary[,4] = as.numeric(nightsummary[,4]) # wake
-                  if (nightsummary[sumi,3] > nightsummary[sumi,4] & # onset after wake is impossible 
+                  if (nightsummary[sumi,3] > nightsummary[sumi,4] & # onset after wake is impossible
                       nightsummary[sumi,4] < 36 & daysleeper[j] == TRUE) {  # even more impossible if wake occurs before none, while we previously labelled it as daysleep
                     nightsummary[sumi,4] = nightsummary[sumi,4] + 24 # correction for overcorrection in waking time
                   }
@@ -759,7 +759,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       if (onsetBeforeDoubleHour == TRUE & wakeInDoubleHour == TRUE ) {
                         if (timeWentBackward == TRUE) { # if time went back then it ended in the second hour of the double hour and the + 1 is definitely justified
                           nightsummary[,durcol] = nightsummary[,durcol] + 1
-                        } else if (timeWentBackward == FALSE) { 
+                        } else if (timeWentBackward == FALSE) {
                           # if time did not go back then SPT may have ended in either the first or second of the double hour
                           # TO DO: distinguish these rare cases, for now assume it ends in the second hour to avoid sleep efficiency above 100%.
                           nightsummary[,durcol] = nightsummary[,durcol] + 1
@@ -768,7 +768,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       if (wakeAfterDoubleHour == TRUE & onsetInDoubleHour == TRUE) {
                         if (timeWentBackward == TRUE) { # if time went back then it ended in the second hour of the double hour and the + 1 is definitely justified
                           nightsummary[,durcol] = nightsummary[,durcol] + 1 # accelerometer derived sleep duration
-                        } else if (timeWentBackward == FALSE) { 
+                        } else if (timeWentBackward == FALSE) {
                           # if time did not go back then SPT may have ended in either the first or second of the double hour
                           # TO DO: distinguish these rare cases, for now assume it ends in the second hour to avoid sleep efficiency above 100%.
                           nightsummary[,durcol] = nightsummary[,durcol] + 1 # accelerometer derived sleep duration
@@ -779,7 +779,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=3,wakecol=4,durcol=5,dsthour=dsthour,delta_t1=delta_t1)
                     nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=7,wakecol=8,durcol=9,dsthour=dsthour,delta_t1=delta_t1)
                   }
-                  
+
                   #======================================================================================================
                   sibds_atleast15min = 0
                   if (length(sibds) > 0) {
@@ -822,7 +822,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,27] = fnames[i]
                   # nightsummary
                   #------------------------------------------------------------------------
-                  # PLOT     
+                  # PLOT
                   if (do.visual == TRUE) {
                     if (defi == undef[1]) { #only decide whether to plot the first time
                       if (outliers.only == TRUE) {
@@ -839,7 +839,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     }
                     # upcoming 5 lines added to avoid ending up with meaningless visualisations of nights
                     # for which no sleep log entry was available, and for which L5 method provided estimates
-                    if (length(loglocation) > 0) { 
+                    if (length(loglocation) > 0) {
                       cleaningcriterion = 1
                     } else {
                       cleaningcriterion = 2
@@ -847,11 +847,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     if (doplot == TRUE & cleaningcode < cleaningcriterion) {
                       idlabels[cnt] = paste("ID",accid," night",j,sep="")
                       den = 20
-                      defii = which(undef == defi)              
+                      defii = which(undef == defi)
                       qtop = ((defii / length(undef))*0.6) - 0.3
                       qbot = (((defii-1) / length(undef))*0.6) - 0.3
                       # add bar for each sleep defintion of accelerometer
-                      for (pli in 1:nrow(spocum.t)) { 
+                      for (pli in 1:nrow(spocum.t)) {
                         if (spocum.t[pli,2] > spocum.t[pli,3]) {
                           if (pli > 1 & pli < nrow(spocum.t) & abs(as.numeric(spocum.t[pli,2]) - as.numeric(spocum.t[pli,3])) < 2) {
                             spocum.t[pli,2:3] = spocum.t[pli,3:2] #add 15/12/2014 to deal with effect of daysaving time.
@@ -889,7 +889,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,29] = sleeplog_used
                   nightsummary[sumi,30] = acc_available
                   nightsummary[sumi,31] = guider
-                  
+
                   if (storefolderstructure == TRUE) {
                     nightsummary[sumi,32] = ffd[i] #full filename structure
                     nightsummary[sumi,33] = ffp[i] #use the lowest foldername as foldername name
@@ -935,8 +935,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     dev.off()
     cnt67 = 1
   }
-  
-  SI = sessionInfo() 
+
+  SI = sessionInfo()
   sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part4.RData",sep="")
   if (file.exists(sessionInfoFile)) {
     FI = file.info(sessionInfoFile)
