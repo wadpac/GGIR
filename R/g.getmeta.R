@@ -47,9 +47,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
-                          do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
+  metrics2do = data.frame(do.bfen, do.enmo,do.lfenmo,do.en,do.hfen,
+                          do.hfenplus, do.mad,do.anglex,do.angley,do.anglez,
+                          do.roll_med_acc_x, do.roll_med_acc_y,do.roll_med_acc_z,
+                          do.dev_roll_med_acc_x, do.dev_roll_med_acc_y,
+                          do.dev_roll_med_acc_z, do.enmoa,do.lfen, stringsAsFactors = TRUE)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
@@ -81,7 +83,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   PreviousEndPage = c() # needed for g.readaccfile
   start_meas = ws2/60 #ensures that first window starts at logical timepoint relative to its size (15,30,45 or 60 minutes of each hour)
   monnames = c("genea","geneactive","actigraph","axivity") #monitor names
-  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE,NFilePagesSkipped = 0)
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
+                           filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (15 minutes or whatever is specified above)
@@ -841,7 +844,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa,do.lfen)])
-    metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
+    metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
     for (ncolms in 2:ncol(metashort)) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
@@ -851,7 +854,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & use.temp == TRUE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
     }
-    metalong = data.frame(A = metalong,stringsAsFactors = FALSE)
+    metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {
       metalong[,ncolml] = as.numeric(metalong[,ncolml])

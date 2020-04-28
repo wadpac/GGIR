@@ -119,7 +119,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
                      "dmY", "dmy", "dbY", "dby",
                      "Ymd", "ymd", "Ybd", "ybd",
                      "Ydm", "ydm", "Ydb", "ydb")
-      fc = data.frame(matrix(0,1,length(allformats))) # data.frame to keep track of formats that have been checked
+      fc = data.frame(matrix(0,1,length(allformats)), stringsAsFactors = TRUE) # data.frame to keep track of formats that have been checked
       names(fc) = allformats
       # Now systematically go through all possible formats to identify which one it is
       fc$mdY = length(grep("MM[.]dd[.]yyyy|M[.]d[.]yyyy|M[.]dd[.]yyyy|MM[.]d[.]yyyy",topline))
