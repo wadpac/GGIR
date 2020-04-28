@@ -268,11 +268,11 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     if (is.list(H) == TRUE) {
       conv = c()
       for (jj in 1:length(H)) {
-        conv = rbind(conv,H[[jj]])
+        conv = rbind(conv,H[[jj]], stringsAsFactors = TRUE)
       }
-      H = as.data.frame(conv)
+      H = as.data.frame(conv, stringsAsFactors = TRUE)
     } else {
-      H = as.data.frame(t(H))
+      H = as.data.frame(t(H), stringsAsFactors = TRUE)
     }
     names(H) = c("hnames","hvalues")
   } else if (dformat == 4) { #cwa data
@@ -283,7 +283,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
 
     H = header = Pusercsvformat$header
     if (Pusercsvformat$header != "no header") {
-      H = data.frame(name=row.names(header),value=header)
+      H = data.frame(name=row.names(header),value=header, stringsAsFactors = TRUE)
     }
     sf = rmc.sf
   }
@@ -314,18 +314,18 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     }
   }
   if (dformat == 4) {
-    header = data.frame(value=H,row.names=rownames(H))
+    header = data.frame(value=H,row.names=rownames(H), stringsAsFactors = TRUE)
   } else {
     if (mon == 2 & dformat == 1) {
       varname = rownames(as.matrix(H))
-      H = data.frame(varname = varname,varvalue = as.character(H))
+      H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
     } else {
-      if (length(H) > 1 & class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2])
+      if (length(H) > 1 & class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2], stringsAsFactors = TRUE)
     }
   }
   if (dformat != 4 & length(H) > 1 & (class(H)[1] == "matrix" | class(H)[1] == "data.frame")) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
-    header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1])
+    header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1], stringsAsFactors = TRUE)
   }
   monc = mon
   monn = monnames[mon]

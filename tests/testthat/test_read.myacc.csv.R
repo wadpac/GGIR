@@ -17,19 +17,22 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   temp = rnorm(N)
   wear = c(rep(TRUE,N/3),rep(FALSE,N/6),rep(TRUE,N/3),rep(TRUE,N/6))
   # create test file 1: No header, with temperature, with time
-  S1 = data.frame(x=accx, time=timestamps,y=accy,z=accz,temp=temp+20)
+  S1 = data.frame(x=accx, time=timestamps, 
+                  y=accy, z=accz, temp=temp+20, 
+                  stringsAsFactors = TRUE)
   testfile[1] = "testcsv1.csv"
   write.csv(S1, file= testfile[1], row.names = FALSE)
   # create test file 2: No header, without temperature, with time
-  S2 = data.frame(x=accx, time=timestamps,y=accy,z=accz)
+  S2 = data.frame(x=accx, time=timestamps,y=accy,z=accz, stringsAsFactors = TRUE)
   testfile[2] = "testcsv2.csv"
   write.csv(S2, file= testfile[2], row.names = FALSE)
   # create test file 3: No header, without temperature, without time, with wear channel
-  S3 = data.frame(x=accx, y=accy, z=accz, wear=wear)
+  S3 = data.frame(x=accx, y=accy, z=accz, wear=wear, stringsAsFactors = TRUE)
   testfile[3] = "testcsv3.csv"
   write.csv(S3, file= testfile[3], row.names = FALSE)
   # create test file 4: With header, with temperature, with time
-  S4 = as.matrix(data.frame(x=accx, time=timestamps,y=accy,z=accz,temp=temp+20))
+  S4 = as.matrix(data.frame(x=accx, time=timestamps,y=accy,
+                            z=accz,temp=temp+20, stringsAsFactors = TRUE))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S4))
   hd[1,1:2] = c("ID","12345")
@@ -55,7 +58,8 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   zb = sample(x = 1:(2^bits),size = N,replace = TRUE)
   set.seed(400)
   temp3 = rnorm(N)
-  S5 = as.matrix(data.frame(x=xb, time=timestamps,y=yb, z=zb,temp=temp3+20))
+  S5 = as.matrix(data.frame(x=xb, time=timestamps,y=yb,
+                            z=zb,temp=temp3+20, stringsAsFactors = TRUE))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S5))
   hd[1,1:2] = c("ID","12345")
@@ -83,7 +87,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   zb = sample(x = 1:(2^bits),size = N_withgap,replace = TRUE)
   set.seed(400)
   temp2 = rnorm(N_withgap)
-  S7 = as.matrix(data.frame(x=xb, time=timestamps_gap,y=yb, z=zb,temp=temp2+20))
+  S7 = as.matrix(data.frame(x=xb, time=timestamps_gap,y=yb, z=zb,temp=temp2+20, stringsAsFactors = TRUE))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S5))
   hd[1,1:2] = c("ID","12345")

@@ -316,7 +316,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
               personSummary[missingv,colli] = ""
             }
           }
-          personSummary = as.data.frame(personSummary)
+          personSummary = as.data.frame(personSummary, stringsAsFactors = TRUE)
           if (length(personSummarynames) != ncol(personSummary)) {
             if (length(personSummarynames_backup) > 0) {
               names(personSummary) = personSummarynames_backup

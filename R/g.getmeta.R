@@ -47,9 +47,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  metrics2do = data.frame(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,
-                          do.hfenplus,do.mad,do.anglex,do.angley,do.anglez,do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen)
+  metrics2do = data.frame(do.bfen, do.enmo,do.lfenmo,do.en,do.hfen,
+                          do.hfenplus, do.mad,do.anglex,do.angley,do.anglez,
+                          do.roll_med_acc_x, do.roll_med_acc_y,do.roll_med_acc_z,
+                          do.dev_roll_med_acc_x, do.dev_roll_med_acc_y,
+                          do.dev_roll_med_acc_z, do.enmoa,do.lfen, stringsAsFactors = TRUE)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
@@ -61,7 +63,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
     # bugs after waiting for the data to be load
-    check_myfun(myfun, windowsizes) 
+    check_myfun(myfun, windowsizes)
   }
 
   if (length(nmetrics) == 0) {
@@ -85,9 +87,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = starttime = wday = weekdays = wdayname = c()
-  
+
   monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
-  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE,NFilePagesSkipped = 0)
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
+  filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
@@ -145,7 +148,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   options(warn=-1)
   if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
-  
+
   ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat)
@@ -266,7 +269,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
-        SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat, 
+        SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
                                                             P, header, desiredtz,
                                                         sf, i, datafile,  ws2,
@@ -325,7 +328,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             }
             if (mon != 5) {
               light = as.numeric(data[,lightcolumn])
-            } 
+            }
             if (mon == 5 & length(rmc.col.wear) > 0) {
               wearcol = as.character(data[, which(colnames(data) == "wear")])
               suppressWarnings(storage.mode(wearcola) <- "logical")
@@ -494,12 +497,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (do.lfen == TRUE) {
           metashort[count:(count-1+length(LFEN3b)),col_msi] = LFEN3b; col_msi = col_msi + 1
         }
-        
+
         if (length(myfun) != 0) { # if an external function is applied.
           NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-        
+
         count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
         rm(allmetrics)
         # update blocksize depending on available memory
@@ -531,7 +534,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           if (length(rmc.col.wear) > 0) {
             wearTable = table(wearcol[(1+hoc1):hoc2], useNA = FALSE)
             NWav[h,1] = as.logical(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
-          } 
+          }
           for (jj in  1:3) {
             #hoc1 & hoc2 = edges of windows
             #window is bigger& window2 is smaller one
@@ -738,13 +741,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                          do.enmoa,do.lfen)])
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
-    NbasicMetrics = length(metricnames_short) 
+    NbasicMetrics = length(metricnames_short)
     if (length(myfun) != 0) {
       metricnames_short = c(metricnames_short, myfun$colnames)
       if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
     }
-    
-    metashort = data.frame(A = metashort,stringsAsFactors = FALSE)
+
+    metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
@@ -754,7 +757,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & use.temp == TRUE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
     }
-    metalong = data.frame(A = metalong,stringsAsFactors = FALSE)
+    metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {
       metalong[,ncolml] = as.numeric(metalong[,ncolml])

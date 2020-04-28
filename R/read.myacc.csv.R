@@ -38,7 +38,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     header_tmp = as.data.frame(data.table::fread(file = rmc.file,
                                                  nrow = rmc.header.length, 
                                                  skip=rmc.firstrow.header-1,
-                                                 dec=rmc.dec, showProgress = FALSE, header = FALSE))
+                                                 dec=rmc.dec, showProgress = FALSE, header = FALSE,
+                                                 stringsAsFactors = TRUE))
     options(warn=0)
     if (length(rmc.header.structure) != 0) { # header is stored in 1 column, with strings that need to be split
       if (length(header_tmp) == 1) { # one header item
