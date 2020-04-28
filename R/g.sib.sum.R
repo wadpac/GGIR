@@ -1,5 +1,5 @@
 g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
-  A = as.data.frame(SLE$output)
+  A = as.data.frame(SLE$output, stringsAsFactors = TRUE)
   invalid = A$invalid
   if (ignorenonwear == TRUE) {
     if (length(which(A$invalid==1)) > 0) {
@@ -17,7 +17,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   }
   # time = as.POSIXlt(A$time,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
   night = A$night
-  sleep = as.data.frame(as.matrix(A[,(which(colnames(A)=="night")+1):ncol(A)]))
+  sleep = as.data.frame(as.matrix(A[,(which(colnames(A)=="night")+1):ncol(A)]), stringsAsFactors = TRUE)
   colnames(sleep) = colnames(A)[(which(colnames(A)=="night")+1):ncol(A)]
   ws3 = M$windowsizes[1]
   ws2 = M$windowsizes[2]
@@ -32,7 +32,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
     qqq2 = which(night == i)[length(which(night == i))]
     if (length(qqq1) == 1 & length(qqq2) == 1) {
       time.t = time[qqq1:qqq2]
-      sleep.t = as.data.frame(sleep[qqq1:qqq2,])
+      sleep.t = as.data.frame(sleep[qqq1:qqq2,], stringsAsFactors = TRUE)
       colnames(sleep.t) = colnames(sleep)
       invalid.t = invalid[qqq1:qqq2]
       for (j in 1:ncol(sleep.t)) { #sleep definitions

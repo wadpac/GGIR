@@ -4,8 +4,8 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
   # get data
   S = tuneR::readWave(wavfile, from = start, to = end, units = units)
   B = tuneR::extractWave(S, from = start, to = length(S),xunit = c("samples", "time"))
-  S = as.data.frame(S)
-  B = as.data.frame(B)
+  S = as.data.frame(S, stringsAsFactors = TRUE)
+  B = as.data.frame(B, stringsAsFactors = TRUE)
   #-------------------------------------------------------
   # extract info from header: fileEncoding does not seem to be consistent, so try variants
   header = c()
@@ -40,7 +40,7 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
       tmp = c(tmp[1],tmp[length(tmp)])
     }
   })
-  P = as.data.frame(t(P))
+  P = as.data.frame(t(P), stringsAsFactors = TRUE)
   names(P) = c("hnames","hvalues")
   H = tuneR::readWave(wavfile, from = 1, to = 3600,units = c("seconds"), header = TRUE) #get wav file header
   #-----------------------------------------------

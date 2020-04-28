@@ -14,7 +14,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidn
   }
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ",(nrow(S)*nnights),2)
-  
+
   cnt = 1
   for (i in 1:nnights) { #loop through nights
     SL = as.character(S[,coln1+((i-1)*2)])
@@ -60,7 +60,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidn
     sleeplog = sleeplog[-c(which(sleeplog[,1] == 0)),]
     sleeplog_times = sleeplog_times[-c(which(sleeplog[,1] == 0)),]
   }
-  sleeplog= as.data.frame(sleeplog)
+  sleeplog= as.data.frame(sleeplog, stringsAsFactors = TRUE)
   names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]

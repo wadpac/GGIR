@@ -531,6 +531,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   # Form outcome
   return(invisible(list(
     header = header,
-    data = as.data.frame(cbind(time = timeRes, accelRes, temp,  battery, light))
+    data = as.data.frame(cbind(time = timeRes, accelRes, temp,  battery, light), stringsAsFactors = TRUE)
   )))
 }
