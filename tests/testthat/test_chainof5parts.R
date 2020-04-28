@@ -140,7 +140,7 @@ test_that("chainof5parts", {
 
   #--------------------------------------------
   # create dummy selectdaysfile
-  selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016")
+  selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016", stringsAsFactors = TRUE)
   selectdaysfile = paste0(getwd(),"/selectdaysfile.csv")
   write.csv(selectdays, file=selectdaysfile,row.names = FALSE,fileEncoding="UTF-8")
   # we will now use it in g.part2, not sure whether g.part2 will actually be able to handle this.
