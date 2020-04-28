@@ -8,8 +8,8 @@ g.create.sp.mat = function(nsp,spo,sleepdet.t,daysleep=FALSE) {
   weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   for (sp in 1:nsp) {
     spo[sp,1] = sp
-    tmp7 = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])
-    tmp7w = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])
+    tmp7 = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])[1]
+    tmp7w = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])[1]
     if (length(tmp7) > 0) {
       if (tmp7 != "") {
         tmp8 = unlist(strsplit(tmp7," "))

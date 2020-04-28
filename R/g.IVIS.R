@@ -18,7 +18,7 @@ g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = 3600, IVI
     N = length(Xi)
     hour = rep(1:ceiling(N/ni),each=ni)
     if (length(hour) > N) hour = hour[1:N]
-    dat = data.frame(Xi=Xi,hour=hour)
+    dat = data.frame(Xi=Xi, hour=hour, stringsAsFactors = TRUE)
     InterdailyStability = NA
     IntradailyVariability = NA
     if (nrow(dat) > 1) {

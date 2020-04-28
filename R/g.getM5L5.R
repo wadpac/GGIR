@@ -30,9 +30,11 @@ g.getM5L5 = function(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr, qM5L5  = c()) {
     if (length(DAYM5VALUE) > 1) { DAYM5VALUE = sort(DAYM5VALUE)[ceiling(length(DAYM5VALUE)/2)] }
     if (length(DAYM5HOUR) > 1) { DAYM5HOUR = sort(DAYM5HOUR)[ceiling(length(DAYM5HOUR)/2)] }
     
-    M5L5vars = data.frame(DAYL5HOUR=DAYL5HOUR[1],DAYL5VALUE=DAYL5VALUE,DAYM5HOUR=DAYM5HOUR[1],DAYM5VALUE=DAYM5VALUE)
+    M5L5vars = data.frame(DAYL5HOUR=DAYL5HOUR[1],DAYL5VALUE=DAYL5VALUE,DAYM5HOUR=DAYM5HOUR[1],
+                          DAYM5VALUE=DAYM5VALUE, stringsAsFactors = TRUE)
   } else {
-    M5L5vars = data.frame(DAYL5HOUR=NA,DAYL5VALUE=NA,DAYM5HOUR=NA,DAYM5VALUE=NA)
+    M5L5vars = data.frame(DAYL5HOUR=NA,DAYL5VALUE=NA, 
+                          DAYM5HOUR=NA,DAYM5VALUE=NA, stringsAsFactors = TRUE)
   }
   ML5N = c(paste0("L",winhr,"hr"), paste0("L",winhr), paste0("M",winhr,"hr"), paste0("M",winhr))
   names(M5L5vars) = ML5N
@@ -54,7 +56,7 @@ g.getM5L5 = function(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr, qM5L5  = c()) {
     }
     M5L5varsExtraNames = c(paste0("L",winhr,"_q",round(qM5L5 *100)), paste0("M",winhr,"_q",round(qM5L5 *100)))
     # add to M5L5vars data.frame
-    M5L5vars =as.data.frame(c(M5L5vars,M5L5varsExtra))
+    M5L5vars =as.data.frame(c(M5L5vars,M5L5varsExtra), stringsAsFactors = TRUE)
     names(M5L5vars) = c(ML5N, M5L5varsExtraNames)
   }
   return(M5L5vars)
