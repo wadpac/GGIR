@@ -240,7 +240,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   # merge them into one output data.frame (G)
                   charcol = which(lapply(PlainAggregate, class) != "numeric" & names(PlainAggregate) != filename)
                   numcol = which(lapply(PlainAggregate, class) == "numeric")
-                  WeightedAggregate = as.data.frame(WeightedAggregate)
+                  WeightedAggregate = as.data.frame(WeightedAggregate, stringsAsFactors = TRUE)
                   G = base::merge(PlainAggregate,WeightedAggregate,by="filename",all.x=TRUE)
                   p0b = paste0(names(PlainAggregate[,charcol]),".x")
                   p1 = paste0(names(PlainAggregate[,numcol]),".x")
@@ -265,7 +265,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3$daytype[which(OF3$weekday == "Monday" | OF3$weekday == "Tuesday" |
                                     OF3$weekday == "Wednesday" | OF3$weekday == "Thursday" |
                                     OF3$weekday == "Friday")] = "WD"
-                OF3 = as.data.frame(OF3)
+                OF3 = as.data.frame(OF3, stringsAsFactors = TRUE)
                 
                 # before processing OF3, first identify which days have enough monitor wear time
                 getValidDayIndices = function(x, includenightcrit, includedaycrit) {
@@ -295,8 +295,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
                     df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
-                    mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2))
-                    mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold])
+                    mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2), stringsAsFactors = TRUE)
+                    mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold], stringsAsFactors = TRUE)
                     aggPerIndividual = merge(aggPerIndividual,mmm2,by="filename")
                     names(aggPerIndividual)[which(names(aggPerIndividual)=="cc")] = namenew
                     foo34 = aggPerIndividual

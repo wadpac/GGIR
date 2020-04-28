@@ -415,7 +415,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   eval(parse(text = tmpCmd)) ##
                 }
               } else {
+                cat("\ng.part4_A")
                 DD = g.create.sp.mat(nsp,spo,sleepdet.t,daysleep=daysleeper[j])
+                cat("\ng.part4_B")
                 if (loaddaysi == 1) { # newly added 25/11/2015
                   wdayname[j] = DD$wdayname
                   calendardate[j] = DD$calendardate

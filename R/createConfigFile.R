@@ -50,7 +50,7 @@ createConfigFile = function(config.parameters = c()) {
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
   out[nrow(out) - 1,] = c("GGIR_version", GGIRversion, " not applicable")
   out[nrow(out),] = c("R_version", SI$R.version$version.string, " not applicable")
-  out = as.data.frame(out)
+  out = as.data.frame(out, stringsAsFactors = TRUE)
   colnames(out) = c("argument","value","context")
   out = out[order(out$context),]
   return(out)
