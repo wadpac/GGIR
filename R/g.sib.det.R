@@ -177,7 +177,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       }
     }
     cnt = 1
-    sleep = as.data.frame(sleep)
+    sleep = as.data.frame(sleep, stringsAsFactors = TRUE)
     for (i in timethreshold) {
       for (j in anglethreshold) {
         colnames(sleep)[cnt] = paste("T",i,"A",j,sep="")
@@ -304,7 +304,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       cat("No midnights found")
       detection.failed = TRUE
     }
-    metatmp = data.frame(time,invalid,night=night,sleep = sleep)
+    metatmp = data.frame(time,invalid,night=night,sleep = sleep, stringsAsFactors = T)
   } else {
     metatmp =c()
     L5list = c()

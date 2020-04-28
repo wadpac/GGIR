@@ -44,7 +44,8 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # set parameters
-  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE)
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
+                           filedoesnotholdday = FALSE, stringsAsFactors = TRUE)
   ws4 = 10 #epoch for recalibration, don't change
   ws2 = windowsizes[2] #dummy variable
   ws =  windowsizes[3] # window size for assessing non-wear time (seconds)
@@ -464,7 +465,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     }
   }
   if (length(ncol(meta_temp)) != 0) {
-    spheredata = data.frame(A = meta_temp)
+    spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
     } else {
