@@ -1,7 +1,7 @@
 ---
 title: "Embedding external functions in GGIR"
 author: "Vincent van Hees"
-date: "April 24 2020"
+date: "April 29 2020"
 output:
   pdf_document:
     toc: true
@@ -23,13 +23,15 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Algorithms (e.g. machine learning models) are typically developed initially for a specific data format and without the data cleaning and aggregation steps needed for real life 'out of the lab' implementation. GGIR can take care of this by allowing you to provide your prototype external function written in R or Python. GGIR applies your function to the the data and integrates the output it its own output.
+If you like GGIR but want to use algorithms for raw data not included in GGIR then the external function embedding feature can be the solution. For example, you may want to pilot a new machine learned classifiction algorithm but you do not want to write all the data cleaning and aggregation steps needed for analysis of real life 'out of the lab' acceleormeter data.
 
-Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory, corrected for calibration error, and resampled to the sample rate required by your function, GGIR applies its own default algorithms as well as the external function provided by you. The external function is expected to take as input: A three-column matrix with the acceleration data corresponding to the three acceleration axes, and an optional parameters argument. As output it is expected to produce a matrix or data.frame with one or multiple columns corresponding to the output of your external function.
+**How it works:**
+
+Internally GGIR loads the raw accelerometer data in memory blocks of about 24 hours. When the data is in memory, corrected for calibration error, and resampled to the sample rate required by your function, GGIR applies its own default algorithms as well as the external function provided by you (Python or R). The external function is expected to take as input: A three-column matrix with the acceleration data corresponding to the three acceleration axes, and an optional parameters argument which can be of any R format (character, list, vector, data.frame, etc). As output your external function is expected to produce a matrix or data.frame with one or multiple columns corresponding to the output of your external function.
 
 # Example with external R function
 
-In this example we will apply the function counts() from R package activityCounts to the raw data, which produces an estimate of Actigraph counts per second.
+In this example we will apply the function counts() from R package [activityCounts](https://cran.r-project.org/web/packages/activityCounts/index.html) to the raw data, which produces an estimate of Actigraph counts per second.
 
 ## Write external function
 
