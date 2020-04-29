@@ -56,11 +56,9 @@ part5_personsummary_*
 The following files are stored in the folder results/QC:
 part5_daysummary_full_*
 
-
-See package vignette paragraph "Sleep and full day time-use analysis 
-in GGIR" and "Output part 5" for a more elaborative description of
+See package vignette paragraph "Waking-waking or 24 hour time-use analysis"
+and "Output part 5" for a more elaborative description of
 the full day time-use and analysis and reporting.
-
 }
 \author{
   Vincent T van Hees <vincentvanhees@gmail.com>

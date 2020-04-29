@@ -180,13 +180,11 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
 }
 \value{
- The function provides no values, it only ensures that other functions are called
- and that their output is stored in .RData files. See details.
-}
-\details{
-This function writes all its output to an RData file
-The value \code{output} is a dataframe and comes with a large range of variables, which
-are used by function g.report.part5 to generate a report. See vignette paragrpah "Output part 5" for details.
+  The function does not produce values but generates an RData file
+in the milestone subfolder ms5.out which incudes a dataframe
+named \code{output}. This dataframe is used in g.report.part5 to create
+two reports one per day and one per person. See package vignette 
+paragraph "Output part 5" for description of all the variables.
 }
 \examples{
 \dontrun{
@@ -196,9 +194,4 @@ g.part5(metadatadir=metadatadir)
 }
 \author{
   Vincent T van Hees <vincentvanhees@gmail.com>
-}
-\references{
-\itemize{
-\item This function has not been described in a scientific journal yet
-}
 }

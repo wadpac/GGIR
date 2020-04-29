@@ -71,9 +71,8 @@ nights with a sleeplog or if you do not use a sleeplog at all. For all
 other scenarios We advise using the *_full.csv report and to clean it 
 yourself.
 
-See package vignette paragraph "Sleep and full day time-use analysis 
-in GGIR" and "Output part 4" for a more elaborative description of
-the sleep analysis and reporting.
+See package vignette sections "Sleep analysis" and "Output part 4"
+for a more elaborative description of the sleep analysis and reporting.
 }
 \author{
   Vincent T van Hees <vincentvanhees@gmail.com>
