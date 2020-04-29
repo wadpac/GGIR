@@ -122,7 +122,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading block: ",i,sep=""))
+      cat(paste("\nLoading chunk: ",i,sep=""))
     } else {
       cat(paste(" ",i,sep=""))
     }
