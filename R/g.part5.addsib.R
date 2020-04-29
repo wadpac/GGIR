@@ -98,5 +98,6 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     sdl1 = sdl1[1]
   }
   ts$sibdetection[redo1:redo2] = sdl1
+  # if (length(ts$sibdetection == 1) > 0) ts$ACC[ts$sibdetection == 1] = 0 #turn all acceleration to zero if sustained inactivity bouts are detected
   return(ts)
 }

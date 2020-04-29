@@ -10,7 +10,9 @@ Creates report from milestone data produced by \link{g.part5}. Not intended
 \usage{
 g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                           includenightcrit=c(),includedaycrit=c(),
-                          data_cleaning_file=c())
+                          data_cleaning_file=c(),
+                          includedaycrit.part5=2/3,
+                          minimum_MM_length.part5=23)
 }
 \arguments{
   \item{metadatadir}{
@@ -26,13 +28,21 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   see \link{g.part4}
   }
   \item{includenightcrit}{
-  see \link{g.part4}
+    Despricated as of version 2.0, not used anymore in part 5 report
   }
   \item{includedaycrit}{
-  see \link{g.part2}
+    Despricated as of version 2.0, not used anymore in part 5 report
   }
   \item{data_cleaning_file}{
   see \link{g.part4}
+  }
+  \item{includedaycrit.part5}{
+    Inclusion criteria for number of valid hours, either
+    as expressed as a ratio of 1 or as the number of hours in a 24 hour day.
+  }
+  \item{minimum_MM_length.part5}{
+    Minimum length in hours of a MM day to be included in the cleaned
+    part 5 results.
   }
 }
 \value{
