@@ -246,6 +246,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("save_ms5rawlevels") == FALSE) save_ms5rawlevels = FALSE
   if (exists("save_ms5raw_format") == FALSE) save_ms5raw_format = "csv"
   if (exists("save_ms5raw_without_invalid") == FALSE) save_ms5raw_without_invalid = TRUE
+  if (exists("includedaycrit.part5") == FALSE) includedaycrit.part5 = 2/3
+  if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
+  
   # Related to (r)ead (m)yacc (c)sv file:
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
@@ -456,9 +459,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms5.out < f0) f0 = 1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
+    
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
-                   data_cleaning_file=data_cleaning_file)
+                   data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
+                   minimum_MM_length.part5=minimum_MM_length.part5)
   }
   if (visualreport == TRUE) {
     cat('\n')
