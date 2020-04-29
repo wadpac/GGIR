@@ -3,8 +3,9 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
 
-\section{Changes in version 2.0-0 (release date:24-04-2020)}{
+\section{Changes in version 2.0-0 (release date:29-04-2020)}{
 \itemize{
+  \item GGIR now updated to be R4.0 compatible
   \item HDCZA algorithm expanded to be able to detect daysleepers
   \item Part 4 + 5 output variable names improved
   \item Part 5 now also stores full and cleaned output

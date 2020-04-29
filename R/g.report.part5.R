@@ -153,7 +153,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 agg_plainNweighted = function(df,filename="filename",daytype="daytype") {
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
-                  ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number")
+                  ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number",
+                                "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric")
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
@@ -185,7 +186,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   AggregateWDWE$len <- 0
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WD")] = 5
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WE")] = 2
-                  dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class)=="numeric" | names(AggregateWDWE) == filename)])
+                  dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class)=="numeric" |
+                                                                         names(AggregateWDWE) == filename)])
                   options(warn=-1)
                   .SD <- .N <- count <- a <- NULL
                   WeightedAggregate <- dt[,lapply(.SD,weighted.mean,w=len,na.rm=TRUE),by=list(filename)]
