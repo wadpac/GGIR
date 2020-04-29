@@ -6,7 +6,7 @@
 \section{Changes in version 2.0-0 (release date:24-04-2020)}{
 \itemize{
   \item HDCZA algorithm expanded to be able to detect daysleepers
-  \item Part 5 output variable names improved
+  \item Part 4 + 5 output variable names improved
   \item Part 5 now also stores full and cleaned output
   \item Part 5 now better handles missing days in part 4 output.
   \item Numunpack function moved back to c++
@@ -26,6 +26,8 @@
   dynamic range then ignore entire block.
   \item Expanded vignette with documentation on sleep and full day time-use.
   \item Output variable documentation for parts 4 and 5 from tutorial to vignette.
+  \item Behavioral class SIB removed from daytime in part 5 to simplify results
+  
 }
 }
 

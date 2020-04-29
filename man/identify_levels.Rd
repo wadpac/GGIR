@@ -9,21 +9,14 @@ and sustained inactivity sibdetection (using angles). Function not
 intended for direct use by package user.
 }
 \usage{
-identify_levels(time,diur,sibdetection,ACC,
-                           TRLi,TRMi,TRVi,
-                           boutdur.mvpa,boutcriter.mvpa,
-                           boutdur.lig,boutcriter.lig,
-                           boutdur.in,boutcriter.in,
-                           ws3,bout.metric)
+identify_levels(ts, TRLi,TRMi,TRVi,
+                 boutdur.mvpa,boutcriter.mvpa,
+                 boutdur.lig,boutcriter.lig,
+                 boutdur.in,boutcriter.in,
+                 ws3,bout.metric)
 }
 \arguments{
-  \item{time}{
-}
-\item{diur}{
-}
-\item{sibdetection}{
-}
-\item{ACC}{
+  \item{ts}{ Data.frame with time series genrated in .gpart5
 }
 \item{TRLi}{
 }
@@ -55,12 +48,12 @@ item{Lnames}{}
 item{bc.mvpa}{}
 item{bc.lig}{}
 item{bc.in}{}
+item{ts}{}
 }
   
 \examples{
 \dontrun{
-levels = identify_levels(time,diur,sibdetection,ACC,
-                           TRLi,TRMi,TRVi,
+levels = identify_levels(TRLi,TRMi,TRVi,
                            boutdur.mvpa,boutcriter.mvpa,
                            boutdur.lig,boutcriter.lig,
                            boutdur.in,boutcriter.in,
