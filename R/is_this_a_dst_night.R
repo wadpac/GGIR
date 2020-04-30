@@ -1,7 +1,7 @@
-is_this_a_dst_night = function(calendardate=c(),tz="Europe/London") {
+is_this_a_dst_night = function(calendar_date=c(),tz="Europe/London") {
   # calendardata in dd/mm/yyyy format
   # this function investigates whether it is a dst night
-  splitdate = unlist(strsplit(calendardate,"/"))
+  splitdate = unlist(strsplit(calendar_date,"/"))
   t0 = as.POSIXlt(paste0(splitdate[3],"-",splitdate[2],"-",splitdate[1]," 21:00:00"),tz=tz)
   t1 = as.POSIXlt(as.numeric(t0) + 3600*9,origin="1970-01-01",tz=tz)
   hoursinbetween = as.numeric(format(seq(t0,t1,by=3600),"%H"))

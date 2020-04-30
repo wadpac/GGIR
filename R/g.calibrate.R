@@ -1,4 +1,4 @@
-g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
+g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
                        desiredtz = "", ...) {
   #get input variables
@@ -41,6 +41,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.4) chunksize = 0.4
+  use.temp = TRUE
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # set parameters
@@ -121,7 +122,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading block: ",i,sep=""))
+      cat(paste("\nLoading chunk: ",i,sep=""))
     } else {
       cat(paste(" ",i,sep=""))
     }
