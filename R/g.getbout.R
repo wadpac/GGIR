@@ -29,8 +29,8 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       }
       jmvpa = jmvpa + jump
     }
-    x[which(xt == 2)] = 1
-    if (length(which(xt == 1)) > 0) x[which(xt == 1)] = 0
+    x[xt == 2] = 1
+    if (length(which(xt == 1)) > 0) x[xt == 1] = 0
     
     if (closedbout == TRUE) { #only difference is that bouts are closed
       x = boutcount
@@ -54,34 +54,34 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       }
       jmvpa = jmvpa + 1
     }
-    x[which(xt == 2)] = 1
+    x[xt == 2] = 1
     boutcount = x
   } else if (bout.metric == 3) { # bout metric simply looks at percentage of moving window that meets criterium
-    x[which(is.na(x) == TRUE)] = 0 # ignore NA values in the unlikely event that there are any
+    x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
     #look for breaks larger than 1 minute
     lookforbreaks = zoo::rollmean(x=x,k=(60/ws3),align="center",fill=rep(0,3)) #
     #insert negative numbers to prevent these minutes to be counted in bouts
-    xt[which(lookforbreaks == 0)] = -(60/ws3) * boutduration 
+    xt[lookforbreaks == 0] = -(60/ws3) * boutduration 
     #in this way there will not be bouts breaks lasting longer than 1 minute
     RM = zoo::rollmean(x=xt,k=boutduration,align="center",fill=rep(0,3)) #,
     p = which(RM > boutcriter)
     starti = round(boutduration/2)
     for (gi in 1:boutduration) {
       inde = p-starti+(gi-1)
-      xt[inde[which(inde > 0 & inde < length(xt))]] = 2
+      xt[inde[inde > 0 & inde < length(xt)]] = 2
     }
-    x[which(xt != 2)] = 0
-    x[which(xt == 2)] = 1
+    x[xt != 2] = 0
+    x[xt == 2] = 1
     boutcount = x
   } else if (bout.metric == 4) { # bout metric simply looks at percentage of moving window that meets criterium
-    x[which(is.na(x) == TRUE)] = 0 # ignore NA values in the unlikely event that there are any
+    x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
     #look for breaks larger than 1 minute
     lookforbreaks = zoo::rollmean(x=x,k=(60/ws3),align="center",fill=rep(0,3)) #
     #insert negative numbers to prevent these minutes to be counted in bouts
     #in this way there will not be bouts breaks lasting longer than 1 minute
-    xt[which(lookforbreaks == 0)] = -(60/ws3) * boutduration 
+    xt[lookforbreaks == 0] = -(60/ws3) * boutduration 
     RM = zoo::rollmean(x=xt,k=boutduration,align="center",fill=rep(0,3)) #,
     p = which(RM > boutcriter)
     starti = round(boutduration/2)
@@ -95,8 +95,8 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       inde = p-starti+(gi-1)
       xt[inde[which(inde > 0 & inde < length(xt))]] = 2
     }
-    x[which(xt != 2)] = 0
-    x[which(xt == 2)] = 1
+    x[xt != 2] = 0
+    x[xt == 2] = 1
     boutcount = x
   }  
   invisible(list(x=x,boutcount=boutcount))
