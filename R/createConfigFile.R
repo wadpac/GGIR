@@ -9,7 +9,11 @@ createConfigFile = function(config.parameters = c()) {
     Value = config.parameters[[i]]
     if (length(Value) == 0) Value = 'c()'
     if (length(Value) > 1) Value = paste0("c(",paste(Value,collapse = ","),")")
-    out[i,2] = Value
+    if (is.function(Value) == FALSE | is.list(Value) == FALSE) {
+      out[i,2] = Value
+    } else {
+      out[i,2] = 'c()' # function or list objects are not stored in the config file, the user will have to provide these explicitely
+    }
     out[i,3] = "General parameters"
     if (NM %in% c("windowsizes", "chunksize",
                   "minloadcrit", "do.enmo", "do.lfenmo", "do.en", "do.bfen", "do.hfen",
@@ -18,7 +22,7 @@ createConfigFile = function(config.parameters = c()) {
                   "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
                   "do.enmoa", "printsummary", "do.cal", "print.filename", 
                   "backup.cal.coef", "dayborder", "dynrange",
-                  "configtz", "do.lfen", "hb", "lb", "n") ==  TRUE) {
+                  "configtz", "do.lfen", "hb", "lb", "n", "myfun") ==  TRUE) {
       out[i,3] = "Calibration, Feature extraction, Epoch size, Time zone"
     } else if (NM %in% c("strategy", "hrs.del.start", "hrs.del.end", "maxdur",
                          "includedaycrit", "M5L5res", "winhr", "qwindow", "qlevels",
@@ -50,7 +54,7 @@ createConfigFile = function(config.parameters = c()) {
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
   out[nrow(out) - 1,] = c("GGIR_version", GGIRversion, " not applicable")
   out[nrow(out),] = c("R_version", SI$R.version$version.string, " not applicable")
-  out = as.data.frame(out)
+  out = as.data.frame(out, stringsAsFactors = TRUE)
   colnames(out) = c("argument","value","context")
   out = out[order(out$context),]
   return(out)

@@ -50,9 +50,8 @@ for all nights in the data, and *_cleaned.csv in the results folder includes
 estimates for all nights in the data excluding the nights that did not had a
 sleeplog entry or had no valid accelerometer data.
 
-If a sleep log is not used then *_full.csv is the same, but now * _cleaned.csv
-now includes all nights with valid accelerometer data regardless of missing
-sleeplog.
+If a sleep log is not used then * _cleaned.csv includes the nights that are
+in *_full.csv excluding the nights with insufficient data.
 
 If you have a study where the sleeplog was available for a subset of the
 participants, but you want to include all individuals in your analysis, 
@@ -69,9 +68,11 @@ those nights.
 
 In other words, *_cleaned.csv is perfect if you only want to rely on 
 nights with a sleeplog or if you do not use a sleeplog at all. For all
-other scenarios I advise using the *_full.csv report and to clean it 
+other scenarios We advise using the *_full.csv report and to clean it 
 yourself.
 
+See package vignette sections "Sleep analysis" and "Output part 4"
+for a more elaborative description of the sleep analysis and reporting.
 }
 \author{
   Vincent T van Hees <vincentvanhees@gmail.com>

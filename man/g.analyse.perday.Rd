@@ -17,8 +17,8 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti,
   doquan, qlevels, quantiletype, doilevels, 
   ilevels, iglevels, domvpa,
   mvpathreshold, boutcriter, closedbout,
-  bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-  deviceSerialNumber, qM5L5)
+  bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
+  deviceSerialNumber, qM5L5, ExtFunColsi, myfun)
 }
 
 \arguments{
@@ -72,12 +72,14 @@ quality check derived with g.impute}
 \item{mvpanames}{Matrix with 6 columns and 1 row
 holding the names for the six mvpa variables}
 \item{wdaycode}{Equal to M$wday as produced by \link{g.getmeta}}
-\item{idd}{As produced by \link{g.extractheadervars}}
-\item{id}{As produced by \link{g.extractheadervars}}
-\item{id2}{gnerated inside \link{g.analyse} either a copy of id, or
+\item{IDd}{As produced by \link{g.extractheadervars}}
+\item{ID}{As produced by \link{g.extractheadervars}}
+\item{ID2}{gnerated inside \link{g.analyse} either a copy of ID, or
 as character string before the first hyphen}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
 \item{qM5L5}{see \link{g.getM5L5}}
+\item{ExtFunColsi}{column index of metahosrt where metric is stored}
+\item{myfun}{External function object to be applied to raw data, see \link{g.getmeta}.}
 
 }
 \value{

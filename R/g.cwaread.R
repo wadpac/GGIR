@@ -92,7 +92,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     # Start from the file origin
     seek(fid,0)
     # Read block header and check correctness of name
-    idstr = readChar(fid,2,useBytes = TRUE) #offset 0 1
+    idstr = suppressWarnings(readChar(fid,2,useBytes = TRUE)) #offset 0 1
     if (idstr == "MD") {
       # It is correct header block read information from it
       readChar(fid,2,useBytes = TRUE) #offset 2 3
@@ -109,16 +109,16 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       upperDeviceId = readBin(fid, integer(), size = 2, signed = FALSE) #offset 11 12
       if (upperDeviceId >= 65535) upperDeviceId = 0
       uniqueSerialCode = upperDeviceId * 65536 + lowerDeviceId
-      readChar(fid, 23, useBytes = TRUE) #offset 13..34
+      suppressWarnings(readChar(fid, 23, useBytes = TRUE)) #offset 13..34
       # sensorConfig = readBin(fid, raw(), size = 1) #offset 35
       # sample rate and dynamic range accelerometer
       samplerate_dynrange = readBin(fid, integer(), size = 1) #offset 36
       frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
       accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
-      readChar(fid, 4, useBytes = TRUE) #offset 37..40
+      suppressWarnings(readChar(fid, 4, useBytes = TRUE)) #offset 37..40
       version = readBin(fid, integer(), size = 1) #offset 41
       # Skip 982 bytes and go to the first data block
-      readChar(fid, 982, useBytes = TRUE) #offset 42..1024
+      suppressWarnings(readChar(fid, 982, useBytes = TRUE)) #offset 42..1024
       # Read the first data block without data
       datas = readDataBlock(fid, complete = FALSE)
       if (is.null(datas)){
@@ -210,16 +210,16 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     #
     
     # Check the block header
-    idstr = readChar(fid,2,useBytes = TRUE)
+    idstr = suppressWarnings(readChar(fid,2,useBytes = TRUE))
     if (length(idstr) == 0 || idstr != "AX"){
       return(invisible(NULL))
     } else {
       # Read the data block. Extract several data fields
       # offset 4 contains u16 with timestamp offset
-      readChar(fid, 2, useBytes = TRUE)
+      suppressWarnings(readChar(fid, 2, useBytes = TRUE))
       tsOffset = readBin(fid, integer(), size = 2)
       # read data for timestamp u32 in offset 14
-      readChar(fid, 8, useBytes = TRUE)
+      suppressWarnings(readChar(fid, 8, useBytes = TRUE))
       timeStamp = readBin(fid, integer(), size = 4)
       # Get light u16 in offset 18
       offset18 = unsigned16(readBin(fid, integer(), size = 2))
@@ -235,7 +235,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       # Read and recalculate temperature u16 in offset 20
       temperature = (150.0 * readBin(fid, integer(), size = 2) - 20500.0) / 1000.0;
       # Read and recalculate battery charge u8 in offset 23
-      readChar(fid, 1, useBytes = TRUE)
+      suppressWarnings(readChar(fid, 1, useBytes = TRUE))
       battery = 3.0 * (unsigned8(readBin(fid, integer(), size = 1)) / 512.0 + 1.0);
       # sampling rate in one of file format U8 in offset 24
       samplerate_dynrange = readBin(fid, integer(), size = 1)
@@ -298,7 +298,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           temp = 482 - (2 * Naxes * blockLength)
         }
         # Skip the rest of block
-        readChar(fid, temp, useBytes = TRUE)
+        suppressWarnings(readChar(fid, temp, useBytes = TRUE))
         # Set names and Normalize accelerations
         if (is.na(header$accrange == TRUE)) {
           header$accrange = 8
@@ -314,7 +314,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           data[,c("x","y","z")] = data[,c("x","y","z")] * accelScale
         }
       } else {
-        readChar(fid, 482, useBytes = TRUE)
+        suppressWarnings(readChar(fid, 482, useBytes = TRUE))
       }
       l = list(
         frequency = frequency,
@@ -373,7 +373,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   # reinitiate file and start reading of data and sesrch the beginning of required
   seek(fid,0)
   # skip header
-  readChar(fid,1024,useBytes = TRUE)
+  suppressWarnings(readChar(fid,1024,useBytes = TRUE))
   
   # Create data for results
   timeRes = seq(start, end, step)
@@ -531,6 +531,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   # Form outcome
   return(invisible(list(
     header = header,
-    data = as.data.frame(cbind(time = timeRes, accelRes, temp,  battery, light))
+    data = as.data.frame(cbind(time = timeRes, accelRes, temp,  battery, light), stringsAsFactors = TRUE)
   )))
 }

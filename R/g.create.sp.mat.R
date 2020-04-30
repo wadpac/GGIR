@@ -8,8 +8,8 @@ g.create.sp.mat = function(nsp,spo,sleepdet.t,daysleep=FALSE) {
   weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   for (sp in 1:nsp) {
     spo[sp,1] = sp
-    tmp7 = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])
-    tmp7w = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])
+    tmp7 = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])[1]
+    tmp7w = as.character(sleepdet.t$sib.onset.time[which(sleepdet.t$sib.period == sp)])[1]
     if (length(tmp7) > 0) {
       if (tmp7 != "") {
         tmp8 = unlist(strsplit(tmp7," "))
@@ -32,7 +32,7 @@ g.create.sp.mat = function(nsp,spo,sleepdet.t,daysleep=FALSE) {
           wday = soso$wday #day of the week 0-6 and 0 is Sunday
           #remember day of the week and date
           wday_safe = wday + 1 #change to 1-7 number
-          calendardate_safe = paste(soso$mday,"/",(soso$mon+1),"/",(soso$year+1900),sep="")
+          calendar_date_safe = paste(soso$mday,"/",(soso$mon+1),"/",(soso$year+1900),sep="")
         }
         if (sp == nsp)   { #waking up of last sleep period
           soso = unclass(as.POSIXlt(tmp7w))
@@ -41,18 +41,18 @@ g.create.sp.mat = function(nsp,spo,sleepdet.t,daysleep=FALSE) {
           # check whether both beginning and end of the night are on the same day
           if (wday == (wday_safe+1)) { #normal night starting on one day and ending at the ned
             wdayname = weekdays[wday_safe]
-            calendardate = calendardate_safe
+            calendar_date = calendar_date_safe
           } else { #start and end at the same day
             if (tmp10w > th2) { #end of last sleep period starts at first day (end of night is before midnight)
               wdayname = weekdays[wday_safe]
-              calendardate = paste(soso$mday,"/",(soso$mon+1),"/",(soso$year+1900),sep="")
+              calendar_date = paste(soso$mday,"/",(soso$mon+1),"/",(soso$year+1900),sep="")
             } else { #second day
               tmp7 = as.POSIXlt(tmp7) - (24*3600) #change date
               soso = unclass(as.POSIXlt(tmp7))
               wday = soso$wday #day of the week 0-6 and 0 is Sunday
               wday = wday + 1 #change to 1-7 number
               wdayname = weekdays[wday]
-              calendardate = paste(soso$mday,"/",(soso$mon+1),"/",(soso$year+1900),sep="")
+              calendar_date = paste(soso$mday,"/",(soso$mon+1),"/",(soso$year+1900),sep="")
             }
           }
         }
@@ -75,5 +75,5 @@ g.create.sp.mat = function(nsp,spo,sleepdet.t,daysleep=FALSE) {
       }
     }
   }
-  invisible(list(spo=spo,calendardate=calendardate,wdayname=wdayname))
+  invisible(list(spo=spo,calendar_date=calendar_date,wdayname=wdayname))
 }

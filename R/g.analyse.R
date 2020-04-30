@@ -4,7 +4,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                      IVIS.activity.metric=1, qM5L5 = c()) {
+                      IVIS.activity.metric=1, qM5L5 = c(), myfun=c()) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
@@ -61,9 +61,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(qwindow) > 0) NVARS = NVARS + 2 # for qwindow non-wear time
   nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels
   if (length(qwindow) > 0) {
-    if (qwindow[1] != 0 | qwindow[2] != 24) {
-      nfeatures = 50+NVARS*(2*(20+(length(qlevels)+length(ilevels))))
-    }
+    nfeatures = 50+NVARS*(length(qwindow)*(20+(length(qlevels)+length(ilevels))))
   }
   i = 1
   #---------------
@@ -75,7 +73,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   wearthreshold = 2 #needs to be 0, 1 or 2 (hard coded to avoid inconsistency in literature)
   # Extracting basic information about the file
   hvars = g.extractheadervars(I)
-  id = hvars$id;              iid =hvars$iid; idd =hvars$idd
+  ID = hvars$ID;              iID =hvars$iID; IDd =hvars$IDd
   HN = hvars$HN;              BodyLocation = hvars$BodyLocation
   SX=hvars$SX;                deviceSerialNumber = hvars$deviceSerialNumber
   n_ws2_perday = (1440*60) / ws2
@@ -85,8 +83,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   #----------------------
   # Pelotas specific
-  id2 = id
-  iid2 = iid
+  ID2 = ID
+  iID2 = iID
   if (idloc == 3) { #remove hyphen in id-name for Pelotas id-numbers
     get_char_before_hyphen = function(x) {
       for (j in 1:length(x)) {
@@ -99,8 +97,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
       return(x2)
     }
-    id2 = get_char_before_hyphen(id)
-    iid2 = get_char_before_hyphen(iid)
+    ID2 = get_char_before_hyphen(ID)
+    iID2 = get_char_before_hyphen(iID)
   }
   #---------------------
   # detect first and last midnight and all midnights
@@ -139,6 +137,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ENi = which(colnames(metashort) == "EN")
   ENMOai = which(colnames(metashort) == "ENMOa")
   ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
+  if (length(myfun) > 0) {
+    ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
+  } else {
+    ExtFunColsi = c()
+  }
   if (length(ANYANGLEi) == 0) ANYANGLEi = -1
   if (length(ENMOi) == 0) ENMOi = -1
   if (length(LFENMOi) == 0) LFENMOi = -1
@@ -186,8 +189,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
-                                     bout.metric, mvpadur, mvpanames, wdaycode, idd, id, id2,
-                                     deviceSerialNumber, qM5L5)
+                                     bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
+                                     deviceSerialNumber, qM5L5, ExtFunColsi, myfun)
     daysummary= output_perday$daysummary
     ds_names=output_perday$ds_names
     windowsummary=output_perday$windowsummary
@@ -242,9 +245,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     cat("file skipped for general average caculation because not enough data")
   }
   rm(metalong); rm(metashort)
-  id[which(id == "NA")] =iid[which(id == "NA")]
-  id2[which(id2 == "NA")] =iid2[which(id2 == "NA")]
-  output_perfile = g.analyse.perfile(id, id2, idd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+  ID[which(ID == "NA")] =iID[which(ID == "NA")]
+  ID2[which(ID2 == "NA")] =iID2[which(ID2 == "NA")]
+  output_perfile = g.analyse.perfile(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
                                      LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                                      ML5AD_names, igfullr, igfullr_names,
                                      daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
