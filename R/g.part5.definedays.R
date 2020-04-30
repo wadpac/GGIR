@@ -20,10 +20,20 @@ g.part5.definedays = function(nightsi, wi, summarysleep_tmp2, indjump, nightsi_b
       if (wi <= length(nightsi)) {
         qqq[2] = nightsi[wi]
       } else {
-        qqq[2] = nightsi_bu[which(nightsi_bu == nightsi[wi-indjump]) + indjump]
-        indjump = indjump + 1 # in case there are multiple days beyond nightsi
-        if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
-          qqq[2] = nightsi_bu[which(nightsi_bu == nightsi[wi-(indjump-1)]) + (indjump-1)] + (24*(60/ws3new) * 60) -1
+        if (wi-indjump <= length(nightsi)) {
+          tmp1 = which(nightsi_bu == nightsi[wi-indjump])
+          qqq[2] = nightsi_bu[tmp1 + indjump]
+          indjump = indjump + 1 # in case there are multiple days beyond nightsi
+          if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
+            index_lastmidn = which(nightsi_bu == nightsi[wi-(indjump-1)]) + (indjump-1)
+            if (length(index_lastmidn) > 0) {
+              qqq[2] = nightsi_bu[index_lastmidn] + (24*(60/ws3new) * 60) -1
+            } else {
+              qqq[2] = NA
+            }
+          }
+        } else {
+          qqq[2] = NA
         }
         if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
           qqq[2] = qqq_backup[2] + (24*(60/ws3new) * 60) -1
