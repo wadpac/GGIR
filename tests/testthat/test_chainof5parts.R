@@ -35,7 +35,7 @@ test_that("chainof5parts", {
   # part 2 with strategy = 3
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 3,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel)
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel,myfun=c())
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -46,7 +46,7 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 2,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels= TRUE,
-          do.parallel = do.parallel)
+          do.parallel = do.parallel,myfun=c())
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -57,7 +57,7 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0,qM5L5=c(0.2,0.4),winhr=c(3,10),
-          do.parallel = do.parallel)
+          do.parallel = do.parallel,myfun=c())
   g.report.part2(metadatadir=metadatadir,f0=1,f1=1,maxdur=Ndays)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -94,7 +94,7 @@ test_that("chainof5parts", {
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
           idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
           excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
-          relyonsleeplog=FALSE,desiredtz=desiredtz,
+          relyonguider=FALSE,desiredtz=desiredtz,
           storefolderstructure=FALSE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -103,7 +103,7 @@ test_that("chainof5parts", {
   g.report.part4(datadir=fn,metadatadir=metadatadir,loglocation = sleeplog_fn,f0=1,f1=1)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
+  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
 
@@ -118,9 +118,9 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(5)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(134))
-  expect_that(round(as.numeric(output$acc_wake[2]),digits=4),equals(35.9958))
+  expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
+  expect_that(ncol(output),equals(121))
+  expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
 
  #--------------------------------------------
   #g.shell.GGIR
@@ -136,11 +136,9 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
-
-
   #--------------------------------------------
   # create dummy selectdaysfile
-  selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016")
+  selectdays = data.frame(Monitor = "MOS2D12345678",Day1="24/06/2016",Day2="25/06/2016", stringsAsFactors = TRUE)
   selectdaysfile = paste0(getwd(),"/selectdaysfile.csv")
   write.csv(selectdays, file=selectdaysfile,row.names = FALSE,fileEncoding="UTF-8")
   # we will now use it in g.part2, not sure whether g.part2 will actually be able to handle this.
@@ -149,7 +147,7 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, selectdaysfile=selectdaysfile, storefolderstructure=TRUE,
-          do.parallel = do.parallel)
+          do.parallel = do.parallel,myfun=c())
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
@@ -162,18 +160,18 @@ test_that("chainof5parts", {
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonsleeplog=FALSE,desiredtz=desiredtz,
+                         relyonguider=FALSE,desiredtz=desiredtz,
                          storefolderstructure=TRUE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(10.2417))
+  expect_that(round(nightsummary$SptDuration[1],digits=4),equals(10.2417))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
 
   #----------------------------------------------------------------------
-  # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonsleeplog=TRUE
+  # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonguider=TRUE
   sptwindow_HDCZA_end = c(37,37) # turn into midday
   row2copy = which(sib.cla.sum$sib.onset.time == "2016-06-24T05:10:15+0100")
   newrow = sib.cla.sum[row2copy,]
@@ -186,7 +184,7 @@ test_that("chainof5parts", {
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonsleeplog=TRUE,desiredtz=desiredtz,
+                         relyonguider=TRUE,desiredtz=desiredtz,
                          storefolderstructure=TRUE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -195,8 +193,8 @@ test_that("chainof5parts", {
 
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(0))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=2),equals(7))
+  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(0))
+  expect_that(round(nightsummary$SptDuration[1],digits=2),equals(19))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------
@@ -216,14 +214,14 @@ test_that("chainof5parts", {
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonsleeplog=TRUE,desiredtz=desiredtz,
+                         relyonguider=TRUE,desiredtz=desiredtz,
                          storefolderstructure=TRUE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(5.9167))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(7))
+  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(10))
+  expect_that(round(nightsummary$SptDuration[1],digits=4),equals(7))
 
   #----------------------------------------------------------------------
   # Part 4 - DST-1
@@ -242,14 +240,14 @@ test_that("chainof5parts", {
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonsleeplog=FALSE,desiredtz=desiredtz,
+                         relyonguider=FALSE,desiredtz=desiredtz,
                          storefolderstructure=TRUE, overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$acc_dur_sibd[1],digits=4),equals(4.95))
-  expect_that(round(nightsummary$acc_SptDuration[1],digits=4),equals(13.075))
+  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
+  expect_that(round(nightsummary$SptDuration[1],digits=4),equals(13.075))
 
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)

@@ -262,7 +262,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     # load rows 11:13  to investigate whether the file has a header
     testheader = as.data.frame(data.table::fread(filename,nrow = 2,
                                                  skip=10,
-                                                 dec=decn,showProgress = FALSE, header = FALSE))
+                                                 dec=decn,showProgress = FALSE, header = FALSE), 
+                               stringsAsFactors = TRUE)
     if (suppressWarnings(is.na(as.numeric(testheader[1,1]))) ==  FALSE) { # it has no header, first value is a number
       freadheader = FALSE
     } else { # it has a header, first value is a character
@@ -278,7 +279,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       P = as.data.frame(
         data.table::fread(filename,nrow = deltapage,
                           skip=startpage,
-                          dec=decn,showProgress = FALSE, header = freadheader))
+                          dec=decn,showProgress = FALSE, header = freadheader),
+        stringsAsFactors = TRUE)
     },silent=TRUE)
     if (length(P) > 1) {
       P = data.matrix(P) # as.matrix turned num to char if there are missing values.
@@ -364,13 +366,15 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     startpage = (headerlength+(blocksize*300*(blocknumber-1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
-                             blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
+                             blocknumber=blocknumber, 
+                             PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr={
       P = as.data.frame(
         data.table::fread(filename,nrow = deltapage,
                           skip=startpage,
-                          dec=decn,showProgress = FALSE, header = freadheader))
+                          dec=decn,showProgress = FALSE, header = freadheader),
+        stringsAsFactors = TRUE)
     },silent=TRUE)
     if (length(P) > 1) {
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {

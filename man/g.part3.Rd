@@ -14,7 +14,7 @@ Typical users should work with function g.shell.GGIR only.
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   acc.metric="ENMO", ignorenonwear=TRUE, overwrite=FALSE,
   desiredtz="",constrain2range=TRUE,
-  do.part3.pdf=TRUE, do.parallel=TRUE, dayborder=0)
+  do.part3.pdf=TRUE, do.parallel=TRUE, dayborder=0, myfun=c())
 }
 \arguments{
   \item{metadatadir}{
@@ -69,6 +69,10 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   }
   \item{dayborder}{
     See \link{g.part1}
+  }
+   \item{myfun}{
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
   }
 }
 \value{

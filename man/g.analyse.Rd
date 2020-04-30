@@ -26,7 +26,7 @@ dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = c(),
 IVIS_windowsize_minutes = 60,
 IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1,
-qM5L5=c())
+qM5L5=c(), myfun=c())
 }
 
 \arguments{
@@ -150,137 +150,21 @@ qM5L5=c())
   \item{qM5L5}{
     see function \link{g.getM5L5}
   }
+  \item{myfun}{
+    External function object to be applied to raw data, see \link{g.getmeta}.
+  }
   
    
 }
 \value{
-\item{\code{summary}}{summary for the file that was analysed (see details)}
-\item{\code{daysummary}}{summary per day for the file that was analysed (see details)}
+  g.analyse generated two data,franeL
+  \item{\code{summary}}{summary for the file that was analysed}
+  \item{\code{daysummary}}{summary per day for the file that was analysed}
+  These data.frames are used by function g.report.part2 to generate csv reports.
+  An exaplantion of all the columns in the data.frame and subsequent csv reports
+  can be found in the package vignette (Output part 2).
 }
 
-\details{
-The value \code{summary} is a dataframe and comes with the following variables:\cr
-\itemize{
-\item \code{ID} Participant id extracted from file header
-\item \code{device_sn} Device serial number extracted from file header
-\item \code{dodylocation} Body location extracted from file header
-\item \code{filename} Name of the accelerometer file
-\item \code{start_time} Timestamp when experiment started
-\item \code{startday} Name of day when experiment started
-\item \code{samplefreq}Sample frequency (Hz)
-\item \code{device} Name of the device brand, e.g. Geneactiv
-\item \code{clipping_score} Fraction of 15 minute windows per file for which the
-acceleration in one of the three axis was close to the maximum for at least 80
-percent of the time. This should be 0
-\item \code{meas_dur_dys} Measurement duration (days)
-\item \code{complete_24hrcycle} Fraction of 15 minute windows per 24 hours for which
-valid data is available at any day of the measurement
-\item \code{meas_dur_def_proto_day} Measurement duration
-(days) minus the hours that are ignored at the beginning and end of the measurement
-motived by protocol design
-\item \code{wear_dur_def_proto_day} Measurement duration according 
-to protocol (days) minus invalid time periods
-\item \code{calib_err} Estimated based on all non-movement periods in the measurement
-after applying the autocalibration
-\item \code{calib_status} Summary statement about the status of the calibration
-error minimisation
-\item \code{ENMO_fullRecordingMean} ENMO is the main summary measure of acceleration.
-The value presented is the average ENMO over all the available data normalised per 24 hour
-cycles (diurnal balanced), with invalid data imputed by the average at similar 
-time points on different days of the week. In addition to ENMO it is possible to 
-extract other acceleration metrics (i.e. BFEN, HFEN, HFENplus). We emphasize 
-that it is calculated over the full recording because the alternative is that
-a variable is only calculated overmeasurement days with sufficient valid
-hours of data.
-\item \code{pX_ENMO_mg_0-24h_fullRecording} This variable represents the Xth 
-percentile in the distribution of short epoch acceleration values of the average 
-day within the time interval as specified. 
-\item \code{L5hr_ENMO_mg_0-24_fullRecording} Starting time in hours of the
-least active five* hours within the time interval as specified (* window size defined by
-argument winhr)
-\item \code{L5_ENMO_mg} Average acceleration over L5
-\item \code{M5hr_ENMO_mg_0-24_fullRecording} Starting time in hours of the most active
-five* hours in the day within the time interval as specified (* window size defined by
-argument winhr)
-modifiable in g.getmeta)
-\item \code{M5_ENMO_mg_0-24_fullRecording} Average acceleration over M5
-\item \code{ig_gradient_ENMO_0-24hr_fullRecording} Intensity gradient calculated over
-the full recording.
-\item \code{1am-6am_ENMO_mg_fullRecording} Average acceleration between
-1am and 6am
-\item \code{N valid WEdays} Number of valid weekend days
-\item \code{N valid WDdays} Number of valid week days
-\item \code{IS_interdailystability} Intra daily variability
-\item \code{IV_intradailyvariability} Intra intradailyvariability
-\item \code{AD_...} The
-variable ... was calculated per day and then averaged over all the available days
-\item \code{WE_...}
-The variable ... was calculated per day and then averaged over weekend days only
-\item \code{WD_...}
-The variable ... was calculated per day and then averaged over week days only
-\item \code{WWE_...} The variable ... was calculated
-per day and then averaged over weekend days. Double weekend days are averaged
-This is only relevant for experiments that last for more than seven days
-\item \code{WWD_...} The variable ... was calculated per
-day and then averaged over week days. Double weekend days were averaged. This is
-only relevant for experiments that last for more than seven days)
-\item \code{..._MVPA_E5S_B1M80_T100} MVPA calculated based on 5 second epoch setting
-bout duration 1 Minute and inclusion criterion of more than 80 percent. This is
-only done for metric ENMO at the moment, and only if mvpathreshold is not left blank
-\item \code{..._ENMO_mg...} ENMO or other metric was first calcualte per day and
-then average according to AD, WD, WWE, WWD
-\item \code{data exclusion strategy} A log of the decision made when calling  g.impute:
-value=1 mean ignore specific hours; value=2 mean ignore all data before the first
-midnight and after the last midnight
-\item \code{n hours ignored at the start of the measurement (if strategy = 1)}
-A log of the decision made when calling g.impute
-\item \code{n hours ignored at the end of the measurement (if strategy = 1)}
-A log of the decision made when calling  g.impute
-\item \code{n days of measurement after which data is ignored
-(if strategy = 1)}
-A log of the decision made when calling  g.impute
-}
-
-The value \code{daysummary} is a dataframe and comes with the following variables:\cr
-\itemize{
-\item \code{id} Participant id extracted from file header
-\item \code{filename} File name
-\item \code{calender_date} Calender data
-\item \code{bodylocation} Body location (if known)
-\item \code{N valid hours} Number of hours with valid data
-\item \code{N hours} Number of hours of measurement
-\item \code{weekday}Day of the week
-\item \code{measurementday} Day number relative to start of the measurement
-\item \code{L5hr_ENMO_mg_0-24h} Starting hour of L5 on a scale from 0 to 24, where
- 14.5 means 14:30. Within the time window as specified
-\item \code{L5_ENMO_mg_0-24h} Magnitude of average acceleration during the least
-active five hours calculated with metric ENMO. Within the time window as specified
-\item \code{M5hr_ENMO_mg_0-24h} Starting hour of M5 on a scale from 0 to 24, where
- 14.5 means 14:30. Within the time window as specified
-\item \code{M5_ENMO_mg_0-24h} Magnitude of average acceleration during the most
-active five hours calculated with metric ENMO. Within the time window as specified
-\item \code{mean_ENMO_mg_1-6am} Mean acceleration between 1am and 6am
-\item \code{mean_ENMO_mg_0-24hr} Mean acceleration over 24 hour period
-\item \code{pX_ENMO_mg_0-24h} Percentile in the short epoch distribution with
-invalid data imputed.  Within the time window as specified
-\item \code{[A,B)_ENMO_mg_0-24h} Time spent in minutes between (and including)
-acceleration value A in mg and (excluding) acceleration value B in mg. This is
-only done for metric ENMO at the moment, and only done if ilevels is not left blank
-\item \code{MVPA_E5S_B1M80_T100_0-24hr} MVPA calculated based on 5 second epoch 
-setting bout duration 1 Minute and inclusion criterion of more than 80 percent.
-This is only done for metric ENMO at the moment, and only if mvpathreshold is
-not left blank
-\item \code{ig_gradient_ENMO_0-24hr} Gradient from intensity gradient
-analysis (Rowlands et al 2018) based on metric ENMO for the time segment
-0 to 24 hours
-\item \code{ig_intercept_ENMO_0-24hr} Intercept from intensity gradient
-analysis (Rowlands et al 2018) based on metric ENMO for the time segment
-0 to 24 hours
-\item \code{ig_rsquared_ENMO_0-24hr} r squared from intensity gradient
-analysis (Rowlands et al 2018) based on metric ENMO for the time segment
-0 to 24 hours
-}
-}
 
 \examples{
 data(data.getmeta)
