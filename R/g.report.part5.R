@@ -274,7 +274,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   cut = which(nom == "sleeponset_ts" | nom == "wakeup_ts" | nom == "night_number"  | nom == "window_number"
                               | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
                               | nom == "guider" | nom == "L5TIME" | nom == "M5TIME"
-                              | nom == "L10TIME" | nom == "M10TIME" | nom == "acc_available")
+                              | nom == "L10TIME" | nom == "M10TIME" | nom == "acc_available" | nom == "daytype")
                   names(OF4)[which(names(OF4)=="weekday")] = "startday"
                   OF4 = OF4[,-cut]
                   OF4 = as.matrix(OF4)
