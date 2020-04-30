@@ -28,8 +28,10 @@ test_that("g.getmetric calculates the correct metric values", {
   expect_equal(floor(sum(T13)),1477)
   expect_equal(floor(sum(T14)),3531)
   metrics2do = data.frame(do.bfen=T,do.enmo=T,do.lfenmo=T,do.en=T,do.hfen=T,
-                          do.hfenplus=T,do.mad=T,do.anglex=F,do.angley=F,do.anglez=F,do.roll_med_acc_x=T,do.roll_med_acc_y=T,do.roll_med_acc_z=T,
-                          do.dev_roll_med_acc_x=T,do.dev_roll_med_acc_y=T,do.dev_roll_med_acc_z=T,do.enmoa=T)
+                          do.hfenplus=T,do.mad=T,do.anglex=F,do.angley=F,
+                          do.anglez=F,do.roll_med_acc_x=T,do.roll_med_acc_y=T,do.roll_med_acc_z=T,
+                          do.dev_roll_med_acc_x=T,do.dev_roll_med_acc_y=T,
+                          do.dev_roll_med_acc_z=T,do.enmoa=T, stringsAsFactors = TRUE)
   HH = g.applymetrics(data,n,sf,ws3=1,metrics2do)
   expect_equal(round(sum(HH$BFEN3b),digits=1),208.3)
   expect_equal(round(sum(HH$MAD3b),digits=1),89.1)

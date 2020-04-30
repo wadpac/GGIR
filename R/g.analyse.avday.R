@@ -36,7 +36,7 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
           avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
           # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
           ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value, qM5L5=qM5L5)
-          ML5AD = as.data.frame(c(ML5AD,ML5ADtmp))
+          ML5AD = as.data.frame(c(ML5AD,ML5ADtmp), stringsAsFactors = TRUE)
         }
         ML5N = names(ML5AD)
         for (ML5ADi in 1:length(ML5N)) {

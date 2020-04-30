@@ -3,9 +3,18 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidn
   #===============================
   # Load sleep log data...
   S = read.csv(loglocation)
+  if (length(S) == 0) {
+    cat("\nCould not read sleeplog file, check that file path is correct.")
+    cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
+  } else {
+    if (nrow(S) ==0 | ncol(S) <= 2) {
+      cat("\nCould not read sleeplog file. Does it have at least 3 columns and comma seperated values?")
+      cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
+    }
+  }
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ",(nrow(S)*nnights),2)
-  
+
   cnt = 1
   for (i in 1:nnights) { #loop through nights
     SL = as.character(S[,coln1+((i-1)*2)])
@@ -51,8 +60,8 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidn
     sleeplog = sleeplog[-c(which(sleeplog[,1] == 0)),]
     sleeplog_times = sleeplog_times[-c(which(sleeplog[,1] == 0)),]
   }
-  sleeplog= as.data.frame(sleeplog)
-  names(sleeplog) = c("id","night","duration")
+  sleeplog= as.data.frame(sleeplog, stringsAsFactors = TRUE)
+  names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]
   invisible(list(sleeplog=sleeplog))

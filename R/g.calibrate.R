@@ -1,4 +1,4 @@
-g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
+g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE,
                        chunksize=c(),windowsizes=c(5,900,3600),selectdaysfile=c(),dayborder=0,
                        desiredtz = "", ...) {
   #get input variables
@@ -41,10 +41,12 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.4) chunksize = 0.4
+  use.temp = TRUE
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # set parameters
-  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,filedoesnotholdday = FALSE)
+  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
+                           filedoesnotholdday = FALSE, stringsAsFactors = TRUE)
   ws4 = 10 #epoch for recalibration, don't change
   ws2 = windowsizes[2] #dummy variable
   ws =  windowsizes[3] # window size for assessing non-wear time (seconds)
@@ -120,7 +122,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading block: ",i,sep=""))
+      cat(paste("\nLoading chunk: ",i,sep=""))
     } else {
       cat(paste(" ",i,sep=""))
     }
@@ -464,7 +466,7 @@ g.calibrate = function(datafile,use.temp=TRUE,spherecrit=0.3,minloadcrit=72,prin
     }
   }
   if (length(ncol(meta_temp)) != 0) {
-    spheredata = data.frame(A = meta_temp)
+    spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
     } else {

@@ -18,12 +18,9 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     #---------------------------------
     # Specifying directories with meta-data and extracting filenames
     path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
-    fnames = dir(path)
-    if (f1 > length(fnames)) f1 = length(fnames)
-    # create output folders
-    ms2.out = "/meta/ms2.out"
-    fnames.ms2 = dir(paste0(metadatadir,ms2.out))
-
+    fnames = dir(path) # part 1
+    # ms2.out = "/meta/ms2.out"
+    fnames.ms2 = dir(paste0(metadatadir,ms2.out))  #part 2
     #---------------------------------
     # house keeping variables
     pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
@@ -31,6 +28,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     winSUMMARY = daySUMMARY = c()
     if (length(f0) ==  0) f0 = 1
     if (length(f1) ==  0) f1 = length(fnames)
+    if (f1 > length(fnames)) f1 = length(fnames)
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
@@ -43,15 +41,20 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       if (pdfpagecount == 1) {
         pdf(paste0(metadatadir,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf"),width=7,height=7)
       }
+      # First load part 1 data
       M = c()
       fname2read =paste0(path,fnames[i])
       try(expr={load(fname2read)},silent=TRUE) #reading RData-file
       if (length(M) == 0) {
-        cat(paste0("Error in g.report2: Struggling to read : ",fnames[i]))
+        cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
       }
-      if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-        fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
-        selp = which(fnames.ms2 == fname)
+      fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
+      selp = which(fnames.ms2 == fname)
+      if(length(selp) == 0 ) {
+        cat(paste0("File ",fname," not available in part 2"))
+      }
+      if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
+        # Load part 2 data
         IMP=c()
         fname2read = paste0(metadatadir,ms2.out,"/",fnames.ms2[selp])
         try(expr={load(file=fname2read)},silent=TRUE)
@@ -73,41 +76,26 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
           } else {
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
-            if (ncol(SUMMARY) == ncol(SUM$summary)) {
-            } else {
-              if (ncol(SUM$summary) > ncol(SUMMARY)) {
-                cat(" Error: Failed to merge output from incompatible analysis. Please
-                    make sure you use a consistent set of parameters within a single analysis.")
+            bind_with_prev_data = function(df1, df2) {
+              df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
+              df1 = as.data.frame(df1)
+              # replace factors by character value
+              i <- sapply(df1, is.factor)
+              df1[,i] <- lapply(df1[,i], as.character)
+              # replace all NA values by blank
+              df1[is.na(df1)] <- ""
+              if (length(which(df1 == "NaN")) > 0) {
+                df1[df1=="NaN"] = ""
               }
-              SUM$summary = cbind(SUM$summary[1:(ncol(SUM$summary)-8)],
-                                  matrix(" ",1,(ncol(SUMMARY) - ncol(SUM$summary))),
-                                  SUM$summary[(ncol(SUM$summary)-7):ncol(SUM$summary)])
-              colnames(SUM$summary) = colnames(SUMMARY)
+              return(df1)
             }
-            # daysummary
-            if (ncol(daySUMMARY) == ncol(SUM$daysummary)) {
-            } else {
-              SUM$daysummary = cbind(SUM$daysummary,matrix(" ",1,(ncol(daySUMMARY) - ncol(SUM$daysummary))))
-              colnames(SUM$daysummary) = colnames(daySUMMARY)
-            }
-            if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
-              names(SUM$daysummary) =   colnames(daySUMMARY)
-            }
+            SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
+            daySUMMARY = bind_with_prev_data(daySUMMARY, SUM$daysummary)
             if (length(selectdaysfile) > 0) {
               # winsummary
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
-              if (ncol(winSUMMARY) == ncol(winSUMMARY2)) {
-              } else {
-                winSUMMARY2 = cbind(winSUMMARY2,matrix(" ",1,(ncol(winSUMMARY) - ncol(winSUMMARY2))))
-                colnames(winSUMMARY2) = colnames(winSUMMARY)
-              }
-              if (length(which(colnames(winSUMMARY) != names(winSUMMARY2)) ) > 0) {
-                names(winSUMMARY2) =   colnames(winSUMMARY)
-              }
-              winSUMMARY = rbind(winSUMMARY,winSUMMARY2)
+              winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
             }
-            SUMMARY = rbind(SUMMARY,SUM$summary)
-            daySUMMARY = rbind(daySUMMARY,SUM$daysummary)
           }
         }
       }
@@ -197,14 +185,10 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
     write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
-
     write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
     if (length(selectdaysfile) > 0) {
       write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
     }
     write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
-    # this code is now part of g.part4
-    # SI = sessionInfo()
-    # save(SI,file=paste0(metadatadir,"/results/QC/sessioninfo_part2.RData"))
   }
 }

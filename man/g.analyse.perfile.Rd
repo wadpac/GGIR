@@ -8,7 +8,7 @@ Generates recording specific analyses and fills corresponding
 output matrix, \link{g.analyse}.
 }
 \usage{
-g.analyse.perfile(id, id2, idd, fname, deviceSerialNumber,
+g.analyse.perfile(ID, ID2, IDd, fname, deviceSerialNumber,
   BodyLocation, startt, I, LC2, LD, dcomplscore,
   LMp, LWp, C, lookat, AveAccAve24hr, 
   colnames_to_lookat, QUAN,  ML5AD,
@@ -21,9 +21,9 @@ g.analyse.perfile(id, id2, idd, fname, deviceSerialNumber,
 }
 
 \arguments{
-\item{id}{see \link{g.analyse.perday}}
-\item{id2}{see \link{g.analyse.perday}}
-\item{idd}{see \link{g.analyse.perday}}
+\item{ID}{see \link{g.analyse.perday}}
+\item{ID2}{see \link{g.analyse.perday}}
+\item{IDd}{see \link{g.analyse.perday}}
 \item{fname}{see \link{g.analyse.perday}}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
 \item{BodyLocation}{as produced by \link{g.extractheadervars}}

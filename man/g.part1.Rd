@@ -30,10 +30,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
         do.lfen = FALSE,
         do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
-        use.temp=TRUE,spherecrit=0.3,minloadcrit=72,
+        spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
-        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2, ...)
+        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
+        myfun=c(), ...)
 }
 \arguments{
   \item{datadir}{
@@ -133,9 +134,6 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{n}{
   order of the frequency filter, see \link{g.getmeta}
   }
-  \item{use.temp}{
-  see \link{g.calibrate} use temperature sensor data if available (Geneactive only)
-  }
   \item{spherecrit}{
   see \link{g.calibrate} the minimum required acceleration value (in g) on both
   sides of 0 g for each axis. Used to judge whether the sphere is sufficiently
@@ -192,6 +190,10 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     Minimum File size in MB required to enter processing, default 2MB. This argument can help
     to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
     collects several MBs per hour, the default setting should only skip the very short files.
+  }
+  \item{myfun}{
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
   }
   \item{...}{
    Any input arguments needed for function \link{read.myacc.csv} if you
