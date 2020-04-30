@@ -324,7 +324,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in timewindow) {
                     nightsi = nightsi_bu
-                    plusrow = 1
                     ts$guider = "unknown"
                     if (timewindowi == "WW") {
                       if (length(FM) > 0) {
@@ -340,7 +339,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                     }
                     if (timewindowi == "MM") {
-                      Nwindows = nrow(summarysleep_tmp2)+plusrow
+                      Nwindows = nrow(summarysleep_tmp2)
                     } else {
                       Nwindows = length(which(diff(ts$diur) == -1))
                     }
