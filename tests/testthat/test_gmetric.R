@@ -31,20 +31,24 @@ test_that("g.getmetric calculates the correct metric values", {
                           do.hfenplus=T,do.mad=T,do.anglex=F,do.angley=F,
                           do.anglez=F,do.roll_med_acc_x=T,do.roll_med_acc_y=T,do.roll_med_acc_z=T,
                           do.dev_roll_med_acc_x=T,do.dev_roll_med_acc_y=T,
-                          do.dev_roll_med_acc_z=T,do.enmoa=T, stringsAsFactors = TRUE)
-  HH = g.applymetrics(data,n,sf,ws3=1,metrics2do)
-  expect_equal(round(sum(HH$BFEN3b),digits=1),208.3)
-  expect_equal(round(sum(HH$MAD3b),digits=1),89.1)
-  expect_equal(round(sum(HH$LFENMO3b),digits=1),117.9)
-  expect_equal(round(sum(HH$HFEN3b),digits=1),234.2)
-  expect_equal(round(sum(HH$EN3b),digits=1),282.0)
-  expect_equal(round(sum(HH$HFENplus3b),digits=1),246.9)
-  expect_equal(round(sum(HH$roll_med_acc_x3b),digits=1),162.7)
-  expect_equal(round(sum(HH$roll_med_acc_y3b),digits=1),-9)
-  expect_equal(round(sum(HH$roll_med_acc_z3b),digits=1),-5.9)
+                          do.dev_roll_med_acc_z=T,do.enmoa=T,
+                          do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+                          do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
+                          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
+                          stringsAsFactors = TRUE)
+  HH = g.applymetrics(data, n=n, sf=sf, ws3=1 , metrics2do)
+  expect_equal(round(sum(HH$BFEN),digits=1), 208.3)
+  expect_equal(round(sum(HH$MAD),digits=1), 89.1)
+  expect_equal(round(sum(HH$LFENMO),digits=1), 117.9)
+  expect_equal(round(sum(HH$HFEN),digits=1), 234.2)
+  expect_equal(round(sum(HH$EN),digits=1), 282.0)
+  expect_equal(round(sum(HH$HFENplus),digits=1), 345.7)
+  expect_equal(round(sum(HH$roll_med_acc_x),digits=1), 162.7)
+  expect_equal(round(sum(HH$roll_med_acc_y),digits=1),-9)
+  expect_equal(round(sum(HH$roll_med_acc_z),digits=1),-5.9)
   
-  expect_equal(round(sum(HH$dev_roll_med_acc_x3b),digits=1),118.9)
-  expect_equal(round(sum(HH$dev_roll_med_acc_y3b),digits=1),117.6)
-  expect_equal(round(sum(HH$dev_roll_med_acc_z3b),digits=1),116.6)
-  expect_equal(round(sum(HH$ENMOa3b),digits=1),142.0)
+  expect_equal(round(sum(HH$dev_roll_med_acc_x),digits=1), 118.9)
+  expect_equal(round(sum(HH$dev_roll_med_acc_y),digits=1), 117.6)
+  expect_equal(round(sum(HH$dev_roll_med_acc_z),digits=1), 116.6)
+  expect_equal(round(sum(HH$ENMOa),digits=1),142.0)
 })
