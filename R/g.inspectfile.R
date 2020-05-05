@@ -233,6 +233,8 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile=datafile)
       # on.exit(closeAllConnections())
+    } else if (mon == 5) { #movisens
+      H = "file does not have header" # these files have no header
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea
@@ -325,7 +327,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   } else {
     if (mon == 2 & dformat == 1) {
       varname = rownames(as.matrix(H))
-      H = data.frame(varname F= varname,varvalue = as.character(H), stringsAsFactors = TRUE)
+      H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
     } else {
       if (length(H) > 1 & class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2], stringsAsFactors = TRUE)
     }
