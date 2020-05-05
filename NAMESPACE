@@ -28,6 +28,6 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "quantile", "sd","coef", "lm")
 importFrom("utils", "memory.limit", "memory.size", "tail")
 import(data.table)
-import(unisensR)
+importFrom(unisensR)
 useDynLib(GGIR, .registration=TRUE)
 importFrom(Rcpp, sourceCpp)
