@@ -88,7 +88,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = starttime = wday = weekdays = wdayname = c()
 
-  monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
+  monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
   filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
