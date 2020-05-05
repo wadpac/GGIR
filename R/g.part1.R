@@ -73,6 +73,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   } else {
     useRDA = FALSE
   }
+  # check whether these are movisens files
+  is.mv = ismovisens(fnames)
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
@@ -108,6 +110,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    dir(datadir,recursive=TRUE,pattern="[.]bin", full.names = TRUE),
                    dir(datadir,recursive=TRUE,pattern="[.]wav", full.names = TRUE),
                    dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
+    if(is.mv == TRUE) {
+      fnamesfull = dir(datadir,recursive=TRUE,pattern="acc.bin", full.names = TRUE)
   } else {
     fnamesfull = datadir
   }
@@ -229,7 +233,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                          "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                          "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv",
-                         "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata")
+                         "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens")
     errhand = 'stop'
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
