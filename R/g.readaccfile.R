@@ -45,7 +45,8 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   # mon 2 = GENEACtiv
   # mon 3 = Actigraph
   # mon 4 = Axivity
-  # mon 5 = Other
+  # mon 5 = Movisens
+  # mon 0 = Other
   # dformat 1 = binary
   # dformat 2 = csv
   # dformat 3 = wav
@@ -407,7 +408,26 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     } else {
       P = c()
     }
-  } else if (mon == 5 & dformat == 5) { # user specified csv format
+  } else if (mon == 5 & dformat == 1){ #movisens
+      startpage = blocksize*(blocknumber-1) + 1
+      deltapage = blocksize
+      UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
+                               blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
+      startpage = UPI$startpage;    endpage = UPI$endpage 
+      file_length = unisensR::getUnisensSignalSampleCount(filename, "acc.bin")
+      if (endpage > file_length){
+          endpage = file_length
+          switchoffLD = 1
+          }
+      P = unisensR::readUnisensSignalEntry(filename, "acc.bin",
+                                           startIndex = startpage,
+                                           endIndex = endpage)
+      P = as.matrix(P)
+      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+          P = c()
+          switchoffLD = 1
+          filequality$filetooshort = TRUE
+  } else if (mon == 0 & dformat == 5) { # user specified csv format
     startpage = (1+(blocksize*300*(blocknumber-1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
@@ -449,5 +469,5 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       P = c()
     }
   }
-  invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage))
+  invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage,  startpage = startpage))
 }
