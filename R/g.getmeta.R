@@ -227,6 +227,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
       PreviousEndPage = accread$endpage
+      PreviousStartPage = accread$startpage
       rm(accread); gc()
     } else {
       filetooshort = FALSE
