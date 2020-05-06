@@ -17,5 +17,5 @@ g.readtemp_movisens = function(datafile) {
     rawLast = nrow(rawTemp)
     tempRes = resample(rawTemp, rawTime, timeRes, rawLast) # this is now the resampled temp data
     temperature = tempRes[PreviousStartPage:PreviousEndPage]
-    return(temperature)
+    invisible(temperature)
 }
