@@ -1,7 +1,7 @@
 \name{ismovisens}
 \alias{ismovisens}
 \title{
-Checks whether fnames refer to files collected with
+Checks whether the files to process are collected with
 movisens accelerometers
 }
 \description{
@@ -12,7 +12,7 @@ ismovisens(fnames)
 }
 \arguments{
   \item{fnames}{
-Argument fnames as derived in some GGIR functions
+Full path to the file/s or directory where they are stored.
 }
 }
 \value{
