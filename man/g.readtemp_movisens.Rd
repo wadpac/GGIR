@@ -5,12 +5,12 @@ Reads the temperature from movisens files.
 }
 \description{
 Reads the temperature from movisens files, resamples it and adds 
-it to the matrix where accelerations are stored.
+it to the matrix where accelerations are stored}
 \usage{
 g.readtemp_movisens(datafile)	
 }
 \arguments{
-  \item{fnames}{
+  \item{datafile}{
 Full path to the directory where the movisens recording files are stored.
 }
 }
