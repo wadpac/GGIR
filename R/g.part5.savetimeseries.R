@@ -16,7 +16,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
   names(mdat)[which(names(mdat) == "diur")] = "SleepPeriodTime"
   mdat = mdat[,-which(names(mdat) == "date_time")]
   # Add invalid day indicator
-  mdat$invalid_wakinghours = mdat$invalid_sleepperiod =  mdat$invalid_fullwindow= 1
+  mdat$invalid_wakinghours = mdat$invalid_sleepperiod =  mdat$invalid_fullwindow = 100
   wakeup = which(diff(c(mdat$SleepPeriodTime,0)) == -1) + 1 # first epoch of each day
   if (length(wakeup) > 1) {
     for (di in 1:(length(wakeup)-1)) {
@@ -31,7 +31,10 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     mdat$ACC = round(mdat$ACC, digits= 3)
     if (save_ms5raw_without_invalid == TRUE) {
       # remove irrelevant columns and rows
+      # remove fully invalid days
       mdat = mdat[-which(mdat$invalid_fullwindow == 1),] # remove days from which we already know that they are not going to be included (first and last day)
+      cut = which(mdat$invalid_fullwindow == 100)
+      if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)
     }
     mdat$guider = ifelse(mdat$guider =='sleeplog', yes = 1, # digitize guider to save storage space
                          no = ifelse(mdat$guider == 'HDCZA', yes = 2,
