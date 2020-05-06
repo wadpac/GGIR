@@ -170,8 +170,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   if (temp.available == FALSE) {
     metalong = matrix(" ",((nev/(sf*ws2))+100),4) #generating output matrix for 15 minutes summaries
-  } else if (temp.available == TRUE){
+  } else if (temp.available == TRUE & mon != 5){
     metalong = matrix(" ",((nev/(sf*ws2))+100),7) #generating output matrix for 15 minutes summaries
+  } else if (temp.available == TRUE & mon == 5){
+    metalong = matrix(" ",((nev/(sf*ws2))+100),5) #generating output matrix for 15 minutes summaries
   }
   #------------------------------------------
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
@@ -325,18 +327,20 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           data = as.matrix(data)
           #--------------------------------------------
-          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
+          if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)) {
             if (mon == 2) {
               temperaturecolumn = 7; lightcolumn = 5
             } else if (mon ==4) {
               temperaturecolumn = 5; lightcolumn = 7
-            } else if (mon ==5) {
+            } else if (mon == 5) {
+              temperaturecolumn = 4
+            } else if (mon ==0) {
               temperaturecolumn = 5
             }
-            if (mon != 5) {
+            if (mon != 0 & mon != 5) {
               light = as.numeric(data[,lightcolumn])
             }
-            if (mon == 5 & length(rmc.col.wear) > 0) {
+            if (mon == 0 & length(rmc.col.wear) > 0) {
               wearcol = as.character(data[, which(colnames(data) == "wear")])
               suppressWarnings(storage.mode(wearcola) <- "logical")
             }
@@ -358,8 +362,14 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
               scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
             rm(yy); gc()
+          } else if(mon == 5) {
+            yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
+            data = data[,1:3]
+            data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
+              scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
+            rm(yy); gc()
           } else if ((dformat == 2 | dformat == 5) & (mon != 4)) {
-            if (mon == 2 | (mon == 5 & use.temp == TRUE)) {
+            if (mon == 2 | (mon == 0 & use.temp == TRUE)) {
               tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))
               yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
               meantemp = mean(as.numeric(data[,temperaturecolumn]))
@@ -372,9 +382,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                 data = apply(data, 2,as.numeric)
               }
             }
-            if ((mon == 3 | mon == 5) & use.temp == FALSE) {
+            if ((mon == 3 | mon == 0) & use.temp == FALSE) {
               data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale)  #rescale data
-            } else if ((mon == 2 | mon == 5) & use.temp == TRUE) {
+            } else if ((mon == 2 | mon == 0) & use.temp == TRUE) {
               # meantemp replaced by meantempcal # 19-12-2013
               data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale) +
                 scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
@@ -392,9 +402,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
             # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
-            if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 5)) {
+            if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 0)) {
               I = INFI
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,light,
+                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+            } else if (mon == 5) {
+              save(I,sf,wday,wdayname,decn,data,starttime,temperature,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
             } else {
               save(I,sf,wday,wdayname,decn,data,starttime,
@@ -759,10 +772,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & use.temp == FALSE)) {
+    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-    } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & use.temp == TRUE)) {
+    } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
+    } else if (mon == 5) {
+      metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
     }
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
