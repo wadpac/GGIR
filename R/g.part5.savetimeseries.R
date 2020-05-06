@@ -1,5 +1,7 @@
 g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
-                                  save_ms5raw_format="csv", save_ms5raw_without_invalid=TRUE) {
+                                  save_ms5raw_format="csv", save_ms5raw_without_invalid=TRUE,
+                                  DaCleanFile = c(),
+                                  includedaycrit.part5= 2/3, ID = c()) {
   Nts = nrow(ts)
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
@@ -30,9 +32,29 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     # round acceleration values to 3 digits to reduce storage space
     mdat$ACC = round(mdat$ACC, digits= 3)
     if (save_ms5raw_without_invalid == TRUE) {
-      # remove irrelevant columns and rows
-      # remove fully invalid days
-      cut = which(mdat$invalid_fullwindow == 100)
+      # Remove days based on data_cleaning_file
+      if (length(DaCleanFile) > 0) { 
+        if (ID %in% DaCleanFile$ID) {
+          days2exclude = DaCleanFile$day_part5[which(DaCleanFile$ID == ID)]
+          if (length(days2exclude) > 0) {
+            cut = which(which(mdat$window %in% days2exclude == TRUE))
+            if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)       
+          }
+        }
+      }
+      # Reformat includedaycrit.part5 to maximum percentage non-wear during waking hours:
+      if (includedaycrit.part5 >= 0 & includedaycrit.part5 <= 1) { # if includedaycrit.part5 is used as a ratio
+        includedaycrit.part5 = includedaycrit.part5 * 100
+      } else if (includedaycrit.part5 > 1 & includedaycrit.part5 <= 25) { # if includedaycrit.part5 is used like includedaycrit as a number of hours
+        includedaycrit.part5 = (includedaycrit.part5 / 24) * 100
+      } else if (includedaycrit.part5 < 0 ) {
+        warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
+      } else if (includedaycrit.part5 > 25) {
+        warning("\nIncorrect value of includedaycrit.part5, this should be a fraction of the day between zero and one or the number of hours in a day.")
+      }
+      maxpernwday = 100 - includedaycrit.part5
+      # Exclude days that have 100% nonwear over the full window or 100% over wakinghours
+      cut = which(mdat$invalid_fullwindow == 100 | mdat$invalid_wakinghours > maxpernwday)
       if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)
     }
     mdat$guider = ifelse(mdat$guider =='sleeplog', yes = 1, # digitize guider to save storage space
@@ -40,10 +62,9 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                      no =  ifelse(mdat$guider == 'setwindow', yes = 3,
                                                   no = ifelse(mdat$guider == 'L512', yes = 4,
                                                               no = 0))))
-    mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))] #,"invalidepoch"
+    mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns
     naS = colnames(mdat)
-    # mdat = mdat[,c(which(naS == "filename"),which(naS != "filename"))]
     if (save_ms5raw_format == "csv") {
       # save to csv file
       write.csv(mdat,rawlevels_fname, row.names = F)
