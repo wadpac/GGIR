@@ -32,7 +32,6 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     if (save_ms5raw_without_invalid == TRUE) {
       # remove irrelevant columns and rows
       # remove fully invalid days
-      mdat = mdat[-which(mdat$invalid_fullwindow == 1),] # remove days from which we already know that they are not going to be included (first and last day)
       cut = which(mdat$invalid_fullwindow == 100)
       if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)
     }
