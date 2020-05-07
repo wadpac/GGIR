@@ -597,9 +597,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
                               L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
                               M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
-                              if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
-                              if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
+                            if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
+                            if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             if (L5HOUR != "not detected") {
                               time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
                               if (time_num < 12) time_num = time_num + 24
