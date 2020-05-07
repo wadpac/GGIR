@@ -83,6 +83,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   if (save_ms5raw_format != "RData" & save_ms5raw_format != "csv") {
     save_ms5raw_format = "csv"# specify as csv if user does not clearly specify format
   }
+  DaCleanFile = c()
+  if (length(data_cleaning_file) > 0) {
+    if (file.exists(data_cleaning_file)) DaCleanFile = read.csv(data_cleaning_file)
+  }
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (storefolderstructure == TRUE) {
@@ -185,10 +189,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       di = 1
       fi = 1
       sptwindow_HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
-      DaCleanFile = c()
-      if (length(data_cleaning_file) > 0) {
-        if (file.exists(data_cleaning_file)) DaCleanFile = read.csv(data_cleaning_file)
-      }
+      
       if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
         summarysleep_tmp = summarysleep
         #======================================================================

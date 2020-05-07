@@ -21,7 +21,8 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   overwrite=FALSE, desiredtz="", 
   bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
-  save_ms5raw_without_invalid=TRUE)
+  save_ms5raw_without_invalid=TRUE,
+  data_cleaning_file=c(), includedaycrit.part5=2/3)
 
 }
 \arguments{
@@ -177,6 +178,16 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   \item{save_ms5raw_without_invalid}{
   Boolean to indicate whether to remove invalid days from the time series output files.
   Only used if save_ms5rawlevels is set to TRUE. 
+  }
+  \item{data_cleaning_file}{
+  See \link{g.report.part5}. Only used in this function if
+  save_ms5rawlevels is TRUE,  and it only affects the time 
+  series files stored.
+  }
+  \item{includedaycrit.part5}{
+  See \link{g.report.part5}. Only used in this function if
+  save_ms5rawlevels is TRUE,  and it only affects the time 
+  series files stored.
   }
 }
 \value{
