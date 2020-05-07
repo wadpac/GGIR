@@ -427,6 +427,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
           P = c()
           switchoffLD = 1
           filequality$filetooshort = TRUE
+        }
   } else if (mon == 0 & dformat == 5) { # user specified csv format
     startpage = (1+(blocksize*300*(blocknumber-1)))
     deltapage = (blocksize*300)
