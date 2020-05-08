@@ -5,14 +5,14 @@ Checks whether the files to process are collected with
 movisens accelerometers
 }
 \description{
-Checks whether the files indicated by fnames are files collected
-with movisens accelerometer}
+Checks whether the files in the datadir folder are files collected
+with movisens accelerometers}
 \usage{
-ismovisens(fnames)	
+ismovisens(datadir)	
 }
 \arguments{
-  \item{fnames}{
-Full path to the file/s or directory where they are stored.
+  \item{datadir}{
+Full path to the directory where they raw files are stored.
 }
 }
 \value{
@@ -21,6 +21,6 @@ Boolean whether it is a movisens file (TRUE) or not (FALSE)
   
 \examples{
 \dontrun{
-is.mv = ismovisens(fnames)
+is.mv = ismovisens(datadir)
 }
 }
