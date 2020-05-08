@@ -74,7 +74,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     useRDA = FALSE
   }
   # check whether these are movisens files
-  is.mv = ismovisens(fnames)
+  is.mv = ismovisens(datadir)
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
