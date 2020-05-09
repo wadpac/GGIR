@@ -1,4 +1,4 @@
-g.readtemp_movisens = function(datafile) {
+g.readtemp_movisens = function(datafile, desiredtz = "", PreviousStartPage, PreviousEndPage) {
     temperature = unisensR::readUnisensSignalEntry(datafile, "temp.bin")
     temperature = as.data.frame(temperature)
     origin = unisensR::readUnisensStartTime(datafile)
