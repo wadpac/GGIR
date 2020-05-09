@@ -11,8 +11,17 @@ g.readtemp_movisens(datafile)
 }
 \arguments{
   \item{datafile}{
-Full path to the directory where the movisens recording files are stored.
-}
+  Full path to the directory where the movisens recording files are stored.
+  }
+  \item{desiredtz}{
+  see \link{g.getmeta}
+  }
+  \item{from}{
+  Origin point to derive the temperature from movisens files (automatically calculated by GGIR)
+  }
+  \item{to}{
+  End point to derive the temperature from movisens files (automatically calculated by GGIR)
+  }
 }
 \value{
 Data matrix with the temperature values resampled at 64 Hz.
