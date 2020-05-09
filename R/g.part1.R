@@ -112,7 +112,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
     if(is.mv == TRUE) {
       fnamesfull = dir(datadir,recursive=TRUE,pattern="acc.bin", full.names = TRUE)
-      fnames = dir(datadir, recursive = TRUE, pattern = "acc.bin")
+      fnames = dir(datadir, recursive = FALSE)
       }
   } else {
     fnamesfull = datadir
