@@ -152,16 +152,22 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   tmp5 = tmp6 = rep(0,length(fnamesfull))
   if (length(fnamesfull) > 0) {
-    fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-    phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-    for (i in 1:length(fnames)) {
-      ff = unlist(strsplit(fnames[i],"/"))
-      ff = ff[length(ff)]
-      if (length(which(fnamesshort == ff)) > 0) {
-        tmp5[i] = fnamesfull[which(fnamesshort == ff)]
-        tmp6[i] = phase[which(fnamesshort == ff)]
+    if(is.mv == FALSE) {
+      fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
+      phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+      for (i in 1:length(fnames)) {
+        ff = unlist(strsplit(fnames[i],"/"))
+        ff = ff[length(ff)]
+        if (length(which(fnamesshort == ff)) > 0) {
+          tmp5[i] = fnamesfull[which(fnamesshort == ff)]
+          tmp6[i] = phase[which(fnamesshort == ff)]
+        }
       }
-    }
+    } else if (is.mv == TRUE) {
+      tmp5 = fnamesfull
+      phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+      tmp6 = phase
+      }
   } else {
     stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
                 "in the directory specified with argument datadir"))
