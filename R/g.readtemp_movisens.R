@@ -1,4 +1,4 @@
-g.readtemp_movisens = function(datafile, desiredtz = "", PreviousStartPage, PreviousEndPage) {
+g.readtemp_movisens = function(datafile, desiredtz = "", PreviousStartPage = c(), PreviousEndPage = c()) {
     temperature = unisensR::readUnisensSignalEntry(datafile, "temp.bin")
     temperature = as.data.frame(temperature)
     origin = unisensR::readUnisensStartTime(datafile)
@@ -16,6 +16,10 @@ g.readtemp_movisens = function(datafile, desiredtz = "", PreviousStartPage, Prev
     tempRes = matrix(0,nrow = nr, ncol = ncol(rawTemp), dimnames = list(NULL,colnames(rawTemp)))
     rawLast = nrow(rawTemp)
     tempRes = resample(rawTemp, rawTime, timeRes, rawLast) # this is now the resampled temp data
-    temperature = tempRes[PreviousStartPage:PreviousEndPage]
+    if(length(PreviousStartPage) > 0 & length(PreviousEndPage) > 0) {
+       temperature = tempRes[PreviousStartPage:PreviousEndPage]
+    } else {
+       temperature = tempRes
+    }
     invisible(temperature)
 }
