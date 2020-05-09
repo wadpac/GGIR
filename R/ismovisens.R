@@ -1,16 +1,17 @@
-ismovisens = function(datadir){
+ismovisens = function(data){
         # ---------------------------
-        # In some functions, the file, and not the datadir is introduced in the 
-        # function. Now this allow to handle files or directories
-        isFile = strsplit(datadir, ".", fixed = T)
-        if(length(isFile[[1]]) >= 2) {  
-                datadir_tmp = strsplit(datadir, "/")
-                datadir_ln = length(datadir_tmp[[1]]) - 1
-                datadir = paste(datadir_tmp[[1]][1:datadir_ln], collapse = "/")
-        }
+        # Is data a directory? Then use the first file to test if recorded with movisens
+        directory = dir(data, recursive = T, full.names = T)[1]
+        isdir = !is.na(directory)
+        if(isdir == TRUE) data = directory
         # ---------------------------
-        unisensXML = paste(datadir, "unisens.xml", sep = "/")
+        # Now, I focus on the participant directory
+        p_dir = strsplit(data, ".", fixed = T)
+        data_tmp = strsplit(p_dir[[1]], "/")
+        data_ln = length(data_tmp[[1]]) - 1
+        data = paste(data_tmp[[1]][1:data_ln], collapse = "/")
+        # ---------------------------
+        unisensXML = paste(data, "unisens.xml", sep = "/")
         is.mv = file.exists(unisensXML)
         return(is.mv)
 }
-      
