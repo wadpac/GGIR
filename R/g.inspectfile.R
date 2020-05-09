@@ -336,6 +336,9 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
     header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1], stringsAsFactors = TRUE)
   }
+  if (H[1,1] == "file does not have header") { #no header
+                header = "no header"
+        }
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
