@@ -232,7 +232,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       PreviousStartPage = accread$startpage
       rm(accread); gc()
       if(mon == 5) { # if movisens, then read temperature
-        P = cbind(P, g.readtemp_movisens(datafile))
+        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
+        P = cbind(P, temperature)
         colnames(P)[4] = "temp"
         }
     } else {
