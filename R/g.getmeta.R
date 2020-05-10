@@ -313,7 +313,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           }
           if ((LD - use) > 1) {
             # reading csv files
-            S = data[(use+1):LD,] #store left over
+            S = as.matrix(data[(use+1):LD,]) #store left over (included as.matrix)
             if (ncol(S) == 1) {
               S = t(S)
             }
