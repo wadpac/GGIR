@@ -193,8 +193,8 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       if (length(use) > 0) {
         if (use > 0) {
           if (use != LD) {
-            # S = as.matrix(data[(use+1):LD,]) #store left over # as.matrix removed on 22May2019 because redundant
-            S = data[(use+1):LD,] #store left over
+            S = as.matrix(data[(use+1):LD,]) #store left over # as.matrix removed on 22May2019 because redundant
+            #S = data[(use+1):LD,] #store left over
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
