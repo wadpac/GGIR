@@ -163,7 +163,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1+nmetrics)) #generating output matrix for acceleration signal
-  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & length(rmc.col.temp) == 0)) {
+  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & length(rmc.col.temp) == 0)) {
     temp.available = FALSE
   } else if (mon == 2 | (mon == 4 & dformat == 4)  | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)){
     temp.available = TRUE
