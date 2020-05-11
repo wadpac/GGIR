@@ -586,8 +586,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         col_mli = 2
         metalong[count2:((count2-1)+nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
         metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
-        if (mon == 2 | (mon == 4 & dformat == 4)) { #going from sample to ws2
-          #light (running mean)
+        if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5) { #going from sample to ws2
+          if (mon == 2 | (mon == 4 & dformat == 4)) {
+            #light (running mean)
           lightc = cumsum(c(0,light))
           select = seq(1,length(lightc),by=(ws2*sfold))
           lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
@@ -601,6 +602,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             } else {
               lightmax[li] = max(light[((li-1)*(ws2*sfold)):(li*(ws2*sfold))])
             }
+           }
           }
           #temperature (running mean)
           temperaturec = cumsum(c(0,temperature))
@@ -618,7 +620,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmax; col_mli= col_mli + 1
           metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
         } else if (mon == 5) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperature; col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
         }
         metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = ENb; col_mli= col_mli + 1
         count2  = count2 + nmin
