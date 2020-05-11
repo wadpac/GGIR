@@ -17,7 +17,7 @@ g.readtemp_movisens = function(datafile, desiredtz = "", from = c(), to = c()) {
     rawLast = nrow(rawTemp)
     tempRes = resample(rawTemp, rawTime, timeRes, rawLast) # this is now the resampled temp data
     if(length(from) > 0 & length(to) > 0) {
-       temperature = tempRes[from:(to-1)]
+       temperature = tempRes[from:to]
     } else {
        temperature = tempRes
     }
