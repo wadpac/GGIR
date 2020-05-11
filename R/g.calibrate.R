@@ -248,7 +248,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
             use.temp = FALSE
           } else if (mon == 5) {
             temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
-            data = cbind(data, temperature)
+            data = cbind(data, temperature[1:nrow(data)])
             colnames(data)[4] = "temp"
             temperaturecolumn = 4
           }
