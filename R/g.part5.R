@@ -703,7 +703,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
                     # save time series to csv files
-                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider")], LEVELS,
+                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider","window")], LEVELS,
                                            desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid,
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5= includedaycrit.part5, ID=ID)

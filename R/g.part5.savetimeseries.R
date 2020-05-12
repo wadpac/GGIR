@@ -37,7 +37,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
         if (ID %in% DaCleanFile$ID) {
           days2exclude = DaCleanFile$day_part5[which(DaCleanFile$ID == ID)]
           if (length(days2exclude) > 0) {
-            cut = which(which(mdat$window %in% days2exclude == TRUE))
+            cut = which(mdat$window %in% days2exclude == TRUE)
             if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)       
           }
         }
