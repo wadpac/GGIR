@@ -7,11 +7,11 @@ Reads the temperature from movisens files.
 Reads the temperature from movisens files, resamples it and adds 
 it to the matrix where accelerations are stored}
 \usage{
-g.readtemp_movisens(datafile)	
+g.readtemp_movisens(datafile, desiredtz = "", from = c(), to = c())	
 }
 \arguments{
   \item{datafile}{
-  Full path to the directory where the movisens recording files are stored.
+  Full path to the data file movisens folder.
   }
   \item{desiredtz}{
   see \link{g.getmeta}
@@ -29,6 +29,6 @@ Data matrix with the temperature values resampled at 64 Hz.
   
 \examples{
 \dontrun{
-P = g.readtemp_movisens(datafile)
+P = g.readtemp_movisens(datafile, desiredtz = "", from = c(), to = c())
 }
 }
