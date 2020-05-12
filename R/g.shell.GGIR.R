@@ -401,7 +401,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
-            save_ms5raw_without_invalid=save_ms5raw_without_invalid)
+            save_ms5raw_without_invalid=save_ms5raw_without_invalid,
+            data_cleaning_file=data_cleaning_file,
+            includedaycrit.part5=includedaycrit.part5)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
