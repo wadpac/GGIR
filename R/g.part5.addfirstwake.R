@@ -20,11 +20,17 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, Nep
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
       wake_night1 = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == 1)]
-      if (length(wake_night1) != 0) {
-        if (wake_night1 != "") {
+      onset_night1 = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == 1)]
+      if (length(wake_night1) != 0 & length(onset_night1) != 0) {
+        if (wake_night1 != "" & onset_night1 != "") {
           # express hour relative to midnight within the noon-noon:
           wake_night1_hour = clock2numtime(wake_night1)
-          if (wake_night1_hour > 12) wake_night1_hour = wake_night1_hour - 24 # express hour relative to midnight
+          onset_night1_hour = clock2numtime(onset_night1)
+          # If wake is in the afternoon or evening and onset hour is at noon
+          # then this cannot be a daysleeper and wakie time need to be correct
+          if (wake_night1_hour > 12 & (onset_night1_hour >= 12 & onset_night1_hour < 18)) {
+            wake_night1_hour = wake_night1_hour - 24 # express hour relative to midnight
+          }
           # onset_night1_hour = clock2numtime(onset_night1)
           wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
           # express hour relative to midnight within the noon-noon:
