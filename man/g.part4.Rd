@@ -135,11 +135,12 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   }
   \item{data_cleaning_file}{
   Optional path to a csv file you create as used 
-  that holds three columns: ID, day_part5, and relyonguider_part4
+  that holds four columns: ID, day_part5, relyonguider_part4, 
+  and day_part4
   This to facilitate forced exclusion of specific days in the output
   and/or forced relying on guider in part 4 output.
-  Columns day_part5 and relyonguider_part4 do not both have to have
-  a value.
+  Columns day_part5, day_part4 and relyonguider_part4 do not all 
+  have to have a value.
   }
 }
 \value{
