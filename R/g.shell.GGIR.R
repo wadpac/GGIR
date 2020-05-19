@@ -451,7 +451,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
     if (f1 == 0) f1 = N.files.ms4.out
     g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation =loglocation,f0=f0,f1=f1,
-                   storefolderstructure=storefolderstructure)
+                   storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file)
   }
   if (length(which(do.report == 5)) > 0) {
     cat('\n')
