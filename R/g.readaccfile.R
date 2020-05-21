@@ -241,7 +241,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
                              blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr={P = read.csv(checkgz(filename),nrow = deltapage, skip=startpage,header = FALSE,dec=decn)},silent=TRUE)
+    try(expr={P = read.csv(filename,nrow = deltapage, skip=startpage,header = FALSE,dec=decn)},silent=TRUE)
     if (length(P) > 1) {
       P = as.matrix(P)
       if (nrow(P) < ((sf*ws*2)+1) & blocknumber == 1) {
