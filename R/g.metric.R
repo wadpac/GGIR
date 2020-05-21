@@ -1,9 +1,10 @@
 g.metric= function(data,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
   
   
-  # THIS FUNCTION IS NOW NOT USED ANYMORE BY g.applymetrics
-  warning("Function g.metric is no longer used internally by GGIR")
-  warning("Function g.metric will be removed from GGIR in 2021")
+  # THIS FUNCTION IS NOT USED ANYMORE BY GGIR (g.applymetrics)
+  # cat("\nFunction g.metric is no longer used internally by GGIR")
+  # cat("\nFunction g.metric will be removed from GGIR in 2021")
+  
   #--------------------------------------
   #Input:
   # G = acceleration signal
