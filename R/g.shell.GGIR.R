@@ -144,7 +144,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("printsummary") == FALSE)  printsummary = FALSE
   if (exists("windowsizes") == FALSE)  windowsizes = c(5,900,3600)
   if (exists("minloadcrit") == FALSE)  minloadcrit = 72
-  if (exists("desiredtz") == FALSE)  desiredtz = "Europe/London"
+  if (exists("desiredtz") == FALSE)  desiredtz = ""
   if (exists("configtz") == FALSE)  configtz = c()
   if (exists("chunksize") == FALSE)  chunksize = 1
   if (exists("do.enmo") == FALSE)  do.enmo = TRUE
@@ -274,7 +274,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
   if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
   if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= ""
   if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
   if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
   if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
