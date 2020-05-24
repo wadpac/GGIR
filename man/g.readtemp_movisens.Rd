@@ -11,7 +11,9 @@ g.readtemp_movisens(datafile, desiredtz = "", from = c(), to = c())
 }
 \arguments{
   \item{datafile}{
-  Full path to the data file movisens folder.
+  Full path to the folder where the movisens bin files are stored. Note that movisens
+  store a set of bin file in one folder per recording. GGIR will read the pertinent bin 
+  file to access to the temperature data.
   }
   \item{desiredtz}{
   see \link{g.getmeta}
