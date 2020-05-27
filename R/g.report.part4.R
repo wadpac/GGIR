@@ -84,7 +84,8 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
       dupl = which(duplicated(outputp5[,c("ID","night_number")]) == TRUE)
       if (length(dupl) > 0) {
         # some days in part 5 can have two SPTs, remove first and keep second SPT
-        dupl2 = which(outputp5$ID == outputp5$ID[dupl] & outputp5$night_number == outputp5$night_number [dupl])[1:2]
+        dupl2 = which((outputp5$ID %in% outputp5$ID[dupl] &
+                        outputp5$night_number %in% outputp5$night_number[dupl]) ==  TRUE)[1]
         outputp5 = outputp5[-dupl2[1],]
       }
       colnames(outputp5)[which(colnames(outputp5) == "night_number")] = "night"
