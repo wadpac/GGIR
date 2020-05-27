@@ -137,8 +137,8 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           # include_window = rep(TRUE, nrow(x))
           if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
             DaCleanFile = read.csv(data_cleaning_file)
-            if ("day_part4" %in% colnames(DaCleanFile)) {
-              days2exclude = which(nightsummary$ID %in% DaCleanFile$ID & nightsummary$night %in% DaCleanFile$day_part4)
+            if ("night_part4" %in% colnames(DaCleanFile)) {
+              days2exclude = which(nightsummary$ID %in% DaCleanFile$ID & nightsummary$night %in% DaCleanFile$night_part4)
               if (length(days2exclude) > 0) {
                 nightsummary = nightsummary[-days2exclude,]
               }
