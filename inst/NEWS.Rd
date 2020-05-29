@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.0-1 (GitHub-only-release date:05-05-2020)}{
+\itemize{
+  \item Data from movisens accelerometers can be now processed in GGIR
+}
+}			 
 \section{Changes in version 2.0-0 (release date:30-04-2020)}{
 \itemize{
   \item Now R version 4.0 compatible
