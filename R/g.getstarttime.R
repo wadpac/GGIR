@@ -176,9 +176,11 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       starttime = as.POSIXlt(starttime,format=expectedformat)
       lengthheader = 9
     }
-  } else if (dformat == 5 & mon == 5) {
+  } else if (dformat == 5 & mon == 0) {
     starttime = P$data$timestamp[1]
     lengthheader = nrow(P$header)
+  } else if (mon == 5) {
+    starttime = unisensR::readUnisensStartTime(datafile)
   }
   return(starttime)
 }

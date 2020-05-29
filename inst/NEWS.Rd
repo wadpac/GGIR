@@ -2,12 +2,13 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.1-0 (GitHub-only-release date:01-06-2020)}{
+\section{Changes in version 2.0-1 (GitHub-only-release date:29-05-2020)}{
 \itemize{
   \item Now able to read gzipped csv files
   \item Part 2 Fixed midnight selction being off by one sample
   \item Part 1 tidied up metric calculation and added a few metrics
   \item Part 2 Added strategy 4 (ignore data before first midnight)
+  \item Data from movisens accelerometers can be now processed in GGIR
   }
 }
 \section{Changes in version 2.0-0 (release date:30-04-2020)}{

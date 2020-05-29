@@ -62,7 +62,14 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       dformat = 4 #4 = cwa
       mon = 4 # Axivity
     }
-    if (dformat == 1) { # .bin
+    is.mv = ismovisens(datafile)
+    if (is.mv == TRUE){
+      dformat = 1
+      sf = 64
+      mon = 5
+      header = "no header"
+      }
+    if (dformat == 1 & is.mv == FALSE) { # .bin and not movisens
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
@@ -181,7 +188,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
+  monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
   fornames = c("bin","csv","wav","cwa","csv") #format names
 
   if (length(filename) == 0) {
@@ -189,7 +196,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   }
   if (length(rmc.firstrow.acc) == 1) {
     dformat = 5
-    mon = 5
+    mon = 0
     Pusercsvformat = read.myacc.csv(rmc.file=datafile, rmc.nrow=5, rmc.dec=rmc.dec,
                        rmc.firstrow.acc = rmc.firstrow.acc,
                        rmc.firstrow.header = rmc.firstrow.header,
@@ -226,6 +233,8 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile=datafile)
       # on.exit(closeAllConnections())
+    } else if (mon == 5) { #movisens
+      H = "file does not have header" # these files have no header
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { #genea
@@ -327,8 +336,11 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
     header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1], stringsAsFactors = TRUE)
   }
+  if (H[1,1] == "file does not have header") { #no header
+                header = "no header"
+        }
   monc = mon
-  monn = monnames[mon]
+  monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
   if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
