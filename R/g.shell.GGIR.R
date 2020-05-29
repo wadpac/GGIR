@@ -179,7 +179,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
-  if (exists("maxdur") == FALSE)  maxdur = 7
+  if (exists("maxdur") == FALSE)  maxdur = 0
   if (exists("hrs.del.start") == FALSE)  hrs.del.start = 0
   if (exists("hrs.del.end") == FALSE)  hrs.del.end = 0
   if (exists("includedaycrit") == FALSE)  includedaycrit = 16
