@@ -103,10 +103,10 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
-  if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
+  if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)) {
     meta = matrix(99999,NR,8) #for meta data
   } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) |
-             (mon == 4 & dformat == 2) | (mon == 5 & length(rmc.col.temp) == 0)) {
+             (mon == 4 & dformat == 2) | (mon == 0 & length(rmc.col.temp) == 0)) {
     meta = matrix(99999,NR,7)
   }
   # setting size of blocks that are loaded (too low slows down the process)
@@ -116,6 +116,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
   if (mon == 1) blocksize = blocksizegenea
   if (mon == 4 & dformat == 3) blocksize = round(1440 * chunksize)
   if (mon == 4 & dformat == 2) blocksize = round(blocksize)
+  if (mon == 5) blocksize = (sf * 60 * 1440) / 2   #Around 12 hours of data for movisens
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
@@ -158,6 +159,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
     filedoesnotholdday = filequality$filedoesnotholdday
     switchoffLD = accread$switchoffLD
     PreviousEndPage = accread$endpage
+    PreviousStartPage = accread$startpage
     options(warn=0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -167,7 +169,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
         data = P$rawxyz #change scalling for Axivity?
       } else if (mon == 2  & dformat == 1) {
         data = P$data.out
-      } else if (dformat == 2) {
+      } else if (dformat == 2 | mon == 5) {
         data = as.matrix(P)
       } else if (dformat == 4) {
         if (P$header$hardwareType == "AX6") { # cwa AX6
@@ -191,8 +193,8 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       if (length(use) > 0) {
         if (use > 0) {
           if (use != LD) {
-            # S = as.matrix(data[(use+1):LD,]) #store left over # as.matrix removed on 22May2019 because redundant
-            S = data[(use+1):LD,] #store left over
+            S = as.matrix(data[(use+1):LD,]) #store left over # as.matrix removed on 22May2019 because redundant
+            #S = data[(use+1):LD,] #store left over
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
@@ -216,11 +218,14 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
           } else if (mon == 2 & dformat == 1) {
             Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperature = data[,7]
             temperature = as.numeric(data[,7])
-          } else if (mon == 5 & dformat == 5 & length(rmc.col.temp) > 0) {
+          } else if (mon == 5) {
+            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
+            use.temp = TRUE
+          } else if (mon == 0 & dformat == 5 & length(rmc.col.temp) > 0) {
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
             temperature = as.numeric(data[,5])
             use.temp = TRUE
-          } else if (mon == 5 & dformat == 5 & length(rmc.col.temp) == 0) {
+          } else if (mon == 0 & dformat == 5 & length(rmc.col.temp) == 0) {
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
             use.temp = FALSE
           } else if (dformat == 2 & mon != 4) {
@@ -232,7 +237,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
             }
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
-          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == TRUE)) {
+          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 0 & use.temp == TRUE)) {
             if (mon == 2) {
               temperaturecolumn = 7
             } else if (mon ==4 | mon == 5) {
@@ -241,9 +246,14 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == 1 | mon == 3) {
             use.temp = FALSE
+          } else if (mon == 5) {
+            temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
+            data = cbind(data, temperature[1:nrow(data)])
+            colnames(data)[4] = "temp"
+            temperaturecolumn = 4
           }
-          if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 5) & use.temp == TRUE) {
-            #also ignore temperature for GENEActive if temperature values are unrealisticly high or NA
+          if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | mon == 0) & use.temp == TRUE) {
+            #also ignore temperature for GENEActive/movisens if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               cat("\ntemperature is NA\n")
               use.temp = FALSE
@@ -323,6 +333,8 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       } else if (mon == 4) {
         sdcriter = 0.013 # NO IDEA WHAT REST NOISE IS FOR AXIVITY....test needed
       } else if (mon == 5) {
+        sdcriter = 0.013 # NO IDEA WHAT REST NOISE IS FOR MOVISENS....test needed
+      } else if (mon == 0) {
         if (length(rmc.noise) == 0) {
           warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
         }
@@ -441,10 +453,10 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       cal.error.end = mean(abs(cal.error.end-1))
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
-        if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & use.temp == FALSE))) {
+        if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & use.temp == FALSE))) {
           QC = "recalibration done, no problems detected"
         } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) |
-                                        (mon == 4 & dformat == 2) | (mon == 5 & use.temp == TRUE)))  {
+                                        (mon == 4 & dformat == 2) | mon == 5 | (mon == 0 & use.temp == TRUE)))  {
           QC = "recalibration done, but temperature values not used"
         } else if (mon != 2 & dformat != 3)  {
           QC = "recalibration done, no problems detected"

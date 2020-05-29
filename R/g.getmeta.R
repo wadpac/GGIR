@@ -5,11 +5,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      do.hfenplus=FALSE, do.mad=FALSE,
                      do.anglex=FALSE, do.angley=FALSE, do.anglez=FALSE,
                      do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE,
-                     do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE, 
+                     do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE,
                      do.dev_roll_med_acc_z=FALSE, do.enmoa=FALSE,
-                     do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+                     do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
                      do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
-                     do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
+                     do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),...) {
   #get input variables
@@ -54,9 +54,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                           do.hfenplus, do.mad,do.anglex,do.angley,do.anglez,
                           do.roll_med_acc_x, do.roll_med_acc_y,do.roll_med_acc_z,
                           do.dev_roll_med_acc_x, do.dev_roll_med_acc_y,
-                          do.dev_roll_med_acc_z, do.enmoa,do.lfen, 
-                          do.lfx, do.lfy, do.lfz,  
-                          do.hfx, do.hfy, do.hfz, 
+                          do.dev_roll_med_acc_z, do.enmoa,do.lfen,
+                          do.lfx, do.lfy, do.lfz,
+                          do.hfx, do.hfy, do.hfz,
                           do.bfx, do.bfy, do.bfz, stringsAsFactors = TRUE)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
@@ -72,7 +72,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     # bugs after waiting for the data to be load
     check_myfun(myfun, windowsizes)
   }
-  
+
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -94,8 +94,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = starttime = wday = weekdays = wdayname = c()
-  
-  monnames = c("genea","geneactive","actigraph","axivity","unknown") #monitor names
+
+  monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
                            filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
@@ -155,7 +155,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   options(warn=-1)
   if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
-  
+
   ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat)
@@ -163,22 +163,24 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   blocksize = ncb_params$blocksize
   sdcriter = ncb_params$sdcriter
   racriter = ncb_params$racriter
-  
+
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1+nmetrics)) #generating output matrix for acceleration signal
-  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & length(rmc.col.temp) == 0)) {
+  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & length(rmc.col.temp) == 0)) {
     temp.available = FALSE
-  } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & length(rmc.col.temp) > 0)){
+  } else if (mon == 2 | (mon == 4 & dformat == 4)  | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)){
     temp.available = TRUE
   }
   if (temp.available == FALSE) {
     metalong = matrix(" ",((nev/(sf*ws2))+100),4) #generating output matrix for 15 minutes summaries
-  } else if (temp.available == TRUE){
+  } else if (temp.available == TRUE & mon != 5){
     metalong = matrix(" ",((nev/(sf*ws2))+100),7) #generating output matrix for 15 minutes summaries
+  } else if (temp.available == TRUE & mon == 5){
+    metalong = matrix(" ",((nev/(sf*ws2))+100),5) #generating output matrix for 15 minutes summaries
   }
   #------------------------------------------
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
@@ -234,7 +236,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
       PreviousEndPage = accread$endpage
+      PreviousStartPage = accread$startpage
       rm(accread); gc()
+      if(mon == 5) { # if movisens, then read temperature
+        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
+        P = cbind(P, temperature[1:nrow(P)])
+        colnames(P)[4] = "temp"
+        }
     } else {
       filetooshort = FALSE
       filecorrupt = FALSE
@@ -271,6 +279,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           }
         } else if (dformat == 5) {
           data = P$data
+        } else if (mon == 5) {
+          data = as.matrix(P)
         }
         #add left over data from last time
         if (nrow(S) > 0) {
@@ -310,7 +320,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           }
           if ((LD - use) > 1) {
             # reading csv files
-            S = data[(use+1):LD,] #store left over
+            S = as.matrix(data[(use+1):LD,]) #store left over (included as.matrix)
             if (ncol(S) == 1) {
               S = t(S)
             }
@@ -325,18 +335,20 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           data = as.matrix(data)
           #--------------------------------------------
-          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 5 & length(rmc.col.temp) > 0)) {
+          if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)) {
             if (mon == 2) {
               temperaturecolumn = 7; lightcolumn = 5
             } else if (mon ==4) {
               temperaturecolumn = 5; lightcolumn = 7
-            } else if (mon ==5) {
+            } else if (mon == 5) {
+              temperaturecolumn = 4
+            } else if (mon ==0) {
               temperaturecolumn = 5
             }
-            if (mon != 5) {
+            if (mon != 0 & mon != 5) {
               light = as.numeric(data[,lightcolumn])
             }
-            if (mon == 5 & length(rmc.col.wear) > 0) {
+            if (mon == 0 & length(rmc.col.wear) > 0) {
               wearcol = as.character(data[, which(colnames(data) == "wear")])
               suppressWarnings(storage.mode(wearcola) <- "logical")
             }
@@ -358,8 +370,14 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
               scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
             rm(yy); gc()
+          } else if(mon == 5) {
+            yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
+            data = data[,1:3]
+            data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
+              scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
+            rm(yy); gc()
           } else if ((dformat == 2 | dformat == 5) & (mon != 4)) {
-            if (mon == 2 | (mon == 5 & use.temp == TRUE)) {
+            if (mon == 2 | (mon == 0 & use.temp == TRUE)) {
               tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))
               yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
               meantemp = mean(as.numeric(data[,temperaturecolumn]))
@@ -372,9 +390,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                 data = apply(data, 2,as.numeric)
               }
             }
-            if ((mon == 3 | mon == 5) & use.temp == FALSE) {
+            if ((mon == 3 | mon == 0) & use.temp == FALSE) {
               data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale)  #rescale data
-            } else if ((mon == 2 | mon == 5) & use.temp == TRUE) {
+            } else if ((mon == 2 | mon == 0) & use.temp == TRUE) {
               # meantemp replaced by meantempcal # 19-12-2013
               data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale) +
                 scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
@@ -392,9 +410,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
             # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
-            if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 5)) {
+            if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 0)) {
               I = INFI
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,light,
+                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+            } else if (mon == 5) {
+              save(I,sf,wday,wdayname,decn,data,starttime,temperature,
                    file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
             } else {
               save(I,sf,wday,wdayname,decn,data,starttime,
@@ -540,12 +561,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (do.bfz == TRUE) {
           metashort[count:(count-1+length(BFZ)),col_msi] = BFZ; col_msi = col_msi + 1
         }
-        
+
         if (length(myfun) != 0) { # if an external function is applied.
           NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-        
+
         count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         rm(allmetrics)
         # update blocksize depending on available memory
@@ -608,8 +629,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         col_mli = 2
         metalong[count2:((count2-1)+nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
         metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
-        if (mon == 2 | (mon == 4 & dformat == 4)) { #going from sample to ws2
-          #light (running mean)
+        if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5) { #going from sample to ws2
+          if (mon == 2 | (mon == 4 & dformat == 4)) {
+            #light (running mean)
           lightc = cumsum(c(0,light))
           select = seq(1,length(lightc),by=(ws2*sfold))
           lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
@@ -623,6 +645,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             } else {
               lightmax[li] = max(light[((li-1)*(ws2*sfold)):(li*(ws2*sfold))])
             }
+           }
           }
           #temperature (running mean)
           temperaturec = cumsum(c(0,temperature))
@@ -638,6 +661,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         if (mon == 2 | (mon == 4 & dformat == 4)) {
           metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmean; col_mli= col_mli + 1
           metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmax; col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
+        } else if (mon == 5) {
           metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
         }
         metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = ENb; col_mli= col_mli + 1
@@ -792,16 +817,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       metricnames_short = c(metricnames_short, myfun$colnames)
       if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
     }
-    
+
     metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 5 & use.temp == FALSE)) {
+    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-    } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 5 & use.temp == TRUE)) {
+    } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
+    } else if (mon == 5) {
+      metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
     }
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
