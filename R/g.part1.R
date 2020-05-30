@@ -73,6 +73,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   } else {
     useRDA = FALSE
   }
+  # check whether these are movisens files
+  is.mv = ismovisens(datadir)
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
@@ -108,6 +110,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    dir(datadir,recursive=TRUE,pattern="[.]bin", full.names = TRUE),
                    dir(datadir,recursive=TRUE,pattern="[.]wav", full.names = TRUE),
                    dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
+    if(is.mv == TRUE) {
+      fnamesfull = dir(datadir,recursive=TRUE,pattern="acc.bin", full.names = TRUE)
+      fnames = dir(datadir, recursive = FALSE)
+      }
   } else {
     fnamesfull = datadir
   }
@@ -146,16 +152,22 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   tmp5 = tmp6 = rep(0,length(fnamesfull))
   if (length(fnamesfull) > 0) {
-    fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-    phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
-    for (i in 1:length(fnames)) {
-      ff = unlist(strsplit(fnames[i],"/"))
-      ff = ff[length(ff)]
-      if (length(which(fnamesshort == ff)) > 0) {
-        tmp5[i] = fnamesfull[which(fnamesshort == ff)]
-        tmp6[i] = phase[which(fnamesshort == ff)]
+    if(is.mv == FALSE) {
+      fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
+      phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+      for (i in 1:length(fnames)) {
+        ff = unlist(strsplit(fnames[i],"/"))
+        ff = ff[length(ff)]
+        if (length(which(fnamesshort == ff)) > 0) {
+          tmp5[i] = fnamesfull[which(fnamesshort == ff)]
+          tmp6[i] = phase[which(fnamesshort == ff)]
+        }
       }
-    }
+    } else if (is.mv == TRUE) {
+      tmp5 = fnamesfull
+      phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+      tmp6 = phase
+      }
   } else {
     stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
                 "in the directory specified with argument datadir"))
@@ -229,7 +241,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                          "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                          "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv",
-                         "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata")
+                         "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens")
     errhand = 'stop'
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
@@ -525,7 +537,14 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         metadatadir = c()
         if (length(datadir) > 0) {
           # list of all csv and bin files
-          fnames = datadir2fnames(datadir,filelist) #GGIR::
+          if (is.mv == TRUE) {
+            for (filei in 1:length(fnames)) {
+              fnames[[filei]] = strsplit(fnames[[filei]], "/")[[1]][1]
+            }
+            fnames = unique(fnames)
+          } else if(is.mv == FALSE){
+            fnames = datadir2fnames(datadir,filelist) #GGIR::
+          }
           # check whether these are RDA
           if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
             useRDA = TRUE

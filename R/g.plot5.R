@@ -374,28 +374,25 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
-              sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
-              # find the first index that matches sleeponset_hour and _min
-              sleeponset_hour = as.integer(substr(sleeponset_time,start=1,stop=2))
-              if (sleeponset_hour > 12) {   # only add the annotation here if sleeponset is before midnight, otherwise, check it next day
-                sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
-                sleeponset_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min) # will not find it, if it occurs after midnight, check prev day in next section
-                sleeponset_loc = sleeponset_loc[1]
-                if (is.na(sleeponset_loc)) sleeponset_loc = 0
-              }
-              # check to see if wake time is before midnight
-              wake_time = summarysleep_tmp$wakeup_ts[check_date]
-              wake_hour = as.integer(substr(wake_time,start=1,stop=2))
-              if (length(wake_hour) > 0) {
-                if (wake_hour > 12) {
-                  # wake annotation on the current days plot before midnight
-                  wake_min = as.integer(substr(wake_time,start=4,stop=5))
-                  wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
-                  wake_loc = wake_loc[1]
-                  if (is.na(wake_loc)) wake_loc = 0
+              #sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
+              sleeponset_time = summarysleep_tmp$sleeponset[check_date]  # get the time of sleep_onset
+              if (sleeponset_time < 24) {
+                sleeponset_hour = trunc(sleeponset_time)
+                sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
+                sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
+                if (!is.na(sleeponset_locations[1])) { 
+                  sleeponset_loc = sleeponset_locations[1]
                 }
-              } else {
-                wake_loc = 0
+              }
+              
+              wake_time = summarysleep_tmp$wakeup[check_date]
+              if (wake_time < 24) {
+                wake_hour = trunc(wake_time)
+                wake_min = round((wake_time - trunc(wake_time)) * 60)
+                wake_locations = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
+                if (!is.na(wake_locations[1])) {
+                  wake_loc = wake_locations[1]
+                }
               }
             }
 
@@ -403,34 +400,36 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             prev_date = curr_date - 1
             check_date = match(prev_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
-              wake_time = summarysleep_tmp$wakeup_ts[check_date] # get wake time
-              # find the first index that matches wake time hour and min
-              wake_hour = as.integer(substr(wake_time,start=1,stop=2))
-              wake_min = as.integer(substr(wake_time,start=4,stop=5))
-              if (wake_hour < 12) {
-                if (wake_loc > 0) { # check to see if there is already a wake loc on this day
-                  wake_prev_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
-                  if (!is.na(wake_prev_loc[1])) wake_loc[2] = wake_prev_loc[1]
-                } else if (wake_loc == 0) { # two wake locations on this 24hr period
-                  wake_loc = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
-                  wake_loc = wake_loc[1]
-                  if (is.na(wake_loc)) wake_loc = 0
+              wake_time = summarysleep_tmp$wakeup[check_date]
+              if (wake_time > 24) {
+                wake_hour = trunc(wake_time) - 24
+                wake_min = round((wake_time - trunc(wake_time)) * 60)
+                wake_locations = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
+                if (wake_loc > 0) {
+                  if (!is.na(wake_locations[1])) {
+                    wake_loc[2] = wake_locations[1]
+                  }
+                } else if (wake_loc == 0) {
+                  if (!is.na(wake_locations[1])) {
+                    wake_loc = wake_locations[1]
+                  }
                 }
               }
-              # check for a late sleeponset time registered in previous day
-              sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
-              # find the first index that matches sleeponset_hour and _min
-              sleeponset_hour = as.integer(substr(sleeponset_time,start=1,stop=2))
-              sleeponset_min = as.integer(substr(sleeponset_time,start=4,stop=5))
-              if (sleeponset_hour < 12) {  # the prev-day had a sleeponset time after midnight
-                if (sleeponset_loc > 0) { # check to see if there is already a sleeponset on this day
-                  # sleeponset found after midnight, reported on previous day
-                  sleeponset_prev_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
-                  if (!is.na(sleeponset_prev_loc[1])) sleeponset_loc[2] = sleeponset_prev_loc[1]
+              
+              # new way 
+              sleeponset_time = summarysleep_tmp$sleeponset[check_date]
+              if (sleeponset_time > 24) {
+                sleeponset_hour = trunc(sleeponset_time) - 24
+                sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
+                sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
+                if (sleeponset_loc > 0) {
+                  if (!is.na(sleeponset_locations[1])) {
+                    sleeponset_loc[2] = sleeponset_locations[1]  
+                  }
                 } else if (sleeponset_loc == 0) {
-                  sleeponset_loc = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min) # will not find it, if it occurs after midnight, check prev day in next section
-                  sleeponset_loc = sleeponset_loc[1]
-                  if (is.na(sleeponset_loc)) sleeponset_loc = 0
+                  if (!is.na(sleeponset_locations[1])) { 
+                    sleeponset_loc = sleeponset_locations[1]
+                  }
                 }
               }
             }

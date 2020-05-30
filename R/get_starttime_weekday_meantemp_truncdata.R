@@ -8,9 +8,10 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     use.temp = FALSE
   }
   meantemp =c()
-  if (monc == 2 | (monc == 4 & dformat == 4) | (monc == 5 & use.temp == TRUE)) {
+  if (monc == 2 | (monc == 4 & dformat == 4) | monc == 5 | (monc == 0 & use.temp == TRUE)) {
     if (monc == 2) tempcolumn = 7
-    if (monc == 4 | monc == 5) tempcolumn = 5
+    if (monc == 4 | monc == 0) tempcolumn = 5
+    if (monc == 5) tempcolumn = 4
     meantemp = mean(as.numeric(data[,tempcolumn]),na.rm=TRUE)
     if (is.na(meantemp) == T) { #mean(as.numeric(data[1:10,7]))
       cat("\ntemperature is NA\n")
