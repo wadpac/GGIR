@@ -6,7 +6,8 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
   if (monc == 4 & dformat == 3) blocksize = round(1440 * chunksize)
   if (monc == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
   if (monc == 4 & dformat == 2) blocksize = round(blocksize)
-  
+  if (monc == 5) blocksize = sf * 60 * 1440
+
   #Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
   if (length(dynrange) > 0) {
     clipthres = dynrange - 0.5
@@ -20,6 +21,8 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
     } else if (monc == 4) {
       clipthres = 7.5 # hard coded assumption that dynamic range is 8g
     } else if (monc == 5) {
+      clipthres = 15.5 # hard coded assumption that dynamic range is 16g
+    } else if (monc == 0) {
       clipthres = rmc.dynamic_range
     }
   }
@@ -35,6 +38,8 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
   } else if (monc == 4) {
     sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
   } else if (monc == 5) {
+    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR MOVISENS???????????
+  } else if (monc == 0) {
     if (length(rmc.noise) == 0) {
       warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
     }
