@@ -55,21 +55,21 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       qqq2 = (midnightsi[(di+1)]*(ws2/ws3))-1
     } else if (startatmidnight == 1 & endatmidnight == 0) {
       if (di < floor(ndays)) { #applying floor because when day there is day saving time then ndays is not an integer
-        qqq1 = midnightsi[di]*(ws2/ws3)
-        qqq2 = (midnightsi[(di+1)]*(ws2/ws3))-1
+        qqq1 = (midnightsi[di]-1)*(ws2/ws3)
+        qqq2 = ((midnightsi[(di+1)]-1)*(ws2/ws3))+1
       } else if (di == floor(ndays)) {
-        qqq1 = midnightsi[di]*(ws2/ws3)
+        qqq1 = (midnightsi[di]-1)*(ws2/ws3)
         qqq2 = nrow(metashort)
       }
     } else if (startatmidnight == 0 & endatmidnight == 0) {
       if (di == 1) {
         qqq1 = 1
-        qqq2 = (midnightsi[di]*(ws2/ws3))-1
+        qqq2 = ((midnightsi[di]-1)*(ws2/ws3))
       } else if (di > 1 & di < floor(ndays)) {
-        qqq1 = midnightsi[(di-1)]*(ws2/ws3) # a day starts at 00:00
-        qqq2 = (midnightsi[di]*(ws2/ws3))-1
+        qqq1 = (midnightsi[(di-1)]-1)*(ws2/ws3)+1 # a day starts at 00:00
+        qqq2 = ((midnightsi[di]-1)*(ws2/ws3))
       } else if (di == floor(ndays)) {
-        qqq1 = midnightsi[(di-1)]*(ws2/ws3) # a day starts at 00:00
+        qqq1 = (midnightsi[(di-1)]-1)*(ws2/ws3)+1 # a day starts at 00:00
         qqq2 = nrow(metashort)
       }
     } else if (startatmidnight == 0 & endatmidnight == 1) {
