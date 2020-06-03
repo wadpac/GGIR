@@ -52,7 +52,10 @@ Dataframe with metric values in columns average per epoch (ws3)
   do.angley=FALSE,do.anglez=FALSE,do.roll_med_acc_x=FALSE,
   do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
   do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,
-  do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE)
+  do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
+  do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+                          do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
+                          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE)
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 }
 
