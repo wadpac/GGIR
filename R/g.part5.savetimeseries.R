@@ -71,7 +71,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     } else if (save_ms5raw_format == "RData"){
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
-      mdat$timestamp = as.POSIXlt(mdat$timenum, origin="1970-01-01",tz="Europe/London") 
+      mdat$timestamp = as.POSIXlt(mdat$timenum, origin="1970-01-01",tz=desiredtz) 
       save(mdat, file = rawlevels_fname)
     }
     #===============================
