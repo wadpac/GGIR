@@ -88,7 +88,10 @@
   }
   \item{rmc.dynamic_range}{
     Numeric, if unit of acceleration is a bit then provide dynamic range deviation
-    in g from zero, e.g. +/-6g would mean this argument needs to be 6.
+    in g from zero, e.g. +/-6g would mean this argument needs to be 6. If you give this
+    argument a character value the code will search the file header for elements with
+    a name equal to the character value and use the corresponding numeric value
+    next to it as dynamic range.
   }
   \item{rmc.unsignedbit}{
     Boolean, if unsignedbit = TRUE means that bits are only positive numbers.
