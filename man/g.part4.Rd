@@ -134,13 +134,16 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     See \link{g.getmeta}
   }
   \item{data_cleaning_file}{
-  Optional path to a csv file you create as used 
-  that holds four columns: ID, day_part5, relyonguider_part4, 
-  and day_part4
-  This to facilitate forced exclusion of specific days in the output
-  and/or forced relying on guider in part 4 output.
-  Columns day_part5, day_part4 and relyonguider_part4 do not all 
-  have to have a value.
+  Optional path to a csv file you create that holds four
+  columns: ID, day_part5, relyonguider_part4, 
+  and night_part4. ID should hold the participant ID.
+  Columns day_part5 and night_part4 allow you to 
+  specify which day and night needs to be excluded from
+  part 5 and 4, respectively. So, this will be done regardless
+  of whether the rest of GGIR thinks those days /nights are valid.
+  Column relyonguider_part4 allows you to specify for
+  which nights part 4 should fully rely on the guider. See
+  also package vignette.
   }
 }
 \value{
