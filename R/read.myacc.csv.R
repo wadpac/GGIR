@@ -87,7 +87,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       if (is.character(rmc.bitrate[1]) == TRUE) { # extract bitrate if it is in the header
         rmc.bitrate = as.numeric(header[which(row.names(header) == rmc.bitrate[1]),1])
       }
-      if (rmc.dynamic_range[1] == "dynamic_range") { # extract dynamic range if it is in the header
+      if (is.character(rmc.dynamic_range[1]) ==  TRUE) { # extract dynamic range if it is in the header
         rmc.dynamic_range = as.numeric(header[which(row.names(header) == rmc.dynamic_range[1]),1])
       } 
     }

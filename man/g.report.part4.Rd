@@ -9,7 +9,7 @@ Creates report from milestone data produced by \link{g.part4}. Not intended
 }
 \usage{
 g.report.part4(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),
-  f1=c(),storefolderstructure=TRUE)
+  f1=c(),storefolderstructure=TRUE, data_cleaning_file=c())
   
 }
 \arguments{
@@ -29,6 +29,9 @@ g.report.part4(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),
   see \link{g.part4}
   }
   \item{storefolderstructure}{
+  see \link{g.part4}
+  }
+    \item{data_cleaning_file}{
   see \link{g.part4}
   }
 

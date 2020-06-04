@@ -9,32 +9,32 @@ profiling of sleep and physical activity stratified across intensity levels and
 based on bouted periods as well as non-bouted periods.
 }
 \usage{
-g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1, 
+g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   maxdur=7, hrs.del.start=0, hrs.del.end =0,
-  loglocation= c(), excludefirstlast.part5=FALSE, 
-  windowsizes=c(5,900,3600),acc.metric="ENMO", boutcriter.mvpa=0.8, 
-  boutcriter.in=0.9, boutcriter.lig=0.8, storefolderstructure=FALSE, 
+  loglocation= c(), excludefirstlast.part5=FALSE,
+  windowsizes=c(5,900,3600),acc.metric="ENMO", boutcriter.mvpa=0.8,
+  boutcriter.in=0.9, boutcriter.lig=0.8, storefolderstructure=FALSE,
   threshold.lig = c(40), threshold.mod = c(100),
-  threshold.vig = c(400), timewindow=c("MM","WW"), 
-  boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), 
+  threshold.vig = c(400), timewindow=c("MM","WW"),
+  boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
   boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
-  overwrite=FALSE, desiredtz="", 
+  overwrite=FALSE, desiredtz="",
   bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
+  data_cleaning_file=c(), includedaycrit.part5=2/3,
   frag.classes.day = c(),  frag.classes.spt = c(),
                    frag.metrics=c())
-
 }
 \arguments{
   \item{datadir}{
   Directory where the accelerometer files are stored or list of accelerometer
   filenames and directories
-  } 
+  }
  \item{metadatadir}{
   Directory that holds a folders 'meta' and inside this a folder 'basic' which
   contains the milestone data produced by g.part1. The folderstructure
-  is normally created by g.part1 and g.shell.GGIR will recognise what the value 
+  is normally created by g.part1 and g.shell.GGIR will recognise what the value
   of metadatadir is.
   }
  \item{f0}{
@@ -55,7 +55,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     definitely stop? (set to zero if unknown = default), see \link{g.impute}
   }
  \item{hrs.del.start}{
-  how many HOURS after start of experiment did wearing of monitor start?, 
+  how many HOURS after start of experiment did wearing of monitor start?,
     see \link{g.impute}
   }
  \item{hrs.del.end}{
@@ -132,7 +132,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
  \item{boutdur.in}{
   Durations of inactivty bouts in minutes to be extracted. Inactivity bouts are
   detected in the segments of the data which were not labelled as sleep or MVPA
-  bouts. The default duration values is c(10,20,30), this will start with the 
+  bouts. The default duration values is c(10,20,30), this will start with the
   identification of 30 minute bouts, followed by 20 minute bouts in the rest of
   the data, and followed by 10 minute bouts in the rest of the data.
   }
@@ -141,7 +141,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   bouts are detected in the segments of the data which were not labelled as sleep,
   MVPA, or inactivity bouts. The default duration values is c(1,5,10), this will
   start with the identification of 10 minute bouts, followed by 5 minute bouts
-  in the rest of the data, and followed by 1 minute bouts in the rest of the data.  
+  in the rest of the data, and followed by 1 minute bouts in the rest of the data.
   }
   \item{M5L5res}{
   resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
@@ -155,10 +155,10 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   see \link{g.getmeta}
   }
   \item{bout.metric}{
-   See documnetion in \link{g.getbout} and 
+   See documnetion in \link{g.getbout} and
   }
   \item{dayborder}{
-   Hour at which days start and end (default = 0), value = 4 would mean 4am 
+   Hour at which days start and end (default = 0), value = 4 would mean 4am
   }
   \item{winhr}{
    see \link{g.getmeta}
@@ -174,34 +174,42 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
    \item{save_ms5raw_format}{
     Character string to specify how data should be stored: either "csv" (default) or "RData".
-    Only used if save_ms5rawlevels is set to TRUE. 
+    Only used if save_ms5rawlevels is set to TRUE.
   }
   \item{save_ms5raw_without_invalid}{
   Boolean to indicate whether to remove invalid days from the time series output files.
-  Only used if save_ms5rawlevels is set to TRUE. 
+  Only used if save_ms5rawlevels is set to TRUE.
   }
-  
+
   \item{frag.classes.day}{
   Character vector with behavioural class name(s) to consider for daytime fragmentation analysis
   For example: c("day_IN_bts", "day_IN_unbt"). If the vector includes "day_IN_bts", "day_MVPA_bts" or
   "day_LIG_bts" the function will automatically include all bout duration variations of this bout type.
-  }  
+  }
   \item{frag.classes.spt}{
   Character vector with behavioural class name(s) to consider for spt fragmentation analysis.
   For example: "spt_sleep".
   }
- 
+
  \item{frag.metrics}{
  Fragmentation metric(s) to use. See \link{g.fragmentation}
  }
-  
-  
+
+ \item{data_cleaning_file}{
+ See \link{g.part4}. Note that in part 5 this affects both
+ the time series and the csv reports.
+ }
+ \item{includedaycrit.part5}{
+ See \link{g.report.part5}. Only used in this function if
+ save_ms5rawlevels is TRUE,  and it only affects the time
+ series files stored.
+ }
 }
 \value{
   The function does not produce values but generates an RData file
 in the milestone subfolder ms5.out which incudes a dataframe
 named \code{output}. This dataframe is used in g.report.part5 to create
-two reports one per day and one per person. See package vignette 
+two reports one per day and one per person. See package vignette
 paragraph "Output part 5" for description of all the variables.
 }
 \examples{

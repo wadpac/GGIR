@@ -1,15 +1,22 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.0-1 (GitHub-only-release date:05-05-2020)}{
+
+\section{Changes in version 2.0-1 (GitHub-only-release date:04-06-2020)}{
 \itemize{
+  \item Now able to read gzipped csv files
+  \item Part 2 Fixed midnight selction being off by one sample
+  \item Part 1 tidied up metric calculation and added a few metrics
+  \item Part 2 Added strategy 4 (ignore data before first midnight)
   \item Data from movisens accelerometers can be now processed in GGIR
+  \item Part 5 timestamps in timeseries output in RData format (new since 2.0)
+  now correctly accounts for timezone
 }
-}			 
+}
 \section{Changes in version 2.0-0 (release date:30-04-2020)}{
 \itemize{
   \item Now R version 4.0 compatible
-  \item Part 1 Clipping detection expanded: If any value in block more than 150 percent 
+  \item Part 1 Clipping detection expanded: If any value in block more than 150 percent
   dynamic range then ignore entire block.
   \item Part 2 report now able to handle changing variable count due to missing data
   \item Part 2 L5M5 better able to handle small qwindow intervals
@@ -25,7 +32,7 @@
   \item Numunpack function moved back to c++
   \item Various updates to visualreport (plot5 function)
   \item External function embedding feature added
-  \item We now consistently refer to ID (not id) and calendar_date, spelling was 
+  \item We now consistently refer to ID (not id) and calendar_date, spelling was
   inconsistent.
   \item Vignette now has documentation on sleep and time-use analysis.
 }

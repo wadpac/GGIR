@@ -144,7 +144,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("printsummary") == FALSE)  printsummary = FALSE
   if (exists("windowsizes") == FALSE)  windowsizes = c(5,900,3600)
   if (exists("minloadcrit") == FALSE)  minloadcrit = 72
-  if (exists("desiredtz") == FALSE)  desiredtz = "Europe/London"
+  if (exists("desiredtz") == FALSE)  desiredtz = ""
   if (exists("configtz") == FALSE)  configtz = c()
   if (exists("chunksize") == FALSE)  chunksize = 1
   if (exists("do.enmo") == FALSE)  do.enmo = TRUE
@@ -165,6 +165,15 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("do.dev_roll_med_acc_z") == FALSE)  do.dev_roll_med_acc_z=FALSE
   if (exists("do.enmoa") == FALSE)  do.enmoa = FALSE
   if (exists("do.lfen") == FALSE)  do.lfen = FALSE
+  if (exists("do.lfx") == FALSE)  do.lfx = FALSE
+  if (exists("do.lfy") == FALSE)  do.lfy = FALSE
+  if (exists("do.lfz") == FALSE)  do.lfz = FALSE
+  if (exists("do.hfx") == FALSE)  do.hfx = FALSE
+  if (exists("do.hfy") == FALSE)  do.hfy = FALSE
+  if (exists("do.hfz") == FALSE)  do.hfz = FALSE
+  if (exists("do.bfx") == FALSE)  do.bfx = FALSE
+  if (exists("do.bfy") == FALSE)  do.bfy = FALSE
+  if (exists("do.bfz") == FALSE)  do.bfz = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
@@ -176,10 +185,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
-  
+
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
-  if (exists("maxdur") == FALSE)  maxdur = 7
+  if (exists("maxdur") == FALSE)  maxdur = 0
   if (exists("hrs.del.start") == FALSE)  hrs.del.start = 0
   if (exists("hrs.del.end") == FALSE)  hrs.del.end = 0
   if (exists("includedaycrit") == FALSE)  includedaycrit = 16
@@ -252,7 +261,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("frag.classes.spt") == FALSE) frag.classes.spt = c()
   if (exists("frag.metrics") == FALSE) frag.metrics = c()
 
- 
+
   # Related to (r)ead (m)yacc (c)sv file:
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
@@ -269,7 +278,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
   if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
   if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= ""
   if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
   if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
   if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
@@ -311,7 +320,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,
             do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,
             do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
-            do.enmoa = do.enmoa,printsummary=printsummary,
+            do.enmoa = do.enmoa,
+            do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz,
+            do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
+            do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
+            printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
@@ -407,7 +420,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
             frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
-            frag.metrics = frag.metrics)
+            frag.metrics = frag.metrics,
+            data_cleaning_file=data_cleaning_file,
+            includedaycrit.part5=includedaycrit.part5)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -455,7 +470,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
     if (f1 == 0) f1 = N.files.ms4.out
     g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation =loglocation,f0=f0,f1=f1,
-                   storefolderstructure=storefolderstructure)
+                   storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file)
   }
   if (length(which(do.report == 5)) > 0) {
     cat('\n')
@@ -465,7 +480,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms5.out < f0) f0 = 1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
-    
+
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
