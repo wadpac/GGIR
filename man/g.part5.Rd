@@ -180,9 +180,8 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   Only used if save_ms5rawlevels is set to TRUE. 
   }
   \item{data_cleaning_file}{
-  See \link{g.report.part5}. Only used in this function if
-  save_ms5rawlevels is TRUE,  and it only affects the time 
-  series files stored.
+  See \link{g.part4}. Note that in part 5 this affects both
+  the time series and the csv reports.
   }
   \item{includedaycrit.part5}{
   See \link{g.report.part5}. Only used in this function if
