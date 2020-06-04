@@ -8,6 +8,22 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
   }
   w0 = w1 = rep(0,length(summarysleep_tmp2$calendar_date))
   for (k in 1:length(summarysleep_tmp2$calendar_date)){ # loop through nights from part 4
+    
+    # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
+    round_seconds_to_ws3new = function(x, ws3new) {
+      temp = as.numeric(unlist(strsplit(x,":")))
+      if (temp[3] / ws3new != round(temp[3] / ws3new)) {
+        x = paste0(temp[1],":",temp[2],":",round(temp[3] / ws3new)*ws3new)
+      }
+      return(x)
+    }
+    summarysleep_tmp2$wakeup_ts[k] = round_seconds_to_ws3new(summarysleep_tmp2$wakeup_ts[k], ws3new)
+    summarysleep_tmp2$sleeponset_ts[k] = round_seconds_to_ws3new(summarysleep_tmp2$sleeponset_ts[k], ws3new)
+    
+    summarysleep_tmp2$sleeponset[k] = (round((summarysleep_tmp2$sleeponset[k]*3600) / ws3new) * ws3new) / 3600
+    summarysleep_tmp2$wakeup[k] = (round((summarysleep_tmp2$wakeup[k]*3600) / ws3new) * ws3new) / 3600
+    
+    
     # Load sleep onset and waking time from part 4 and convert them into timestamps
     tt = unlist(strsplit(as.character(summarysleep_tmp2$calendar_date[k]),"/")) # calendar date
     # if sleep onset is not available in from acc and/or sleep then us the following default

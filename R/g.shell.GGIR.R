@@ -188,7 +188,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
-  if (exists("maxdur") == FALSE)  maxdur = 7
+  if (exists("maxdur") == FALSE)  maxdur = 0
   if (exists("hrs.del.start") == FALSE)  hrs.del.start = 0
   if (exists("hrs.del.end") == FALSE)  hrs.del.end = 0
   if (exists("includedaycrit") == FALSE)  includedaycrit = 16
@@ -414,7 +414,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
-            save_ms5raw_without_invalid=save_ms5raw_without_invalid)
+            save_ms5raw_without_invalid=save_ms5raw_without_invalid,
+            data_cleaning_file=data_cleaning_file,
+            includedaycrit.part5=includedaycrit.part5)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -462,7 +464,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
     if (f1 == 0) f1 = N.files.ms4.out
     g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation =loglocation,f0=f0,f1=f1,
-                   storefolderstructure=storefolderstructure)
+                   storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file)
   }
   if (length(which(do.report == 5)) > 0) {
     cat('\n')
