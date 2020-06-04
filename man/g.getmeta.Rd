@@ -23,7 +23,11 @@ do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
 do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
 do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
 do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-do.enmoa = FALSE, do.lfen = FALSE, lb = 0.2,hb = 15, n = 4,
+do.enmoa = FALSE, do.lfen = FALSE, 
+do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+                     do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
+                     do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
+                     lb = 0.2,hb = 15, n = 4,
 meantempcal=c(),chunksize=c(),
 selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),
 myfun=c(),...)
@@ -107,6 +111,34 @@ myfun=c(),...)
   }
   \item{do.lfen}{if TRUE, calculate metric EN with low-pass filtered
   inputed signals using configuration set by \code{hb}
+  }
+  
+  \item{do.lfx}{ if TRUE, calculate average absolute low-pass filtered x-axis
+  with filter configuration set by \code{hb}.
+  }
+  \item{do.lfy}{ if TRUE, calculate average absolute low-pass filtered y-axis
+  with filter configuration set by \code{hb}.
+  }
+  \item{do.lfz}{ if TRUE, calculate average absolute low-pass filtered z-axis
+  with filter configuration set by \code{hb}.
+  }
+    \item{do.hfx}{ if TRUE, calculate average absolute low-pass filtered x-axis
+  with filter configuration set by \code{lb}.
+  }
+  \item{do.hfy}{ if TRUE, calculate average absolute low-pass filtered y-axis
+  with filter configuration set by \code{lb}.
+  }
+  \item{do.hfz}{ if TRUE, calculate average absolute low-pass filtered z-axis
+  with filter configuration set by \code{lb}.
+  }
+      \item{do.bfx}{ if TRUE, calculate average absolute band-pass filtered x-axis
+  with filter configuration set by \code{lb} and by \code{hb}.
+  }
+  \item{do.bfy}{ if TRUE, calculate average absolute band-pass filtered y-axis
+  with filter configuration set by \code{lb} and by \code{hb}.
+  }
+  \item{do.bfz}{ if TRUE, calculate average absolute band-pass filtered z-axis
+  with filter configuration set by \code{lb} and by \code{hb}.
   }
   \item{lb}{lower boundary of the frequency filter (in Hertz)
   }

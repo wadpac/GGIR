@@ -36,7 +36,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  
+
   # function wrapper to read blocks of accelerationd data from various brands
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
@@ -137,7 +137,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       hhr <- GENEAread::header.info(filename)
       tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = dayborder),
                     getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = dayborder))
-      
+
       if (blocknumber == nrow(tint)+1 | nrow(tint) == 0) {
         #all data read now make sure that it does not try to re-read it with mmap on
         switchoffLD = 1
@@ -263,7 +263,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     # load rows 11:13  to investigate whether the file has a header
     testheader = as.data.frame(data.table::fread(filename,nrow = 2,
                                                  skip=10,
-                                                 dec=decn,showProgress = FALSE, header = FALSE), 
+                                                 dec=decn,showProgress = FALSE, header = FALSE),
                                stringsAsFactors = TRUE)
     if (suppressWarnings(is.na(as.numeric(testheader[1,1]))) ==  FALSE) { # it has no header, first value is a number
       freadheader = FALSE
@@ -367,7 +367,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     startpage = (headerlength+(blocksize*300*(blocknumber-1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
-                             blocknumber=blocknumber, 
+                             blocknumber=blocknumber,
                              PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr={
@@ -413,7 +413,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
       deltapage = blocksize
       UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
                                blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
-      startpage = UPI$startpage;    endpage = UPI$endpage 
+      startpage = UPI$startpage;    endpage = UPI$endpage
       file_length = unisensR::getUnisensSignalSampleCount(filename, "acc.bin")
       if (endpage > file_length){
           endpage = file_length
@@ -434,14 +434,14 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     UPI = updatepageindexing(startpage=startpage,deltapage=deltapage,
                              blocknumber=blocknumber,PreviousEndPage=PreviousEndPage, mon=mon, dformat=dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr={P = read.myacc.csv(rmc.file=filename, 
+    try(expr={P = read.myacc.csv(rmc.file=filename,
                                  rmc.nrow=deltapage, rmc.skip=startpage,
                                  rmc.dec=rmc.dec,
-                                 rmc.firstrow.acc = rmc.firstrow.acc, 
+                                 rmc.firstrow.acc = rmc.firstrow.acc,
                                  rmc.firstrow.header = rmc.firstrow.header,
                                  rmc.header.length = rmc.header.length,
                                  rmc.col.acc = rmc.col.acc,
-                                 rmc.col.temp = rmc.col.temp, 
+                                 rmc.col.temp = rmc.col.temp,
                                  rmc.col.time=rmc.col.time,
                                  rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                                  rmc.unit.time = rmc.unit.time,
@@ -449,7 +449,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
                                  rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
                                  rmc.unsignedbit = rmc.unsignedbit,
                                  rmc.origin = rmc.origin,
-                                 rmc.desiredtz = rmc.desiredtz, 
+                                 rmc.desiredtz = rmc.desiredtz,
                                  rmc.sf = rmc.sf,
                                  rmc.headername.sf = rmc.headername.sf,
                                  rmc.headername.sn = rmc.headername.sn,
@@ -469,6 +469,9 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
     } else {
       P = c()
     }
+  }
+  if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
+    closeAllConnections()
   }
   invisible(list(P=P,filequality=filequality, switchoffLD = switchoffLD, endpage = endpage,  startpage = startpage))
 }
