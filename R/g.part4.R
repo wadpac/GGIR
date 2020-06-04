@@ -3,7 +3,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
                    relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
-                   overwrite=FALSE,desiredtz="",data_cleaning_file=c()) {
+                   overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
+                   excludefirst.part4=FALSE,excludelast.part4=FALSE) {
 
 
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
@@ -256,9 +257,21 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         # create overview of which night numbers in the file that have a value and are not equal to zero
         nnights.list = nnightlist
         nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]
-        if (excludefirstlast==TRUE) {#exclude first and last night
+        if (excludefirstlast==TRUE & excludelast.part4 == FALSE & excludefirst.part4 == FALSE) {#exclude first and last night
           if (length(nnights.list) >= 3) {
             nnights.list = nnights.list[2:(length(nnights.list)-1)]
+          } else {
+            nnights.list = c()
+          }
+        } else if (excludelast.part4 == FALSE & excludefirst.part4 == TRUE) {
+          if (length(nnights.list) >= 2) {
+            nnights.list = nnights.list[2:length(nnights.list)]
+          } else {
+            nnights.list = c()
+          }
+        } else if (excludelast.part4 == TRUE & excludefirst.part4 == FALSE) {
+          if (length(nnights.list) >= 2) {
+            nnights.list = nnights.list[1:(length(nnights.list)-1)]
           } else {
             nnights.list = c()
           }
