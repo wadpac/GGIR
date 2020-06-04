@@ -138,9 +138,10 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   columns: ID, day_part5, relyonguider_part4, 
   and night_part4. ID should hold the participant ID.
   Columns day_part5 and night_part4 allow you to 
-  specify which day and night needs to be excluded from
+  specify which day(s) and night(s) need to be excluded from
   part 5 and 4, respectively. So, this will be done regardless
-  of whether the rest of GGIR thinks those days /nights are valid.
+  of whether the rest of GGIR thinks those day(s)/night(s)
+  are valid.
   Column relyonguider_part4 allows you to specify for
   which nights part 4 should fully rely on the guider. See
   also package vignette.
