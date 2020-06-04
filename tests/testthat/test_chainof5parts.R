@@ -112,14 +112,16 @@ test_that("chainof5parts", {
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
                      loglocation= sleeplog_fn,
-                     overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel)
+                     overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel,
+          frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
+          frag.metrics="all")
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(121))
+  expect_that(ncol(output),equals(139))#143
   expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
 
  #--------------------------------------------

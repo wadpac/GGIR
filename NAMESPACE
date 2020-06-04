@@ -16,7 +16,8 @@ export(g.analyse,g.calibrate,g.getmeta
        read.myacc.csv, g.part5.addfirstwake, g.part5.addsib,
        g.part5.definedays, g.part5.fixmissingnight,
        g.part5.onsetwaketiming, g.part5.wakesleepwindows, g.part5.savetimeseries,
-       get_nw_clip_block_params, get_starttime_weekday_meantemp_truncdata, ismovisens, g.readtemp_movisens)
+       get_nw_clip_block_params, get_starttime_weekday_meantemp_truncdata,
+       ismovisens, g.readtemp_movisens, g.fragmentation)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",

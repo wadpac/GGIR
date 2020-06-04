@@ -6,7 +6,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste(names(input)[i],"=",input[i],sep="")
-      if (class(unlist(input[i])) == "character") {
+      if (class(unlist(input[i])) == "character" & length(unlist(input[i])) == 1) {
         txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
       }
       eval(parse(text=txt))
@@ -248,7 +248,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("save_ms5raw_without_invalid") == FALSE) save_ms5raw_without_invalid = TRUE
   if (exists("includedaycrit.part5") == FALSE) includedaycrit.part5 = 2/3
   if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
-  
+  if (exists("frag.classes.day") == FALSE) frag.classes.day = c()
+  if (exists("frag.classes.spt") == FALSE) frag.classes.spt = c()
+  if (exists("frag.metrics") == FALSE) frag.metrics = c()
+
+ 
   # Related to (r)ead (m)yacc (c)sv file:
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
@@ -401,7 +405,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
-            save_ms5raw_without_invalid=save_ms5raw_without_invalid)
+            save_ms5raw_without_invalid=save_ms5raw_without_invalid,
+            frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
+            frag.metrics = frag.metrics)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
