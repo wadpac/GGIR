@@ -42,10 +42,10 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
     tmp5 = unlist(strsplit(filename,"[.]cw"))
-    if (tmp1[length(tmp1)] == "v") { #this is a csv file
+    if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
-      testcsv = read.csv(paste(datafile,sep=""),nrow=10,skip=10)
-      testcsvtopline = read.csv(paste(datafile,sep=""),nrow=2,skip=1)
+      testcsv = read.csv(datafile,nrow=10,skip=10)
+      testcsvtopline = read.csv(datafile,nrow=2,skip=1)
       if (ncol(testcsv) == 2 & ncol(testcsvtopline) < 4) { #it is a geneactivefile
         mon = 2
       } else if (ncol(testcsv) >= 3 & ncol(testcsvtopline) < 4) {	#it is an actigraph file
@@ -343,6 +343,9 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
+  if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
+    closeAllConnections()
+  }
   invisible(list(header=header,monc=monc,monn=monn,
                  dformc=dformc,dformn=dformn,sf=sf,filename=filename))
 }

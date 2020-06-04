@@ -1,13 +1,16 @@
 g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
-                     do.bfen=FALSE,do.enmo=TRUE,do.lfenmo=FALSE,
-                     do.en=FALSE,do.hfen=FALSE,
+                     do.bfen=FALSE, do.enmo=TRUE, do.lfenmo=FALSE,
+                     do.en=FALSE, do.hfen=FALSE,
                      do.hfenplus=FALSE, do.mad=FALSE,
-                     do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
-                     do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
-                     do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
-                     do.lfen=FALSE,
-                     lb = 0.2, hb = 15,  n = 4,meantempcal=c(),chunksize=c(),selectdaysfile=c(),
+                     do.anglex=FALSE, do.angley=FALSE, do.anglez=FALSE,
+                     do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE,
+                     do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE,
+                     do.dev_roll_med_acc_z=FALSE, do.enmoa=FALSE,
+                     do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
+                     do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
+                     do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
+                     lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),...) {
   #get input variables
   input = list(...)
@@ -51,14 +54,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                           do.hfenplus, do.mad,do.anglex,do.angley,do.anglez,
                           do.roll_med_acc_x, do.roll_med_acc_y,do.roll_med_acc_z,
                           do.dev_roll_med_acc_x, do.dev_roll_med_acc_y,
-                          do.dev_roll_med_acc_z, do.enmoa,do.lfen, stringsAsFactors = TRUE)
+                          do.dev_roll_med_acc_z, do.enmoa,do.lfen,
+                          do.lfx, do.lfy, do.lfz,
+                          do.hfx, do.hfy, do.hfz,
+                          do.bfx, do.bfy, do.bfz, stringsAsFactors = TRUE)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
   nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                   do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,do.enmoa,do.lfen))
+                   do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,do.enmoa, do.lfen,
+                   do.lfx, do.lfy, do.lfz,  do.hfx, do.hfy, do.hfz,  do.bfx, do.bfy, do.bfz))
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
@@ -90,7 +97,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
 
   monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
-  filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
+                           filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
@@ -281,7 +288,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
-                                                            P, header, desiredtz,
+                                                        P, header, desiredtz,
                                                         sf, i, datafile,  ws2,
                                                         starttime, wday, weekdays, wdayname)
         starttime=SWMT$starttime
@@ -420,26 +427,35 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           data = cbind(rep(0,nrow(data)),data)
           LD = nrow(data)
         }
-        EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2)
+        EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         allmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
-        BFEN3b = allmetrics$BFEN3b
-        ENMO3b = allmetrics$ENMO3b
-        ENMOa3b = allmetrics$ENMOa3b
-        LFENMO3b = allmetrics$LFENMO3b
-        EN3b = allmetrics$EN3b
-        HFEN3b = allmetrics$HFEN3b
-        HFENplus3b = allmetrics$HFENplus3b
-        MAD3b = allmetrics$MAD3b
-        angle_x3b = allmetrics$angle_x3b
-        angle_y3b = allmetrics$angle_y3b
-        angle_z3b = allmetrics$angle_z3b
-        roll_med_acc_x3b = allmetrics$roll_med_acc_x3b
-        roll_med_acc_y3b = allmetrics$roll_med_acc_y3b
-        roll_med_acc_z3b = allmetrics$roll_med_acc_z3b
-        dev_roll_med_acc_x3b = allmetrics$dev_roll_med_acc_x3b
-        dev_roll_med_acc_y3b = allmetrics$dev_roll_med_acc_y3b
-        dev_roll_med_acc_z3b = allmetrics$dev_roll_med_acc_z3b
-        LFEN3b = allmetrics$LFEN3b
+        BFEN = allmetrics$BFEN
+        ENMO = allmetrics$ENMO
+        ENMOa = allmetrics$ENMOa
+        LFENMO = allmetrics$LFENMO
+        EN_shortepoch = allmetrics$EN
+        HFEN = allmetrics$HFEN
+        HFENplus = allmetrics$HFENplus
+        MAD = allmetrics$MAD
+        angle_x = allmetrics$angle_x
+        angle_y = allmetrics$angle_y
+        angle_z = allmetrics$angle_z
+        roll_med_acc_x = allmetrics$roll_med_acc_x
+        roll_med_acc_y = allmetrics$roll_med_acc_y
+        roll_med_acc_z = allmetrics$roll_med_acc_z
+        dev_roll_med_acc_x = allmetrics$dev_roll_med_acc_x
+        dev_roll_med_acc_y = allmetrics$dev_roll_med_acc_y
+        dev_roll_med_acc_z = allmetrics$dev_roll_med_acc_z
+        LFEN = allmetrics$LFEN
+        HFX =  allmetrics$HFX
+        HFY =  allmetrics$HFY
+        HFZ =  allmetrics$HFZ
+        LFX =  allmetrics$LFX
+        LFY =  allmetrics$LFY
+        LFZ =  allmetrics$LFZ
+        BFX =  allmetrics$BFX
+        BFY =  allmetrics$BFY
+        BFZ =  allmetrics$BFZ
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
@@ -465,58 +481,85 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         col_msi = 2
         if (do.bfen == TRUE) {
-          metashort[count:(count-1+length(BFEN3b)),col_msi] = BFEN3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(BFEN)),col_msi] = BFEN; col_msi = col_msi + 1
         }
         if (do.enmo == TRUE) {
-          metashort[count:(count-1+length(ENMO3b)),col_msi] = ENMO3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(ENMO)),col_msi] = ENMO; col_msi = col_msi + 1
         }
         if (do.lfenmo == TRUE) {
-          metashort[count:(count-1+length(LFENMO3b)),col_msi] = LFENMO3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(LFENMO)),col_msi] = LFENMO; col_msi = col_msi + 1
         }
         if (do.en == TRUE) {
-          metashort[count:(count-1+length(EN3b)),col_msi] = EN3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(EN_shortepoch)),col_msi] = EN_shortepoch; col_msi = col_msi + 1
         }
         if (do.hfen == TRUE) {
-          metashort[count:(count-1+length(HFEN3b)),col_msi] = HFEN3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(HFEN)),col_msi] = HFEN; col_msi = col_msi + 1
         }
         if (do.hfenplus == TRUE) {
-          metashort[count:(count-1+length(HFENplus3b)),col_msi] = HFENplus3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(HFENplus)),col_msi] = HFENplus; col_msi = col_msi + 1
         }
         if (do.mad == TRUE) {
-          metashort[count:(count-1+length(MAD3b)),col_msi] = MAD3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(MAD)),col_msi] = MAD; col_msi = col_msi + 1
         }
         if (do.anglex == TRUE) {
-          metashort[count:(count-1+length(angle_x3b)),col_msi] = angle_x3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(angle_x)),col_msi] = angle_x; col_msi = col_msi + 1
         }
         if (do.angley == TRUE) {
-          metashort[count:(count-1+length(angle_y3b)),col_msi] = angle_y3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(angle_y)),col_msi] = angle_y; col_msi = col_msi + 1
         }
         if (do.anglez == TRUE) {
-          metashort[count:(count-1+length(angle_z3b)),col_msi] = angle_z3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(angle_z)),col_msi] = angle_z; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_x == TRUE) {
-          metashort[count:(count-1+length(roll_med_acc_x3b)),col_msi] = roll_med_acc_x3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(roll_med_acc_x)),col_msi] = roll_med_acc_x; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_y == TRUE) {
-          metashort[count:(count-1+length(roll_med_acc_y3b)),col_msi] = roll_med_acc_y3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(roll_med_acc_y)),col_msi] = roll_med_acc_y; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_z == TRUE) {
-          metashort[count:(count-1+length(roll_med_acc_z3b)),col_msi] = roll_med_acc_z3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(roll_med_acc_z)),col_msi] = roll_med_acc_z; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_x == TRUE) {
-          metashort[count:(count-1+length(dev_roll_med_acc_x3b)),col_msi] = dev_roll_med_acc_x3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(dev_roll_med_acc_x)),col_msi] = dev_roll_med_acc_x; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_y == TRUE) {
-          metashort[count:(count-1+length(dev_roll_med_acc_y3b)),col_msi] = dev_roll_med_acc_y3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(dev_roll_med_acc_y)),col_msi] = dev_roll_med_acc_y; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_z == TRUE) {
-          metashort[count:(count-1+length(dev_roll_med_acc_z3b)),col_msi] = dev_roll_med_acc_z3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(dev_roll_med_acc_z)),col_msi] = dev_roll_med_acc_z; col_msi = col_msi + 1
         }
         if (do.enmoa == TRUE) {
-          metashort[count:(count-1+length(ENMOa3b)),col_msi] = ENMOa3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(ENMOa)),col_msi] = ENMOa; col_msi = col_msi + 1
         }
         if (do.lfen == TRUE) {
-          metashort[count:(count-1+length(LFEN3b)),col_msi] = LFEN3b; col_msi = col_msi + 1
+          metashort[count:(count-1+length(LFEN)),col_msi] = LFEN; col_msi = col_msi + 1
+        }
+        if (do.lfx == TRUE) {
+          metashort[count:(count-1+length(LFX)),col_msi] = LFX; col_msi = col_msi + 1
+        }
+        if (do.lfy == TRUE) {
+          metashort[count:(count-1+length(LFY)),col_msi] = LFY; col_msi = col_msi + 1
+        }
+        if (do.lfz == TRUE) {
+          metashort[count:(count-1+length(LFZ)),col_msi] = LFZ; col_msi = col_msi + 1
+        }
+        if (do.hfx == TRUE) {
+          metashort[count:(count-1+length(HFX)),col_msi] = HFX; col_msi = col_msi + 1
+        }
+        if (do.hfy == TRUE) {
+          metashort[count:(count-1+length(HFY)),col_msi] = HFY; col_msi = col_msi + 1
+        }
+        if (do.hfz == TRUE) {
+          metashort[count:(count-1+length(HFZ)),col_msi] = HFZ; col_msi = col_msi + 1
+        }
+        if (do.bfx == TRUE) {
+          metashort[count:(count-1+length(BFX)),col_msi] = BFX; col_msi = col_msi + 1
+        }
+        if (do.bfy == TRUE) {
+          metashort[count:(count-1+length(BFY)),col_msi] = BFY; col_msi = col_msi + 1
+        }
+        if (do.bfz == TRUE) {
+          metashort[count:(count-1+length(BFZ)),col_msi] = BFZ; col_msi = col_msi + 1
         }
 
         if (length(myfun) != 0) { # if an external function is applied.
@@ -524,7 +567,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
 
-        count = count + length(EN3b) #increasing "count" the indicator of how many seconds have been read
+        count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         rm(allmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
@@ -758,12 +801,15 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     }
     metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
-                          "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa","LFEN") #
+                          "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa","LFEN",
+                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ") #
     metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                                                          do.anglex,do.angley,do.anglez,
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
-                                                         do.enmoa,do.lfen)])
+                                                         do.enmoa,do.lfen,
+                                                         do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
+                                                         do.bfx, do.bfy, do.bfz)])
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)

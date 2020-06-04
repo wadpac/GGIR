@@ -116,6 +116,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
+  
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
@@ -154,7 +155,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
-  LW = length(which(as.numeric(qcheck) != 1)) / (60/ws3) #number of minutes wear time between first and last midnights
+  # LW = length(which(as.numeric(qcheck) != 1)) / (60/ws3) #number of minutes wear time between first and last midnights
   nfulldays = (lastmidnighti - firstmidnighti) / ((3600/ws2)*24)
   ndays = length(midnights) + 1 #ceiling(nfulldays + 2) # ceiling to cope with days with 23 hours
   if (ndays != round(ndays)) { #day saving time causing trouble?
@@ -205,7 +206,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     }
   }
   ND = nrow(metashort) / n_ws3_perday #update this because of reduction in datapoints (added on 20-11-2012)
-  LW = length(which(r5 < 1)) * (ws2/60) #length wear in minutes (for entire signal)
+  # LW = length(which(r5 < 1)) * (ws2/60) #length wear in minutes (for entire signal)
   LWp = length(which(r5[which(r4 == 0)] < 1)) * (ws2/60) #length wear in minutes (for protocol)
   LMp = length(which(r4 == 0)) * (ws2/60) #length protocol
   #====================================================================

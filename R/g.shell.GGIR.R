@@ -112,7 +112,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                   if (isna == TRUE) { # it is a vector with characters
                     vecchar = unlist(strsplit(unlist(strsplit(config[ci,2],"\\(|\\)"))[2],","))
                     if (config[ci,1] == "timewindow") timewindow = vecchar
-
+                    
                   } else {
                     txt = paste(as.character(config[ci,1]),"=",config[ci,2],"",sep="")
                   }
@@ -128,13 +128,13 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
   }
   # obtain default parameter values if not provided:
-
+  
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
   if (exists("myfun") == FALSE)  myfun = c()
-
+  
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
@@ -144,7 +144,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("printsummary") == FALSE)  printsummary = FALSE
   if (exists("windowsizes") == FALSE)  windowsizes = c(5,900,3600)
   if (exists("minloadcrit") == FALSE)  minloadcrit = 72
-  if (exists("desiredtz") == FALSE)  desiredtz = "Europe/London"
+  if (exists("desiredtz") == FALSE)  desiredtz = ""
   if (exists("configtz") == FALSE)  configtz = c()
   if (exists("chunksize") == FALSE)  chunksize = 1
   if (exists("do.enmo") == FALSE)  do.enmo = TRUE
@@ -165,6 +165,15 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("do.dev_roll_med_acc_z") == FALSE)  do.dev_roll_med_acc_z=FALSE
   if (exists("do.enmoa") == FALSE)  do.enmoa = FALSE
   if (exists("do.lfen") == FALSE)  do.lfen = FALSE
+  if (exists("do.lfx") == FALSE)  do.lfx = FALSE
+  if (exists("do.lfy") == FALSE)  do.lfy = FALSE
+  if (exists("do.lfz") == FALSE)  do.lfz = FALSE
+  if (exists("do.hfx") == FALSE)  do.hfx = FALSE
+  if (exists("do.hfy") == FALSE)  do.hfy = FALSE
+  if (exists("do.hfz") == FALSE)  do.hfz = FALSE
+  if (exists("do.bfx") == FALSE)  do.bfx = FALSE
+  if (exists("do.bfy") == FALSE)  do.bfy = FALSE
+  if (exists("do.bfz") == FALSE)  do.bfz = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
@@ -172,7 +181,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
-
+  
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
@@ -202,14 +211,14 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
-
-
+  
+  
   # PART 3
   if (exists("anglethreshold") == FALSE)  anglethreshold = 5
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-
+  
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -265,7 +274,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
   if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
   if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= ""
   if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
   if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
   if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
@@ -276,18 +285,18 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
-
-
+  
+  
   # VISUAL REPORT
-
+  
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
-
+  
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
   cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
-
+  
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
@@ -307,7 +316,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,
             do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,
             do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
-            do.enmoa = do.enmoa,printsummary=printsummary,
+            do.enmoa = do.enmoa,
+            do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz, 
+            do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
+            do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
+            printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
