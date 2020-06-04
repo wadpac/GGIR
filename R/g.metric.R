@@ -1,4 +1,10 @@
 g.metric= function(data,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
+  
+  
+  # THIS FUNCTION IS NOT USED ANYMORE BY GGIR (g.applymetrics)
+  # cat("\nFunction g.metric is no longer used internally by GGIR")
+  # cat("\nFunction g.metric will be removed from GGIR in 2021")
+  
   #--------------------------------------
   #Input:
   # G = acceleration signal
@@ -19,6 +25,8 @@ g.metric= function(data,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
   GyCP = matrix(0,durexp,1)
   GzCP = matrix(0,durexp,1)
   GCP = matrix(0,durexp,1)
+  #------------------------
+  
   if (ii == 1) {
     # high pass filter
     bf = signal::butter(n,c(lb/(sf/2)),type=c("high")) #creating filter coefficients
@@ -63,6 +71,7 @@ g.metric= function(data,n=c(),sf,ii,TW=c(),lb=c(),hb=c(),gravity = 1) {
     Gxm[which(is.na(Gxm[1:1000]) ==T)] = Gxm[which(is.na(Gxm[1:1000]) ==F)[1]]
     Gym[which(is.na(Gym[1:1000]) ==T)] = Gym[which(is.na(Gym[1:1000]) ==F)[1]]
     Gzm[which(is.na(Gzm[1:1000]) ==T)] = Gzm[which(is.na(Gzm[1:1000]) ==F)[1]]
+    
     if (length(which(is.na(Gxm) ==T | is.na(Gym) == T | is.na(Gzm) == T)) > 0) {
       p1 = which(is.na(Gxm) ==F); Gxm[which(is.na(Gxm) ==T)] = Gxm[p1[length(p1)]]
       p1 = which(is.na(Gym) ==F); Gym[which(is.na(Gym) ==T)] = Gym[p1[length(p1)]]

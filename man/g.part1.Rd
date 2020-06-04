@@ -28,7 +28,9 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE,
         do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE,
         do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
-        do.lfen = FALSE,
+        do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+                   do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
+                    do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
         do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
         spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
@@ -119,8 +121,27 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{do.dev_roll_med_acc_z}{see \link{g.getmeta}
   }
-  \item{do.lfen}{see \link{g.getmeta}
+  \item{do.lfen}{ see \link{g.getmeta}
   }
+  \item{do.lfx}{ see \link{g.getmeta}
+  }
+  \item{do.lfy}{ see \link{g.getmeta}
+  }
+  \item{do.lfz}{ see \link{g.getmeta}
+  }
+  \item{do.hfx}{ see \link{g.getmeta}
+  }
+  \item{do.hfy}{ see \link{g.getmeta}
+  }
+  \item{do.hfz}{ see \link{g.getmeta}
+  }
+   \item{do.bfx}{ see \link{g.getmeta}
+  }
+  \item{do.bfy}{ see \link{g.getmeta}
+  }
+  \item{do.bfz}{ see \link{g.getmeta}
+  }
+  
   \item{do.cal}{
   Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
   recommended setting is TRUE

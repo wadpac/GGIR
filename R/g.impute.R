@@ -101,11 +101,11 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
     starttime = firstmidnight
     endtime = lastmidnight
     starttimei = firstmidnighti
-    endtimei = lastmidnighti - 1
+    endtimei = lastmidnighti
     if (firstmidnighti != 1) { #ignore everything before the first midnight
       r4[1:(firstmidnighti-1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
     }
-    r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the first midnight
+    r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
   } else if (strategy == 3) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
@@ -126,7 +126,7 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
       if ((p1 - p0) > 1000) {
         atestlist[ati] = mean(atest[p0:p1],na.rm=TRUE)
       } else {
-        print("zero")
+        # print("zero")
         atestlist[ati] = 0
       }
     }
@@ -153,7 +153,15 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
     }
     starttimei = 1
     endtimei = length(r4)
+    
+  } else if (strategy == 4) { #from first midnight to end of recording
+    starttime = firstmidnight
+    starttimei = firstmidnighti
+    if (firstmidnighti != 1) { #ignore everything before the first midnight
+      r4[1:(firstmidnighti-1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
+    }
   }
+  
   #extracting calibration value during periods of non-wear
   if (length(which(r1==1)) > 0) {
     CALIBRATE = mean(as.numeric(metalong[which(r1==1 & r2 != 1),9])) #mean EN during non-wear time and non-clipping time
@@ -169,8 +177,7 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
   r5long = replace(r5long,1:length(r5long),r5)
   r5long = t(r5long)
   dim(r5long) = c((length(r5)*(ws2/ws3)),1)
-  
- 
+
   #------------------------------
   # detect which features have been calculated in part 1 and in what column they have ended up
   ENi = which(colnames(metashort) == "en")

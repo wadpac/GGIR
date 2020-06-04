@@ -6,7 +6,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.enmoa = FALSE,
                    do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                    do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-                   do.lfen = FALSE,
+                   do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+                   do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
+                   do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
@@ -204,7 +206,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       Nmetrics2calc = do.bfen + do.enmo + do.lfenmo + do.lfen + do.en + do.hfen + do.hfenplus + do.mad +
         do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
         do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
-        do.dev_roll_med_acc_z + do.enmoa
+        do.dev_roll_med_acc_z + do.enmoa + do.lfx + do.lfy + do.lfz + do.hfx + 
+        do.hfy + do.hfz + do.bfx +  do.bfy + do.bfz
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -247,7 +250,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     # So, it is probably best to turn off parallel when debugging cwa data.
   }
   `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  #,'GENEAread','mmap', 'signal'
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% {
     tryCatchResult = tryCatch({
@@ -485,19 +487,26 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       do.hfen=do.hfen,
                       do.hfenplus=do.hfenplus,
                       do.mad=do.mad,
-                      do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
-                      do.roll_med_acc_x=do.roll_med_acc_x,do.roll_med_acc_y=do.roll_med_acc_y,do.roll_med_acc_z=do.roll_med_acc_z,
-                      do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
+                      do.anglex=do.anglex, do.angley=do.angley, do.anglez=do.anglez,
+                      do.roll_med_acc_x=do.roll_med_acc_x,
+                      do.roll_med_acc_y=do.roll_med_acc_y,
+                      do.roll_med_acc_z=do.roll_med_acc_z,
+                      do.dev_roll_med_acc_x=do.dev_roll_med_acc_x, 
+                      do.dev_roll_med_acc_y=do.dev_roll_med_acc_y, 
+                      do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
                       do.enmoa=do.enmoa,
+                      do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz, 
+                      do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
+                      do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz, 
                       lb = lb, hb = hb,  n = n,
-                      desiredtz=desiredtz,daylimit=daylimit,windowsizes=windowsizes,
-                      tempoffset=C$tempoffset,scale=C$scale,offset=C$offset,
-                      meantempcal=C$meantempcal,chunksize=chunksize,
+                      desiredtz=desiredtz, daylimit=daylimit, windowsizes=windowsizes,
+                      tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
+                      meantempcal=C$meantempcal, chunksize=chunksize,
                       selectdaysfile=selectdaysfile,
                       outputdir=outputdir,
                       outputfolder=outputfolder,
-                      dayborder=dayborder,dynrange=dynrange,
-                      rmc.dec=rmc.dec,configtz=configtz,
+                      dayborder=dayborder, dynrange=dynrange,
+                      rmc.dec=rmc.dec, configtz=configtz,
                       rmc.firstrow.acc = rmc.firstrow.acc,
                       rmc.firstrow.header = rmc.firstrow.header,
                       rmc.header.length = rmc.header.length,
