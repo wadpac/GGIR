@@ -715,6 +715,7 @@ Notice that part 4 is focused on sleep research, by which the cleaned reported i
 
 The package allows some adjustments to be made after data quality check. The `data_cleaning_file` argument allows you to specify individuals and nights for whom part4 should entirely rely on the guider (for example if we decide to use sleep log only information).
 The first column of this file should have header `ID` and there should be a column `relyonguider_part4` to specifiy the night.
+The `data_cleaning_file` allows you to tell GGIR which person(s) and night(s) should be omitted in part 4. The the night numbers to be excluded should be listed in a column `night_part4` as header.
 
 ## Waking-waking or 24 hour time-use analysis
 

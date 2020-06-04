@@ -11,7 +11,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    M5L5res = 10,
                    overwrite=FALSE,desiredtz="",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE,
                    do.parallel = TRUE, part5_agg2_60seconds = FALSE,
-                   save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE) {
+                   save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
+                   data_cleaning_file=c(),
+                   includedaycrit.part5=2/3) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -80,6 +82,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   boutdur.in = sort(boutdur.in,decreasing = TRUE)
   if (save_ms5raw_format != "RData" & save_ms5raw_format != "csv") {
     save_ms5raw_format = "csv"# specify as csv if user does not clearly specify format
+  }
+  DaCleanFile = c()
+  if (length(data_cleaning_file) > 0) {
+    if (file.exists(data_cleaning_file)) DaCleanFile = read.csv(data_cleaning_file)
   }
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
@@ -183,6 +189,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       di = 1
       fi = 1
       sptwindow_HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
+      
       if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
         summarysleep_tmp = summarysleep
         #======================================================================
@@ -240,7 +247,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             ts = ts_backup
           }
           # extract time and from that the indices for midnights
-          time_POSIX = as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)
+          time_POSIX = iso8601chartime2POSIX(ts$time,tz=desiredtz)
           tempp = unclass(time_POSIX)
           if (is.na(tempp$sec[1]) == TRUE) {
             tempp = unclass(as.POSIXlt(ts$time,tz=desiredtz))
@@ -270,17 +277,18 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
-              ts$time_num = round(as.numeric(as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)) / 60) * 60
+              ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
               ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear")], by = list(ts$time_num), FUN= function(x) mean(x))
               ts$sibdetection = round(ts$sibdetection)
               ts$diur = round(ts$diur)
               ts$nonwear = round(ts$nonwear)
               names(ts)[1] = "time"
-              # convert back to iso8601 format
-              ts$time = strftime(as.POSIXlt(ts$time,origin="1970-1-1",tz=desiredtz),format="%Y-%m-%dT%H:%M:%S%z", tz = desiredtz)
+              # # convert back to iso8601 format
+              # ts$time = strftime(as.POSIXlt(ts$time,origin="1970-1-1",tz=desiredtz),format="%Y-%m-%dT%H:%M:%S%z", tz = desiredtz)
+              ts$time = as.POSIXlt(ts$time, origin="1970-1-1",tz=desiredtz)
               ws3new = 60 # change because below it is used to decide how many epochs are there in
               # extract nightsi again
-              time_POSIX = as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)
+              time_POSIX = ts$time #as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)
               tempp = unclass(time_POSIX)
               if (is.na(tempp$sec[1]) == TRUE) {
                 tempp = unclass(as.POSIXlt(ts$time,tz=desiredtz))
@@ -295,6 +303,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
               }
               Nts = nrow(ts)
             }
+            ts$window = 0
             for (TRLi in threshold.lig) {
               for (TRMi in threshold.mod) {
                 for (TRVi in threshold.vig) {
@@ -345,6 +354,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     }
                     indjump = 1
                     qqq_backup = c()
+                    add_one_day_to_next_date = FALSE
                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, summarysleep_tmp2, indjump,
@@ -363,13 +373,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           plusb = 1
                         }
                         skiponset = skipwake = TRUE
-
+                        ts$window[qqq[1]:qqq[2]] = wi
                         #==========================
                         # Newly added to avoid issue with merging sleep
                         # variables from part 4, we simply extract them
                         # from the new time series
                         # Note that this means that for MM windows there can be multiple or no wake or onsets
-                        date = as.Date(as.POSIXlt(ts$time[qqq[1]+1],tz=desiredtz))
+                        date = as.Date(ts$time[qqq[1]+1])
+                        if (add_one_day_to_next_date == TRUE) { # see below for explanation
+                          date = date + 1
+                          add_one_day_to_next_date = FALSE
+                        }
                         Sys.setlocale("LC_TIME", "C")
                         weekday = weekdays(date)
                         dsummary[di,fi:(fi+1)] = c(weekday, as.character(date))
@@ -379,6 +393,12 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         onset = onsetwaketiming$onset; wake = onsetwaketiming$wake
                         onseti = onsetwaketiming$onseti; wakei = onsetwaketiming$wakei
                         skiponset = onsetwaketiming$skiponset; skipwake = onsetwaketiming$skipwake
+                        if (wake < 24) { 
+                          # waking up before midnight means that next WW window
+                          # will start a day before the day we refer to when discussing it's SPT
+                          # So, for next window we have to do date = date + 1
+                          add_one_day_to_next_date = TRUE
+                        }
                         # Add to dsummary output matrix
                         if (skiponset == FALSE) {
                           dsummary[di,fi] = onset
@@ -577,9 +597,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                             if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
                               L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
                               M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
-                              if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
-                              if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             }
+                            if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
+                            if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                             if (L5HOUR != "not detected") {
                               time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
                               if (time_num < 12) time_num = time_num + 24
@@ -675,20 +695,18 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     }
                   }
                   if (save_ms5rawlevels == TRUE) {
-
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames)-1), stringsAsFactors = F)
                       write.csv(legendtable, file = legendfile, row.names=F)
                     }
-
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
-
                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
                     # save time series to csv files
-                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider")], LEVELS,
-                                           desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid)
-
+                    g.part5.savetimeseries(ts[,c("time","ACC","diur","nonwear","guider","window")], LEVELS,
+                                           desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid,
+                                           DaCleanFile = DaCleanFile,
+                                           includedaycrit.part5= includedaycrit.part5, ID=ID)
                   }
                 }
               }
