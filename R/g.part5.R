@@ -12,11 +12,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    overwrite=FALSE,desiredtz="",bout.metric=4, dayborder = 0, save_ms5rawlevels = FALSE,
                    do.parallel = TRUE, part5_agg2_60seconds = FALSE,
                    save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
+                    data_cleaning_file=c(),
+                   includedaycrit.part5=2/3,
                    frag.classes.day = c(), #c("day_IN_bts", "day_IN_unbt"),
                    frag.classes.spt = c(),# "spt_sleep"
-                   frag.metrics = c(),
-                   data_cleaning_file=c(),
-                   includedaycrit.part5=2/3) {
+                   frag.metrics = c()) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR

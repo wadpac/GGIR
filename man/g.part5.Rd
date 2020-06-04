@@ -180,7 +180,15 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   Boolean to indicate whether to remove invalid days from the time series output files.
   Only used if save_ms5rawlevels is set to TRUE.
   }
-
+\item{data_cleaning_file}{
+ See \link{g.part4}. Note that in part 5 this affects both
+ the time series and the csv reports.
+ }
+ \item{includedaycrit.part5}{
+ See \link{g.report.part5}. Only used in this function if
+ save_ms5rawlevels is TRUE,  and it only affects the time
+ series files stored.
+ }
   \item{frag.classes.day}{
   Character vector with behavioural class name(s) to consider for daytime fragmentation analysis
   For example: c("day_IN_bts", "day_IN_unbt"). If the vector includes "day_IN_bts", "day_MVPA_bts" or
@@ -195,15 +203,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
  Fragmentation metric(s) to use. See \link{g.fragmentation}
  }
 
- \item{data_cleaning_file}{
- See \link{g.part4}. Note that in part 5 this affects both
- the time series and the csv reports.
- }
- \item{includedaycrit.part5}{
- See \link{g.report.part5}. Only used in this function if
- save_ms5rawlevels is TRUE,  and it only affects the time
- series files stored.
- }
+ 
 }
 \value{
   The function does not produce values but generates an RData file
