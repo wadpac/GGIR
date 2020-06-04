@@ -10,6 +10,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   # Note VvH: I put the following two lines here, which come from g.shell.GGIR
   N_milestone_data_p4 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
   if (f1 > N_milestone_data_p4) f1 = N_milestone_data_p4
+  if (f1 == 0) f1 = N_milestone_data_p4
   # directories
   meta = paste(metadatadir,"/meta/basic",sep="")
   metasleep = paste(metadatadir,"/meta/ms3.out",sep="")
