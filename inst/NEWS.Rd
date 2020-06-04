@@ -12,6 +12,7 @@
   \item Part 5 timestamps in timeseries output in RData format (new since 2.0)
   now correctly accounts for timezone
 }
+}
 \section{Changes in version 2.0-0 (release date:30-04-2020)}{
 \itemize{
   \item Now R version 4.0 compatible
