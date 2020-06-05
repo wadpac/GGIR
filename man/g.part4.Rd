@@ -16,7 +16,8 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
     relyonguider=FALSE, relyonsleeplog=FALSE, def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
-    desiredtz="",data_cleaning_file=c())
+    desiredtz="",data_cleaning_file=c(),
+    excludefirst.part4=FALSE,excludelast.part4=FALSE)
 }
 \arguments{
   \item{datadir}{
@@ -145,6 +146,14 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   Column relyonguider_part4 allows you to specify for
   which nights part 4 should fully rely on the guider. See
   also package vignette.
+  }
+  \item{excludefirst.part4}{
+  If TRUE then the first night of the measurement are
+  ignored for the sleep assessment.
+  }
+  \item{excludelast.part4}{
+  If TRUE then the last night of the measurement are
+  ignored for the sleep assessment.
   }
 }
 \value{

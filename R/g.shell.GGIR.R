@@ -237,6 +237,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
   if (exists("do.visual") == FALSE)  do.visual=FALSE
   if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
+  if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
+  if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
+
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -395,7 +398,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             includenightcrit=includenightcrit,relyonguider=relyonguider,
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
             storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
-            data_cleaning_file=data_cleaning_file)
+            data_cleaning_file=data_cleaning_file,
+            excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4)
   }
   if (dopart5 == TRUE) {
     cat('\n')
