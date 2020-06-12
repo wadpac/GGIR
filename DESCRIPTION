@@ -21,7 +21,7 @@ BugReports: https://github.com/wadpac/GGIR/issues
 License: LGPL (>= 2.0, < 3) | file LICENSE
 Suggests: testthat, covr, knitr, rmarkdown
 Imports: data.table, Rcpp (>= 0.12.10), foreach, doParallel, signal, zoo, bitops, matlab, GENEAread, tuneR, unisensR, R.utils
-Depends: stats, utils, R (>= 3.5.0)
+Depends: stats, utils, R (>= 3.2.0)
 NeedsCompilation: yes
 LinkingTo: Rcpp
 VignetteBuilder: knitr
