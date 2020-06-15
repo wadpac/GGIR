@@ -368,20 +368,16 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             annot_mat[,5] <- MODPA[t0:t1]              # moderate pa
             annot_mat[,6] <- VIGPA[t0:t1]              # vigorous pa
 
-            # check to see if there are any sleep onset or wake annotations on this day (only works for noon - noon detection style)
+            # check to see if there are any sleep onset or wake annotations on this day 
             sleeponset_loc = 0
             wake_loc = 0
             
             
-            if (viewingwindow == 1) {
+            if (viewingwindow == 1) {  # use different search coefficients for noon or midnight centered plots
               sw_coefs = c(0,24)  
             } else if (viewingwindow == 2) {
               sw_coefs = c(12,36)  
             }
-            
-            browser()
-            
-            
             
             # check for sleeponset & wake time that is logged on this day before midnight
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
@@ -393,6 +389,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
             }
             
+            
+            browser()
+            
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
               #sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
@@ -401,6 +400,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               if (sleeponset_time >= sw_coefs[1] & sleeponset_time < sw_coefs[2]) {
                 sleeponset_hour = trunc(sleeponset_time)
                 if (sleeponset_hour == 24) sleeponset_hour = 0
+                if (sleeponset_hour > 24) sleeponset_hour = sleeponset_hour - 24 # only with viewingwindow==2
                 sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                 if (!is.na(sleeponset_locations[1])) { 
@@ -412,7 +412,8 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               if (wake_time >= sw_coefs[1] & wake_time < sw_coefs[2]) {
               #if (wake_time < 24) {
                 wake_hour = trunc(wake_time)
-                if (viewingwindow==2) {
+                if (wake_hour == 24) wake_hour = 0
+                if (wake_hour > 24) {
                   wake_hour = wake_hour - 24
                 }
                 wake_min = round((wake_time - trunc(wake_time)) * 60)
@@ -608,11 +609,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
             }
             title = paste("Day ",daycount,": ",
-                          wdaynames[unclass(as.POSIXlt(time[t0]))$wday+1],
+                          wdaynames[unclass(as.POSIXlt(curr_date))$wday+1],
                           " ",
-                          unclass(as.POSIXlt(time[t0]))$mday,"/",
-                          unclass(as.POSIXlt(time[t0]))$mon+1,"/",
-                          unclass(as.POSIXlt(time[t0]))$year+1900,sep="")
+                          unclass(as.POSIXlt(curr_date))$mday,"/",
+                          unclass(as.POSIXlt(curr_date))$mon+1,"/",
+                          unclass(as.POSIXlt(curr_date))$year+1900,sep="")
 
             if (skip == FALSE) {
               YXLIM = c(-230,300)
