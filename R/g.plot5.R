@@ -389,9 +389,6 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               }
             }
             
-            
-            browser()
-            
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
               #sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
