@@ -7,6 +7,7 @@
   \item Visual report, fixed argument viewingwindow for g.plot5 (visualreport)
   \item Part 1 rmc.myacc.csv now raises warning when timestamps are not recognised
   \item Part 1 fixed rmc.dynamic_range not correctly passed on in 2.0-1
+  \item Part 5 sub-function round_seconds_to_ws3new now handles missing values
 }
 }
 \section{Changes in version 2.0-1 (GitHub-only-release date:04-06-2020)}{
