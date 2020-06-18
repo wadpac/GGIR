@@ -2,6 +2,13 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
+\section{Changes in version 2.0-2 (GitHub-only-release date:18-06-2020)}{
+\itemize{
+  \item Visual report, fixed argument viewingwindow for g.plot5 (visualreport)
+  \item Part 1 rmc.myacc.csv now raises warning when timestamps are not recognised
+  \item Part 1 fixed rmc.dynamic_range not correctly passed on in 2.0-1
+}
+}
 \section{Changes in version 2.0-1 (GitHub-only-release date:04-06-2020)}{
 \itemize{
   \item Now able to read gzipped csv files
