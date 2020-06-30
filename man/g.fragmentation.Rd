@@ -13,7 +13,10 @@ and assuming that acceleration values have already been
 converted into intergers of zeros and ones. 
 }
 \usage{
-  g.fragmentation(x=c(), frag.metrics = c("mean_bout","TP","Gini","power","hazard","all"))
+  g.fragmentation(x=c(), frag.metrics = c("mean_bout", "TP", "Gini", "power",
+                                          "hazard", "h",
+                                          "CoV", "x0.5_0", "W0.5_0", "dfa", "InfEn",
+                                          "SampEn", "FastApEn", "all"))
 }
 \arguments{
   \item{x}{
@@ -24,7 +27,9 @@ converted into intergers of zeros and ones.
   }
    \item{frag.metrics}{
    Character with fragmentation metric to exract. Can be
-  "mean_bout", "TP", "Gini", "power", "hazard", or all the above metrics "all".
+  "mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
+  "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "FastApEn", 
+  or all the above metrics "all".
   }
    
   
@@ -38,8 +43,8 @@ List with Character object showing how decimals are separated
  \item{towardsTP}{transition probability towards behaviour of interest}
  \item{Gini_1}{Gini index for behaviour of interest}
   \item{Gini_0}{Gini index for breaks in behaviour of interest}
- %\item{h_1}{hazard function for behaviour of interest}
-  %\item{h_0}{hazard function for breaks in behaviour of interest}
+ \item{h_1}{hazard function for behaviour of interest}
+  \item{h_0}{hazard function for breaks in behaviour of interest}
   \item{alpha_1}{power law parameter for behaviour of interest}
   \item{alpha_0}{power law parameter for breaks in behaviour of interest}
 
