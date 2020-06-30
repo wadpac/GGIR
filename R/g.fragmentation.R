@@ -66,18 +66,13 @@ g.fragmentation = function(x=c(),
     #   output[["h_1"]] = mean(fita$n.event/fita$n.risk)
     # }
     # , TSEntropies, nonlinearTseries
-    # if ("dfa" %in% frag.metrics) {
-    #   dfa_0 = nonlinearTseries::dfa(time.series = State0,
-    #               window.size.range = c(3, 30),
-    #               npoints = 20,
-    #               do.plot = FALSE)
-    #   dfa_1 = nonlinearTseries::dfa(time.series = State0,
-    #               window.size.range = c(3, 30),
-    #               npoints = 20,
-    #               do.plot = FALSE)
-    #   output[["dfa_0"]] = nonlinearTseries::estimate(dfa_0,do.plot=FALSE)
-    #   output[["dfa_1"]] = nonlinearTseries::estimate(dfa_1,do.plot=FALSE)
-    # }
+    if ("dfa" %in% frag.metrics) {
+      dfa = nonlinearTseries::dfa(time.series = x,
+                  window.size.range = c(3, 30),
+                  npoints = 20,
+                  do.plot = FALSE)
+      output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)
+    }
     # #------------------------------------------------------------------------
     # # For the following metrics it is a bit of a question mark at the moment whether
     # # applying them to binary time series is actually meaningful, maybe these
