@@ -16,8 +16,8 @@ converted into intergers of zeros and ones.
   g.fragmentation(x=c(), frag.classes =c(),
                   frag.metrics = c("mean_bout", "TP", "Gini", "power",
                                           "hazard", "h",
-                                          "CoV", "x0.5_0", "W0.5_0", "dfa", "InfEn",
-                                          "SampEn", "ApEn", "all"),
+                                          "CoV", "dfa", "InfEn",
+                                          "SampEn", "ApEn", "RQA", "all"),
                   ACC = c(), intensity.thresholds = c())
 }
 \arguments{
@@ -33,7 +33,7 @@ converted into intergers of zeros and ones.
    \item{frag.metrics}{
    Character with fragmentation metric to exract. Can be
   "mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-  "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "ApEn", 
+  "dfa", "InfEn", "SampEn", "ApEn", "RQA"
   or all the above metrics "all".
   }
   \item{ACC}{ Acceleration time series (optional) with which complexity metrics are derived
@@ -47,16 +47,33 @@ converted into intergers of zeros and ones.
 List with Character object showing how decimals are separated
   \item{mean_1}{mean duration of behaviour of interest}
   \item{mean_0}{mean duration of breaks in behaviour of interest}
- \item{awayTP}{transition probability away from behaviour of interest}
- \item{towardsTP}{transition probability towards behaviour of interest}
- \item{Gini_1}{Gini index for behaviour of interest}
+  \item{awayTP}{transition probability away from behaviour of interest}
+  \item{towardsTP}{transition probability towards behaviour of interest}
+  \item{Gini_1}{Gini index for behaviour of interest}
   \item{Gini_0}{Gini index for breaks in behaviour of interest}
- \item{h_1}{hazard function for behaviour of interest}
+  \item{h_1}{hazard function for behaviour of interest}
   \item{h_0}{hazard function for breaks in behaviour of interest}
   \item{alpha_1}{power law parameter for behaviour of interest}
   \item{alpha_0}{power law parameter for breaks in behaviour of interest}
-
-
+  \item{x0.5_0}{ }
+  \item{x0.5_1}{ }
+  \item{W0.5_0}{ }
+  \item{W0.5_1}{ }
+  \item{dfa}{ }
+  \item{InfEn_binary}{ }
+  \item{SampEn_multiclass}{ }
+  \item{InfEn_multiclass}{ }
+  \item{FastApEn_contin}{ }
+  %\item{REC_rqa_contin}{ }
+  %\item{DET_rqa_contin}{ }
+  %\item{RATIO_rqa_contin}{ }
+  %\item{DIV_rqa_contin}{ }
+  %\item{Lmax_rqa_contin}{ }
+  %\item{Lmean_rqa_contin}{ }
+  %\item{ENTR_rqa_contin}{ }
+  %\item{LAM_rqa_contin}{ }
+  %\item{Vmax_rqa_contin}{ }
+ %\item{Vmean_rqa_contin}{ }
 }
 \details{
 Metrics include

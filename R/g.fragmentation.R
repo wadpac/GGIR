@@ -1,6 +1,7 @@
 g.fragmentation = function(x=c(), frag.classes =c(),
                          frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-                                          "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "ApEn", "all"),
+                                          "dfa", "InfEn",
+                                          "SampEn", "ApEn", "RQA", "all"),
                          ACC = c(), intensity.thresholds = c()) {
   # This function is based on code from R package ActFrag as developed by Junrui Di.
   # Dependencies: ineq and survival package for Gini and Hazard metric respecitvely.
@@ -17,7 +18,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
   }
   if ("all" %in% frag.metrics){
     frag.metrics = c("mean_bout","TP","Gini","power","hazard", "h", "CoV",
-                     "x0.5_0", "W0.5_0", "dfa", "InfEn","SampEn","ApEn")
+                     "dfa", "InfEn","SampEn","ApEn", "RQA")
   }
   output = list()
   if (length(ACC) > 1 & length(intensity.thresholds) > 2) {
@@ -27,8 +28,24 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     # RQA analysis
     # Approximate Entropy
     if ("ApEn" %in% frag.metrics) {
-      output[["FastApEn_continuous"]] = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))
+      output[["FastApEn_contin"]] = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))
     }
+    # if ("RQA" %in% frag.metrics) { 
+    #   cat("A")
+    #   RP = nonlinearTseries::rqa(time.series=ACC, radius = 10, embedding.dim = 2) #[1:(60*10)] #S$class_id
+    #   cat("B")
+    #   output[["REC_rqa_contin"]] = RP$REC
+    #   output[["DET_rqa_contin"]] = RP$DET
+    #   output[["RATIO_rqa_contin"]] = RP$RATIOImpl
+    #   output[["DIV_rqa_contin"]] = RP$DIV
+    #   output[["Lmax_rqa_contin"]] = RP$Lmax
+    #   output[["Lmean_rqa_contin"]] = RP$Lmean
+    #   output[["ENTR_rqa_contin"]] = RP$ENTR
+    #   output[["LAM_rqa_contin"]] = RP$LAM
+    #   output[["Vmax_rqa_contin"]] = RP$Vmax
+    #   output[["Vmean_rqa_contin"]] = RP$Vmean
+    # }
+    
     #====================================================
     # Complexity metrics that depend on multi-class data
     # Convert ACC into categorical multi-class behaviours
@@ -57,6 +74,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     if ("SampEn" %in% frag.metrics) {
       output[["SampEn_multiclass"]] = TSEntropies::SampEn_C(TS = y, dim = 2, lag = 1)
     }
+  
     rm(y)
   }
   
