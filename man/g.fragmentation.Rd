@@ -13,10 +13,12 @@ and assuming that acceleration values have already been
 converted into intergers of zeros and ones. 
 }
 \usage{
-  g.fragmentation(x=c(), frag.metrics = c("mean_bout", "TP", "Gini", "power",
+  g.fragmentation(x=c(), frag.classes =c(),
+                  frag.metrics = c("mean_bout", "TP", "Gini", "power",
                                           "hazard", "h",
                                           "CoV", "x0.5_0", "W0.5_0", "dfa", "InfEn",
-                                          "SampEn", "FastApEn", "all"))
+                                          "SampEn", "ApEn", "all"),
+                  ACC = c(), intensity.thresholds = c())
 }
 \arguments{
   \item{x}{
@@ -25,15 +27,21 @@ converted into intergers of zeros and ones.
   and 0 reflects all the other time, which you may refer to as gaps or breaks in the 
   behaviour of interest.
   }
+  \item{frag.classes}{Vector with integer to specify the class ids corresponding to the 
+  behaviour of interest
+  }
    \item{frag.metrics}{
    Character with fragmentation metric to exract. Can be
   "mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-  "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "FastApEn", 
+  "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "ApEn", 
   or all the above metrics "all".
   }
-   
-  
-  
+  \item{ACC}{ Acceleration time series (optional) with which complexity metrics are derived
+  that depend on continuous data or multi-class data.
+  }
+  \item{intensity.thresholds}{
+    Intensity thresholds to define classes in the multi-class approach where bouts are not considered.
+  }
 }
 \value{
 List with Character object showing how decimals are separated

@@ -1,12 +1,11 @@
-g.fragmentation = function(x=c(),
+g.fragmentation = function(x=c(), frag.classes =c(),
                          frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-                                          "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "FastApEn", "all")) {
+                                          "x0.5_0", "W0.5_0", "dfa", "InfEn", "SampEn", "ApEn", "all"),
+                         ACC = c(), intensity.thresholds = c()) {
   # This function is based on code from R package ActFrag as developed by Junrui Di.
   # Dependencies: ineq and survival package for Gini and Hazard metric respecitvely.
   #
-  # x: time series of integers 0 or 1 to indicate bouts, where
-  # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
-  # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
+  # x: time series of classess
   # frag.metrics: metric to define fragmentation
   # in contract to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of outside this
@@ -16,16 +15,71 @@ g.fragmentation = function(x=c(),
   } else {
     x = as.integer(x)
   }
-  fragments = rle(x)
+  if ("all" %in% frag.metrics){
+    frag.metrics = c("mean_bout","TP","Gini","power","hazard", "h", "CoV",
+                     "x0.5_0", "W0.5_0", "dfa", "InfEn","SampEn","ApEn")
+  }
   output = list()
+  if (length(ACC) > 1 & length(intensity.thresholds) > 2) {
+    #====================================================
+    # Space for complexity metrics that depends on continuous data:
+    # ...
+    # RQA analysis
+    # Approximate Entropy
+    if ("ApEn" %in% frag.metrics) {
+      output[["FastApEn_continuous"]] = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))
+    }
+    #====================================================
+    # Complexity metrics that depend on multi-class data
+    # Convert ACC into categorical multi-class behaviours
+    y = rep(0,length(ACC))
+    intensity.thresholds = c(0, intensity.thresholds)
+    for (ij in 1:length(intensity.thresholds)) {
+      if (ij != length(intensity.thresholds)) {
+        ij_indices = which(ACC >= intensity.thresholds[ij] & ACC < intensity.thresholds[ij+1])
+        if (length(ij_indices) > 0) y[ij_indices] = ij
+      } else {
+        ij_indices = which(ACC >= intensity.thresholds[ij])
+        if (length(ij_indices) > 0) y[ij_indices] = ij
+      }
+    }
+    if ("InfEn" %in% frag.metrics) {
+      alpha = length(unique(y))
+      N = length(y)
+      IEnt = 0
+      uvalues = unique(y)
+      for (i in 1:alpha) {
+        p_i = length(which(y == uvalues[i])) / N
+        IEnt = IEnt - (p_i * log(p_i,2))
+      }
+      output[["InfEn_multiclass"]] = IEnt/ log(alpha, 2)
+    }
+    if ("SampEn" %in% frag.metrics) {
+      output[["SampEn_multiclass"]] = TSEntropies::SampEn_C(TS = y, dim = 2, lag = 1)
+    }
+    rm(y)
+  }
+  
+  #====================================================
+  # Binary fragmentation
+  
+  binarize = function(x, values) {
+    # converts input into binary signal, with a 1 for x values that match the vector values
+    # and a 0 for all other values
+    tmp = as.integer(ifelse(test = x %in% values, yes = 1, no = 0))
+    return(tmp)
+  }
+  x = binarize(x, values = frag.classes)
+  # x are now integers 0 or 1 to indicate bouts, where
+  # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
+  # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
+  
+  fragments = rle(x)
+  
   Nfragments = length(fragments$lengths)
   output[["Nfragments"]] = Nfragments
   if (Nfragments > 1) {
-    
-    if ("all" %in% frag.metrics){
-      frag.metrics = c("mean_bout","TP","Gini","power","hazard", "h", "CoV",
-                       "x0.5_0", "W0.5_0", "dfa", "InfEn","SampEn","FastApEn")
-    }
+  
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
     
@@ -71,7 +125,7 @@ g.fragmentation = function(x=c(),
                   window.size.range = c(3, 30),
                   npoints = 20,
                   do.plot = FALSE)
-      output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)
+      output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)[1]
     }
     # #------------------------------------------------------------------------
     # # For the following metrics it is a bit of a question mark at the moment whether
@@ -88,14 +142,10 @@ g.fragmentation = function(x=c(),
         p_i = length(which(TS == uvalues[i])) / N
         IEnt = IEnt - (p_i * log(p_i,2))
       }
-      output[["InfEn"]] = IEnt/ log(alpha, 2)
-    }
-    if ("ApEnt" %in% frag.metrics) {
-      TS = x
-      output[["FastApEn"]] = TSEntropies::FastApEn(TS, dim = 2, lag = 1, r = 0.15 * sd(TS))
+      output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
     }
     if ("SanpEn" %in% frag.metrics) {
-      output[["SampEn"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
+      output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
     }
     
 

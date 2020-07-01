@@ -4,8 +4,13 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   
   x = as.integer(c(rep(0,3),rep(1,20),rep(0,4),rep(1,12),rep(0,1),rep(1,15),rep(0,3),rep(1,9),
         rep(0,2),rep(1,2),rep(0,7),rep(1,16),rep(0,9),rep(1,1),rep(0,2),rep(1,8)))
-  
-  out = g.fragmentation(x=x,frag.metrics = c("all"))
+  frag.classes = 1
+  set.seed(300)
+  ACC = runif(n = length(x), min=0, max=500)
+  intensity.thresholds = c(50,100,400)
+  out = g.fragmentation(x=x, frag.classes=frag.classes, frag.metrics = c("all"),
+                        ACC=ACC,
+                        intensity.thresholds=intensity.thresholds)
   expect_that(round(out$mean_0, digits=3),equals(3.875))
   expect_that(round(out$mean_1, digits=3),equals(10.375))
   expect_that(round(out$towardsTP, digits=4),equals(0.2581))
@@ -16,4 +21,13 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_that(round(out$alpha_1, digits=4),equals(1.3725))
   # expect_that(round(out$h_0, digits=4),equals(0.4407))
   # expect_that(round(out$h_1, digits=4),equals(0.3397))
+  expect_that(round(out$x0.5_0, digits=4),equals(3.561))
+  expect_that(round(out$x0.5_1, digits=4),equals(6.4287))
+  expect_that(round(out$W0.5_0, digits=4),equals(0.6452))
+  expect_that(round(out$W0.5_1, digits=4),equals(0.9639))
+  expect_that(round(out$dfa, digits=4),equals(1.0434))
+  expect_that(round(out$InfEn_binary, digits=4),equals(0.8442))
+  expect_that(round(out$SampEn_multiclass, digits=4),equals(0.8246))
+  expect_that(round(out$InfEn_multiclass, digits=4),equals(0.7335))
+  expect_that(round(out$FastApEn_continuous, digits=4),equals(0.4313))
 })

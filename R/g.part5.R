@@ -706,23 +706,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         #===============================================
                         # FRAGMENTATION per window, and split by night and day
                         if (length(frag.classes.day_tmp) > 0 & length(frag.classes.spt_tmp) > 0 & length(frag.metrics) > 0) {
-                          binarize = function(x, values) {
-                            # converts input into binary signal, with a 1 for x values that match the vector values
-                            # and a 0 for all other values
-                            tmp = as.integer(ifelse(test = x %in% values, yes = 1, no = 0))
-                            return(tmp)
-                          }
                           # daytime
                           frag.classes.day2 = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
-                          frag.out = g.fragmentation(x=binarize(LEVELS[sse[ts$diur[sse] == 0]], values = frag.classes.day2),
-                                                   frag.metrics = frag.metrics)
+                          frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 0]]), frag.classes = frag.classes.day2,
+                                                   frag.metrics = frag.metrics, ACC = ts$ACC, intensity.thresholds = c(TRLi, TRMi, TRVi))
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = as.numeric(frag.out)
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_day")
                           fi = fi + length(frag.out)
                           # spt
                           frag.classes.spt2 = which(Lnames %in% frag.classes.spt_tmp) - 1 # convert to numberic class id
-                          frag.out = g.fragmentation(x=binarize(LEVELS[sse[ts$diur[sse] == 1]], values = frag.classes.spt2),
-                                                   frag.metrics = frag.metrics)
+                          frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 1]]), frag.classes = frag.classes.spt2,
+                                                   frag.metrics = frag.metrics, ACC = ts$ACC, intensity.thresholds = c(TRLi, TRMi, TRVi))
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = as.numeric(frag.out)
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_spt")
                           fi = fi + length(frag.out)
