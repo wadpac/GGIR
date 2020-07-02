@@ -1,6 +1,10 @@
 g.conv.actlog = function(qwindow) {
   # Function to read activity log and convert it into data.frame
   # that has for each ID and date a different qwindow vector
+  
+  # TO DO: Enable this to also read in different Activity log formats.
+  # TO DO: Add documentation in code below
+  
   actlog = read.csv(file = qwindow)
   actlog = actlog[which(actlog[,1] != ""),]
   actlog_vec = unlist(actlog)
@@ -25,9 +29,6 @@ g.conv.actlog = function(qwindow) {
     tmp2 = gsub(pattern = "[.].*",replacement = "",x = tmp)
     return(tmp2)
   }
-  # getDate = function(x) {
-  #   return(as.Date(x, tryFormats = "%d-%m-%Y"))
-  # }
   for (i in 1:nrow(actlog)) {
     datei = which(actlog_vec[i,] == TRUE)
     Ndays = length(datei)
