@@ -160,9 +160,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
           NDEF = length(uuu)
         }
         if (storefolderstructure==TRUE) {
-          personSummary = matrix(0,NIDS,((NDEF*3*19)+13+(6*3)))
+          personSummary = matrix(0,NIDS,((NDEF*3*22)+13+(6*3)))
         } else {
-          personSummary = matrix(0,NIDS,((NDEF*3*19)+11+(6*3)))
+          personSummary = matrix(0,NIDS,((NDEF*3*22)+11+(6*3)))
         }
         uid = unique(nightsummary$ID)
         if (nrow(nightsummary) > 0) {

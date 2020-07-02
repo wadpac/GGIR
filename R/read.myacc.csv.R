@@ -60,14 +60,14 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
         header_tmp0 = header_tmp
         header_tmp = unlist(lapply(header_tmp, FUN=mysplit))
         if (length(header_tmp) > 2) {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow=nrow(header_tmp0), byrow=T))
+          header_tmp = data.frame(matrix(unlist(header_tmp), nrow=nrow(header_tmp0), byrow=T), stringsAsFactors = TRUE)
         } else {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow=1, byrow=T))
+          header_tmp = data.frame(matrix(unlist(header_tmp), nrow=1, byrow=T), stringsAsFactors = TRUE)
           colnames(header_tmp) = NULL
         }
       }
       if (ncol(header_tmp) == 1) header_tmp = t(header_tmp)
-      header_tmp2 = data.frame(a = header_tmp[,2])
+      header_tmp2 = data.frame(a = header_tmp[,2], stringsAsFactors = TRUE)
       colnames(header_tmp2) = NULL
       row.names(header_tmp2) = header_tmp[,1] 
       header = header_tmp2
@@ -75,7 +75,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       colnames(header_tmp) = NULL
       validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
       header_tmp = header_tmp[validrows,1:2]
-      header_tmp2 = as.data.frame(header_tmp[,2])
+      header_tmp2 = as.data.frame(header_tmp[,2], stringsAsFactors = TRUE)
       row.names(header_tmp2) = header_tmp[,1]
       colnames(header_tmp2) = NULL
       header = header_tmp2
@@ -115,11 +115,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   if (length(rmc.skip) > 0) {
     skip = skip + rmc.skip
   }
-  
   # read data from file
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip=skip,
-                                      dec=rmc.dec, showProgress = FALSE, header = freadheader))
-  
+                                      dec=rmc.dec, showProgress = FALSE, header = freadheader),
+                    stringsAsFactors = TRUE)
   if (length(rmc.col.wear) > 0) {
     wearIndicator = P[, rmc.col.wear] # keep wear channel seperately and reinsert at the end
   }
@@ -156,6 +155,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       numerictime = datecode +timecode
       P$timestamp= as.POSIXlt(numerictime,origin=rmc.origin,tz=rmc.desiredtz)
     }
+    if (length(which(is.na(P$timestamp) == FALSE)) == 0) {
+     stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
+    }
   }
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
@@ -181,7 +183,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   } else if (rmc.unit.temp == "F") {
     P$temperature = (P$temperature - 32) * (5/9) # From Fahrenheit to Celsius
   }
-  
   if (length(rmc.col.wear) > 0) { # reinsert the nonwear channel
     P$wear = wearIndicator
   }
@@ -199,7 +200,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       NumberOfGaps = length(gapsi)
       for (jk in 1:NumberOfGaps) { # fill up gaps
         dt = P$timestamp[gapsi[jk]+1] - P$timestamp[gapsi[jk]] # difference in time
-        newblock = as.data.frame(matrix(0,dt*sf,ncol(P)))
+        newblock = as.data.frame(matrix(0,dt*sf,ncol(P)), stringsAsFactors = TRUE)
         colnames(newblock) = colnames(P)
         seqi = seq(P$timestamp[gapsi[jk]],P$timestamp[gapsi[jk]+1] - (1/sf),by=1/sf)
         if (length(seqi) >= length(newblock$timestamp)) {
@@ -230,7 +231,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
     colnamesP = colnames(P)
     timeRes = as.POSIXlt(timeRes, origin=rmc.origin, tz = rmc.desiredtz)
-    P = as.data.frame(accelRes)
+    P = as.data.frame(accelRes, stringsAsFactors = TRUE)
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P)-1))]
     colnames(P) = colnamesP

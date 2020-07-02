@@ -3,7 +3,7 @@
 abstract: "Converts raw data from wearables into insightful reports for researchers investigating human daily physical activity and sleep."
 authors:
   -
-    affiliation: "Netherlands eScience Center"
+    affiliation: "Accelting"
     family-names: Hees
     given-names: Vincent
     name-particle: van
@@ -40,8 +40,12 @@ authors:
     family-names: Migueles
     given-names: "Jairo H."
     orcid: "https://orcid.org/0000-0003-0366-6935"
+  -
+    affiliation: "Shimmer Ltd"
+    family-names: Patterson
+    given-names: "Matt"
 cff-version: "1.0.3"
-date-released: 2020-06-04
+date-released: 2020-06-18
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"
@@ -53,5 +57,5 @@ license: "LGPL-2.0-only"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/wadpac/GGIR"
 title: GGIR
-version: "2.0-1"
+version: "2.0-2"
 ...

@@ -11,8 +11,12 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
     round_seconds_to_ws3new = function(x, ws3new) {
       temp = as.numeric(unlist(strsplit(x,":")))
-      if (temp[3] / ws3new != round(temp[3] / ws3new)) {
-        x = paste0(temp[1],":",temp[2],":",round(temp[3] / ws3new)*ws3new)
+      if (length(temp) == 3) {
+        if (temp[3] / ws3new != round(temp[3] / ws3new)) {
+          x = paste0(temp[1],":",temp[2],":",round(temp[3] / ws3new)*ws3new)
+        }
+      } else {
+        x = ""
       }
       return(x)
     }
