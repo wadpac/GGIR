@@ -163,6 +163,11 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
         }
+        # TO DO:
+        # - extract qwindow vectors from qwindow data.frame
+        # - pass on to g.analyse and make sure these are used downstream
+        #
+        
         SUM = g.analyse(I,C,M,IMP,qlevels=qlevels,qwindow=qwindow,L5M5window=L5M5window,M5L5res=M5L5res,
                         includedaycrit=includedaycrit,ilevels=ilevels,winhr=winhr,idloc=idloc,
                         mvpathreshold =mvpathreshold ,boutcriter=boutcriter,mvpadur=mvpadur,selectdaysfile=selectdaysfile,
