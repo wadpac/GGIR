@@ -10,7 +10,12 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
                    myfun=c()) {
   snloc= 1
-  qwindow = qwindow[order(qwindow)]
+  if (is.numeric(qwindow)) {
+    qwindow = qwindow[order(qwindow)]
+  } else if (is.character(qwindow)) { 
+    qwindow = g.conv.actlog(qwindow)
+    # This will be an object with numeric qwindow values for all individuals and days
+  }  
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
