@@ -82,7 +82,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   ws3 = windowsizes[1] ; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * round(ws2/60))
-    cat("\nWARNING: The long windowsize needs to be a multitude of five minutes periods. The\n")
+    cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
     cat(paste("\nlong windowsize has now been automatically adjusted to: ",ws2," seconds in order to meet this criteria.\n",sep=""))
   }
   if ((ws2/ws3) != round(ws2/ws3)) {
@@ -158,7 +158,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
 
   ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
-  ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat)
+  ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat,  rmc.dynamic_range)
   clipthres = ncb_params$clipthres
   blocksize = ncb_params$blocksize
   sdcriter = ncb_params$sdcriter
