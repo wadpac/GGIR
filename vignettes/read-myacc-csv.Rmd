@@ -6,15 +6,15 @@ output: rmarkdown::html_vignette
     toc_depth: 3
 urlcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Reading csv files with accelerometer raw data with GGIR}
+%\VignetteIndexEntry{Reading csv files with accelerometer raw data with GGIR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
-
-```{r, include = FALSE}
+  ---
+  
+  ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+collapse = TRUE,
+comment = "#>"
 )
 ```
 
@@ -24,8 +24,97 @@ If you want to use GGIR but the accelerometer brand which you collected data wit
 
 **How it works:**
 
-Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardization includes unit of measurement (_G_).
+Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardisation includes unit of measurement, timestamp, header format, and column locations.
+
+# Example call
 
 ```{r setup}
-library(GGIR)
+GGIR::read.myacc.csv(rmc.file="C:/mystudy/mydata/datafile.csv", 
+                     rmc.nrow=c(), rmc.skip = c(), rmc.dec=".",
+                     rmc.firstrow.acc = 1, 
+                     rmc.firstrow.header=c(),
+                     rmc.header.length = c(),
+                     rmc.col.acc = 1:3, 
+                     rmc.col.temp = c(), 
+                     rmc.col.time=c(),
+                     rmc.unit.acc = "g", 
+                     rmc.unit.temp = "C", 
+                     rmc.unit.time = "POSIX",
+                     rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                     rmc.bitrate = c(),
+                     rmc.dynamic_range = 6, 
+                     rmc.unsignedbit = TRUE,
+                     rmc.origin = "1970-01-01",
+                     rmc.desiredtz = "Europe/London",
+                     rmc.sf = 100,
+                     rmc.headername.sf = c(),
+                     rmc.headername.sn = c(),
+                     rmc.headername.recordingid = c(),
+                     rmc.header.structure = c(),
+                     rmc.check4timegaps = FALSE,
+                     rmc.col.wear = c(),
+                     rmc.doresample=FALSE)
 ```
+
+The `read.myacc.csv` function is intented to be called within the `g.part1` or the `g.shell.GGIR` functions. These two functions accept all the arguments of the `read.myacc.csv` function and make an internal call to this function in order to make the data compatible with all the GGIR functions. Thus, the key arguments to allow GGIR handle the csv files should be specified in either `g.part1` or `g.shell.GGIR`. See below what are the key arguments depending on the characteristics of the csv file to process.
+
+# Key arguments
+
+As the `read.myacc.csv` function tries to read csv files with a wide variety of formats, the key arguments to specify depend on the characteristics of the csv file to process. Overall, if an argument is not relevant, it should be left in default setting (e.g., if the csv file does not contain temperature data, the arguments related to temperature settings should be left in default values)
+
+## General arguments
+
+- `rmc.file` - Filename of file to be read.
+- `rmc.nrow` - Number of rows to read, same as nrow argument in read.csv and in fread.
+- `rmc.skip` - Number of rows to skip, same as skip argument in read.csv and in fread.
+- `rmc.dec` - Decimal used for numbers, same as skip argument in read.csv and in fread.
+- `rmc.firstrow.acc` - First row (number) of the acceleration data.
+- `rmc.unit.acc` - Character with unit of acceleration values: "g", "mg", or "bit".
+- `rmc.desiredtz` - Timezone in which device was configured and expriments took place.
+- `rmc.sf` - Sample rate in Hertz, if this is stored in the file header then the that will be used instead.
+
+## For files with acceleration stored in bits
+
+- `rmc.bitrate` - Numeric: If unit of acceleration is a bit then provide bit rate, e.g. 12 bit.
+- `rmc.dynamic_range` - Numeric, if unit of acceleration is a bit then provide dynamic range deviation in g from zero, e.g. +/-6g would mean this argument needs to be 6. If you give this argument a character value the code will search the file header for elements with a name equal to the character value and use the corresponding numeric value next to it as dynamic range.
+- `rmc.unsignedbit` - Boolean, if unsignedbit = TRUE means that bits are only positive numbers. If unsignedbit = FALSE then bits are both positive and negative.
+
+## For files with header
+
+- `rmc.firstrow.header` - If file has header, specify header length (numeric).
+- `rmc.header.length` - Vector with three column (numbers) in which the acceleration signals are stored
+- `rmc.headername.sf` - If file has a header: Row name (character) under which the sample frequency can be found.
+- `rmc.headername.sn` - If file has a header: Row name (character) under which the serial number can be found.
+- `rmc.headername.recordingid` -  If file has a header: Row name (character) under which the recording ID can be found.
+- `rmc.header.structure` - Character used to split the header name from the header value, e.g. ":" or " ".
+
+## For files with timestamp
+
+- `rmc.col.time` - Scalar with column (number) in which the timestamps are stored.
+- `rmc.unit.time` - Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument origin), "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL activity monitor).
+- `rmc.format.time` - Format of timestamp, only used for rmc.unit.time: character and POSIX.
+- `rmc.origin` - Origin of time when unit of time is UNIXsec, e.g. 1970-1-1.
+
+## For files with temperature
+
+- `rmc.col.temp` - Scalar with column (number) in which the temperature is stored. Leave in default setting if no temperature is avaible.
+- `rmc.unit.temp` - Character with unit of temperature values: (K)elvin, (C)elsius, or (F)ahrenheit.
+
+## For files with an estimation of the non-wear time
+
+- `rmc.col.wear` - If external wear detection outcome is stored as part of the data then this can be used by GGIR. This argument specifies the column in which the wear detection (Boolean) is stored.
+
+## Time gaps and resample
+
+- `rmc.check4timegaps` - Boolean to indicate whether gaps in time should be imputed with zeros.
+- `rmc.doresample` - Boolean to indicate whether to resample the data based on the available timestamps and extracted sample rate from the file header
+
+# Integration in GGIR output
+
+## Part 1
+The external csv reading function is included in the GGIR function `g.part1`. The output from this function (i.e., the standardised time-series meta data) is stored in: `/output_nameofstudy/meta/basic`.
+The resolution of these output in GGIR is set by g.shell.GGIR argument `windowsizes`, which is `c(5,900,3600)` by default. Here, the first element `5` specifies the short epoch size in seconds.
+All the arguments specified above are supported by the `g.part1` function. In the case these arguments are provedide, `g.part1` would call the `read.myacc.csv` function to process the csv containing the raw accelerometer data.
+
+## Shell function
+Since the `g.part1` function is embedded in the `g.shell.GGIR` function. The `read.myacc.csv` arguments are also supported by `g.shell.GGIR`.
