@@ -2,6 +2,11 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
+\section{Changes in version 2.0-3 (GitHub-only-release date:05-07-2020)}{
+\itemize{
+  \item Vignette for read.myacc.csv function included.
+}
+}
 \section{Changes in version 2.0-2 (GitHub-only-release date:18-06-2020)}{
 \itemize{
   \item Visual report, fixed argument viewingwindow for g.plot5 (visualreport)
