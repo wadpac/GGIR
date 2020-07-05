@@ -1,0 +1,31 @@
+---
+title: "Reading csv files with accelerometer raw data with GGIR"
+output: rmarkdown::html_vignette
+    toc : true
+    number_sections: true
+    toc_depth: 3
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Reading csv files with accelerometer raw data with GGIR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+If you want to use GGIR but the accelerometer brand which you collected data with is not supported by GGIR, the `read.myacc.csv` function may be of help. This function is able to read data from a csv containing the raw data from tri-axial accelerometers. The term _**raw**_ refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration. Thus, the usability of GGIR is extended to almost any device as long as a single csv file with the raw acceleroemter data for each of the three axes is provided.
+
+**How it works:**
+
+Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardization includes unit of measurement (_G_).
+
+```{r setup}
+library(GGIR)
+```

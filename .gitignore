@@ -8,3 +8,4 @@
 *.Rd2pdf*
 doc
 Meta
+inst/doc
