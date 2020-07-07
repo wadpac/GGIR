@@ -40,7 +40,6 @@ g.conv.actlog = function(qwindow) {
         k = cnt+j-1
         if ((datei[j+1] - datei[j]) >= 2) {
           qwindow$qwindow_times[k] = list(actlog[i,(datei[j]+1):(datei[j+1]-1)])
-          print(qwindow$qwindow_times[k])
           qwindow$qwindow_values[k] = list(time2numeric(qwindow$qwindow_times[k]))
           qwindow$qwindow_names[k] = list(extract_names(qwindow$qwindow_times[k]))
           unlisted_qv = unlist(qwindow$qwindow_values[k])

@@ -94,7 +94,6 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F &
                  as.numeric(daysummary[wkend,NVHcolumn]) >= includedaycrit)
     wkend = wkend[v1]
-    # Recognise weekdays with enough data
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F  &
                  as.numeric(daysummary[wkday,NVHcolumn]) >= includedaycrit)

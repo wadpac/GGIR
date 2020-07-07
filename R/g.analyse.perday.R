@@ -7,7 +7,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                             mvpathreshold, boutcriter, closedbout,
                             bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
-                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun) {
+                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz) {
   if (length(selectdaysfile) > 0 & ndays == 2) {
     ndays = 1
     startatmidnight = endatmidnight  = 1
@@ -43,9 +43,28 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
   }
   #===============================================
   # Features per day (based on on single variables)
-  qwindowbackup = qwindow
+  qwindow_names = qwindowbackup = qwindow
+  qwindow_actlog =FALSE
+  if (is.data.frame(qwindow) == TRUE) {
+    qwindow_actlog =TRUE  
+  }
+  unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time), by = (3600/ws2)*12),length(time))], tz=desiredtz)))
   for (di in 1:ndays) { #run through days
     qwindow = qwindowbackup
+    if (is.data.frame(qwindow) == TRUE) {
+      currentdate = which(qwindow$date == unique_dates_recording[di])
+      if (length(currentdate) > 0) {
+        qwindow_times = as.character(unlist(qwindow$qwindow_times[currentdate]))
+        qwindow_names = as.character(unlist(qwindow$qwindow_names[currentdate]))
+        qwindow = qwindow_values_backup = unlist(qwindow$qwindow_values[currentdate])
+      }
+      if (length(qwindow) == 1) qwindow = c()
+      if (length(qwindow) == 0 | length(currentdate) == 0)  {
+        qwindow_times = c("00:00","24:00")
+        qwindow_names = c("midnight","midnight")
+        qwindow = qwindow_values_backup = c(0, 24)
+      } 
+    }
     #extract day from matrix D and qcheck
     if (length(selectdaysfile) > 0 & startatmidnight == 1 & endatmidnight == 1) { #added on 14/9/2016
       qqq1 = 1#midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
@@ -110,10 +129,10 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     deltaLengthQwindow = 0
     if (length(qwindow) < 2) qwindow = c()
     if (length(qwindow) > 0) {
-      if (length(qwindowbackup) == 1) {
+      if (length(qwindow_names) == 1) {
         cat("Argument to qwindow is invalid, requires a vector of at least length 2")
       }
-      if (length(qwindowbackup) == 2) {
+      if (length(qwindow_names) == 2) {
         if (qwindow[1] != 0 | qwindow[2] != 24) {
           if((qwindowindices[2]*60*(60/ws3)) <= length(val)) {
             valq = val[((qwindowindices[1]*60*(60/ws3))+1):(qwindowindices[2]*60*(60/ws3))]
@@ -123,8 +142,8 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
           nvalidhours_qwindow =length(which(valq == 0))/ (3600/ws3)
           nhours_qwindow = length(valq)/ (3600/ws3) #valid hours per day (or half a day)
         }
-      } else if (length(qwindowbackup) > 2) {
-        deltaLengthQwindow = length(qwindowbackup) - length(qwindowindices)
+      } else if (length(qwindow_names) > 2) {
+        deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
         for (qwi in 1:(length(qwindowindices)-1)) { #
           startindex = qwindowindices[qwi]*60*(60/ws3)
           endindex = qwindowindices[qwi+1]*60*(60/ws3)
@@ -139,8 +158,8 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
             nvalidhours_qwindow[qwi + deltaLengthQwindow] =length(which(valq == 0))/ (3600/ws3)
             nhours_qwindow[qwi + deltaLengthQwindow] = length(valq)/ (3600/ws3) #valid hours per day (or half a day)
           } else {
-            nvalidhours_qwindow[qwi + deltaLengthQwindow] = 0
-            nhours_qwindow[qwi + deltaLengthQwindow] = 0 #valid hours per day (or half a day)
+            nvalidhours_qwindow[qwi + deltaLengthQwindow] = ""
+            nhours_qwindow[qwi + deltaLengthQwindow] = "" #valid hours per day (or half a day)
           }
         }
       }
@@ -173,21 +192,38 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     fi = fi + 4
     if (length(qwindow > 0)) {
       if (length(qwindow) > 2 | qwindow[1] != 0 | qwindow[2] != 24) {
-        for (qwi in 1:(length(qwindowbackup)-1)) { # create variables regardless of
-          if (length(which(qwindowbackup[qwi] %in% qwindow == TRUE)) > 0) {
-            daysummary[di,(fi)] = nvalidhours_qwindow[qwi]
-            daysummary[di,(fi+1)] = nhours_qwindow[qwi]
-          } else {
-            daysummary[di,(fi)] = 0 # note that we only consider qwindows when there is data for the entire window, otherwise duration is 0
-            daysummary[di,(fi+1)] = 0
+        for (qwi in 1:(length(qwindow_names)-1)) { # create variables regardless of
+          tmp_name = c(paste0("N_valid_hours_",qwindow_names[qwi],"-",qwindow_names[qwi+1],"hr"),
+                       paste0("N_hours_",qwindow_names[qwi],"-",qwindow_names[qwi+1],"hr"))
+          matchi1 = which(ds_names %in% tmp_name[1] == TRUE)
+          matchi2 = which(ds_names %in% tmp_name[2] == TRUE)
+          if (length(matchi1) == 1 & length(matchi2) == 1) {
+            ds_names[matchi1] == tmp_name[1]
+            ds_names[matchi2] == tmp_name[2]
+            if (length(which(qwindow_values_backup[qwi] %in% qwindow == TRUE)) > 0) {
+              daysummary[di,matchi1] = nvalidhours_qwindow[qwi]
+              daysummary[di,matchi2] = nhours_qwindow[qwi]
+            } else {
+              daysummary[di,matchi1] = "" # note that we only consider qwindows when there is data for the entire window, otherwise duration is 0
+              daysummary[di,matchi2] = ""
+            }
+            fi = fi + 2
+          } else {  # variable does not exists, so add it,
+            ds_names = c(ds_names,tmp_name)
+            daysummary = cbind(daysummary, matrix("",nrow(daysummary),2))
+            newncol = ncol(daysummary)
+            if (length(which(qwindow_values_backup[qwi] %in% qwindow == TRUE)) > 0) {
+              daysummary[di, (newncol-1):newncol] = c(nvalidhours_qwindow[qwi], nhours_qwindow[qwi])
+            } else {
+              daysummary[di, (newncol-1):newncol] = c("", "")
+            }
           }
-          ds_names[fi:(fi+1)] = c(paste0("N_valid_hours_",qwindowbackup[qwi],"-",qwindowbackup[qwi+1],"hr"),
-                                  paste0("N_hours_",qwindowbackup[qwi],"-",qwindowbackup[qwi+1],"hr"))
-          fi = fi + 2
         }
       }
     }
-    
+    if (di > 1 & qwindow_actlog == TRUE & length(which(ds_names == "weekday")) > 0) {
+      fi = which(ds_names == "weekday")
+    }
     #--------------------------------------
     weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
     weekdays = rep(weekdays,26) # hardcoded maximum number of weeks of 26, not ideal
@@ -199,6 +235,11 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     daysummary[di,(fi+1)] = di #day number relative to start of measurement
     ds_names[fi:(fi+1)] = c("weekday","measurementday")
     fi = fi + 2
+    if (qwindow_actlog == TRUE) { # add column with all timestamps in single character
+      ds_names[fi] =  "qwindow_timestamps"
+      daysummary[di,fi] = paste0(qwindow_times,collapse="_")
+      fi = fi + 1
+    }
     if (length(selectdaysfile) > 0) {
       #---------------------------
       # Description per timewindow for millenium cohort:
@@ -255,7 +296,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
             anwi_t0 = c(anwi_t0,((qwindowindices[oddqwindow]*60*(60/ws3))+1))
             anwi_t1 = c(anwi_t1,(qwindowindices[evenqwindow]*60*(60/ws3)))
             for (iin in 1:length(oddqwindow)) {
-              anwi_nameindices = c(anwi_nameindices,paste0("_",qwindow[oddqwindow[iin]],"-",qwindow[evenqwindow[iin]],"hr"))
+              anwi_nameindices = c(anwi_nameindices,paste0("_",qwindow_names[oddqwindow[iin]],"-",qwindow_names[evenqwindow[iin]],"hr"))
             }
           }
         } else {
@@ -263,6 +304,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
           anwi_t1 = c(anwi_t1,(24*60*(60/ws3)))
           anwi_nameindices = c(anwi_nameindices,"")
         }
+
         fi_remember = fi
         for (anwi_index in 1:length(anwi_t0)) {
           if(anwi_index == 2 & di == 1) {
@@ -306,13 +348,13 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   for (winhr_value in winhr) {
                     if (length(varnum) > (60/ws3)*60*winhr_value*3) { # Calculate values
                       # Time window for L5 & M5 analysis
-                      t0_LFMF = L5M5window[1] #start in 24 hour clock hours
-                      t1_LFMF = L5M5window[2]+(winhr_value-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
+                      t0_LFMF =  (anwi_t0[anwi_index]-1)/(60*(60/ws3)) #L5M5window[1] #start in 24 hour clock hours
+                      t1_LFMF = anwi_t1[anwi_index]/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5)
                       ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
                       if (anwi_index > 1) {
-                        L5M5shift = qwindow[anwi_index - 1]
+                        L5M5shift = qwindow_values_backup[anwi_index - 1] #qwindow
                       } else {
                         L5M5shift = 0
                       }
@@ -398,7 +440,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   ds_names[fi:(fi+(length(q48)-1))] = namesq47
                   fi = fi+length(q48)
                 }
-                
                 if (doiglevels == TRUE) { # intensity gradient (as described by Alex Rowlands 2018)
                   q49 = c()
                   q50 = cut((varnum*1000),breaks = iglevels,right=FALSE)

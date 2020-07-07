@@ -11,6 +11,9 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
   QUAN = qlevels_names = c()
   ML5AD = ML5AD_names = c()
   one2sixname = ""
+  if (is.data.frame(t_TWDI) == TRUE) { # If an activity log was used then use for average day only 24 hour window.
+    t_TWDI= c(0,24)
+  }
   if (doquan == TRUE) {
     for (quani in 1:ncol(averageday)) { # these columns of averageday correspond to the metrics from part 1
       if (colnames(M$metashort)[(quani+1)] %in% c("anglex", "angley", "anglez") == FALSE) {
