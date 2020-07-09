@@ -53,7 +53,6 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     }
     
     nightsummary2 = as.data.frame(do.call(rbind,lapply(fnames.ms4,myfun)),stringsAsFactors=FALSE)
-    
     #======================================
     # Add non-wearing during SPT from part 5, if it is availabe:
     ms5.out = "/meta/ms5.out"
@@ -81,12 +80,11 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         out = as.matrix(output[,which(colnames(output) %in% c("ID","nonwear_perc_spt", "night_number"))])
       }
       outputp5 = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun5)),stringsAsFactors=FALSE)
+
       dupl = which(duplicated(outputp5[,c("ID","night_number")]) == TRUE)
       if (length(dupl) > 0) {
         # some days in part 5 can have two SPTs, remove first and keep second SPT
-        dupl2 = which((outputp5$ID %in% outputp5$ID[dupl] &
-                        outputp5$night_number %in% outputp5$night_number[dupl]) ==  TRUE)[1]
-        outputp5 = outputp5[-dupl2[1],]
+        outputp5 = outputp5[-dupl,] #-dupl2[1]
       }
       colnames(outputp5)[which(colnames(outputp5) == "night_number")] = "night"
       nightsummary2 = base::merge(nightsummary2, outputp5, by= c("ID","night"), all.x=TRUE)
