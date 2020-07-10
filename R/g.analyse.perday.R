@@ -7,7 +7,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                             mvpathreshold, boutcriter, closedbout,
                             bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
-                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz) {
+                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz="") {
   if (length(selectdaysfile) > 0 & ndays == 2) {
     ndays = 1
     startatmidnight = endatmidnight  = 1
@@ -48,6 +48,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
   if (is.data.frame(qwindow) == TRUE) {
     qwindow_actlog =TRUE  
   }
+  
   unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time), by = (3600/ws2)*12),length(time))], tz=desiredtz)))
   for (di in 1:ndays) { #run through days
     qwindow = qwindowbackup
@@ -348,8 +349,10 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   for (winhr_value in winhr) {
                     if (length(varnum) > (60/ws3)*60*winhr_value*3) { # Calculate values
                       # Time window for L5 & M5 analysis
-                      t0_LFMF =  (anwi_t0[anwi_index]-1)/(60*(60/ws3)) #L5M5window[1] #start in 24 hour clock hours
-                      t1_LFMF = anwi_t1[anwi_index]/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
+                      # t0_LFMF =  (anwi_t0[anwi_index]-1)/(60*(60/ws3)) #L5M5window[1] #start in 24 hour clock hours
+                      # t1_LFMF = anwi_t1[anwi_index]/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
+                      t0_LFMF =  1 #start
+                      t1_LFMF = length(varnum)/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5)
                       ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
