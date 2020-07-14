@@ -229,8 +229,9 @@ g.impute = function(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0,
       dcomplscore = length(which(r5long == 0))/wpd
     }
   }
-  metashortimp = metashort
+  n_decimal_places = 4
+  metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
   rout = data.frame(r1=r1,r2=r2,r3=r3,r4=r4,r5=r5, stringsAsFactors = TRUE)
-  invisible(list(metashort=metashortimp,rout=rout,dcomplscore=dcomplscore,averageday=averageday,windowsizes=windowsizes,strategy=strategy,
+  invisible(list(metashort=metashort,rout=rout,dcomplscore=dcomplscore,averageday=averageday,windowsizes=windowsizes,strategy=strategy,
                  LC=LC,LC2=LC2,hrs.del.start=hrs.del.start,hrs.del.end=hrs.del.end,maxdur=maxdur))
 }

@@ -163,7 +163,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   blocksize = ncb_params$blocksize
   sdcriter = ncb_params$sdcriter
   racriter = ncb_params$racriter
-
+  n_decimal_places = 4 # number of decimal places to which features should be rounded
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
@@ -429,6 +429,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         allmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
+        # round decimal places, because due to averaging we get a lot of information
+        # that only slows down computation and increases storage size
+        allmetrics = lapply(allmetrics,round,n_decimal_places)
         BFEN = allmetrics$BFEN
         ENMO = allmetrics$ENMO
         ENMOa = allmetrics$ENMOa
@@ -659,13 +662,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
         rm(ENc, EN); gc()
         if (mon == 2 | (mon == 4 & dformat == 4)) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmean; col_mli= col_mli + 1
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmax; col_mli= col_mli + 1
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(lightmean, digits=n_decimal_places)
+          col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(lightmax, digits=n_decimal_places)
+          col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(temperatureb, digits=n_decimal_places)
+          col_mli= col_mli + 1
         } else if (mon == 5) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(temperatureb, digits=n_decimal_places)
+          col_mli= col_mli + 1
         }
-        metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = ENb; col_mli= col_mli + 1
+        metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(ENb, digits=n_decimal_places)
+        col_mli= col_mli + 1
         count2  = count2 + nmin
         if (exists("data")) rm(data)
         if (exists("light")) rm(light)
