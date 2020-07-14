@@ -710,7 +710,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           frag.classes.day2 = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
                           frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 0]]), frag.classes = frag.classes.day2,
                                                    frag.metrics = frag.metrics, ACC = ts$ACC, intensity.thresholds = c(TRLi, TRMi, TRVi))
-                          dsummary[di,fi:(fi+(length(frag.out)-1))] = as.numeric(frag.out)
+                          dsummary[di,fi:(fi+(length(frag.out)-1))] = round(as.numeric(frag.out), digits=5) # fragmentation values come with a lot of decimal places
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_day")
                           fi = fi + length(frag.out)
                           # spt
@@ -724,9 +724,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         #===============================================
                         # FOLDER STRUCTURE
                         if (storefolderstructure == TRUE) {
+                          if ("filename_dir" %in% ds_names) fi = which( ds_names == "filename_dir")
                           dsummary[di,fi] = fullfilenames[i] #full filename structure
                           ds_names[fi] = "filename_dir"; fi = fi + 1
                           dsummary[di,fi] = foldername[i] #store the lowest foldername
+                          if ("foldername" %in% ds_names) fi = which( ds_names == "foldername")
                           ds_names[fi] = "foldername"; fi = fi + 1
                         }
                         di = di + 1
@@ -798,6 +800,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
             emptycols = sapply(output, function(x)all(x==""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
             emptycols = which(emptycols == TRUE)
             if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
+            # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
+            FRAG_variables_indices = grep(pattern = "FRAG_",x = names(output))
+            emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
             if (length(emptycols) > 0) output = output[-emptycols]
           }
           if (length(output) > 0) {

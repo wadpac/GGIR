@@ -28,7 +28,13 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     # RQA analysis
     # Approximate Entropy
     if ("ApEn" %in% frag.metrics) {
-      output[["FastApEn_contin"]] = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))
+      # output[["FastApEn_contin"]] = NA
+      FastApEn = c()
+      try(expr = {FastApEn = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
+      if (length(FastApEn) == 0) {
+        try(expr = {FastApEn = TSEntropies::ApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
+      }
+      output[["FastApEn_contin"]] = FastApEn
     }
     # if ("RQA" %in% frag.metrics) { 
     #   cat("A")
@@ -61,6 +67,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       }
     }
     if ("InfEn" %in% frag.metrics) {
+      # output[["InfEn_multiclass"]] = NA
       alpha = length(unique(y))
       N = length(y)
       IEnt = 0
@@ -72,7 +79,13 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       output[["InfEn_multiclass"]] = IEnt/ log(alpha, 2)
     }
     if ("SampEn" %in% frag.metrics) {
-      output[["SampEn_multiclass"]] = TSEntropies::SampEn_C(TS = y, dim = 2, lag = 1)
+      # output[["SampEn_multiclass"]] = NA
+      SampEn = c()
+      try(expr = {SampEn = TSEntropies::FastSampEn(TS = y, dim = 2, lag = 1)})
+      if (length(SampEn) == 0) {
+        try(expr = {SampEn = TSEntropies::SampEn(TS = y, dim = 2, lag = 1)})
+      }
+      output[["SampEn_multiclass"]] = SampEn
     }
   
     rm(y)
@@ -102,22 +115,27 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     State0 = fragments$length[which(fragments$value == 0)]
     
     if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
+      # output[["CoV_0"]] = output[["CoV_1"]] = NA
       output[["CoV_0"]] = sd(State0) / mean(log(State0))
       output[["CoV_1"]] = sd(State1) / mean(log(State1))
     }
     if ("mean_bout" %in% frag.metrics){
+      # output[["mean_0"]] = output[["mean_1"]] = NA
       output[["mean_0"]] = mean(State0)
       output[["mean_1"]] = mean(State1)
     }
     if ("TP" %in% frag.metrics){
+      # output[["towardsTP"]] = output[["awayTP"]] = NA
       output[["towardsTP"]] = 1/mean(State0) # transition towards behaviour of interest
       output[["awayTP"]] = 1/mean(State1) # transition away from behaviour of interest
     }
     if ("Gini" %in% frag.metrics){
+      # output[["Gini_0"]] = output[["Gini_1"]] = NA
       output[["Gini_0"]] = ineq::Gini(State0,corr = T)
       output[["Gini_1"]] = ineq::Gini(State1,corr = T)
     }
     if ("power" %in% frag.metrics){
+      output[["alpha_0"]] = output[["alpha_1"]] = output[["x0.5_0"]] = output[["x0.5_1"]] = output[["W0.5_0"]] = output[["W0.5_1"]] = NA
       nr = length(State0)
       na = length(State1)
       rmin = min(State0)
@@ -126,7 +144,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       output[["alpha_1"]] = 1+ na/sum(log(State1/(amin-0.5)))
       # From this we can calculate (according to Chastin 2010):
       output[["x0.5_0"]] = 2^ (1 / (output[["alpha_0"]]-1) * min(State0))
-      output[["x0.5_1"]] =  2^ (1 / (output[["alpha_1"]]-1) * min(State1))
+      output[["x0.5_1"]] = 2^ (1 / (output[["alpha_1"]]-1) * min(State1))
       # From this we can calculate (according to Chastin 2010):
       output[["W0.5_0"]] = sum(State0[which(State0 > output[["x0.5_0"]])]) / sum(State0)
       output[["W0.5_1"]] = sum(State1[which(State1 > output[["x0.5_1"]])]) / sum(State1)
@@ -139,6 +157,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     # }
     # , TSEntropies, nonlinearTseries
     if ("dfa" %in% frag.metrics) {
+      # output[["dfa"]] = NA
       dfa = nonlinearTseries::dfa(time.series = x,
                   window.size.range = c(3, 30),
                   npoints = 20,
@@ -151,6 +170,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     # # should be moved to a seperate function to be applied to all
     # # behavioural classes/intensities, which we could name g.complexity
     if ("InfEn" %in% frag.metrics) {
+      # output[["InfEn_binary"]] = NA
       TS = x
       alpha = length(unique(TS))
       N = length(TS)
@@ -163,10 +183,9 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
     }
     if ("SanpEn" %in% frag.metrics) {
+      # output[["SampEn_binary"]] = NA
       output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
     }
-    
-
-  }
+    }
   return(output)
 }

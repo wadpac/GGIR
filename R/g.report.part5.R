@@ -72,8 +72,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
       if (length(cut) > 0 & length(cut) < nrow(output)) {
         output = output[-cut,which(colnames(output) != "")]
       }
-
       out = as.matrix(output)
+      return(out)
     }
     outputfinal = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun)),stringsAsFactors=FALSE)
     # cut = which(outputfinal[1,] == "" & outputfinal[2,] == "")
