@@ -329,12 +329,14 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             #   sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3))
             #   sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3))
             # } else if(j == 1 & midnightsi[j] != 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time
-            if (j == 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time
+            #if (j == 1){   #added 02/12/2019. First night get shifted start and end bedtimes depending on the initial time
+            if (qqq1 == 1) { # MP - only adjust time if the start of the block into HDCZA was after noon
               startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
               startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord
-            } else  if(j != 1) {
+            } else {
+            #} else  if(j != 1) {
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12
             }
