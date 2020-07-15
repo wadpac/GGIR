@@ -139,6 +139,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
+  hvars = g.extractheadervars(INFI)
+  deviceSerialNumber = hvars$deviceSerialNumber
+  if (mon == 3) { 
+    # If Actigraph then try to specify dynamic range based on Actigraph model
+    if (length(grep(pattern = "CLE", x = deviceSerialNumber)) == 1) {
+      dynrange = 6
+    } else if (length(grep(pattern = "MOS", x = deviceSerialNumber)) == 1) {
+      dynrange = 8
+    } else if (length(grep(pattern = "NEO", x = deviceSerialNumber)) == 1) {
+      dynrange = 6
+    }
+  }
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(rmc.sf) == 0) {
       stop("Could not identify sample frequency")
