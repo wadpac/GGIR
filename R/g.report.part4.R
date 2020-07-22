@@ -80,14 +80,34 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         out = as.matrix(output[,which(colnames(output) %in% c("ID","nonwear_perc_spt", "night_number"))])
       }
       outputp5 = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun5)),stringsAsFactors=FALSE)
-
       dupl = which(duplicated(outputp5[,c("ID","night_number")]) == TRUE)
+      # Note: another approach to removing duplicates could be to take the average...
       if (length(dupl) > 0) {
         # some days in part 5 can have two SPTs, remove first and keep second SPT
         outputp5 = outputp5[-dupl,] #-dupl2[1]
       }
       colnames(outputp5)[which(colnames(outputp5) == "night_number")] = "night"
+      # merge should now work, but if ID is numeric and stored as character with a leading zero
+      # then part 5 ID will not have this leading zero, so, we need fix this now:
+      remove_oldID = FALSE
+      if (is.character(nightsummary2$ID) & is.character(outputp5$ID)) {
+        options(warn=-1)
+        # next line could generate warning about NA creation when content is not numeric
+        # this is why we turn of warnings
+        testnumeric = !is.na(as.numeric(nightsummary2$ID))
+        options(warn=0)
+        if (length(which(testnumeric == TRUE)) > (nrow(nightsummary2)*(2/3))) {
+          nightsummary2$ID_old = nightsummary2$ID
+          nightsummary2$ID = as.character(as.numeric(nightsummary2$ID))
+          remove_oldID = TRUE
+        }
+      }
+      # merge in variable
       nightsummary2 = base::merge(nightsummary2, outputp5, by= c("ID","night"), all.x=TRUE)
+      if (remove_oldID == TRUE) {
+        nightsummary2$ID = nightsummary2$ID_old
+        nightsummary2 = nightsummary2[,-which(names(nightsummary2) == "ID_old")]
+      }
       nightsummary2 = nightsummary2[order(nightsummary2$ID, nightsummary2$night),]
       nightsummary2$nonwear_perc_spt = as.numeric(nightsummary2$nonwear_perc_spt)
     }
