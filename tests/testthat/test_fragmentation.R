@@ -27,7 +27,7 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_that(round(out$W0.5_1, digits=4),equals(0.9639))
   expect_that(round(out$dfa, digits=4),equals(1.0434))
   expect_that(round(out$InfEn_binary, digits=4),equals(0.8442))
-  expect_that(round(out$SampEn_multiclass, digits=4),equals(0.8246))
+  expect_that(round(out$SampEn_multiclass, digits=4),equals(0.1863))
   expect_that(round(out$InfEn_multiclass, digits=4),equals(0.7335))
   expect_that(round(out$FastApEn_contin, digits=4),equals(0.4313))
   
