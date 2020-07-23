@@ -48,7 +48,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
   if (is.data.frame(qwindow) == TRUE) {
     qwindow_actlog =TRUE  
   }
-  
   unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time), by = (3600/ws2)*12),length(time))], tz=desiredtz)))
   for (di in 1:ndays) { #run through days
     qwindow = qwindowbackup
@@ -65,8 +64,15 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         qwindow_names = c("midnight","midnight")
         qwindow = qwindow_values_backup = c(0, 24)
       } 
+    } else {
+      if (length(qwindow) == 0) {
+        qwindow = c(0, 24)
+      }
+      qwindow_values_backup = qwindow
+      qwindow_times = as.character(qwindow)
+      qwindow_names = as.character(qwindow)
     }
-    #extract day from matrix D and qcheck
+    # extract day from matrix D and qcheck
     if (length(selectdaysfile) > 0 & startatmidnight == 1 & endatmidnight == 1) { #added on 14/9/2016
       qqq1 = 1#midnightsi[di]*(ws2/ws3) 	#a day starts at 00:00
       qqq2 = midnightsi[di]*(ws2/ws3) #(midnightsi[(di+1)]*(ws2/ws3))-1
@@ -222,12 +228,12 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         }
       }
     }
-    if (di > 1 & qwindow_actlog == TRUE & length(which(ds_names == "weekday")) > 0) {
+    if (di > 1 & length(which(ds_names == "weekday")) > 0) { #qwindow_actlog == TRUE &
       fi = which(ds_names == "weekday")
     }
     #--------------------------------------
     weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-    weekdays = rep(weekdays,26) # hardcoded maximum number of weeks of 26, not ideal
+    weekdays = rep(weekdays, 104) # hardcoded maximum number of weeks of 104, not ideal
     if (di == 1) {
       daysummary[di,fi] = wdayname
     } else {
@@ -236,7 +242,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     daysummary[di,(fi+1)] = di #day number relative to start of measurement
     ds_names[fi:(fi+1)] = c("weekday","measurementday")
     fi = fi + 2
-    if (qwindow_actlog == TRUE) { # add column with all timestamps in single character
+    if (qwindow_actlog == TRUE | length(qwindow) > 2) { # add column with all timestamps in single character
       ds_names[fi] =  "qwindow_timestamps"
       daysummary[di,fi] = paste0(qwindow_times,collapse="_")
       fi = fi + 1
@@ -308,7 +314,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
           anwi_t1 = c(anwi_t1,(24*60*(60/ws3)))
           anwi_nameindices = c(anwi_nameindices,"")
         }
-
         fi_remember = fi
         for (anwi_index in 1:length(anwi_t0)) {
           if(anwi_index == 2 & di == 1) {
@@ -350,7 +355,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 if (length(varnum) > ((60/ws3)*60*min(winhr)*1.2)) { # Calculate values
                   exfi = 0
                   for (winhr_value in winhr) {
-                    if (length(varnum) > (60/ws3)*60*winhr_value*3) { # Calculate values
+                    if (length(varnum) > (60/ws3)*60*winhr_value*1.2) { # Calculate values
                       # Time window for L5 & M5 analysis
                       # t0_LFMF =  (anwi_t0[anwi_index]-1)/(60*(60/ws3)) #L5M5window[1] #start in 24 hour clock hours
                       # t1_LFMF = anwi_t1[anwi_index]/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window

@@ -89,8 +89,8 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     #====================================================================
     # Recognise weekenddays with enough data
     wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
-    columnWithAlwaysData = which(ds_names == "N hours")
-    NVHcolumn = which(ds_names == "N valid hours") #only count in the days for which the inclusion criteria is met
+    columnWithAlwaysData = which(ds_names == "N hours" | ds_names == "N_hours")
+    NVHcolumn = which(ds_names == "N valid hours" | ds_names == "N_valid_hours" ) #only count in the days for which the inclusion criteria is met
     v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F &
                  as.numeric(daysummary[wkend,NVHcolumn]) >= includedaycrit)
     wkend = wkend[v1]
@@ -128,7 +128,7 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
         # - there is more than 1 day of data
         # - there are multiple daysegments (qwindow)
         # - first value is not empty
-        if (storevalue == TRUE) { 
+        if (storevalue == TRUE) {
           # Plain average of available days
           v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) 
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
