@@ -240,6 +240,9 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       ds_names[fi] =  "qwindow_timestamps"
       daysummary[di,fi] = paste0(qwindow_times,collapse="_")
       fi = fi + 1
+      ds_names[fi] =  "qwindow_names"
+      daysummary[di,fi] = paste0(qwindow_names,collapse="_")
+      fi = fi + 1
     }
     if (length(selectdaysfile) > 0) {
       #---------------------------

@@ -264,6 +264,28 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       col2move = which(colnames(df) %in% c("N_valid_hours_in_window","N_hours_in_window") == TRUE)
       col2NH = which(colnames(df) %in% c("N_valid_hours","N_hours") == TRUE)
       df = df[,c(1:max(col2NH),col2move,(max(col2NH)+1):(ncol(df)-2))]
+      # rename segment names
+      for (ji in unique(df$ID)) {
+        for (hi in unique(df$calendar_date)) {
+          df_tmp = df[which(df$ID == ji & df$calendar_date == hi),c("qwindow_timestamps", "qwindow_names",
+                                                                    "timesegment2")]
+          tms = unlist(strsplit(df_tmp$qwindow_timestamps[1],"_"))
+          nms = unlist(strsplit(df_tmp$qwindow_names[1],"_"))
+          namekey = matrix("",length(tms),2)
+          for (gi in 1:(length(tms))) {
+            if (gi == 1) {
+              namekey[1,] = c("00:00-00:24","0-24hr")
+            } else {
+              namekey[gi,] = c(paste0(tms[gi-1], "-", tms[gi]),paste0(nms[gi-1], "-", nms[gi],"hr"))
+            }
+            df_tmp$qwindow_timestamps[which(as.character(df_tmp$timesegment2) == namekey[gi,2])] = namekey[gi,1]
+          }
+          df[which(df$ID == ji & df$calendar_date == hi),c("qwindow_timestamps", "qwindow_names",
+                                                           "timesegment2")] = df_tmp
+        }
+      }
+      df = df[, -which(colnames(df) %in% c("qwindow_names"))]
+      colnames(df)[which(colnames(df) == "timesegment2")] = "qwindow_name"
       write.csv(df,paste0(metadatadir,"/results/part2_daysummary_long.csv"),row.names=F)
     }
     
