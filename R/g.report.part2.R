@@ -1,4 +1,4 @@
-g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfile=c()) {
+g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfile=c(), store.long=FALSE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -186,6 +186,88 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
     # store final matrices again
     write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
     write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
+    
+    # Optionally convert daySUMMARY to long format
+    if (store.long == TRUE) {
+      dev.mode = FALSE
+      extractlastpart = function(x) {
+        tmp = unlist(strsplit(x,"_"))
+        if (length(tmp) > 1) {
+          tmp = tmp[length(tmp)]
+          tmp2 = unlist(strsplit(tmp,"-"))
+          if (length(tmp2) < 2) tmp = ""
+        } else {
+          tmp = ""
+        }
+        if (tmp != "") {
+          out = c(unlist(strsplit(x, paste0(tmp,"_")))[1], tmp)
+        } else {
+          out = c("","")
+        }
+        return(out)
+      }
+      if (dev.mode == TRUE) {
+        cn =c("test_2-34","test_56-7","othervar",
+              "exp_2-34","exp_56-7","othervar2")
+        daySUMMARY = data.frame(a = runif(n = 10,min = 1,max = 10), b = runif(n = 10,min = 1,max = 10),
+                                c = runif(n = 10,min = 100,max = 110), d = runif(n = 10,min = 1,max = 10),
+                                d = runif(n = 10,min = 1,max = 10), e = runif(n = 10,min = 200,max = 210))
+        colnames(daySUMMARY) = cn
+        daySUMMARY$ID =rep(c(1:2),each=5)
+        daySUMMARY$day =rep(c(1:5),times=2)
+        daySUMMARY = daySUMMARY[,c("ID","day",cn)]
+        cn = colnames(daySUMMARY)
+      } else {
+        colnames(daySUMMARY) = gsub(pattern = " ",replacement = "_", x = colnames(daySUMMARY))
+        cn = names(daySUMMARY)
+      }
+      tt = sapply(cn, FUN = extractlastpart)
+      id.vars = colnames(tt[,which(tt[2,] == "")])
+      daySUMMARY = data.table::as.data.table(daySUMMARY)
+      daySUMMARY2 = data.table::melt(daySUMMARY, id.vars = id.vars, 
+                                     measure.vars = colnames(tt)[which(tt[2,]!= "")])
+      getvar = function(x) {
+        tmp = unlist(strsplit(as.character(x),"_"))
+        return(paste0(tmp[1:(length(tmp)-1)],collapse="_"))
+      }
+      daySUMMARY2$variable2 = sapply(daySUMMARY2$variable, FUN = getvar)
+      gettimeseg = function(x) {
+        tmp = unlist(strsplit(as.character(x),"_"))
+        return(tmp[length(tmp)])
+      }
+      daySUMMARY2$timesegment2 = sapply(daySUMMARY2$variable, FUN = gettimeseg)
+      daySUMMARY2 = as.data.frame(daySUMMARY2)
+      rem = which(colnames(daySUMMARY2) =="variable")
+      daySUMMARY2 = daySUMMARY2[,-rem] # It is a data.table object so column removal works different
+      id.vars = c(id.vars,"timesegment2")
+      cnt = 1
+      for (i in unique(daySUMMARY2$variable2)) {
+        if (cnt == 1) {
+          df = daySUMMARY2[which(daySUMMARY2$variable2 == i),]
+          colnames(df)[which(colnames(df) == "value")] = i
+          rem = which(colnames(df) =="variable2")
+          df = df[,-rem]
+        } else {
+          df = base::merge(df, daySUMMARY2[which(daySUMMARY2$variable2 == i),], by=id.vars, all.x=T)
+          colnames(df)[which(colnames(df) == "value")] = i
+          rem = which(colnames(df) =="variable2")
+          df = df[,-rem]
+        }
+        cnt = cnt+1
+      }
+      Nvh.1 = which(colnames(df) == "N_valid_hours.1")
+      Nh.1 = which(colnames(df) == "N_hours.1")
+      if (length(Nvh.1) > 0) colnames(df)[Nvh.1] = "N_valid_hours_in_window"
+      if (length(Nh.1) > 0) colnames(df)[Nh.1] = "N_hours_in_window"
+      df$N_valid_hours_in_window[which(df$timesegment2 == "0-24hr")] = ""
+      df$N_hours_in_window[which(df$timesegment2 == "0-24hr")] = ""
+      col2move = which(colnames(df) %in% c("N_valid_hours_in_window","N_hours_in_window") == TRUE)
+      col2NH = which(colnames(df) %in% c("N_valid_hours","N_hours") == TRUE)
+      df = df[,c(1:max(col2NH),col2move,(max(col2NH)+1):(ncol(df)-2))]
+      write.csv(df,paste0(metadatadir,"/results/part2_daysummary_long.csv"),row.names=F)
+    }
+    
+    #---------------
     if (length(selectdaysfile) > 0) {
       write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
     }

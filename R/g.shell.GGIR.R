@@ -457,7 +457,13 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms2.out < f0) f0 = 1
     if (N.files.ms2.out < f1) f1 = N.files.ms2.out
     if (f1 == 0) f1 = N.files.ms2.out
-    g.report.part2(metadatadir=metadatadir,f0=f0,f1=f1,maxdur=maxdur,selectdaysfile=selectdaysfile)
+    if (length(qwindow) > 2 | is.character(qwindow)) {
+      store.long = TRUE
+    } else {
+      store.long = FALSE
+    }
+    g.report.part2(metadatadir=metadatadir, f0=f0, f1=f1, maxdur=maxdur,
+                   selectdaysfile=selectdaysfile, store.long=store.long)
   }
   if (length(which(do.report == 4)) > 0) {
     cat('\n')
