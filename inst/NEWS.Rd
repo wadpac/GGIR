@@ -1,7 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 2.0-3 (GitHub-only-release date:24-07-2020)}{
+\itemize{
+  \item Part 2 now able to be guided by activity log (see qwindow)
+  \item Part 2 now stores output also in long format if day is segmented
+}
+}
 \section{Changes in version 2.0-2 (GitHub-only-release date:18-06-2020)}{
 \itemize{
   \item Visual report, fixed argument viewingwindow for g.plot5 (visualreport)
