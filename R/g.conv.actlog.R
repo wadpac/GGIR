@@ -34,7 +34,7 @@ g.conv.actlog = function(qwindow) {
     Ndays = length(datei)
     if (Ndays > 0) {
       qwindow$ID[cnt:(cnt+Ndays-1)]  = rep(actlog[i,1],Ndays)
-      qwindow$date[cnt:(cnt+Ndays-1)]  = as.character(actlog[i,datei])
+      qwindow$date[cnt:(cnt+Ndays-1)]  = as.character(as.Date(as.character(actlog[i,datei]),format="%d-%m-%Y"))
       datei = c(datei,max(which(actlog[i,] != "")) + 1) # add number to be able to identify last class after last date
       for (j in 1:(length(datei)-1)) {
         k = cnt+j-1
@@ -48,12 +48,12 @@ g.conv.actlog = function(qwindow) {
           if (unlisted_qv[1] != 0) {
             qwindow$qwindow_values[k] = list(c(0, unlisted_qv))
             qwindow$qwindow_times[k] = list(c("00:00", unlisted_qt))
-            qwindow$qwindow_names[k] = list(c("midnight", unlisted_qn))
+            qwindow$qwindow_names[k] = list(c("daystart", unlisted_qn))
           }
           if (unlisted_qv[length(unlisted_qv)] != 24) {
             qwindow$qwindow_values[k] = list(c(unlist(qwindow$qwindow_values[k]), 24))
             qwindow$qwindow_times[k] = list(c(unlist(qwindow$qwindow_times[k]), "24:00"))
-            qwindow$qwindow_names[k] = list(c(unlist(qwindow$qwindow_names[k]),"midnight"))
+            qwindow$qwindow_names[k] = list(c(unlist(qwindow$qwindow_names[k]),"dayend"))
           }
         } else {
           qwindow$qwindow_values[k] = list("")
@@ -64,6 +64,10 @@ g.conv.actlog = function(qwindow) {
       cnt = cnt + Ndays
     }
   }
-  qwindow$date =  as.Date(qwindow$date,format="%d-%m-%Y")
+  if (is.na(as.Date(qwindow$date[1],format="%y-%m-%d")) == FALSE) {
+    qwindow$date =  as.Date(qwindow$date,format="%y-%m-%d")  
+  } else {
+    qwindow$date =  as.Date(qwindow$date)  
+  }
   return(qwindow)
 }
