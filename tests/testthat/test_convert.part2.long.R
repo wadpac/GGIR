@@ -91,7 +91,8 @@ test_that("converts_part2_output_to_long_format", {
   daySUMMARY$qwindow_timestamps = rep(c("00:00_08:00_14:00_24:00"), times=15)
   daySUMMARY$qwindow_names = rep(c("daystart_Start_End_dayend"), times=15)
   df = g.convert.part2.long(daySUMMARY)
-  expect_that(nrow(df),equals(45)) # 3 individuals x 5 days x 3 segments
+  # 3 individuals x 5 days x 4 segments (daystart-Start, Start-End, End-dayend, daystart-dayend)
+  expect_that(nrow(df),equals(60)) 
   expect_that(ncol(df),equals(50)) # 50 unique variable are in daySUMMARY (above)
   expect_that(length(unique(df$ID)),equals(3))
 })

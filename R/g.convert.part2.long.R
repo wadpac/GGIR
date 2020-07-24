@@ -56,13 +56,14 @@ g.convert.part2.long = function(daySUMMARY) {
       rem = which(colnames(df) =="variable2")
       df = df[,-rem]
     } else {
-      df = base::merge(df, daySUMMARY2[which(daySUMMARY2$variable2 == i),], by=id.vars) #, all.x=T
+      df = base::merge(df, daySUMMARY2[which(daySUMMARY2$variable2 == i),], by=id.vars, all.x=T) #
       colnames(df)[which(colnames(df) == "value")] = i
       rem = which(colnames(df) =="variable2")
       df = df[,-rem]
     }
     cnt = cnt+1
   }
+  
   # tidy up variable names
   Nvh.1 = which(colnames(df) == "N_valid_hours.1")
   Nh.1 = which(colnames(df) == "N_hours.1")
@@ -90,9 +91,9 @@ g.convert.part2.long = function(daySUMMARY) {
       for (gi in 1:(length(tms))) {
         if (gi == 1) {
           options(warn=-1)
-          qwindownumeric = is.na(as.numeric(tms[1]))
+          qwindownumeric = !is.na(as.numeric(tms[1]))
           options(warn=0)
-          if (qwindownumeric == TRUE) {
+          if (qwindownumeric == FALSE) {
             namekey[1,] = c("00:00-24:00","0-24hr")
           } else { # if qwindow is numeric then store as such to be consistent with other output
             namekey[1,] = c("0-24","0-24hr")
@@ -117,5 +118,9 @@ g.convert.part2.long = function(daySUMMARY) {
             df[,ncol(df)-1] == "" & df[,ncol(df)] == "" | df$qwindow_timestamps =="not_calculated")
   if (length(redundant_rows) > 0) df = df[-redundant_rows,]
   colnames(df)[which(colnames(df) == "timesegment2")] = "qwindow_name"
+  if (qwindownumeric == FALSE) {
+    df$qwindow_name[which(df$qwindow_name == "0-24hr")] = "daystart-dayendhr"
+  }
+  df$qwindow_name = substr(df$qwindow_name,1,nchar(df$qwindow_name)-2) # remove last two characters, because they are hr
   return(df)
 }
