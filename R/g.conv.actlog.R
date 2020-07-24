@@ -69,5 +69,8 @@ g.conv.actlog = function(qwindow) {
   } else {
     qwindow$date =  as.Date(qwindow$date)  
   }
+  if (is.na(qwindow$date[1]) == TRUE | class(qwindow$date[1]) != "Date") {
+    warning("\n Date not recognised in activity diary")
+  }
   return(qwindow)
 }
