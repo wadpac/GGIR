@@ -205,16 +205,16 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           time = as.character(iso8601chartime2POSIX(time,desiredtz))
           nw_time = as.character(iso8601chartime2POSIX(nw_time,desiredtz))
         }
-
-        sec = unclass(as.POSIXlt(time))$sec
-        min_vec = unclass(as.POSIXlt(time))$min
-        hour = unclass(as.POSIXlt(time))$hour
-
+        time_unclassed = unclass(as.POSIXlt(time,desiredtz)) # Updated by by VvH: now doing this step once, and re-using the output
+        sec = time_unclassed$sec
+        min_vec = time_unclassed$min
+        hour = time_unclassed$hour
         # Prepare nonwear information for plotting
         NONWEAR = rep(NA,length(ACC))
-        day = unclass(as.POSIXlt(time))$mday
-        month = unclass(as.POSIXlt(time))$mon + 1
-        year = unclass(as.POSIXlt(time))$year + 1900
+        day = time_unclassed$mday
+        month = time_unclassed$mon + 1
+        year = time_unclassed$year + 1900
+        rm(time_unclassed)
         # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
         if (sum(which(nonwearscore > 1))) {
           nonwear_elements = which(nonwearscore > 1)
@@ -315,7 +315,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         night_wake_full[is.na(detection)] <- 1 # for plotting wake during SPT window
 
         # prepare to search for sleeplog_onst / sleeplog_wake
-        sleep_dates = as.Date(summarysleep_tmp$calendar_date,format='%d/%m/%Y')
+        sleep_dates = as.Date(summarysleep_tmp$calendar_date,format='%d/%m/%Y', origin="1970-1-1")
 
         # detect midnights
         if (viewingwindow == 1) {
@@ -380,7 +380,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             }
             
             # check for sleeponset & wake time that is logged on this day before midnight
-            curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d')  # what day is it?
+            curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d', origin="1970-1-1")  # what day is it?
             
             if (viewingwindow == 2) {
               # check to see if it is the first day that has less than 24 and starts after midnight
@@ -605,13 +605,15 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                 if (length(which(n2exclude == g)) > 0) skip = TRUE
               }
             }
+            #VvH I have moved unclass to one location, to avoid doing this computation several times:
+            curr_date_unclassed = unclass(as.POSIXlt(curr_date,desiredtz))
             title = paste("Day ",daycount,": ",
-                          wdaynames[unclass(as.POSIXlt(curr_date))$wday+1],
+                          wdaynames[curr_date_unclassed$wday+1],
                           " ",
-                          unclass(as.POSIXlt(curr_date))$mday,"/",
-                          unclass(as.POSIXlt(curr_date))$mon+1,"/",
-                          unclass(as.POSIXlt(curr_date))$year+1900,sep="")
-
+                          curr_date_unclassed$mday,"/",
+                          curr_date_unclassed$mon+1,"/",
+                          curr_date_unclassed$year+1900,sep="")
+            rm(curr_date_unclassed)
             if (skip == FALSE) {
               YXLIM = c(-230,300)
               LJ = 2
