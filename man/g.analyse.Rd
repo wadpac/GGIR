@@ -50,11 +50,21 @@ qM5L5=c(), myfun=c())
     \link{g.getmeta}.
   }
   \item{qwindow}{
-  To specify windows over which all variables are calculated. If value = c(0,24)
-  all variables will only be calculated over the full 24 hours in a day, If
+  To specify windows over which all variables are calculated, e.g. acceleration
+  distirbution, number of valid hours, LXMX analysis, MVPA. If value = c(0,24), 
+  which is the default, all variables will only be calculated over the full 
+  24 hours in a day, If
   value =c(8,24) variables will be calculated over the window 0-8, 8-24 and 0-24.
-  Previously this functionality was limited to the distribution in acceleration
-  metric values, but now it also derives N valid hours, L5M5 analysis and MVPA.
+  All days in the recording will be segmented based on these values. If you want
+  to use a day specific segmentation then you can set qwindow to the to be
+  the full path to activity diary file. Expectd format of the activity diary is:
+  First column headers followed by one row per recording, first column is recording ID,
+  which needs to match with the ID GGIR extracts from the accelerometer file.
+  Followed by date column in format "23-04-2017", followed by one or multiple columns
+  with start times for the activity types in that day format in 
+  hours:minutes:seconds. The header of the column will be used as label for each activity
+  type. Insert a new date column before continuing with activity types for enxt day.
+  Leave missing values empty.
   }
   \item{quantiletype}{
   type of quantile function to use (default recommended). For details, see 
