@@ -1,5 +1,5 @@
 g.convert.part2.long = function(daySUMMARY) {
-  
+  # local functions:
   extractlastpart = function(x) { 
     # function extract windowsegment specification which 
     # is at the end of the variable name
@@ -18,6 +18,29 @@ g.convert.part2.long = function(daySUMMARY) {
     }
     return(out)
   }
+  
+  convert2minutes = function(x) {
+    x = as.numeric(x)
+    hour = floor(x)
+    minutes = round((x-floor(x)) * 60)
+    if (nchar(minutes) == 1) minutes = paste0("0",minutes)
+    if (nchar(hour) == 1) minutes = paste0("0",hour)
+    time = paste0(hour,":",minutes)
+    return(time)
+  }
+  
+  getvar = function(x) {
+    tmp = unlist(strsplit(as.character(x),"_"))
+    return(paste0(tmp[1:(length(tmp)-1)],collapse="_"))
+  }
+  gettimeseg = function(x) {
+    tmp = unlist(strsplit(as.character(x),"_"))
+    tmp2 = unlist(strsplit(tmp[length(tmp)],"[.]"))[1]
+    return(tmp2)
+  }
+  #------------------------------
+  # main code
+  
   # replace spaces by underscores, because melt function struggles with it later on
   colnames(daySUMMARY) = gsub(pattern = " ",replacement = "_", x = colnames(daySUMMARY))
   cn = names(daySUMMARY)
@@ -30,17 +53,8 @@ g.convert.part2.long = function(daySUMMARY) {
   daySUMMARY2 = data.table::melt(daySUMMARY, id.vars = id.vars, 
                                  measure.vars = colnames(tt)[which(tt[2,]!= "")])
   # extract variable names
-  getvar = function(x) {
-    tmp = unlist(strsplit(as.character(x),"_"))
-    return(paste0(tmp[1:(length(tmp)-1)],collapse="_"))
-  }
   daySUMMARY2$variable2 = sapply(daySUMMARY2$variable, FUN = getvar)
   # extract time segment names
-  gettimeseg = function(x) {
-    tmp = unlist(strsplit(as.character(x),"_"))
-    tmp2 = unlist(strsplit(tmp[length(tmp)],"[.]"))[1]
-    return(tmp2)
-  }
   daySUMMARY2$timesegment2 = sapply(daySUMMARY2$variable, FUN = gettimeseg)
   daySUMMARY2 = as.data.frame(daySUMMARY2)
   # tidy up
@@ -96,10 +110,16 @@ g.convert.part2.long = function(daySUMMARY) {
           if (qwindownumeric == FALSE) {
             namekey[1,] = c("00:00-24:00","0-24hr")
           } else { # if qwindow is numeric then store as such to be consistent with other output
-            namekey[1,] = c("0-24","0-24hr")
+            namekey[1,] = c("00:00-24:00","0-24hr")
           }
         } else {
-          namekey[gi,] = c(paste0(tms[gi-1], "-", tms[gi]),paste0(nms[gi-1], "-", nms[gi],"hr"))
+          if (qwindownumeric == FALSE) {
+            namekey[gi,] = c(paste0(tms[gi-1], "-", tms[gi]),paste0(nms[gi-1], "-", nms[gi],"hr"))
+          } else {
+            
+            namekey[gi,] = c(paste0(convert2minutes(tms[gi-1]), "-", convert2minutes(tms[gi])), 
+                             paste0(nms[gi-1], "-", nms[gi],"hr"))
+          }
         }
         qwt_index = which(as.character(df_tmp$timesegment2) == namekey[gi,2])
         if (length(qwt_index) > 0) {
