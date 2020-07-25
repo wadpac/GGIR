@@ -112,7 +112,8 @@ test_that("chainof5parts", {
   g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
                      loglocation= sleeplog_fn,
-                     overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel)
+                     overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel,
+          save_ms5rawlevels=TRUE)
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -121,7 +122,13 @@ test_that("chainof5parts", {
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(121))
   expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
-
+  dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
+  rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
+  expect_true(file.exists(rn2[1]))
+  TSFILE = read.csv(rn2[1])
+  expect_that(nrow(TSFILE),equals(4601)) 
+  expect_that(ncol(TSFILE),equals(10))
+  expect_that(length(unique(TSFILE$class_id)),equals(9))
  #--------------------------------------------
   #g.shell.GGIR
   suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
@@ -248,7 +255,46 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
   expect_that(round(nightsummary$SptDuration[1],digits=4),equals(13.075))
-
+  #---------------------
+  # Part 1 with external function:
+  exampleExtFunction = function(data=c(), parameters=c()) {
+    data = data.frame(data, agglevel=round((1:nrow(data))/(30*60*15)))
+    output = aggregate(data,by=list(data$agglevel),FUN=mean)
+    output = output[,-c(1,2, ncol(output))]
+    return(output)
+  }
+  
+  myfun =  list(FUN=exampleExtFunction,
+                parameters = 1.1,
+                expected_sample_rate= 3, # resample data to 30 Hertz before applying function
+                expected_unit="mg",
+                minlength = 15,
+                outputres = 15,
+                colnames=c("A","B","C"),
+                outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
+                aggfunction = mean,
+                timestamp=as.numeric(Sys.time())) # for unit test only
+  
+  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
+          do.parallel = do.parallel,myfun=myfun,
+          studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = FALSE,
+          windowsizes = c(15,300,3600),
+           chunksize= 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
+          do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,
+          do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
+          do.enmoa = TRUE)
+  rn = dir("output_test/meta/basic/",full.names = TRUE)
+  load(rn[1])
+  expect_that(ncol(M$metashort),equals(16))
+  expect_that(round(mean(M$metashort$B, na.rm = T),digits=3),equals(24.926))
+  expect_that(round(mean(M$metashort$C, na.rm = T),digits=3),equals(-6.195))
+  expect_that(round(mean(M$metashort$EN, na.rm = T),digits=3),equals(1.029))
+  expect_that(round(mean(M$metashort$angley, na.rm = T),digits=3),equals(0.791))
+  expect_that(round(mean(M$metashort$roll_med_acc_x, na.rm = T),digits=3),equals(0.729))
+  expect_that(round(mean(M$metashort$roll_med_acc_z, na.rm = T),digits=3),equals(0.007))
+  expect_that(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T),digits=3),equals(0.007))
+  expect_that(round(mean(M$metashort$ENMOa, na.rm = T),digits=3),equals(0.03))
+  
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
