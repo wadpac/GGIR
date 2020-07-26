@@ -418,6 +418,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           # data[,1], data[,2], data[,3], starttime, (temperature, light)
           if (length(selectdaysfile) > 0) {
             path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
+            raw_output_dir = paste0(path3,"/meta/raw")
+            if (!dir.exists(raw_output_dir)) {
+              dir.create(raw_output_dir)
+            }
             # calculate extra timestamp in a more complete format
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
@@ -425,13 +429,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 0)) {
               I = INFI
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,light,
-                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
             } else if (mon == 5) {
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,
-                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
             } else {
               save(I,sf,wday,wdayname,decn,data,starttime,
-                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
             }
           }
         } else {
@@ -742,7 +746,14 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        options(warn=-1)
+        char_deviceSerialNumber = is.na(as.numeric(deviceSerialNumber))
+        options(warn=0)
+        if (char_deviceSerialNumber ==  FALSE) {
+          SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        } else {
+          SDFi = which(SDF$Monitor == deviceSerialNumber)
+        }
         dateday1 = as.character(SDF[SDFi,2])
         dateday2 = as.character(SDF[SDFi,3])
         dtday1 = as.POSIXlt(paste0(dateday1," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
@@ -797,9 +808,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                             rmc.header.structure = rmc.header.structure,
                             rmc.check4timegaps = rmc.check4timegaps)
         }
-        hvars = g.extractheadervars(I)
-        deviceSerialNumber = hvars$deviceSerialNumber
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        # Next three lines commented out, because this was also calculated 50 lines earlier
+        # hvars = g.extractheadervars(I)
+        # deviceSerialNumber = hvars$deviceSerialNumber
+        # SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
         if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
           dateday1 = as.character(SDF[SDFi,2])
           dateday2 = as.character(SDF[SDFi,3])
