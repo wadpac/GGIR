@@ -256,14 +256,13 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
   expect_that(round(nightsummary$SptDuration[1],digits=4),equals(13.075))
   #---------------------
-  # Part 1 with external function:
+  # Part 1 with external function and selectdaysfile:
   exampleExtFunction = function(data=c(), parameters=c()) {
     data = data.frame(data, agglevel=round((1:nrow(data))/(30*60*15)))
     output = aggregate(data,by=list(data$agglevel),FUN=mean)
     output = output[,-c(1,2, ncol(output))]
     return(output)
   }
-  
   myfun =  list(FUN=exampleExtFunction,
                 parameters = 1.1,
                 expected_sample_rate= 3, # resample data to 30 Hertz before applying function
@@ -274,6 +273,14 @@ test_that("chainof5parts", {
                 outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
                 timestamp=as.numeric(Sys.time())) # for unit test only
+  # create selectdaysfile
+  SDF = matrix("",1,3)
+  SDF[1,1] = "MOS2D12345678"
+  SDF[1,2:3] =  c("23-05-2016","24-05-2016")
+  colnames(SDF) = c("Monitor","Day1","Day2")
+  selectdaysfile = "selectdaysfile.csv"
+  write.csv(SDF, file = selectdaysfile)
+  
   
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
           do.parallel = do.parallel,myfun=myfun,
@@ -282,21 +289,32 @@ test_that("chainof5parts", {
            chunksize= 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
           do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,
           do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
-          do.enmoa = TRUE)
+          do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen=TRUE,
+          do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen=TRUE,
+          do.enmoa = TRUE,selectdaysfile=selectdaysfile)
+  
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_that(ncol(M$metashort),equals(16))
-  expect_that(round(mean(M$metashort$B, na.rm = T),digits=3),equals(24.926))
-  expect_that(round(mean(M$metashort$C, na.rm = T),digits=3),equals(-6.195))
-  expect_that(round(mean(M$metashort$EN, na.rm = T),digits=3),equals(1.029))
-  expect_that(round(mean(M$metashort$angley, na.rm = T),digits=3),equals(0.791))
-  expect_that(round(mean(M$metashort$roll_med_acc_x, na.rm = T),digits=3),equals(0.729))
-  expect_that(round(mean(M$metashort$roll_med_acc_z, na.rm = T),digits=3),equals(0.007))
-  expect_that(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T),digits=3),equals(0.007))
-  expect_that(round(mean(M$metashort$ENMOa, na.rm = T),digits=3),equals(0.03))
+  expect_equal(ncol(M$metashort), 24)
+  expect_equal(round(mean(M$metashort$B, na.rm = T),digits=3), 24.712)
+  expect_equal(round(mean(M$metashort$C, na.rm = T),digits=3), -6.524)
+  expect_equal(round(mean(M$metashort$EN, na.rm = T),digits=3), 1.029)
+  expect_equal(round(mean(M$metashort$angley, na.rm = T),digits=3), 0.768)
+  expect_equal(round(mean(M$metashort$roll_med_acc_x, na.rm = T),digits=3), 0.728)
+  expect_equal(round(mean(M$metashort$roll_med_acc_z, na.rm = T),digits=3), 0.007)
+  expect_equal(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T),digits=3), 0.007)
+  expect_equal(round(mean(M$metashort$ENMOa, na.rm = T),digits=3), 0.03)
+  
+  SDF = "output_test/meta/raw/123A_testaccfile.csv_day1.RData"
+  expect_true(file.exists(SDF))
+  load(SDF)
+  expect_that(nrow(data),equals(390600))
+  expect_that(round(mean(data),digits=3),equals(0.266))
+  
   
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
+  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
