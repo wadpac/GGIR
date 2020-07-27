@@ -306,6 +306,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
           tmpANGLE = angle[qqq1:qqq2]
           tmpTIME = time[qqq1:qqq2]
+          daysleep_offset = 0
           inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
                                      perc = perc, inbedthreshold = inbedthreshold,
                                      bedblocksize = bedblocksize, outofbedsize = outofbedsize)
@@ -325,9 +326,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                   inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
                 }
               }
-            } else {
-              daysleep_offset = 0
-            }
+            } 
             if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
               startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
               startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
