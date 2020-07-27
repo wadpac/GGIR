@@ -109,7 +109,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
   
   Nfragments = length(fragments$lengths)
   output[["Nfragments"]] = Nfragments
-  if (Nfragments > 1) {
+  if (Nfragments >= 10) {
   
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
@@ -149,12 +149,12 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       output[["W0.5_0"]] = sum(State0[which(State0 > output[["x0.5_0"]])]) / sum(State0)
       output[["W0.5_1"]] = sum(State1[which(State1 > output[["x0.5_1"]])]) / sum(State1)
     }
-    # if ("hazard" %in% frag.metrics){
-    #   fitr = survival::survfit(survival::Surv(State0,rep(1,length(State0)))~1)
-    #   fita = survival::survfit(survival::Surv(State1,rep(1,length(State1)))~1)
-    #   output[["h_0"]] =  mean(fitr$n.event/fitr$n.risk)
-    #   output[["h_1"]] = mean(fita$n.event/fita$n.risk)
-    # }
+    if ("hazard" %in% frag.metrics){
+      fitr = survival::survfit(survival::Surv(State0,rep(1,length(State0)))~1)
+      fita = survival::survfit(survival::Surv(State1,rep(1,length(State1)))~1)
+      output[["h_0"]] =  mean(fitr$n.event/fitr$n.risk)
+      output[["h_1"]] = mean(fita$n.event/fita$n.risk)
+    }
     # , TSEntropies, nonlinearTseries
     if ("dfa" %in% frag.metrics) {
       # output[["dfa"]] = NA
