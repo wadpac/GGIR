@@ -1,8 +1,8 @@
 g.fragmentation = function(x=c(), frag.classes =c(),
-                         frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-                                          "dfa", "InfEn",
-                                          "SampEn", "ApEn", "RQA", "all"),
-                         ACC = c(), intensity.thresholds = c()) {
+                           frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
+                                            "dfa", "InfEn",
+                                            "SampEn", "ApEn", "RQA", "all"),
+                           ACC = c(), intensity.thresholds = c()) {
   # This function is based on code from R package ActFrag as developed by Junrui Di.
   # Dependencies: ineq and survival package for Gini and Hazard metric respecitvely.
   #
@@ -66,8 +66,33 @@ g.fragmentation = function(x=c(), frag.classes =c(),
         if (length(ij_indices) > 0) y[ij_indices] = ij
       }
     }
+    if ("hazard" %in% frag.metrics) {
+      y2 = y # y is a four class variables for inactivity, light, moderate, and vigorous
+      y2[which(y2 == 4)] = 3 # collapse moderate and vigorous into mvpa
+      fragments3 = rle(y2) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
+      State1 = fragments3$length[which(fragments3$value == 1)] # all inactivity fragments
+      Nfrag3 = length(fragments3$value)
+      # Get only indices of inactive fragments that transition to light:
+      inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
+      # Get only indices of inactive fragments that transition to mvpa:
+      inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 3)
+      if (length(inact_2_light_trans) >= 10) {
+        State2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
+        fit_inactivity_to_light = survival::survfit(survival::Surv(State2,rep(1,length(State2)))~1)
+        output[["h_inac2light"]] = mean(fit_inactivity_to_light$n.event/fit_inactivity_to_light$n.risk)
+        output[["inac2lightTP"]] = length(State2) / mean(State1) # transition from inactive to light
+        output[["Nfragments_inac2lights"]] = length(State2)
+      }
+      if (length(inact_2_mvpa_trans) >= 10) {
+        State3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
+        fit_inactivity_to_mvpa = survival::survfit(survival::Surv(State3,rep(1,length(State3)))~1)
+        output[["h_inac2mvpa"]] = mean(fit_inactivity_to_mvpa$n.event/fit_inactivity_to_mvpa$n.risk)
+        output[["inac2mvpaTP"]] = length(State3) / mean(State1) # transition from inactive to mvpa
+        output[["Nfragments_inac2mvpa"]] = length(State3)
+      }
+      rm(y2)
+    }
     if ("InfEn" %in% frag.metrics) {
-      # output[["InfEn_multiclass"]] = NA
       alpha = length(unique(y))
       N = length(y)
       IEnt = 0
@@ -87,13 +112,11 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       }
       output[["SampEn_multiclass"]] = SampEn
     }
-  
     rm(y)
   }
   
   #====================================================
   # Binary fragmentation
-  
   binarize = function(x, values) {
     # converts input into binary signal, with a 1 for x values that match the vector values
     # and a 0 for all other values
@@ -110,27 +133,23 @@ g.fragmentation = function(x=c(), frag.classes =c(),
   Nfragments = length(fragments$lengths)
   output[["Nfragments"]] = Nfragments
   if (Nfragments >= 10) {
-  
+    
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
     
     if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
-      # output[["CoV_0"]] = output[["CoV_1"]] = NA
       output[["CoV_0"]] = sd(State0) / mean(log(State0))
       output[["CoV_1"]] = sd(State1) / mean(log(State1))
     }
     if ("mean_bout" %in% frag.metrics){
-      # output[["mean_0"]] = output[["mean_1"]] = NA
       output[["mean_0"]] = mean(State0)
       output[["mean_1"]] = mean(State1)
     }
     if ("TP" %in% frag.metrics){
-      # output[["towardsTP"]] = output[["awayTP"]] = NA
       output[["towardsTP"]] = 1/mean(State0) # transition towards behaviour of interest
       output[["awayTP"]] = 1/mean(State1) # transition away from behaviour of interest
     }
     if ("Gini" %in% frag.metrics){
-      # output[["Gini_0"]] = output[["Gini_1"]] = NA
       output[["Gini_0"]] = ineq::Gini(State0,corr = T)
       output[["Gini_1"]] = ineq::Gini(State1,corr = T)
     }
@@ -157,11 +176,10 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     }
     # , TSEntropies, nonlinearTseries
     if ("dfa" %in% frag.metrics) {
-      # output[["dfa"]] = NA
       dfa = nonlinearTseries::dfa(time.series = x,
-                  window.size.range = c(3, 30),
-                  npoints = 20,
-                  do.plot = FALSE)
+                                  window.size.range = c(3, 30),
+                                  npoints = 20,
+                                  do.plot = FALSE)
       output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)[1]
     }
     # #------------------------------------------------------------------------
@@ -170,7 +188,6 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     # # should be moved to a seperate function to be applied to all
     # # behavioural classes/intensities, which we could name g.complexity
     if ("InfEn" %in% frag.metrics) {
-      # output[["InfEn_binary"]] = NA
       TS = x
       alpha = length(unique(TS))
       N = length(TS)
@@ -183,9 +200,8 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
     }
     if ("SanpEn" %in% frag.metrics) {
-      # output[["SampEn_binary"]] = NA
       output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
     }
-    }
+  }
   return(output)
 }

@@ -709,14 +709,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           # daytime
                           frag.classes.day2 = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
                           frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 0]]), frag.classes = frag.classes.day2,
-                                                   frag.metrics = frag.metrics, ACC = ts$ACC, intensity.thresholds = c(TRLi, TRMi, TRVi))
+                                                   frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
+                                                   intensity.thresholds = c(TRLi, TRMi, TRVi))
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = round(as.numeric(frag.out), digits=5) # fragmentation values come with a lot of decimal places
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_day")
                           fi = fi + length(frag.out)
                           # spt
                           frag.classes.spt2 = which(Lnames %in% frag.classes.spt_tmp) - 1 # convert to numberic class id
                           frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 1]]), frag.classes = frag.classes.spt2,
-                                                   frag.metrics = frag.metrics, ACC = ts$ACC, intensity.thresholds = c(TRLi, TRMi, TRVi))
+                                                   frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 1]],
+                                                   intensity.thresholds = c(TRLi, TRMi, TRVi))
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = as.numeric(frag.out)
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_spt")
                           fi = fi + length(frag.out)
