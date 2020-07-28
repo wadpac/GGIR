@@ -113,7 +113,7 @@ test_that("chainof5parts", {
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
                      loglocation= sleeplog_fn,
                      overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel,
-          frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
+          # frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
           frag.metrics="all")
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
