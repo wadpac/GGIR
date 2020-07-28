@@ -1,7 +1,7 @@
 g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
                                             "dfa", "InfEn",
                                             "SampEn", "ApEn", "RQA", "all"),
-                           ACC = c(), intensity.thresholds = c(), do.multiclass=c()) {
+                           ACC = c(), intensity.thresholds = c(), do.multiclass=c()) { #sleepclass=c()
   
   # This function is based on code from R package ActFrag as developed by Junrui Di.
   # Dependencies: ineq and survival package for Gini and Hazard metric respecitvely.
@@ -13,7 +13,7 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   
   if ("all" %in% frag.metrics) {
     frag.metrics = c("mean_bout","TP","Gini","power","hazard", "h", "CoV",
-                     "dfa", "InfEn","SampEn","ApEn", "RQA")
+                     "dfa", "InfEn","SampEn","ApEn")
   }
   min_Nfragments = 10 # minimum number of required fragments
   min_Nfragments_TP_only = 1
@@ -58,15 +58,21 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       y2 = y # y is a four class variables for inactivity, light, moderate, and vigorous
       y2[which(y2 == 4)] = 3 # collapse moderate and vigorous into mvpa
       fragments3 = rle(y2) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
-      State1 = fragments3$length[which(fragments3$value == 1)] # all inactivity fragments
       Nfrag3 = length(fragments3$value)
+      
+      # print(paste0("Nfragments ",Nfrag3))
+      # print(paste0("Nfragments INAC ",length(which(fragments3$value == 1))))
+      # print(paste0("Nfragments LIPA ",length(which(fragments3$value == 2))))
+      # print(paste0("Nfragments MVPA ",length(which(fragments3$value == 3))))
+      State1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
       # Get only indices of inactive fragments that transition to light:
       inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
       # Get only indices of inactive fragments that transition to mvpa:
       inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 3)
       # State1 = State1[1:(length(State1)-1)] # shorten by 1 do match length of State 2 and 3
-      # initialise variables
-      output[["IN2PA_TP"]] = output[["IN2LIPA_TPsum"]] = output[["IN2LIPA_TPlen"]] = output[["Nfragments_IN2LIPA"]] = NA
+      # initialise variables:
+      output[["IN2PA_TP"]] = NA
+      output[["IN2LIPA_TPsum"]] = output[["IN2LIPA_TPlen"]] = output[["Nfragments_IN2LIPA"]] = NA
       output[["IN2MVPA_TPsum"]] = output[["IN2MVPA_TPlen"]] = output[["Nfragments_IN2MVPA"]] = NA
       if (length(inact_2_light_trans) >=  min_Nfragments_TP_only) {
         State2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
@@ -83,6 +89,9 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       if (length(inact_2_light_trans) >= min_Nfragments_TP_only & length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
         output[["IN2PA_TP"]] = 1 / mean(State1) # transition from inactive to mvpa
       }
+      # print(paste0("Nfragments state1 -as reported ",length(State1)))
+      # print(paste0("Nfragments state2 -as reported ",length(State2)))
+      # print(paste0("Nfragments state3 -as reported ",length(State3)))
       rm(y2)
     }
     if ("InfEn" %in% frag.metrics) {
@@ -105,23 +114,12 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       output[["SampEn_multiclass"]] = SampEn
     }
     rm(y)
-  } else {
-    if ("ApEn" %in% frag.metrics) {
-      output[["FastApEn_contin"]] = NA
-    }
-    if ("TP" %in% frag.metrics) {
-      output[["IN2PA_TP"]] = output[["IN2LIPA_TPsum"]] = output[["IN2LIPA_TPlen"]] = output[["Nfragments_IN2LIPA"]] = NA
-      output[["IN2MVPA_TPsum"]] = output[["IN2MVPA_TPlen"]] = output[["Nfragments_IN2MVPA"]] = NA
-    }
-    if ("InfEn" %in% frag.metrics) {
-      output[["InfEn_multiclass"]] = NA
-    }
-    if ("SampEn" %in% frag.metrics) {
-      output[["SampEn_multiclass"]] = NA
-    }
   }
   #====================================================
   # Binary fragmentation
+  
+  
+  # if (length(sleepclass) == 0) {
   # binarize = function(x, values) {
   #   # converts input into binary signal, with a 1 for x values that match the vector values
   #   # and a 0 for all other values
@@ -130,16 +128,17 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   # }
   # x = binarize(x, values = frag.classes)
   x = rep(0,length(ACC))
-  
   ij_indices = which(ACC >= intensity.thresholds[1] & ACC < intensity.thresholds[2])
   if (length(ij_indices) > 0) x[ij_indices] = 1
-
   x = as.integer(x)
+  # } else {
+  #   x = as.integer(sleepclass)
+  # }
   # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
   # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
   fragments = rle(x)
   Nfragments = length(fragments$lengths)
-  output[["Nfragments"]] = Nfragments
+  output[["Nfragments_binary"]] = Nfragments
   if (Nfragments >= min_Nfragments) {
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]

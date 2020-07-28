@@ -260,8 +260,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("save_ms5raw_without_invalid") == FALSE) save_ms5raw_without_invalid = TRUE
   if (exists("includedaycrit.part5") == FALSE) includedaycrit.part5 = 2/3
   if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
-  if (exists("frag.classes.day") == FALSE) frag.classes.day = c()
-  if (exists("frag.classes.spt") == FALSE) frag.classes.spt = c()
+  # if (exists("frag.classes.day") == FALSE) frag.classes.day = c()
+  # if (exists("frag.classes.spt") == FALSE) frag.classes.spt = c()
   if (exists("frag.metrics") == FALSE) frag.metrics = c()
 
 
@@ -423,7 +423,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
-            frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
+            # frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
             includedaycrit.part5=includedaycrit.part5)
