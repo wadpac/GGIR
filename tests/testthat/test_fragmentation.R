@@ -18,11 +18,17 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
          rep(25,3), rep(75,5), rep(25, 5), rep(200,8),
          rep(25,4), rep(75,6), rep(25, 4), rep(200,9))
   ACC = x2
-  x = as.integer(ifelse(ACC < 50, yes = 1, no = 0))
+  # x2 = as.integer(x2)
+  x = as.integer(ifelse(x2 < 50, yes = 1,
+                        no = ifelse(x2 > 50 & x2 < 100, yes = 2,
+                                    no = ifelse(x2 > 100 & x2 < 300, yes = 3,
+                                                no = ifelse(x2 > 300, yes = 3, no = 0)))))
   intensity.thresholds = c(50,100,400)
   frag.classes = 1
-  out = g.fragmentation(x=x, frag.classes=frag.classes, frag.metrics = c("all"),
-                        ACC=ACC, intensity.thresholds=intensity.thresholds)
+  out = g.fragmentation(frag.metrics = c("all"),
+                        ACC=ACC, 
+                        intensity.thresholds=intensity.thresholds,
+                        do.multiclass=TRUE)
 
   expect_equal(round(out$mean_0, digits=3), 7)
   expect_equal(round(out$mean_1, digits=3), 4)

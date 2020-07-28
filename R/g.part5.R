@@ -325,6 +325,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.in = levels$bc.in
                   ts = levels$ts
 
+                  frag.classes.day.in = frag.classes.day.light = frag.classes.day.mvpa = c()
                   # Prepare fragmentation variables only once:
                   if (length(frag.classes.day) > 0 & length(frag.classes.spt) > 0 & length(frag.metrics) > 0) {
                     frag.classes.day_tmp = frag.classes.day
@@ -338,7 +339,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                     if ("day_IN_bts" %in% frag.classes.day_tmp) {
                       frag.classes.day_tmp = c(frag.classes.day_tmp, Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
                     }
+                    frag.classes.day.in = c("day_IN_unbt", Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
+                    frag.classes.day.light = c("day_LIG_unbt", Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
+                    frag.classes.day.mvpa = c("day_MVPA_unbt", Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
                   }
+                  
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
                   # we want there to be one more nights in the accelerometer data than there are nights with sleep results
@@ -707,18 +712,24 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         # FRAGMENTATION per window, and split by night and day
                         if (length(frag.classes.day_tmp) > 0 & length(frag.classes.spt_tmp) > 0 & length(frag.metrics) > 0) {
                           # daytime
-                          frag.classes.day2 = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
-                          frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 0]]), frag.classes = frag.classes.day2,
-                                                   frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
-                                                   intensity.thresholds = c(TRLi, TRMi, TRVi))
+                          # frag.classes.day2 = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
+                          # frag.classes.day.in = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
+                          # frag.classes.day.light = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
+                          # frag.classes.day.mvpa = which(Lnames %in% frag.classes.day_tmp) - 1 # convert to numberic class id
+                          # x=as.integer(LEVELS[sse[ts$diur[sse] == 0]]), frag.classes = frag.classes.day2,
+                          # frag.classes.day.in = frag.classes.day.in,
+                          frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
+                                                   intensity.thresholds = c(TRLi, TRMi, TRVi), do.multiclass=TRUE)
+                                                   # frag.classes.day.light = frag.classes.day.light,
+                                                   # frag.classes.day.mvpa = frag.classes.day.mvpa)
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = round(as.numeric(frag.out), digits=5) # fragmentation values come with a lot of decimal places
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_day")
                           fi = fi + length(frag.out)
                           # spt
-                          frag.classes.spt2 = which(Lnames %in% frag.classes.spt_tmp) - 1 # convert to numberic class id
-                          frag.out = g.fragmentation(x=as.integer(LEVELS[sse[ts$diur[sse] == 1]]), frag.classes = frag.classes.spt2,
-                                                   frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 1]],
-                                                   intensity.thresholds = c(TRLi, TRMi, TRVi))
+                          # frag.classes.spt2 = which(Lnames %in% frag.classes.spt_tmp) - 1 # convert to numberic class id
+                          # x=as.integer(LEVELS[sse[ts$diur[sse] == 1]]), frag.classes = frag.classes.spt2,
+                          frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 1]],
+                                                   intensity.thresholds = c(TRLi, TRMi, TRVi), do.multiclass=FALSE)
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = as.numeric(frag.out)
                           ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_spt")
                           fi = fi + length(frag.out)

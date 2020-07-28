@@ -13,23 +13,14 @@ and assuming that acceleration values have already been
 converted into intergers of zeros and ones. 
 }
 \usage{
-  g.fragmentation(x=c(), frag.classes =c(),
-                  frag.metrics = c("mean_bout", "TP", "Gini", "power",
+  g.fragmentation(frag.metrics = c("mean_bout", "TP", "Gini", "power",
                                           "hazard", "h",
                                           "CoV", "dfa", "InfEn",
                                           "SampEn", "ApEn", "RQA", "all"),
-                  ACC = c(), intensity.thresholds = c())
+                  ACC = c(), intensity.thresholds = c(),
+                  do.multiclass =c())
 }
 \arguments{
-  \item{x}{
-  Time series of integers 0 or 1 to indicate bouts, where 1 reflects
-  the behaviour of interest as defined by argument frag.classes.day/frag.classes.spt in g.part5
-  and 0 reflects all the other time, which you may refer to as gaps or breaks in the 
-  behaviour of interest.
-  }
-  \item{frag.classes}{Vector with integer to specify the class ids corresponding to the 
-  behaviour of interest
-  }
    \item{frag.metrics}{
    Character with fragmentation metric to exract. Can be
   "mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
@@ -41,6 +32,9 @@ converted into intergers of zeros and ones.
   }
   \item{intensity.thresholds}{
     Intensity thresholds to define classes in the multi-class approach where bouts are not considered.
+  }
+  \item{do.multiclass}{
+  Boolean to indicate whether multiclass metrics should be extracted
   }
 }
 \value{
