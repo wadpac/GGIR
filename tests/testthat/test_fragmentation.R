@@ -44,8 +44,10 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_equal(round(out$InfEn_multiclass, digits=4), 0.9847)
   expect_equal(round(out$FastApEn_contin, digits=4), 0.8031)
   
-  expect_equal(round(out$IN2MVPA_TP, digits=4), 0.1406)
-  expect_equal(round(out$IN2LIPA_TP, digits=4), 0.1094)
+  expect_equal(round(out$IN2MVPA_TPsum, digits=4), 0.1406)
+  expect_equal(round(out$IN2LIPA_TPsum, digits=4), 0.1094)
+  expect_equal(round(out$IN2MVPA_TPlen, digits=4), 0.125)
+  expect_equal(round(out$IN2LIPA_TPlen, digits=4), 0.125)
   expect_equal(round(out$IN2PA_TP, digits=4), 0.25)
   # expect_that(round(out$REC_rqa_contin, digits=4),equals(0.0098))
   # expect_that(round(out$DET_rqa_contin, digits=4),equals(0.904))
