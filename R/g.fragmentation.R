@@ -66,7 +66,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
         if (length(ij_indices) > 0) y[ij_indices] = ij
       }
     }
-    if ("hazard" %in% frag.metrics) {
+    if ("TP" %in% frag.metrics) {
       y2 = y # y is a four class variables for inactivity, light, moderate, and vigorous
       y2[which(y2 == 4)] = 3 # collapse moderate and vigorous into mvpa
       fragments3 = rle(y2) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
@@ -76,19 +76,22 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
       # Get only indices of inactive fragments that transition to mvpa:
       inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 3)
+      # State1 = State1[1:(length(State1)-1)] # shorten by 1 do match length of State 2 and 3
+      # initialise variables
+      output[["IN2PA_TP"]] = output[["IN2LIPA_TP"]] =  output[["Nfragments_IN2LIPA"]] = NA
+      output[["IN2MVPA_TP"]] = output[["Nfragments_IN2MVPA"]] = NA
       if (length(inact_2_light_trans) >= 10) {
         State2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
-        fit_inactivity_to_light = survival::survfit(survival::Surv(State2,rep(1,length(State2)))~1)
-        output[["h_inac2light"]] = mean(fit_inactivity_to_light$n.event/fit_inactivity_to_light$n.risk)
-        output[["inac2lightTP"]] = length(State2) / mean(State1) # transition from inactive to light
-        output[["Nfragments_inac2lights"]] = length(State2)
+        output[["IN2LIPA_TP"]] = (sum(State2)/sum(State1)) / mean(State1) # transition from inactive to mvpa
+        output[["Nfragments_IN2LIPA"]] = length(State2)
       }
       if (length(inact_2_mvpa_trans) >= 10) {
         State3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
-        fit_inactivity_to_mvpa = survival::survfit(survival::Surv(State3,rep(1,length(State3)))~1)
-        output[["h_inac2mvpa"]] = mean(fit_inactivity_to_mvpa$n.event/fit_inactivity_to_mvpa$n.risk)
-        output[["inac2mvpaTP"]] = length(State3) / mean(State1) # transition from inactive to mvpa
-        output[["Nfragments_inac2mvpa"]] = length(State3)
+        output[["IN2MVPA_TP"]] = (sum(State3)/sum(State1)) / mean(State1) # transition from inactive to mvpa
+        output[["Nfragments_IN2MVPA"]] = length(State3)
+      }
+      if (length(inact_2_light_trans) >= 10 & length(inact_2_mvpa_trans) >= 10) {
+        output[["IN2PA_TP"]] = 1 / mean(State1) # transition from inactive to mvpa
       }
       rm(y2)
     }
@@ -123,13 +126,13 @@ g.fragmentation = function(x=c(), frag.classes =c(),
     tmp = as.integer(ifelse(test = x %in% values, yes = 1, no = 0))
     return(tmp)
   }
+  print(frag.classes)
   x = binarize(x, values = frag.classes)
   # x are now integers 0 or 1 to indicate bouts, where
   # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
   # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
   
   fragments = rle(x)
-  
   Nfragments = length(fragments$lengths)
   output[["Nfragments"]] = Nfragments
   if (Nfragments >= 10) {
@@ -199,7 +202,7 @@ g.fragmentation = function(x=c(), frag.classes =c(),
       }
       output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
     }
-    if ("SanpEn" %in% frag.metrics) {
+    if ("SampEn" %in% frag.metrics) {
       output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
     }
   }
