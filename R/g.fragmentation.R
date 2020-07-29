@@ -143,6 +143,8 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   if (Nfragments >= min_Nfragments) {
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
+    output[["nfragments_0"]] = length(State0)
+    output[["nfragments_1"]] = length(State1)
     
     if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
       output[["CoV_0"]] = sd(State0) / mean(log(State0))
