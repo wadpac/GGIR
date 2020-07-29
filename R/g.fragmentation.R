@@ -1,7 +1,8 @@
 g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
                                             "dfa", "InfEn",
                                             "SampEn", "ApEn", "RQA", "all"),
-                           ACC = c(), intensity.thresholds = c(), do.multiclass=c()) { #sleepclass=c()
+                           ACC = c(), intensity.thresholds = c(), do.multiclass=c(), LEVELS = c(),
+                           Lnames=c()) { #sleepclass=c()
   
   # This function is based on code from R package ActFrag as developed by Junrui Di.
   # Dependencies: ineq and survival package for Gini and Hazard metric respecitvely.
@@ -19,6 +20,16 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   min_Nfragments_TP_only = 1
   intensity.thresholds = c(0, intensity.thresholds) 
   output = list()
+  if (length(LEVELS) > 0) {
+    classes.in = c("day_IN_unbt", Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
+    class.in.ids = which(Lnames %in%  classes.in) - 1 # convert to numberic class id
+    
+    classes.lig = c("day_LIG_unbt", Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
+    class.lig.ids = which(Lnames %in%  classes.lig) - 1 # convert to numberic class id
+    
+    classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
+    class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1 # convert to numberic class id
+  }
   if (length(ACC) > 1 & do.multiclass == TRUE) { # metrics that require more than just binary
     #====================================================
     # Approximate Entropy
@@ -33,15 +44,21 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
     #====================================================
     # Convert ACC into categorical multi-class behaviours
     y = rep(0,length(ACC))
-    
-    for (ij in 1:length(intensity.thresholds)) {
-      if (ij != length(intensity.thresholds)) {
-        ij_indices = which(ACC >= intensity.thresholds[ij] & ACC < intensity.thresholds[ij+1])
-        if (length(ij_indices) > 0) y[ij_indices] = ij
-      } else {
-        ij_indices = which(ACC >= intensity.thresholds[ij])
-        if (length(ij_indices) > 0) y[ij_indices] = ij
+    if (length(LEVELS) == 0) {
+      for (ij in 1:length(intensity.thresholds)) {
+        if (ij != length(intensity.thresholds)) {
+          ij_indices = which(ACC >= intensity.thresholds[ij] & ACC < intensity.thresholds[ij+1])
+          if (length(ij_indices) > 0) y[ij_indices] = ij
+        } else {
+          ij_indices = which(ACC >= intensity.thresholds[ij])
+          if (length(ij_indices) > 0) y[ij_indices] = ij
+        }
       }
+      y[which(y == 4)] = 3 # collapse moderate and vigorous into mvpa
+    } else {
+      y[which(LEVELS %in% class.in.ids)] = 1
+      y[which(LEVELS %in% class.lig.ids)] = 2
+      y[which(LEVELS %in% class.mvpa.ids)] = 3
     }
     # assign3classes = function(x, frag.classes.day.in, frag.classes.day.light, frag.classes.day.mvpa) {
     #   # converts input into binary signal, with a 1 for x values that match the vector values
@@ -55,15 +72,8 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
     #====================================================
     # TP (transition probability) metrics that depend on multiple classes
     if ("TP" %in% frag.metrics) {
-      y2 = y # y is a four class variables for inactivity, light, moderate, and vigorous
-      y2[which(y2 == 4)] = 3 # collapse moderate and vigorous into mvpa
-      fragments3 = rle(y2) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
+      fragments3 = rle(y) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
       Nfrag3 = length(fragments3$value)
-      
-      # print(paste0("Nfragments ",Nfrag3))
-      # print(paste0("Nfragments INAC ",length(which(fragments3$value == 1))))
-      # print(paste0("Nfragments LIPA ",length(which(fragments3$value == 2))))
-      # print(paste0("Nfragments MVPA ",length(which(fragments3$value == 3))))
       State1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
       # Get only indices of inactive fragments that transition to light:
       inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
@@ -90,10 +100,6 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       if (length(inact_2_light_trans) >= min_Nfragments_TP_only & length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
         output[["IN2PA_TP"]] = 1 / mean(State1) # transition from inactive to mvpa
       }
-      # print(paste0("Nfragments state1 -as reported ",length(State1)))
-      # print(paste0("Nfragments state2 -as reported ",length(State2)))
-      # print(paste0("Nfragments state3 -as reported ",length(State3)))
-      rm(y2)
     }
     if ("InfEn" %in% frag.metrics) {
       alpha = length(unique(y))
@@ -129,8 +135,12 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   # }
   # x = binarize(x, values = frag.classes)
   x = rep(0,length(ACC))
-  ij_indices = which(ACC >= intensity.thresholds[1] & ACC < intensity.thresholds[2])
-  if (length(ij_indices) > 0) x[ij_indices] = 1
+  if (length(LEVELS) == 0) {
+    ij_indices = which(ACC >= intensity.thresholds[1] & ACC < intensity.thresholds[2])
+    if (length(ij_indices) > 0) x[ij_indices] = 1
+  } else {
+    x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
+  }
   x = as.integer(x)
   # } else {
   #   x = as.integer(sleepclass)
@@ -138,8 +148,8 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
   # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
   fragments = rle(x)
-  Nfragments = length(fragments$lengths)
-  output[["Nfragments_binary"]] = Nfragments
+  Nfragments = length(fragments$lengths) / 2
+  # output[["Nfragments_binary"]] = Nfragments
   if (Nfragments >= min_Nfragments) {
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
