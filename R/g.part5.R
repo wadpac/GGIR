@@ -715,7 +715,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                           # daytime
                           frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
                                                    intensity.thresholds = c(TRLi, TRMi, TRVi), do.multiclass=TRUE,
-                                                   LEVEL = LEVELS[sse[ts$diur[sse] == 0]],
+                                                   LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
                                                    Lnames = Lnames)
                           # fragmentation values come with a lot of decimal places
                           dsummary[di,fi:(fi+(length(frag.out)-1))] = round(as.numeric(frag.out), digits=5)

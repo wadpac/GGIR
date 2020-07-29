@@ -18,7 +18,9 @@ converted into intergers of zeros and ones.
                                           "CoV", "dfa", "InfEn",
                                           "SampEn", "ApEn", "RQA", "all"),
                   ACC = c(), intensity.thresholds = c(),
-                  do.multiclass =c())
+                  do.multiclass =c(),
+                  LEVELS = c(),
+                           Lnames=c())
 }
 \arguments{
    \item{frag.metrics}{
@@ -35,6 +37,12 @@ converted into intergers of zeros and ones.
   }
   \item{do.multiclass}{
   Boolean to indicate whether multiclass metrics should be extracted
+  }
+  \item{LEVELS}{
+    vector of behavioural level identifiers derived with identify_levels function
+  }
+  \item{Lnames}{
+    vector with characters to specify the names of the level identifiers.
   }
 }
 \value{
