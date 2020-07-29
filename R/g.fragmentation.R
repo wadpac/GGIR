@@ -74,13 +74,14 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       output[["IN2PA_TP"]] = NA
       output[["IN2LIPA_TPsum"]] = output[["IN2LIPA_TPlen"]] = output[["Nfragments_IN2LIPA"]] = NA
       output[["IN2MVPA_TPsum"]] = output[["IN2MVPA_TPlen"]] = output[["Nfragments_IN2MVPA"]] = NA
-      if (length(inact_2_light_trans) >=  min_Nfragments_TP_only) {
+      # only calculate this if there are enough fragments for both transitions
+      if (length(inact_2_light_trans) >=  min_Nfragments_TP_only & 
+          length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
         State2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
         output[["IN2LIPA_TPsum"]] = (sum(State2)/sum(State1)) / mean(State1) # transition from inactive to mvpa
         output[["IN2LIPA_TPlen"]] = (length(State2)/length(State1)) / mean(State1) # transition from inactive to mvpa
         output[["Nfragments_IN2LIPA"]] = length(State2)
-      }
-      if (length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
+    
         State3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
         output[["IN2MVPA_TPsum"]] = (sum(State3)/sum(State1)) / mean(State1) # transition from inactive to mvpa
         output[["IN2MVPA_TPlen"]] = (length(State3)/length(State1)) / mean(State1) # transition from inactive to mvpa
