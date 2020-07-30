@@ -48,7 +48,6 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     }
     return(indices)
   }
-
   ms5.out = "/meta/ms5.out"
   if (file.exists(paste(metadatadir,ms5.out,sep=""))) {
     if (length(dir(paste(metadatadir,ms5.out,sep=""))) == 0) {

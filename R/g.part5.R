@@ -192,7 +192,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       di = 1
       fi = 1
       sptwindow_HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
-
       if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
         summarysleep_tmp = summarysleep
         #======================================================================
@@ -324,26 +323,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                   bc.lig = levels$bc.lig
                   bc.in = levels$bc.in
                   ts = levels$ts
-
-                  # frag.classes.day.in = frag.classes.day.light = frag.classes.day.mvpa = c()
-                  # # Prepare fragmentation variables only once:
-                  # if (length(frag.classes.day) > 0 & length(frag.classes.spt) > 0 & length(frag.metrics) > 0) {
-                  #   frag.classes.day_tmp = frag.classes.day
-                  #   frag.classes.spt_tmp = frag.classes.spt
-                  #   if ("day_MVPA_bts" %in% frag.classes.day_tmp) {
-                  #     frag.classes.day_tmp = c(frag.classes.day_tmp, Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
-                  #   }
-                  #   if ("day_LIG_bts" %in% frag.classes.day_tmp) {
-                  #     frag.classes.day_tmp = c(frag.classes.day_tmp, Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
-                  #   }
-                  #   if ("day_IN_bts" %in% frag.classes.day_tmp) {
-                  #     frag.classes.day_tmp = c(frag.classes.day_tmp, Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
-                  #   }
-                  #   frag.classes.day.in = c("day_IN_unbt", Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
-                  #   frag.classes.day.light = c("day_LIG_unbt", Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
-                  #   frag.classes.day.mvpa = c("day_MVPA_unbt", Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
-                  # }
-                  
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
                   # we want there to be one more nights in the accelerometer data than there are nights with sleep results
@@ -463,7 +442,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         }
                         # Untill here.
                         #==========================
-
                         # define time windows:
                         # We will get acc_onset and wakeup
                         # regarding to the same day of measurement in the same row.
@@ -538,9 +516,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                         ds_names[fi] = "dur_spt_min";      fi = fi + 1
                         dsummary[di,fi] = (length(c(qqq1:qqq2)) * ws3new) / 60
                         ds_names[fi] = "dur_day_spt_min";      fi = fi + 1
-
-
-
                         #============================================
                         # Number of long wake periods (defined as > 5 minutes) during the night
                         Nawake = length(which(abs(diff(which(LEVELS[qqq1:qqq2] == 0))) > (300 / ws3new))) - 2
@@ -707,7 +682,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             paste(boutdur.mvpa,collapse="_"), bout.metric)
                         ds_names[fi:(fi+6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                                          "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
-
                         #===============================================
                         # FRAGMENTATION per window, and split by night and day
                         # if (length(frag.classes.day_tmp) > 0 & length(frag.classes.spt_tmp) > 0 &

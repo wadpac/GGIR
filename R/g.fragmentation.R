@@ -60,15 +60,6 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       y[which(LEVELS %in% class.lig.ids)] = 2
       y[which(LEVELS %in% class.mvpa.ids)] = 3
     }
-    # assign3classes = function(x, frag.classes.day.in, frag.classes.day.light, frag.classes.day.mvpa) {
-    #   # converts input into binary signal, with a 1 for x values that match the vector values
-    #   # and a 0 for all other values
-    #   tmp = as.integer(ifelse(test = x %in% frag.classes.day.in, yes = 1,
-    #                           no = ifelse(test = x %in% frag.classes.day.light, yes = 2,
-    #                                        no = ifelse(test = x %in% frag.classes.day.mvpa, yes = 3, no = 0))))
-    #   return(tmp)
-    # }
-    # y = assign3classes(x, frag.classes.day.in, frag.classes.day.light, frag.classes.day.mvpa)
     #====================================================
     # TP (transition probability) metrics that depend on multiple classes
     if ("TP" %in% frag.metrics) {
@@ -124,16 +115,6 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   }
   #====================================================
   # Binary fragmentation
-  
-  
-  # if (length(sleepclass) == 0) {
-  # binarize = function(x, values) {
-  #   # converts input into binary signal, with a 1 for x values that match the vector values
-  #   # and a 0 for all other values
-  #   tmp = as.integer(ifelse(test = x %in% values, yes = 1, no = 0))
-  #   return(tmp)
-  # }
-  # x = binarize(x, values = frag.classes)
   x = rep(0,length(ACC))
   if (length(LEVELS) == 0) {
     ij_indices = which(ACC >= intensity.thresholds[1] & ACC < intensity.thresholds[2])
@@ -142,14 +123,10 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
   }
   x = as.integer(x)
-  # } else {
-  #   x = as.integer(sleepclass)
-  # }
   # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
   # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
   fragments = rle(x)
   Nfragments = length(fragments$lengths) / 2
-  # output[["Nfragments_binary"]] = Nfragments
   if (Nfragments >= min_Nfragments) {
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
