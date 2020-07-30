@@ -78,12 +78,14 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
     #look for breaks larger than 1 minute
-    lookforbreaks = zoo::rollmean(x=x,k=(60/ws3),align="center",fill=rep(0,3)) #
+    # 30-7-2020, I do + 1 to make sure we look for breaks larger than but not equal to a minute,
+    # this is critical when working with 1 minute epoch data
+    lookforbreaks = zoo::rollmean(x=x,k=(60/ws3)+1,align="center",fill=rep(0,3)) 
     #insert negative numbers to prevent these minutes to be counted in bouts
     #in this way there will not be bouts breaks lasting longer than 1 minute
     xt[lookforbreaks == 0] = -(60/ws3) * boutduration 
     RM = zoo::rollmean(x=xt,k=boutduration,align="center",fill=rep(0,3)) #,
-    p = which(RM > boutcriter)
+    p = which(RM >=boutcriter)
     starti = round(boutduration/2)
     # only consider windows that at least start and end with value that meets criterium
     tri = p-starti
