@@ -31,7 +31,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ws3 = windowsizes[1]
   ws2 = windowsizes[2]
   keepindex_46 = keepindex_48 = c()
-
   # Extracting basic information about the file
   hvars = g.extractheadervars(I)
   ID = hvars$ID;              iID =hvars$iID; IDd =hvars$IDd
@@ -67,6 +66,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     qwindow_actlog = TRUE
     if (idloc == 2) {
       IDt = unlist(strsplit(fname,"_"))[1] #id
+    } else if (idloc == 5) {
+      IDt = unlist(strsplit(fname," "))[1] #id
     } else if (idloc == 4) {
       IDt = IDd
     } else if (idloc == 1) {

@@ -94,7 +94,9 @@ qM5L5=c(), myfun=c())
   \item{idloc}{
     If value = 1 (default) the code assumes that ID number is stored in the
     obvious header field. If value = 2 the code uses the character string preceding
-    the character '_' in the filename as the ID number
+    the character '_' in the filename as the ID number.
+    If value = 5 the code uses the character string preceding
+    the first space ' ' in the filename as the ID number
   }
   \item{snloc}{
     If value = 1 (default) the code assumes that device serial number is stored in
