@@ -7,7 +7,8 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                             mvpathreshold, boutcriter, closedbout,
                             bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
-                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz="") {
+                            deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz="",
+                            MX.ig.min.dur=10) {
   if (length(selectdaysfile) > 0 & ndays == 2) {
     ndays = 1
     startatmidnight = endatmidnight  = 1
@@ -367,10 +368,18 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi | mi == ENMOai) {
                 collectfi =c()
                 for (winhr_value in winhr) { # Variable (column) names
-                  # We are first defining location of variable names, before calcualting
+                  # We are first defining location of variable names, before calculating
                   # variables
                   ML5colna = c(paste0("L",winhr_value,"hr"), paste0("L",winhr_value), 
                                paste0("M",winhr_value,"hr"), paste0("M",winhr_value))
+                  if (length(iglevels) > 0 & length(MX.ig.min.dur) == 1) { # intensity gradient (as described by Alex Rowlands 2018)
+                    if (winhr_value >= MX.ig.min.dur) {
+                      for (li in 1:2) { # do twice, once for LX and once for MX
+                        varnameig = paste0(paste0(ifelse(li == 1, yes = "L", no = "M"),winhr_value,"_"),c("ig_gradient","ig_intercept","ig_rsquared"))
+                        ML5colna = c(ML5colna, varnameig)
+                      }
+                    }
+                  }
                   if (length(qM5L5) > 0) {
                     ML5colna = c(ML5colna,
                                  paste0("L",winhr_value,"_q",round(qM5L5 *100)), 
@@ -383,7 +392,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   fi=fi+length(ML5colna)
                 }
                 if (length(varnum) > ((60/ws3)*60*min(winhr)*1.2)) { # Calculate values
-                  # exfi = 0
                   for (winhr_value in winhr) {
                     exfi = collectfi[which(winhr == winhr_value)]
                     if (length(varnum) > (60/ws3)*60*winhr_value*1.2) { # Calculate values
@@ -392,7 +400,8 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                       # t1_LFMF = anwi_t1[anwi_index]/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       t0_LFMF =  1 #start
                       t1_LFMF = length(varnum)/(60*(60/ws3)) + (winhr_value-(M5L5res/60)) # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
-                      ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5)
+                      ML5 = g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr_value, qM5L5=qM5L5, 
+                                      iglevels=iglevels, MX.ig.min.dur=MX.ig.min.dur)
                       ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
                       if (anwi_index > 1) {

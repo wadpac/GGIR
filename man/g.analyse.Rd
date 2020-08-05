@@ -26,7 +26,7 @@ dayborder=0,bout.metric = 1,
 closedbout=FALSE,desiredtz = "",
 IVIS_windowsize_minutes = 60,
 IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1,
-qM5L5=c(), myfun=c())
+qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
 }
 
 \arguments{
@@ -165,6 +165,7 @@ qM5L5=c(), myfun=c())
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
+  \item{MX.ig.min.dur}{see \link{g.getM5L5}}
   
    
 }

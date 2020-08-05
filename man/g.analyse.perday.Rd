@@ -18,7 +18,7 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti,
   ilevels, iglevels, domvpa,
   mvpathreshold, boutcriter, closedbout,
   bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
-  deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz)
+  deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz, MX.ig.min.dur=10)
 }
 
 \arguments{
@@ -81,7 +81,7 @@ as character string before the first hyphen}
 \item{ExtFunColsi}{column index of metahosrt where metric is stored}
 \item{myfun}{External function object to be applied to raw data, see \link{g.getmeta}.}
 \item{desiredtz}{see \link{g.getmeta}}
-
+\item{MX.ig.min.dur}{see \link{g.getM5L5}}
 }
 \value{
 \item{\code{daysummary}}{Summary per day for the file that was analysed}

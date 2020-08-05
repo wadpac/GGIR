@@ -8,7 +8,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
                    IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
-                   myfun=c()) {
+                   myfun=c(), MX.ig.min.dur=10) {
   snloc= 1
   if (is.numeric(qwindow)) {
     qwindow = qwindow[order(qwindow)]
@@ -170,7 +170,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                         window.summary.size=window.summary.size,dayborder=dayborder,bout.metric=bout.metric,closedbout=closedbout,
                         desiredtz=desiredtz,IVIS_windowsize_minutes = IVIS_windowsize_minutes,
                         IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
-                        IVIS.activity.metric= IVIS.activity.metric, qM5L5  = qM5L5, myfun=myfun)
+                        IVIS.activity.metric= IVIS.activity.metric, qM5L5  = qM5L5, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur)
         name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
         if (epochvalues2csv==TRUE) {
           if (length(IMP$metashort) > 0) {
