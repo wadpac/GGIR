@@ -54,5 +54,5 @@ Vector of metric values at the same time resolution as the input data
 }
 
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

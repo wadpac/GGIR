@@ -15,6 +15,7 @@
   \item Part 4 report, issue fixed with double night entries.
   \item Bug fixed with Actigraph starttime recognition when machine language
   is not English and months are expressed in b or hh format.
+  \item Bug fixed in accounting for daysleeper in first night ofr recording.
 }
 }
 \section{Changes in version 2.0-2 (GitHub-only-release date:18-06-2020)}{

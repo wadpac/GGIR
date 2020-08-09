@@ -25,7 +25,7 @@ g.intensitygradient(x,y)
  \item{rsquared}{R squared of x and y values in log-log space}
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }
 \references{
 Rowlands A, Edwardson CL, et al. (2018) Beyond Cut Points: Accelerometer Metrics 

@@ -89,5 +89,5 @@ IMP = g.impute(M=data.getmeta, I=data.inspectfile)
 }
 
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

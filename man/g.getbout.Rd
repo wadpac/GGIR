@@ -54,5 +54,5 @@ y = g.getbout(x=round(runif(1000,0.4,1)),boutduration = 120,boutcriter=0.9,
     closedbout=FALSE,bout.metric=3,ws3=5)
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }
