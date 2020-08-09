@@ -9,6 +9,17 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
     x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
     return(sum(x2))
   }
+  hr_to_clocktime = function(x) {
+    hrsNEW = floor(x)
+    minsUnrounded = (x - hrsNEW) *60
+    minsNEW =  floor(minsUnrounded)
+    secsNEW =  floor( (minsUnrounded - minsNEW)*60)
+    if (minsNEW < 10) minsNEW = paste0(0,minsNEW)
+    if (secsNEW < 10) secsNEW = paste0(0,secsNEW)
+    if (hrsNEW < 10) hrsNEW = paste0(0,hrsNEW)
+    time = paste0(hrsNEW,":",minsNEW,":",secsNEW)
+    return(time)
+  }
   potentialnight = min(summarysleep_tmp2$night):max(summarysleep_tmp2$night)
   missingnight = which(as.numeric(potentialnight) %in% as.numeric(summarysleep_tmp2$night) == FALSE)
   if (length(missingnight) > 0) {
@@ -34,17 +45,6 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
         newnight$wakeup = newnight$guider_wakeup = sleeplogwake_hr
         if (sleeplogwake_hr > 36) {
           newnight$daysleeper = 1
-        }
-        hr_to_clocktime = function(x) {
-          hrsNEW = floor(x)
-          minsUnrounded = (x - hrsNEW) *60
-          minsNEW =  floor(minsUnrounded)
-          secsNEW =  floor( (minsUnrounded - minsNEW)*60)
-          if (minsNEW < 10) minsNEW = paste0(0,minsNEW)
-          if (secsNEW < 10) secsNEW = paste0(0,secsNEW)
-          if (hrsNEW < 10) hrsNEW = paste0(0,hrsNEW)
-          time = paste0(hrsNEW,":",minsNEW,":",secsNEW)
-          return(time)
         }
         newnight$sleeponset_ts = hr_to_clocktime(sleeplogonset_hr)
         newnight$wakeup_ts = hr_to_clocktime(sleeplogwake_hr)
