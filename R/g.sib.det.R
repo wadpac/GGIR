@@ -313,12 +313,12 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
             if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
               # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
-              daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
               newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
               newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
               if (newqqq2 > length(angle)) newqqq2 = length(angle)
               # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
               if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+                daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
                 inbedout = sptwindow_HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
                                            perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
                                            outofbedsize = outofbedsize)
