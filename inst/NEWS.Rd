@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.1-0 (release date:09-08-2020)}{
+\section{Changes in version 2.1-0 (release date:12-08-2020)}{
 \itemize{
   \item Actigraph serial number now extracted from the csv fileheader
   \item Actigraph serial number now used to assign correct dynamic range per
