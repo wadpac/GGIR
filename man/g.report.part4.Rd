@@ -78,5 +78,5 @@ See package vignette sections "Sleep analysis" and "Output part 4"
 for a more elaborative description of the sleep analysis and reporting.
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

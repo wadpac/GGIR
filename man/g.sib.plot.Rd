@@ -35,5 +35,5 @@
 Function has no output other than the plot
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

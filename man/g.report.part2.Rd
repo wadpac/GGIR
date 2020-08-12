@@ -33,5 +33,5 @@ Function does not produce data, but only writes reports
 in csv format and visual reports in pdf format
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

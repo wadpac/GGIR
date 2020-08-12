@@ -29,5 +29,5 @@ Dataframe with per night and per definition of sustained inactivity bouts
 the start and end time of each sustained inactivity bout
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }
