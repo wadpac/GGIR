@@ -43,4 +43,5 @@ end point for reading data, this can either be a timestamp
 }
 \author{
 Evgeny Mirkes <em322@leicester.ac.uk>
+Vincent van Hees <v.vanhees@accelting.com>
 }

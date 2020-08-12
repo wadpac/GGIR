@@ -85,7 +85,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   } else { # pass on functions
     functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight",
                          "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
-                         "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient")
+                         "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
+                         "iso8601chartime2POSIX")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`

@@ -60,5 +60,5 @@ Dataframe with metric values in columns average per epoch (ws3)
 }
 
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

@@ -173,6 +173,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
         }
       }
       expectedformat = paste0('%',splitformat[1],sepa,'%',splitformat[2],sepa,'%',splitformat[3],' %H:%M:%S')
+      Sys.setlocale("LC_TIME", "C")  # set language to English because that is what we use elsewhere in GGIR
       starttime = as.POSIXlt(starttime,format=expectedformat)
       lengthheader = 9
     }

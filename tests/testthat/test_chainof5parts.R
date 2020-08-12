@@ -71,8 +71,8 @@ test_that("chainof5parts", {
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
   expect_that(ncol(SUM$daysummary), equals(34))
-  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3),equals(88.989))
-  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3),equals(37.133))
+  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3),equals(88.988))
+  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3),equals(37.15))
 
   #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
   #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
@@ -114,7 +114,7 @@ test_that("chainof5parts", {
                      loglocation= sleeplog_fn,
                      overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel,
           # frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
-          frag.metrics="all")
+          frag.metrics="all", save_ms5rawlevels=TRUE)
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -123,7 +123,13 @@ test_that("chainof5parts", {
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(152))
   expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
-
+  dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
+  rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
+  expect_true(file.exists(rn2[1]))
+  TSFILE = read.csv(rn2[1])
+  expect_that(nrow(TSFILE),equals(4601))
+  expect_that(ncol(TSFILE),equals(10))
+  expect_that(length(unique(TSFILE$class_id)),equals(9))
  #--------------------------------------------
   #g.shell.GGIR
   suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
@@ -250,9 +256,66 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
   expect_that(round(nightsummary$SptDuration[1],digits=4),equals(13.075))
+  #---------------------
+  # Part 1 with external function and selectdaysfile:
+  exampleExtFunction = function(data=c(), parameters=c()) {
+    data = data.frame(data, agglevel=round((1:nrow(data))/(30*60*15)))
+    output = aggregate(data,by=list(data$agglevel),FUN=mean)
+    output = output[,-c(1,2, ncol(output))]
+    return(output)
+  }
+  myfun =  list(FUN=exampleExtFunction,
+                parameters = 1.1,
+                expected_sample_rate= 3, # resample data to 30 Hertz before applying function
+                expected_unit="mg",
+                minlength = 15,
+                outputres = 15,
+                colnames=c("A","B","C"),
+                outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
+                aggfunction = mean,
+                timestamp=as.numeric(Sys.time())) # for unit test only
+  # create selectdaysfile
+  SDF = matrix("",1,3)
+  SDF[1,1] = "MOS2D12345678"
+  SDF[1,2:3] =  c("23-05-2016","24-05-2016")
+  colnames(SDF) = c("Monitor","Day1","Day2")
+  selectdaysfile = "selectdaysfile.csv"
+  write.csv(SDF, file = selectdaysfile)
+
+
+  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
+          do.parallel = do.parallel,myfun=myfun,
+          studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = FALSE,
+          windowsizes = c(15,300,3600),
+           chunksize= 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
+          do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,
+          do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
+          do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen=TRUE,
+          do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen=TRUE,
+          do.enmoa = TRUE,selectdaysfile=selectdaysfile)
+
+  rn = dir("output_test/meta/basic/",full.names = TRUE)
+  load(rn[1])
+  expect_equal(ncol(M$metashort), 24)
+  expect_equal(round(mean(M$metashort$B, na.rm = T),digits=3), 24.712)
+  expect_equal(round(mean(M$metashort$C, na.rm = T),digits=3), -6.524)
+  expect_equal(round(mean(M$metashort$EN, na.rm = T),digits=3), 1.029)
+  expect_equal(round(mean(M$metashort$angley, na.rm = T),digits=3), 0.768)
+  expect_equal(round(mean(M$metashort$roll_med_acc_x, na.rm = T),digits=3), 0.728)
+  expect_equal(round(mean(M$metashort$roll_med_acc_z, na.rm = T),digits=3), 0.007)
+  expect_equal(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T),digits=3), 0.007)
+  expect_equal(round(mean(M$metashort$ENMOa, na.rm = T),digits=3), 0.03)
+
+  SDF = "output_test/meta/raw/123A_testaccfile.csv_day1.RData"
+  expect_true(file.exists(SDF))
+  load(SDF)
+  expect_that(nrow(data),equals(390600))
+  expect_that(round(mean(data),digits=3),equals(0.266))
+
 
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
+  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })

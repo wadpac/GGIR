@@ -139,6 +139,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
+  hvars = g.extractheadervars(INFI)
+  deviceSerialNumber = hvars$deviceSerialNumber
+  if (mon == 3) { 
+    # If Actigraph then try to specify dynamic range based on Actigraph model
+    if (length(grep(pattern = "CLE", x = deviceSerialNumber)) == 1) {
+      dynrange = 6
+    } else if (length(grep(pattern = "MOS", x = deviceSerialNumber)) == 1) {
+      dynrange = 8
+    } else if (length(grep(pattern = "NEO", x = deviceSerialNumber)) == 1) {
+      dynrange = 6
+    }
+  }
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(rmc.sf) == 0) {
       stop("Could not identify sample frequency")
@@ -163,7 +175,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   blocksize = ncb_params$blocksize
   sdcriter = ncb_params$sdcriter
   racriter = ncb_params$racriter
-
+  n_decimal_places = 4 # number of decimal places to which features should be rounded
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
@@ -406,6 +418,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           # data[,1], data[,2], data[,3], starttime, (temperature, light)
           if (length(selectdaysfile) > 0) {
             path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
+            raw_output_dir = paste0(path3,"/meta/raw")
+            if (!dir.exists(raw_output_dir)) {
+              dir.create(raw_output_dir)
+            }
             # calculate extra timestamp in a more complete format
             # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
             # to the starttime of the first epoch in the data
@@ -413,13 +429,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 0)) {
               I = INFI
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,light,
-                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
             } else if (mon == 5) {
               save(I,sf,wday,wdayname,decn,data,starttime,temperature,
-                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
             } else {
               save(I,sf,wday,wdayname,decn,data,starttime,
-                   file = paste(path3,"/meta/raw/",filename,"_day",i,".RData",sep=""))
+                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
             }
           }
         } else {
@@ -429,6 +445,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         allmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
+        # round decimal places, because due to averaging we get a lot of information
+        # that only slows down computation and increases storage size
+        allmetrics = lapply(allmetrics,round,n_decimal_places)
         BFEN = allmetrics$BFEN
         ENMO = allmetrics$ENMO
         ENMOa = allmetrics$ENMOa
@@ -659,13 +678,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
         rm(ENc, EN); gc()
         if (mon == 2 | (mon == 4 & dformat == 4)) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmean; col_mli= col_mli + 1
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = lightmax; col_mli= col_mli + 1
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(lightmean, digits=n_decimal_places)
+          col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(lightmax, digits=n_decimal_places)
+          col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(temperatureb, digits=n_decimal_places)
+          col_mli= col_mli + 1
         } else if (mon == 5) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = temperatureb; col_mli= col_mli + 1
+          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(temperatureb, digits=n_decimal_places)
+          col_mli= col_mli + 1
         }
-        metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = ENb; col_mli= col_mli + 1
+        metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(ENb, digits=n_decimal_places)
+        col_mli= col_mli + 1
         count2  = count2 + nmin
         if (exists("data")) rm(data)
         if (exists("light")) rm(light)
@@ -722,7 +746,14 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        options(warn=-1)
+        char_deviceSerialNumber = is.na(as.numeric(deviceSerialNumber))
+        options(warn=0)
+        if (char_deviceSerialNumber ==  FALSE) {
+          SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        } else {
+          SDFi = which(SDF$Monitor == deviceSerialNumber)
+        }
         dateday1 = as.character(SDF[SDFi,2])
         dateday2 = as.character(SDF[SDFi,3])
         dtday1 = as.POSIXlt(paste0(dateday1," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
@@ -777,9 +808,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                             rmc.header.structure = rmc.header.structure,
                             rmc.check4timegaps = rmc.check4timegaps)
         }
-        hvars = g.extractheadervars(I)
-        deviceSerialNumber = hvars$deviceSerialNumber
-        SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
+        # Next three lines commented out, because this was also calculated 50 lines earlier
+        # hvars = g.extractheadervars(I)
+        # deviceSerialNumber = hvars$deviceSerialNumber
+        # SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
         if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
           dateday1 = as.character(SDF[SDFi,2])
           dateday2 = as.character(SDF[SDFi,3])

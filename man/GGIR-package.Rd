@@ -22,8 +22,8 @@ citing the supporting publications (e.g. Migueles et al. 2019) in your publicati
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 2.0-2\cr
-Date: \tab 2020-06-18\cr
+Version: \tab 2.1-0\cr
+Date: \tab 2020-08-12\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -52,7 +52,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
 \author{
 \itemize{
-\item Vincent T van Hees <v.vanhees@movementdata.nl> main developer
+\item Vincent T van Hees <v.vanhees@accelting.com> main developer
 \item Zhou Fang co-developed function \link{g.calibrate}
 \item Jing Hua Zhao <jinghua.zhao@mrc-epid.cam.ac.uk> co-developed function \link{g.binread}
 \item Joe Heywood helped develop the functionality to process only specific days
