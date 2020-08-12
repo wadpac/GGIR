@@ -2,24 +2,23 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.1-1 (GitHub-only-release date:01-09-2020)}{
+\section{Changes in version 2.1-0 (release date:12-08-2020)}{
 \itemize{
-\item Part 2 now able to be guided by activity log (see qwindow)
-\item Part 2 now stores output also in long format if day is segmented
-}
-}
-\section{Changes in version 2.1-0 (release date:07-08-2020)}{
-\itemize{
+  \item Part 2 now able to be guided by activity log (see qwindow)
+  \item Part 2 now stores output also in long format if day is segmented
   \item Actigraph serial number now extracted from the csv fileheader
   \item Actigraph serial number now used to assign correct dynamic range per
   Actigraph generation (6 and 8 g respectively). Previously 8 assumed.
-  \item Part 2 indicator added of whcih axis is most correlated with itself
-  over 24 hours, for hip this may be indicator of vertical axis.
+  \item Part 2 indicator added of which axis is most correlated with itself
+  over 24 hours, for hip data this may be indicator of vertical axis orientation.
   \item Part 1 bug fixed in timestamp generation that caused measurements
   that start exactly at the hour and 0 minutes to have a 1 minute offset in time.
   \item Part 1 to reduce data storage size epoch level metric values are now
   rounded to 4 decimal places.
   \item Part 4 report, issue fixed with double night entries.
+  \item Bug fixed with Actigraph starttime recognition when machine language
+  is not English and months are expressed in b or hh format.
+  \item Bug fixed in accounting for daysleeper in first night ofr recording.
 }
 }
 \section{Changes in version 2.0-2 (GitHub-only-release date:18-06-2020)}{

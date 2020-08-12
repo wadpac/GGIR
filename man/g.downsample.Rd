@@ -36,5 +36,5 @@ corresponding to downsample time series at
  downsampled_sig = g.downsample(sig,fs=20,ws3=5,ws2=15)
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }
