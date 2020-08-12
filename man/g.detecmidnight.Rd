@@ -33,5 +33,5 @@ Output of the function is list containing the following objects:\cr
 }
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

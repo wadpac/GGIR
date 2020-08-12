@@ -29,5 +29,5 @@ datadir2fnames(datadir = "C:/mydatafolder",filelist=TRUE)
 }
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

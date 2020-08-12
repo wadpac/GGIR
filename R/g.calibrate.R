@@ -351,7 +351,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)
         cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)
-        cal.error.start = mean(abs(cal.error.start - 1))
+        cal.error.start = round(mean(abs(cal.error.start - 1)), digits = 5)
         #check whether sphere is well populated
         tel = 0
         for (axis in 2:4) {
@@ -450,7 +450,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       # END of Zhou Fang's code
       #-------------------------------------------
       cal.error.end = sqrt(meta_temp2[,1]^2 + meta_temp2[,2]^2 + meta_temp2[,3]^2)
-      cal.error.end = mean(abs(cal.error.end-1))
+      cal.error.end = round(mean(abs(cal.error.end-1)), digits = 5)
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
         if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & use.temp == FALSE))) {

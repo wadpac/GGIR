@@ -26,5 +26,5 @@ g.createcoordinates(r,timeline)
   corresponding to the end of each block on the timeline
 }
 \author{
-  Vincent van Hees <vincentvanhees@gmail.com>
+  Vincent van Hees <v.vanhees@accelting.com>
 }
