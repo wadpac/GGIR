@@ -1,17 +1,16 @@
-g.getM5L5 = function(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr, 
+g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr, 
                      qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10) {
   #diurnal pattern features extracted only meaningful if more than 16 hours
   # note: acceleration 1-6am removed from this function and
   # placed in g.analyse because it is not related to M5L5 analyse (23-7-2019)
   meanVarnum = mean(varnum)
   do.M5L5 = meanVarnum > 0 # & length(varnum) > 1440*(60/ws3)
-  if (length(do.M5L5) == 0) do.M5L5 = FALSE
-  if (is.na(do.M5L5) == TRUE) do.M5L5 = FALSE
+  if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE) do.M5L5 = FALSE
   if (do.M5L5 == TRUE) { # only do the analysis if varnum has values other than zero
     reso = M5L5res #resolution
     nwindow_f = (t1_LFMF-winhr) - t0_LFMF #number of windows for L5M5 analyses
     nwindow_f = nwindow_f * (60/reso)
-    DAYrunav5 = matrix(0,nwindow_f,1)
+    DAYrunav5 = matrix(NA,nwindow_f,1)
     first_hri = (t0_LFMF*(60/reso))
     last_hri = min(nrow(DAYrunav5),floor(((t1_LFMF-winhr)*(60/reso))-1))
     for (hri in first_hri:last_hri) { #e.g.9am-9pm
@@ -25,7 +24,8 @@ g.getM5L5 = function(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr,
       DAYrunav5[((hri-(t0_LFMF*(60/reso)))+1),1] = mean(varnum[einclude])
     }
     valid = which(is.na(DAYrunav5) == F)
-    DAYL5HOUR = ((which(DAYrunav5 == min(DAYrunav5[valid], na.rm = T) & is.na(DAYrunav5) == F)-1)/(60/reso)) + t0_LFMF #- 1
+    DAYL5HOUR = ((which(DAYrunav5 == min(DAYrunav5[valid], na.rm = T) &
+                          is.na(DAYrunav5) == F)-1)/(60/reso)) + t0_LFMF #- 1
     DAYL5VALUE = min(DAYrunav5[valid]) * 1000
     DAYM5HOUR = ((which(DAYrunav5 == max(DAYrunav5[valid], na.rm = T)  & is.na(DAYrunav5) == F)-1)/(60/reso)) + t0_LFMF #- 1
     DAYM5VALUE = max(DAYrunav5[valid]) * 1000
