@@ -45,7 +45,7 @@ If anything is not clear in the documentation, please let us know via either the
 
 GGIR is open source software and does not come with service or support guarantees. However, as user-community you can help each other via the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please use these public platform rather than private e-mails such that others can learn from your conversations.
 
-If you need dedicated support with the use of GGIR or need someone to adapt GGIR then Vincent van Hees is available as [indpendent consultant](https://www.accelting.com/).
+If you need dedicated support with the use of GGIR or need someone to adapt GGIR then Vincent van Hees is available as [indpendent consultant](https://accelting.com/).
 
 **Change log**
 
@@ -68,7 +68,7 @@ install.packages("GGIR", dependencies = TRUE)
 ## Prepare folder structure
 
 1. GGIR works with the following accelerometer brands and formats:
-    - [GENEActiv](https://geneactiv.org/) .bin and .csv
+    - [GENEActiv](https://www.activinsights.com/) .bin and .csv
     - [ActiGraph](https://actigraphcorp.com/) .csv. Note for Actigraph users:
 In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absense of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
@@ -168,7 +168,7 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 - [Esliger et al 2011](https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx): wrist and waist in adults.
 - [Schaefer et al 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/): wrist in 6-11 year old children.
 - [Roscoe et al 2017](https://link.springer.com/article/10.1007/s00431-017-2948-2): wrist in 4-5 year old pre-school children.
-- [Phillips et al 2013](https://europepmc.org/article/med/22770768): wrist and hip in 8-14 year olds.
+- [Phillips et al 2013](https://www.jsams.org/article/S1440-2440(12)00112-0/fulltext): wrist and hip in 8-14 year olds.
 - [Vaha-Ypya et al 2015](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813): hip in adults.
 - [Hildebrand et al 2014](https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx) and [2016](https://onlinelibrary.wiley.com/doi/abs/10.1111/sms.12795): wrist and hip in 7-11 and 21-61 years old.
 - If you are aware of any additional publications then let us know.
@@ -615,7 +615,7 @@ An acceleration sensor works on the principle that acceleration is captured mech
 Reference:
 
 - van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. doi: 10.1152/japplphysiol.00421.2014. Epub 2014 Aug 7.
-PMID: 25103964 [link](https://journals.physiology.org/doi/10.1152/japplphysiol.00421.2014)
+PMID: 25103964 [link](https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014)
 
 Key decisions to be made:
 
@@ -781,7 +781,7 @@ PMID: 24500862 [link](https://pubmed.ncbi.nlm.nih.gov/24500862/)
 
 If you used the **auto-calibration functionality** then also cite:
 
-4. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](https://journals.physiology.org/doi/10.1152/japplphysiol.00421.2014)
+4. van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. [link](https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014)
 
 If you used the **sleep detection** then also cite:
 
