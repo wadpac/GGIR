@@ -125,7 +125,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
 
           f01 = daysummary_tmp[,c45]
           f02 = daysummary_tmp[,MainMetric]
-          f05 = nocsleepdur #runif(length(days), 4, 10)
+          #f05 = nocsleepdur #runif(length(days), 4, 10)
+          f05 = matrix(,nrow=2,ncol=length(summarysleep_tmp$SptDuration))
+          f05[1,] = summarysleep_tmp$SleepDurationInSpt
+          f05[2,] = summarysleep_tmp$SptDuration - summarysleep_tmp$SleepDurationInSpt
+          f05_2 = summarysleep_tmp$SptDuration
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
           f07 = daysummary_tmp$N.valid.hours #runif(7, 20, 24)
@@ -138,7 +142,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           # headers
           vars = c(paste("Time spent in moderate or vigorous activity (average is ",round(mean(f01,na.rm=TRUE))," minutes per day)",sep=""),
                    paste("Total physical activity (average per day is ",round(mean(f02,na.rm=TRUE))," mg)",sep=""),
-                   paste("Sleep duration (average is ",round(mean(f05,na.rm=TRUE),digits=1)," hours per night)",sep=""),
+                   paste("Sleep period time (average is ",round(mean(f05_2,na.rm=TRUE),digits=1)," hours per night)",sep=""),
                    paste("Sleep efficiency (average is ",round(mean(f06,na.rm=TRUE)),"% per night)",sep=""),
                    paste("Duration monitor worn (hours per day)",sep="")) #(mean = ",round(mean(f07))," hours)
           # plot data
@@ -171,13 +175,18 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           abline(h=16,lty=2,lwd=2)
           text(x=1,y=(max(YXLIM)*0.95),labels=vars[5],pos=4,font=2,cex=1.2)
           #Sleep duration
-          YXLIM =c(0,(max(f05,na.rm=TRUE)*1.3))
-          B4 = barplot(as.matrix(f05),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
-                       ylim=YXLIM,cex.names=CEXN,las=0,col=CLS_B,density = 20) #
+          night_sleep_col <- rgb(0.8,0.8,0.8,alpha=0.3)
+          night_wake_col <- rgb(0,0.8,0.6,alpha=0.2)
+          space_vec = rep(0,length(f05_2))
+          YXLIM =c(0,(max(f05_2,na.rm=TRUE)*1.3))
+          B4 = barplot(as.matrix(f05),names.arg=days_SLEEP,#beside=TRUE,#axes=FALSE,
+                       ylim=YXLIM,las=0,col=c(night_sleep_col,night_wake_col),space=space_vec) #,cex.names=CEXN,density = 20
+          legend("bottomleft",c('Nocturnal Wake','Sleep'),fill=c(night_wake_col,night_sleep_col),bg='white')
           abline(h=6,lty=2,lwd=2)
-          topp = mean(as.matrix(round(f05,digits=1)))*0.1
-          text(y= as.matrix(round(f05,digits=1))+topp, x= B4, labels=as.character(as.matrix(round(f05,digits=1))), xpd=TRUE,cex=1)
-          text(x=1,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)
+          topp = mean(as.matrix(round(f05_2,digits=1)))*0.1
+          text(y= as.matrix(round(f05_2,digits=1))+topp, x= B4, labels=as.character(as.matrix(round(f05_2,digits=1))), xpd=TRUE,cex=1)
+          # not sure why I had to change x to 0 (from 1) in the following line:
+          text(x=0,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)
           #Sleep efficiency
           YXLIM = c(0,120)
           B5 = barplot(as.matrix(f06),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
