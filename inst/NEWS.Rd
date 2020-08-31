@@ -4,6 +4,7 @@
 \section{Changes in version 2.1-1 (GitHub-only-release date:31-08-2020)}{
 \itemize{
   \item Part2 argument qwindow now able to handle person specific activity diary
+  \item Intensity gradient now also extracted from long MX windows, see MX.ig.min.dur
 }
 }
 \section{Changes in version 2.1-0 (release date:27-08-2020)}{
