@@ -45,7 +45,7 @@ authors:
     family-names: Patterson
     given-names: "Matt"
 cff-version: "1.0.3"
-date-released: 2020-08-26
+date-released: 2020-08-27
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"
