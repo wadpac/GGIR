@@ -63,8 +63,9 @@ qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
   Followed by date column in format "23-04-2017", followed by one or multiple columns
   with start times for the activity types in that day format in 
   hours:minutes:seconds. The header of the column will be used as label for each activity
-  type. Insert a new date column before continuing with activity types for enxt day.
-  Leave missing values empty.
+  type. Insert a new date column before continuing with activity types for next day.
+  Leave missing values empty. If an activitylog is used then individuals who do 
+  not appear in the activitylog will still be processed with value c(0,24).
   }
   \item{quantiletype}{
   type of quantile function to use (default recommended). For details, see 
