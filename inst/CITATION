@@ -34,7 +34,7 @@ bibentry(bibtype = "Article",
         number    =  7,
         pages     = "738--744",
         year      =  2014,
-        url       = "https://www.physiology.org/doi/10.1152/japplphysiol.00421.2014")
+        url       = "https://journals.physiology.org/doi/10.1152/japplphysiol.00421.2014")
         
         
 bibentry(bibtype = "Article",
@@ -55,5 +55,5 @@ bibentry(bibtype = "Article",
         volume    =  10,
         number    =  11,
         year      =  2015,
-        url       = "http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533")
+        url       = "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533")
          

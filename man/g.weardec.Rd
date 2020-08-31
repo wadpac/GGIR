@@ -41,5 +41,5 @@ data(data.getmeta)
 output = g.weardec(M=data.getmeta,wearthreshold=2,ws2=3600)
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

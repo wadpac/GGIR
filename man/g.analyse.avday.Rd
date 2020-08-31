@@ -50,5 +50,5 @@ g.analyse.avday(qlevels, doquan, averageday, M, IMP,
 }
 
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

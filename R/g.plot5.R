@@ -125,7 +125,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
 
           f01 = daysummary_tmp[,c45]
           f02 = daysummary_tmp[,MainMetric]
-          f05 = nocsleepdur #runif(length(days), 4, 10)
+          #f05 = nocsleepdur #runif(length(days), 4, 10)
+          f05 = matrix(,nrow=2,ncol=length(summarysleep_tmp$SptDuration))
+          f05[1,] = summarysleep_tmp$SleepDurationInSpt
+          f05[2,] = summarysleep_tmp$SptDuration - summarysleep_tmp$SleepDurationInSpt
+          f05_2 = summarysleep_tmp$SptDuration
           f06 = sleepefficiency #runif(length(days), 30, 100)
           #           if (length(which(f06 > 100)) > 0) f06[which(f06 > 100)] =0
           f07 = daysummary_tmp$N.valid.hours #runif(7, 20, 24)
@@ -138,7 +142,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           # headers
           vars = c(paste("Time spent in moderate or vigorous activity (average is ",round(mean(f01,na.rm=TRUE))," minutes per day)",sep=""),
                    paste("Total physical activity (average per day is ",round(mean(f02,na.rm=TRUE))," mg)",sep=""),
-                   paste("Sleep duration (average is ",round(mean(f05,na.rm=TRUE),digits=1)," hours per night)",sep=""),
+                   paste("Sleep period time (average is ",round(mean(f05_2,na.rm=TRUE),digits=1)," hours per night)",sep=""),
                    paste("Sleep efficiency (average is ",round(mean(f06,na.rm=TRUE)),"% per night)",sep=""),
                    paste("Duration monitor worn (hours per day)",sep="")) #(mean = ",round(mean(f07))," hours)
           # plot data
@@ -171,13 +175,18 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           abline(h=16,lty=2,lwd=2)
           text(x=1,y=(max(YXLIM)*0.95),labels=vars[5],pos=4,font=2,cex=1.2)
           #Sleep duration
-          YXLIM =c(0,(max(f05,na.rm=TRUE)*1.3))
-          B4 = barplot(as.matrix(f05),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
-                       ylim=YXLIM,cex.names=CEXN,las=0,col=CLS_B,density = 20) #
+          night_sleep_col <- rgb(0.8,0.8,0.8,alpha=0.3)
+          night_wake_col <- rgb(0,0.8,0.6,alpha=0.2)
+          space_vec = rep(0,length(f05_2))
+          YXLIM =c(0,(max(f05_2,na.rm=TRUE)*1.3))
+          B4 = barplot(as.matrix(f05),names.arg=days_SLEEP,#beside=TRUE,#axes=FALSE,
+                       ylim=YXLIM,las=0,col=c(night_sleep_col,night_wake_col),space=space_vec) #,cex.names=CEXN,density = 20
+          legend("bottomleft",c('Nocturnal Wake','Sleep'),fill=c(night_wake_col,night_sleep_col),bg='white')
           abline(h=6,lty=2,lwd=2)
-          topp = mean(as.matrix(round(f05,digits=1)))*0.1
-          text(y= as.matrix(round(f05,digits=1))+topp, x= B4, labels=as.character(as.matrix(round(f05,digits=1))), xpd=TRUE,cex=1)
-          text(x=1,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)
+          topp = mean(as.matrix(round(f05_2,digits=1)))*0.1
+          text(y= as.matrix(round(f05_2,digits=1))+topp, x= B4, labels=as.character(as.matrix(round(f05_2,digits=1))), xpd=TRUE,cex=1)
+          # not sure why I had to change x to 0 (from 1) in the following line:
+          text(x=0,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)
           #Sleep efficiency
           YXLIM = c(0,120)
           B5 = barplot(as.matrix(f06),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
@@ -391,14 +400,13 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             
             check_date = match(curr_date,sleep_dates)
             if (is.na(check_date) == FALSE) {
-              #sleeponset_time = summarysleep_tmp$sleeponset_ts[check_date]  # get the time of sleep_onset
               sleeponset_time = summarysleep_tmp$sleeponset[check_date]  # get the time of sleep_onset
-              #if (sleeponset_time < 24) {
               if (sleeponset_time >= sw_coefs[1] & sleeponset_time < sw_coefs[2]) {
                 sleeponset_hour = trunc(sleeponset_time)
                 if (sleeponset_hour == 24) sleeponset_hour = 0
                 if (sleeponset_hour > 24) sleeponset_hour = sleeponset_hour - 24 # only with viewingwindow==2
                 sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
+                if (sleeponset_min == 60) sleeponset_min = 0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                 if (!is.na(sleeponset_locations[1])) { 
                   sleeponset_loc = sleeponset_locations[1]
@@ -407,13 +415,13 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               
               wake_time = summarysleep_tmp$wakeup[check_date]
               if (wake_time >= sw_coefs[1] & wake_time < sw_coefs[2]) {
-              #if (wake_time < 24) {
                 wake_hour = trunc(wake_time)
                 if (wake_hour == 24) wake_hour = 0
                 if (wake_hour > 24) {
                   wake_hour = wake_hour - 24
                 }
                 wake_min = round((wake_time - trunc(wake_time)) * 60)
+                if (wake_min == 60) wake_min = 0
                 wake_locations = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
                 if (!is.na(wake_locations[1])) {
                   wake_loc = wake_locations[1]
@@ -427,12 +435,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (is.na(check_date) == FALSE) {
               wake_time = summarysleep_tmp$wakeup[check_date]
               if (wake_time >= sw_coefs[2]) {
-              #if (wake_time > 24) {
                 wake_hour = trunc(wake_time) - 24
-              #  if (viewingwindow==2) {
-              #    wake_hour = wake_hour + 24
-              #  }
                 wake_min = round((wake_time - trunc(wake_time)) * 60)
+                if (wake_min == 60) wake_min = 0
                 wake_locations = which(hour[t0:t1] == wake_hour & min_vec[t0:t1] == wake_min)
                 if (wake_loc > 0) {
                   if (!is.na(wake_locations[1])) {
@@ -448,9 +453,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               # new way 
               sleeponset_time = summarysleep_tmp$sleeponset[check_date]
               if (sleeponset_time >= sw_coefs[2]) {
-              #if (sleeponset_time > 24) {
                 sleeponset_hour = trunc(sleeponset_time) - 24
                 sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
+                if (sleeponset_min == 60) sleeponset_min = 0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                 if (sleeponset_loc > 0) {
                   if (!is.na(sleeponset_locations[1])) {
@@ -467,10 +472,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (viewingwindow==2) {
               next_day = curr_date + 1
               check_date = match(next_day,sleep_dates)
-              
-              
             }
-            
 
             # add extensions if <24hr of data
             first_day_adjust = 0 # hold adjustment amounts on first and last day plots

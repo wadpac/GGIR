@@ -47,5 +47,5 @@
     is typically not used by the GGIR user directly.
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

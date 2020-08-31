@@ -1,8 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-\section{Changes in version 2.1-0 (release date:12-08-2020)}{
+\section{Changes in version 2.1-1 (GitHub-only-release date:31-08-2020)}{
+\itemize{
+  \item Part2 argument qwindow now able to handle person specific activity diary
+}
+}
+\section{Changes in version 2.1-0 (release date:27-08-2020)}{
 \itemize{
   \item Part 2 now able to be guided by activity log (see qwindow)
   \item Part 2 now stores output also in long format if day is segmented
