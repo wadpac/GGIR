@@ -74,5 +74,5 @@ the average day produced by \link{g.analyse.avday}}
 }
 
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

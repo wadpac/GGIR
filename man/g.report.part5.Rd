@@ -61,5 +61,5 @@ and "Output part 5" for a more elaborative description of
 the full day time-use and analysis and reporting.
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

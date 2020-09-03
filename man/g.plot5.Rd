@@ -70,6 +70,6 @@ No values, this function only generates a plot
   }
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 Matthew R Patterson <mpatterson@shimmersensing.com>
 }

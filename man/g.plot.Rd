@@ -50,5 +50,5 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
 
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

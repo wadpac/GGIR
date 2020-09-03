@@ -31,7 +31,7 @@ Internally GGIR loads the raw accelerometer data in memory blocks of about 24 ho
 
 # Example with external R function
 
-In this example we will apply the function counts() from R package [activityCounts](https://cran.r-project.org/web/packages/activityCounts/index.html) to the raw data, which produces an estimate of Actigraph counts per second.
+In this example we will apply the function counts() from R package [activityCounts](https://CRAN.R-project.org/package=activityCounts) to the raw data, which produces an estimate of Actigraph counts per second.
 
 ## Write external function
 
