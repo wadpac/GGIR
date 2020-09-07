@@ -1,6 +1,8 @@
-g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-                                            "dfa", "InfEn",
-                                            "SampEn", "ApEn", "RQA", "all"),
+g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "power",
+                                            "hazard", "h", "CoV",
+                                            "dfa", "InfEn", "SampEn", "ApEn", "RQA",
+                                            "mean_volume", "TP_volume", "Gini_volume",
+                                            "mean_acc", "TP_acc", "Gini_acc", "all"),
                            ACC = c(), intensity.thresholds = c(), do.multiclass=c(), LEVELS = c(),
                            Lnames=c()) { #sleepclass=c()
   
@@ -13,8 +15,11 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
   # function.
   
   if ("all" %in% frag.metrics) {
-    frag.metrics = c("mean_bout","TP","Gini","power","hazard", "h", "CoV",
-                     "dfa", "InfEn","SampEn","ApEn")
+    frag.metrics = c("mean_duration", "TP", "Gini", "power",
+                     "hazard", "h", "CoV",
+                     "dfa", "InfEn", "SampEn", "ApEn", "RQA",
+                     "mean_volume", "TP_volume", "Gini_volume",
+                     "mean_acc", "TP_acc", "Gini_acc")
   }
   min_Nfragments = 10 # minimum number of required fragments
   min_Nfragments_TP_only = 1
@@ -123,21 +128,61 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
   }
   x = as.integer(x)
+  # try-out dummy example:
+  # A = 1:20
+  # D = c(rep(0,4),rep(1,4),rep(0,4),rep(1,4),rep(0,4))
+  # rle(D)
+  ACCcs = c(0,cumsum(ACC))
+  ACCmean = diff(ACCcs[c(1,which(diff(x) != 0)+1,length(ACCcs))]) # mean acceleration per segment
+  
   # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
   # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
   fragments = rle(x)
+  fragments$ACCmean = ACCmean
+  fragments$volume = fragments$ACCmean * fragments$length
   Nfragments = length(fragments$lengths) / 2
   if (Nfragments >= min_Nfragments) {
+    Acc1 = fragments$ACCmean[which(fragments$value == 1)]
+    Acc0 = fragments$ACCmean[which(fragments$value == 0)]
+    Volume1 = fragments$volume[which(fragments$value == 1)]
+    Volume0 = fragments$volume[which(fragments$value == 0)]
     State1 = fragments$length[which(fragments$value == 1)]
     State0 = fragments$length[which(fragments$value == 0)]
     output[["nfragments_0"]] = length(State0)
     output[["nfragments_1"]] = length(State1)
+    # Acceleration related metrics
+    if ("mean_acc" %in% frag.metrics){
+      output[["acc_0"]] = mean(Acc0)
+      output[["acc_1"]] = mean(Acc1)
+    }
+    if ("TP_acc" %in% frag.metrics){
+      output[["towardsTPacc"]] = 1/mean(Acc0) # transition towards behaviour of interest
+      output[["awayTPacc"]] = 1/mean(Acc1) # transition away from behaviour of interest
+    }
+    if ("Gini_acc" %in% frag.metrics){
+      output[["Gini_0acc"]] = ineq::Gini(Acc0,corr = T)
+      output[["Gini_1acc"]] = ineq::Gini(Acc1,corr = T)
+    }
     
+    # Volume related metrics
+    if ("mean_volume" %in% frag.metrics){
+      output[["volume_0"]] = mean(Volume0)
+      output[["volume_1"]] = mean(Volume1)
+    }
+    if ("TP_volume" %in% frag.metrics){
+      output[["towardsTPvolume"]] = 1/mean(Volume0) # transition towards behaviour of interest
+      output[["awayTPvolume"]] = 1/mean(Volume1) # transition away from behaviour of interest
+    }
+    if ("Gini_volume" %in% frag.metrics){
+      output[["Gini_0volume"]] = ineq::Gini(Volume0,corr = T)
+      output[["Gini_1volume"]] = ineq::Gini(Volume1,corr = T)
+    }
+    # Time related metrics
     if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
       output[["CoV_0"]] = sd(State0) / mean(log(State0))
       output[["CoV_1"]] = sd(State1) / mean(log(State1))
     }
-    if ("mean_bout" %in% frag.metrics){
+    if ("mean_duration" %in% frag.metrics){
       output[["mean_0"]] = mean(State0)
       output[["mean_1"]] = mean(State1)
     }
@@ -155,8 +200,8 @@ g.fragmentation = function(frag.metrics = c("mean_bout", "TP", "Gini", "power", 
       na = length(State1)
       rmin = min(State0)
       amin = min(State1)
-      output[["alpha_0"]] = 1+ nr/sum(log(State0/(rmin-0.5)))
-      output[["alpha_1"]] = 1+ na/sum(log(State1/(amin-0.5)))
+      output[["alpha_0"]] = 1+ nr/sum(log(State0/(rmin))) # adapted to match Chastin 2010
+      output[["alpha_1"]] = 1+ na/sum(log(State1/(amin))) # adapted to match Chastin 2010
       # From this we can calculate (according to Chastin 2010):
       output[["x0.5_0"]] = 2^ (1 / (output[["alpha_0"]]-1) * min(State0))
       output[["x0.5_1"]] = 2^ (1 / (output[["alpha_1"]]-1) * min(State1))

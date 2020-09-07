@@ -13,10 +13,11 @@ and assuming that acceleration values have already been
 converted into intergers of zeros and ones. 
 }
 \usage{
-  g.fragmentation(frag.metrics = c("mean_bout", "TP", "Gini", "power",
-                                          "hazard", "h",
-                                          "CoV", "dfa", "InfEn",
-                                          "SampEn", "ApEn", "RQA", "all"),
+  g.fragmentation(frag.metrics = c("mean_duration", "TP", "Gini", "power",
+                                            "hazard", "h", "CoV",
+                                            "dfa", "InfEn", "SampEn", "ApEn", "RQA",
+                                            "mean_volume", "TP_volume", "Gini_volume",
+                                            "mean_acc", "TP_acc", "Gini_acc", "all"),
                   ACC = c(), intensity.thresholds = c(),
                   do.multiclass =c(),
                   LEVELS = c(),
@@ -25,8 +26,11 @@ converted into intergers of zeros and ones.
 \arguments{
    \item{frag.metrics}{
    Character with fragmentation metric to exract. Can be
-  "mean_bout", "TP", "Gini", "power", "hazard", "h", "CoV",
-  "dfa", "InfEn", "SampEn", "ApEn", "RQA"
+ "mean_duration", "TP", "Gini", "power",
+"hazard", "h", "CoV",
+"dfa", "InfEn", "SampEn", "ApEn", "RQA",
+"mean_volume", "TP_volume", "Gini_volume",
+"mean_acc", "TP_acc", "Gini_acc"
   or all the above metrics "all".
   }
   \item{ACC}{ Acceleration time series (optional) with which complexity metrics are derived
@@ -79,7 +83,7 @@ List with Character object showing how decimals are separated
 }
 \details{
 Metrics include
-mean_bout (mean bout duration),
+mean_duration (mean bout duration),
 TP (between states transition probability),
 Gini (gini index),
 power (alapha parameter for power law distribution)

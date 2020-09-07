@@ -30,18 +30,34 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
                         intensity.thresholds=intensity.thresholds,
                         do.multiclass=TRUE)
 
+  
+  
+  expect_equal(round(out$volume_0, digits=2), 8393.75)
+  expect_equal(round(out$volume_1, digits=1), 412.5)
+  expect_equal(round(out$towardsTPvolume, digits=5), 0.00012)
+  expect_equal(round(out$awayTPvolume, digits=5), 0.00242)
+  expect_equal(round(out$Gini_0volume, digits=3), 0.408)
+  expect_equal(round(out$Gini_1volume, digits=4), 0.1877)
+  
+  expect_equal(round(out$acc_0, digits=1), 1056.2)
+  expect_equal(round(out$acc_1, digits=1), 100)
+  expect_equal(round(out$towardsTPacc, digits=5), 0.00095)
+  expect_equal(round(out$awayTPacc, digits=2), 0.01)
+  expect_equal(round(out$Gini_0acc, digits=3), 0.331)
+  expect_equal(round(out$Gini_1acc, digits=4), 0.0968)
+  
   expect_equal(round(out$mean_0, digits=3), 7)
   expect_equal(round(out$mean_1, digits=3), 4)
   expect_equal(round(out$towardsTP, digits=4), 0.1429)
   expect_equal(round(out$awayTP, digits=4), 0.25)
   expect_equal(round(out$Gini_0, digits=4), 0.129)
   expect_equal(round(out$Gini_1, digits=4), 0.0968)
-  expect_equal(round(out$alpha_0, digits=4), 3.4074)
-  expect_equal(round(out$alpha_1, digits=4), 3.2033)
+  expect_equal(round(out$alpha_0, digits=4), 4.2255)
+  expect_equal(round(out$alpha_1, digits=4), 4.6826)
   expect_equal(round(out$h_0, digits=4), 0.5208)
   expect_equal(round(out$h_1, digits=4), 0.6389)
-  expect_equal(round(out$x0.5_0, digits=4), 4.2191)
-  expect_equal(round(out$x0.5_1, digits=4), 2.5697)
+  expect_equal(round(out$x0.5_0, digits=4), 2.9285)
+  expect_equal(round(out$x0.5_1, digits=4), 1.7589)
   expect_equal(round(out$W0.5_0, digits=4), 1)
   expect_equal(round(out$W0.5_1, digits=4), 1)
   expect_equal(round(out$dfa, digits=4), 0.8884)
@@ -49,6 +65,8 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_equal(round(out$SampEn_multiclass, digits=4), 0.0146)
   expect_equal(round(out$InfEn_multiclass, digits=4), 0.9847)
   expect_equal(round(out$FastApEn_contin, digits=4), 0.8031)
+  
+  
   
   expect_equal(round(out$IN2MVPA_TPsum, digits=4), 0.1406)
   expect_equal(round(out$IN2LIPA_TPsum, digits=4), 0.1094)
