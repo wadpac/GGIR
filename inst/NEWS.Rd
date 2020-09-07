@@ -1,14 +1,22 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.1-1 (GitHub-only-release date:31-08-2020)}{
+\itemize{
+  \item Part2 argument qwindow now able to handle person specific activity diary
+  \item Intensity gradient now also extracted from long MX windows, see MX.ig.min.dur
+}
+}
 \section{Changes in version 2.1-0 (release date:27-08-2020)}{
 \itemize{
+  \item Part 2 now able to be guided by activity log (see qwindow)
+  \item Part 2 now stores output also in long format if day is segmented
   \item Actigraph serial number now extracted from the csv fileheader
   \item Actigraph serial number now used to assign correct dynamic range per
   Actigraph generation (6 and 8 g respectively). Previously 8 assumed.
   \item Part 2 indicator added of which axis is most correlated with itself
   over 24 hours, for hip data this may be indicator of vertical axis orientation.
-  \item Part 1 bug fixed in timestamp generation that caused measurements 
+  \item Part 1 bug fixed in timestamp generation that caused measurements
   that start exactly at the hour and 0 minutes to have a 1 minute offset in time.
   \item Part 1 to reduce data storage size epoch level metric values are now
   rounded to 4 decimal places.

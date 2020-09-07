@@ -1,7 +1,7 @@
 g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantiletype,
                            winhr, L5M5window, M5L5res, ws3, IVIS_epochsize_seconds, 
                            IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels,
-                           firstmidnighti, ws2, midnightsi, iglevels, qM5L5) {
+                           firstmidnighti, ws2, midnightsi, iglevels, qM5L5, MX.ig.min.dur = 10) {
   if (doquan == TRUE) {
     QLN = rep(" ",length(qlevels))
     for (QLNi in 1:length(qlevels)) {
@@ -11,6 +11,9 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
   QUAN = qlevels_names = c()
   ML5AD = ML5AD_names = c()
   one2sixname = ""
+  if (is.data.frame(t_TWDI) == TRUE) { # If an activity log was used then use for average day only 24 hour window.
+    t_TWDI= c(0,24)
+  }
   if (doquan == TRUE) {
     for (quani in 1:ncol(averageday)) { # these columns of averageday correspond to the metrics from part 1
       if (colnames(M$metashort)[(quani+1)] %in% c("anglex", "angley", "anglez") == FALSE) {
@@ -35,7 +38,8 @@ g.analyse.avday = function(qlevels, doquan, averageday, M, IMP, t_TWDI, quantile
           avday = averageday[,quani]
           avday = c(avday[(firstmidnighti*(ws2/ws3)):length(avday)],avday[1:((firstmidnighti*(ws2/ws3))-1)])
           # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
-          ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],M5L5res,winhr_value, qM5L5=qM5L5)
+          ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF=t_TWDI[1],t1_LFMF=t_TWDI[length(t_TWDI)],
+                               M5L5res,winhr_value, qM5L5=qM5L5, MX.ig.min.dur=MX.ig.min.dur)
           ML5AD = as.data.frame(c(ML5AD,ML5ADtmp), stringsAsFactors = TRUE)
         }
         ML5N = names(ML5AD)
