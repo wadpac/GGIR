@@ -1,13 +1,11 @@
 \name{g.conv.actlog}
 \alias{g.conv.actlog}
 \title{
-  Function to read activity log and convert it into data.frame that 
-  has for each date a different qwindow vector.
+  Function to read activity log and make it useful for the rest of GGIR.
 }
 \description{
-  Downsamples a vector of numeric values at three time resolutions:
-  1 seconds, ws3 seconds, and ws2 second. Function is not intended
-  for direct interaction by package end user
+ Function to read activity log and convert it into data.frame
+ that has for each ID and date a different qwindow vector
   
 }
 \usage{
@@ -23,5 +21,5 @@ Data.frame with column ID, date and qwindow, where each
 qwindow value is a qwindow vector
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }
