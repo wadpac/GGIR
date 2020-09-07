@@ -5,12 +5,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
                    excludefirst.part4=FALSE,excludelast.part4=FALSE) {
-
-
+  
+  
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
-
+  
   nnpp = 40 # number of nights to be displayed in the report (hard-coded not a critical parameter for most scenarios)
   #------------------------------------------------
   # check whether milestone 3 data exists, if not give warning
@@ -74,7 +74,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   # } else {
   #   sleeplog_used = " "
   # }
-
+  
   #========================================================================
   # check which files have already been processed, such that no double work is done
   ffdone = c()
@@ -178,9 +178,15 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = desiredtz)
         #------------------------------------------------------
         # extract the identifier from accelerometer data
-        if (idloc == 2) { #idloc is an argument to specify where the participant identifier can be found
-          getCharBeforeUnderscore = function(x) {
-            return(as.character(unlist(strsplit(x,"_")))[1])
+        if (idloc == 2 | idloc == 5) { #idloc is an argument to specify where the participant identifier can be found
+          if (idloc == 2) {
+            getCharBeforeUnderscore = function(x) {
+              return(as.character(unlist(strsplit(x,"_")))[1])
+            }
+          } else {
+            getCharBeforeUnderscore = function(x) {
+              return(as.character(unlist(strsplit(x," ")))[1])
+            }
           }
           accid = apply(as.matrix(as.character(fnames[i])),MARGIN=c(1),FUN=getCharBeforeUnderscore)
           accid_bu = accid
@@ -203,6 +209,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         } else { # get id from filename
           newaccid = fnames[i]
           if (length(unlist(strsplit(newaccid,"_"))) > 1) newaccid = unlist(strsplit(newaccid,"_"))[1]
+          if (length(unlist(strsplit(newaccid," "))) > 1) newaccid = unlist(strsplit(newaccid,"_"))[1]
           if (length(unlist(strsplit(newaccid,"[.]RDa"))) > 1) newaccid = unlist(strsplit(newaccid,"[.]RDa"))[1]
           if (length(unlist(strsplit(newaccid,"[.]cs"))) > 1) newaccid = unlist(strsplit(newaccid,"[.]cs"))[1]
           accid = newaccid[1]
@@ -230,7 +237,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 warning("\nArgument sleeplogidnum is set to TRUE, but it seems the identifiers are
                     stored as character values, you may want to consider changing sleeplogidnum to TRUE")
               } else {
-
+                
                 if (is.na(accid_num) == TRUE) { # format probably incorrect
                   warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
                            code expects format: ",as.character(accid[1])))
@@ -238,7 +245,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               }
             }
           }
-
+          
         } else {
           wi = 1
         }
@@ -288,7 +295,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # get default onset and wake (based on sleeplog or on heuristic algorithms)
           # def.noc.sleep is an input argument the GGIR user can use
           # to specify what detection strategy is used in the absense of a sleep diary
-
+          
           if (length(def.noc.sleep) == 0 | length(sptwindow_HDCZA_start) == 0) {
             # use L5+/-6hr algorithm if HDCZA fails OR if the user explicitely asks for it (length zero argument)
             guider = "notavailable"
@@ -349,8 +356,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               names(sleeplog.t) = c("ID","night","duration","sleeponset","sleepwake")
             }
             sleeplog.t[j,1:5] = c(accid, j, defaultdur,
-                                       convertHRsinceprevMN2Clocktime(defaultSptOnset),
-                                       convertHRsinceprevMN2Clocktime(defaultSptWake))
+                                  convertHRsinceprevMN2Clocktime(defaultSptOnset),
+                                  convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
           }
           nightj = nightj + 1
@@ -504,7 +511,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       spo[,2:3] = spo[,2:3]+ 24 # + 24 to create continues timelines for day 2 relative to day 1
                       tmpCmd = paste("spo_day2",k,"= spo",sep="") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
-
+                      
                     } else {
                       tmpCmd = paste("spo_day2",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
@@ -518,7 +525,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 }
                 if (daysleeper[j] == TRUE) {
                   if (SptWake < 21 & SptWake > 12 &  SptOnset > SptWake) # waking up in the afternoon should have value above 36
-                  SptWake = SptWake + 24
+                    SptWake = SptWake + 24
                 }
                 # Detect whether none of the SIBs overlaps with the SPT, if this is the case
                 # then probably the night is not going to be very useful for sleep analysis
@@ -625,7 +632,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 rowswithdefi = which(spocum[,5] == defi)
                 if(length(rowswithdefi) > 1) { # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi,]
-
+                  
                   # in DST it can be that a double hour is not recognized as part of the SPT
                   correct01010pattern = function(x) {
                     x = as.numeric(x)
@@ -639,7 +646,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                   #sbefore = spocum.t[,4]
                   delta_t1 = diff(as.numeric(spocum.t[,3]))
-
+                  
                   spocum.t[,4] = correct01010pattern(spocum.t[,4])
                   #----------------------------
                   nightsummary[sumi,1] = accid
@@ -792,7 +799,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=3,wakecol=4,durcol=5,dsthour=dsthour,delta_t1=delta_t1)
                     nightsummary[sumi,] = correctSptEdgingInDoubleHour(nightsummary[sumi,],onsetcol=7,wakecol=8,durcol=9,dsthour=dsthour,delta_t1=delta_t1)
                   }
-
+                  
                   #======================================================================================================
                   sibds_atleast15min = 0
                   if (length(sibds) > 0) {
@@ -902,7 +909,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,29] = sleeplog_used
                   nightsummary[sumi,30] = acc_available
                   nightsummary[sumi,31] = guider
-
+                  
                   if (storefolderstructure == TRUE) {
                     nightsummary[sumi,32] = ffd[i] #full filename structure
                     nightsummary[sumi,33] = ffp[i] #use the lowest foldername as foldername name
@@ -948,7 +955,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     dev.off()
     cnt67 = 1
   }
-
+  
   SI = sessionInfo()
   sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part4.RData",sep="")
   if (file.exists(sessionInfoFile)) {
