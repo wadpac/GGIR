@@ -74,7 +74,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   # } else {
   #   sleeplog_used = " "
   # }
-  
   #========================================================================
   # check which files have already been processed, such that no double work is done
   ffdone = c()
@@ -209,7 +208,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         } else { # get id from filename
           newaccid = fnames[i]
           if (length(unlist(strsplit(newaccid,"_"))) > 1) newaccid = unlist(strsplit(newaccid,"_"))[1]
-          if (length(unlist(strsplit(newaccid," "))) > 1) newaccid = unlist(strsplit(newaccid,"_"))[1]
+          if (length(unlist(strsplit(newaccid," "))) > 1) newaccid = unlist(strsplit(newaccid," "))[1]
           if (length(unlist(strsplit(newaccid,"[.]RDa"))) > 1) newaccid = unlist(strsplit(newaccid,"[.]RDa"))[1]
           if (length(unlist(strsplit(newaccid,"[.]cs"))) > 1) newaccid = unlist(strsplit(newaccid,"[.]cs"))[1]
           accid = newaccid[1]
