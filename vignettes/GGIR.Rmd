@@ -570,7 +570,7 @@ M5VALUE	| Acceleration value for most active 5hrs
 
 **Special note if you are working on compositional data analysis:**
 
-The duration of all `dur_` variables that have `_total_` in their name should add up to the length of the full day.
+The duration of all `dur_` variables that have `_total_` in their name should add up to the total length of the waking hours in a day.
 Similarly, the duration of all other `dur_` variables excluding the variables `_total_` in their name and excluding the variable with `dur_day_min`, `dur_spt_min`, and `dur_day_spt_min` should also add up to the length of the full day.
 
 **Motivation for default boutcriter.in = 0.9:**
