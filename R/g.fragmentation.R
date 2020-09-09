@@ -1,13 +1,10 @@
-g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "power",
-                                            "hazard", "h", "CoV",
-                                            "dfa", "InfEn", "SampEn", "ApEn", "RQA",
-                                            "mean_volume", "TP_volume", "Gini_volume",
-                                            "mean_acc", "TP_acc", "Gini_acc", "all"),
+g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
+                                            "CoV", "all"),
+                           # "dfa", "InfEn", "SampEn", "ApEn", "RQA",
                            ACC = c(), intensity.thresholds = c(), do.multiclass=c(), LEVELS = c(),
                            Lnames=c()) { #sleepclass=c()
   
-  # This function is based on code from R package ActFrag as developed by Junrui Di.
-  # Dependencies: ineq and survival package for Gini and Hazard metric respecitvely.
+  # This function is inspired from R package ActFrag as developed by Junrui Di.
   #
   # frag.metrics: metric to define fragmentation
   # in contract to R package ActFrag this function assumes
@@ -15,11 +12,8 @@ g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "powe
   # function.
   
   if ("all" %in% frag.metrics) {
-    frag.metrics = c("mean_duration", "TP", "Gini", "power",
-                     "hazard", "h", "CoV",
-                     "dfa", "InfEn", "SampEn", "ApEn", "RQA",
-                     "mean_volume", "TP_volume", "Gini_volume",
-                     "mean_acc", "TP_acc", "Gini_acc")
+    frag.metrics = c("mean", "TP", "Gini", "power",
+                     "CoV", "all")
   }
   min_Nfragments = 10 # minimum number of required fragments
   min_Nfragments_TP_only = 1
@@ -36,16 +30,16 @@ g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "powe
     class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1 # convert to numberic class id
   }
   if (length(ACC) > 1 & do.multiclass == TRUE) { # metrics that require more than just binary
-    #====================================================
-    # Approximate Entropy
-    if ("ApEn" %in% frag.metrics) {
-      FastApEn = c()
-      try(expr = {FastApEn = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
-      if (length(FastApEn) == 0) {
-        try(expr = {FastApEn = TSEntropies::ApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
-      }
-      output[["FastApEn_contin"]] = FastApEn
-    }
+    # #====================================================
+    # # Approximate Entropy
+    # if ("ApEn" %in% frag.metrics) {
+    #   FastApEn = c()
+    #   try(expr = {FastApEn = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
+    #   if (length(FastApEn) == 0) {
+    #     try(expr = {FastApEn = TSEntropies::ApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
+    #   }
+    #   output[["FastApEn_contin"]] = FastApEn
+    # }
     #====================================================
     # Convert ACC into categorical multi-class behaviours
     y = rep(0,length(ACC))
@@ -70,12 +64,12 @@ g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "powe
     if ("TP" %in% frag.metrics) {
       fragments3 = rle(y) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
       Nfrag3 = length(fragments3$value)
-      State1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
+      Duration1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
       # Get only indices of inactive fragments that transition to light:
       inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
       # Get only indices of inactive fragments that transition to mvpa:
       inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 3)
-      # State1 = State1[1:(length(State1)-1)] # shorten by 1 do match length of State 2 and 3
+      # Duration1 = Duration1[1:(length(Duration1)-1)] # shorten by 1 do match length of Duration 2 and 3
       # initialise variables:
       output[["IN2PA_TP"]] = NA
       output[["IN2LIPA_TPsum"]] = output[["IN2LIPA_TPlen"]] = output[["Nfragments_IN2LIPA"]] = NA
@@ -83,39 +77,39 @@ g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "powe
       # only calculate this if there are enough fragments for both transitions
       if (length(inact_2_light_trans) >=  min_Nfragments_TP_only & 
           length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
-        State2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
-        output[["IN2LIPA_TPsum"]] = (sum(State2)/sum(State1)) / mean(State1) # transition from inactive to mvpa
-        output[["IN2LIPA_TPlen"]] = (length(State2)/length(State1)) / mean(State1) # transition from inactive to mvpa
-        output[["Nfragments_IN2LIPA"]] = length(State2)
+        Duration2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
+        output[["IN2LIPA_TPsum"]] = (sum(Duration2)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        output[["IN2LIPA_TPlen"]] = (length(Duration2)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        output[["Nfragments_IN2LIPA"]] = length(Duration2)
     
-        State3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
-        output[["IN2MVPA_TPsum"]] = (sum(State3)/sum(State1)) / mean(State1) # transition from inactive to mvpa
-        output[["IN2MVPA_TPlen"]] = (length(State3)/length(State1)) / mean(State1) # transition from inactive to mvpa
-        output[["Nfragments_IN2MVPA"]] = length(State3)
+        Duration3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
+        output[["IN2MVPA_TPsum"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        output[["IN2MVPA_TPlen"]] = (length(Duration3)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        output[["Nfragments_IN2MVPA"]] = length(Duration3)
       }
       if (length(inact_2_light_trans) >= min_Nfragments_TP_only & length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
-        output[["IN2PA_TP"]] = 1 / mean(State1) # transition from inactive to mvpa
+        output[["IN2PA_TP"]] = 1 / mean(Duration1) # transition from inactive to mvpa
       }
     }
-    if ("InfEn" %in% frag.metrics) {
-      alpha = length(unique(y))
-      N = length(y)
-      IEnt = 0
-      uvalues = unique(y)
-      for (i in 1:alpha) {
-        p_i = length(which(y == uvalues[i])) / N
-        IEnt = IEnt - (p_i * log(p_i,2))
-      }
-      output[["InfEn_multiclass"]] = IEnt/ log(alpha, 2)
-    }
-    if ("SampEn" %in% frag.metrics) {
-      SampEn = c()
-      try(expr = {SampEn = TSEntropies::FastSampEn(TS = y, dim = 2, lag = 1)})
-      if (length(SampEn) == 0) {
-        try(expr = {SampEn = TSEntropies::SampEn(TS = y, dim = 2, lag = 1)})
-      }
-      output[["SampEn_multiclass"]] = SampEn
-    }
+    # if ("InfEn" %in% frag.metrics) {
+    #   alpha = length(unique(y))
+    #   N = length(y)
+    #   IEnt = 0
+    #   uvalues = unique(y)
+    #   for (i in 1:alpha) {
+    #     p_i = length(which(y == uvalues[i])) / N
+    #     IEnt = IEnt - (p_i * log(p_i,2))
+    #   }
+    #   output[["InfEn_multiclass"]] = IEnt/ log(alpha, 2)
+    # }
+    # if ("SampEn" %in% frag.metrics) {
+    #   SampEn = c()
+    #   try(expr = {SampEn = TSEntropies::FastSampEn(TS = y, dim = 2, lag = 1)})
+    #   if (length(SampEn) == 0) {
+    #     try(expr = {SampEn = TSEntropies::SampEn(TS = y, dim = 2, lag = 1)})
+    #   }
+    #   output[["SampEn_multiclass"]] = SampEn
+    # }
     rm(y)
   }
   #====================================================
@@ -146,103 +140,106 @@ g.fragmentation = function(frag.metrics = c("mean_duration", "TP", "Gini", "powe
     Acc0 = fragments$ACCmean[which(fragments$value == 0)]
     Volume1 = fragments$volume[which(fragments$value == 1)]
     Volume0 = fragments$volume[which(fragments$value == 0)]
-    State1 = fragments$length[which(fragments$value == 1)]
-    State0 = fragments$length[which(fragments$value == 0)]
-    output[["nfragments_0"]] = length(State0)
-    output[["nfragments_1"]] = length(State1)
-    # Acceleration related metrics
-    if ("mean_acc" %in% frag.metrics){
-      output[["acc_0"]] = mean(Acc0)
-      output[["acc_1"]] = mean(Acc1)
+    Duration1 = fragments$length[which(fragments$value == 1)]
+    Duration0 = fragments$length[which(fragments$value == 0)]
+    output[["Nfragments_0"]] = length(Duration0)
+    output[["Nfragments_1"]] = length(Duration1)
+    # mean
+    if ("mean" %in% frag.metrics){
+      output[["mean_acc_0"]] = mean(Acc0)
+      output[["mean_acc_1"]] = mean(Acc1)
+      output[["mean_vol_0"]] = mean(Volume0)
+      output[["mean_vol_1"]] = mean(Volume1)
+      output[["mean_dur_0"]] = mean(Duration0)
+      output[["mean_dur_1"]] = mean(Duration1)
     }
-    if ("TP_acc" %in% frag.metrics){
-      output[["towardsTPacc"]] = 1/mean(Acc0) # transition towards behaviour of interest
-      output[["awayTPacc"]] = 1/mean(Acc1) # transition away from behaviour of interest
-    }
-    if ("Gini_acc" %in% frag.metrics){
-      output[["Gini_0acc"]] = ineq::Gini(Acc0,corr = T)
-      output[["Gini_1acc"]] = ineq::Gini(Acc1,corr = T)
-    }
-    
-    # Volume related metrics
-    if ("mean_volume" %in% frag.metrics){
-      output[["volume_0"]] = mean(Volume0)
-      output[["volume_1"]] = mean(Volume1)
-    }
-    if ("TP_volume" %in% frag.metrics){
-      output[["towardsTPvolume"]] = 1/mean(Volume0) # transition towards behaviour of interest
-      output[["awayTPvolume"]] = 1/mean(Volume1) # transition away from behaviour of interest
-    }
-    if ("Gini_volume" %in% frag.metrics){
-      output[["Gini_0volume"]] = ineq::Gini(Volume0,corr = T)
-      output[["Gini_1volume"]] = ineq::Gini(Volume1,corr = T)
-    }
-    # Time related metrics
-    if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
-      output[["CoV_0"]] = sd(State0) / mean(log(State0))
-      output[["CoV_1"]] = sd(State1) / mean(log(State1))
-    }
-    if ("mean_duration" %in% frag.metrics){
-      output[["mean_0"]] = mean(State0)
-      output[["mean_1"]] = mean(State1)
+    # Gini
+    if ("Gini" %in% frag.metrics){
+      output[["Gini_dur_0"]] = ineq::Gini(Duration0,corr = T)
+      output[["Gini_dur_1"]] = ineq::Gini(Duration1,corr = T)
+      output[["Gini_acc_0"]] = ineq::Gini(Acc0,corr = T)
+      output[["Gini_acc_1"]] = ineq::Gini(Acc1,corr = T)
+      output[["Gini_vol_0"]] = ineq::Gini(Volume0,corr = T)
+      output[["Gini_vol_1"]] = ineq::Gini(Volume1,corr = T)
     }
     if ("TP" %in% frag.metrics){
-      output[["towardsTP"]] = 1/mean(State0) # transition towards behaviour of interest
-      output[["awayTP"]] = 1/mean(State1) # transition away from behaviour of interest
+      output[["towardsTP_acc"]] = 1/mean(Acc0) # transition towards behaviour of interest
+      output[["awayTP_acc"]] = 1/mean(Acc1) # transition away from behaviour of interest
+      output[["towardsTP_vol"]] = 1/mean(Volume0) # transition towards behaviour of interest
+      output[["awayTP_vol"]] = 1/mean(Volume1) # transition away from behaviour of interest
+      output[["towardsTP_dur"]] = 1/mean(Duration0) # transition towards behaviour of interest
+      output[["awayTP_dur"]] = 1/mean(Duration1) # transition away from behaviour of interest
     }
-    if ("Gini" %in% frag.metrics){
-      output[["Gini_0"]] = ineq::Gini(State0,corr = T)
-      output[["Gini_1"]] = ineq::Gini(State1,corr = T)
+    if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
+      output[["CoV_dur_0"]] = sd(Duration0) / mean(log(Duration0))
+      output[["CoV_dur_1"]] = sd(Duration1) / mean(log(Duration1))
+      output[["CoV_acc_0"]] = sd(Acc0) / mean(log(Acc0))
+      output[["CoV_acc_1"]] = sd(Acc1) / mean(log(Acc1))
+      output[["CoV_vol_0"]] = sd(Volume0) / mean(log(Volume0))
+      output[["CoV_vol_1"]] = sd(Volume1) / mean(log(Volume1))
     }
+    
     if ("power" %in% frag.metrics){
-      output[["alpha_0"]] = output[["alpha_1"]] = output[["x0.5_0"]] = output[["x0.5_1"]] = output[["W0.5_0"]] = output[["W0.5_1"]] = NA
-      nr = length(State0)
-      na = length(State1)
-      rmin = min(State0)
-      amin = min(State1)
-      output[["alpha_0"]] = 1+ nr/sum(log(State0/(rmin))) # adapted to match Chastin 2010
-      output[["alpha_1"]] = 1+ na/sum(log(State1/(amin))) # adapted to match Chastin 2010
+      calc_alpha = function(x) {
+        nr = length(x)
+        rmin = min(x)
+        alpha = 1+ nr/sum(log(x/(rmin))) # adapted to match Chastin 2010
+        return(alpha)
+      }
+      output[["alpha_dur_0"]] = calc_alpha(Duration0)
+      output[["alpha_dur_1"]] = calc_alpha(Duration1)
+      output[["alpha_acc_0"]] = calc_alpha(Acc0)
+      output[["alpha_acc_1"]] = calc_alpha(Acc1)
+      output[["alpha_vol_0"]] = calc_alpha(Volume0)
+      output[["alpha_vol_1"]] = calc_alpha(Volume1)
       # From this we can calculate (according to Chastin 2010):
-      output[["x0.5_0"]] = 2^ (1 / (output[["alpha_0"]]-1) * min(State0))
-      output[["x0.5_1"]] = 2^ (1 / (output[["alpha_1"]]-1) * min(State1))
-      # From this we can calculate (according to Chastin 2010):
-      output[["W0.5_0"]] = sum(State0[which(State0 > output[["x0.5_0"]])]) / sum(State0)
-      output[["W0.5_1"]] = sum(State1[which(State1 > output[["x0.5_1"]])]) / sum(State1)
+      output[["x0.5_dur_0"]] = 2^ (1 / (output[["alpha_dur_0"]]-1) * min(Duration0))
+      output[["x0.5_dur_1"]] = 2^ (1 / (output[["alpha_dur_1"]]-1) * min(Duration1))
+      output[["x0.5_acc_0"]] = 2^ (1 / (output[["alpha_acc_0"]]-1) * min(Acc0))
+      output[["x0.5_acc_1"]] = 2^ (1 / (output[["alpha_acc_1"]]-1) * min(Acc1))
+      output[["x0.5_vol_0"]] = 2^ (1 / (output[["alpha_vol_0"]]-1) * min(Volume0))
+      output[["x0.5_vol_1"]] = 2^ (1 / (output[["alpha_vol_1"]]-1) * min(Volume1))
+      output[["W0.5_dur_0"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_0"]])]) / sum(Duration0)
+      output[["W0.5_dur_1"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_1"]])]) / sum(Duration1)
+      output[["W0.5_acc_0"]] = sum(Acc0[which(Acc0 > output[["x0.5_acc_0"]])]) / sum(Acc0)
+      output[["W0.5_acc_1"]] = sum(Acc1[which(Acc1 > output[["x0.5_acc_1"]])]) / sum(Acc1)
+      output[["W0.5_vol_0"]] = sum(Volume0[which(Volume0 > output[["x0.5_vol_0"]])]) / sum(Volume0)
+      output[["W0.5_vol_1"]] = sum(Volume1[which(Volume1 > output[["x0.5_vol_1"]])]) / sum(Volume1)
     }
-    if ("hazard" %in% frag.metrics){
-      fitr = survival::survfit(survival::Surv(State0,rep(1,length(State0)))~1)
-      fita = survival::survfit(survival::Surv(State1,rep(1,length(State1)))~1)
-      output[["h_0"]] =  mean(fitr$n.event/fitr$n.risk)
-      output[["h_1"]] = mean(fita$n.event/fita$n.risk)
-    }
-    # , TSEntropies, nonlinearTseries
-    if ("dfa" %in% frag.metrics) {
-      dfa = nonlinearTseries::dfa(time.series = x,
-                                  window.size.range = c(3, 30),
-                                  npoints = 20,
-                                  do.plot = FALSE)
-      output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)[1]
-    }
+    # if ("hazard" %in% frag.metrics){
+    #   fitr = survival::survfit(survival::Surv(Duration0,rep(1,length(Duration0)))~1)
+    #   fita = survival::survfit(survival::Surv(Duration1,rep(1,length(Duration1)))~1)
+    #   output[["h_dur_0"]] =  mean(fitr$n.event/fitr$n.risk)
+    #   output[["h_dur_1"]] = mean(fita$n.event/fita$n.risk)
+    # }
+    # # , TSEntropies, nonlinearTseries
+    # if ("dfa" %in% frag.metrics) {
+    #   dfa = nonlinearTseries::dfa(time.series = x,
+    #                               window.size.range = c(3, 30),
+    #                               npoints = 20,
+    #                               do.plot = FALSE)
+    #   output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)[1]
+    # }
     # #------------------------------------------------------------------------
     # # For the following metrics it is a bit of a question mark at the moment whether
     # # applying them to binary time series is actually meaningful, maybe these
     # # should be moved to a seperate function to be applied to all
     # # behavioural classes/intensities, which we could name g.complexity
-    if ("InfEn" %in% frag.metrics) {
-      TS = x
-      alpha = length(unique(TS))
-      N = length(TS)
-      IEnt = 0
-      uvalues = unique(TS)
-      for (i in 1:alpha) {
-        p_i = length(which(TS == uvalues[i])) / N
-        IEnt = IEnt - (p_i * log(p_i,2))
-      }
-      output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
-    }
-    if ("SampEn" %in% frag.metrics) {
-      output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
-    }
+    # if ("InfEn" %in% frag.metrics) {
+    #   TS = x
+    #   alpha = length(unique(TS))
+    #   N = length(TS)
+    #   IEnt = 0
+    #   uvalues = unique(TS)
+    #   for (i in 1:alpha) {
+    #     p_i = length(which(TS == uvalues[i])) / N
+    #     IEnt = IEnt - (p_i * log(p_i,2))
+    #   }
+    #   output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
+    # }
+    # if ("SampEn" %in% frag.metrics) {
+    #   output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
+    # }
   }
   return(output)
 }

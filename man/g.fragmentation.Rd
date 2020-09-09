@@ -13,25 +13,17 @@ and assuming that acceleration values have already been
 converted into intergers of zeros and ones. 
 }
 \usage{
-  g.fragmentation(frag.metrics = c("mean_duration", "TP", "Gini", "power",
-                                            "hazard", "h", "CoV",
-                                            "dfa", "InfEn", "SampEn", "ApEn", "RQA",
-                                            "mean_volume", "TP_volume", "Gini_volume",
-                                            "mean_acc", "TP_acc", "Gini_acc", "all"),
+  g.fragmentation(frag.metrics = c("mean", "TP", "Gini", "power",
+                                            "CoV",  "all"),
                   ACC = c(), intensity.thresholds = c(),
                   do.multiclass =c(),
-                  LEVELS = c(),
-                           Lnames=c())
+                  LEVELS = c(), Lnames=c())
 }
 \arguments{
    \item{frag.metrics}{
    Character with fragmentation metric to exract. Can be
- "mean_duration", "TP", "Gini", "power",
-"hazard", "h", "CoV",
-"dfa", "InfEn", "SampEn", "ApEn", "RQA",
-"mean_volume", "TP_volume", "Gini_volume",
-"mean_acc", "TP_acc", "Gini_acc"
-  or all the above metrics "all".
+  "mean", "TP", "Gini", "power", or "CoV"
+  or all the above metrics with "all".
   }
   \item{ACC}{ Acceleration time series (optional) with which complexity metrics are derived
   that depend on continuous data or multi-class data.
@@ -51,35 +43,18 @@ converted into intergers of zeros and ones.
 }
 \value{
 List with Character object showing how decimals are separated
-  \item{mean_1}{mean duration of behaviour of interest}
-  \item{mean_0}{mean duration of breaks in behaviour of interest}
-  \item{awayTP}{transition probability away from behaviour of interest}
-  \item{towardsTP}{transition probability towards behaviour of interest}
-  \item{Gini_1}{Gini index for behaviour of interest}
-  \item{Gini_0}{Gini index for breaks in behaviour of interest}
-  \item{h_1}{hazard function for behaviour of interest}
-  \item{h_0}{hazard function for breaks in behaviour of interest}
-  \item{alpha_1}{power law parameter for behaviour of interest}
-  \item{alpha_0}{power law parameter for breaks in behaviour of interest}
-  \item{x0.5_0}{ }
-  \item{x0.5_1}{ }
-  \item{W0.5_0}{ }
-  \item{W0.5_1}{ }
-  \item{dfa}{ }
-  \item{InfEn_binary}{ }
-  \item{SampEn_multiclass}{ }
-  \item{InfEn_multiclass}{ }
-  \item{FastApEn_contin}{ }
-  %\item{REC_rqa_contin}{ }
-  %\item{DET_rqa_contin}{ }
-  %\item{RATIO_rqa_contin}{ }
-  %\item{DIV_rqa_contin}{ }
-  %\item{Lmax_rqa_contin}{ }
-  %\item{Lmean_rqa_contin}{ }
-  %\item{ENTR_rqa_contin}{ }
-  %\item{LAM_rqa_contin}{ }
-  %\item{Vmax_rqa_contin}{ }
- %\item{Vmean_rqa_contin}{ }
+  \item{mean_dur_1}{mean duration of behaviour of interest}
+  \item{mean_dur_0}{mean duration of breaks in behaviour of interest}
+  \item{awayTP_dur}{transition probability away from behaviour of interest}
+  \item{towardsTP_dur}{transition probability towards behaviour of interest}
+  \item{Gini_dur_1}{Gini index for behaviour of interest}
+  \item{Gini_dur_0}{Gini index for breaks in behaviour of interest}
+  \item{alpha_dur_1}{power law parameter for behaviour of interest}
+  \item{alpha_dur_0}{power law parameter for breaks in behaviour of interest}
+  \item{x0.5_dur_0}{ }
+  \item{x0.5_dur_1}{ }
+  \item{W0.5_dur_0}{ }
+  \item{W0.5_dur_1}{ }
 }
 \details{
 Metrics include
