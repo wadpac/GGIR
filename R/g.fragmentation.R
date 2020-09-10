@@ -2,7 +2,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                                             "CoV", "all"),
                            # "dfa", "InfEn", "SampEn", "ApEn", "RQA",
                            ACC = c(), intensity.thresholds = c(), do.multiclass=c(), LEVELS = c(),
-                           Lnames=c()) { #sleepclass=c()
+                           Lnames=c(), xmin=1) { #sleepclass=c()
   
   # This function is inspired from R package ActFrag as developed by Junrui Di.
   #
@@ -10,12 +10,13 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # in contract to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of outside this
   # function.
+  # xmin is shortest recordable boutlength
   
   if ("all" %in% frag.metrics) {
     frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "all")
   }
-  min_Nfragments = 10 # minimum number of required fragments
+  min_Nfragments_power = min_Nfragments = 10 # minimum number of required fragments
   min_Nfragments_TP_only = 1
   intensity.thresholds = c(0, intensity.thresholds) 
   output = list()
@@ -179,7 +180,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["CoV_vol_1"]] = sd(Volume1) / mean(log(Volume1))
     }
     
-    if ("power" %in% frag.metrics){
+    if ("power" %in% frag.metrics & Nfragments >= min_Nfragments_power){
       calc_alpha = function(x) {
         nr = length(x)
         rmin = min(x)
@@ -188,23 +189,11 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       }
       output[["alpha_dur_0"]] = calc_alpha(Duration0)
       output[["alpha_dur_1"]] = calc_alpha(Duration1)
-      output[["alpha_acc_0"]] = calc_alpha(Acc0)
-      output[["alpha_acc_1"]] = calc_alpha(Acc1)
-      output[["alpha_vol_0"]] = calc_alpha(Volume0)
-      output[["alpha_vol_1"]] = calc_alpha(Volume1)
       # From this we can calculate (according to Chastin 2010):
-      output[["x0.5_dur_0"]] = 2^ (1 / (output[["alpha_dur_0"]]-1) * min(Duration0))
-      output[["x0.5_dur_1"]] = 2^ (1 / (output[["alpha_dur_1"]]-1) * min(Duration1))
-      output[["x0.5_acc_0"]] = 2^ (1 / (output[["alpha_acc_0"]]-1) * min(Acc0))
-      output[["x0.5_acc_1"]] = 2^ (1 / (output[["alpha_acc_1"]]-1) * min(Acc1))
-      output[["x0.5_vol_0"]] = 2^ (1 / (output[["alpha_vol_0"]]-1) * min(Volume0))
-      output[["x0.5_vol_1"]] = 2^ (1 / (output[["alpha_vol_1"]]-1) * min(Volume1))
+      output[["x0.5_dur_0"]] = 2^ (1 / (output[["alpha_dur_0"]]-1) * xmin)
+      output[["x0.5_dur_1"]] = 2^ (1 / (output[["alpha_dur_1"]]-1) * xmin)
       output[["W0.5_dur_0"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_0"]])]) / sum(Duration0)
       output[["W0.5_dur_1"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_1"]])]) / sum(Duration1)
-      output[["W0.5_acc_0"]] = sum(Acc0[which(Acc0 > output[["x0.5_acc_0"]])]) / sum(Acc0)
-      output[["W0.5_acc_1"]] = sum(Acc1[which(Acc1 > output[["x0.5_acc_1"]])]) / sum(Acc1)
-      output[["W0.5_vol_0"]] = sum(Volume0[which(Volume0 > output[["x0.5_vol_0"]])]) / sum(Volume0)
-      output[["W0.5_vol_1"]] = sum(Volume1[which(Volume1 > output[["x0.5_vol_1"]])]) / sum(Volume1)
     }
     # if ("hazard" %in% frag.metrics){
     #   fitr = survival::survfit(survival::Surv(Duration0,rep(1,length(Duration0)))~1)

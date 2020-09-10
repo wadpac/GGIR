@@ -17,7 +17,7 @@ converted into intergers of zeros and ones.
                                             "CoV",  "all"),
                   ACC = c(), intensity.thresholds = c(),
                   do.multiclass =c(),
-                  LEVELS = c(), Lnames=c())
+                  LEVELS = c(), Lnames=c(), xmin=1)
 }
 \arguments{
    \item{frag.metrics}{
@@ -26,19 +26,22 @@ converted into intergers of zeros and ones.
   or all the above metrics with "all".
   }
   \item{ACC}{ Acceleration time series (optional) with which complexity metrics are derived
-  that depend on continuous data or multi-class data.
+    that depend on continuous data or multi-class data.
   }
   \item{intensity.thresholds}{
     Intensity thresholds to define classes in the multi-class approach where bouts are not considered.
   }
   \item{do.multiclass}{
-  Boolean to indicate whether multiclass metrics should be extracted
+    Boolean to indicate whether multiclass metrics should be extracted
   }
   \item{LEVELS}{
     vector of behavioural level identifiers derived with identify_levels function
   }
   \item{Lnames}{
     vector with characters to specify the names of the level identifiers.
+  }
+  \item{xmin}{
+    Minimum recordable bout length.
   }
 }
 \value{
