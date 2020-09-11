@@ -121,7 +121,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(160))
+  expect_that(ncol(output),equals(162))
   expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
