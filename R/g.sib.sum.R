@@ -27,7 +27,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   if (length(which(un == 0 | is.na(un) == TRUE)) > 0) {
     un = un[-c(which(un == 0 | is.na(un) == TRUE))]
   }
-  for (i in 1:length(un)) { #nights
+  for (i in 1:max(un)) { #nights #length(un)
     qqq1 = which(night == i)[1]
     qqq2 = which(night == i)[length(which(night == i))]
     if (length(qqq1) == 1 & length(qqq2) == 1) {

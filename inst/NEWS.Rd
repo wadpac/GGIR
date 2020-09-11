@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 2.1-2 (GitHub-only-release date:15-09-2020)}{
+\itemize{
+  \item Part 5 bug fixed with day name and date allocation for daysleepers for MM report
+  \item Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.
+}
+}
+
 \section{Changes in version 2.1-1 (GitHub-only-release date:07-09-2020)}{
 \itemize{
   \item Part2 argument qwindow now able to handle person specific activity diary
