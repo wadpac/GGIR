@@ -34,7 +34,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     dolog = FALSE
   }
   if (dolog == TRUE) {
-    LL = g.loadlog(loglocation,coln1,colid,nnights,sleeplogidnum)
+    LL = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum)
     sleeplog = LL$sleeplog
     save(sleeplog,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))
   }
