@@ -31,16 +31,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1 # convert to numberic class id
   }
   if (length(ACC) > 1 & do.multiclass == TRUE) { # metrics that require more than just binary
-    # #====================================================
-    # # Approximate Entropy
-    # if ("ApEn" %in% frag.metrics) {
-    #   FastApEn = c()
-    #   try(expr = {FastApEn = TSEntropies::FastApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
-    #   if (length(FastApEn) == 0) {
-    #     try(expr = {FastApEn = TSEntropies::ApEn(TS = ACC, dim = 2, lag = 1, r = 0.15 * sd(ACC))})
-    #   }
-    #   output[["FastApEn_contin"]] = FastApEn
-    # }
     #====================================================
     # Convert ACC into categorical multi-class behaviours
     y = rep(0,length(ACC))
@@ -79,38 +69,19 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       if (length(inact_2_light_trans) >=  min_Nfragments_TP_only & 
           length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
         Duration2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
-        output[["IN2LIPA_TPsum"]] = (sum(Duration2)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
-        output[["IN2LIPA_TPlen"]] = (length(Duration2)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        output[["IN2LIPA_TP"]] = (sum(Duration2)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        # output[["IN2LIPA_TPlen"]] = (length(Duration2)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
         output[["Nfragments_IN2LIPA"]] = length(Duration2)
     
         Duration3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
-        output[["IN2MVPA_TPsum"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
-        output[["IN2MVPA_TPlen"]] = (length(Duration3)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        output[["IN2MVPA_TP"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
+        # output[["IN2MVPA_TPlen"]] = (length(Duration3)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
         output[["Nfragments_IN2MVPA"]] = length(Duration3)
       }
       if (length(inact_2_light_trans) >= min_Nfragments_TP_only & length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
         output[["IN2PA_TP"]] = 1 / mean(Duration1) # transition from inactive to mvpa
       }
     }
-    # if ("InfEn" %in% frag.metrics) {
-    #   alpha = length(unique(y))
-    #   N = length(y)
-    #   IEnt = 0
-    #   uvalues = unique(y)
-    #   for (i in 1:alpha) {
-    #     p_i = length(which(y == uvalues[i])) / N
-    #     IEnt = IEnt - (p_i * log(p_i,2))
-    #   }
-    #   output[["InfEn_multiclass"]] = IEnt/ log(alpha, 2)
-    # }
-    # if ("SampEn" %in% frag.metrics) {
-    #   SampEn = c()
-    #   try(expr = {SampEn = TSEntropies::FastSampEn(TS = y, dim = 2, lag = 1)})
-    #   if (length(SampEn) == 0) {
-    #     try(expr = {SampEn = TSEntropies::SampEn(TS = y, dim = 2, lag = 1)})
-    #   }
-    #   output[["SampEn_multiclass"]] = SampEn
-    # }
     rm(y)
   }
   #====================================================
@@ -164,12 +135,12 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["Gini_vol_1"]] = ineq::Gini(Volume1,corr = T)
     }
     if ("TP" %in% frag.metrics){
-      output[["towardsTP_acc"]] = 1/mean(Acc0) # transition towards behaviour of interest
-      output[["awayTP_acc"]] = 1/mean(Acc1) # transition away from behaviour of interest
-      output[["towardsTP_vol"]] = 1/mean(Volume0) # transition towards behaviour of interest
-      output[["awayTP_vol"]] = 1/mean(Volume1) # transition away from behaviour of interest
-      output[["towardsTP_dur"]] = 1/mean(Duration0) # transition towards behaviour of interest
-      output[["awayTP_dur"]] = 1/mean(Duration1) # transition away from behaviour of interest
+      output[["B01_TP_acc"]] = 1/mean(Acc0) # transition towards behaviour of interest
+      output[["B10_TP_acc"]] = 1/mean(Acc1) # transition away from behaviour of interest
+      output[["B01_TP_vol"]] = 1/mean(Volume0) # transition towards behaviour of interest
+      output[["B10_TP_vol"]] = 1/mean(Volume1) # transition away from behaviour of interest
+      output[["B01_TP_dur"]] = 1/mean(Duration0) # transition towards behaviour of interest
+      output[["B10_TP_dur"]] = 1/mean(Duration1) # transition away from behaviour of interest
     }
     if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
       output[["CoV_dur_0"]] = sd(Duration0) / mean(log(Duration0))
@@ -200,34 +171,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     #   fita = survival::survfit(survival::Surv(Duration1,rep(1,length(Duration1)))~1)
     #   output[["h_dur_0"]] =  mean(fitr$n.event/fitr$n.risk)
     #   output[["h_dur_1"]] = mean(fita$n.event/fita$n.risk)
-    # }
-    # # , TSEntropies, nonlinearTseries
-    # if ("dfa" %in% frag.metrics) {
-    #   dfa = nonlinearTseries::dfa(time.series = x,
-    #                               window.size.range = c(3, 30),
-    #                               npoints = 20,
-    #                               do.plot = FALSE)
-    #   output[["dfa"]] = nonlinearTseries::estimate(dfa,do.plot=FALSE)[1]
-    # }
-    # #------------------------------------------------------------------------
-    # # For the following metrics it is a bit of a question mark at the moment whether
-    # # applying them to binary time series is actually meaningful, maybe these
-    # # should be moved to a seperate function to be applied to all
-    # # behavioural classes/intensities, which we could name g.complexity
-    # if ("InfEn" %in% frag.metrics) {
-    #   TS = x
-    #   alpha = length(unique(TS))
-    #   N = length(TS)
-    #   IEnt = 0
-    #   uvalues = unique(TS)
-    #   for (i in 1:alpha) {
-    #     p_i = length(which(TS == uvalues[i])) / N
-    #     IEnt = IEnt - (p_i * log(p_i,2))
-    #   }
-    #   output[["InfEn_binary"]] = IEnt/ log(alpha, 2)
-    # }
-    # if ("SampEn" %in% frag.metrics) {
-    #   output[["SampEn_binary"]] = TSEntropies::SampEn_C(TS = x, dim = 2, lag = 1)
     # }
   }
   return(output)
