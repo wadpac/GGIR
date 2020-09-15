@@ -347,11 +347,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                           nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
                                                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                                                     }
-                                                    if (timewindowi == "MM") {
-                                                      Nwindows = nrow(summarysleep_tmp2)
-                                                    } else {
+                                                    #if (timewindowi == "MM") {
+                                                    #  Nwindows = nrow(summarysleep_tmp2)
+                                                    #} else {
                                                       Nwindows = length(which(diff(ts$diur) == -1))
-                                                    }
+                                                    #}
                                                     indjump = 1
                                                     qqq_backup = c()
                                                     add_one_day_to_next_date = FALSE
