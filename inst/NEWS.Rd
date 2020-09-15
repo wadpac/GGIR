@@ -6,6 +6,8 @@
 \itemize{
   \item Part 5 bug fixed with day name and date allocation for daysleepers for MM report
   \item Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.
+  \item Part 5 Nwindows redefined for MM output
+
 }
 }
 
