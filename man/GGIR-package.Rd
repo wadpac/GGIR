@@ -6,8 +6,8 @@
 A package to process multi-day raw accelerometer data
 }
 \description{
-Disclaimer: If you are a new GGIR user then please see 
-\href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{package vignette} 
+Disclaimer: If you are a new GGIR user then please see
+\href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{package vignette}
  for an introduction to GGIR.\cr
 \cr
 This document is primarily aimed at documenting the functions and their input arguments.\cr
@@ -22,8 +22,8 @@ citing the supporting publications (e.g. Migueles et al. 2019) in your publicati
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 2.1-0\cr
-Date: \tab 2020-08-27\cr
+Version: \tab 2.1-1\cr
+Date: \tab 2020-09-07\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
@@ -68,7 +68,7 @@ g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 \itemize{
 
 \item Migueles JH, Rowlands AV, et al. GGIR: A Research Community-Driven Open Source
-R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw 
+R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw
 Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019.
 doi:10.1123/jmpb.2018-0063.
 \item van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating

@@ -2,9 +2,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       includedaycrit = 16,ilevels=c(),winhr=5,idloc=1,snloc=1,
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
-                      dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz=c(),
+                      dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz="",
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                      IVIS.activity.metric=1, qM5L5 = c(), myfun=c()) {
+                      IVIS.activity.metric=1, qM5L5 = c(), myfun=c(), MX.ig.min.dur = 10) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
@@ -31,46 +31,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ws3 = windowsizes[1]
   ws2 = windowsizes[2]
   keepindex_46 = keepindex_48 = c()
-  # # Time window for L5 & M5 analysis (commented out because this is now defined further down)
-  # t0_LFMF = L5M5window[1] #start in 24 hour clock hours
-  # t1_LFMF = L5M5window[2]+(winhr-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
-  # Time window for distribution analysis
-  t_TWDI = qwindow #start and of 24 hour clock hours
-  if (length(qwindow) == 0) {
-    t_TWDI = c(0,24)
-    if ((length(qlevels) > 0 | length(ilevels) > 0)) qwindow = c(0,24)
-  }
-  if (length(qwindow) > 0) {
-    if (qwindow[1] != 0) qwindow = c(0,qwindow)
-    if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow,24)
-  }
-  #==========================================================================================
-  # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
-  domvpa = doilevels = doiglevels = doquan = FALSE
-  if (length(qlevels) > 0) doquan = TRUE
-  if (length(ilevels) > 0) doilevels = TRUE
-  if (length(iglevels) > 0) {
-    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
-    doiglevels = TRUE
-  }
-  if (length(mvpathreshold) > 0) domvpa = TRUE
-  doperday = TRUE
-  #------------------------------------------------------
-  NVARS = (length(colnames(metashort))-1)
-  if (NVARS < 1) NVARS = 1
-  if (length(qwindow) > 0) NVARS = NVARS + 2 # for qwindow non-wear time
-  nfeatures = 50+NVARS*(20+length(qlevels)+length(ilevels))    #levels changed into qlevels
-  if (length(qwindow) > 0) {
-    nfeatures = 50+NVARS*(length(qwindow)*(20+(length(qlevels)+length(ilevels))))
-  }
-  i = 1
-  #---------------
-  if (domvpa) { #create dummy data
-    mvpanames = matrix(0,6,length(mvpathreshold))
-    mvpanames[,1:length(mvpathreshold)] = c("MVPA1","MVPA2","MVPA3","MVPA4","MVPA5","MVPA6")
-  }
-  # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
-  wearthreshold = 2 #needs to be 0, 1 or 2 (hard coded to avoid inconsistency in literature)
   # Extracting basic information about the file
   hvars = g.extractheadervars(I)
   ID = hvars$ID;              iID =hvars$iID; IDd =hvars$IDd
@@ -100,6 +60,64 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     ID2 = get_char_before_hyphen(ID)
     iID2 = get_char_before_hyphen(iID)
   }
+  # Extract qwindow if an activity log is provided:
+  qwindow_actlog =FALSE
+  if (is.data.frame(qwindow) == TRUE) {
+    qwindow_actlog = TRUE
+    if (idloc == 2) {
+      IDt = unlist(strsplit(fname,"_"))[1] #id
+    } else if (idloc == 5) {
+      IDt = unlist(strsplit(fname," "))[1] #id
+    } else if (idloc == 4) {
+      IDt = IDd
+    } else if (idloc == 1) {
+      IDt = ID
+    } else if (idloc == 3) {
+      IDt = ID2
+    }
+    qwindow = qwindow[which(qwindow$ID == IDt),]
+  }
+  # # Time window for L5 & M5 analysis (commented out because this is now defined further down)
+  # t0_LFMF = L5M5window[1] #start in 24 hour clock hours
+  # t1_LFMF = L5M5window[2]+(winhr-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
+  # Time window for distribution analysis
+  t_TWDI = qwindow #start and of 24 hour clock hours
+  if (length(qwindow) == 0) {
+    t_TWDI = c(0,24)
+    if ((length(qlevels) > 0 | length(ilevels) > 0)) qwindow = c(0,24)
+    qwindow_actlog = FALSE # ignore qwdinow_actlog if it does not produce actual qwindow values
+  }
+  if (length(qwindow) > 0 & qwindow_actlog == FALSE) {
+    if (qwindow[1] != 0) qwindow = c(0,qwindow)
+    if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow,24)
+  }
+  #==========================================================================================
+  # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
+  domvpa = doilevels = doiglevels = doquan = FALSE
+  if (length(qlevels) > 0) doquan = TRUE
+  if (length(ilevels) > 0) doilevels = TRUE
+  if (length(iglevels) > 0) {
+    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
+    doiglevels = TRUE
+  }
+  if (length(mvpathreshold) > 0) domvpa = TRUE
+  doperday = TRUE
+  #------------------------------------------------------
+  NVARS = (length(colnames(metashort))-1)
+  if (NVARS < 1) NVARS = 1
+  if (length(qwindow) > 0 | qwindow_actlog == TRUE) NVARS = NVARS + 2 # for qwindow non-wear time
+  nfeatures = 50+NVARS*(21+length(qlevels)+length(ilevels))    #levels changed into qlevels
+  if (length(qwindow) > 0 | qwindow_actlog == TRUE) {
+    nfeatures = 50+NVARS*(length(qwindow)*(21+(length(qlevels)+length(ilevels))))
+  }
+  i = 1
+  #---------------
+  if (domvpa) { #create dummy data
+    mvpanames = matrix(0,6,length(mvpathreshold))
+    mvpanames[,1:length(mvpathreshold)] = c("MVPA1","MVPA2","MVPA3","MVPA4","MVPA5","MVPA6")
+  }
+  # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
+  wearthreshold = 2 #needs to be 0, 1 or 2 (hard coded to avoid inconsistency in literature)
   #---------------------
   # detect first and last midnight and all midnights
   tsi = which(colnames(metalong) == "timestamp")
@@ -116,7 +134,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
   lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
   midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
-  
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
@@ -198,7 +215,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   output_avday = g.analyse.avday(qlevels,doquan, averageday, M, IMP, t_TWDI, quantiletype, winhr, L5M5window, M5L5res,
                                  ws3, IVIS_epochsize_seconds,
                                  IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels, firstmidnighti, ws2,
-                                 midnightsi, iglevels, qM5L5)
+                                 midnightsi, iglevels, qM5L5, MX.ig.min.dur=MX.ig.min.dur)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
@@ -219,7 +236,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
                                      bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
-                                     deviceSerialNumber, qM5L5, ExtFunColsi, myfun)
+                                     deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz, MX.ig.min.dur)
     daysummary= output_perday$daysummary
     ds_names=output_perday$ds_names
     windowsummary=output_perday$windowsummary

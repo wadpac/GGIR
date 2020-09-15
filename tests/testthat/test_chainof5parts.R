@@ -46,13 +46,14 @@ test_that("chainof5parts", {
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 2,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels= TRUE,
-          do.parallel = do.parallel,myfun=c())
+          do.parallel = do.parallel,myfun=c(), winhr=16, MX.ig.min.dur = 14)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=3),equals(0.029))
   expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=2),equals(1))
+  expect_equal(round(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]),digits=2), -1.11)
   # part 2 with strategy = 1
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,

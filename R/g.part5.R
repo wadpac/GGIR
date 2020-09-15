@@ -383,7 +383,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           # from the new time series
                                                           # Note that this means that for MM windows there can be multiple or no wake or onsets
                                                           date = as.Date(ts$time[qqq[1]+1])
-                                                          if (add_one_day_to_next_date == TRUE) { # see below for explanation
+                                                          if (add_one_day_to_next_date == TRUE & timewindowi == "WW") { # see below for explanation
                                                             date = date + 1
                                                             add_one_day_to_next_date = FALSE
                                                           }
@@ -396,7 +396,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           onset = onsetwaketiming$onset; wake = onsetwaketiming$wake
                                                           onseti = onsetwaketiming$onseti; wakei = onsetwaketiming$wakei
                                                           skiponset = onsetwaketiming$skiponset; skipwake = onsetwaketiming$skipwake
-                                                          if (wake < 24) {
+                                                          if (wake < 24 & timewindowi == "WW") {
                                                             # waking up before midnight means that next WW window
                                                             # will start a day before the day we refer to when discussing it's SPT
                                                             # So, for next window we have to do date = date + 1
@@ -642,7 +642,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                               ds_names[fi+(bci-1)] = paste0("Nbouts_day_MVPA_bts_",boutdur.mvpa[bci],"_",boutdur.mvpa[bci-1])
                                                             }
                                                           }
-                                                          
                                                           fi = fi + bci
                                                           bc.in = checkshape(bc.in)
                                                           for (bci in 1:nrow(bc.in)) {
@@ -652,7 +651,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             } else {
                                                               ds_names[fi+(bci-1)] = paste0("Nbouts_day_IN_bts_",boutdur.in[bci],"_",boutdur.in[bci-1])
                                                             }
-                                                            
                                                           }
                                                           fi = fi + bci
                                                           bc.lig = checkshape(bc.lig)

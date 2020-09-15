@@ -304,7 +304,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         S$sib.end.time = iso8601chartime2POSIX(S$sib.end.time, tz = desiredtz)
         def = unique(S$definition)[1]
         S = S[which(S$definition==def),] # simplify to one definition
-        for (j in 1:length(unique(S$night))) { #nights
+        for (j in 1:max(unique(S$night))) { #nights #length(unique(S$night)
           tmp = S[which(S$night==j),]
           for (h in 1:nrow(tmp)) { # sleep periods
             s0 = which(time == as.character(tmp$sib.onset.time[h]))[1]
