@@ -110,7 +110,8 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
         # If non-wear is high for this day and if sleeplog is available
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
         sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
-        if (length(sleeplogonset) != 0 & length( sleeplogwake) != 0) {
+        if (length(sleeplogonset) != 0 & !is.na(sleeplogonset) &
+            length(sleeplogwake) != 0 & !is.na(sleeplogwake)) {
           # ... and if there is sleeplog data for the relevant night
           # rely on sleeplog for defining the start and end of the night
           sleeplogonset_hr = clock2numtime(sleeplogonset)
