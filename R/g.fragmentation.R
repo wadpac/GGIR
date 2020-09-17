@@ -155,10 +155,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     }
     
     if ("power" %in% frag.metrics & Nfragments >= min_Nfragments_power){
-      calc_alpha = function(x) {
+      calc_alpha = function(x, xmin) {
         nr = length(x)
-        rmin = min(x)
-        alpha = 1+ nr/sum(log(x/(rmin))) # adapted to match Chastin 2010
+        # xmin = min(x)
+        alpha = 1+ nr/sum(log(x/(xmin))) # adapted to match Chastin 2010
         return(alpha)
       }
       output[["alpha_dur_0"]] = calc_alpha(Duration0)
