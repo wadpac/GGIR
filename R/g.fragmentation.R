@@ -161,8 +161,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         alpha = 1+ nr/sum(log(x/(xmin))) # adapted to match Chastin 2010
         return(alpha)
       }
-      output[["alpha_dur_0"]] = calc_alpha(Duration0)
-      output[["alpha_dur_1"]] = calc_alpha(Duration1)
+      output[["alpha_dur_0"]] = calc_alpha(Duration0, xmin)
+      output[["alpha_dur_1"]] = calc_alpha(Duration1, xmin)
       # From this we can calculate (according to Chastin 2010):
       output[["x0.5_dur_0"]] = 2^ (1 / (output[["alpha_dur_0"]]-1) * xmin)
       output[["x0.5_dur_1"]] = 2^ (1 / (output[["alpha_dur_1"]]-1) * xmin)
