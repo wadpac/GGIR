@@ -53,8 +53,8 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_equal(round(out$Gini_dur_0, digits=4), 0.129)
   expect_equal(round(out$Gini_dur_1, digits=4), 0.0968)
   
-  expect_equal(round(out$alpha_dur_0, digits=4), 4.2255)
-  expect_equal(round(out$x0.5_dur_0, digits=4), 1.2397)
+  expect_equal(round(out$alpha_dur_0, digits=4), 1.521)
+  expect_equal(round(out$x0.5_dur_0, digits=4), 3.7828)
   expect_equal(round(out$W0.5_dur_1, digits=4), 1)
 
   expect_equal(round(out$IN2MVPA_TP, digits=4), 0.1406)
