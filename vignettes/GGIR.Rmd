@@ -692,7 +692,7 @@ GGIR uses by default the sleep log, if the sleep log is not available it falls b
 
 ### Daysleepers (nights workers)
 
-If the guider indicates that the person woke up after noon, the sleep analysis in part 4 is performed again on a window from 6pm-6pm. In this way our method is sensitive to people who have their main sleep period starting before noon and ending after noon, referred as daysleeper=1 in daysummary.csv file, which you can interpret as night workers. Note that the L5+/-12 algorithm is not configured to identify daysleepers, it will only consider the noon-noon time window.
+If the guider indicates that the person woke up after 11am, the sleep analysis in part 4 is performed again on a window from 6pm-6pm. In this way our method is sensitive to people who have their main sleep period starting before noon and ending after noon, referred as daysleeper=1 in daysummary.csv file, which you can interpret as night workers. Note that the L5+/-12 algorithm is not configured to identify daysleepers, it will only consider the noon-noon time window.
 
 ### Cleaningcode
 
