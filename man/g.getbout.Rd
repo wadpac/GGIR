@@ -35,11 +35,11 @@ bout.metric=1,ws3=5)
   towards MVPA may simplify interpretation and still counts the two persons in
   the example as each others equal. If value=3, using sliding window across the
   data to test bout criteria per window and do not allow for breaks larger than 1 minute
-  and with percentage of time larger than the boutcriter threshold.
+  and with fraction of time larger than the boutcriter threshold.
   If value=4, same as 3 but also requires the first and last epoch to 
-  require the threshold criteria. If value=5, same as 4, but now looking for break
-  larger than but not equal to a minute, and percentage of time that meets
-  the thresholds can be equal than or greater than the bout criteria.
+  meet the threshold criteria. If value=5, same as 4, but now allowing for breaks
+  shorter than but not equal to a minute, and the fraction of time that meets
+  the threshold should be equal than or greater than the bout.criter threshold.
 }
   \item{ws3}{epoch length in seconds, only needed for bout.metric =3, because
   it needs to measure how many epochs equal 1 minute breaks
