@@ -1,4 +1,4 @@
-g.part5.definedays = function(nightsi, wi, summarysleep_tmp2, indjump, nightsi_bu, 
+g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu, 
                               ws3new, qqq_backup=c(), ts, Nts, timewindowi, Nwindows) {
   
   
@@ -13,11 +13,11 @@ g.part5.definedays = function(nightsi, wi, summarysleep_tmp2, indjump, nightsi_b
       if (wi==1) {
         qqq[1] = 1
         qqq[2] = nightsi[wi]
-      } else if (wi<=nrow(summarysleep_tmp2)) {
+      } else if (wi<=length(nightsi)) {
         qqq[1] = nightsi[wi-1] + 1
         qqq[2] = nightsi[wi]
         qqq_backup = qqq
-      } else if (wi>nrow(summarysleep_tmp2)) {
+      } else if (wi>length(nightsi)) {
         qqq[1] = qqq_backup[2] + 1
         if (wi <= length(nightsi)) {
           qqq[2] = nightsi[wi]
