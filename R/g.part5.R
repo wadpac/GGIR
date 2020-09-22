@@ -348,7 +348,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                                                     }
                                                     if (timewindowi == "MM") {
-                                                      Nwindows = nrow(summarysleep_tmp2)
+                                                    #  Nwindows = nrow(summarysleep_tmp2)
+                                                      Nwindows = length(which(diff(ts$diur) == -1)) + 1
                                                     } else {
                                                       Nwindows = length(which(diff(ts$diur) == -1))
                                                     }
@@ -357,7 +358,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                     add_one_day_to_next_date = FALSE
                                                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                                                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
-                                                      defdays = g.part5.definedays(nightsi, wi, summarysleep_tmp2, indjump,
+                                                      defdays = g.part5.definedays(nightsi, wi, indjump,
                                                                                    nightsi_bu, ws3new, qqq_backup, ts, Nts,
                                                                                    timewindowi, Nwindows)
                                                       qqq = defdays$qqq
