@@ -8,15 +8,13 @@
   Defines when day windows start and end as part of \link{g.part5}.
 }
 \usage{
-  g.part5.definedays(nightsi, wi, summarysleep_tmp2, indjump, nightsi_bu, 
+  g.part5.definedays(nightsi, wi, indjump, nightsi_bu, 
                               ws3new, qqq_backup=c(), ts, Nts, timewindowi, Nwindows)
 }
 \arguments{
   \item{nightsi}{
   }
   \item{wi}{
-  }
-  \item{summarysleep_tmp2}{
   }
   \item{indjump}{
   }

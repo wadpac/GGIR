@@ -17,7 +17,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "all")
   }
   min_Nfragments_power = min_Nfragments = 10 # minimum number of required fragments
-  min_Nfragments_TP_only = 1
+  # min_Nfragments_TP_only = 1
   intensity.thresholds = c(0, intensity.thresholds) 
   output = list()
   if (length(LEVELS) > 0) {
@@ -65,23 +65,26 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
         # Get only indices of inactive fragments that transition to mvpa:
         inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 3)
-        # Duration1 = Duration1[1:(length(Duration1)-1)] # shorten by 1 do match length of Duration 2 and 3
-        # initialise variables:
-        # only calculate this if there are enough fragments for both transitions
-        if (length(inact_2_light_trans) >=  min_Nfragments_TP_only & 
-            length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
+        if (length(inact_2_light_trans) >=  1) {
           Duration2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
           output[["IN2LIPA_TP"]] = (sum(Duration2)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
-          # output[["IN2LIPA_TPlen"]] = (length(Duration2)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
           output[["Nfragments_IN2LIPA"]] = length(Duration2)
-          
+        } 
+        if (length(inact_2_mvpa_trans) >= 1) {
           Duration3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
           output[["IN2MVPA_TP"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
-          # output[["IN2MVPA_TPlen"]] = (length(Duration3)/length(Duration1)) / mean(Duration1) # transition from inactive to mvpa
           output[["Nfragments_IN2MVPA"]] = length(Duration3)
+        } 
+        output[["IN2PA_TP"]] = 1 / mean(Duration1) # transition from inactive to mvpa
+        if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) { # only IN2mvpa transitions
+          output[["IN2MVPA_TP"]] = 1 / mean(Duration1)
+          output[["Nfragments_IN2MVPA"]] = length(Duration1)
+          output[["IN2LIPA_TP"]] = output[["Nfragments_IN2LIPA"]] = 0
         }
-        if (length(inact_2_light_trans) >= min_Nfragments_TP_only & length(inact_2_mvpa_trans) >= min_Nfragments_TP_only) {
-          output[["IN2PA_TP"]] = 1 / mean(Duration1) # transition from inactive to mvpa
+        if (length(inact_2_light_trans) != 0 & length(inact_2_mvpa_trans) == 0) { # only IN2LIPA transitions
+          output[["IN2LIPA_TP"]] = 1 / mean(Duration1)
+          output[["Nfragments_IN2LIPA"]] = length(Duration1)
+          output[["IN2MVPA_TP"]] = output[["Nfragments_IN2MVPA"]] = 0
         }
       }
     }
