@@ -333,8 +333,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
               startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
               startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord
-              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord
+              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord + daysleep_offset
+              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord + daysleep_offset
             } else {
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
