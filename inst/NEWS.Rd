@@ -2,12 +2,13 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.1-2 (GitHub-only-release date:25-09-2020)}{
+\section{Changes in version 2.1-2 (GitHub-only-release date:28-09-2020)}{
 \itemize{
   \item Part 5 bug fixed with day name and date allocation for daysleepers for MM report
   \item Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.
   \item Fix bug part 3 introduced in version 2.1-0 re. SPT detection for daysleepers.
   \item Fix redefinition of the time windows (with "MM") in part 5 to include all recording days when the measurement starts with multiple non-wear days.
+  \item Bout metric 5 added to enable not allowing for gaps in bouts.
 }
 }
 
