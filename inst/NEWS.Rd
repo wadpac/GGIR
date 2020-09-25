@@ -8,6 +8,7 @@
   \item Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.
   \item Fix bug part 3 introduced in version 2.1-0 re. SPT detection for daysleepers.
   \item Fix redefinition of the time windows (with "MM") in part 5 to include all recording days when the measurement starts with multiple non-wear days.
+  \item GGIR version now displayed in console when running GGIR
   \item Bout metric 5 added to enable not allowing for gaps in bouts.
 }
 }
