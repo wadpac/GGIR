@@ -51,4 +51,14 @@ test_that("g.getbout produces expected output", {
   expect_that(sum(bm4$boutcount),equals(124))
   expect_that(bm4$x,equals(bm4Ex))
   expect_that(bm4$boutcount,equals(bm4Eboutcount))
+  
+  # Metric 5
+  set.seed(300)
+  bm5 = g.getbout(x=round(runif(1000,0.4,1)),boutduration = 120,boutcriter=0.9,
+                  closedbout=FALSE,bout.metric=5,ws3=5)
+  bm5Ex = c(rep(0,42), rep(1,285), rep(0,673))
+  bm5Eboutcount = c(rep(0,42), rep(1,285), rep(0,673))
+  expect_that(sum(bm5$x),equals(285))
+  expect_that(sum(bm5$boutcount),equals(285))
+ 
 })

@@ -76,7 +76,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   cnt = 1
   fnames.ms3 = sort(fnames.ms3)
   if (f1 == 0) length(fnames.ms4)
-  if (f1 > length(fnames.ms4)) f1 = length(fnames.ms4)
+  if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
   boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
   boutdur.in = sort(boutdur.in,decreasing = TRUE)
