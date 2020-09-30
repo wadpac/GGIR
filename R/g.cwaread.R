@@ -275,6 +275,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           fractional = bitwShiftL(bitwAnd(tsOffset, 0x7fffL), 1);
           # frequency is truncated to int in firmware
           shift = shift + bitwShiftR((fractional * frequency), 16);
+        } else if (bitwAnd(tsOffset, 0x8000L) == 0 & class(frequency) ==  "function") {
+          frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
         }
       } else {
         #Very old format, where offset 26 contains frequency
