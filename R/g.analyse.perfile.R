@@ -1,10 +1,10 @@
 g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
-                  LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
-                  ML5AD_names, igfullr, igfullr_names,
-                  daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
-                  hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
-                  qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                  IVIS_windowsize_minutes, IVIS_epochsize_seconds, qwindow, longitudinal_axis_id) {
+                             LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
+                             ML5AD_names, igfullr, igfullr_names,
+                             daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
+                             hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
+                             qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
+                             IVIS_windowsize_minutes, IVIS_epochsize_seconds, qwindow, longitudinal_axis_id) {
   filesummary = matrix(" ",1,100) #matrix to be stored with summary per participant
   s_names = rep(" ",ncol(filesummary))
   vi = 1
@@ -17,6 +17,8 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     filesummary[vi] = ID
   } else if (idloc == 3) {
     filesummary[vi] = ID2
+  } else if (idloc == 5) {
+    filesummary[vi] = unlist(strsplit(fname," "))[1] #id
   }
   # Serial number
   if (snloc == 1) {
@@ -89,12 +91,11 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     #====================================================================
     # Recognise weekenddays with enough data
     wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
-    columnWithAlwaysData = which(ds_names == "N hours")
-    NVHcolumn = which(ds_names == "N valid hours") #only count in the days for which the inclusion criteria is met
+    columnWithAlwaysData = which(ds_names == "N hours" | ds_names == "N_hours")
+    NVHcolumn = which(ds_names == "N valid hours" | ds_names == "N_valid_hours" ) #only count in the days for which the inclusion criteria is met
     v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F &
                  as.numeric(daysummary[wkend,NVHcolumn]) >= includedaycrit)
     wkend = wkend[v1]
-    # Recognise weekdays with enough data
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F  &
                  as.numeric(daysummary[wkday,NVHcolumn]) >= includedaycrit)
@@ -129,7 +130,7 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
         # - there is more than 1 day of data
         # - there are multiple daysegments (qwindow)
         # - first value is not empty
-        if (storevalue == TRUE) { 
+        if (storevalue == TRUE) {
           # Plain average of available days
           v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) 
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
@@ -197,8 +198,8 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
     filesummary[(vi+6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
     s_names[vi:(vi+6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
-                                              " value=2, ignore all data before the first midnight and",
-                                              " after the last midnight)"),
+                                               " value=2, ignore all data before the first midnight and",
+                                               " after the last midnight)"),
                                         "n hours ignored at start of meas (if strategy=1)",
                                         "n hours ignored at end of meas (if strategy=1)",
                                         "n days of measurement after which all data is ignored (if strategy=1)",

@@ -13,9 +13,14 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, Nep
   }
   firstwake = which(diff(ts$diur) == -1)[1]
   firstonset = which(diff(ts$diur) == 1)[1]
+  
+  if (is.na(sptwindow_HDCZA_end[1]) == TRUE) {
+    sptwindow_HDCZA_end = sptwindow_HDCZA_end[which(is.na(sptwindow_HDCZA_end) == FALSE)]
+  }
   # test whether wake for second day is missing
   # if the full sleep period happens before midnights
-  if (firstwake > nightsi[2] | (summarysleep_tmp2$sleeponset[1] < 18 & summarysleep_tmp2$wakeup[1] < 18 & firstwake < nightsi[2])) { 
+  if (firstwake > nightsi[2] | (summarysleep_tmp2$sleeponset[1] < 18 &
+                                summarysleep_tmp2$wakeup[1] < 18 & firstwake < nightsi[2])) { 
     wake_night1_index =c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
@@ -32,6 +37,7 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, Nep
             wake_night1_hour = wake_night1_hour - 24 # express hour relative to midnight
           }
           # onset_night1_hour = clock2numtime(onset_night1)
+
           wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
           # express hour relative to midnight within the noon-noon:
           if (wake_night1_index > Nts) wake_night1_index = Nts

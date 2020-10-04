@@ -110,30 +110,32 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
         # If non-wear is high for this day and if sleeplog is available
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
         sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
-        if (length(sleeplogonset) != 0 & length( sleeplogwake) != 0) {
-          # ... and if there is sleeplog data for the relevant night
-          # rely on sleeplog for defining the start and end of the night
-          sleeplogonset_hr = clock2numtime(sleeplogonset)
-          sleeplogwake_hr= clock2numtime(sleeplogwake)
-          # express hour relative to midnight within the noon-noon:
-          if (sleeplogonset_hr > 12) {
-            sleeplogonset_hr = sleeplogonset_hr - 24
+        if (length(sleeplogonset) != 0 & length(sleeplogwake) != 0) {
+          if (!is.na(sleeplogonset) &  !is.na(sleeplogwake)) {
+            # ... and if there is sleeplog data for the relevant night
+            # rely on sleeplog for defining the start and end of the night
+            sleeplogonset_hr = clock2numtime(sleeplogonset)
+            sleeplogwake_hr= clock2numtime(sleeplogwake)
+            # express hour relative to midnight within the noon-noon:
+            if (sleeplogonset_hr > 12) {
+              sleeplogonset_hr = sleeplogonset_hr - 24
+            }
+            if (sleeplogwake_hr > 18 & summarysleep_tmp2$daysleeper[k] == 1) {
+              sleeplogwake_hr = sleeplogwake_hr - 24 # 18 because daysleepers can wake up after 12
+            } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
+              sleeplogwake_hr = sleeplogwake_hr - 24
+            }
+            if (sleeplogwake_hr > 36 &  sleeplogonset_hr > 36) {
+              sleeplogwake_hr = sleeplogwake_hr - 24
+              sleeplogonset_hr = sleeplogonset_hr - 24
+            }
+            s0 = closestmidnight + round(sleeplogonset_hr * Nepochsinhour)
+            if (s0 < 1) {
+              warning("Impossible index for first night, consider setting excludefirst.part4=TRUE")
+              s0 = 1
+            }
+            s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
           }
-          if (sleeplogwake_hr > 18 & summarysleep_tmp2$daysleeper[k] == 1) {
-            sleeplogwake_hr = sleeplogwake_hr - 24 # 18 because daysleepers can wake up after 12
-          } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
-            sleeplogwake_hr = sleeplogwake_hr - 24
-          }
-          if (sleeplogwake_hr > 36 &  sleeplogonset_hr > 36) {
-            sleeplogwake_hr = sleeplogwake_hr - 24
-            sleeplogonset_hr = sleeplogonset_hr - 24
-          }
-          s0 = closestmidnight + round(sleeplogonset_hr * Nepochsinhour)
-          if (s0 < 1) {
-            warning("Impossible index for first night, consider setting excludefirst.part4=TRUE")
-            s0 = 1
-          }
-          s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
         }
       }
       ts$diur[s0:(s1-1)] = 1

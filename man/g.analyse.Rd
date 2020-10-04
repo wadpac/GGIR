@@ -23,10 +23,10 @@ winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),
 boutcriter=c(),mvpadur=c(1,5,10),
 selectdaysfile=c(),window.summary.size=10,
 dayborder=0,bout.metric = 1,
-closedbout=FALSE,desiredtz = c(),
+closedbout=FALSE,desiredtz = "",
 IVIS_windowsize_minutes = 60,
 IVIS_epochsize_seconds = 3600, iglevels = c(),IVIS.activity.metric=1,
-qM5L5=c(), myfun=c())
+qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
 }
 
 \arguments{
@@ -50,11 +50,22 @@ qM5L5=c(), myfun=c())
     \link{g.getmeta}.
   }
   \item{qwindow}{
-  To specify windows over which all variables are calculated. If value = c(0,24)
-  all variables will only be calculated over the full 24 hours in a day, If
+  To specify windows over which all variables are calculated, e.g. acceleration
+  distirbution, number of valid hours, LXMX analysis, MVPA. If value = c(0,24), 
+  which is the default, all variables will only be calculated over the full 
+  24 hours in a day, If
   value =c(8,24) variables will be calculated over the window 0-8, 8-24 and 0-24.
-  Previously this functionality was limited to the distribution in acceleration
-  metric values, but now it also derives N valid hours, L5M5 analysis and MVPA.
+  All days in the recording will be segmented based on these values. If you want
+  to use a day specific segmentation then you can set qwindow to the to be
+  the full path to activity diary file. Expectd format of the activity diary is:
+  First column headers followed by one row per recording, first column is recording ID,
+  which needs to match with the ID GGIR extracts from the accelerometer file.
+  Followed by date column in format "23-04-2017", followed by one or multiple columns
+  with start times for the activity types in that day format in 
+  hours:minutes:seconds. The header of the column will be used as label for each activity
+  type. Insert a new date column before continuing with activity types for next day.
+  Leave missing values empty. If an activitylog is used then individuals who do 
+  not appear in the activitylog will still be processed with value c(0,24).
   }
   \item{quantiletype}{
   type of quantile function to use (default recommended). For details, see 
@@ -84,7 +95,9 @@ qM5L5=c(), myfun=c())
   \item{idloc}{
     If value = 1 (default) the code assumes that ID number is stored in the
     obvious header field. If value = 2 the code uses the character string preceding
-    the character '_' in the filename as the ID number
+    the character '_' in the filename as the ID number.
+    If value = 5 the code uses the character string preceding
+    the first space ' ' in the filename as the ID number
   }
   \item{snloc}{
     If value = 1 (default) the code assumes that device serial number is stored in
@@ -153,6 +166,7 @@ qM5L5=c(), myfun=c())
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
+  \item{MX.ig.min.dur}{see \link{g.getM5L5}}
   
    
 }

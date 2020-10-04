@@ -11,7 +11,7 @@ time-use analysis in GGIR" for an elaborate descript of the sleep detection.
 }
 \usage{
 g.part4(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,
-loglocation = c(),colid = 1,coln1 = 9,nnights = 7,
+loglocation = c(),colid = 1,coln1 = 2,nnights = 7,
 sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
     relyonguider=FALSE, relyonsleeplog=FALSE, def.noc.sleep=1,

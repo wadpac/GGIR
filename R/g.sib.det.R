@@ -10,7 +10,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
       return(angvar)
     }
-
     x = zoo::rollapply(angle, k, medabsdi) # 5 minute rolling median of the absolute difference
     nomov = rep(0,length(x)) # no movement
     inbedtime = rep(NA,length(x))
@@ -102,7 +101,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         calc_sptwindow_HDCZA_end = calc_sptwindow_HDCZA_end + 1
       }
     }
-
     return(calc_sptwindow_HDCZA_end)
   }
   #==================================================
@@ -155,7 +153,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         getSleepFromExternalFunction = TRUE
       }
     }
-
     angle[which(is.na(angle) == T)] = 0
     if (getSleepFromExternalFunction == FALSE) {
       cnt = 1
@@ -202,7 +199,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
-
     tib.threshold = sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = rep(NA,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
@@ -227,8 +223,9 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
           if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
-            newqqq1 = qqq1+(6*(3600/ws3))
-            newqqq2 = qqq2+(6*(3600/ws3))
+            daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
+            newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
+            newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
             if (newqqq2 > length(angle)) newqqq2 = length(angle)
             # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
             if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
@@ -238,20 +235,24 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
               if (inbedout$sptwindow_HDCZA_start+newqqq1 >= newqqq2) {
                 inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
               }
+            } else {
+              daysleep_offset  = 0
             }
           }
-
-          startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
-          startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-          sptwindow_HDCZA_end[1] = inbedout$sptwindow_HDCZA_end/(3600/ws3) + startTimeRecord
-          sptwindow_HDCZA_start[1] = inbedout$sptwindow_HDCZA_start/(3600/ws3)  + startTimeRecord
+          if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
+            startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
+            startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
+            sptwindow_HDCZA_end[1] = inbedout$sptwindow_HDCZA_end/(3600/ws3) + startTimeRecord
+            sptwindow_HDCZA_start[1] = inbedout$sptwindow_HDCZA_start/(3600/ws3)  + startTimeRecord
+          } else {
+            sptwindow_HDCZA_end[1] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
+            sptwindow_HDCZA_start[1] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
+          }
           sptwindow_HDCZA_end[1] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
-                                              tz=desiredtz,calc_sptwindow_HDCZA_end=sptwindow_HDCZA_end[1],
-                                              calc_sptwindow_HDCZA_start=sptwindow_HDCZA_start[1])
+                                                         tz=desiredtz,calc_sptwindow_HDCZA_end=sptwindow_HDCZA_end[1],
+                                                         calc_sptwindow_HDCZA_start=sptwindow_HDCZA_start[1])
           tib.threshold[1] = inbedout$tib.threshold
         }
-
-
         #------------------------------------------------------------------
         # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
         tmpACC = ACC[qqq1:qqq2]
@@ -313,25 +314,27 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
             if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
               # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
+              daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
               newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
               newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
               if (newqqq2 > length(angle)) newqqq2 = length(angle)
               # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
               if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-                daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
                 inbedout = sptwindow_HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
                                            perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
                                            outofbedsize = outofbedsize)
                 if (inbedout$sptwindow_HDCZA_start+newqqq1 >= newqqq2) {
                   inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
                 }
+              } else {
+                daysleep_offset  = 0
               }
             } 
             if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
               startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
               startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord
-              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord
+              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord + daysleep_offset
+              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord + daysleep_offset
             } else {
               sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
               sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12 + daysleep_offset

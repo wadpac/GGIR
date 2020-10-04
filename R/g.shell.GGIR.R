@@ -211,6 +211,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
+  if (exists("MX.ig.min.dur") == FALSE)  MX.ig.min.dur = 10
   
   
   # PART 3
@@ -296,6 +297,13 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
   
+  
+  GGIRversion = ""
+  SI = sessionInfo()
+  try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
+  if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
+  GGIRversion = paste0(" ",GGIRversion)
+  cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
   cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
@@ -369,7 +377,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun)
+            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -457,7 +465,13 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms2.out < f0) f0 = 1
     if (N.files.ms2.out < f1) f1 = N.files.ms2.out
     if (f1 == 0) f1 = N.files.ms2.out
-    g.report.part2(metadatadir=metadatadir,f0=f0,f1=f1,maxdur=maxdur,selectdaysfile=selectdaysfile)
+    if (length(qwindow) > 2 | is.character(qwindow)) {
+      store.long = TRUE
+    } else {
+      store.long = FALSE
+    }
+    g.report.part2(metadatadir=metadatadir, f0=f0, f1=f1, maxdur=maxdur,
+                   selectdaysfile=selectdaysfile, store.long=store.long)
   }
   if (length(which(do.report == 4)) > 0) {
     cat('\n')
