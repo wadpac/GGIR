@@ -4,7 +4,7 @@
 
 \section{Changes in version 2.1-3 (GitHub-only-release date:10-10-2020)}{
 \itemize{
-  \item Part 1 fix to 1 minute time shift when recording starts at the hours
+  \item Part 1 fix to 1 minute time shift when recording starts at full minute.
   }
 }
 
