@@ -60,6 +60,7 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
   if (useRDA == FALSE) {
     I = inspectfileobject
     mon = I$monc
+    if (mon == 6) mon = 3
     dformat = I$dformc
     sf = I$sf
   }

@@ -188,7 +188,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
+  monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
   fornames = c("bin","csv","wav","cwa","csv") #format names
 
   if (length(filename) == 0) {
@@ -338,7 +338,13 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   }
   if (H[1,1] == "file does not have header") { #no header
                 header = "no header"
-        }
+  }
+  if (mon == 3) {
+    verisense_check = substr(colnames(read.csv(datafile,nrow=1)[1]),36,44)
+    if (identical('Verisense',toString(verisense_check))) {
+      mon = 6
+    }
+  }
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat

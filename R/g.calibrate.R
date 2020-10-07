@@ -83,6 +83,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
                        rmc.check4timegaps = rmc.check4timegaps)  # Check which file type and monitor brand it is
   options(warn=0) #turn off warnings
   mon = INFI$monc
+  if (mon == 6) mon = 3
   dformat = INFI$dformc
   sf = INFI$sf
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf

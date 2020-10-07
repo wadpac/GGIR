@@ -29,7 +29,7 @@ g.extractheadervars = function(I) {
       SX = hvalues[which(hnames == "Sex")] #gender
       deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number			
     }
-  } else if (mon == "actigraph") {
+  } else if (mon == "actigraph" | mon == 'verisense') {
     deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
     if (length(deviceSerialNumber) == 0) deviceSerialNumber = "not extracted" #serial number
     
