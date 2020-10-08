@@ -44,7 +44,7 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
     sdcriter = 0.013 #ADJUSTMENT NEEDED FOR MOVISENS???????????
   } else if (monc == 6) {
     sdcriter = 0.013
-    racriter = 0.15
+    racriter = 0.20
   } else if (monc == 0) {
     if (length(rmc.noise) == 0) {
       warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
