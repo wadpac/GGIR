@@ -95,7 +95,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = starttime = wday = weekdays = wdayname = c()
 
-  monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
+  monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
                            filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
@@ -182,7 +182,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1+nmetrics)) #generating output matrix for acceleration signal
-  if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & length(rmc.col.temp) == 0)) {
+  if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & length(rmc.col.temp) == 0)) {
     temp.available = FALSE
   } else if (mon == 2 | (mon == 4 & dformat == 4)  | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)){
     temp.available = TRUE
@@ -402,7 +402,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                 data = apply(data, 2,as.numeric)
               }
             }
-            if ((mon == 3 | mon == 0) & use.temp == FALSE) {
+            if ((mon == 3 | mon == 0 | mon == 6) & use.temp == FALSE) {
               data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale)  #rescale data
             } else if ((mon == 2 | mon == 0) & use.temp == TRUE) {
               # meantemp replaced by meantempcal # 19-12-2013
@@ -855,7 +855,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
+    if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
     } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
       metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
