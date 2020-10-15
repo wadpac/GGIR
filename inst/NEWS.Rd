@@ -2,9 +2,10 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.1-3 (GitHub-only-release date:10-10-2020)}{
+\section{Changes in version 2.1-3 (GitHub-only-release date:15-10-2020)}{
 \itemize{
   \item Part 1 fix to 1 minute time shift when recording starts at full minute.
+  \item Improved compatibility with older .cwa file formats.
   }
 }
 
