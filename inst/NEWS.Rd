@@ -1,13 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-\section{Changes in version 2.1-3 (GitHub-only-release date:10-10-2020)}{
+\section{Changes in version 2.1-3 (GitHub-only-release date:15-10-2020)}{
 \itemize{
+  \item Depricating sessionInfo storage as it caused problems for large scale parallel processing
   \item Part 1 fix to 1 minute time shift when recording starts at full minute.
-  }
 }
-
+}
 \section{Changes in version 2.1-2 (GitHub-only-release date:25-09-2020)}{
 \itemize{
   \item Part 5 bug fixed with day name and date allocation for daysleepers for MM report
