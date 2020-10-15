@@ -78,7 +78,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     #
     # Read file header and return it as a list with following elements
     #   uniqueSerialCode is unque serial code of used device
-    #   samfreq is measurement frequency. All data will be resampled
+    #   frequency is measurement frequency. All data will be resampled
     #       for this frequency.
     #   start is timestamp in numeric form. To get text representation
     #       it is enough to use
@@ -113,7 +113,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       # sensorConfig = readBin(fid, raw(), size = 1) #offset 35
       # sample rate and dynamic range accelerometer
       samplerate_dynrange = readBin(fid, integer(), size = 1) #offset 36
-      sf = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
+      frequency_header = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
       accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
       suppressWarnings(readChar(fid, 4, useBytes = TRUE)) #offset 37..40
       version = readBin(fid, integer(), size = 1) #offset 41
@@ -124,9 +124,9 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       if (is.null(datas)){
         stop("Error in the first data block reading")
       }
-      if (samfreq != datas$samfreq){
+      if (frequency_header != datas$frequency){
         warning("Inconsistent value of measurement frequency: there is ",
-                samfreq, " in header and ", datas$samfreq, " in the first data block ")
+                frequency_header, " in header and ", datas$frequency, " in the first data block ")
       }
     } else {
       return(invisible(NULL))
@@ -135,7 +135,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     start = as.POSIXct(datas$start, origin = "1970-01-01", tz=desiredtz)
     
     returnobject = list(
-      uniqueSerialCode = uniqueSerialCode, samfreq = samfreq,
+      uniqueSerialCode = uniqueSerialCode, frequency = frequency_header,
       start = start,
       device = "Axivity", firmwareVersion = version, blocks = numDBlocks,
       accrange = accrange, hardwareType=hardwareType
@@ -197,7 +197,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   
   readDataBlock = function(fid, complete = TRUE){
     # Read one block of data and return list with following elements
-    #   samfreq is frequency recorded in this block
+    #   frequency is frequency recorded in this block
     #   start is start time in nummeric form. To create string representation
     #       it is necesarry to use
     #           as.POSIXct(start, origin = "1970-01-01", tz=desiredtz)
@@ -260,7 +260,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         # If tsOffset is not null then timestamp offset was artificially
         # modified for backwards-compatibility ... therefore undo this...
         if (bitwAnd(tsOffset, 0x8000L) != 0) {
-          samfreq = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
+          frequency_data = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
           accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
           # Need to undo backwards-compatible shim:
           # Take into account how many whole samples the fractional part
@@ -274,13 +274,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           # use 15-bits as 16-bit fractional time
           fractional = bitwShiftL(bitwAnd(tsOffset, 0x7fffL), 1);
           # frequency is truncated to int in firmware
-          shift = shift + bitwShiftR((fractional * samfreq), 16);
-        } else if (bitwAnd(tsOffset, 0x8000L) == 0) {
-          samfreq = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
+          shift = shift + bitwShiftR((fractional * frequency_data), 16);
+        } else if (bitwAnd(tsOffset, 0x8000L) == 0) { # & class(frequency_data) ==  "function") {
+          frequency_data = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
         }
       } else {
         #Very old format, where offset 26 contains frequency
-        samfreq = temp
+        frequency_data = temp
       }
       # Read data if necessary
       if (complete){
@@ -319,8 +319,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         suppressWarnings(readChar(fid, 482, useBytes = TRUE))
       }
       l = list(
-        samfreq = samfreq,
-        start = timestampDecoder(timeStamp, fractional,-shift / samfreq),
+        frequency = frequency_data,
+        start = timestampDecoder(timeStamp, fractional,-shift / frequency_data),
         temperature = temperature,
         battery = battery,
         light = light,
@@ -353,7 +353,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   header = readHeader(fid, numDBlocks)
   # preprocess start and stop
   origin = as.numeric(header$start)
-  step = 1/header$samfreq
+  step = 1/header$frequency
   if (is.numeric(start)) {
     if (start<0)
       start = 0
