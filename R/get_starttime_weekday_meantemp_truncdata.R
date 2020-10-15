@@ -38,8 +38,8 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     if (dformat == 1) { #not sure whether this is required for csv-format (2)
       if (length(which(timezone == "GMT")) > 0) {
         if (length(desiredtz) == 0) {
-          print("desiredtz not specified, Europe/London used as default")
-          desiredtz = "Europe/London"
+          print("desiredtz not specified, local timezoneused as default")
+          desiredtz = ""
         }
         starttime = as.POSIXlt(starttime[1],tz=desiredtz)
       }
@@ -72,13 +72,12 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     if (secshift != 60) {
       start_min = start_min +1 #shift in minutes needed (+1 one to account for seconds comp)
     }
-    #-----------
+    if (secshift == 60) secshift = 0 # if starttime is 00:00 then we do not want to remove data
     minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
     if (minshift == start_meas) {
       minshift = 0;
-      if (secshift == 60) secshift = 0 # if starttime is 00:00 then we do not want to remove data
+      
     }
-    #-----------
     sampleshift = ((minshift)*60*sf) + (secshift*sf) #derive sample shift
     if (floor(sampleshift) > 1) {
       data = data[-c(1:floor(sampleshift)),] #delete data accordingly
@@ -90,16 +89,15 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
       newmin = newmin - 60
       start_hr = start_hr + 1
       if (start_hr == 24) { #if measurement is started in 15 minutes before midnight
-        #there used to be a nasty hack here for measurements that start in the 15 minutes before midnight, now fixed
         start_hr = 0
         remem2add24 = TRUE #remember to add 24 hours because this is now the wrong day
       }
     }
-    starttime3 = paste(temp[1]," ",start_hr,":",newmin,":",newsec,sep="") #<<<====  changed 17-12-2013
+    starttime3 = paste(temp[1]," ",start_hr,":",newmin,":",newsec,sep="")
     #create timestamp from string (now desiredtz is added)
     if (length(desiredtz) == 0) {
-      print("desiredtz not specified, Europe/London used as default")
-      desiredtz = "Europe/London"
+      print("desiredtz not specified, local timezone used as default")
+      desiredtz = ""
     }
     starttime_a = as.POSIXct(starttime3,format="%d/%m/%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
     starttime_b = as.POSIXct(starttime3,format="%d-%m-%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"

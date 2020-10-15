@@ -52,8 +52,8 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
     starttime = as.character(P[1,1])
     starttime = as.POSIXlt(starttime)
     lengthheader = 20
-  } else if (dformat == 2 & (mon == 3 | mon == 4)) {
-    if (mon == 3) {
+  } else if (dformat == 2 & (mon == 3 | mon == 4 | mon == 6)) {
+    if (mon == 3 | mon == 6) {
       tmph = read.csv(datafile,nrow=8,skip=1)
       tmphi = 1
       while (tmphi < 10) {
@@ -106,7 +106,7 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
     starttime = paste(startdate," ",starttime,sep="")
     getOption("digits.secs")
     options(digits.secs = 3)
-    if (mon == 3) {
+    if (mon == 3 | mon == 6) {
       options(warn=-1)
       topline = as.matrix(colnames(as.matrix(read.csv(datafile,nrow=1,skip=0))))
       topline = topline[1]  #To avoid dots

@@ -4,6 +4,7 @@
 \section{Changes in version 2.1-3 (GitHub-only-release date:15-10-2020)}{
 \itemize{
   \item Depricating sessionInfo storage as it caused problems for large scale parallel processing
+  \item Part 1 fix to 1 minute time shift when recording starts at full minute.
 }
 }
 \section{Changes in version 2.1-2 (GitHub-only-release date:25-09-2020)}{
