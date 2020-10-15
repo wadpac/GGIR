@@ -585,20 +585,4 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       }
     }
   }
-  if (exists("metadatadir")) { # do this because foreach may not use all cores at the end of a loop and then metadatadir can be missing
-    if (length(metadatadir) > 0) {
-      SI = sessionInfo()
-      sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part1.RData",sep="")
-      if (file.exists(sessionInfoFile)) {
-        FI = file.info(sessionInfoFile)
-        timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
-        # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
-        if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
-          save(SI,file=sessionInfoFile)
-        }
-      } else {
-        save(SI,file=sessionInfoFile)
-      }
-    }
-  }
 }
