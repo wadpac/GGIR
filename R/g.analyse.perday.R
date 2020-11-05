@@ -82,8 +82,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       qqq2 = (midnightsi[(di+1)]*(ws2/ws3))-1
     } else if (startatmidnight == 1 & endatmidnight == 0) {
       if (di < floor(ndays)) { #applying floor because when day there is day saving time then ndays is not an integer
-        #qqq1 = (midnightsi[di]-1)*(ws2/ws3)
-        #qqq2 = ((midnightsi[(di+1)]-1)*(ws2/ws3))+1
         qqq1 = (midnightsi[di]-1)*(ws2/ws3) + 1
         qqq2 = ((midnightsi[(di+1)]-1)*(ws2/ws3))  #remove +1 because I got some extra seconds per day
 } else if (di == floor(ndays)) {
