@@ -4,6 +4,7 @@
 \section{Changes in version 2.1-4 (GitHub-only-release date:20-11-2020)}{
 \itemize{
   \item Improved midnights identification when the recording starts at 0am
+  \item Fixed days misclassification for recordings starting with some non-wear days
 }
 }
 \section{Changes in version 2.1-3 (GitHub-only-release date:20-10-2020)}{
