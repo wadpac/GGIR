@@ -349,7 +349,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                     }
                                                     if (timewindowi == "MM") {
                                                     #  Nwindows = nrow(summarysleep_tmp2)
-                                                      Nwindows = length(which(diff(ts$diur) == -1)) + 1
+                                                    #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
+                                                       Nwindows = length(nightsi) + 1
                                                     } else {
                                                       Nwindows = length(which(diff(ts$diur) == -1))
                                                     }
