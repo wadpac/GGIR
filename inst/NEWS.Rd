@@ -1,10 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.1-4 (GitHub-only-release date:20-11-2020)}{
+\section{Changes in version 2.2-0 (GitHub-only-release date:22-11-2020)}{
 \itemize{
   \item Part 5 improved midnights identification when the recording starts at 0am
   \item Part 5 fixed days misclassification for MM output when recordings starts with some non-wear days
+  \item Documentation added to vignette for L5TIME_num and M5TIME_num
 }
 }
 \section{Changes in version 2.1-3 (GitHub-only-release date:20-10-2020)}{
