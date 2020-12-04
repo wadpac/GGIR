@@ -8,3 +8,4 @@ prepareNewRelease.R
 ^Meta$
 ^appveyor\.yml$
 ^pdf_vignettes_for_github_only
+^\.github
