@@ -8,7 +8,7 @@ on:
     branches:
       - '*'
 
-name: R-CMD-check-basic
+name: R-CMD-check
 
 jobs:
   R-CMD-check:
@@ -28,6 +28,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - uses: actions/checkout@master
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
