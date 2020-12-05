@@ -3,7 +3,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.2-1 (GitHub-only-release date:10-12-2020)}{
 \itemize{
-  \item Fix big introduced in 2.2-0 making it impossible for part 3 to handle files with 100 percent non-wear
+  \item Fix bug part 3 introduced in 2.2-0 for recordings without sustained inactivity bouts
+  \item Transitioned from Travis+Appveyor CI to GitHub Actions
 }
 }
 \section{Changes in version 2.2-0 (release date:22-11-2020)}{
