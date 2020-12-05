@@ -6,7 +6,7 @@
 # See https://github.com/r-lib/actions/tree/master/examples#readme for
 # additional example workflows available for the R community.
 
-name: R
+name: R-CMD-check-basic
 
 on:
   push:
@@ -15,8 +15,6 @@ on:
   pull_request:
     branches:
     - '*'
-
-name: R-CMD-check-basic
 
 jobs:
   build:
