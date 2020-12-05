@@ -29,6 +29,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
+      - uses: r-lib/actions/setup-tinytex@v1
+      - run: tlmgr --version
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -67,7 +69,7 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--ignore-vignettes", "--no-build-vignettes"), check_dir = "check")
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual"), check_dir = "check")
         shell: Rscript {0}
 
       - name: Upload check results
