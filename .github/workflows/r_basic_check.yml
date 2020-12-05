@@ -10,9 +10,13 @@ name: R
 
 on:
   push:
-    branches: [ * ]
+    branches:
+    - '*'
   pull_request:
-    branches: [ * ]
+    branches:
+    - '*'
+
+name: R-CMD-check-basic
 
 jobs:
   build:
