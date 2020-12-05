@@ -44,7 +44,9 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   expect_true(Mwav$filetooshort)
   expect_false(Mwav$filecorrupt)
   
-  IGA = expect_warning(g.inspectfile(GAfile, desiredtz = desiredtz))
+  options(warn=-1) # to ignore GENEAread warnings
+  IGA = g.inspectfile(GAfile, desiredtz = desiredtz)
+  options(warn=0) # to ignore GENEAread warnings
   expect_equal(IGA$monc,2)
   expect_equal(IGA$dformc,1)
   expect_equal(IGA$sf,85.7)
@@ -55,6 +57,7 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   MGA = expect_warning(g.getmeta(GAfile, desiredtz=desiredtz, windowsize = c(1,300,300)))
   expect_true(MGA$filetooshort)
   expect_true(MGA$filecorrupt)
+  
   
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat=4,mon=4, desiredtz = desiredtz)
