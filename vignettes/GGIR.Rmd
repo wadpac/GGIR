@@ -1,7 +1,7 @@
 ---
 title: "Accelerometer data processing with GGIR"
 author: "Vincent van Hees"
-date: "September 07 2020"
+date: "November 22 2020"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -567,8 +567,9 @@ dur_day_min | Duration of waking hours within this day window
 dur_spt_min | Duration of Sleep Period Time wihtin this day window.
 dur_day_spt_min | Duration this day window, including both waking hours and SPT.
 sleep_efficiency | Sleep efficiency (within the SPT window, not including sleep latency)
-L5TIME	| Timing of least active 5hrs
+L5TIME	| Timing of least active 5hrs, expressed as timestamp in the day
 M5TIME | Timing of most active 5hrs
+L5TIME_num, M5TIME_num | Timing of least/most active 5hrs, expressed as hours after previous midnight to make it comparable with numeric timestamps for sleep onset/waking up.
 L5VALUE	| Acceleration value for least active 5hrs
 M5VALUE	| Acceleration value for most active 5hrs
 

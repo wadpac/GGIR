@@ -113,7 +113,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       # sensorConfig = readBin(fid, raw(), size = 1) #offset 35
       # sample rate and dynamic range accelerometer
       samplerate_dynrange = readBin(fid, integer(), size = 1) #offset 36
-      frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
+      frequency_header = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
       accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
       suppressWarnings(readChar(fid, 4, useBytes = TRUE)) #offset 37..40
       version = readBin(fid, integer(), size = 1) #offset 41
@@ -124,18 +124,17 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       if (is.null(datas)){
         stop("Error in the first data block reading")
       }
-      if (frequency != datas$frequency){
+      if (frequency_header != datas$frequency){
         warning("Inconsistent value of measurement frequency: there is ",
-                frequency, " in header and ", datas$frequency, " in the first data block ")
+                frequency_header, " in header and ", datas$frequency, " in the first data block ")
       }
     } else {
       return(invisible(NULL))
     }
-    # start = as.POSIXct(datas$start, origin = "1970-01-01", tz=configtz)
     start = as.POSIXct(datas$start, origin = "1970-01-01", tz=desiredtz)
     
     returnobject = list(
-      uniqueSerialCode = uniqueSerialCode, frequency = frequency,
+      uniqueSerialCode = uniqueSerialCode, frequency = frequency_header,
       start = start,
       device = "Axivity", firmwareVersion = version, blocks = numDBlocks,
       accrange = accrange, hardwareType=hardwareType
@@ -148,7 +147,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   unsigned8 = function(x) {
     # Auxiliary function for normalisation of unsigned integers
     if (x < 0)
-      return(x + 256)
+      return(x + 256) #2^8
     else
       return(x)
   }
@@ -160,41 +159,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       return(x)
   }
   
-  # numUnpack2 = function(packedData) {
-  #   #---------------------------------
-  #   # Code for unpacking provided by Dan Jackson:
-  #   #---------------------------------
-  #   count = length(packedData)
-  #   xyz = integer(count * 3)
-  #   for (i in 1:count) {
-  #     # eezzzzzz zzzzyyyy yyyyyyxx xxxxxxxx
-  #     value = packedData[i]
-  # 
-  #     # Isolate each axis component
-  #     x = bitwAnd(           value     , 0x03ff)
-  #     y = bitwAnd(bitwShiftR(value, 10), 0x03ff)
-  #     z = bitwAnd(bitwShiftR(value, 20), 0x03ff)
-  # 
-  #     # Signed
-  #     if (x >= 0x200) { x = x - 0x400 }
-  #     if (y >= 0x200) { y = y - 0x400 }
-  #     if (z >= 0x200) { z = z - 0x400 }
-  # 
-  #     # Scale
-  #     shift = bitwAnd(bitwShiftR(value, 30), 0x03)
-  #     x = bitwShiftL(x, shift)
-  #     y = bitwShiftL(y, shift)
-  #     z = bitwShiftL(z, shift)
-  # 
-  #     # Store
-  #     xyz[(i - 1) * 3 + 1] = x
-  #     xyz[(i - 1) * 3 + 2] = y
-  #     xyz[(i - 1) * 3 + 3] = z
-  #   }
-  #   data = matrix(xyz, ncol=3, byrow=T)
-  #   return(data)
-  # }
-  
+
   readDataBlock = function(fid, complete = TRUE){
     # Read one block of data and return list with following elements
     #   frequency is frequency recorded in this block
@@ -216,10 +181,10 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     } else {
       # Read the data block. Extract several data fields
       # offset 4 contains u16 with timestamp offset
-      suppressWarnings(readChar(fid, 2, useBytes = TRUE))
+      suppressWarnings(readChar(fid, 2, useBytes = TRUE)) # skip packetlength
       tsOffset = readBin(fid, integer(), size = 2)
       # read data for timestamp u32 in offset 14
-      suppressWarnings(readChar(fid, 8, useBytes = TRUE))
+      suppressWarnings(readChar(fid, 8, useBytes = TRUE)) # skip sessionId and sequenceID
       timeStamp = readBin(fid, integer(), size = 4)
       # Get light u16 in offset 18
       offset18 = unsigned16(readBin(fid, integer(), size = 2))
@@ -235,7 +200,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       # Read and recalculate temperature u16 in offset 20
       temperature = (150.0 * readBin(fid, integer(), size = 2) - 20500.0) / 1000.0;
       # Read and recalculate battery charge u8 in offset 23
-      suppressWarnings(readChar(fid, 1, useBytes = TRUE))
+      suppressWarnings(readChar(fid, 1, useBytes = TRUE)) # skip events
       battery = 3.0 * (unsigned8(readBin(fid, integer(), size = 1)) / 512.0 + 1.0);
       # sampling rate in one of file format U8 in offset 24
       samplerate_dynrange = readBin(fid, integer(), size = 1)
@@ -246,7 +211,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       temp = as.integer(temp_raw)
       packed = bitwAnd(temp,15) == 0
       # can be measurement with whole seconds or sample rate u16 in offset 26
-      temp = readBin(fid, integer(), size = 2)
+      temp = readBin(fid, integer(), size = 2) # timestampOffset
       # number of observations in block U16 in offset 28
       blockLength = readBin(fid, integer(), size = 2) # blockLength is expected to be 40 for AX6, 80 or 120 for AX3
       # auxiliary variables
@@ -260,7 +225,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         # If tsOffset is not null then timestamp offset was artificially
         # modified for backwards-compatibility ... therefore undo this...
         if (bitwAnd(tsOffset, 0x8000L) != 0) {
-          frequency = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
+          frequency_data = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
           accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
           # Need to undo backwards-compatible shim:
           # Take into account how many whole samples the fractional part
@@ -274,11 +239,13 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           # use 15-bits as 16-bit fractional time
           fractional = bitwShiftL(bitwAnd(tsOffset, 0x7fffL), 1);
           # frequency is truncated to int in firmware
-          shift = shift + bitwShiftR((fractional * frequency), 16);
+          shift = shift + bitwShiftR((fractional * frequency_data), 16);
+        } else if (bitwAnd(tsOffset, 0x8000L) == 0) { # & class(frequency_data) ==  "function") {
+          frequency_data = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
         }
       } else {
         #Very old format, where offset 26 contains frequency
-        frequency = temp
+        frequency_data = temp
       }
       # Read data if necessary
       if (complete){
@@ -317,8 +284,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         suppressWarnings(readChar(fid, 482, useBytes = TRUE))
       }
       l = list(
-        frequency = frequency,
-        start = timestampDecoder(timeStamp, fractional,-shift / frequency),
+        frequency = frequency_data,
+        start = timestampDecoder(timeStamp, fractional,-shift / frequency_data),
         temperature = temperature,
         battery = battery,
         light = light,

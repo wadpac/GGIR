@@ -68,14 +68,13 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       sf = 64
       mon = 5
       header = "no header"
-      }
+    }
     if (dformat == 1 & is.mv == FALSE) { # .bin and not movisens
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
-      suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile)},silent=TRUE))
-      # on.exit(closeAllConnections())
+      suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile, more = F)},silent=TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
@@ -117,7 +116,6 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
             for (ii in 1:nrow(csvr)) {
               tmp3 = unlist(strsplit(as.character(csvr[ii,1]),"quency:")) #part of 'frequency'
               if (length(tmp3) > 1) {
-                #			print(csvr[ii,1])
                 sf_r = tmp3[2]#a s.numeric(tmp3[2]) + as.numeric(csvr[ii,]/10) #sample frequency from the page header
               }
             }
@@ -188,7 +186,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea","geneactive","actigraph","axivity","movisens") #monitor names
+  monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
   fornames = c("bin","csv","wav","cwa","csv") #format names
 
   if (length(filename) == 0) {
@@ -231,7 +229,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       genea = g.binread(datafile,0,1)
       H = genea$header
     } else if (mon == 2) { #geneactive
-      H = GENEAread::header.info(binfile=datafile)
+      H = GENEAread::header.info(binfile=datafile, more = F)
       # on.exit(closeAllConnections())
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
@@ -338,7 +336,13 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   }
   if (H[1,1] == "file does not have header") { #no header
                 header = "no header"
-        }
+  }
+  if (mon == 3) {
+    verisense_check = substr(colnames(read.csv(datafile,nrow=1)[1]),36,44)
+    if (identical('Verisense',toString(verisense_check))) {
+      mon = 6
+    }
+  }
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat

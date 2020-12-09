@@ -351,7 +351,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                     }
                                                     if (timewindowi == "MM") {
                                                     #  Nwindows = nrow(summarysleep_tmp2)
-                                                      Nwindows = length(which(diff(ts$diur) == -1)) + 1
+                                                    #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
+                                                       Nwindows = length(nightsi) + 1
                                                     } else {
                                                       Nwindows = length(which(diff(ts$diur) == -1))
                                                     }
@@ -810,17 +811,5 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
-  }
-  SI = sessionInfo()
-  sessionInfoFile = paste(metadatadir,"/results/QC/sessioninfo_part5.RData",sep="")
-  if (file.exists(sessionInfoFile)) {
-    FI = file.info(sessionInfoFile)
-    timesincecreation = abs(as.numeric(difftime(FI$ctime,Sys.time(),units="secs")))
-    # if file is older than 2 hours plus a random number of seconds (max 1 hours) then overwrite it
-    if (timesincecreation > (2*3600 + (sample(seq(1,3600,by=0.1),size = 1)))) {
-      save(SI,file=sessionInfoFile)
-    }
-  } else {
-    save(SI,file=sessionInfoFile)
   }
 }
