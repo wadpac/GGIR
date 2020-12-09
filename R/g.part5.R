@@ -222,6 +222,20 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                         }
                                         ts$nonwear = 0 # initialise column
                                         ts$nonwear = nonwear
+                                        # Check if temperature and light are availble
+                                        if ("lightpeak" %in% colnames(M$metalong)) {
+                                          luz = M$metalong$lightpeak
+                                          # luz = luz[rep(seq_len(nrow(luz)), each = (IMP$windowsizes[2]/IMP$windowsizes[1])), ]
+                                          luz = rep(luz,each=(IMP$windowsizes[2]/IMP$windowsizes[1]))
+                                          if (length(luz) > Nts) {
+                                            luz = luz[1:Nts]
+                                          } else if (length(luz) < Nts) {
+                                            luz = c(luz, rep(0,(Nts-nrow(luz))))
+                                          }
+                                          ts$lightpeak = 0 # initialise column
+                                          ts$lightpeak = luz
+                                        }
+                                        
                                         rm(IMP,M,I)
                                         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
                                           x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
@@ -280,7 +294,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
-                                              ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear")], by = list(ts$time_num), FUN= function(x) mean(x))
+                                              ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "lightpeak")],
+                                                             by = list(ts$time_num), FUN= function(x) mean(x))
                                               ts$sibdetection = round(ts$sibdetection)
                                               ts$diur = round(ts$diur)
                                               ts$nonwear = round(ts$nonwear)
@@ -304,7 +319,37 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                 nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
                                               }
                                               Nts = nrow(ts)
-                                            }
+                                            } 
+                                            
+                                            
+                                            
+                                            # Experimental coce 9 December 2020
+                                            # else if (part5_agg2_60seconds ==  FALSE & part5_roll2_60seconds == TRUE) {
+                                            #   ts$diur =  round(rollapply(ts$diur, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
+                                            #   ts$ACC =  rollapply(ts$ACC, width = 60/ws3, FUN = mean, align = "center", partial = TRUE)
+                                            #   ts$sibdetection = round(rollapply(ts$sibdetection, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
+                                            #   ts$nonwear = round(rollapply(ts$nonwear, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
+                                            #   #note: lightpeak was derived at a resolution less than 1 minut, so no need to smooth
+                                            #   
+                                            #   ws3new = ws3 # stays the same, because we are not downsample as above
+                                            #   # extract nightsi again
+                                            #   time_POSIX = ts$time #as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)
+                                            #   tempp = unclass(time_POSIX)
+                                            #   if (is.na(tempp$sec[1]) == TRUE) {
+                                            #     tempp = unclass(as.POSIXlt(ts$time,tz=desiredtz))
+                                            #   }
+                                            #   print("e")
+                                            #   sec = tempp$sec
+                                            #   min = tempp$min
+                                            #   hour = tempp$hour
+                                            #   if (dayborder == 0) {
+                                            #     nightsi = which(sec == 0 & min == 0 & hour == 0)
+                                            #   } else {
+                                            #     nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
+                                            #   }
+                                            #   Nts = nrow(ts)
+                                            # }
+
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -707,6 +752,35 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             # dsummary[di,fi:(fi+(length(frag.out)-1))] =  round(as.numeric(frag.out), digits=5)
                                                             # ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_spt")
                                                             # fi = fi + length(frag.out)
+                                                          }
+                                                          
+                                                          #===============================================
+                                                          # TEMPERATURE AND LIGHT, IF AVAILABLE
+                                                          if ("lightpeak" %in% colnames(ts)) {
+                                                            # mean LUX
+                                                            dsummary[di,fi] =  mean(ts$lightpeak[sse[ts$diur[sse] == 0]])
+                                                            dsummary[di,fi + 1] =  mean(ts$lightpeak[sse[ts$diur[sse] == 1]])
+                                                            dsummary[di,fi + 2] =  mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]])
+                                                            ds_names[fi:(fi+2)] = c("LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 3
+
+                                                            # time in LUX ranges
+                                                            dsummary[di,fi] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 0 &
+                                                                                              ts$lightpeak[sse[ts$diur[sse] == 0]] < 250)) / (60/ws3new)
+                                                            dsummary[di,fi+1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 250 &
+                                                                                              ts$lightpeak[sse[ts$diur[sse] == 0]] < 500)) / (60/ws3new)
+                                                            dsummary[di,fi+2] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 500 &
+                                                                                                ts$lightpeak[sse[ts$diur[sse] == 0]] < 750)) / (60/ws3new)
+                                                            dsummary[di,fi+3] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 750 &
+                                                                                              ts$lightpeak[sse[ts$diur[sse] == 0]] < 1000)) / (60/ws3new)
+                                                            dsummary[di,fi+4] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 1000 &
+                                                                                                ts$lightpeak[sse[ts$diur[sse] == 0]] < 2000)) / (60/ws3new)
+                                                            dsummary[di,fi+5] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 2000)) / (60/ws3new)
+                                                            ds_names[fi:(fi+5)] = c("LUX_min_0_250_day", 
+                                                                             "LUX_min_250_500_day",
+                                                                             "LUX_min_500_750_day",
+                                                                             "LUX_min_750_1000_day",
+                                                                             "LUX_min_1000_2000_day",
+                                                                             "LUX_min_2000_and_up_day"); fi = fi + 6
                                                           }
                                                           #===============================================
                                                           # FOLDER STRUCTURE
