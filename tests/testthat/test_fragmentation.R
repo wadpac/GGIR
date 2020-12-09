@@ -34,22 +34,16 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   
   expect_equal(round(out$mean_vol_0, digits=2), 8393.75)
   expect_equal(round(out$mean_vol_1, digits=1), 412.5)
-  expect_equal(round(out$B01_TP_vol, digits=5), 0.00012)
-  expect_equal(round(out$B10_TP_vol, digits=5), 0.00242)
   expect_equal(round(out$Gini_vol_0, digits=3), 0.408)
   expect_equal(round(out$Gini_vol_1, digits=4), 0.1877)
   
   expect_equal(round(out$mean_acc_0, digits=1), 1056.2)
   expect_equal(round(out$mean_acc_1, digits=1), 100)
-  expect_equal(round(out$B01_TP_acc, digits=5), 0.00095)
-  expect_equal(round(out$B10_TP_acc, digits=2), 0.01)
   expect_equal(round(out$Gini_acc_0, digits=3), 0.331)
   expect_equal(round(out$Gini_acc_1, digits=4), 0.0968)
   
   expect_equal(round(out$mean_dur_0, digits=3), 7)
   expect_equal(round(out$mean_dur_1, digits=3), 4)
-  expect_equal(round(out$B01_TP_dur, digits=4), 0.1429)
-  expect_equal(round(out$B10_TP_dur, digits=4), 0.25)
   expect_equal(round(out$Gini_dur_0, digits=4), 0.129)
   expect_equal(round(out$Gini_dur_1, digits=4), 0.0968)
   

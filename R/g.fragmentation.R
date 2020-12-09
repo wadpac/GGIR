@@ -1,8 +1,7 @@
 g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                                             "CoV", "all"),
-                           # "dfa", "InfEn", "SampEn", "ApEn", "RQA",
                            ACC = c(), intensity.thresholds = c(), do.multiclass=c(), LEVELS = c(),
-                           Lnames=c(), xmin=1) { #sleepclass=c()
+                           Lnames=c(), xmin=1) { 
   
   # This function is inspired from R package ActFrag as developed by Junrui Di.
   #
@@ -50,16 +49,18 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       y[which(LEVELS %in% class.lig.ids)] = 2
       y[which(LEVELS %in% class.mvpa.ids)] = 3
     }
+    
     #====================================================
     # TP (transition probability) metrics that depend on multiple classes
     if ("TP" %in% frag.metrics) {
       fragments3 = rle(y) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
       Nfrag3 = length(fragments3$value)
-      output[["IN2PA_TP"]] = NA
+      output[["IN2PA_TP"]] = output[["PA2IN_TP"]] = NA
       output[["IN2LIPA_TP"]] = output[["Nfragments_IN2LIPA"]] = NA
       output[["IN2MVPA_TP"]] = output[["Nfragments_IN2MVPA"]] = NA
       
       if (Nfrag3 >= min_Nfragments) {
+        Duration0 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 0)] # all inactivity fragments
         Duration1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
         # Get only indices of inactive fragments that transition to light:
         inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
@@ -75,7 +76,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
           output[["IN2MVPA_TP"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
           output[["Nfragments_IN2MVPA"]] = length(Duration3)
         } 
-        output[["IN2PA_TP"]] = 1 / mean(Duration1) # transition from inactive to mvpa
+        output[["IN2PA_TP"]] = 1 / mean(Duration1) # transition from inactive to active (no distinction light or MVPA)
+        output[["PA2IN_TP"]] = 1 / mean(Duration0) # transition from active to inactive (no distinction light or MVPA)
         if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) { # only IN2mvpa transitions
           output[["IN2MVPA_TP"]] = 1 / mean(Duration1)
           output[["Nfragments_IN2MVPA"]] = length(Duration1)
@@ -100,10 +102,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
   }
   x = as.integer(x)
-  # try-out dummy example:
-  # A = 1:20
-  # D = c(rep(0,4),rep(1,4),rep(0,4),rep(1,4),rep(0,4))
-  # rle(D)
+
   ACCcs = c(0,cumsum(ACC))
   ACCmean = diff(ACCcs[c(1,which(diff(x) != 0)+1,length(ACCcs))]) # mean acceleration per segment
   
@@ -141,12 +140,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["Gini_vol_1"]] = ineq::Gini(Volume1,corr = T)
     }
     if ("TP" %in% frag.metrics){
-      output[["B01_TP_acc"]] = 1/mean(Acc0) # transition towards behaviour of interest
-      output[["B10_TP_acc"]] = 1/mean(Acc1) # transition away from behaviour of interest
-      output[["B01_TP_vol"]] = 1/mean(Volume0) # transition towards behaviour of interest
-      output[["B10_TP_vol"]] = 1/mean(Volume1) # transition away from behaviour of interest
-      output[["B01_TP_dur"]] = 1/mean(Duration0) # transition towards behaviour of interest
-      output[["B10_TP_dur"]] = 1/mean(Duration1) # transition away from behaviour of interest
+      output[["TP01_acc"]] = 1/mean(Acc0) # transition towards behaviour of interest
+      output[["TP10_acc"]] = 1/mean(Acc1) # transition away from behaviour of interest
+      output[["TP01_vol"]] = 1/mean(Volume0) # transition towards behaviour of interest
+      output[["TP10_vol"]] = 1/mean(Volume1) # transition away from behaviour of interest
     }
     if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
       output[["CoV_dur_0"]] = sd(Duration0) / mean(log(Duration0))
