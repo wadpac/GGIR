@@ -758,9 +758,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           # TEMPERATURE AND LIGHT, IF AVAILABLE
                                                           if ("lightpeak" %in% colnames(ts)) {
                                                             # mean LUX
-                                                            dsummary[di,fi] =  mean(ts$lightpeak[sse[ts$diur[sse] == 0]])
-                                                            dsummary[di,fi + 1] =  mean(ts$lightpeak[sse[ts$diur[sse] == 1]])
-                                                            dsummary[di,fi + 2] =  mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]])
+                                                            dsummary[di,fi] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]]), digits = 1)
+                                                            dsummary[di,fi + 1] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]]), digits = 1)
+                                                            dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
                                                             ds_names[fi:(fi+2)] = c("LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 3
 
                                                             # time in LUX ranges
