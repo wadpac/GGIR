@@ -102,7 +102,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
   }
   x = as.integer(x)
-
+  
   ACCcs = c(0,cumsum(ACC))
   ACCmean = diff(ACCcs[c(1,which(diff(x) != 0)+1,length(ACCcs))]) # mean acceleration per segment
   
@@ -175,6 +175,29 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     #   output[["h_dur_0"]] =  mean(fitr$n.event/fitr$n.risk)
     #   output[["h_dur_1"]] = mean(fita$n.event/fita$n.risk)
     # }
+  } else {
+    # Create empty variables:
+    output[["Nfragments_0"]] = NA
+    output[["Nfragments_1"]] = NA
+    if ("mean" %in% frag.metrics){
+      output[["mean_acc_0"]] = output[["mean_acc_1"]] = output[["mean_vol_0"]] = NA
+      output[["mean_vol_1"]] = output[["mean_dur_0"]] = output[["mean_dur_1"]] = NA
+    }
+    if ("Gini" %in% frag.metrics){
+      output[["Gini_dur_0"]] = output[["Gini_dur_1"]] = output[["Gini_acc_0"]] = NA
+      output[["Gini_acc_1"]] = output[["Gini_vol_0"]] = output[["Gini_vol_1"]] = NA
+    }
+    if ("TP" %in% frag.metrics){
+      output[["TP01_acc"]] = output[["TP10_acc"]] = output[["TP01_vol"]] = output[["TP10_vol"]] = NA
+    }
+    if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
+      output[["CoV_dur_0"]] = output[["CoV_dur_1"]] = output[["CoV_acc_0"]] = NA
+      output[["CoV_acc_1"]] = output[["CoV_vol_0"]] = output[["CoV_vol_1"]] = NA
+    }
+    if ("power" %in% frag.metrics){
+      output[["alpha_dur_0"]] = output[["alpha_dur_1"]] = output[["x0.5_dur_0"]] = NA
+      output[["x0.5_dur_1"]] = output[["W0.5_dur_0"]] = output[["W0.5_dur_1"]] = NA
+    }
   }
   return(output)
 }
