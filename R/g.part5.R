@@ -235,7 +235,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                           ts$lightpeak = 0 # initialise column
                                           ts$lightpeak = luz
                                         }
-                                        
                                         rm(IMP,M,I)
                                         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
                                           x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
@@ -320,9 +319,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                               }
                                               Nts = nrow(ts)
                                             } 
-                                            
-                                            
-                                            
                                             # Experimental coce 9 December 2020
                                             # else if (part5_agg2_60seconds ==  FALSE & part5_roll2_60seconds == TRUE) {
                                             #   ts$diur =  round(rollapply(ts$diur, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
@@ -349,7 +345,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             #   }
                                             #   Nts = nrow(ts)
                                             # }
-
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -753,15 +748,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             # ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_spt")
                                                             # fi = fi + length(frag.out)
                                                           }
-                                                          
                                                           #===============================================
                                                           # TEMPERATURE AND LIGHT, IF AVAILABLE
                                                           if ("lightpeak" %in% colnames(ts)) {
                                                             # mean LUX
-                                                            dsummary[di,fi] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]]), digits = 1)
-                                                            dsummary[di,fi + 1] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]]), digits = 1)
-                                                            dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
-                                                            ds_names[fi:(fi+2)] = c("LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 3
+                                                            dsummary[di,fi] =  round(max(ts$lightpeak[sse[ts$diur[sse] == 0]]), digits = 1)
+                                                            dsummary[di,fi + 1] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]]), digits = 1)
+                                                            dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]]), digits = 1)
+                                                            dsummary[di,fi + 3] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
+                                                            ds_names[fi:(fi+3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
 
                                                             # time in LUX ranges
                                                             dsummary[di,fi] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 0 &
@@ -782,6 +777,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                              "LUX_min_1000_2000_day",
                                                                              "LUX_min_2000_and_up_day"); fi = fi + 6
                                                           }
+
                                                           #===============================================
                                                           # FOLDER STRUCTURE
                                                           if (storefolderstructure == TRUE) {
@@ -794,7 +790,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           }
                                                           di = di + 1
                                                         }
-                                                      }}
+                                                      }
+                                                    }
                                                   }
                                                   if (save_ms5rawlevels == TRUE) {
                                                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
@@ -866,7 +863,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-                                          if (length(output) > 0) {
+                                          
+                                          if (length(output) > 0 & nrow(output) > 0) {
                                             save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
                                           }
                                         }
