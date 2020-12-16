@@ -75,13 +75,10 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
       return(out)
     }
     outputfinal = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun)),stringsAsFactors=FALSE)
-    # cut = which(outputfinal[1,] == "" & outputfinal[2,] == "")
-    cut = which(sapply(outputfinal, function(x)all(x=="")) == TRUE)# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
+    cut = which(sapply(outputfinal, function(x) all(x=="")) == TRUE)# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
     if (length(cut) > 0) {
       outputfinal = outputfinal[,-cut]
     }
-    # cut = which(outputfinal[1,] == "")
-    # cut2 = which(outputfinal[,1] == "" & outputfinal[,2] == "")
     cut2 = which(sapply(outputfinal, function(x)all(x=="")) == TRUE)# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
     if (length(cut2) > 0) {
       outputfinal = outputfinal[-cut2,]
