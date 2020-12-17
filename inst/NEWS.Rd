@@ -5,6 +5,7 @@
 \itemize{
   \item Fix bug part 3 introduced in 2.2-0 for recordings without sustained inactivity bouts
   \item Transitioned from Travis+Appveyor CI to GitHub Actions
+  \item Part 5 fixed issue with max number of files to process causing files to be missed.
 }
 }
 \section{Changes in version 2.2-0 (release date:22-11-2020)}{
