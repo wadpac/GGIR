@@ -1,7 +1,7 @@
 ---
-title: "Accelerometer data processing with GGIR"
+title: "Accelerometer data processing with GGIR" 
 author: "Vincent van Hees"
-date: "November 22 2020"
+date: "January 6 2021"
 output:
   rmarkdown::html_vignette:
     toc : true
@@ -12,11 +12,18 @@ vignette: >
   %\VignetteIndexEntry{Accelerometer data processing with GGIR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+
 ---
+
+
+```{r, echo=FALSE, out.width = "75%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 
 # Introduction
 
@@ -795,3 +802,11 @@ If you used the **sleep detection** then also cite:
 If you used the **sleep detection without relying on sleep diary** then also cite:
 
 6. van Hees VT, Sabia S, et al. Estimating sleep parameters using an accelerometer without sleep diary. Scientific Reports 2018. doi: 10.1038/s41598-018-31266-z. [link](https://www.nature.com/articles/s41598-018-31266-z)
+
+
+The copyright of the GGIR logo lies with Accelting (Almere, The Netherlands), please contact v.vanhees@acceleting.com to ask for permission to use this logo.
+
+
+```{r, echo=FALSE, out.width = "75%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
