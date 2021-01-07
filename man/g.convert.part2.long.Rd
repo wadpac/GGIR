@@ -21,5 +21,5 @@ g.convert.part2.long(daySUMMARY)
   Data.frame with long format version of daySUMMARY
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

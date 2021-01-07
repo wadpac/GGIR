@@ -257,7 +257,7 @@ g.part1(datadir,outputdir)
 }
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }
 \references{
 \itemize{
