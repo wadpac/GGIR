@@ -1,12 +1,13 @@
 ---
 title: "Accelerometer data processing with GGIR" 
-author: "Vincent van Hees"
+author: ""
 date: "January 6 2021"
 output:
-  rmarkdown::html_vignette:
+   html_document:
     toc : true
     number_sections: true
     toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
 urlcolor: blue
 vignette: >
   %\VignetteIndexEntry{Accelerometer data processing with GGIR}
@@ -16,7 +17,7 @@ vignette: >
 ---
 
 
-```{r, echo=FALSE, out.width = "75%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "100%", out.extra='style="border: 0; padding:20px"'}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
