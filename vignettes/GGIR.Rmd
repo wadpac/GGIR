@@ -1,6 +1,6 @@
 ---
 title: "Accelerometer data processing with GGIR" 
-author: ""
+author: "Vincent van Hees, Jairo H Migueles, Matthew R Patterson, Severine Sabia"
 date: "January 6 2021"
 output:
    html_document:
