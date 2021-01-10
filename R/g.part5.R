@@ -75,7 +75,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   di = 1
   cnt = 1
   fnames.ms3 = sort(fnames.ms3)
-  if (f1 == 0) length(fnames.ms4)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
   boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
@@ -96,7 +95,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     fullfilenames = folderstructure$fullfilenames
     foldername = folderstructure$foldername
   }
-  if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3)
   if (f0 > length(fnames.ms3)) f0 = 1
   if (f1 == 0 | length(f1) == 0 | f1 > length(fnames.ms3))  f1 = length(fnames.ms3)
   #======================================================================

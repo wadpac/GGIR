@@ -5,6 +5,7 @@
 \itemize{
   \item Fix bug part 3 introduced in 2.2-0 for recordings without sustained inactivity bouts
   \item Transitioned from Travis+Appveyor CI to GitHub Actions
+  \item Part 5 fixed issue with max number of files to process causing files to be missed.
   \item Enabled console display of GGIR version number when running g.shell.shell under Windows
 }
 }

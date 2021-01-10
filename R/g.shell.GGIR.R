@@ -412,7 +412,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 5\n")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
+    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep=""))) # this is intentionally ms3 and not ms4, do not change!
     g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
             hrs.del.start=hrs.del.start,
             hrs.del.end=hrs.del.end,
