@@ -803,6 +803,7 @@ If you used the **sleep detection without relying on sleep diary** then also cit
 6. van Hees VT, Sabia S, et al. Estimating sleep parameters using an accelerometer without sleep diary. Scientific Reports 2018. doi: 10.1038/s41598-018-31266-z. [link](https://www.nature.com/articles/s41598-018-31266-z)
 
 
+## Copyright for GGIR logo
 The copyright of the GGIR logo lies with Accelting (Almere, The Netherlands), please contact v.vanhees@acceleting.com to ask for permission to use this logo.
 
 
