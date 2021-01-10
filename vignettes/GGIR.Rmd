@@ -13,9 +13,7 @@ vignette: >
   %\VignetteIndexEntry{Accelerometer data processing with GGIR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
-
 ---
-
 
 ```{r, echo=FALSE, out.width = "100%", out.extra='style="border: 0; padding:20px"'}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
@@ -360,7 +358,7 @@ GGIR generates the following types of output.
 knitr::include_graphics("reportexample.jpg")
 ```
 
-## Output part 2
+## Output part 2 {.tabset}
 
 Part 2 generates the following output:
 
@@ -445,7 +443,7 @@ ig_intercept_ENMO_0-24hr | Intercept from intensity gradient analysis (Rowlands 
 ig_rsquared_ENMO_0-24hr | r squared from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
 
 
-## Output part 4
+## Output part 4 {.tabset}
 
 Part 4 generates the following output:
 
@@ -530,7 +528,7 @@ This visualisation with outliers.only set to TRUE and critererror set to 4 was v
 knitr::include_graphics("example_dovisual.jpg")
 ```
 
-## Output part 5
+## Output part 5 {.tabset}
 
 The output of part 5 is dependent on the parameter configuration, it will generate as many output files as there are unique combination of the three thresholds provide. For example, the output could be:
 
