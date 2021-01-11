@@ -1,9 +1,9 @@
+![](vignettes/GGIR-MASTERLOGO-RGB.png)
+
 ![GitHub Actions R-CMD-check](https://github.com/wadpac/GGIR/workflows/R-CMD-check-full/badge.svg)
 [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
 [![](https://cranlogs.r-pkg.org/badges/GGIR)](https://cran.r-project.org/package=GGIR)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/GGIR)](https://cran.r-project.org/package=GGIR)
-
-![](vignettes/GGIR-MASTERLOGO-RGB.png)
 
 ## Getting started:
 The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
