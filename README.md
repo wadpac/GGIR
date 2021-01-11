@@ -3,7 +3,7 @@
 [![](https://cranlogs.r-pkg.org/badges/GGIR)](https://cran.r-project.org/package=GGIR)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/GGIR)](https://cran.r-project.org/package=GGIR)
 
-![](vignettes/GGIR-MASTERLOGO-RGB.png){width=75%}
+![](vignettes/GGIR-MASTERLOGO-RGB.png)
 
 ## Getting started:
 The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
