@@ -7,6 +7,7 @@
   \item Transitioned from Travis+Appveyor CI to GitHub Actions
   \item Part 5 fixed issue with expected max number of files to process
   \item Enabled console display of GGIR version number when running g.shell.shell under Windows
+  \item Embedded new GGIR logo and update layout of vignette
 }
 }
 \section{Changes in version 2.2-0 (release date:22-11-2020)}{
