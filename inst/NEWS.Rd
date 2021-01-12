@@ -1,11 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.2-1 (GitHub-only-release date:7-1-2021)}{
+\section{Changes in version 2.2-1 (GitHub-only-release date:12-01-2021)}{
 \itemize{
   \item Fix bug part 3 introduced in 2.2-0 for recordings without sustained inactivity bouts
   \item Transitioned from Travis+Appveyor CI to GitHub Actions
-  \item Part 5 fixed issue with max number of files to process causing files to be missed.
+  \item Part 5 fixed issue with expected max number of files to process
   \item Enabled console display of GGIR version number when running g.shell.shell under Windows
 }
 }
