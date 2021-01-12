@@ -301,6 +301,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   GGIRversion = ""
   SI = sessionInfo()
   try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
+  if (length(GGIRversion) == 0) {
+    try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version},silent=TRUE)
+  }
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
   GGIRversion = paste0(" ",GGIRversion)
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
