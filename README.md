@@ -48,7 +48,7 @@ With this new release structure I will use the following version coding. **A.B-C
 - C increases with every GitHub release.
 
 ### Images usaged
-The copyright of the GGIR logo as contained in the file vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The Netherlands), please contact v.vanhees@acceleting.com to ask for permission to use this logo.
+The copyright of the GGIR logo as contained in the file vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The Netherlands), please contact v.vanhees@accelting.com to ask for permission to use this logo.
 
 All other images in this repository are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
 
