@@ -1,12 +1,9 @@
+![](vignettes/GGIR-MASTERLOGO-RGB.png)
+
 ![GitHub Actions R-CMD-check](https://github.com/wadpac/GGIR/workflows/R-CMD-check-full/badge.svg)
 [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://codecov.io/gh/wadpac/GGIR) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1051064.svg)](https://doi.org/10.5281/zenodo.1051064)
 [![](https://cranlogs.r-pkg.org/badges/GGIR)](https://cran.r-project.org/package=GGIR)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/GGIR)](https://cran.r-project.org/package=GGIR)
-
-  
-  
-  
-The code in this repository is the development version for the code in R-package GGIR on CRAN
 
 ## Getting started:
 The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
@@ -49,3 +46,9 @@ With this new release structure I will use the following version coding. **A.B-C
 - A increases with major changes that affect backward compatibility with previous releases like changes in function names, function arguments or file format.
 - B increases with every CRAN release.
 - C increases with every GitHub release.
+
+### Images usaged
+The copyright of the GGIR logo as contained in the file vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The Netherlands), please contact v.vanhees@accelting.com to ask for permission to use this logo.
+
+All other images in this repository are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+
