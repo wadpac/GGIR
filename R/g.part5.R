@@ -131,7 +131,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                          "g.part5.addfirstwake", "g.part5.addsib",
                          "g.part5.definedays", "g.part5.fixmissingnight",
                          "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
-                         "g.part5.savetimeseries", "g.fragmentation")
+                         "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
