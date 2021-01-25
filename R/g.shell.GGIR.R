@@ -208,6 +208,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("window.summary.size") == FALSE) window.summary.size = 10
   if (exists("dayborder") == FALSE)  dayborder = 0
   if (exists("iglevels") == FALSE)  iglevels = c()
+  if (length(iglevels) > 0) {
+    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
+  }
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
@@ -434,7 +437,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             # frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5)
+            includedaycrit.part5=includedaycrit.part5, iglevels=iglevels)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file

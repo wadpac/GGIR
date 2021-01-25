@@ -24,7 +24,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   save_ms5raw_without_invalid=TRUE,
   data_cleaning_file=c(), includedaycrit.part5=2/3,
   %frag.classes.day = c(),  frag.classes.spt = c(),
-                   frag.metrics=c())
+                   frag.metrics=c(), iglevels=c())
 }
 \arguments{
   \item{datadir}{
@@ -202,7 +202,9 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
  \item{frag.metrics}{
  Fragmentation metric(s) to use. See \link{g.fragmentation}
  }
-
+ \item{iglevels}{
+   See  \link{g.analyse}. If provided then the intensity gradient will be calculated
+  }
  
 }
 \value{

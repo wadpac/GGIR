@@ -16,7 +16,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    includedaycrit.part5=2/3,
                    # frag.classes.day = c(), #c("day_IN_bts", "day_IN_unbt"),
                    # frag.classes.spt = c(),# "spt_sleep"
-                   frag.metrics = c()) {
+                   frag.metrics = c(), iglevels=c()) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -721,6 +721,16 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                                      paste(boutdur.mvpa,collapse="_"), bout.metric)
                                                           ds_names[fi:(fi+6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                                                                                   "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
+                                                          #===========================
+                                                          # Intensity gradient over waking hours
+                                                          if (length(iglevels) > 0) {
+                                                            q55 = cut(ts$ACC[sse[ts$diur[sse] == 0]],breaks = iglevels,right=FALSE)
+                                                            x_ig = zoo::rollmean(iglevels,k=2)
+                                                            y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
+                                                            dsummary[di,fi:(fi+2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
+                                                            ds_names[fi:(fi+2)] = c("ig_gradient","ig_intercept","ig_rsquared")
+                                                            fi = fi + 3
+                                                          }
                                                           #===============================================
                                                           # FRAGMENTATION per window, and split by night and day
                                                           # if (length(frag.classes.day_tmp) > 0 & length(frag.classes.spt_tmp) > 0 &
