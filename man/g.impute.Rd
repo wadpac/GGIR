@@ -26,7 +26,8 @@ maxdur = 0, ndayswindow = 7,desiredtz="", dayborder= 0, TimeSegments2Zero =c())
     based on \code{hrs.del.start}, \code{hrs.del.end}, and \code{maxdur}.
     Value = 2 makes that only the data between the first midnight and the last
     midnight is used for imputation. Value = 3 only selects the most active X days
-    in the files. X is specified by argument \code{ndayswindow}
+    in the file where X is specified by argument \code{ndayswindow}. Value = 4 to
+    only use the data after the first midnight.
   }
   \item{hrs.del.start}{
     how many HOURS after start of experiment did wearing of monitor start?

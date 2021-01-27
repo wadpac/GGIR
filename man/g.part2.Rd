@@ -47,8 +47,8 @@ qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10)
     based on \code{hrs.del.start}, \code{hrs.del.end}, and \code{maxdur}.
     Value = 2 to only use the data between the first midnight and the last
     midnight, value = 3 only selects the most active X days
-    in the files. X is specified by argument \code{ndayswindow}
-    See also \link{g.impute}
+    in the files. X is specified by argument \code{ndayswindow}, value = 4 to
+    only use the data after the first midnight. See also \link{g.impute}
   }
   \item{hrs.del.start}{
     how many HOURS after start of experiment did wearing of monitor start?,
