@@ -566,9 +566,9 @@ WW | in filename refers to analyses based on the timewindow from waking to wakin
 MM | in filename refers to analyses done on windows between midnight and midnight
 `_total_IN` | total time spent in inactivity (no distinction between bouted or unbouted behavior, this is a simple count of the number of epochs that meet the threshold criteria.
 `_total_LIG` | total time spent in light activity.
-nonwear_perc_day_spt | Non-wear percentage during the waking hours of this day.
+nonwear_perc_day | Non-wear percentage during the waking hours of this day.
 nonwear_perc_spt | Non-wear percentage during the spt hours of this day.
-nonwear_perc_day | Non-wear percentage during the whole day, including waking and spt.
+nonwear_perc_day_spt | Non-wear percentage during the whole day, including waking and spt.
 dur_day_min | Duration of waking hours within this day window
 dur_spt_min | Duration of Sleep Period Time wihtin this day window.
 dur_day_spt_min | Duration this day window, including both waking hours and SPT.
