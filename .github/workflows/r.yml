@@ -85,7 +85,6 @@ jobs:
           path: check
       
       - name: Upload coverage to Codecov
-        uses: actions/checkout@master
         uses: codecov/codecov-action@v1
         with:
           files: ./coverage1.xml,./coverage2.xml # optional
