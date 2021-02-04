@@ -204,6 +204,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
   if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=30
   if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
+  if (length(mvpadur) != 3) {
+    mvpadur = c(1,5,10)
+    warning("mvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
+  }
   if (exists("epochvalues2csv") == FALSE)  epochvalues2csv = FALSE
   if (exists("window.summary.size") == FALSE) window.summary.size = 10
   if (exists("dayborder") == FALSE)  dayborder = 0
