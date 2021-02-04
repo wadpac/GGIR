@@ -213,7 +213,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("dayborder") == FALSE)  dayborder = 0
   if (exists("iglevels") == FALSE)  iglevels = c()
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
-  if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
+  if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 2
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
   if (exists("MX.ig.min.dur") == FALSE)  MX.ig.min.dur = 10
   

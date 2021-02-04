@@ -11,7 +11,7 @@
 }
 \usage{
   g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = 3600, 
-  IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1)
+  IVIS_windowsize_minutes = 60, IVIS.activity.metric = 2)
 }
 \arguments{
   \item{Xi}{

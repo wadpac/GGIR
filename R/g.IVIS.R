@@ -1,4 +1,4 @@
-g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = 3600, IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1) {
+g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = 3600, IVIS_windowsize_minutes = 60, IVIS.activity.metric = 2) {
   
   if (IVIS.activity.metric == 2) { # use binary scoring
     Xi = ifelse((Xi*1000) < 20, 0, 1) # explored on 5 June 2018 as an attempt to better mimic original ISIV construct

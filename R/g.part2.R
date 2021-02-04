@@ -7,7 +7,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                   IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
+                   IVIS.activity.metric=2, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
                    myfun=c(), MX.ig.min.dur=10) {
   snloc= 1
   if (is.numeric(qwindow)) {
