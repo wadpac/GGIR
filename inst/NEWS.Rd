@@ -2,11 +2,12 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.2-2 (GitHub-only-release date:06-02-2021)}{
+\section{Changes in version 2.2-2 (GitHub-only-release date:04-02-2021)}{
 \itemize{
-  \item Part 5 inproved estimate of waking up time for first window when night is missing in part 4
+  \item Part 5 inproved estimate of waking up time for 1st WW window when 1st night is missing in part 4
   \item Various expansions to documentation
   \item Default value for argument IVIS.activity.metric changed to 2.
+  \item Migrate codecoverage testing to Github Actions
 }
 }
 \section{Changes in version 2.2-1 (GitHub-only-release date:12-01-2021)}{
