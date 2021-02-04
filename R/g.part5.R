@@ -218,6 +218,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                         }
                                         ts$nonwear = 0 # initialise column
                                         ts$nonwear = nonwear
+                                        # calculate starting time (in hours) of the recording), which we may need to interpret first HDCZA value:
+                                        startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
+                                        startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
                                         rm(IMP,M,I)
                                         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
                                           x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
@@ -273,7 +276,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
                                             # Add first waking up time, if it is missing:
                                             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
-                                                                      Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
+                                                                      Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3, desiredtz, startTimeRecord)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
                                               ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear")], by = list(ts$time_num), FUN= function(x) mean(x))
