@@ -4,7 +4,7 @@
 
 \section{Changes in version 2.2-2 (GitHub-only-release date:04-02-2021)}{
 \itemize{
-  \item Part 5 inproved estimate of waking up time for 1st WW window when 1st night is missing in part 4
+  \item Part 5 bug fix in waking up time for first night, in WW mode and HDCZA guider
   \item Various expansions to documentation
   \item Default value for argument IVIS.activity.metric changed to 2.
   \item Migrate codecoverage testing to Github Actions

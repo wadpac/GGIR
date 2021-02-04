@@ -1,5 +1,5 @@
 g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, 
-                               Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new, desiredtz="", startTimeRecord) {
+                               Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new) {
   # Note related to if first and last night were ignored in part 4:
   # - diur lacks the first and last night at this point in the code.
   # - nightsi has all the midnights, so it is possible to check here
@@ -57,7 +57,7 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
       # if there was no sleep log
       if (is.na(sptwindow_HDCZA_end[1]) == FALSE) {
         if (sptwindow_HDCZA_end[1] != 0) {
-          wake_night1_index = round((sptwindow_HDCZA_end[1] + (startTimeRecord-12))* Nepochsinhour)
+          wake_night1_index = round((sptwindow_HDCZA_end[1]-24)* Nepochsinhour)
           Ndays_delta = (wake_night1_index - nightsi[1]) / (3600/ws3new) 
           if (Ndays_delta> 24) {
             wake_night1_index = wake_night1_index  - (24*floor(Ndays_delta/24) * (60/ws3new)*60)

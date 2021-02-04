@@ -10,7 +10,7 @@
 }
 \usage{
   g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog,
-  ID, Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new, desiredtz = "", startTimeRecord)
+  ID, Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new)
 }
 \arguments{
   \item{ts}{
@@ -30,12 +30,6 @@
   \item{sptwindow_HDCZA_end}{
   }
   \item{ws3new}{
-  }
-  \item{desiredtz}{
-  see \link{g.getmeta}
-  }
-  \item{startTimeRecord}{
-  Start time in hours of the recording to aid interpretation of first HDCZA estimate
   }
 }
 \value{
