@@ -398,8 +398,8 @@ ig_gradient_ENMO_0-24hr_fullRecording | Intensity gradient calculated over the f
 1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am
 N valid WEdays | Number of valid weekend days
 N valid WKdays | Number of valid week days
-IS_interdailystability | inter daily stability
-IV_intradailyvariability | intra daily variability
+IS_interdailystability | inter daily stability. Note: The movement count that is derived for this was an attempt to adhere to original approach, we are currently looking for researchers willing to help evaluate this implementation.
+IV_intradailyvariability | intra daily variability. Note: Same note as for IS_interdailystability.
 IVIS_windowsize_minutes | Sizes of the windows based on which IV and IS are calculated (note that this is modifiable)
 IVIS_epochsize_seconds | size of the epochs based on which IV and IS are calculated (note that this is modifiable)
 `AD_` | All days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over all the available days
