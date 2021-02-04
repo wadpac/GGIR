@@ -564,6 +564,8 @@ dur_day_spt_min | Total length of daytime waking hours and spt combined (typical
 Nblock | number of blocks of a certain behavioral class, not these are not bouts but a count of the number of times the behavioral class occures without interruptions.
 WW | in filename refers to analyses based on the timewindow from waking to waking up
 MM | in filename refers to analyses done on windows between midnight and midnight
+calendar_date | calendar date on which the window started. So, for WW window this could mean that you have two windows starting on the same date.
+weekday | weekday on which the window started. So, for WW window this could mean that you have two windows starting on the weekday.
 `_total_IN` | total time spent in inactivity (no distinction between bouted or unbouted behavior, this is a simple count of the number of epochs that meet the threshold criteria.
 `_total_LIG` | total time spent in light activity.
 nonwear_perc_day | Non-wear percentage during the waking hours of this day.
