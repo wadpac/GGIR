@@ -58,10 +58,6 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
       if (is.na(sptwindow_HDCZA_end[1]) == FALSE) {
         if (sptwindow_HDCZA_end[1] != 0) {
           wake_night1_index = round((sptwindow_HDCZA_end[1]-24)* Nepochsinhour)
-          Ndays_delta = (wake_night1_index - nightsi[1]) / (3600/ws3new) 
-          if (Ndays_delta> 24) {
-            wake_night1_index = wake_night1_index  - (24*floor(Ndays_delta/24) * (60/ws3new)*60)
-          }
         }
       }
     }
