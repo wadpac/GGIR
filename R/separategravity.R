@@ -38,7 +38,7 @@ separategravity = function(acc, gyr, sf) {
   weight = pmin(pmax((rowSums(abs(acc_hf)) - 0.04),0) / 0.02, 1) 
   rm(acc_hf)
   # smooth the weight values with the same low-pass filter
-  weight = as.numeric(filter(lowpf, weight))
+  weight = as.numeric(signal::filter(lowpf, weight))
   # weight = runstats::RunningMean(weight,W = sf, circular = TRUE)
   # trim off weights above 1 and below 0.01
   weight = ifelse(weight > 1, yes = 1, no = weight)

@@ -13,7 +13,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),...) {
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),
+                   do.sgAccEN=TRUE, do.sgAnglex=TRUE, do.sgAngley=TRUE, do.sgAnglez=TRUE, ...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -245,7 +246,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                          "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv",
                          "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                         "g.extractheadervars")
+                         "g.extractheadervars", "separategravity", "g.applygmetrics4sg")
     errhand = 'stop'
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
@@ -499,6 +500,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz, 
                       do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
                       do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz, 
+                      do.sgAccEN=do.sgAccEN, do.sgAnglex=do.sgAnglex,
+                      do.sgAngley=do.sgAngley, do.sgAnglez=do.sgAnglez,
                       lb = lb, hb = hb,  n = n,
                       desiredtz=desiredtz, daylimit=daylimit, windowsizes=windowsizes,
                       tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
@@ -572,7 +575,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         }
 
         rm(M); rm(I); rm(C)
-        # }
+        # } # for loop
       }
     }) # END tryCatch
     return(tryCatchResult)
