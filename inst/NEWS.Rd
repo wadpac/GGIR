@@ -6,6 +6,7 @@
 \itemize{
   \item Part 5 bug fix in waking up time for first night, in WW mode and HDCZA guider
   \item Various expansions to documentation
+  \item Earlier draft implementation of IV and IS metrics now better tested and bugs fixed.
   \item Default value for argument IVIS.activity.metric changed to 2.
   \item Migrate codecoverage testing to Github Actions
 }
