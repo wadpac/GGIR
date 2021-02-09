@@ -35,13 +35,27 @@ separategravity = function(acc, gyr, sf) {
   weight = rep(1, N)
   # update weight vector (rely on accelerometer (weight=0) when
   # summed absolute acceleration over 3 axis <= 0.04
-  weight = pmin(pmax((rowSums(abs(acc_hf)) - 0.04),0) / 0.02, 1) 
+  #----------------------------------------------------------------
+  # Turning absolute sum of acceleration into weights.
+  # Any value below 0.04 will get weight=0.
+  # The role is that it provides a minor
+  # slope between weight for summed acceleration 0.04 (weight = 0) and 
+  # weight for summed acceleration 0.05 (weight=1).
+  weight = pmin(pmax((rowSums(abs(acc_hf)) - 0.04),0) / 0.01, 1) 
   rm(acc_hf)
-  # smooth the weight values with the same low-pass filter
-  weight = as.numeric(signal::filter(lowpf, weight))
-  # weight = runstats::RunningMean(weight,W = sf, circular = TRUE)
-  # trim off weights above 1 and below 0.01
-  weight = ifelse(weight > 1, yes = 1, no = weight)
+  #----------------------------------------------------------------
+  # Maximum weight value. By setting the maximum weight value to 1-(1/sf),
+  # we ensure that there is always negative exponential shift from gyroscope based
+  # orientation to accelerometer based orientation. This to counteract a
+  # possible drift in the gyroscope derived orientation, and assuming that even under
+  # dynamic circumstances the low-pass filtered accelerometer can provide a
+  # crude estimate of the average orientation of the sensor across multiple seconds.
+  maxweight = 1-(1/sf)
+  #----------------------------------------------------------------
+  weight = ifelse(weight > maxweight, yes = maxweight, no = weight)
+  # Minimum non-zero weight value. By setting a minimum non-zero weight value to 0.01,
+  # we ensure that when the gyro contribution is small it is ignored. This then speeds
+  # up the algorithm, because the vector rotation does not have to be applied
   weight = ifelse(weight < 0.01, yes = 0, no = weight)
   #====================================================================
   # Fuse the acc and gyr signal:
