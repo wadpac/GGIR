@@ -12,7 +12,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
-                     do.sgAccEN=TRUE, do.sgAnglex=TRUE, do.sgAngley=TRUE, do.sgAnglez=TRUE,
+                     do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,
                      ...) {
   #get input variables
   input = list(...)
@@ -473,7 +473,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           # TO DO:
           # - derive features from acclocal and gvector
           # - add these new features to the output
-        }
+        } 
         
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
@@ -900,16 +900,24 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
                           "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa","LFEN",
-                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ",
-                          "sgAccEN", "sgAnglex", "sgAngley", "sgAnglez") #
-    metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
+                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ")
+    if (extract.sgmetrics == TRUE) {
+      # metrics related to separated gravity (only available when using accelerometer+gyroscope data)
+      metricnames_short = c(metricnames_short, "sgAccEN", "sgAnglex", "sgAngley", "sgAnglez")
+    }
+    metricnames_short_1 = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                                                          do.anglex,do.angley,do.anglez,
                                                          do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                                                          do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                          do.enmoa,do.lfen,
                                                          do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
-                                                         do.bfx, do.bfy, do.bfz,
-                                                         do.sgAccEN, do.sgAnglex, do.sgAngley, do.sgAnglez)])
+                                                         do.bfx, do.bfy, do.bfz)])
+    if (extract.sgmetrics == TRUE) {
+      # metrics related to separated gravity (only available when using accelerometer+gyroscope data)
+      metricnames_short = c(metricnames_short_1, as.character(metricnames_short[c(do.sgAccEN, do.sgAnglex, do.sgAngley, do.sgAnglez)]))
+    } else {
+      metricnames_short = metricnames_short_1
+    }
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)

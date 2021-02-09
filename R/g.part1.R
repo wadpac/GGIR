@@ -14,7 +14,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
                    configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),
-                   do.sgAccEN=TRUE, do.sgAnglex=TRUE, do.sgAngley=TRUE, do.sgAnglez=TRUE, ...) {
+                   do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE, ...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {

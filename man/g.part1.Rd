@@ -36,7 +36,9 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
         dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
-        myfun=c(), ...)
+        myfun=c(),
+        do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,
+        ...)
 }
 \arguments{
   \item{datadir}{
@@ -215,6 +217,19 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
+  }
+  
+    \item{do.sgAccEN}{
+  Boolean, see \link{g.getmeta})
+  }
+  \item{do.sgAnglex}{
+  Boolean, see \link{g.getmeta})
+  }
+  \item{do.sgAngley}{
+  Boolean, see \link{g.getmeta})
+  }
+  \item{do.sgAnglez}{
+  Boolean, see \link{g.getmeta})
   }
   \item{...}{
    Any input arguments needed for function \link{read.myacc.csv} if you

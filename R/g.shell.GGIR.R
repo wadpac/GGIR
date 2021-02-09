@@ -175,9 +175,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("do.bfy") == FALSE)  do.bfy = FALSE
   if (exists("do.bfz") == FALSE)  do.bfz = FALSE
   if (exists("do.sgAccEN") == FALSE)  do.sgAccEN = TRUE
-  if (exists("do.sgAnglex") == FALSE)  do.sgAnglex = TRUE
-  if (exists("do.sgAngley") == FALSE)  do.sgAngley = TRUE
-  if (exists("do.sgAnglez") == FALSE)  do.sgAnglez = TRUE
+  if (exists("do.sgAnglex") == FALSE)  do.sgAnglex = FALSE
+  if (exists("do.sgAngley") == FALSE)  do.sgAngley = FALSE
+  if (exists("do.sgAnglez") == FALSE)  do.sgAnglez = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
