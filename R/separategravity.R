@@ -10,7 +10,7 @@ separategravity = function(acc, gyr, sf) {
   # an orientation vector (OV) per sample relative to 
   # local coordinate system of the sensor
   # and a magnitude of angular velocity around that vector (theta)
-  theta = sqrt(rowSums(gyr ^ 2)) # magnitude of omega (angular velocity)
+  theta = sqrt(rowSums(gyr ^ 2)) # magnitude of theta (angular velocity)
   OV = matrix(0, N, 3)
   nozero = which(theta > 0)
   OV[nozero,] = as.numeric(gyr[nozero,] / theta[nozero])
@@ -72,7 +72,7 @@ separategravity = function(acc, gyr, sf) {
   RotArr = array(dim = c(N, 3, 3)) # this is a rotation matrix for every timestep
   costheta = cos(theta)
   sintheta = sin(theta)
-  RotArr[,1,1:3] = cbind(cos(theta) +
+  RotArr[,1,1:3] = cbind(costheta +
                            OV[,1]^2 * (1-costheta), OV[,1] * OV[,2] * (1- costheta) -
                            OV[,3] * sintheta, OV[,1] * OV[,3] * (1- costheta) +
                            OV[,2] * sintheta)
