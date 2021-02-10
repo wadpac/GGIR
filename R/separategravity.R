@@ -31,10 +31,6 @@ separategravity = function(acc, gyr, sf) {
     acc_lf[,i] <- signal::filter(lowpf, acc[,i]) # low-pass filtered
   }
   acc_hf <- acc - acc_lf # high-pass filtered
-  # initialize weight vector: weight = 1 rely on gyroscope (default)
-  weight = rep(1, N)
-  # update weight vector (rely on accelerometer (weight=0) when
-  # summed absolute acceleration over 3 axis <= 0.04
   #----------------------------------------------------------------
   # Turning absolute sum of acceleration into weights.
   # Any value below 0.04 will get weight=0.
@@ -50,7 +46,7 @@ separategravity = function(acc, gyr, sf) {
   # possible drift in the gyroscope derived orientation, and assuming that even under
   # dynamic circumstances the low-pass filtered accelerometer can provide a
   # crude estimate of the average orientation of the sensor across multiple seconds.
-  maxweight = 1-(1/sf)
+  maxweight = 1-(0.5/sf)
   #----------------------------------------------------------------
   weight = ifelse(weight > maxweight, yes = maxweight, no = weight)
   # Minimum non-zero weight value. By setting a minimum non-zero weight value to 0.01,
