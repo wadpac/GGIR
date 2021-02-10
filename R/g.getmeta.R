@@ -287,7 +287,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         } else if (dformat == 4) {
           if (P$header$hardwareType == "AX6") { # cwa AX6
             gyro_available = TRUE
-           }
+          }
           # if (P$header$hardwareType == "AX6") { # cwa AX6
             # Note 18-Feb-2020: For the moment GGIR ignores the AX6 gyroscope signals until robust sensor
             # fusion algorithms and gyroscope metrics have been prepared
@@ -522,6 +522,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         BFX =  accmetrics$BFX
         BFY =  accmetrics$BFY
         BFZ =  accmetrics$BFZ
+
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
@@ -651,7 +652,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-        
         count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         rm(accmetrics)
         # update blocksize depending on available memory
@@ -841,7 +841,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       time6 = strftime(time6,format="%Y-%m-%dT%H:%M:%S%z")
       metashort[,1] = as.character(time6)
     }
-    # cut2 = (count2+1):nrow(metalong)
     cut2 = (count2):nrow(metalong) # how it was
     if (length(cut2) > 1) {
       metalong = as.matrix(metalong[-cut2,])
@@ -905,18 +904,23 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       # metrics related to separated gravity (only available when using accelerometer+gyroscope data)
       metricnames_short = c(metricnames_short, "sgAccEN", "sgAnglex", "sgAngley", "sgAnglez")
     }
-    metricnames_short_1 = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
-                                                         do.anglex,do.angley,do.anglez,
-                                                         do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                                                         do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
-                                                         do.enmoa,do.lfen,
-                                                         do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
-                                                         do.bfx, do.bfy, do.bfz)])
     if (extract.sgmetrics == TRUE) {
       # metrics related to separated gravity (only available when using accelerometer+gyroscope data)
-      metricnames_short = c(metricnames_short_1, as.character(metricnames_short[c(do.sgAccEN, do.sgAnglex, do.sgAngley, do.sgAnglez)]))
+      metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
+                                                           do.anglex,do.angley,do.anglez,
+                                                           do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
+                                                           do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
+                                                           do.enmoa,do.lfen,
+                                                           do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
+                                                           do.bfx, do.bfy, do.bfz, do.sgAccEN, do.sgAnglex, do.sgAngley, do.sgAnglez)])
     } else {
-      metricnames_short = metricnames_short_1
+      metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
+                                                             do.anglex,do.angley,do.anglez,
+                                                             do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
+                                                             do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
+                                                             do.enmoa,do.lfen,
+                                                             do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
+                                                             do.bfx, do.bfy, do.bfz)])
     }
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
@@ -925,7 +929,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       metricnames_short = c(metricnames_short, myfun$colnames)
       if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
     }
-    
     metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
     for (ncolms in 2:NbasicMetrics) {
