@@ -14,6 +14,6 @@ test_that("separategravity", {
   sg = separategravity(acc = acc, gyr = gyr, sf=sf)
   
   expect_equal(round(sg$acclocal[2,],digits=3),c(0.954, -0.033, -0.044))
-  expect_equal(sum(rowSums(round(sg$gvector,digits=3))), 885.153)
-  expect_equal(sum(rowSums(round(sg$acclocal,digits=3))), 9069.33)
+  expect_equal(sum(rowSums(round(sg$gvector,digits=3))), 522.951)
+  expect_equal(sum(rowSums(round(sg$acclocal,digits=3))), 9431.448)
 })
