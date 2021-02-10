@@ -151,37 +151,9 @@ acclocal = acc - gvector
 
 # Using the algorithm with GGIR
 
-At the moment I have implemented the functionality to work with the .cwa data from the AX6 sensor by Axivity Ltd.
-While running the central GGIR function `g.shell.GGIR` the code will automatically extract metric `sgAccEN`, which is the average of the local magnitude of acceleration based on the fused data.
+At the moment I have implemented the functionality only for the .cwa data collected with AX6 sensors by Axivity Ltd.
+Simply apply GGIR function `g.shell.GGIR` as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment it only extract metric `sgAccEN` as epoch level summary of the data, which represents the epoch level average of the magnitude of acceleration after separation of the gravitational component. I am sure this can be expanded with additional metrics.
 
-# Performance
+# Reflections on performance and next steps
 
-## Speed
-
-With a virtual machine (Ubuntu 20, 4 core, and 8GB):
-
-Recording duration (hours) at 100 Hertz | Processing time
--------------------- | --------------------------
-1 hour | 1.25 seconds
-2 hour | 2.00 seconds
-4 hour | 3.80 seconds
-12 hour | 10.34 seconds
-24 hour | 10.34 seconds
-
-## Accuracy
-
-I did some simple home experiments to check the output. However, a thorough benchmark test has not been done yet. If you are interested in doing this work then get in touch: v.vanhees@accelting.com.
-
-# Relation with accelerometer-only metrics
-
-For accelerometer-only metrics it has traditionally been difficult to assess how good these metrics are.
-The fused sensor data now offers us a more reliable reference point for compare accelerometer-only metrics for the magnitude of movement-related acceleration. I have extracted all metrics from the [2013 PLOSONE publication](link to pa(https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691) I mentioned above, which let to the following correlation with `sgAccEN`.
-
-Accelerometer-only metric | Correlation with sgAccEN
--------------------- | -------------------- 
-ENMO |
-ENMOa
-MAD
-HFEN
-HFENplus
-
+The `separategravity` function is able to process 24 hours of 100 Hertz data within 30 seconds (Ubuntu 20, 8 core, 16GB), which sounds promising. I have been doing some simple home experiments to get a first idea of whether the algorithm provides plausible output. For example, by swinging the AX6 like a pendulum in the vertical plane and trying to keep track of it's angle with gravity. However, a thorough benchmark test has not been done yet. If you are interested in doing or supporting such work then please let me know: v.vanhees@accelting.com. I also welcome suggestions and support for implementing alternative fusion algorithms in GGIR.
