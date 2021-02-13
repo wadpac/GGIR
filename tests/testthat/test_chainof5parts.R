@@ -16,8 +16,8 @@ test_that("chainof5parts", {
   #--------------------------------------------
   # part 1
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
-                     studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE,
-          windowsizes = c(15,3600,3600), do.parallel = do.parallel,
+                     studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE,do.sgAccEN=FALSE,
+          windowsizes = c(15,3600,3600), do.parallel = do.parallel, 
           minimumFileSizeMB=minimumFileSizeMB)
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
@@ -291,7 +291,7 @@ test_that("chainof5parts", {
           do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,
           do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen=TRUE,
-          do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen=TRUE,
+          do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen=TRUE, do.sgAccEN=FALSE,
           do.enmoa = TRUE,selectdaysfile=selectdaysfile)
   
   rn = dir("output_test/meta/basic/",full.names = TRUE)
