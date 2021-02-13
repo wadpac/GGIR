@@ -5,12 +5,10 @@
 }
 \description{
   To extract interdaily stability and interdaily variability as originally proposed by
-  van Someren. Note that we had to improvise our replication of his metric, because GGIR
-  does not attempt to calculate count values. The implementation in this function has so
-  far not be evaluated yet.
+  van Someren.
 }
 \usage{
-  g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = 3600, 
+  g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = c(),
   IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1)
 }
 \arguments{
@@ -21,24 +19,23 @@
   Epoch size of the values in Xi expressed in seconds.
   }
   \item{IVIS_epochsize_seconds}{ 
-   Epoch size of the Intradaily Variability (IV) and Interdaily
-  Stability (IS) metrics in seconds
+   This argument has been depricated.
   }
   \item{IVIS_windowsize_minutes}{
     Window size of the Intradaily Variability (IV) and Interdaily
-  Stability (IS) metrics in minutes
+  Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.
   }
   \item{IVIS.activity.metric}{
   Metric used for activity calculation.
-  Value = 1, uses continuous scaled acceleration. 
-  Value = 2, tries to collapse itinto a binary score of rest versus active
-  to try to similate the original approach.
+  Value = 1, uses continuous scaled acceleration.
+  Value = 2, tries to collapse acce;eration into a binary score of rest
+  versus active to try to similate the original approach.
   }
 }
 \value{
   \item{InterdailyStability}{}
   \item{IntradailyVariability}{}
-  
+
 }
 \examples{
   Xi = abs(rnorm(n = 10000,mean = 0.2))
