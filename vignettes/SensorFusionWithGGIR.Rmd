@@ -1,5 +1,5 @@
 ---
-title: "Sensor fusion in GGIR"
+title: "Sensor fusion with GGIR"
 author: "Vincent van Hees"
 date: "February 13 2021"
 output:
@@ -10,7 +10,7 @@ output:
     toc_float: true #by turning this on, the table of contents moves to the left of the page.
 urlcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Sensor fusion in GGIR}
+  %\VignetteIndexEntry{Sensor fusion with GGIR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
