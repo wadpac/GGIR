@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.2-2 (GitHub-only-release date:13-02-2021)}{
+\itemize{
+  \item Implemented initial sensor fusion functionality for AX6 cwa data
+}
+}
 \section{Changes in version 2.2-1 (GitHub-only-release date:12-01-2021)}{
 \itemize{
   \item Fix bug part 3 introduced in 2.2-0 for recordings without sustained inactivity bouts

@@ -462,7 +462,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           LD = nrow(data)
         }
         extract.sgmetrics = FALSE
-        if (ncol(data) == 6) {
+        if (ncol(data) == 6 & (do.sgAccEN + do.sgAnglex + do.sgAngley + do.sgAnglez) > 0) {
           extract.sgmetrics = TRUE
           # assumption here that gyroscope data is stored in columns 1:3 and accelerometer data in columns 4:6
           sg = separategravity(acc=data[,4:6], gyr=data[,1:3] * (pi/180), sf=sf)
