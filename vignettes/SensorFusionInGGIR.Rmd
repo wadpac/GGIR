@@ -149,7 +149,7 @@ acclocal = acc - gvector
 # Using the algorithm with GGIR
 
 At the moment I have implemented the functionality only for the .cwa data collected with AX6 sensors by Axivity Ltd.
-Simply apply GGIR function `g.shell.GGIR` as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment it only extracts metric `sgAccEN` as epoch level summary of the data, which represents the epoch level average of the magnitude of acceleration after separation of the gravitational component. To skip the procedure set argument do.sgAccEN = FALSE.
+To use the functionality apply GGIR function `g.shell.GGIR` to the .cwa file as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment it only extracts metric `sgAccEN` as epoch level summary of the data, which represents the epoch level average of the magnitude of acceleration after separation of the gravitational component. To skip the procedure set argument do.sgAccEN = FALSE.
 
 # Reflections on performance and next steps
 
