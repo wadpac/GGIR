@@ -74,6 +74,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
             }
           } else {
+            t3 = Sys.time()
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
             bind_with_prev_data = function(df1, df2) {
@@ -84,9 +85,11 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
               df1[,i] <- lapply(df1[,i], as.character)
               # replace all NA values by blank
               df1[is.na(df1)] <- ""
-              if (length(which(df1 == "NaN")) > 0) {
-                df1[df1=="NaN"] = ""
+              # replace all NaN values by blank
+              is.nan.data.frame <- function(x) {
+                do.call(cbind, lapply(x, is.nan))
               }
+              df1[is.nan(df1)]  = ""
               return(df1)
             }
             SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
@@ -96,6 +99,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
               winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
             }
+            
           }
         }
       }
