@@ -74,7 +74,6 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
             }
           } else {
-            t3 = Sys.time()
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
             bind_with_prev_data = function(df1, df2) {
@@ -99,7 +98,6 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
               winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
             }
-            
           }
         }
       }
