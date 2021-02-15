@@ -1,7 +1,6 @@
 ---
 title: "Sensor fusion with GGIR"
-author: "Vincent van Hees"
-date: "February 13 2021"
+author: "By: Vincent van Hees"
 output:
    html_document:
     toc : true
@@ -23,25 +22,32 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 
 Wearable sensors that combine acceleration and gyroscope sensors have existed for decades but have only recently become feasible for use in population research. This research field requires that the wearable sensors are worn for at least a week, while high resolution data is being logged for later offline analysis. R package [GGIR](https://CRAN.R-project.org/package=GGIR) originated from the need to process accelerometer-only data in the 2010s. However, with the new availability of gyroscope data it is important that GGIR is expanded to also facilitate gyroscope data.
 
-For health researchers with no background in sensor technology it may be good to point out that a gyroscope sensor measures angular velocity. This information can help us to achieve a more accurate estimation of sensor's magnitude of acceleration and orientation. You may not be aware of this, but accelerometer-only applications have always had the fundamental limitation that they were poor at distinguishing acceleration caused by gravity and acceleration caused by movement while the sensor is moving and rotating relative to gravity. See also the work by my colleagues and I in our [2013 PLOSONE publication](link to pa(https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
+For health researchers with no background in sensor technology it may be good to point out that a gyroscope sensor capture angular velocity. This information can help us to achieve a more accurate estimation of the sensor's magnitude of acceleration and orientation in space. You may not be aware of this, but accelerometer-only applications have always had the fundamental limitation that they were poor at distinguishing acceleration caused by gravity and acceleration caused by movement while the sensor is moving and rotating relative to gravity. See also the work by my colleagues and I in our [2013 PLOSONE publication](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
 
 Extracting the improved estimate of acceleration and orientation is a non-trivial task as we need to combine information from both the acceleration- and gyroscope signals, typically referred to as sensor fusion.
 
 # Requirements
 
-I identified the following criteria for doing sensor fusion GGIR :
-- The algorithm should be fast enough to process a week worth of 100 Hertz sensor data. A couple of minutes is fine, but it would be unacceptable if the processing takes hours.
-- The primary focus for GGIR is to quantify acceleration related to movement via improved separation of the gravitational signal component. A more elaborate kinematic description including estimates of Eular angles seems less essential within the context of GGIR.
+The following criteria apply for doing sensor fusion GGIR:
+
+- The algorithm should be fast enough to process a week worth of 100 Hertz sensor data. A couple of minutesof processing is fine, but it would be unacceptable if the processing takes hours.
+- The primary focus for GGIR is to quantify acceleration related to movement via improved separation of the gravitational signal component. A more elaborate kinematic description including estimates of orientation relative to the poles (called yaw angle) seems less essential within the context of current GGIR use-cases.
 
 # Initial exploration of existing algorithms
 
-Various sensor fusion algorithms have been proposed in the literature. As I have not specific backgroun in this, I spent a couple of days exploring the algorithms proposed by Luinge and Veltink in 2005, and the one proposed by [Madgewick in 2009](https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/). However, I struggled to get them to run within an R environment at an acceptable speed. Further, I found it difficult to translate their output to an estimate of local (gravity free) acceleration. As this has only been a side project for me, I decided to develop my own algorithm tailored to the needs of GGIR. In this way I challenged myself to learn about this topic and it allowed me to make a starting point with facilitating sensor fusion in GGIR. GGIR is an open-source project, so I welcome help and financial support to develop and improve this functionality. Please get in touch if you are interested: v.vanhees@accelting.com.
+Various sensor fusion algorithms have been proposed in the literature. As I do not have a specific background in this, I spent a couple of days exploring the algorithms proposed by Luinge and Veltink in 2005, and the agorithm proposed by [Madgewick in 2009](https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/). However, I struggled to get them to run within an R environment at an acceptable speed. Further, I found it difficult to translate their output to an estimate of local (gravity free) acceleration. As this has only been a side-project for me, I decided to develop my own algorithm tailored to the needs of GGIR. In this way I challenged myself to learn about this topic and it allowed me to make a starting point with facilitating sensor fusion in GGIR. GGIR is an open-source project, so I welcome help and financial support to further improve this functionality. Please get in touch if you are interested: v.vanhees@accelting.com.
 
 # Algorithm description
 
+In this chapter I describe the algorithm as I implemented it in R function `separategravity`.
+
 ## Input
 
-The input of the algorithm consists of three objects: `acc`, a three-column matrix with the accelerometer values in *g*-units; `gyr`, a three-column matrix with the gyroscope values in radians per second, and; `sf` the sample frequency in Hertz. The algorithm assumes a constant sample frequency throughout the recording. Please note that GGIR has function `resample` to aid in converting irregularly sampled data to a regular sample frequency.
+The input of the algorithm consists of three objects:
+
+* `acc`, a three-column matrix with the accelerometer values in *g*-units.
+* `gyr`, a three-column matrix with the gyroscope values in radians per second.
+* `sf` the sample frequency in Hertz. The algorithm assumes a constant sample frequency throughout the recording. Please note that GGIR has function `resample` to aid in converting irregularly sampled data to a regular sample frequency.
 
 ## Coordinate system
 
@@ -73,7 +79,7 @@ lb = 0.5 # cut-off frequency for the filter in Hertz
 lowpf = signal::butter(n=4,c(lb/(sf/2)),type=c("low")) #creating filter coefficients
 acc_lf = acc_hf = matrix(NA, nrow(acc), ncol(acc)) # initialize matrices
 for (i in 1:3) {
-    # note: acc_lf will also be used as assume orientation of gravity in the
+    # note: acc_lf will also be used for orientation of gravity in the
     # absence of movement further down, so this calculate serves two purposes
     acc_lf[,i] <- signal::filter(lowpf, acc[,i]) # low-pass filtered
 }
@@ -88,7 +94,7 @@ weight = pmin(pmax((rowSums(abs(acc_hf)) - 0.04),0) / 0.01, 1)
 
 ### Maximum weight value
 
-By setting the maximum weight value to 1-(0.5/sf) I ensure that there is always a negative exponential drift from gyroscope estimate to the accelerometer estimate. This to counteract a possible drift in the gyroscope derived orientation change. Here, I am making the assumption that even under dynamic circumstances the low-pass filtered acceleration signal averaged across multiple seconds provides some indication of the average orientation of the sensor during that period.
+By setting the maximum weight value to 1-(0.5/sf) I ensure that there is always a negative exponential drift from the gyroscope estimate to the accelerometer estimate. This to counteract a possible drift in the gyroscope derived orientation change. Here, I am making the assumption that even under dynamic circumstances the low-pass filtered acceleration signal averaged across multiple seconds provides some indication of the average orientation of the sensor during that period.
 
 
 ```{R,eval=FALSE}
@@ -107,10 +113,7 @@ weight = ifelse(weight < 0.01, yes = 0, no = weight)
 
 ## Rotation vector
 
-To rotate the orientation vector of gravity we need to convert `theta` and `OV` into a rotation matrix.
-
-Note that this is a standard textbook procedure:
-https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrary-axis 
+To rotate the orientation vector of gravity we need to convert `theta` and `OV` into a rotation matrix. Note that this is a standard [textbook procedure](https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrary-axis):
 
 ```{R,eval=FALSE}
   RotArr = array(dim = c(N, 3, 3)) # this is a rotation matrix for every timestep
@@ -133,7 +136,7 @@ https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrar
 ## Rotating the gravity vector
 
 In the following lines I loop over the non-zero weight values to rotate the gravitational vector
-within the local coordinate system. Note that this is an iterative process, each step depends on the previous step, which is why I am using a loop and not an `apply` statement in R. If you have suggestions on how I could speed this up then I would love to hear from you.
+within the local coordinate system. Note that this is an iterative process, each step depends on the previous step, which is why I am using a loop and not an `apply` statement in R. Nonetheless, if you have suggestions on how I could speed this up then I would love to hear from you.
 
 ```{R,eval=FALSE}
 gvector = acc_lf # initialize gvector as equivalent of acc_lf
@@ -148,12 +151,12 @@ acclocal = acc - gvector
 
 # Using the algorithm with GGIR
 
-At the moment I have implemented the functionality only for the .cwa data collected with AX6 sensors by Axivity Ltd.
-To use the functionality apply GGIR function `g.shell.GGIR` to the .cwa file as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment it only extracts metric `sgAccEN` as epoch level summary of the data, which represents the epoch level average of the magnitude of acceleration after separation of the gravitational component. To skip the procedure set argument do.sgAccEN = FALSE.
+At the moment I have implemented the functionality only for the .cwa data collected with AX6 sensors by [Axivity Ltd](https://axivity.com/product/ax6).
+To use the functionality apply GGIR function `g.shell.GGIR` to the .cwa file as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment it only extracts metric `sgAccEN` as epoch level summary of the data, which represents the epoch level average of the magnitude of acceleration after separation of the gravitational component. To skip the procedure set argument `do.sgAccEN = FALSE`.
 
 # Reflections on performance and next steps
 
-The `separategravity` function is able to process 24 hours of 100 Hertz data in 30 seconds (Ubuntu 20, 8 core, 16GB), which seems promising. I have been doing some simple home experiments to get a initial idea of whether the algorithm provides plausible output. For example, by swinging the AX6 like a pendulum in the vertical plane and trying to keep track of it's angle with gravity. However, a thorough benchmark test has not been done yet. If you are interested in doing or supporting such work then please let me know: v.vanhees@accelting.com. I also welcome suggestions and support for implementing alternative fusion algorithms in GGIR.
+The `separategravity` function is able to process 24 hours of 100 Hertz gyroscope and accelerometer data in 30 seconds (Ubuntu 20, 8 core, 16GB), which seems promising. I have been doing some simple home experiments to get an initial idea of whether the algorithm provides plausible output. For example, by swinging the AX6 like a pendulum in the vertical plane and checking the amplitude of the rotation in the data with the amplitude I applied. However, a thorough benchmark test has not been done yet. If you are interested in doing or supporting such work then please let me know: v.vanhees@accelting.com. I also welcome suggestions and support for implementing other fusion algorithms in GGIR.
 
 
 ```{r, echo=FALSE, out.width = "75%", out.extra='style="border: 0; padding:20px"'}
