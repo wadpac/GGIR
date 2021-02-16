@@ -151,8 +151,29 @@ acclocal = acc - gvector
 
 # Using the algorithm with GGIR
 
-At the moment I have implemented the functionality only for the .cwa data collected with AX6 sensors by [Axivity Ltd](https://axivity.com/product/ax6).
-To use the functionality apply GGIR function `g.shell.GGIR` to the .cwa file as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment it only extracts metric `sgAccEN` as epoch level summary of the data, which represents the epoch level average of the magnitude of acceleration after separation of the gravitational component. To skip the procedure set argument `do.sgAccEN = FALSE`.
+To use the function `separategravity` on it's own do:
+
+```{R,eval=FALSE}
+library("GGIR")
+# acc: a 3-column matrix with your accelerometer data
+# gyr: a 3-column matrix with your gyroscope data
+# sf: sample frequency in Hertz
+output = separategravity(acc = acc, gyr = gyr, sf = sf)`
+acclocal = output$acclocal
+gvector = output$gvector
+```
+
+To use `separategravity` withint the context of GGIR do:
+
+```{R,eval=FALSE}
+library("GGIR")
+datadir = "/your/data/directory" # with .cwa files from the AX6 sensor (Axivity Ltd)
+outputdir = "/your/output/directory"
+g.shell.GGIR(datadir=datadir, outputdir=outputdir)
+```
+
+GGIR function `g.shell.GGIR` is the central interface to all GGIR functionality. Use this function as you would do with accelerometer-only data and the code will automatically use the gyroscope data. For the moment the sensor fusion only works for .cwa data collected with AX6 sensors by [Axivity Ltd](https://axivity.com/product/ax6).
+Here, GGIR will extracts metric `sgAccEN` as epoch level summary of the data, which represents the average magnitude of acceleration after separation of the gravitational component for that epoch. To skip the procedure and use accelerometer-only data set argument `do.sgAccEN = FALSE`.
 
 # Reflections on performance and next steps
 
