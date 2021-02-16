@@ -246,7 +246,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                          "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv",
                          "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                         "g.extractheadervars", "separategravity", "g.applygmetrics4sg")
+                         "g.extractheadervars", "separategravity", "g.applymetrics4sg")
     errhand = 'stop'
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
