@@ -1,7 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 2.3-0 (GitHub-only-release date:17-02-2021)}{
+\itemize{
+  \item Documentation added for g.applymetrics4sg function
+  \item Part5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
+}
+}
 \section{Changes in version 2.2-2 (GitHub-only-release date:13-02-2021)}{
 \itemize{
   \item Part 5 bug fix in waking up time for first night, in WW mode and HDCZA guider
