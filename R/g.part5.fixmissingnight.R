@@ -37,19 +37,23 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
       if (length(sleeplog) > 0) { # we impute with sleeplog (TO DO: Also implement catch for if sleeplog is not available)
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == missingNight)]
         sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == missingNight)]
+        newnight$sleeplog_used = 0
+        newnight$guider = "nosleeplog_accnotworn"
         if (length(sleeplogonset) != 0 & length( sleeplogwake) != 0) {
-          sleeplogonset_hr = clock2numtime(sleeplogonset)
-          sleeplogwake_hr= clock2numtime(sleeplogwake)
+          if (is.na(sleeplogonset) == FALSE & is.na(sleeplogonset) == FALSE) {
+            sleeplogonset_hr = clock2numtime(sleeplogonset)
+            sleeplogwake_hr= clock2numtime(sleeplogwake)
+            newnight$sleeponset = newnight$guider_onset = sleeplogonset_hr
+            newnight$wakeup = newnight$guider_wakeup = sleeplogwake_hr
+            if (sleeplogwake_hr > 36) {
+              newnight$daysleeper = 1
+              newnight$sleeponset_ts = hr_to_clocktime(sleeplogonset_hr)
+              newnight$wakeup_ts = hr_to_clocktime(sleeplogwake_hr)
+              newnight$sleeplog_used = 1
+              newnight$guider = "sleeplog"
+            }
+          }
         }
-        newnight$sleeponset = newnight$guider_onset = sleeplogonset_hr
-        newnight$wakeup = newnight$guider_wakeup = sleeplogwake_hr
-        if (sleeplogwake_hr > 36) {
-          newnight$daysleeper = 1
-        }
-        newnight$sleeponset_ts = hr_to_clocktime(sleeplogonset_hr)
-        newnight$wakeup_ts = hr_to_clocktime(sleeplogwake_hr)
-        newnight$sleeplog_used = 1
-        newnight$guider = "sleeplog"
       } else {
         newnight$sleeplog_used = 0
         newnight$guider = "nosleeplog_accnotworn"
