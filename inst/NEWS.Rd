@@ -4,7 +4,7 @@
 \section{Changes in version 2.3-0 (GitHub-only-release date:17-02-2021)}{
 \itemize{
   \item Part5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
-  \item Documentationfor sensor fusion functionality improved
+  \item Documentation for sensor fusion functionality improved
   \item Part2 csv report generation speeded up
 }
 }

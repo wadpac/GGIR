@@ -22,7 +22,7 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 
 Wearable sensors that combine acceleration and gyroscope sensors have existed for decades but have only recently become feasible for use in population research on physical activity and sleep. Population research field requires that the wearable sensors are worn for at least a week, while high resolution data is being logged for later offline analysis. R package [GGIR](https://CRAN.R-project.org/package=GGIR) originated from the need to process accelerometer-only data in the 2010s. However, with the new availability of gyroscope data it is important that GGIR is expanded to also facilitate gyroscope data.
 
-For health researchers with no background in sensor technology it may be good to know that a gyroscope sensor captures angular velocity. This information can help us to achieve a more accurate estimation of the sensor's magnitude of acceleration and orientation in space. The magnitude of acceleration is related to force caused by muscle contractions, which relates to energy expenditure. You may not be aware of this, but accelerometer-only applications have always had the fundamental limitation that they were poor at detecting the mangitude of acceleration while the sensor is moving and rotating relative to gravity. See also the work by my colleagues and I in our [2013 PLOSONE publication](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691). Gyroscope can help to address this problem.
+For health researchers with no background in sensor technology it may be good to know that a gyroscope sensor captures angular velocity. This information can help us to achieve a more accurate estimation of the sensor's magnitude of acceleration and orientation in space. The magnitude of acceleration is related to force caused by muscle contractions, which relates to energy expenditure. You may not be aware of this, but accelerometer-only applications have always had the fundamental limitation that they were poor at detecting the magnitude of acceleration while the sensor is moving and rotating relative to gravity. See also the work by my colleagues and I in our [2013 PLOSONE publication](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691). Gyroscope can help to address this problem.
 
 Extracting the improved estimate of sensor acceleration and orientation is a non-trivial task as we need to combine information from both the acceleration- and gyroscope signals, typically referred to as sensor fusion.
 
@@ -35,7 +35,7 @@ From the perspective of typical GGIR use-cases the following criteria apply to a
 
 # Initial exploration of existing algorithms
 
-Various sensor fusion algorithms have been proposed in the literature. As I do not have a specific background in this, I spent a couple of days exploring the algorithms proposed by Luinge and Veltink in 2005, and the agorithm proposed by [Madgewick in 2009](https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/). However, I struggled to get them to run within an R environment at an acceptable speed. Further, I found it difficult to translate their output to an estimate of local (gravity free) acceleration. As this has only been a side-project for me, I decided to develop my own algorithm tailored to the needs of GGIR. In this way I challenged myself to learn about this topic and it allowed me to make a starting point with facilitating sensor fusion in GGIR. GGIR is an open-source project, so I welcome help and/or financial support to further improve this functionality. Please get in touch if you are interested: v.vanhees@accelting.com.
+Various sensor fusion algorithms have been proposed. I spent a couple of days exploring the algorithms proposed by [Luinge and Veltink in 2005](https://link.springer.com/article/10.1007/BF02345966), and the agorithm proposed by [Madgewick in 2009](https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/). However, I struggled to get them to run within an R environment at an acceptable speed. Further, I found it difficult to translate their output to an estimate of local (gravity free) acceleration. As this has only been a side-project for me, I decided to develop my own algorithm tailored to the needs of GGIR. In this way I challenged myself to learn about this topic and it allowed me to make a starting point with facilitating sensor fusion in GGIR. GGIR is an open-source project, so I welcome help and/or financial support to further improve this functionality. Please get in touch if you are interested: v.vanhees@accelting.com.
 
 # Algorithm description
 
@@ -51,11 +51,11 @@ The input arguments of the function are:
 
 ## Coordinate system
 
-All calculations will be done within the local cartesian coordinate system of the sensor. In contrast to other algorithms I encountered  I am not attempting to calculate roll, pitch or yaw, because calculating those would require transitioning between multiple coordinate systems. For example, pitch derived from a gyroscope is in a local coordinate system, while pitch derived from an accelerometer is relative to the orientation of gravity. Instead, I will derive the orientation of gravitational acceleration relative to the local coordinate system of the sensor and use the angular velocity vector relative to the local coordinate system to rotate the orientation of the gravity during time segments involving movement. By tracking the orientation of gravity, which I will refer to as the gravity vector, within the local coordinate system of the sensor I will be able to subtract gravity from the original acceleration signals.
+All calculations will be done within the local Cartesian coordinate system of the sensor. In contrast to other algorithms that I encountered  I am not attempting to calculate the roll, pitch or yaw of the sensor, because calculating those would require transitioning between multiple coordinate systems. For example, pitch derived from a gyroscope is expressed in the local coordinate system of the sensor, while pitch derived from an accelerometer is relative to the orientation of gravity. Instead, I will derive the orientation of gravitational acceleration relative to the local coordinate system of the sensor and use the angular velocity vector relative to the local coordinate system to rotate the orientation of the gravity during time segments involving movement. By tracking the orientation of gravity, which I will refer to as the gravity vector, within the local coordinate system of the sensor over time I will be able to subtract gravity from the original acceleration signals.
 
 ## Angular velocity vector
 
-The gyroscope signals represent angular velocity in radians per second. As I want to rotate the gravity vector, I need to split the gyroscope signals up in an angular velocity vector with a magnitude (`theta` in the code) per time step and 3 coordinates for the vector orientation (object `OV` in the code) relative to the sensors coordinate system. 
+The gyroscope signals represent angular velocity in radians per second per sensor axis. As I want to rotate the gravity vector, I need to split the gyroscope signals up in an angular velocity vector with a magnitude (`theta` in the code) per time step and 3 coordinates for the vector orientation (object `OV` in the code) relative to the sensors coordinate system. 
 
 ```{R,eval=FALSE}
 theta = sqrt(rowSums(gyr ^ 2)) # theta (magnitude of angular velocity around orientation vector OV)
@@ -70,9 +70,9 @@ Next, theta is divided by the sample frequency to get radians per time step.
 theta = theta / sf
 ```
 
-## Derivation of fusion weights
+## Defining fusion weights
 
-Weights are used to decide for each time step the extent to which we want to rely on the accelerometer or on the gyroscope for gravity orientation assessment. For this I am using the high-frequency component of the signal as indicator of movement. However, later on I will need a low-pass filtered signal as indicator of gravity orientation during static (non-movement periods). So, to safe computing time I apply a low-pass filter and subtract it from the original signal to get the high-pass filtered signals.
+Weights are used to decide for each time step the extent to which we want to rely on the accelerometer or on the gyroscope for gravity orientation assessment. For this I am using the high-frequency component of the signal as indicator of movement. However, later on I will need a low-pass filtered signal as indicator of gravity orientation during static (non-movement periods). So, to safe computational time I apply a low-pass filter and subtract it from the original signal to get the high-pass filtered signals.
 
 ```{R,eval=FALSE}
 lb = 0.5 # cut-off frequency for the filter in Hertz
@@ -94,7 +94,7 @@ weight = pmin(pmax((rowSums(abs(acc_hf)) - 0.04),0) / 0.01, 1)
 
 ### Maximum weight value
 
-By setting the maximum weight value to 1-(0.5/sf) I ensure that there is always a negative exponential drift from the gyroscope estimate to the accelerometer estimate. This to counteract a possible drift in the gyroscope derived orientation change. Here, I am making the assumption that even under dynamic conditions the low-pass filtered acceleration signal averaged across multiple seconds provides some indication of the average orientation of the sensor during that period. This would not hold true if you apply the sensor to a spinning wheel, but for human movement I suppose it is a fair assumption. Note that the maximum weight value is relative to sample rate, to ensure that process is similar across datasets with differing sample rates.
+By setting the maximum weight value to 1-(0.5/sf) I ensure that there is always a negative exponential drift from the gyroscope estimate to the accelerometer estimate. This to counteract a possible drift in the gyroscope derived orientation change. Here, I am making the assumption that even under dynamic conditions the low-pass filtered acceleration signal averaged across multiple seconds provides some indication of the average orientation of the sensor during that period. This would not hold true if you apply the sensor to a spinning wheel, but for human movement I suppose it is a fair assumption. Note that the maximum weight value is relative to sample rate, to ensure that process is similar across data sets with different sample rates.
 
 
 ```{R,eval=FALSE}
