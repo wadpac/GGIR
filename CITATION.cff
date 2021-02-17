@@ -45,7 +45,7 @@ authors:
     family-names: Patterson
     given-names: "Matt"
 cff-version: "1.0.3"
-date-released: 2021-02-13
+date-released: 2021-02-17
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"
@@ -57,5 +57,5 @@ license: "LGPL-2.0-only"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/wadpac/GGIR"
 title: GGIR
-version: "2.2-2"
+version: "2.3-0"
 ...

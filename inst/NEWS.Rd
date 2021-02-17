@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.3-0 (GitHub-only-release date:18-02-2021)}{
+\section{Changes in version 2.3-0 (GitHub-only-release date:17-02-2021)}{
 \itemize{
   \item Part5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
   \item Documentationfor sensor fusion functionality improved
