@@ -51,11 +51,11 @@ The input arguments of the function are:
 
 ## Coordinate system
 
-All calculations will be done within the local cartesian coordinate system of the sensor. In contrast to other algorithms I encountered  I am not attempting to calculate roll, pitch or yaw, because calculating those would require transitioning between multiple coordinate systems. For example, pitch derived from a gyroscope is in a local coordinate system, while pitch derived from an accelerometer is relative to the orientation of gravity. Instead, I will derive the orientation of gravitational acceleration relative to the local coordinate system of the sensor and use the angular velocity vector relative to the local coordinate system to rotate the orientation of the gravity during time segments involving movement. By tracking the orientation of gravity within the local coordinate system of the sensor I will be able to subtract gravity from the original acceleration signals.
+All calculations will be done within the local cartesian coordinate system of the sensor. In contrast to other algorithms I encountered  I am not attempting to calculate roll, pitch or yaw, because calculating those would require transitioning between multiple coordinate systems. For example, pitch derived from a gyroscope is in a local coordinate system, while pitch derived from an accelerometer is relative to the orientation of gravity. Instead, I will derive the orientation of gravitational acceleration relative to the local coordinate system of the sensor and use the angular velocity vector relative to the local coordinate system to rotate the orientation of the gravity during time segments involving movement. By tracking the orientation of gravity, which I will refer to as the gravity vector, within the local coordinate system of the sensor I will be able to subtract gravity from the original acceleration signals.
 
 ## Angular velocity vector
 
-The gyroscope signals represent angular velocity in radians per second. As I want to rotate the gravitational acceleration vector, I need to split the gyroscope signals up in an angular velocity vector with a magnitude (`theta` in the code) per time step and 3 coordinates for the vector orientation (object `OV` in the code) relative to the sensors coordinate system. 
+The gyroscope signals represent angular velocity in radians per second. As I want to rotate the gravity vector, I need to split the gyroscope signals up in an angular velocity vector with a magnitude (`theta` in the code) per time step and 3 coordinates for the vector orientation (object `OV` in the code) relative to the sensors coordinate system. 
 
 ```{R,eval=FALSE}
 theta = sqrt(rowSums(gyr ^ 2)) # theta (magnitude of angular velocity around orientation vector OV)
@@ -135,7 +135,7 @@ To rotate the orientation vector of gravity we need to convert `theta` and `OV` 
   
 ## Rotating the gravity vector
 
-As final step, I loop over the non-zero weight values to rotate the gravitational vector
+As final step, I loop over the non-zero weight values to rotate the gravity vector
 within the local coordinate system. Note that this is an iterative process, each step depends on the previous step, which is why I am using a loop and not an `apply` statement in R. Nonetheless, if you have suggestions on how I could speed this up then I would love to hear from you. Object `acclocal` will be the local (gravity free) acceleration of the accelormeter, and object `gvector` can be used as an improved estimate of the orientation of the sensor relative to the horizontal plane/ direction of gravity.
 
 ```{R,eval=FALSE}
