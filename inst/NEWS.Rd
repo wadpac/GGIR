@@ -4,23 +4,23 @@
 \section{Changes in version 2.3-0 (GitHub-only-release date:17-02-2021)}{
 \itemize{
   \item Part5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
-  \item Documentation for sensor fusion functionality improved
+  \item Part 1 Documentation for sensor fusion functionality improved
   \item Part2 csv report generation speeded up
 }
 }
 \section{Changes in version 2.2-2 (GitHub-only-release date:13-02-2021)}{
 \itemize{
   \item Part 5 bug fix in waking up time for first night, in WW mode and HDCZA guider
-  \item Various expansions to documentation
-  \item Earlier draft implementation of IV and IS metrics now better tested and bugs fixed.
-  \item Default value for argument IVIS.activity.metric changed to 2.
+  \item Various minor function expansions to documentation and vignette
+  \item Part 2 Earlier draft implementation of IV and IS metrics now better tested and bugs fixed.
+  \item Part 2 Default value for argument IVIS.activity.metric changed to 2.
   \item Migrate codecoverage testing to Github Actions
-  \item Implemented initial sensor fusion functionality for AX6 cwa data
+  \item Part 1 Implemented initial sensor fusion functionality for AX6 cwa data
 }
 }
 \section{Changes in version 2.2-1 (GitHub-only-release date:12-01-2021)}{
 \itemize{
-  \item Fix bug part 3 introduced in 2.2-0 for recordings without sustained inactivity bouts
+  \item Part 3 Fix bug introduced in 2.2-0 for recordings without sustained inactivity bouts
   \item Transitioned from Travis+Appveyor CI to GitHub Actions
   \item Part 5 fixed issue with expected max number of files to process
   \item Enabled console display of GGIR version number when running g.shell.shell under Windows
