@@ -228,7 +228,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     timeRes = as.vector(timeRes[1:nr])
     accelRes = matrix(0,nrow = nr, ncol = ncol(rawAccel), dimnames = list(NULL,colnames(rawAccel)))
     rawLast = nrow(rawAccel)
-    accelRes = GGIR:::resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
+    accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
     colnamesP = colnames(P)
     timeRes = as.POSIXlt(timeRes, origin=rmc.origin, tz = rmc.desiredtz)
     P = as.data.frame(accelRes, stringsAsFactors = TRUE)

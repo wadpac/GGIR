@@ -253,7 +253,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
           # Read 4 byte for three measurements
           packedData = readBin(fid, integer(), size = 4, n = blockLength)
           # Unpack data
-          data = GGIR:::numUnpack(packedData)
+          data = numUnpack(packedData)
           # data2 = numUnpack2(packedData)
           # Calculate number of bytes to skip
           temp = 482 -  4 *(Naxes/3)* blockLength
@@ -407,7 +407,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     last = pos+200;
     if (pos+200>nr)
       last = nr
-    tmp = GGIR:::resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
+    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
     # put result to specified position
     last = nrow(tmp) + pos - 1
     if (last>=pos) {
@@ -461,7 +461,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     last = pos+200;
     if (pos+200>nr)
       last = nr
-    tmp = GGIR:::resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
+    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
     # put result to specified position
     last = nrow(tmp) + pos - 1
     if (last>=pos){
