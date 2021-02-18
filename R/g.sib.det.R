@@ -217,6 +217,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         # Estimate Sleep Period Time Window, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
+        daysleep_offset = 0
         inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
                                    perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
                                    outofbedsize = outofbedsize)
