@@ -126,11 +126,11 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   }
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
-    for (oli in 1:length(output_list)) { # logged error and warning messages
-      if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ",fnames[oli]))
-        print(unlist(output_list[oli])) # print any error and warnings observed
-      }
+  }
+  for (oli in 1:length(output_list)) { # logged error and warning messages
+    if (is.null(unlist(output_list[oli])) == FALSE) {
+      cat(paste0("\nErrors and warnings for ",fnames[oli]))
+      print(unlist(output_list[oli])) # print any error and warnings observed
     }
   }
 }
