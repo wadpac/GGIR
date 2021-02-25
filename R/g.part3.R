@@ -47,7 +47,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   }
   t1 = Sys.time() # copied here
   if (do.parallel == TRUE) {
-    cat(paste0('\n Busy processing ... see ', metadatadir,'/ms3', ' for progress\n'))
+    cat(paste0('\n Busy processing ... see ', metadatadir,'/meta/ms3.out', ' for progress\n'))
   }
   # check whether we are indevelopment mode:
   GGIRinstalled = is.element('GGIR', installed.packages()[,1])

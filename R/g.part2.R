@@ -77,7 +77,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   }
   t1 = Sys.time() # copied here
   if (do.parallel == TRUE) {
-    cat(paste0('\n Busy processing ... see ',metadatadir,'/ms2', ' for progress\n'))
+    cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
   }
   
   # check whether we are indevelopment mode:
