@@ -8,7 +8,7 @@
   van Someren.
 }
 \usage{
-  g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = c(),
+  g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = NA,
   IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1)
 }
 \arguments{
