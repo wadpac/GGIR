@@ -1,7 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.3-0 (GitHub-only-release date:17-02-2021)}{
+\section{Changes in version 2.3-1 (GitHub-only-release date:17-02-2021)}{
+\itemize{
+  \item Part3 bug fixed in usage of argument dayborder when not 0. Thanks Ruben Brondeel for spotting this.
+}
+}
+\section{Changes in version 2.3-0 (release date:17-02-2021)}{
 \itemize{
   \item Part5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
   \item Part 1 Documentation for sensor fusion functionality improved
