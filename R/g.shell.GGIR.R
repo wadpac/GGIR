@@ -97,7 +97,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
           } else if (numi == TRUE) {
             txt = paste(as.character(config[ci,1]),"=",as.numeric(config[ci,2]),"",sep="")
           } else if (numi == FALSE & logi == FALSE) {
-            if (length(config[ci,2]) > 0) {
+            if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
               if (config[ci,2] == 'c()') {
                 if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
                 if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
