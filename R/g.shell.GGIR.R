@@ -37,7 +37,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
-    if (length(which(mode == 3)) > 0) dopart3 = TRUE; do.anglez = TRUE
+    if (length(which(mode == 3)) > 0) { dopart3 = TRUE; do.anglez = TRUE }
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
@@ -97,7 +97,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
           } else if (numi == TRUE) {
             txt = paste(as.character(config[ci,1]),"=",as.numeric(config[ci,2]),"",sep="")
           } else if (numi == FALSE & logi == FALSE) {
-            if (length(config[ci,2]) > 0) {
+            if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
               if (config[ci,2] == 'c()') {
                 if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
                 if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
@@ -206,7 +206,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("ndayswindow") == FALSE)  ndayswindow = 7
   if (exists("do.imp") == FALSE) do.imp = TRUE
   if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
-  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=c()
+  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=NA
   if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(mvpadur) != 3) {
     mvpadur = c(1,5,10)
