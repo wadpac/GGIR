@@ -206,7 +206,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("ndayswindow") == FALSE)  ndayswindow = 7
   if (exists("do.imp") == FALSE) do.imp = TRUE
   if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
-  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=c()
+  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=NA
   if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(mvpadur) != 3) {
     mvpadur = c(1,5,10)

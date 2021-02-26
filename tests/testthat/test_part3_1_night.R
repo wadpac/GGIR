@@ -10,7 +10,6 @@ test_that("Part 3 identifies 1-night scenario", {
   dn = "output_test"
   if (file.exists(dn)) unlink(dn,recursive=TRUE)
 
-
   # g.part# modules report errors and warnings only by printing them out to the console,
   # so these are not true errors and warnings that would get caught by the testing module.
   # Instead, grab the console output and parse out any errors we should know about.
