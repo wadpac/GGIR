@@ -37,7 +37,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
-    if (length(which(mode == 3)) > 0) dopart3 = TRUE; do.anglez = TRUE
+    if (length(which(mode == 3)) > 0) { dopart3 = TRUE; do.anglez = TRUE }
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
