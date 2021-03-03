@@ -1,9 +1,10 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.3-1 (GitHub-only-release date:26-02-2021)}{
+\section{Changes in version 2.3-1 (GitHub-only-release date:03-03-2021)}{
 \itemize{
   \item Part3 bug fixed in usage of argument dayborder when not 0. Thanks Ruben Brondeel for spotting this.
+  \item Part2 fixed warning that depricated IVIS arugment does not exist
 }
 }
 \section{Changes in version 2.3-0 (release date:17-02-2021)}{
