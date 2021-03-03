@@ -1,5 +1,5 @@
-g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds=c(), IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1) {
-  if (!is.null(IVIS_epochsize_seconds)) {
+g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds=NA, IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1) {
+  if (!is.na(IVIS_epochsize_seconds)) {
     warning("Argument IVIS_epochsize_seconds has been depricated")
   }
   IVIS_epochsize_seconds = IVIS_windowsize_minutes*60
