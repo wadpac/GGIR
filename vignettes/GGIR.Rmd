@@ -484,6 +484,8 @@ filename | Name of the accelerometer file
 cleaningcode | see paragraph 'Waking-waking or 24 hour time-use analaysis').
 sleeplog_used | Whether a sleep log was used (TRUE/FALSE)
 acc_available | Whether accelerometer data was available (TRUE/FALSE).
+error_onset | Difference between sleeponset and guider_onset (this variable is only available in the full report as stored in the QC folder)
+error_wake | Difference between wakeup and guider_wake (this variable is only available in the full report as stored in the QC folder)
 
 ### Person level summaries
 
