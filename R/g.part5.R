@@ -388,9 +388,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                                                     }
                                                     if (timewindowi == "MM") {
-                                                    #  Nwindows = nrow(summarysleep_tmp2)
-                                                    #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
-                                                       Nwindows = length(nightsi) + 1
+                                                      #  Nwindows = nrow(summarysleep_tmp2)
+                                                      #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
+                                                      Nwindows = length(nightsi) + 1
                                                     } else {
                                                       Nwindows = length(which(diff(ts$diur) == -1))
                                                     }
@@ -765,27 +765,21 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]]), digits = 1)
                                                             dsummary[di,fi + 3] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
                                                             ds_names[fi:(fi+3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
-
+                                                            
                                                             # time in LUX ranges
-                                                            dsummary[di,fi] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 0 &
-                                                                                              ts$lightpeak[sse[ts$diur[sse] == 0]] < 250)) / (60/ws3new)
-                                                            dsummary[di,fi+1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 250 &
-                                                                                              ts$lightpeak[sse[ts$diur[sse] == 0]] < 500)) / (60/ws3new)
-                                                            dsummary[di,fi+2] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 500 &
-                                                                                                ts$lightpeak[sse[ts$diur[sse] == 0]] < 750)) / (60/ws3new)
-                                                            dsummary[di,fi+3] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 750 &
-                                                                                              ts$lightpeak[sse[ts$diur[sse] == 0]] < 1000)) / (60/ws3new)
-                                                            dsummary[di,fi+4] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 1000 &
-                                                                                                ts$lightpeak[sse[ts$diur[sse] == 0]] < 2000)) / (60/ws3new)
-                                                            dsummary[di,fi+5] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= 2000)) / (60/ws3new)
-                                                            ds_names[fi:(fi+5)] = c("LUX_min_0_250_day", 
-                                                                             "LUX_min_250_500_day",
-                                                                             "LUX_min_500_750_day",
-                                                                             "LUX_min_750_1000_day",
-                                                                             "LUX_min_1000_2000_day",
-                                                                             "LUX_min_2000_and_up_day"); fi = fi + 6
+                                                            # hard-coded thresholds, TO DO: move to function arguments
+                                                            LUXthreshold = c(seq(0,1000, by = 50), 1500, 2000)
+                                                            Nluxt = length(LUXthreshold)
+                                                            for (lti in 1:Nluxt) {
+                                                              dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthreshold[lti] &
+                                                                                                      ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthreshold[lti+1])) / (60/ws3new)
+                                                              ds_names[fi+lti-1] = paste0("LUX_min_",LUXthreshold[lti],"_",LUXthreshold[lti+1],"_day")
+                                                            }
+                                                            dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthreshold[Nluxt])) / (60/ws3new)
+                                                            ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthreshold[lti],"_",LUXthreshold[lti+1],"_day")
+                                                            fi = fi + Nluxt+1
                                                           }
-
+                                                          
                                                           #===============================================
                                                           # FOLDER STRUCTURE
                                                           if (storefolderstructure == TRUE) {
