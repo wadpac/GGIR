@@ -195,7 +195,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     #-------------------------------------------------------------------
     # detect midnights
 
-    detemout = g.detecmidnight(time,desiredtz, dayborder) # ND,
+    detemout = g.detecmidnight(time,desiredtz, dayborder=0) # ND, # for sleep dayborder is always 0, it is the summary of sleep that will be dayborder specific
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
