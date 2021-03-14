@@ -1,6 +1,6 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                      dayborder=0, myfun=c()) {
+                      myfun=c()) {
   #==============================================================
   perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
 
