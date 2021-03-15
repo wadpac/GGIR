@@ -96,7 +96,6 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
         load(paste(metadatadir,"/meta/basic/meta_",fnames[i],sep=""))
         load(paste(metadatadir,"/meta/ms2.out/",fnames[i],sep=""))
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-          # IMP = g.impute(M,I,strategy=1,hrs.del.start=0,hrs.del.end=0,maxdur=0)
           SLE = g.sib.det(M,IMP,I,twd=c(-12,12),timethreshold=timethreshold,anglethreshold=anglethreshold,
                           acc.metric=acc.metric,desiredtz=desiredtz,constrain2range=constrain2range, 
                           myfun=myfun)
