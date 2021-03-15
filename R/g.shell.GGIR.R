@@ -314,6 +314,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   }
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
   GGIRversion = paste0(" ",GGIRversion)
+  rm(SI)
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
@@ -449,7 +450,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
                           "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
-                          "conv2logical", "conv2num") == FALSE)]
+                          "conv2logical", "conv2num", "SI") == FALSE)]
   config.parameters = mget(LS) #lapply(mget(ls()), is.data.frame)
   config.matrix = createConfigFile(config.parameters)
   if (dir.exists(metadatadir)) {
