@@ -11,7 +11,7 @@ g.binread = function(binfile,start=0,end=0) {
   }
   int32 = function(x) {
     x[x < -2147483648] = -2147483648
-    x[x > 2147483648] = 2147483647 
+    x[x > 2147483648] = 2147483647
     round(x)
   }
   uint8 = function(x) {
@@ -35,7 +35,7 @@ g.binread = function(binfile,start=0,end=0) {
     idstr = readChar(fid,5,useBytes=TRUE)
     if (all(idstr=="GENEA")) {
       verstr = readLines(fid,n=1)
-      ## TODO: check file format version	
+      ## TODO: check file format version
       header_items_raw = readBin(fid,"raw",n=10*onebyte)
       ## Find field ends (search for newline chars
       ends = c(0,matlab::find(header_items_raw==10))
@@ -45,7 +45,7 @@ g.binread = function(binfile,start=0,end=0) {
       hlen = length(ends)
       for (i in 1:(hlen-1)) {
         ## Extract CR-LF-terminated strings. Ens given the posion of LF's, so
-        ## to start after one LF up to before the next CR	
+        ## to start after one LF up to before the next CR
         hitem = rawToChar(header_items_raw[(1+ends[i]):(ends[i+1]-2)])
         ## Split field label from value by the first ":" in the string
         separ = min(unlist(gregexpr(":",hitem)))
@@ -57,7 +57,7 @@ g.binread = function(binfile,start=0,end=0) {
       }
       seek(fid,header_end+12,origin="start")
     } else {
-      seek(fid,0,origin="start") 
+      seek(fid,0,origin="start")
     }
     header_end = header_end + 12
     invisible(list(header_end=header_end,hnames = hnames,hvalues = hvalues))
@@ -157,7 +157,7 @@ g.binread = function(binfile,start=0,end=0) {
     ## Try loading 10 pages at a time
     npages = 2000
     minacct = round(npages * 341 * 0.6) # minimum number of acceleration chunktypes required per page
-    nchunks = floor(pagesize/6)	
+    nchunks = floor(pagesize/6)
     ## Press display
     counter = 0
     nextmeg = 1024^2
@@ -167,7 +167,7 @@ g.binread = function(binfile,start=0,end=0) {
       ## Read next npages pages
       pages = readBin(fid,"raw",min(npages*pagesize,(pageend-pagestart)-counter))
       ## Progress meter
-      counter = counter + length(pages) 
+      counter = counter + length(pages)
       if ((counter>=(pageend-pagestart)) || (length(pages)<npages*pagesize)) {
         ## Last page
         done  = 1 # Exit main loop next time
@@ -191,7 +191,7 @@ g.binread = function(binfile,start=0,end=0) {
       rawxyz[xyzidx,2] = bitops::bitShiftL(pages[4,ct0],4) + bitops::bitShiftR(pages[5,ct0],4)
       rawxyz[xyzidx,3] = bitops::bitShiftL(bitops::bitAnd(pages[5,ct0],15),8) + pages[6,ct0]
       nktypes = bitops::bitShiftR(pages[2,],4)
-      
+
       ## Unpack timestamp data
       current_timest = unpack_timestamps(pages,chunktypes)
       ## Lookup table to map back to preceding timestamp
@@ -342,6 +342,9 @@ g.binread = function(binfile,start=0,end=0) {
   #G = 1
   hnames = hvalues = vector()
   fid = file(binfile,"rb")
+  on.exit({
+    close(fid)
+  })
   filelen = file.info(binfile)$size
   ## Get time arguments into a standard form
   t_start = as.numeric(as.POSIXct(start,origin="1970-01-01",tz="Europe/London")) # should be in format "year-month-day hr:min:sec"
@@ -407,7 +410,6 @@ g.binread = function(binfile,start=0,end=0) {
     vbat_t = out$vbat_t
     rm(out)
   }
-  close(fid)
   cut = which(timest == mean(max(timest)))
   timest = as.matrix(timest[1:cut[1]])
   rawxyz = as.matrix(rawxyz[1:cut[1],])
