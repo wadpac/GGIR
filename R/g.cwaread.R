@@ -1,5 +1,5 @@
 g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = "", configtz = c()) {
-  
+
   if (length(configtz) == 0) configtz = desiredtz
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
   #========================================================================
@@ -43,7 +43,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   # Background info on data format:
   # https://github.com/digitalinteraction/openmovement/blob/master/Docs/ax3/ax3-technical.md
     #############################################################################
-  
+
   # Internal functions
   timestampDecoder = function(coded, fraction, shift) {
     year = struc[[1]]
@@ -71,7 +71,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     # Add fractional part and shift
     return(year + fraction / 65536 + shift)
   }
-  
+
   readHeader = function(fid, numDBlocks) {
     # fid is file identifier
     # numDBlocks is number of data blocks
@@ -88,7 +88,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     #   blocks is number of datablocks with 80 or 120 observations in each
     #       Unfortunately frequency of measurement is varied in this device.
     #
-    
+
     # Start from the file origin
     seek(fid,0)
     # Read block header and check correctness of name
@@ -101,7 +101,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       if (hwType == "64") {
         hardwareType = "AX6"
       } else {
-        hardwareType = "AX3" 
+        hardwareType = "AX3"
       }
       # session id and device id
       lowerDeviceId = readBin(fid, integer(), size = 2, signed = FALSE) #offset 5 6
@@ -132,7 +132,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       return(invisible(NULL))
     }
     start = as.POSIXct(datas$start, origin = "1970-01-01", tz=desiredtz)
-    
+
     returnobject = list(
       uniqueSerialCode = uniqueSerialCode, frequency = frequency_header,
       start = start,
@@ -143,7 +143,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       returnobject
     ))
   }
-  
+
   unsigned8 = function(x) {
     # Auxiliary function for normalisation of unsigned integers
     if (x < 0)
@@ -158,7 +158,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     else
       return(x)
   }
-  
+
 
   readDataBlock = function(fid, complete = TRUE){
     # Read one block of data and return list with following elements
@@ -173,7 +173,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     #   data is matrix with three columns "x", "y", and "z"
     #   matrix data is presented if complete == TRUE only.
     #
-    
+
     # Check the block header
     idstr = suppressWarnings(readChar(fid,2,useBytes = TRUE))
     if (length(idstr) == 0 || idstr != "AX"){
@@ -196,7 +196,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       gyroRangeCode = floor(offset18 / 1024) %% 8
       gyroRange = 8000 / (2^gyroRangeCode)
 
-      
+
       # Read and recalculate temperature u16 in offset 20
       temperature = (150.0 * readBin(fid, integer(), size = 2) - 20500.0) / 1000.0;
       # Read and recalculate battery charge u8 in offset 23
@@ -274,7 +274,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         if (Naxes == 3) {
           colnames(data)=c("x","y","z")
           data[,c("x","y","z")] = data[,c("x","y","z")] * accelScale  #/ 256
-          
+
         } else {
           colnames(data)=c("gx","gy","gz", "x","y","z")
           data[,c("gx","gy","gz")] = (data[,c("gx","gy","gz")] / 2^15)* gyroRange
@@ -297,10 +297,10 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       return(invisible(l))
     }
   }
-  
+
   ################################################################################################
   # Main function
-  
+
   # Parse input arguments
   nargin = nargs()
   if (nargin < 1) {
@@ -311,7 +311,9 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   pageLength = 300
   # Open file
   fid = file(fileName,"rb")
-  
+  on.exit({
+    close(fid)
+  })
   #############################################################################
   # read header
   struc = list(0,0L)
@@ -333,7 +335,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   }
   # If data is not necessary then stop work
   if (end <= start) {
-    close(fid)
     return(invisible(list(header = header, data = NULL)))
   }
   #############################################################################
@@ -341,7 +342,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   seek(fid,0)
   # skip header
   suppressWarnings(readChar(fid,1024,useBytes = TRUE))
-  
+
   # Create data for results
   timeRes = seq(start, end, step)
   nr = length(timeRes) - 1
@@ -354,17 +355,16 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
   temp = vector(mode = "double", nr)
   battery = vector(mode = "double", nr)
   light = vector(mode = "double", nr)
-  
+
   #############################################################################
   # Reading of data
-  
+
   # Create progress bar if it is necessary
   if (progressBar)
     pb = txtProgressBar(1, nr, style=3)
   pos = 1 # position of the first element to complete in data
   prevRaw = readDataBlock(fid) # Read the first block
   if (is.null(prevRaw)){
-    close(fid)
     return(invisible(list(header = header, data = NULL))) # <= list() inserted by VvH 23/4/2017
   }
   rawTime = vector(mode = "numeric", 300)
@@ -389,7 +389,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     }
     # Create array of times
     time = seq(prevStart, raw$start, length.out = prevLength + 1)
-    
+
     # fill vector rawTime and matrix rawAccel for resampling
     if (rawPos == 1) {
       rawAccel[1,] = (prevRaw$data[1,])
@@ -401,7 +401,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     rawTime[rawPos:rawLast] = time[1:prevLength]
     rawAccel[rawPos:rawLast,] = as.matrix(prevRaw$data)
     lastTime = time[prevLength]
-    
+
     ###########################################################################
     # resampling of measurements
     last = pos+200;
@@ -413,7 +413,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     if (last>=pos) {
       accelRes[pos:last,] = tmp
     }
-    
+
     # Remove all rawdata exclude the last
     rawTime[1] = rawTime[rawLast]
     rawAccel[1,] = rawAccel[rawLast,]
@@ -455,7 +455,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     rawTime[rawPos:rawLast] = time[1:prevLength]
     rawAccel[rawPos:rawLast,] = as.matrix(prevRaw$data)
     lastTime = time[prevLength]
-    
+
     ###########################################################################
     # resampling of measurements
     last = pos+200;
@@ -472,7 +472,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       battery[pos:last] = prevRaw$battery
     }
   }
-  close(fid)
   #===============================================================================
   # Added by VvH on 22-4-2017
   # Do not export sections of the data with zeros in all channels, because they were not actual recordings

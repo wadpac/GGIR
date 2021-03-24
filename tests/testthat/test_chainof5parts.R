@@ -88,7 +88,7 @@ test_that("chainof5parts", {
   load(rn3[1])
 
   expect_true(dir.exists(dirname))
-  expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(2952))
+  expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(2957))
 
   #--------------------------------------------
   # part 4
