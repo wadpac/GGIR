@@ -198,7 +198,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       }
       cnt = cnt + 1
     }
-    longitudinal_axis_id = which.max(CorrA)
+    if (length(which(is.na(CorrA) == FALSE)) > 0) {
+      longitudinal_axis_id = which.max(CorrA)
+    } else {
+      longitudinal_axis_id = ""
+    }
   }
   
   #--------------------------------------
