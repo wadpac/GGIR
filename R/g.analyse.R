@@ -194,7 +194,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
         CorrA[cnt] = stats::cor(IMP$metashort[1:((Ndays-1)*epochday), anglename],
                                 IMP$metashort[(epochday+1):(Ndays*epochday), anglename])
       } else {
-        CorrA[cnt] = 0
+        CorrA[cnt] = NA
       }
       cnt = cnt + 1
     }
