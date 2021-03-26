@@ -507,70 +507,56 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "TRVi";      fi = fi + 1
                                                           wlih = ((qqq2-qqq1)+1)/((60/ws3new)*60)
                                                           if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
-                                                          # # This part should be redundant now, so commented out (26-Feb 2020):
-                                                          # if (wlih > 30 & length(summarysleep_tmp2$night) > 1) {
-                                                          #   # scenario when day is missing and code reaches out to two days before this day
-                                                          #   qqq1 = (qqq2 - (24* ((60/ws3)*60))) + 1 # code now uses only 24hours before waking up
-                                                          #   if (qqq1 < 1) qqq1 = 1
-                                                          #   wlih = ((qqq2-qqq1)+1)/((60/ws3)*60)
-                                                          # }
-                                                          # dsummary[di,fi] = wlih
-                                                          # ds_names[fi] = "window_length_hours";      fi = fi + 1
-                                                          # dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1)) / ((qqq2-qqq1)+1) ) * 100
-                                                          # ds_names[fi] = "nonwear_perc_window";      fi = fi + 1
-                                                          # dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & ts$diur[qqq1:qqq2] == 0)) / length(which(ts$diur[qqq1:qqq2] == 0)))  *100
-                                                          # ds_names[fi] = "nonwear_perc_waking";      fi = fi + 1
-                                                          # dsummary[di,fi] = (length(which(nonwear[qqq1:qqq2] == 1 & ts$diur[qqq1:qqq2] == 1)) / length(which(ts$diur[qqq1:qqq2] == 1))) * 100
-                                                          # ds_names[fi] = "nonwear_perc_SPT";      fi = fi + 1
+                                                          sse = qqq1:qqq2
                                                           #============================================================
                                                           # percentage of available data
-                                                          zt_hrs_nonwear = (length(which(ts$diur[qqq1:qqq2] == 0 & ts$nonwear[qqq1:qqq2] == 1)) * ws3new) / 3600 #day
-                                                          zt_hrs_total = (length(which(ts$diur[qqq1:qqq2] == 0)) * ws3new) / 3600 #day
+                                                          zt_hrs_nonwear = (length(which(ts$diur[sse] == 0 & ts$nonwear[sse] == 1)) * ws3new) / 3600 #day
+                                                          zt_hrs_total = (length(which(ts$diur[sse] == 0)) * ws3new) / 3600 #day
                                                           dsummary[di,fi] = (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                                                           ds_names[fi] = "nonwear_perc_day";      fi = fi + 1
-                                                          zt_hrs_nonwear = (length(which(ts$diur[qqq1:qqq2] == 1 & ts$nonwear[qqq1:qqq2] == 1)) * ws3new) / 3600 #night
-                                                          zt_hrs_total = (length(which(ts$diur[qqq1:qqq2] == 1)) * ws3new) / 3600 #night
+                                                          zt_hrs_nonwear = (length(which(ts$diur[sse] == 1 & ts$nonwear[sse] == 1)) * ws3new) / 3600 #night
+                                                          zt_hrs_total = (length(which(ts$diur[sse] == 1)) * ws3new) / 3600 #night
                                                           dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                                                           ds_names[fi] = "nonwear_perc_spt";      fi = fi + 1
-                                                          zt_hrs_nonwear = (length(which(ts$nonwear[qqq1:qqq2] == 1)) * ws3new) / 3600
-                                                          zt_hrs_total = (length(ts$diur[qqq1:qqq2]) * ws3new) / 3600 #night and day
+                                                          zt_hrs_nonwear = (length(which(ts$nonwear[sse] == 1)) * ws3new) / 3600
+                                                          zt_hrs_total = (length(ts$diur[sse]) * ws3new) / 3600 #night and day
                                                           dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                                                           ds_names[fi] = "nonwear_perc_day_spt";      fi = fi + 1
                                                           #===============================================
                                                           # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
                                                           test_remember = c(di,fi)
                                                           for (levelsc in 0:(length(Lnames)-1)) {
-                                                            dsummary[di,fi] = (length(which(LEVELS[qqq1:qqq2] == levelsc)) * ws3new) / 60
+                                                            dsummary[di,fi] = (length(which(LEVELS[sse] == levelsc)) * ws3new) / 60
                                                             ds_names[fi] = paste0("dur_",Lnames[levelsc+1],"_min");      fi = fi + 1
                                                           }
                                                           for (g in 1:4) {
-                                                            dsummary[di,(fi+(g-1))] = (length(which(OLEVELS[qqq1:qqq2] == g)) * ws3new) / 60
+                                                            dsummary[di,(fi+(g-1))] = (length(which(OLEVELS[sse] == g)) * ws3new) / 60
                                                           }
                                                           ds_names[fi:(fi+3)] = c("dur_day_total_IN_min",
                                                                                   "dur_day_total_LIG_min",
                                                                                   "dur_day_total_MOD_min",
                                                                                   "dur_day_total_VIG_min")
                                                           fi = fi + 4
-                                                          dsummary[di,fi] = (length(which(ts$diur[qqq1:qqq2] == 0)) * ws3new) / 60
+                                                          dsummary[di,fi] = (length(which(ts$diur[sse] == 0)) * ws3new) / 60
                                                           ds_names[fi] = "dur_day_min";      fi = fi + 1
-                                                          dsummary[di,fi] = (length(which(ts$diur[qqq1:qqq2] == 1)) * ws3new) / 60
+                                                          dsummary[di,fi] = (length(which(ts$diur[sse] == 1)) * ws3new) / 60
                                                           ds_names[fi] = "dur_spt_min";      fi = fi + 1
-                                                          dsummary[di,fi] = (length(c(qqq1:qqq2)) * ws3new) / 60
+                                                          dsummary[di,fi] = (length(c(sse)) * ws3new) / 60
                                                           ds_names[fi] = "dur_day_spt_min";      fi = fi + 1
                                                           #============================================
                                                           # Number of long wake periods (defined as > 5 minutes) during the night
-                                                          Nawake = length(which(abs(diff(which(LEVELS[qqq1:qqq2] == 0))) > (300 / ws3new))) - 2
+                                                          Nawake = length(which(abs(diff(which(LEVELS[sse] == 0))) > (300 / ws3new))) - 2
                                                           if (Nawake < 0) Nawake = 0
                                                           dsummary[di,fi] = Nawake
                                                           ds_names[fi] = "N_atleast5minwakenight";      fi = fi + 1
                                                           #=============================
                                                           # sleep efficiency
-                                                          dsummary[di,fi] = length(which(ts$sibdetection[qqq1:qqq2] == 1 &
-                                                                                           ts$diur[qqq1:qqq2] == 1)) / length(which(ts$diur[qqq1:qqq2] == 1))
+                                                          dsummary[di,fi] = length(which(ts$sibdetection[sse] == 1 &
+                                                                                           ts$diur[sse] == 1)) / length(which(ts$diur[sse] == 1))
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-                                                          sse = qqq1:qqq2
+                                                          
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]])
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
@@ -705,26 +691,30 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           fi = fi + bci
                                                           #===============================================
                                                           # NUMBER OF WINDOWS / BLOCKS
+                                                          RLE_LEVELS = rle(LEVELS[sse])
+                                                          RLE_OLEVELS = rle(OLEVELS[sse])
+                                                          # RunLengthEncoding
                                                           for (levelsc in 0:(length(Lnames)-1)) {
-                                                            dsummary[di,fi] = length(which(diff(which(LEVELS[sse] != levelsc)) > 1)) #qqq1:qqq2
-                                                            if (dsummary[di,fi] == 0 & LEVELS[qqq1] == levelsc) dsummary[di,fi] = 1
-                                                            ds_names[fi] = paste("Nblocks_",Lnames[levelsc+1],sep="");      fi = fi + 1
+                                                            dsummary[di, fi] = length(which(RLE_LEVELS$values == levelsc))
+                                                            if (dsummary[di, fi] == 0 & LEVELS[qqq1] == levelsc) dsummary[di, fi] = 1
+                                                            ds_names[fi] = paste("Nblocks_", Lnames[levelsc+1], sep="");      fi = fi + 1
                                                           }
                                                           for (g in 1:4) {
-                                                            dsummary[di,(fi+(g-1))] = length(which(diff(which(OLEVELS[qqq1:qqq2] != g))> 1))
+                                                            dsummary[di, (fi+(g-1))] = length(which(RLE_OLEVELS$values == g))
                                                           }
-                                                          ds_names[fi:(fi+3)] = c("Nblocks_day_total_IN","Nblocks_day_total_LIG",
-                                                                                  "Nblocks_day_total_MOD","Nblocks_day_total_VIG")
+                                                          ds_names[fi:(fi+3)] = c("Nblocks_day_total_IN", "Nblocks_day_total_LIG",
+                                                                                  "Nblocks_day_total_MOD", "Nblocks_day_total_VIG")
                                                           fi = fi + 4
-                                                          dsummary[di,fi:(fi+6)] = c(boutcriter.in, boutcriter.lig, boutcriter.mvpa,
-                                                                                     paste(boutdur.in,collapse="_"), paste(boutdur.lig,collapse="_"),
-                                                                                     paste(boutdur.mvpa,collapse="_"), bout.metric)
+                                                          dsummary[di, fi:(fi+6)] = c(boutcriter.in, boutcriter.lig, boutcriter.mvpa,
+                                                                                      paste(boutdur.in, collapse="_"),
+                                                                                      paste(boutdur.lig, collapse="_"),
+                                                                                      paste(boutdur.mvpa, collapse="_"), bout.metric)
                                                           ds_names[fi:(fi+6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                                                                                   "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
                                                           #===========================
                                                           # Intensity gradient over waking hours
                                                           if (length(iglevels) > 0) {
-                                                            q55 = cut(ts$ACC[sse[ts$diur[sse] == 0]],breaks = iglevels,right=FALSE)
+                                                            q55 = cut(ts$ACC[sse[ts$diur[sse] == 0]], breaks = iglevels, right=FALSE)
                                                             x_ig = zoo::rollmean(iglevels,k=2)
                                                             y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
                                                             dsummary[di,fi:(fi+2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
