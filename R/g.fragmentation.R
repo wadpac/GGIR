@@ -16,18 +16,16 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "all")
   }
   min_Nfragments_power = min_Nfragments = 10 # minimum number of required fragments
-  # min_Nfragments_TP_only = 1
   intensity.thresholds = c(0, intensity.thresholds) 
   output = list()
   if (length(LEVELS) > 0) {
+    # convert to class names to numeric class ids for inactive, light and MVPA:
     classes.in = c("day_IN_unbt", Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
-    class.in.ids = which(Lnames %in%  classes.in) - 1 # convert to numberic class id
-    
+    class.in.ids = which(Lnames %in%  classes.in) - 1 
     classes.lig = c("day_LIG_unbt", Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
-    class.lig.ids = which(Lnames %in%  classes.lig) - 1 # convert to numberic class id
-    
+    class.lig.ids = which(Lnames %in%  classes.lig) - 1
     classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
-    class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1 # convert to numberic class id
+    class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
   }
   if (length(ACC) > 1 & do.multiclass == TRUE) { # metrics that require more than just binary
     #====================================================
@@ -58,10 +56,17 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["IN2PA_TP"]] = output[["PA2IN_TP"]] = NA
       output[["IN2LIPA_TP"]] = output[["Nfragments_IN2LIPA"]] = NA
       output[["IN2MVPA_TP"]] = output[["Nfragments_IN2MVPA"]] = NA
-      
+      output[["Nfragments_LIPA"]] = output[["Nfragments_MVPA"]] = NA
+      output[["mean_dur_LIPA"]] = output[["mean_dur_MVPA"]] = NA
       if (Nfrag3 >= min_Nfragments) {
         Duration0 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] != 1)] # all activity fragments
         Duration1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
+        DurationLIPA = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 2)] # all light fragments
+        DurationMVPA = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 3)] # all MVPA fragments
+        output[["Nfragments_LIPA"]] = length(DurationLIPA)
+        output[["Nfragments_MVPA"]] = length(DurationMVPA)
+        output[["mean_dur_LIPA"]] = mean(DurationLIPA)
+        output[["mean_dur_MVPA"]] = mean(DurationMVPA)
         # Get only indices of inactive fragments that transition to light:
         inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
         # Get only indices of inactive fragments that transition to mvpa:
@@ -93,7 +98,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     rm(y)
   }
   #====================================================
-  # Binary fragmentation
+  # Binary fragmentation for the metrics that do not depend on multiple classes
   x = rep(0,length(ACC))
   if (length(LEVELS) == 0) {
     ij_indices = which(ACC >= intensity.thresholds[1] & ACC < intensity.thresholds[2])
@@ -102,11 +107,9 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
   }
   x = as.integer(x)
-  
   ACCcs = c(0,cumsum(ACC))
   ACCmean = diff(ACCcs[c(1,which(diff(x) != 0)+1,length(ACCcs))]) # mean acceleration per segment
-  
-  # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part
+  # - 1 = behaviour of interest defined by frag.classes.day/frag.classes.spt in g.part5
   # - 0 = all remaining time, which we may consider breaks in our behaviour of interest
   fragments = rle(x)
   fragments$ACCmean = ACCmean
@@ -169,12 +172,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["W0.5_dur_0"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_0"]])]) / sum(Duration0)
       output[["W0.5_dur_1"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_1"]])]) / sum(Duration1)
     }
-    # if ("hazard" %in% frag.metrics){
-    #   fitr = survival::survfit(survival::Surv(Duration0,rep(1,length(Duration0)))~1)
-    #   fita = survival::survfit(survival::Surv(Duration1,rep(1,length(Duration1)))~1)
-    #   output[["h_dur_0"]] =  mean(fitr$n.event/fitr$n.risk)
-    #   output[["h_dur_1"]] = mean(fita$n.event/fita$n.risk)
-    # }
   } else {
     # Create empty variables:
     output[["Nfragments_0"]] = NA
@@ -190,7 +187,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     if ("TP" %in% frag.metrics){
       output[["TP01_acc"]] = output[["TP10_acc"]] = output[["TP01_vol"]] = output[["TP10_vol"]] = NA
     }
-    if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
+    if ("CoV" %in% frag.metrics){ #coefficient of variation
       output[["CoV_dur_0"]] = output[["CoV_dur_1"]] = output[["CoV_acc_0"]] = NA
       output[["CoV_acc_1"]] = output[["CoV_vol_0"]] = output[["CoV_vol_1"]] = NA
     }
