@@ -1,4 +1,4 @@
-g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=1,ws3=5) {
+g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=6,ws3=5) {
   p = which(x == 1)
   if (bout.metric == 1) { # MVPA definition as used in 2014
     # p are the indices for which the intensity criteria are met
@@ -101,31 +101,89 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[xt == 2] = 1
     boutcount = x
   }  else if (bout.metric == 5) { # bout metric simply looks at percentage of moving window that meets criterium
+    x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
+    xt = x
+    #look for breaks larger than 1 minute
+    # Note: we do + 1 to make sure we look for breaks larger than but not equal to a minute,
+    # this is critical when working with 1 minute epoch data
+    lookforbreaks = zoo::rollmean(x=x,k=(60/ws3)+1,align="center",fill=rep(0,3))
+    #insert negative numbers to prevent these minutes to be counted in bouts
+    #in this way there will not be bouts breaks lasting longer than 1 minute
+    xt[lookforbreaks == 0] = -(60/ws3) * boutduration 
+    RM = zoo::rollmean(x=xt,k=boutduration,align="center",fill=rep(0,3)) #,
+    # p = which(RM > boutcriter)
+    p = which(RM >=boutcriter) # changed to be able to detect bouts with bout criteria 1.0
+    starti = round(boutduration/2)
+    # only consider windows that at least start and end with value that meets criterium
+    tri = p-starti
+    kep = which(tri > 0 & tri < (length(x)-(boutduration-1)))
+    if (length(kep) > 0) tri = tri[kep]
+    p = p[which(x[tri] == 1 & x[tri+(boutduration-1)] == 1)]
+    # now mark all epochs that are covered by the remaining windows
+    for (gi in 1:boutduration) {
+      inde = p-starti+(gi-1)
+      xt[inde[which(inde > 0 & inde < length(xt))]] = 2
+    }
+    x[xt != 2] = 0
+    x[xt == 2] = 1
+    boutcount = x
+  } else if (bout.metric == 6) { # bout metric simply looks at percentage of moving window that meets criterium
       x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
       xt = x
       #look for breaks larger than 1 minute
       # Note: we do + 1 to make sure we look for breaks larger than but not equal to a minute,
       # this is critical when working with 1 minute epoch data
-      lookforbreaks = zoo::rollmean(x=x,k=(60/ws3)+1,align="center",fill=rep(0,3))
+      lookforbreaks = zoo::rollmean(x=x, k=(60/ws3)+1, align="center", fill=rep(0,3))
       #insert negative numbers to prevent these minutes to be counted in bouts
       #in this way there will not be bouts breaks lasting longer than 1 minute
-      xt[lookforbreaks == 0] = -(60/ws3) * boutduration 
-      RM = zoo::rollmean(x=xt,k=boutduration,align="center",fill=rep(0,3)) #,
-      # p = which(RM > boutcriter)
-      p = which(RM >=boutcriter) # changed to be able to detect bouts with bout criteria 1.0
+      xt[lookforbreaks == 0] = -boutduration 
+      RM = zoo::rollmean(x=xt, k=boutduration, align="center", fill=rep(0,3))
+      p = which(RM >=boutcriter)
       starti = round(boutduration/2)
-      # only consider windows that at least start and end with value that meets criterium
-      tri = p-starti
-      kep = which(tri > 0 & tri < (length(x)-(boutduration-1)))
-      if (length(kep) > 0) tri = tri[kep]
-      p = p[which(x[tri] == 1 & x[tri+(boutduration-1)] == 1)]
+      # # only consider windows that at least start and end with value that meets criterium
+      p = c(0, p, 0)
+      for (ii in 1:(60/ws3)) { # only check the first and last minutes of each bout
+        # p are all epochs at the centre of the windows that meet the bout criteria
+        # we want to check the start and end of sequence of which centres whether 
+        # the the epoch half the bout length before and the epoch half the bout
+        # length after this centre meet the threshold criteria
+        # So, we first zoom in on the edges of the sequence
+        edges = which(diff(p) != 1)
+        seq_start = p[edges + 1] # bout centre starts
+        seq_start = seq_start[-1]
+        seq_end = p[edges] # bout centre starts
+        seq_end = seq_end[-1]
+        length_xt = length(xt)
+        seq_start = seq_start[which(seq_start > starti & seq_start < length_xt - starti)]
+        seq_end = seq_end[which(seq_end > starti & seq_end < length_xt - starti)]
+        if (length(seq_start) > 0) {
+          for (bi in seq_start) {
+            if (length_xt >= (bi - starti)) {
+              if (xt[bi - starti] != 1) { # if it does not meet criteria then remove this p value
+                p = p[-which(p == bi)]
+              }
+            }
+          }
+        }
+        if (length(seq_end) > 0) {
+          for (bi in seq_end) {
+            if (length_xt >= (bi - starti)) {
+              if (xt[bi + starti] != 1) {
+                p = p[-which(p == bi)]
+              }
+            }
+          }
+        }
+        
+      }
+      p = p[which(p != 0)]
       # now mark all epochs that are covered by the remaining windows
-      for (gi in 1:boutduration) {
-        inde = p-starti+(gi-1)
+      for (gi in 0:boutduration) {
+        inde = p-starti+gi
         xt[inde[which(inde > 0 & inde < length(xt))]] = 2
       }
       x[xt != 2] = 0
-      x[xt == 2] = 1
+      x[which(xt == 2 & x != 0)] = 1
       boutcount = x
   }  
   invisible(list(x=x,boutcount=boutcount))

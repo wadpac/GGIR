@@ -247,7 +247,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
-  if (exists("bout.metric") == FALSE)  bout.metric = 4 # changed on 13-04-2020, because it is what we have been recommending all the time
+  if (exists("bout.metric") == FALSE)  bout.metric = 6
   if (exists("closedbout") == FALSE)  closedbout = FALSE
   if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
   if (exists("boutcriter.lig") == FALSE)  boutcriter.lig = 0.8
@@ -433,7 +433,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             boutdur.in = boutdur.in,
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
-            overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
+            overwrite=overwrite,desiredtz=desiredtz, bout.metric=bout.metric,dayborder=dayborder,
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
