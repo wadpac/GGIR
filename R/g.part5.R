@@ -661,7 +661,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           }
                                                           bc.mvpa = checkshape(bc.mvpa)
                                                           for (bci in 1:nrow(bc.mvpa)) {
-                                                            dsummary[di,fi+(bci-1)] = length(which(diff(bc.mvpa[bci,])[sse] == 1))
+                                                            RLE = rle(bc.mvpa[bci,sse])
+                                                            dsummary[di,fi+(bci-1)] = length(which(RLE$values == 1))
+                                                            # dsummary[di,fi+(bci-1)] = length(which(diff(bc.mvpa[bci,])[sse] == 1))
                                                             if (bci ==1) {
                                                               ds_names[fi+(bci-1)] = paste0("Nbouts_day_MVPA_bts_",boutdur.mvpa[bci])
                                                             } else {
@@ -671,7 +673,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           fi = fi + bci
                                                           bc.in = checkshape(bc.in)
                                                           for (bci in 1:nrow(bc.in)) {
-                                                            dsummary[di,fi+(bci-1)] = length(which(diff(bc.in[bci,])[sse] == 1))
+                                                            RLE = rle(bc.in[bci,sse])
+                                                            dsummary[di,fi+(bci-1)] = length(which(RLE$values == 1))
+                                                            # dsummary[di,fi+(bci-1)] = length(which(diff(bc.in[bci,])[sse] == 1))
                                                             if (bci ==1) {
                                                               ds_names[fi+(bci-1)] = paste0("Nbouts_day_IN_bts_",boutdur.in[bci])
                                                             } else {
@@ -681,7 +685,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           fi = fi + bci
                                                           bc.lig = checkshape(bc.lig)
                                                           for (bci in 1:nrow(bc.lig)) {
-                                                            dsummary[di,fi+(bci-1)] = length(which(diff(bc.lig[bci,])[sse] == 1))
+                                                            RLE = rle(bc.lig[bci,sse])
+                                                            dsummary[di,fi+(bci-1)] = length(which(RLE$values == 1))
+                                                            # dsummary[di,fi+(bci-1)] = length(which(diff(bc.lig[bci,])[sse] == 1))
                                                             if (bci ==1) {
                                                               ds_names[fi+(bci-1)] = paste0("Nbouts_day_LIG_bts_",boutdur.lig[bci])
                                                             } else {
