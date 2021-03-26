@@ -79,15 +79,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
             bind_with_prev_data = function(df1, df2) {
               df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
               df1 = as.data.frame(df1)
-              # replace factors by character value
-              i <- sapply(df1, is.factor)
-              df1[,i] <- lapply(df1[,i], as.character)
-              # replace all NA values by blank
-              df1[is.na(df1)] <- ""
-              if (length(which(df1 == "NaN")) > 0) {
-                df1[df1=="NaN"] = ""
-              }
-              return(df1)
+             return(df1)
             }
             SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
             daySUMMARY = bind_with_prev_data(daySUMMARY, SUM$daysummary)
@@ -99,6 +91,21 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
           }
         }
       }
+      remove_na_nan = function(df1) {
+        # replace factors by character value
+        i <- sapply(df1, is.factor)
+        df1[,i] <- lapply(df1[,i], as.character)
+        # replace all NA values by blank
+        df1[is.na(df1)] <- ""
+        # replace all NaN values by blank
+        is.nan.data.frame <- function(x) {
+          do.call(cbind, lapply(x, is.nan))
+        }
+        df1[is.nan(df1)]  = ""
+        return(df1)
+      }
+      SUMMARY = remove_na_nan(SUMMARY)
+      daySUMMARY = remove_na_nan(daySUMMARY)
       #-----------------
       # create data quality report
       if (length(C$cal.error.end) == 0) C$cal.error.end = " "

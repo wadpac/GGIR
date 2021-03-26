@@ -30,7 +30,8 @@ do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
                      lb = 0.2,hb = 15, n = 4,
 meantempcal=c(),chunksize=c(),
 selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),
-myfun=c(),...)
+myfun=c(),
+do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -173,6 +174,27 @@ below 1 is recommended.
     External function object to be applied to raw data. 
     See details \link{applyExtFunction}.
   }
+  \item{do.sgAccEN}{
+  If TRUE and if gyroscope data is available, separate gravitational component
+  (see \link{separategravity}) and use this to calculate the Euclidean Norm of the
+  three local acceleration values.
+  }
+  \item{do.sgAnglex}{
+  If TRUE and if gyroscope data is available, separate gravitational component
+  (see \link{separategravity}) and use this to calculate the angle of the x-axis
+  relative to the horizontal plane.
+  }
+  \item{do.sgAngley}{
+  If TRUE and if gyroscope data is available, separate gravitational component
+  (see \link{separategravity}) and use this to calculate the angle of the y-axis
+  relative to the horizontal plane.
+  }
+  \item{do.sgAnglez}{
+  If TRUE and if gyroscope data is available, separate gravitational component
+  (see \link{separategravity}) and use this to calculate the angle of the z-axis
+  relative to the horizontal plane.
+  }
+  
   \item{...}{
    Please ignore. Only used by the code internally when called from within
    g.part1 with selectdaysfile specific.

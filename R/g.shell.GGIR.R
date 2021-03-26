@@ -37,7 +37,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
-    if (length(which(mode == 3)) > 0) dopart3 = TRUE; do.anglez = TRUE
+    if (length(which(mode == 3)) > 0) { dopart3 = TRUE; do.anglez = TRUE }
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
@@ -97,7 +97,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
           } else if (numi == TRUE) {
             txt = paste(as.character(config[ci,1]),"=",as.numeric(config[ci,2]),"",sep="")
           } else if (numi == FALSE & logi == FALSE) {
-            if (length(config[ci,2]) > 0) {
+            if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
               if (config[ci,2] == 'c()') {
                 if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
                 if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
@@ -174,6 +174,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("do.bfx") == FALSE)  do.bfx = FALSE
   if (exists("do.bfy") == FALSE)  do.bfy = FALSE
   if (exists("do.bfz") == FALSE)  do.bfz = FALSE
+  if (exists("do.sgAccEN") == FALSE)  do.sgAccEN = TRUE
+  if (exists("do.sgAnglex") == FALSE)  do.sgAnglex = FALSE
+  if (exists("do.sgAngley") == FALSE)  do.sgAngley = FALSE
+  if (exists("do.sgAnglez") == FALSE)  do.sgAnglez = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
@@ -202,8 +206,12 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("ndayswindow") == FALSE)  ndayswindow = 7
   if (exists("do.imp") == FALSE) do.imp = TRUE
   if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
-  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=30
+  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=NA
   if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
+  if (length(mvpadur) != 3) {
+    mvpadur = c(1,5,10)
+    warning("mvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
+  }
   if (exists("epochvalues2csv") == FALSE)  epochvalues2csv = FALSE
   if (exists("window.summary.size") == FALSE) window.summary.size = 10
   if (exists("dayborder") == FALSE)  dayborder = 0
@@ -212,7 +220,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
   }
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
-  if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 1
+  if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 2
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
   if (exists("MX.ig.min.dur") == FALSE)  MX.ig.min.dur = 10
 
@@ -313,6 +321,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   }
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
   GGIRversion = paste0(" ",GGIRversion)
+  rm(SI)
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
@@ -341,6 +350,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz,
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
+            do.sgAccEN=do.sgAccEN, do.sgAnglex=do.sgAnglex,
+            do.sgAngley=do.sgAngley, do.sgAnglez=do.sgAnglez,
             printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
@@ -397,7 +408,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     g.part3(metadatadir=metadatadir,f0=f0, acc.metric = acc.metric,
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
-            constrain2range=constrain2range, do.parallel = do.parallel, dayborder=dayborder,
+            constrain2range=constrain2range, do.parallel = do.parallel,
             myfun=myfun)
   }
   if (dopart4 == TRUE) {
@@ -448,7 +459,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
                           "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
-                          "conv2logical", "conv2num") == FALSE)]
+                          "conv2logical", "conv2num", "SI") == FALSE)]
   config.parameters = mget(LS) #lapply(mget(ls()), is.data.frame)
   config.matrix = createConfigFile(config.parameters)
   if (dir.exists(metadatadir)) {

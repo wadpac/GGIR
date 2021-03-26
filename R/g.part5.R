@@ -117,7 +117,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   }
   t0 = t1 = Sys.time() # copied here
   if (do.parallel == TRUE) {
-    cat(paste0('\n Busy processing ... see ',metadatadir,'/ms5', ' for progress\n'))
+    cat(paste0('\n Busy processing ... see ', metadatadir, ms5.out, ' for progress\n'))
   }
   # check whether we are in development mode:
   GGIRinstalled = is.element('GGIR', installed.packages()[,1])
@@ -869,11 +869,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                 }
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
-    for (oli in 1:length(output_list)) { # logged error and warning messages
-      if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
-        print(unlist(output_list[oli])) # print any error and warnings observed
-      }
+  }
+  for (oli in 1:length(output_list)) { # logged error and warning messages
+    if (is.null(unlist(output_list[oli])) == FALSE) {
+      cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
+      print(unlist(output_list[oli])) # print any error and warnings observed
     }
   }
 }

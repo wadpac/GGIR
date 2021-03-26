@@ -6,8 +6,8 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    boutcriter = 0.8,ndayswindow=7,idloc=1,do.imp=TRUE,storefolderstructure = FALSE,
                    overwrite=FALSE,epochvalues2csv=FALSE,mvpadur=c(1,5,10),selectdaysfile=c(),
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="",
-                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600, iglevels = c(),
-                   IVIS.activity.metric=1, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
+                   IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA, iglevels = c(),
+                   IVIS.activity.metric=2, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
                    myfun=c(), MX.ig.min.dur=10) {
   snloc= 1
   if (is.numeric(qwindow)) {
@@ -77,7 +77,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   }
   t1 = Sys.time() # copied here
   if (do.parallel == TRUE) {
-    cat(paste0('\n Busy processing ... see ',metadatadir,'/ms2', ' for progress\n'))
+    cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
   }
   
   # check whether we are indevelopment mode:
@@ -221,11 +221,11 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   }
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
-    for (oli in 1:length(output_list)) { # logged error and warning messages
-      if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ",fnames[oli]))
-        print(unlist(output_list[oli])) # print any error and warnings observed
-      }
+  }
+  for (oli in 1:length(output_list)) { # logged error and warning messages
+    if (is.null(unlist(output_list[oli])) == FALSE) {
+      cat(paste0("\nErrors and warnings for ",fnames[oli]))
+      print(unlist(output_list[oli])) # print any error and warnings observed
     }
   }
 }

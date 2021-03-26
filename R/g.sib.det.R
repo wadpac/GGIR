@@ -1,6 +1,6 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                      dayborder=0, myfun=c()) {
+                      myfun=c()) {
   #==============================================================
   perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
 
@@ -195,7 +195,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     #-------------------------------------------------------------------
     # detect midnights
 
-    detemout = g.detecmidnight(time,desiredtz, dayborder) # ND,
+    detemout = g.detecmidnight(time,desiredtz, dayborder=0) # ND, # for sleep dayborder is always 0, it is the summary of sleep that will be dayborder specific
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
@@ -217,6 +217,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         # Estimate Sleep Period Time Window, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
+        daysleep_offset = 0
         inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
                                    perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
                                    outofbedsize = outofbedsize)

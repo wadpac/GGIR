@@ -7,8 +7,8 @@ g.detecmidnight = function(time,desiredtz,dayborder) {
     return(unlist(strsplit(x," "))[2])
   }
   checkmidnight = function(x){
-    temp1 = unlist(strsplit(x,":"))
-    return(sum(as.numeric(temp1)))
+    temp1 = as.numeric(unlist(strsplit(x,":")))
+    return(sum(temp1 / c(1, 60, 3600)))
   }
   space = ifelse(length(unlist(strsplit(time[1]," "))) > 1,TRUE,FALSE)
   if (space == TRUE) {

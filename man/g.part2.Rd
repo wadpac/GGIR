@@ -21,8 +21,8 @@ do.imp=TRUE,storefolderstructure=FALSE,overwrite=FALSE,
 epochvalues2csv=FALSE, mvpadur=c(1,5,10),selectdaysfile=c(),
 window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="",
-IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = 3600,
-iglevels = c(), IVIS.activity.metric=1, TimeSegments2ZeroFile = c(),
+IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA,
+iglevels = c(), IVIS.activity.metric=2, TimeSegments2ZeroFile = c(),
 qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10)
 }
 \arguments{
@@ -47,8 +47,8 @@ qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10)
     based on \code{hrs.del.start}, \code{hrs.del.end}, and \code{maxdur}.
     Value = 2 to only use the data between the first midnight and the last
     midnight, value = 3 only selects the most active X days
-    in the files. X is specified by argument \code{ndayswindow}
-    See also \link{g.impute}
+    in the files. X is specified by argument \code{ndayswindow}, value = 4 to
+    only use the data after the first midnight. See also \link{g.impute}
   }
   \item{hrs.del.start}{
     how many HOURS after start of experiment did wearing of monitor start?,
