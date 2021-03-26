@@ -1,21 +1,21 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.3-1 (GitHub-only-release date:17-03-2021)}{
+\section{Changes in version 2.3-1 (GitHub-only-release date:26-03-2021)}{
 \itemize{
-  \item Part3 bug fixed in usage of argument dayborder when not 0. 
+  \item Part 3 bug fixed in usage of argument dayborder when not 0. 
   Thanks Ruben Brondeel for spotting this.
-  \item Part3 bug fixed in recognition fraction night invalid for first night.
+  \item Part 3 bug fixed in recognition fraction night invalid for first night.
   Thanks Ruben Brondeel for spotting.
   \item Part 1 fixed warning related to closing connection to bin files. Thanks John Muschelli.
-  \item Part2 fixed warning that depricated IVIS arugment does not exist
+  \item Part 2 fixed warning that depricated IVIS arugment does not exist
 }
 }
 \section{Changes in version 2.3-0 (release date:17-02-2021)}{
 \itemize{
-  \item Part5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
+  \item Part 5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
   \item Part 1 Documentation for sensor fusion functionality improved
-  \item Part2 csv report generation speeded up
+  \item Part 2 csv report generation speeded up
 }
 }
 \section{Changes in version 2.2-2 (GitHub-only-release date:13-02-2021)}{
