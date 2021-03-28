@@ -135,7 +135,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         }
       } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") { #todo: create automatic extraction of information from actigraph fileheader
         deviceSerialNumber = "not extracted"
-      } else if (I$monc == 5) { #todo: create automatic extraction of information from monc fileheader
+      } else if (I$monc == 5 | I$monc == 0) { #todo: create automatic extraction of information from monc fileheader
         deviceSerialNumber = "not extracted"
       }
       if (length(C$offset) == 0) {
