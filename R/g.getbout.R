@@ -142,7 +142,12 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       starti = round(boutduration/2)
       # # only consider windows that at least start and end with value that meets criterium
       p = c(0, p, 0)
-      for (ii in 1:(60/ws3)) { # only check the first and last minutes of each bout
+      if (ws3 > 60) {
+        epochs2check = 1
+      } else {
+        epochs2check = (60/ws3)
+      }
+      for (ii in 1:epochs2check) { # only check the first and last minutes of each bout
         # p are all epochs at the centre of the windows that meet the bout criteria
         # we want to check the start and end of sequence of which centres whether 
         # the the epoch half the bout length before and the epoch half the bout
