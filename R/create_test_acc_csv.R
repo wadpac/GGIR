@@ -21,6 +21,28 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
     Rx[3,] = c(0,0,1)
     invisible(list(Rx=Rx,Ry=Ry))
   }
+
+  generate_repeated_timestamp_blocks = function(first_onset, block_duration, period_length, sf, max_timestamp) {
+    # Generate a series of timestamp blocks: the first one at first_onset, then one more each period. 
+    
+    block_onsets = seq(first_onset+1, max_timestamp, by=period_length) # one block onset for each period
+    block_timestamps = rep(block_onsets, each=block_duration)
+    block_timestamps = block_timestamps + rep(0:(block_duration-1), times = length(block_onsets))
+
+    # Make sure the entire duration of the last block fits within the time period for which we have data.
+    # Trim it if necessary.
+    block_timestamps = block_timestamps[which(block_timestamps<=max_timestamp)]
+
+    return(block_timestamps)
+  }
+
+  generate_daily_timestamp_blocks = function(first_onset, block_duration, sf, max_timestamp) {
+    # Generate a series of timestamp blocks: the first one at first_onset, then one more every 24 hours. 
+    day_length = 24*3600*sf
+    block_timestamps = generate_repeated_timestamp_blocks (first_onset, block_duration, day_length, sf, max_timestamp)
+    return(block_timestamps)
+  }
+
   #==================================
   
   if (length(storagelocation) == 0) storagelocation = getwd()
@@ -53,25 +75,22 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
                   sin(((1:Nrows)/((Nrows)/(Nsamplesinday/0.1))))* 0.05 +
                   sin(((1:Nrows)/((Nrows)/(Nsamplesinday/2))))* 0.1
   
-  
-  
-  
   #======================================
-  # insert sleep blocks from the 15th till the 21st hour
-  sleepL1 = seq((12*3600*sf)+1,Nrows,by=24*3600*sf) #first sleep bout
-  sleepL2 = rep(sleepL1,each=2.5*3600*sf) # 2.5 hours
-  sleepL3 = sleepL2 + rep(0:((length(sleepL2)/length(sleepL1))-1), time = length(sleepL1))
-  sleepS1 = seq((15*3600*sf)+1,Nrows,by=24*3600*sf) #second sleep bout
-  sleepS2 = rep(sleepS1,each=3*3600*sf) # 3 hours
-  sleepS3 = sleepS2 + rep(0:((length(sleepS2)/length(sleepS1))-1), time = length(sleepS1))
-  # ACC = rep(0,Nrows) #empty ACC pattern
-  sleep_periods = sort(unique(c(sleepL3,sleepS3)))
+  # generate 2.5-hour sleep blocks: at 12 hours from the start of the recording, and then every 24 hours
+  sleep1 = generate_daily_timestamp_blocks(first_onset=12*3600*sf, block_duration=2.5*3600*sf, sf=sf, max_timestamp=Nrows)
+
+  # generate 3-hour sleep blocks: at 15 hours from the start of the recording, and then every 24 hours
+  sleep2 = generate_daily_timestamp_blocks(first_onset=15*3600*sf, block_duration=3*3600*sf, sf=sf, max_timestamp=Nrows)
+
+  sleep_periods = sort(unique(c(sleep1,sleep2)))
+
   set.seed(300)
   testdata[sleep_periods,1] = accx + round(rnorm(n = length(sleep_periods),mean = 0,sd=0.015) ,digits = 4)
   set.seed(400)
   testdata[sleep_periods,2] = accy + round(rnorm(n = length(sleep_periods),mean = 0,sd=0.015) ,digits = 4)
   set.seed(500)
   testdata[sleep_periods,3] = accz + round(rnorm(n = length(sleep_periods),mean = 0,sd=0.015) ,digits = 4)
+
   # add some rotations to the acceleormeter, to avoid non-wear detection
   for (j in 1:(Nrows/(sf*3600))) { # loop to add angle changes to every night
     t0v = seq(12+((j-1)*24),22+((j-1)*24),by=0.25) # start times of angle positions
@@ -94,32 +113,32 @@ create_test_acc_csv = function(sf=3,Nmin=2000,storagelocation=c()) {
     }
   }
   #============================================================
-  # insert 2 minute blocks of activity at the beginning of every 15 minutes
-  actP1 = seq(1,Nrows,by=0.25*3600*sf) # starts at the 1st minutes and then everry 15 minutes
-  actP2 = rep(actP1,each=2*60*sf) # and it lasts 2 minutes
-  actP3 = actP2 + rep(0:((length(actP2)/length(actP1))-1), time = length(actP1))
+  # insert 2-minute blocks of activity at the beginning of every 15 minutes
+  act2_15 = generate_repeated_timestamp_blocks(first_onset=0, block_duration=2*60*sf, period_length=15*60*sf, sf=sf, max_timestamp=Nrows)
+
   ACC = rep(0,Nrows) #empty ACC pattern
   set.seed(300)
-  ACC[actP3] = 0.08 + round(rnorm(n = length(actP3),mean = 0,sd=0.01) ,digits = 4) # add 0.08g + 10 mg noise
+  ACC[act2_15] = 0.08 + round(rnorm(n = length(act2_15),mean = 0,sd=0.01) ,digits = 4) # add 0.08g + 10 mg noise
   testdata[,1] = testdata[,1] + ACC
   #======================================
-  # insert 2 hour blocks of accelermeter non-wear time
-  nw1 = seq((300*sf)+1,Nrows,by=24*3600*sf) #non wear starts at the 5th minute of every 24 hours
-  nw2 =  rep(nw1,each=7200*sf) # and lasts 2 hours
-  nw3 = nw2 + rep(0:((length(nw2)/length(nw1))-1), time = length(nw1))
-  testdata[nw3,1] = accx # constant values to trigger non-wear detection
-  testdata[nw3,2] = accy
-  testdata[nw3,3] = accz
+  # generate one 2-hour block of non-wear starting at the 5th minute of every 24 hours
+  nw = generate_daily_timestamp_blocks(first_onset=5*60*sf, block_duration=2*3600*sf, sf=sf, max_timestamp=Nrows)
+  
+  testdata[nw,1] = accx # constant values to trigger non-wear detection
+  testdata[nw,2] = accy
+  testdata[nw,3] = accz
   #======================================
   # insert 20 and 4 minute blocks of activity
-  actL1 = seq((3*3600*sf)+1,Nrows,by=24*3600*sf) #long activity starts at the 3rd hour of every 24 hours
-  actL2 = rep(actL1,each=20*60*sf) # and lasts 20 minutes
-  actL3 = actL2 + rep(0:((length(actL2)/length(actL1))-1), time = length(actL1))
-  actS1 = seq((3.5*3600*sf)+1,Nrows,by=24*3600*sf) #short activity starts at the 3.5th hour of every 24 hours
-  actS2 = rep(actS1,each=4*60*sf) # and lasts 4 minutes
-  actS3 = actS2 + rep(0:((length(actS2)/length(actS1))-1), time = length(actS1))
+
+  # generate one 20-minute block of activity starting at the 3rd hour of every 24 hours
+  act1 = generate_daily_timestamp_blocks(first_onset=3*3600*sf, block_duration=20*60*sf, sf=sf, max_timestamp=Nrows)
+
+  # generate one 4-minute block of activity starting at the 3.5th hour of every 24 hours
+  act2 = generate_daily_timestamp_blocks(first_onset=3.5*3600*sf, block_duration=4*60*sf, sf=sf, max_timestamp=Nrows)
+  
+  act_periods = sort(unique(c(act1,act2)))
+
   ACC = rep(0,Nrows) #empty ACC pattern
-  act_periods = sort(unique(c(actL3,actS3)))
   set.seed(300)
   ACC[act_periods] = 0.5 + round(rnorm(n = length(act_periods),mean = 0,sd=0.04) ,digits = 4) # add 0.5g + 20 mg noise
   testdata[,1] = testdata[,1] + ACC
