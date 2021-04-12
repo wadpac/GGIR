@@ -12,7 +12,8 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                           includenightcrit=c(),includedaycrit=c(),
                           data_cleaning_file=c(),
                           includedaycrit.part5=2/3,
-                          minimum_MM_length.part5=23)
+                          minimum_MM_length.part5=23,
+                          week_weekend_aggregate.part5=FALSE)
 }
 \arguments{
   \item{metadatadir}{
@@ -44,6 +45,11 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     Minimum length in hours of a MM day to be included in the cleaned
     part 5 results.
   }
+   \item{week_weekend_aggregate.part5}{
+   Boolean to indicate whether week and weekend-days aggregates
+   should be stored. This is turned off by default as it generates a 
+   large number of extra columns in the output report.
+   }
 }
 \value{
 Function does not produce data, but only writes reports

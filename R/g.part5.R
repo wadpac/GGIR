@@ -532,20 +532,20 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           # AVERAGE ACC PER WINDOW
                                                           sse = qqq1:qqq2
                                                           for (levelsc in 0:(length(Lnames)-1)) {
-                                                            dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]])
+                                                            dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
                                                           }
                                                           for (g in 1:4) {
-                                                            dsummary[di,(fi+(g-1))] = mean(ts$ACC[sse[OLEVELS[sse] == g]])
+                                                            dsummary[di,(fi+(g-1))] = mean(ts$ACC[sse[OLEVELS[sse] == g]], na.rm = TRUE)
                                                           }
                                                           ds_names[fi:(fi+3)] = c("ACC_day_total_IN_mg", "ACC_day_total_LIG_mg",
                                                                                   "ACC_day_total_MOD_mg", "ACC_day_total_VIG_mg")
                                                           fi = fi + 4
-                                                          dsummary[di,fi] = mean(ts$ACC[sse[ts$diur[sse] == 0]])
+                                                          dsummary[di,fi] = mean(ts$ACC[sse[ts$diur[sse] == 0]], na.rm = TRUE)
                                                           ds_names[fi] = "ACC_day_mg";      fi = fi + 1
-                                                          dsummary[di,fi] = mean(ts$ACC[sse[ts$diur[sse] == 1]])
+                                                          dsummary[di,fi] = mean(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
                                                           ds_names[fi] = "ACC_spt_mg";      fi = fi + 1
-                                                          dsummary[di,fi] = mean(ts$ACC[sse])
+                                                          dsummary[di,fi] = mean(ts$ACC[sse], na.rm = TRUE)
                                                           ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
                                                           #===============================================
                                                           # QUANTILES...
