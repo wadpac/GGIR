@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 2.3-2 (GitHub-only-release date:26-04-2021)}{
+\itemize{
+  \item Part 1 handling of timestamp column when using ad-hoc data format (monitor code = 0)
+  \item Test file generation for unit tests improved. Thanks Lena Kushleyeva.
+}
+}
 \section{Changes in version 2.3-1 (GitHub-only-release date:26-03-2021)}{
 \itemize{
   \item Part 3 bug fixed in usage of argument dayborder when not 0. 
