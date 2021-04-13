@@ -16,11 +16,12 @@ g.dotorcomma(inputfile,dformat,mon, desiredtz = "", ...)
   full path to inputfile
   }
    \item{dformat}{
-  Data format code: 1=.bin, 2=.csv, 3=.wav, 4=.cwa
+  Data format code: 1=.bin, 2=.csv, 3=.wav, 4=.cwa, 5=.csv for ad-hoc monitor 
+  brand
   }
   \item{mon}{
-  Monitor code (accelorometer brand): 1=GENEA,2=GENEActiv,3=Actigraph,
-  4=Axivity.
+  Monitor code (accelorometer brand): 0=undefined, 1=GENEA, 2=GENEActiv,
+  3=Actigraph, 4=Axivity, 5=Movisense, 6=Verisense
   }
   \item{desiredtz}{
   Desired timezone, see documentation \link{g.getmeta}
