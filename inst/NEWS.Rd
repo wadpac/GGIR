@@ -5,7 +5,7 @@
 \section{Changes in version 2.3-2 (GitHub-only-release date:26-04-2021)}{
 \itemize{
   \item Part 1 when using ad-hoc data format: now able to handle timestamp column.
-  \item Part 1 when using ad-hoc data format with header: now able to extract 
+  \item Part 2 report when using ad-hoc data format with header: now able to extract 
   and store serial number in part2 report.
   \item Test file generation for unit tests improved. Thanks Lena Kushleyeva.
 }
