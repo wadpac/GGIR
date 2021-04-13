@@ -133,10 +133,15 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
           deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number
         }
-      } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") { #todo: create automatic extraction of information from actigraph fileheader
+      } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") {
         deviceSerialNumber = "not extracted"
-      } else if (I$monc == 5 | I$monc == 0) { #todo: create automatic extraction of information from monc fileheader
+      } else if (I$monc == 5) { #movisense
         deviceSerialNumber = "not extracted"
+      } else if (I$monc == 0) {
+        deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]
+        if (length(deviceSerialNumber) == 0) {
+          deviceSerialNumber = "not extracted"
+        }
       }
       if (length(C$offset) == 0) {
         C$offset = C$translate
