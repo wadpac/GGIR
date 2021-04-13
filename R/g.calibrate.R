@@ -62,6 +62,8 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
   offset = c(0,0,0)
   bsc_qc = data.frame(time=c(),size=c(),stringsAsFactors = FALSE)
   #inspect file
+  op <- options(stringsAsFactors = FALSE)
+  on.exit(options(op))
   options(warn=-1) #turn off warnings
   INFI = g.inspectfile(datafile, desiredtz=desiredtz, rmc.dec=rmc.dec,
                        rmc.firstrow.acc = rmc.firstrow.acc,
@@ -319,7 +321,6 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       LD = 0
     }
     meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
-    rm(meta)
     cut = which(meta_temp[,1] == 99999)
     if (length(cut) > 0) {
       meta_temp = meta_temp[-cut,]
