@@ -161,6 +161,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
     switchoffLD = accread$switchoffLD
     PreviousEndPage = accread$endpage
     PreviousStartPage = accread$startpage
+    rm(accread);
     options(warn=0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -183,11 +184,12 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       } else if (dformat == 5) {
         data = P$data
       }
+      rm(P)
       #add left over data from last time
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
-      
+
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
       use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
@@ -317,6 +319,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       LD = 0
     }
     meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
+    rm(meta)
     cut = which(meta_temp[,1] == 99999)
     if (length(cut) > 0) {
       meta_temp = meta_temp[-cut,]
@@ -348,6 +351,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
                            abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       meta_temp = meta_temp[nomovement,]
+      rm(nomovement)
       if (min(dim(meta_temp)) > 1) {
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)
@@ -451,6 +455,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
       # END of Zhou Fang's code
       #-------------------------------------------
       cal.error.end = sqrt(meta_temp2[,1]^2 + meta_temp2[,2]^2 + meta_temp2[,3]^2)
+      rm(meta_temp2)
       cal.error.end = round(mean(abs(cal.error.end-1)), digits = 5)
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > minloadcrit) { #do not change scaling if there is no evidence that calibration improves
@@ -488,6 +493,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
   } else {
     spheredata = c()
   }
+  rm(meta_temp)
   QCmessage = QC
   if (printsummary == TRUE) {
     # cat(paste0(rep('_ ',options()$width),collapse=''))
