@@ -303,8 +303,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  
-  
+  if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
+  if (length(which(ls() == "week_weekend_aggregate.part5")) == 0) week_weekend_aggregate.part5=FALSE
+
+
 
   # VISUAL REPORT
 
@@ -519,7 +521,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
-                   minimum_MM_length.part5=minimum_MM_length.part5)
+                   minimum_MM_length.part5=minimum_MM_length.part5,
+                   week_weekend_aggregate.part5=week_weekend_aggregate.part5)
   }
   if (visualreport == TRUE) {
     cat('\n')
