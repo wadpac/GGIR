@@ -16,7 +16,6 @@ converted into intergers of zeros and ones.
   g.fragmentation(frag.metrics = c("mean", "TP", "Gini", "power",
                                             "CoV",  "all"),
                   ACC = c(), intensity.thresholds = c(),
-                  do.multiclass =c(),
                   LEVELS = c(), Lnames=c(), xmin=1)
 }
 \arguments{
@@ -29,10 +28,8 @@ converted into intergers of zeros and ones.
     that depend on continuous data or multi-class data.
   }
   \item{intensity.thresholds}{
-    Intensity thresholds to define classes in the multi-class approach where bouts are not considered.
-  }
-  \item{do.multiclass}{
-    Boolean to indicate whether multiclass metrics should be extracted
+    Intensity thresholds to define classes in the multi-class approach where 
+    fragments are not considered.
   }
   \item{LEVELS}{
     vector of behavioural level identifiers derived with identify_levels function
@@ -41,7 +38,7 @@ converted into intergers of zeros and ones.
     vector with characters to specify the names of the level identifiers.
   }
   \item{xmin}{
-    Minimum recordable bout length.
+    Minimum recordable fragment length.
   }
 }
 \value{
@@ -61,7 +58,7 @@ List with Character object showing how decimals are separated
 }
 \details{
 Metrics include
-mean_duration (mean bout duration),
+mean_duration (mean fragment duration),
 TP (between states transition probability),
 Gini (gini index),
 power (alapha parameter for power law distribution)

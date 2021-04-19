@@ -733,7 +733,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           if (length(frag.metrics) > 0) {
                                                             # daytime
                                                             frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
-                                                                                       intensity.thresholds = c(TRLi, TRMi, TRVi), do.multiclass=TRUE,
+                                                                                       intensity.thresholds = c(TRLi, TRMi, TRVi),
                                                                                        LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
                                                                                        Lnames = Lnames, xmin = 60/ws3new)
                                                             # fragmentation values come with a lot of decimal places
@@ -745,7 +745,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             # sleepclass_tmp = rep(0, length(LEVELS[sse[ts$diur[sse]==1]]))
                                                             # sleepclass_tmp[which(as.integer(LEVELS[sse[ts$diur[sse]==1]]) == frag.classes.spt)] = 1
                                                             # frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 1]],
-                                                            #                          intensity.thresholds = c(TRLi, TRMi, TRVi), do.multiclass=FALSE,
+                                                            #                          intensity.thresholds = c(TRLi, TRMi, TRVi), 
                                                             #                          sleepclass = sleepclass_tmp)
                                                             # # fragmentation values come with a lot of decimal places
                                                             # dsummary[di,fi:(fi+(length(frag.out)-1))] =  round(as.numeric(frag.out), digits=5)

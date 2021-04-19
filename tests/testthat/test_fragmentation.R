@@ -27,32 +27,21 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   frag.classes = 1
   out = g.fragmentation(frag.metrics = c("all"),
                         ACC=ACC, 
-                        intensity.thresholds=intensity.thresholds,
-                        do.multiclass=TRUE)
+                        intensity.thresholds=intensity.thresholds)
 
   
   
-  expect_equal(round(out$mean_vol_0, digits=2), 8393.75)
-  expect_equal(round(out$mean_vol_1, digits=1), 412.5)
-  expect_equal(round(out$Gini_vol_0, digits=3), 0.408)
-  expect_equal(round(out$Gini_vol_1, digits=4), 0.1877)
+  expect_equal(round(out$mean_dur_PA, digits=3), 7)
+  expect_equal(round(out$mean_dur_IN, digits=3), 4)
+  expect_equal(round(out$Gini_dur_PA, digits=4), 0.129)
+  expect_equal(round(out$Gini_dur_IN, digits=4), 0.0968)
   
-  expect_equal(round(out$mean_acc_0, digits=1), 1056.2)
-  expect_equal(round(out$mean_acc_1, digits=1), 100)
-  expect_equal(round(out$Gini_acc_0, digits=3), 0.331)
-  expect_equal(round(out$Gini_acc_1, digits=4), 0.0968)
-  
-  expect_equal(round(out$mean_dur_0, digits=3), 7)
-  expect_equal(round(out$mean_dur_1, digits=3), 4)
-  expect_equal(round(out$Gini_dur_0, digits=4), 0.129)
-  expect_equal(round(out$Gini_dur_1, digits=4), 0.0968)
-  
-  expect_equal(round(out$alpha_dur_0, digits=4), 1.521)
-  expect_equal(round(out$x0.5_dur_0, digits=4), 3.7828)
-  expect_equal(round(out$W0.5_dur_1, digits=4), 1)
+  expect_equal(round(out$alpha_dur_PA, digits=4), 1.521)
+  expect_equal(round(out$x0.5_dur_PA, digits=4), 3.7828)
+  expect_equal(round(out$W0.5_dur_IN, digits=4), 1)
 
-  expect_equal(round(out$IN2MVPA_TP, digits=4), 0.1406)
-  expect_equal(round(out$IN2LIPA_TP, digits=4), 0.1094)
-  expect_equal(round(out$IN2PA_TP, digits=4), 0.25)
+  expect_equal(round(out$TP_IN2MVPA, digits=4), 0.1406)
+  expect_equal(round(out$TP_IN2LIPA, digits=4), 0.1094)
+  expect_equal(round(out$TP_IN2PA, digits=4), 0.25)
   
 })
