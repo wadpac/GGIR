@@ -230,7 +230,6 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       H = genea$header
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile=datafile, more = F)
-      # on.exit(closeAllConnections())
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
     }
