@@ -282,12 +282,10 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   OF3tmp$validdays = 1
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode1",cval=1)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode2",cval=2)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode3",cval=3)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode4",cval=4)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode5",cval=5)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcode6",cval=6)
+                  for (ccode in 1:6) {
+                    OF4 = foo34(df=OF3tmp[validdaysi,], aggPerIndividual=OF4, nameold="cleaningcode",
+                                namenew=paste0("Ncleaningcode", ccode), cval=ccode)
+                  }
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
                   OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
                   # Move valid day count variables to beginning of dataframe
