@@ -332,7 +332,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             #   if (is.na(tempp$sec[1]) == TRUE) {
                                             #     tempp = unclass(as.POSIXlt(ts$time,tz=desiredtz))
                                             #   }
-                                            #   print("e")
                                             #   sec = tempp$sec
                                             #   min = tempp$min
                                             #   hour = tempp$hour
@@ -774,6 +773,18 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthreshold[Nluxt])) / (60/ws3new)
                                                             ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthreshold[lti],"_",LUXthreshold[lti+1],"_day")
                                                             fi = fi + Nluxt+1
+                                                            
+                                                            # light per hour of the day, ignoring SPT window
+                                                            hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
+                                                            lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), mean)
+                                                            colnames(lightperhour) = c("hour", "light")
+                                                            lightperhour = base::merge(lightperhour, data.frame(hour = 0:23, light = rep(NA, 24)),
+                                                                                       by =c("hour"), all.y=TRUE)
+                                                            lightperhour = lightperhour[,c("hour","light.x")]
+                                                            colnames(lightperhour) = c("hour", "light")
+                                                            dsummary[di,fi:(fi+23)] = lightperhour$light
+                                                            ds_names[fi:(fi+23)] = paste0("LUX_hour_",lightperhour$hour,"_day")
+                                                            fi = fi + 24
                                                           }
                                                           
                                                           #===============================================
@@ -854,7 +865,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                         if (length(lastcolumn) > 0) {
                                           if (ncol(output) > lastcolumn) {
                                             emptycols = sapply(output, function(x)all(x==""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
-                                            emptycols = which(emptycols == TRUE)
+                                            # ignore columns with the LUX hour
+                                            emptycols = which(emptycols == TRUE & 
+                                                                colnames(output) %in% 
+                                                                grep(pattern = "LUX_hour|LUX_min|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
+                                                                     x = colnames(output), value = TRUE) == FALSE)
                                             if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
                                             # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
                                             FRAG_variables_indices = grep(pattern = "FRAG_",x = names(output))
