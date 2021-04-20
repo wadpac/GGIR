@@ -117,7 +117,18 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   if ("mean" %in% frag.metrics) {
     output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
   }
-  if (Nfragments >= 0) {
+  if ("Gini" %in% frag.metrics){
+    output[["Gini_dur_PA"]] = output[["Gini_dur_IN"]] = NA
+  }
+  if ("CoV" %in% frag.metrics){ #coefficient of variation
+    output[["CoV_dur_PA"]] = output[["CoV_dur_IN"]] = NA
+  }
+  if ("power" %in% frag.metrics){
+    output[["alpha_dur_PA"]] = output[["alpha_dur_IN"]] = NA
+    output[["x0.5_dur_PA"]] = output[["x0.5_dur_IN"]] = NA
+    output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
+  }
+  if (Nfragments > 0) {
     Duration1 = fragments$length[which(fragments$value == 1)]
     Duration0 = fragments$length[which(fragments$value == 0)]
     output[["Nfrag_PA"]] = length(Duration0)
@@ -149,17 +160,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         output[["W0.5_dur_PA"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_PA"]])]) / sum(Duration0)
         output[["W0.5_dur_IN"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_IN"]])]) / sum(Duration1)
       }
-    }
-  } else {
-    if ("Gini" %in% frag.metrics){
-      output[["Gini_dur_PA"]] = output[["Gini_dur_IN"]] = NA
-    }
-    if ("CoV" %in% frag.metrics){ #coefficient of variation
-      output[["CoV_dur_PA"]] = output[["CoV_dur_IN"]] = NA
-    }
-    if ("power" %in% frag.metrics){
-      output[["alpha_dur_PA"]] = output[["alpha_dur_IN"]] = output[["x0.5_dur_PA"]] = NA
-      output[["x0.5_dur_IN"]] = output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
     }
   }
   return(output)
