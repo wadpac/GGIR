@@ -183,27 +183,26 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   # assess which angle per axis is most strongly 24 hour correlated:
   # for hip worn devices this will be the vertical axis
   longitudinal_axis_id = ""
-  epochday = 24*6*(60/ws3)
+  epochday = 24*60*(60/ws3)
   Ndays = floor(nrow(IMP$metashort)/epochday)
   if (length(which(c("anglex","angley","anglez") %in% colnames(IMP$metashort) == FALSE)) == 0 &
-      Ndays >= 2) {
+      Ndays >= 3) {
     CorrA = rep(0,3)
     cnt = 1
-    for (anglename in  c("anglex","angley","anglez")) {
-      CorrA[cnt] = stats::cor(IMP$metashort[1:((Ndays-1)*epochday), anglename],
-                       IMP$metashort[(epochday+1):(Ndays*epochday), anglename])
-      # # if 5th and 95th percentile do not differ by more than 45 degree than ignore this axis
-      # (Commented out, because this was experimental, never used in a GGIR release)
-      # if (abs(diff(quantile(IMP$metashort[, anglename], probs=c(0.05,0.95)))) < 45) {
-      #   CorrA[cnt] = 0
-      # }
+    for (anglename in  c("anglex","angley","anglez") ) {
+      if (sd(IMP$metashort[,anglename]) > 0) {
+        CorrA[cnt] = stats::cor(IMP$metashort[1:((Ndays-1)*epochday), anglename],
+                                IMP$metashort[(epochday+1):(Ndays*epochday), anglename])
+      } else {
+        CorrA[cnt] = NA
+      }
       cnt = cnt + 1
     }
-    longitudinal_axis_id = which.max(CorrA)
-    # TO DO:
-    # - Estimate main time in bed period per day
-    # - Adjust qwindow accordingly, such that it indicates: daytime, nighttime
-    
+    if (length(which(is.na(CorrA) == FALSE)) > 0) {
+      longitudinal_axis_id = which.max(CorrA)
+    } else {
+      longitudinal_axis_id = ""
+    }
   }
   
   #--------------------------------------
