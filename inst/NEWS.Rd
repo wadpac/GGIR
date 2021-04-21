@@ -2,13 +2,13 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.3-2 (GitHub-only-release date:26-04-2021)}{
+\section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
 \itemize{
   \item Part 1 when using ad-hoc data format: now able to handle timestamp column.
   \item Part 2 report when using ad-hoc data format with header: now able to extract 
   and store serial number in part2 report.
   \item Test file generation for unit tests improved. Thanks Lena Kushleyeva.
-  \item Part 2 estimation of longitudinal axis improved
+  \item Part 2 estimation of longitudinal axis and related error handling improved
 }
 }
 \section{Changes in version 2.3-1 (GitHub-only-release date:26-03-2021)}{
