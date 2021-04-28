@@ -134,6 +134,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
   if (exists("myfun") == FALSE)  myfun = c()
+  if (exists("maxNcores") == FALSE)  maxNcores = c()
   
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
@@ -371,7 +372,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
             rmc.col.wear=rmc.col.wear,
             rmc.doresample=rmc.doresample,
-            myfun=myfun)
+            myfun=myfun, maxNcores=maxNcores)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -391,7 +392,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur)
+            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur,
+            maxNcores=maxNcores)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -402,7 +404,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun)
+            myfun=myfun, maxNcores=maxNcores)
   }
   if (dopart4 == TRUE) {
     cat('\n')
@@ -442,7 +444,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
             data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5)
+            includedaycrit.part5=includedaycrit.part5, maxNcores=maxNcores)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file

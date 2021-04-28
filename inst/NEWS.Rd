@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.3-3 (GitHub-only-release date:28-04-2021)}{
+\itemize{
+  \item Added argument maxNcores to control maximum number of cores to be used
+}
+}
 
 \section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
 \itemize{
