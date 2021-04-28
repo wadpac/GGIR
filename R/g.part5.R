@@ -13,7 +13,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    do.parallel = TRUE, part5_agg2_60seconds = FALSE,
                    save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
                    data_cleaning_file=c(),
-                   includedaycrit.part5=2/3, maxNcores=c()) {
+                   includedaycrit.part5=2/3, maxNcores=c(), do.sibreport = FALSE) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -278,7 +278,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
-                                              ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear")], by = list(ts$time_num), FUN= function(x) mean(x))
+                                              ts = aggregate(ts[,c("ACC", "sibdetection", "diur", "nonwear", "angle")], 
+                                                             by = list(ts$time_num), FUN= function(x) mean(x))
                                               ts$sibdetection = round(ts$sibdetection)
                                               ts$diur = round(ts$diur)
                                               ts$nonwear = round(ts$nonwear)
@@ -303,6 +304,29 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                               }
                                               Nts = nrow(ts)
                                             }
+                                            #===============================================
+                                            # GENERATE SIB report
+                                            # We can do this at this point in the code, because it
+                                            # does not depend on bout detection criteria or
+                                            # window definitions.
+                                            if (do.sibreport  == TRUE) {
+                                              sibreport = sibreport(ts, ID, ws3new)
+                                              if ("angle" %in% colnames(ts)) {
+                                                ts = ts[, -which(colnames(ts) == "angle")]
+                                              }
+                                              # store in csv file:
+                                              ms5.sibreport = "/meta/ms5.outraw/sibreport"
+                                              if (!file.exists(paste(metadatadir,ms5.sibreport,sep=""))) {
+                                                dir.create(file.path(metadatadir,ms5.sibreport))
+                                              }
+                                              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],".csv")
+                                              write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
+                                              # TO DO:
+                                              # - Add filter for sibs
+                                              # - Store sib summary in part 5 report
+                                            }
+                                            
+                                            
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -348,9 +372,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                       #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                                                     }
                                                     if (timewindowi == "MM") {
-                                                    #  Nwindows = nrow(summarysleep_tmp2)
-                                                    #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
-                                                       Nwindows = length(nightsi) + 1
+                                                      #  Nwindows = nrow(summarysleep_tmp2)
+                                                      #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
+                                                      Nwindows = length(nightsi) + 1
                                                     } else {
                                                       Nwindows = length(which(diff(ts$diur) == -1))
                                                     }

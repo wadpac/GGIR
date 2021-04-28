@@ -298,6 +298,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
+  if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
   
   
   # VISUAL REPORT
@@ -444,7 +445,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
             data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5, maxNcores=maxNcores)
+            includedaycrit.part5=includedaycrit.part5, maxNcores=maxNcores,
+            do.sibreport=do.sibreport)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file

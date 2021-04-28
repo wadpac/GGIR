@@ -22,7 +22,8 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
-  data_cleaning_file=c(), includedaycrit.part5=2/3, maxNcores=c())
+  data_cleaning_file=c(), includedaycrit.part5=2/3, maxNcores=c(),
+  do.sibreport=FALSE)
 
 }
 \arguments{
@@ -190,6 +191,9 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
   \item{maxNcores}{
     See function \link{g.part1}
+  }
+  \item{do.sibreport}{
+  Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
   }
 }
 \value{
