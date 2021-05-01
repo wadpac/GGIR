@@ -58,17 +58,18 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
       output[["Nfrag_LIPA"]] = output[["Nfrag_MVPA"]] = 0
       output[["mean_dur_LIPA"]] = output[["mean_dur_MVPA"]] = 0
-      if (Nfrag3 > 0) { # at least 1 inactivity fragment
-        Duration0 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] != 1)] # all activity fragments
-        Duration1 = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 1)] # all inactivity fragments
-        DurationLIPA = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 2)] # all light fragments
-        DurationMVPA = fragments3$length[which(fragments3$value[1:(Nfrag3-1)] == 3)] # all MVPA fragments
+      if (Nfrag3 > 0) { # at least 2 inactivity fragment
+        Duration0 = fragments3$length[which(fragments3$value != 1)] # all activity fragments
+        Duration1 = fragments3$length[which(fragments3$value == 1)] # all inactivity fragments
+        DurationLIPA = fragments3$length[which(fragments3$value == 2)] # all light fragments
+        DurationMVPA = fragments3$length[which(fragments3$value == 3)] # all MVPA fragments
         output[["Nfrag_LIPA"]] = length(DurationLIPA)
         output[["Nfrag_MVPA"]] = length(DurationMVPA)
         # Get only indices of inactive fragments that transition to light:
-        inact_2_light_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 2)
+        Nfrag4 = length(fragments3$value)
+        inact_2_light_trans = which(fragments3$value[1:(Nfrag4-1)] == 1 & fragments3$value[2:Nfrag4] == 2)
         # Get only indices of inactive fragments that transition to mvpa:
-        inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag3-1)] == 1 & fragments3$value[2:Nfrag3] == 3)
+        inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag4-1)] == 1 & fragments3$value[2:Nfrag4] == 3)
         if (length(inact_2_light_trans) > 0) {
           output[["mean_dur_LIPA"]] = mean(DurationLIPA)
           Duration2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
@@ -80,7 +81,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
           Duration3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
           output[["TP_IN2MVPA"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
           output[["Nfrag_IN2MVPA"]] = length(Duration3)
-        } 
+        }
         output[["TP_IN2PA"]] = 1 / mean(Duration1) # transition from inactive to active (no distinction light or MVPA)
         output[["TP_PA2IN"]] = 1 / mean(Duration0) # transition from active to inactive (no distinction light or MVPA)
         if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) { # only IN2mvpa transitions
