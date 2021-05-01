@@ -696,12 +696,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           fi = fi + bci
                                                           #===============================================
                                                           # NUMBER OF WINDOWS / BLOCKS
-                                                          RLE_LEVELS = rle(LEVELS[sse])
-                                                          RLE_OLEVELS = rle(OLEVELS[sse])
+                                                          RLE_LEVELS = rle(LEVELS[sse[ts$diur[sse] == 0]])
+                                                          RLE_OLEVELS = rle(OLEVELS[sse[ts$diur[sse] == 0]])
                                                           # RunLengthEncoding
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di, fi] = length(which(RLE_LEVELS$values == levelsc))
-                                                            if (dsummary[di, fi] == 0 & LEVELS[qqq1] == levelsc) dsummary[di, fi] = 1
                                                             ds_names[fi] = paste("Nblocks_", Lnames[levelsc+1], sep="");      fi = fi + 1
                                                           }
                                                           for (g in 1:4) {
@@ -727,10 +726,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             fi = fi + 3
                                                           }
                                                           #===============================================
-                                                          # FRAGMENTATION per window, and split by night and day
-                                                          # if (length(frag.classes.day_tmp) > 0 & length(frag.classes.spt_tmp) > 0 &
+                                                          # FRAGMENTATION for daytime hours only
                                                           if (length(frag.metrics) > 0) {
-                                                            # daytime
                                                             frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
                                                                                        intensity.thresholds = c(TRLi, TRMi, TRVi),
                                                                                        LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
@@ -739,17 +736,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi:(fi+(length(frag.out)-1))] = round(as.numeric(frag.out), digits=5)
                                                             ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_day")
                                                             fi = fi + length(frag.out)
-                                                            # # spt # turned off for now, focus on later when daytime works
-                                                            # frag.classes.spt = which(Lnames %in% "spt_sleep") - 1 # convert to numberic class id
-                                                            # sleepclass_tmp = rep(0, length(LEVELS[sse[ts$diur[sse]==1]]))
-                                                            # sleepclass_tmp[which(as.integer(LEVELS[sse[ts$diur[sse]==1]]) == frag.classes.spt)] = 1
-                                                            # frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 1]],
-                                                            #                          intensity.thresholds = c(TRLi, TRMi, TRVi), 
-                                                            #                          sleepclass = sleepclass_tmp)
-                                                            # # fragmentation values come with a lot of decimal places
-                                                            # dsummary[di,fi:(fi+(length(frag.out)-1))] =  round(as.numeric(frag.out), digits=5)
-                                                            # ds_names[fi:(fi+(length(frag.out)-1))] = paste0("FRAG_",names(frag.out),"_spt")
-                                                            # fi = fi + length(frag.out)
                                                           }
                                                           #===============================================
                                                           # TEMPERATURE AND LIGHT, IF AVAILABLE
