@@ -139,7 +139,8 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       xt[lookforbreaks == 0] = -boutduration 
       RM = zoo::rollmean(x=xt, k=boutduration, align="center", fill=rep(0,3))
       p = which(RM >=boutcriter)
-      starti = round(boutduration/2)
+      half1 = floor(boutduration/2)
+      half2 = boutduration - half1
       # # only consider windows that at least start and end with value that meets criterium
       p = c(0, p, 0)
       if (ws3 > 60) {
@@ -147,44 +148,49 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       } else {
         epochs2check = (60/ws3)
       }
-      for (ii in 1:epochs2check) { # only check the first and last minutes of each bout
+      for (ii in 1:epochs2check) { # only check the first and last minute of each bout
         # p are all epochs at the centre of the windows that meet the bout criteria
-        # we want to check the start and end of sequence of which centres whether 
-        # the the epoch half the bout length before and the epoch half the bout
-        # length after this centre meet the threshold criteria
-        # So, we first zoom in on the edges of the sequence
-        edges = which(diff(p) != 1)
-        seq_start = p[edges + 1] # bout centre starts
-        seq_start = seq_start[-1]
+        # we want to check the start and end of sequence meets the 
+        # threshold criteria
+        edges = which(diff(p) != 1) 
+        seq_start = p[edges + 1] 
+        zeros = which(seq_start == 0)
+        if (length(zeros) > 0) seq_start = seq_start[-zeros] # remove the appended zero
         seq_end = p[edges] # bout centre starts
-        seq_end = seq_end[-1]
+        zeros = which(seq_end == 0)
+        if (length(zeros) > 0) seq_end = seq_end[-zeros]
         length_xt = length(xt)
-        seq_start = seq_start[which(seq_start > starti & seq_start < length_xt - starti)]
-        seq_end = seq_end[which(seq_end > starti & seq_end < length_xt - starti)]
+        # ignore epochs at beginning and end of time time series
+        seq_start = seq_start[which(seq_start > half1 & seq_start < length_xt - half2)]
+        seq_end = seq_end[which(seq_end > half1 & seq_end < length_xt - half2)]
+        # print(seq_start)
+        # print(seq_end)
+        # print(xt[((seq_start - half1)+1):((seq_start + half2)-1)])
+        # check half a bout left of sequence centre:
         if (length(seq_start) > 0) {
           for (bi in seq_start) {
-            if (length_xt >= (bi - starti)) {
-              if (xt[bi - starti] != 1) { # if it does not meet criteria then remove this p value
+            if (length_xt >= (bi - half1)) {
+              if (xt[(bi - half1) + 1] != 1) { # if it does not meet criteria then remove this p value
                 p = p[-which(p == bi)]
               }
             }
           }
         }
+        # check half a bout right of sequence centre:
         if (length(seq_end) > 0) {
           for (bi in seq_end) {
-            if (length_xt >= (bi - starti)) {
-              if (xt[bi + starti] != 1) {
+            if (length_xt >= (bi - half2)) {
+              if (xt[(bi + half2)-1] != 1) {
                 p = p[-which(p == bi)]
               }
             }
           }
         }
-        
       }
       p = p[which(p != 0)]
       # now mark all epochs that are covered by the remaining windows
       for (gi in 0:boutduration) {
-        inde = p-starti+gi
+        inde = p-half1+gi
         xt[inde[which(inde > 0 & inde < length(xt))]] = 2
       }
       x[xt != 2] = 0
