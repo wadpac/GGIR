@@ -47,7 +47,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       y[which(LEVELS %in% class.lig.ids)] = 2
       y[which(LEVELS %in% class.mvpa.ids)] = 3
     }
-    
     #====================================================
     # TP (transition probability) metrics that depend on multiple classes
     if ("TP" %in% frag.metrics) {
@@ -58,13 +57,15 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
       output[["Nfrag_LIPA"]] = output[["Nfrag_MVPA"]] = 0
       output[["mean_dur_LIPA"]] = output[["mean_dur_MVPA"]] = 0
-      if (Nfrag3 > 0) { # at least 2 inactivity fragment
+      DurationLIPA = fragments3$length[which(fragments3$value == 2)] # all light fragments
+      DurationMVPA = fragments3$length[which(fragments3$value == 3)] # all MVPA fragments
+      Nfrag_LIPA = length(DurationLIPA)
+      Nfrag_MVPA = length(DurationMVPA)
+      if (Nfrag_LIPA > 0) output[["Nfrag_LIPA"]] = Nfrag_LIPA
+      if (Nfrag_MVPA > 0) output[["Nfrag_MVPA"]] = Nfrag_MVPA
+      if (Nfrag3 > 0 & (Nfrag_LIPA > 0 | Nfrag_MVPA > 0)) { # at least 1 inactivity frag & at least 1 activity frag
         Duration0 = fragments3$length[which(fragments3$value != 1)] # all activity fragments
         Duration1 = fragments3$length[which(fragments3$value == 1)] # all inactivity fragments
-        DurationLIPA = fragments3$length[which(fragments3$value == 2)] # all light fragments
-        DurationMVPA = fragments3$length[which(fragments3$value == 3)] # all MVPA fragments
-        output[["Nfrag_LIPA"]] = length(DurationLIPA)
-        output[["Nfrag_MVPA"]] = length(DurationMVPA)
         # Get only indices of inactive fragments that transition to light:
         Nfrag4 = length(fragments3$value)
         inact_2_light_trans = which(fragments3$value[1:(Nfrag4-1)] == 1 & fragments3$value[2:Nfrag4] == 2)
@@ -113,7 +114,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   fragments = rle(x)
   fragments$ACCmean = ACCmean
   fragments$volume = fragments$ACCmean * fragments$length
-  Nfragments = length(fragments$lengths) / 2
+  Nfragments = length(fragments$lengths)
   output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
   if ("mean" %in% frag.metrics) {
     output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
@@ -129,7 +130,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     output[["x0.5_dur_PA"]] = output[["x0.5_dur_IN"]] = NA
     output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
   }
-  if (Nfragments > 0) {
+  if (Nfragments > 1) {
     Duration1 = fragments$length[which(fragments$value == 1)]
     Duration0 = fragments$length[which(fragments$value == 0)]
     output[["Nfrag_PA"]] = length(Duration0)
@@ -139,13 +140,15 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["mean_dur_IN"]] = mean(Duration1)
     }
     if (Nfragments >= min_Nfragments) {
+      SD0 = sd(Duration0)
+      SD1 = sd(Duration1)
       if ("Gini" %in% frag.metrics){
-        output[["Gini_dur_PA"]] = ineq::Gini(Duration0,corr = T)
-        output[["Gini_dur_IN"]] = ineq::Gini(Duration1,corr = T)
+        if (SD0 != 0) output[["Gini_dur_PA"]] = ineq::Gini(Duration0,corr = T)
+        if (SD1 != 0) output[["Gini_dur_IN"]] = ineq::Gini(Duration1,corr = T)
       }
       if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
-        output[["CoV_dur_PA"]] = sd(Duration0) / mean(log(Duration0))
-        output[["CoV_dur_IN"]] = sd(Duration1) / mean(log(Duration1))
+        if (SD0 != 0) output[["CoV_dur_PA"]] = sd(Duration0) / mean(log(Duration0))
+        if (SD1 != 0) output[["CoV_dur_IN"]] = sd(Duration1) / mean(log(Duration1))
       }
       if ("power" %in% frag.metrics){
         calc_alpha = function(x, xmin) {
@@ -153,13 +156,16 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
           alpha = 1+ nr/sum(log(x/(xmin))) # adapted to match Chastin 2010
           return(alpha)
         }
-        output[["alpha_dur_PA"]] = calc_alpha(Duration0, xmin)
-        output[["alpha_dur_IN"]] = calc_alpha(Duration1, xmin)
-        # From this we can calculate (according to Chastin 2010):
-        output[["x0.5_dur_PA"]] = 2^ (1 / (output[["alpha_dur_PA"]]-1) * xmin)
-        output[["x0.5_dur_IN"]] = 2^ (1 / (output[["alpha_dur_IN"]]-1) * xmin)
-        output[["W0.5_dur_PA"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_PA"]])]) / sum(Duration0)
-        output[["W0.5_dur_IN"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_IN"]])]) / sum(Duration1)
+        if (SD0 != 0) {
+          output[["alpha_dur_PA"]] = calc_alpha(Duration0, xmin)
+          output[["x0.5_dur_PA"]] = 2^ (1 / (output[["alpha_dur_PA"]]-1) * xmin) # according to Chastin 2010
+          output[["W0.5_dur_PA"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_PA"]])]) / sum(Duration0)
+        }
+        if (SD1 != 0) {
+          output[["alpha_dur_IN"]] = calc_alpha(Duration1, xmin)
+          output[["x0.5_dur_IN"]] = 2^ (1 / (output[["alpha_dur_IN"]]-1) * xmin) # according to Chastin 2010
+          output[["W0.5_dur_IN"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_IN"]])]) / sum(Duration1)
+        }
       }
     }
   }
