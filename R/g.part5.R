@@ -696,8 +696,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           fi = fi + bci
                                                           #===============================================
                                                           # NUMBER OF WINDOWS / BLOCKS
-                                                          RLE_LEVELS = rle(LEVELS[sse[ts$diur[sse] == 0]])
-                                                          RLE_OLEVELS = rle(OLEVELS[sse[ts$diur[sse] == 0]])
+                                                          RLE_LEVELS = rle(LEVELS[sse])
+                                                          RLE_OLEVELS = rle(OLEVELS[sse])
                                                           # RunLengthEncoding
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di, fi] = length(which(RLE_LEVELS$values == levelsc))
