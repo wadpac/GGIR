@@ -82,7 +82,6 @@ test_that("g.getbout produces expected output", {
   xtest = x = c(rep(0, 20), rep(1, 9), rep(0, 20))
   bm6c = g.getbout(x=xtest,boutduration =9, boutcriter=1,
                    closedbout=FALSE,bout.metric=6,ws3=60)
-  print(bm6c)
   expect_that(sum(bm6c$x),equals(9))
   expect_that(sum(bm6c$boutcount),equals(9))
   
