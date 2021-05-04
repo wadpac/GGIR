@@ -40,7 +40,7 @@ bout.metric=6,ws3=5)
   meet the threshold criteria. If value=5, same as 4, but now looks for breaks larger
   than a minute such that 1 minute breaks are allowe, and the fraction of time that meets
   the threshold should be equal than or greater than the bout.criter threshold.
-  If value=6, algorithm improved to check for first and last epoch.
+  If value=6, algorithm improved (2021) to check for first and last epoch.
 }
   \item{ws3}{epoch length in seconds, only needed for bout.metric =3, because
   it needs to measure how many epochs equal 1 minute breaks

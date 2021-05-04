@@ -74,7 +74,7 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[xt != 2] = 0
     x[xt == 2] = 1
     boutcount = x
-  } else if (bout.metric == 4) { # Was default for several years
+  } else if (bout.metric == 4) { # Was default from April - September 2020
     x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
     #look for breaks larger than 1 minute
