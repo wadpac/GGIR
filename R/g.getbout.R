@@ -74,7 +74,7 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[xt != 2] = 0
     x[xt == 2] = 1
     boutcount = x
-  } else if (bout.metric == 4) { # bout metric simply looks at percentage of moving window that meets criterium
+  } else if (bout.metric == 4) { # Was default for several years
     x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
     #look for breaks larger than 1 minute
@@ -100,7 +100,7 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[xt != 2] = 0
     x[xt == 2] = 1
     boutcount = x
-  }  else if (bout.metric == 5) { # bout metric simply looks at percentage of moving window that meets criterium
+  } else if (bout.metric == 5) { # Used between September 2020 and April 2021 (GitHub branch only)
     x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
     #look for breaks larger than 1 minute
@@ -127,7 +127,7 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[xt != 2] = 0
     x[xt == 2] = 1
     boutcount = x
-  } else if (bout.metric == 6) { # bout metric simply looks at percentage of moving window that meets criterium
+  } else if (bout.metric == 6) {
       x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
       xt = x
       #look for breaks larger than 1 minute
