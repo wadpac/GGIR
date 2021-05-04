@@ -14,8 +14,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
                    data_cleaning_file=c(),
                    includedaycrit.part5=2/3,
-                   # frag.classes.day = c(), #c("day_IN_bts", "day_IN_unbt"),
-                   # frag.classes.spt = c(),# "spt_sleep"
                    frag.metrics = c(), iglevels=c()) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
@@ -140,7 +138,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
-                                  tryCatchResult = tryCatch({
+  tryCatchResult = tryCatch({
                                     # for (i in f0:f1) {
                                     if (length(ffdone) > 0) {
                                       if (length(which(ffdone == fnames.ms3[i])) > 0) {
@@ -728,8 +726,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           #===============================================
                                                           # FRAGMENTATION for daytime hours only
                                                           if (length(frag.metrics) > 0) {
-                                                            frag.out = g.fragmentation(frag.metrics = frag.metrics, ACC = ts$ACC[sse[ts$diur[sse] == 0]],
-                                                                                       intensity.thresholds = c(TRLi, TRMi, TRVi),
+                                                            frag.out = g.fragmentation(frag.metrics = frag.metrics, 
                                                                                        LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
                                                                                        Lnames = Lnames, xmin = 60/ws3new)
                                                             # fragmentation values come with a lot of decimal places

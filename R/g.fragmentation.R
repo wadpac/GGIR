@@ -1,22 +1,25 @@
 g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
-                                            "CoV", "all"),
-                           ACC = c(), intensity.thresholds = c(), LEVELS = c(),
+                                            "CoV", "NFragPM", "all"),
+                           LEVELS = c(),
                            Lnames=c(), xmin=1) { 
   
-  # This function is inspired from R package ActFrag as developed by Junrui Di.
-  #
-  # frag.metrics: metric to define fragmentation
+  # This function is loosely inspired from R package ActFrag by Junrui Di.
   # in contract to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of outside this
-  # function.
-  # xmin is shortest recordable boutlength
+  # function. Further, the agorithms are not exactly the same, and there are some
+  # additional metircs.
+  
+  # LEVELS: vector with behavioural classes produced by GGIR
+  # Lnames: Names of brehavioural classes.
+  # frag.metrics: metric to define fragmentation
+  # xmin is shortest recordable (not necessarily observed) boutlength
+  
   
   if ("all" %in% frag.metrics) {
     frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "all")
   }
   min_Nfragments = 10 # minimum number of required fragments
-  intensity.thresholds = c(0, intensity.thresholds) 
   output = list()
   if (length(LEVELS) > 0) {
     # convert to class names to numeric class ids for inactive, light and MVPA:
@@ -27,72 +30,60 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
     class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
   }
-  if (length(ACC) > 1) { # metrics that require more than just binary
+  Nepochs = length(LEVELS)
+  if (Nepochs > 1) { # metrics that require more than just binary
     #====================================================
-    # Convert ACC into categorical multi-class behaviours
-    y = rep(0,length(ACC))
-    if (length(LEVELS) == 0) {
-      for (ij in 1:length(intensity.thresholds)) {
-        if (ij != length(intensity.thresholds)) {
-          ij_indices = which(ACC >= intensity.thresholds[ij] & ACC < intensity.thresholds[ij+1])
-          if (length(ij_indices) > 0) y[ij_indices] = ij
-        } else {
-          ij_indices = which(ACC >= intensity.thresholds[ij])
-          if (length(ij_indices) > 0) y[ij_indices] = ij
-        }
-      }
-      y[which(y == 4)] = 3 # collapse moderate and vigorous into mvpa
-    } else {
-      y[which(LEVELS %in% class.in.ids)] = 1
-      y[which(LEVELS %in% class.lig.ids)] = 2
-      y[which(LEVELS %in% class.mvpa.ids)] = 3
-    }
+    # Convert LEVELS in three classes: Inactivity (1), Light/LIPA (2), and MVPA (3)
+    y = rep(0,Nepochs)
+    y[which(LEVELS %in% class.in.ids)] = 1
+    y[which(LEVELS %in% class.lig.ids)] = 2
+    y[which(LEVELS %in% class.mvpa.ids)] = 3
     #====================================================
     # TP (transition probability) metrics that depend on multiple classes
     if ("TP" %in% frag.metrics) {
-      fragments3 = rle(y) # fragments is now data.frame with value (intensity) and length (duration of fragment) 
-      Nfrag3 = length(fragments3$value[which(fragments3$value == 1)])
+      frag3levels = rle(y) # frag3levels is data.frame with value (intensity) and length (duration of fragment) 
+      Nfrag_IN = length(frag3levels$value[which(frag3levels$value == 1)])
       output[["TP_IN2PA"]] = output[["TP_PA2IN"]] = 0
       output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
       output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
       output[["Nfrag_LIPA"]] = output[["Nfrag_MVPA"]] = 0
       output[["mean_dur_LIPA"]] = output[["mean_dur_MVPA"]] = 0
-      DurationLIPA = fragments3$length[which(fragments3$value == 2)] # all light fragments
-      DurationMVPA = fragments3$length[which(fragments3$value == 3)] # all MVPA fragments
+      DurationLIPA = frag3levels$length[which(frag3levels$value == 2)] # all light fragments
+      DurationMVPA = frag3levels$length[which(frag3levels$value == 3)] # all MVPA fragments
       Nfrag_LIPA = length(DurationLIPA)
       Nfrag_MVPA = length(DurationMVPA)
       if (Nfrag_LIPA > 0) output[["Nfrag_LIPA"]] = Nfrag_LIPA
       if (Nfrag_MVPA > 0) output[["Nfrag_MVPA"]] = Nfrag_MVPA
-      if (Nfrag3 > 0 & (Nfrag_LIPA > 0 | Nfrag_MVPA > 0)) { # at least 1 inactivity frag & at least 1 activity frag
-        Duration0 = fragments3$length[which(fragments3$value != 1)] # all activity fragments
-        Duration1 = fragments3$length[which(fragments3$value == 1)] # all inactivity fragments
+      if (Nfrag_IN > 0 & (Nfrag_LIPA > 0 | Nfrag_MVPA > 0)) { # at least 1 inactivity frag & at least 1 activity frag
+        DurationPA = frag3levels$length[which(frag3levels$value != 1)] # all activity fragments
+        DurationIN = frag3levels$length[which(frag3levels$value == 1)] # all inactivity fragments
         # Get only indices of inactive fragments that transition to light:
-        Nfrag4 = length(fragments3$value)
-        inact_2_light_trans = which(fragments3$value[1:(Nfrag4-1)] == 1 & fragments3$value[2:Nfrag4] == 2)
+        Nfrag3levels = length(frag3levels$value)
+        inact_2_light_trans = which(frag3levels$value[1:(Nfrag3levels-1)] == 1 & frag3levels$value[2:Nfrag3levels] == 2)
         # Get only indices of inactive fragments that transition to mvpa:
-        inact_2_mvpa_trans = which(fragments3$value[1:(Nfrag4-1)] == 1 & fragments3$value[2:Nfrag4] == 3)
+        inact_2_mvpa_trans = which(frag3levels$value[1:(Nfrag3levels-1)] == 1 & frag3levels$value[2:Nfrag3levels] == 3)
         if (length(inact_2_light_trans) > 0) {
           output[["mean_dur_LIPA"]] = mean(DurationLIPA)
-          Duration2 = fragments3$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
-          output[["TP_IN2LIPA"]] = (sum(Duration2)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
-          output[["Nfrag_IN2LIPA"]] = length(Duration2)
+          DurationIN2LIPA = frag3levels$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
+          output[["TP_IN2LIPA"]] = (sum(DurationIN2LIPA)/sum(DurationIN)) / mean(DurationIN) # transition from inactive to mvpa
+          output[["Nfrag_IN2LIPA"]] = length(DurationIN2LIPA)
         } 
         if (length(inact_2_mvpa_trans) > 0) {
           output[["mean_dur_MVPA"]] = mean(DurationMVPA)
-          Duration3 = fragments3$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
-          output[["TP_IN2MVPA"]] = (sum(Duration3)/sum(Duration1)) / mean(Duration1) # transition from inactive to mvpa
-          output[["Nfrag_IN2MVPA"]] = length(Duration3)
+          DurationIN2MVPA = frag3levels$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
+          output[["TP_IN2MVPA"]] = (sum(DurationIN2MVPA)/sum(DurationIN)) / mean(DurationIN) # transition from inactive to mvpa
+          output[["Nfrag_IN2MVPA"]] = length(DurationIN2MVPA)
         }
-        output[["TP_IN2PA"]] = 1 / mean(Duration1) # transition from inactive to active (no distinction light or MVPA)
-        output[["TP_PA2IN"]] = 1 / mean(Duration0) # transition from active to inactive (no distinction light or MVPA)
+        output[["TP_IN2PA"]] = 1 / mean(DurationIN) # transition from inactive to active (no distinction light or MVPA)
+        output[["TP_PA2IN"]] = 1 / mean(DurationPA) # transition from active to inactive (no distinction light or MVPA)
         if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) { # only IN2mvpa transitions
-          output[["TP_IN2MVPA"]] = 1 / mean(Duration1)
-          output[["Nfrag_IN2MVPA"]] = length(Duration1)
+          output[["TP_IN2MVPA"]] = 1 / mean(DurationIN)
+          output[["Nfrag_IN2MVPA"]] = length(DurationIN)
           output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
         }
         if (length(inact_2_light_trans) != 0 & length(inact_2_mvpa_trans) == 0) { # only IN2LIPA transitions
-          output[["TP_IN2LIPA"]] = 1 / mean(Duration1)
-          output[["Nfrag_IN2LIPA"]] = length(Duration1)
+          output[["TP_IN2LIPA"]] = 1 / mean(DurationIN)
+          output[["Nfrag_IN2LIPA"]] = length(DurationIN)
           output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
         }
       }
@@ -101,20 +92,11 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   }
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
-  x = rep(0,length(ACC))
-  if (length(LEVELS) == 0) {
-    ij_indices = which(ACC >= intensity.thresholds[1] & ACC < intensity.thresholds[2])
-    if (length(ij_indices) > 0) x[ij_indices] = 1
-  } else {
-    x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
-  }
+  x = rep(0,Nepochs)
+  x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
   x = as.integer(x)
-  ACCcs = c(0,cumsum(ACC))
-  ACCmean = diff(ACCcs[c(1,which(diff(x) != 0)+1,length(ACCcs))]) # mean acceleration per segment
-  fragments = rle(x)
-  fragments$ACCmean = ACCmean
-  fragments$volume = fragments$ACCmean * fragments$length
-  Nfragments = length(fragments$lengths)
+  frag2levels = rle(x)
+  Nfrag2levels = length(frag2levels$lengths)
   output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
   if ("mean" %in% frag.metrics) {
     output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
@@ -130,25 +112,33 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     output[["x0.5_dur_PA"]] = output[["x0.5_dur_IN"]] = NA
     output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
   }
-  if (Nfragments > 1) {
-    Duration1 = fragments$length[which(fragments$value == 1)]
-    Duration0 = fragments$length[which(fragments$value == 0)]
-    output[["Nfrag_PA"]] = length(Duration0)
-    output[["Nfrag_IN"]] = length(Duration1)
+  if (Nfrag2levels > 1) {
+    DurationIN = frag2levels$length[which(frag2levels$value == 1)]
+    DurationPA = frag2levels$length[which(frag2levels$value == 0)]
+    output[["Nfrag_PA"]] = length(DurationPA)
+    output[["Nfrag_IN"]] = length(DurationIN)
     if ("mean" %in% frag.metrics){
-      output[["mean_dur_PA"]] = mean(Duration0)
-      output[["mean_dur_IN"]] = mean(Duration1)
+      output[["mean_dur_PA"]] = mean(DurationPA)
+      output[["mean_dur_IN"]] = mean(DurationIN)
     }
-    if (Nfragments >= min_Nfragments) {
-      SD0 = sd(Duration0)
-      SD1 = sd(Duration1)
+    if ("NFragPM" %in% frag.metrics){
+      # Identify to metric named fragmentation by Chastin,
+      # but renamed to be a more accurate reflection of the calculation
+      output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / sum(DurationPA)
+      output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / sum(DurationIN)
+    }
+    
+    
+    if (Nfrag2levels >= min_Nfragments) {
+      SD0 = sd(DurationPA)
+      SD1 = sd(DurationIN)
       if ("Gini" %in% frag.metrics){
-        if (SD0 != 0) output[["Gini_dur_PA"]] = ineq::Gini(Duration0,corr = T)
-        if (SD1 != 0) output[["Gini_dur_IN"]] = ineq::Gini(Duration1,corr = T)
+        if (SD0 != 0) output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
+        if (SD1 != 0) output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
       }
       if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
-        if (SD0 != 0) output[["CoV_dur_PA"]] = sd(Duration0) / mean(log(Duration0))
-        if (SD1 != 0) output[["CoV_dur_IN"]] = sd(Duration1) / mean(log(Duration1))
+        if (SD0 != 0) output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
+        if (SD1 != 0) output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
       }
       if ("power" %in% frag.metrics){
         calc_alpha = function(x, xmin) {
@@ -157,14 +147,14 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
           return(alpha)
         }
         if (SD0 != 0) {
-          output[["alpha_dur_PA"]] = calc_alpha(Duration0, xmin)
+          output[["alpha_dur_PA"]] = calc_alpha(DurationPA, xmin)
           output[["x0.5_dur_PA"]] = 2^ (1 / (output[["alpha_dur_PA"]]-1) * xmin) # according to Chastin 2010
-          output[["W0.5_dur_PA"]] = sum(Duration0[which(Duration0 > output[["x0.5_dur_PA"]])]) / sum(Duration0)
+          output[["W0.5_dur_PA"]] = sum(DurationPA[which(DurationPA > output[["x0.5_dur_PA"]])]) / sum(DurationPA)
         }
         if (SD1 != 0) {
-          output[["alpha_dur_IN"]] = calc_alpha(Duration1, xmin)
+          output[["alpha_dur_IN"]] = calc_alpha(DurationIN, xmin)
           output[["x0.5_dur_IN"]] = 2^ (1 / (output[["alpha_dur_IN"]]-1) * xmin) # according to Chastin 2010
-          output[["W0.5_dur_IN"]] = sum(Duration1[which(Duration1 > output[["x0.5_dur_IN"]])]) / sum(Duration1)
+          output[["W0.5_dur_IN"]] = sum(DurationIN[which(DurationIN > output[["x0.5_dur_IN"]])]) / sum(DurationIN)
         }
       }
     }

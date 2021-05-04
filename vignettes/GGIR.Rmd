@@ -85,7 +85,9 @@ In ActiLife you have the option to export data with timestamps. Please do not do
 
 GGIR comes with a large number of functions and optional settings (arguments) per functions. To ease interacting with GGIR there is one central function, named `g.shell.GGIR`, to talk to all the other functions. Being confronted with the amount of optional arguments might feel like stepping inside the cockpit of an airplane:
 
+```{R,eval=FALSE}
 `mode=c(1,2), f0=c(), f1=c(), selectdaysfile = c(), configfile=c(), overwrite = FALSE, strategy = 1, maxdur = 7, do.cal = TRUE,  hrs.del.start = 0, hrs.del.end = 0, loglocation = c(), , acc.metric = "ENMO", storefolderstructure = FALSE, windowsizes = c(5,900,3600), minloadcrit = 72, desiredtz = "Europe/London", chunksize = 1, do.enmo = TRUE, do.lfenmo = FALSE, do.en = FALSE,  do.bfen = FALSE, do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE, do.anglex = FALSE, do.angley = FALSE, do.anglez = FALSE, do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE, do.enmoa = FALSE, dynrange = c(), printsummary = FALSE, includedaycrit = 16, M5L5res = 10, winhr = 5, qwindow = c(0,24), qlevels = c(), ilevels = c(), mvpathreshold = 100, boutcriter = 0.8, ndayswindow = 7, idloc = 1, do.imp = TRUE, anglethreshold = 5, timethreshold = 5, ignorenonwear = TRUE, colid=1, coln1=2, nnights=7, outliers.only=FALSE, excludefirstlast=FALSE, excludefirstlast.part5=FALSE, criterror=3, includenightcrit=16, relyonguider=FALSE, sleeplogidnum=TRUE, def.noc.sleep=c(), do.visual=FALSE, viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE, print.filename = FALSE, backup.cal.coef = c(), bout.metric = 1, closedbout = FALSE, IVIS_windowsize_minutes=60, IVIS_epochsize_seconds=30, constrain2range = TRUE, do.part3.pdf = TRUE, boutcriter.in = 0.9, boutcriter.lig = 0.8, boutcriter.mvpa = 0.8, threshold.lig = 40, threshold.mod = 100,   threshold.vig = 400, timewindow = c("MM","WW"), boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), boutdur.lig = c(1,5,10), save_ms5rawlevels = FALSE,  mvpadur = c(1,5,10), epochvalues2csv = FALSE, bout.metric = 1, window.summary.size = 10, dayborder = 0, iglevels = c()`
+```
 
 In this paragraph we will guide you through the main arguments relevant for 99% of research. First of all, it is important to understand that GGIR is structured in five parts and that `g.shell.GGIR` controls each of these parts:
 
@@ -293,7 +295,7 @@ Note 2: The config.csv file in the root of the output folder will be overwritten
 
 You can use
 
-```source("pathtoscript/myshellscript.R")```
+`source("pathtoscript/myshellscript.R")`
 
 or use the Source button in RStudio if you use RStudio.
 
@@ -580,6 +582,19 @@ M5TIME | Timing of most active 5hrs
 L5TIME_num, M5TIME_num | Timing of least/most active 5hrs, expressed as hours after previous midnight to make it comparable with numeric timestamps for sleep onset/waking up.
 L5VALUE	| Acceleration value for least active 5hrs
 M5VALUE	| Acceleration value for most active 5hrs
+`FRAG_` | All variables related to behavioural fragmentation analysis
+`TP_` | Transition probability
+PA2IN | Physical activity fragments followed by inactivity fragments
+IN2PA | Physical inactivity fragments followed by activity fragments
+Nfrag | Number of fragments
+IN2LIPA | Inactivity fragments followed by LIPA
+IN2MVPA | Inactivity fragments followed by MVPA
+`mean_dur` | mean duration of a fragment category
+`Gini_dur` | Gini index
+`CoV_dur` | Coefficient of Variation
+alpha | Power law exponent
+`x0.5` | Derived from power law exponent alpha, see Chastin 2010
+`W0.5` | Derived from power law exponent alpha, see Chastin 2010
 
 **Special note if you are working on compositional data analysis:**
 
@@ -605,6 +620,8 @@ Nvaliddays | Total number of valid days.
 Nvaliddays_WD | Number of valid week days.
 Nvaliddays_WE | Number of valid weekend days, where the days that start on Saturday or Sunday are considered weekend.
 NcleaningcodeX | Number of days that had cleaning code X for the corresponding sleep analysis in part 4. In case of MM analysis this refers to the night at the end of the day.
+Nvaliddays_AL10F_WD	| Number of valid week days with at least 10 fragments (5 inactivity or 5 inactive)
+Nvaliddays_AL10F_WE	| Number of valid weekend days with at least 10 fragments (5 inactivity or 5 inactive)
 
 
 # Motivation and clarification
@@ -756,6 +773,40 @@ The full part 5 output is stored in the `results/QC` folder. The default inclusi
 ### Data_cleaning_file
 
 The same `data_cleaning_file` argument discussed in the previous paragraph also allows you to tell GGIR which person(s) and day(s) should be omitted in part 5. The the day numbers to be excluded should be listed in a column `day_part5` as header.
+
+### Fragmentation metrics
+
+When setting input argument as `frag.metrics="all"` to GGIR part 5 will perform behavioural fragmentation analysis. It is adviced to do this in combination with argument `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common for behavioural fragmentation research.
+
+A fragment is a defined as a sequence of epochs that belong to one of the four categories:
+
+1. Inactivity
+2. Light Physical Activity (LIPA)
+3. Moderate or Vigorous Physical Acitivty (MVPA)
+4. Physical activity (LIPA or MVPA)
+
+Each of these categories represents the combination of bouted and unbouted time 
+the respective categories.
+
+Note that elsewhere in the part5 we use the term `block`. A `block` is a sequence of epochs
+that belong to the same behavioural class. This may sound similar to fragment, but
+behavioural class also distiguished subcategories, e.g. bouted and unbouted.
+
+The fragmentation metrics are applied in function `g.fragmentation`.
+
+**Literature about these metrics:**
+
+- Coefficient of Variance (`CoV`) is calculated according to Blikman et al. doi: 10.1016/j.apmr.2014.08.023
+- Transition probability (`TP`) is calculated as 1 divided by the mean fragment duration.
+- Gini index is calculated with function `Gini` from the `ineq` R package, and with it's argument `corr` set to TRUE.
+- Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to Chastin et al. doi: 10.1016/j.gaitpost.2009.09.002.
+- Number of fragment per minutes (`NFragPM`) is calculated similar to metric `fragmentation` in Chastin et al. doi: 10.1093/ageing/afr075, but renamed to be a more accurate reflection of the calculation.
+
+**Conditions for calculation and value when condition is not met:**
+
+- Metrics related to Gini, CoV, or power law exponent alpha are only calculated if the standard deviation in fragment duration is not zero, and if there are at least 10 fragments (5 inactive and 5 active). If this condition is not met the metric value will be set to missing. To keep an overview of how many recording days met this criteria, GGIR part 5 stores variable Nvaliddays_AL10F at person level (Nvaliddays At Least 10 Fragments).
+- Other metrics related to binary fragmentation (mean_dur_PA, mean_dur_IN, Nfrag_PA, Nfrag_IN), are calculated when there are at least 2 fragments (1 inactive, 1 active). If this condition is not met the value will is set to zero.
+- Metrics related to TP are calculated if: There is at least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this condition is not met the TP metric value is set to zero.
 
 ## Why use data metric ENMO?
 
