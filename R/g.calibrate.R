@@ -207,7 +207,9 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
           dur = nrow(data)	#duration of experiment in data points
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           # Initialization of variables
-          suppressWarnings(storage.mode(data) <- "numeric")
+          if (dformat != 5) {
+            suppressWarnings(storage.mode(data) <- "numeric")
+          } 
           if (mon == 1) {
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE

@@ -422,11 +422,18 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                 data = apply(data, 2,as.numeric)
               }
             }
+            if (ncol(data) >= 4 & mon == 0) {
+              columns_to_use = rmc.col.acc
+            } else {
+              columns_to_use = 1:3
+            }
+            data = data[,columns_to_use]
+            suppressWarnings(storage.mode(data) <- "numeric")
             if ((mon == 3 | mon == 0 | mon == 6) & use.temp == FALSE) {
-              data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale)  #rescale data
+              data = scale(data,center = -offset, scale = 1/scale)  #rescale data
             } else if ((mon == 2 | mon == 0) & use.temp == TRUE) {
               # meantemp replaced by meantempcal # 19-12-2013
-              data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale) +
+              data = scale(data,center = -offset, scale = 1/scale) +
                 scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
               rm(yy); gc()
             }
