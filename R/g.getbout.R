@@ -189,13 +189,13 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       }
       p = p[which(p != 0)]
       # now mark all epochs that are covered by the remaining windows
-      for (gi in 0:boutduration) {
+      for (gi in 1:boutduration) {
         inde = p-half1+gi
         xt[inde[which(inde > 0 & inde < length(xt))]] = 2
       }
-      x[xt != 2] = 0
-      x[which(xt == 2 & x != 0)] = 1
-      boutcount = x
+      x[which(xt != 2)] = 0
+      x[which(xt == 2)] = 1
+      boutcount = x # distinction not made anymore, but object kept to preserve output structure
   }  
   invisible(list(x=x,boutcount=boutcount))
 }
