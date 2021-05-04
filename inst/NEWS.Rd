@@ -2,6 +2,11 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
+\section{Changes in version 2.3-3 (GitHub-only-release date:04-05-2021)}{
+\itemize{
+  \item Part 1 fixed bug related with ENMOa calculation which made the metashort data frame to be empty
+}
+
 \section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
 \itemize{
   \item Part 1 when using ad-hoc data format: now able to handle timestamp column.
