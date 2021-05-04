@@ -1,7 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 2.3-3 (GitHub-only-release date:21-05-2021)}{
+\itemize{
+  \item Part 5 fragmentation analysis added
+  \item Part 5 report, added argument week_weekend_aggregate.part5
+  \item Bout detection algorithm improved, see bout.metric 6
+}
+}
 \section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
 \itemize{
   \item Part 1 when using ad-hoc data format: now able to handle timestamp column.
