@@ -56,6 +56,8 @@ List with Character object showing how decimals are separated
 \item{x0.5_dur_PA}{x0.5 corresponding to alpha_dur_PA}
 \item{W0.5_dur_IN}{W0.5 corresponding to alpha_dur_IN}
 \item{W0.5_dur_PA}{W0.5 corresponding to alpha_dur_PA}
+\item{NFragPM_IN}{Number of IN fragments per minutes in IN}
+\item{NFragPM_PA}{Number of PA fragments per minutes in PA}
 }
 \details{
 See package vignette for description of fragmentation metrics.
