@@ -780,7 +780,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         cat(paste("\nstopped reading data because this analysis is limited to ",ceiling(daylimit)," days\n",sep=""))
       }
     }
-    i = i + 1; cat(sum(nchar(metashort[,2]) > 0, na.rm = T)) #go to next block
+    i = i + 1 #go to next block
   }
   # deriving timestamps
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
