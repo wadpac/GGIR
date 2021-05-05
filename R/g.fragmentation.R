@@ -6,8 +6,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # This function is loosely inspired from R package ActFrag by Junrui Di.
   # in contract to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of outside this
-  # function. Further, the agorithms are not exactly the same, and there are some
-  # additional metircs.
+  # function. Further, the algorithms are not all exactly the same, and there are some
+  # additional metrics.
   
   # LEVELS: vector with behavioural classes produced by GGIR
   # Lnames: Names of brehavioural classes.
@@ -17,9 +17,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   
   if ("all" %in% frag.metrics) {
     frag.metrics = c("mean", "TP", "Gini", "power",
-                     "CoV", "all")
+                     "CoV", "NFragPM", "all")
   }
-  min_Nfragments = 10 # minimum number of required fragments
   output = list()
   if (length(LEVELS) > 0) {
     # convert to class names to numeric class ids for inactive, light and MVPA:
@@ -46,42 +45,46 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["TP_IN2PA"]] = output[["TP_PA2IN"]] = 0
       output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
       output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
-      output[["Nfrag_LIPA"]] = output[["Nfrag_MVPA"]] = 0
-      output[["mean_dur_LIPA"]] = output[["mean_dur_MVPA"]] = 0
       DurationLIPA = frag3levels$length[which(frag3levels$value == 2)] # all light fragments
       DurationMVPA = frag3levels$length[which(frag3levels$value == 3)] # all MVPA fragments
       Nfrag_LIPA = length(DurationLIPA)
       Nfrag_MVPA = length(DurationMVPA)
-      if (Nfrag_LIPA > 0) output[["Nfrag_LIPA"]] = Nfrag_LIPA
-      if (Nfrag_MVPA > 0) output[["Nfrag_MVPA"]] = Nfrag_MVPA
-      if (Nfrag_IN > 0 & (Nfrag_LIPA > 0 | Nfrag_MVPA > 0)) { # at least 1 inactivity frag & at least 1 activity frag
-        DurationPA = frag3levels$length[which(frag3levels$value != 1)] # all activity fragments
-        DurationIN = frag3levels$length[which(frag3levels$value == 1)] # all inactivity fragments
-        # Get only indices of inactive fragments that transition to light:
+      if (Nfrag_LIPA > 0) {
+        output[["Nfrag_LIPA"]] = Nfrag_LIPA
+        output[["mean_dur_LIPA"]] = mean(DurationLIPA)
+      } else {
+        output[["mean_dur_LIPA"]] = output[["Nfrag_LIPA"]] = 0
+      }
+      if (Nfrag_MVPA > 0) {
+        output[["Nfrag_MVPA"]] = Nfrag_MVPA
+        output[["mean_dur_MVPA"]] = mean(DurationMVPA)
+      } else {
+        output[["mean_dur_MVPA"]] = output[["Nfrag_MVPA"]] = 0
+      }
+      if (Nfrag_IN > 0 & (Nfrag_LIPA > 0 | Nfrag_MVPA > 0)) {
+        DurationPA = frag3levels$length[which(frag3levels$value != 1)]
+        DurationIN = frag3levels$length[which(frag3levels$value == 1)]
         Nfrag3levels = length(frag3levels$value)
         inact_2_light_trans = which(frag3levels$value[1:(Nfrag3levels-1)] == 1 & frag3levels$value[2:Nfrag3levels] == 2)
-        # Get only indices of inactive fragments that transition to mvpa:
         inact_2_mvpa_trans = which(frag3levels$value[1:(Nfrag3levels-1)] == 1 & frag3levels$value[2:Nfrag3levels] == 3)
-        if (length(inact_2_light_trans) > 0) {
-          output[["mean_dur_LIPA"]] = mean(DurationLIPA)
-          DurationIN2LIPA = frag3levels$length[inact_2_light_trans] # durations of all inactivity fragments followed by light.
-          output[["TP_IN2LIPA"]] = (sum(DurationIN2LIPA)/sum(DurationIN)) / mean(DurationIN) # transition from inactive to mvpa
+        if (length(inact_2_light_trans) > 0) { # transitions from inactive to LIPA
+          DurationIN2LIPA = frag3levels$length[inact_2_light_trans]
+          output[["TP_IN2LIPA"]] = (sum(DurationIN2LIPA)/sum(DurationIN)) / mean(DurationIN)
           output[["Nfrag_IN2LIPA"]] = length(DurationIN2LIPA)
         } 
-        if (length(inact_2_mvpa_trans) > 0) {
-          output[["mean_dur_MVPA"]] = mean(DurationMVPA)
-          DurationIN2MVPA = frag3levels$length[inact_2_mvpa_trans] # durations of all inactivity fragments followed by light.
-          output[["TP_IN2MVPA"]] = (sum(DurationIN2MVPA)/sum(DurationIN)) / mean(DurationIN) # transition from inactive to mvpa
+        if (length(inact_2_mvpa_trans) > 0) { # transitions from inactive to MVPA
+          DurationIN2MVPA = frag3levels$length[inact_2_mvpa_trans]
+          output[["TP_IN2MVPA"]] = (sum(DurationIN2MVPA)/sum(DurationIN)) / mean(DurationIN)
           output[["Nfrag_IN2MVPA"]] = length(DurationIN2MVPA)
         }
-        output[["TP_IN2PA"]] = 1 / mean(DurationIN) # transition from inactive to active (no distinction light or MVPA)
-        output[["TP_PA2IN"]] = 1 / mean(DurationPA) # transition from active to inactive (no distinction light or MVPA)
-        if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) { # only IN2mvpa transitions
+        output[["TP_IN2PA"]] = 1 / mean(DurationIN)
+        output[["TP_PA2IN"]] = 1 / mean(DurationPA)
+        if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) {
           output[["TP_IN2MVPA"]] = 1 / mean(DurationIN)
           output[["Nfrag_IN2MVPA"]] = length(DurationIN)
           output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
         }
-        if (length(inact_2_light_trans) != 0 & length(inact_2_mvpa_trans) == 0) { # only IN2LIPA transitions
+        if (length(inact_2_light_trans) != 0 & length(inact_2_mvpa_trans) == 0) {
           output[["TP_IN2LIPA"]] = 1 / mean(DurationIN)
           output[["Nfrag_IN2LIPA"]] = length(DurationIN)
           output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
@@ -112,6 +115,9 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     output[["x0.5_dur_PA"]] = output[["x0.5_dur_IN"]] = NA
     output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
   }
+  if ("power" %in% frag.metrics | "CoV" %in% frag.metrics | "Gini" %in% frag.metrics) {
+    output[["SD_dur_PA"]] = output[["SD_dur_IN"]] = NA
+  }
   if (Nfrag2levels > 1) {
     DurationIN = frag2levels$length[which(frag2levels$value == 1)]
     DurationPA = frag2levels$length[which(frag2levels$value == 0)]
@@ -127,11 +133,11 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / sum(DurationPA)
       output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / sum(DurationIN)
     }
-    
-    
-    if (Nfrag2levels >= min_Nfragments) {
+    if (Nfrag2levels >= 10) { # minimum number of required fragments, because below metrics are less informative with a few metrics
       SD0 = sd(DurationPA)
       SD1 = sd(DurationIN)
+      output[["SD_dur_PA"]] = SD0
+      output[["SD_dur_IN"]] = SD1
       if ("Gini" %in% frag.metrics){
         if (SD0 != 0) output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
         if (SD1 != 0) output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)

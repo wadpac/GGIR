@@ -14,18 +14,18 @@ accounted for before the data enters the function.
 }
 \arguments{
    \item{frag.metrics}{
-   Character with fragmentation metric to exract. Can be
-  "mean", "TP", "Gini", "power", or "CoV", "NFragPM",
-  or all the above metrics with "all". See details.
+   Character with fragmentation metric to exract. Can be "mean", "TP", "Gini", 
+   "power", or "CoV", "NFragPM", or all the above metrics with "all". See details.
   }
   \item{LEVELS}{
-    vector of behavioural level identifiers derived with identify_levels function
+    Numeric vector of behavioural level classes derived with \link{identify_levels}
   }
   \item{Lnames}{
-    vector with characters to specify the names of the level identifiers.
+    Character vector with names of classes used in LEVELS, see details.
   }
   \item{xmin}{
-    Minimum recordable fragment length.
+    Numeric scalar to indicate the minimum recordable fragment length. In \link{g.part5}
+    this is derived from the epoch length.
   }
 }
 \value{
@@ -64,6 +64,14 @@ See package vignette for description of fragmentation metrics.
 In short, abbreviation "TP" refers to transition probality metrics,
 abbreviation "CoV" refers to Coefficient of Variance, and
 metric "NFragPM" refers to the Number of fragments per minute.
+
+Regarding the Lnames argument. The class names included in this are categorised
+as follows:
+\itemize{
+  \item{Inactive - if name includes the character strings "day_IN_unbt" or "day_IN_bts".}
+  \item{LIPA - If name includes the character strings "day_LIG_unbt" or "day_LIG_bts".}
+  \item{MVPA - If name includes the character strings "day_MOD_unbt", "day_VIG_unbt", or "day_MVPA_bts"}
+}
 }
 \examples{
 \dontrun{

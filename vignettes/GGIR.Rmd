@@ -800,7 +800,8 @@ The fragmentation metrics are applied in function `g.fragmentation`.
 - Transition probability (`TP`) is calculated as 1 divided by the mean fragment duration.
 - Gini index is calculated with function `Gini` from the `ineq` R package, and with it's argument `corr` set to TRUE.
 - Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to Chastin et al. doi: 10.1016/j.gaitpost.2009.09.002.
-- Number of fragment per minutes (`NFragPM`) is calculated similar to metric `fragmentation` in Chastin et al. doi: 10.1093/ageing/afr075, but renamed to be a more accurate reflection of the calculation.
+- Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation` in Chastin et al. doi: 10.1093/ageing/afr075, but it is renamed here to be a more specific reflection of the calculation. The term
+`fragmentation` seems too generic given that all fragmentation metrics inform us about fragmentation.
 
 **Conditions for calculation and value when condition is not met:**
 
