@@ -139,12 +139,12 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["SD_dur_PA"]] = SD0
       output[["SD_dur_IN"]] = SD1
       if ("Gini" %in% frag.metrics){
-        if (SD0 != 0) output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
-        if (SD1 != 0) output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
+        output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
+        output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
       }
       if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
-        if (SD0 != 0) output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
-        if (SD1 != 0) output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
+        output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
+        output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
       }
       if ("power" %in% frag.metrics){
         calc_alpha = function(x, xmin) {
