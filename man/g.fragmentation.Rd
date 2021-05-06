@@ -46,8 +46,8 @@ List with Character object showing how decimals are separated
 \item{Nfrag_PA}{Number of activity fragments}
 \item{mean_dur_IN}{mean duration inactivity fragments}
 \item{mean_dur_PA}{mean duration activity fragments}
-\item{Gini_dur_IN}{Gini index corresponding to inacitivty fragment durations}
-\item{Gini_dur_PA}{Gini index corresponding to acitivty fragment durations}
+\item{Gini_dur_IN}{Gini index corresponding to inactivity fragment durations}
+\item{Gini_dur_PA}{Gini index corresponding to activity fragment durations}
 \item{CoV_dur_IN}{Coefficient of Variance corresponding to inactivity fragment durations}
 \item{CoV_dur_PA}{Coefficient of Variance corresponding to activity fragment durations}
 \item{alpha_dur_IN}{Alpha of the fitted power distribution through inactivity fragment durations}
@@ -58,6 +58,9 @@ List with Character object showing how decimals are separated
 \item{W0.5_dur_PA}{W0.5 corresponding to alpha_dur_PA}
 \item{NFragPM_IN}{Number of IN fragments per minutes in IN}
 \item{NFragPM_PA}{Number of PA fragments per minutes in PA}
+\item{SD_dur_IN}{Standard deviation in the duration of inactivity fragments}
+\item{SD_dur_PA}{Standard deviation in the duration of physical activity fragments}
+
 }
 \details{
 See package vignette for description of fragmentation metrics.

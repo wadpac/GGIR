@@ -805,9 +805,12 @@ The fragmentation metrics are applied in function `g.fragmentation`.
 
 **Conditions for calculation and value when condition is not met:**
 
-- Metrics related to Gini, CoV, or power law exponent alpha are only calculated if the standard deviation in fragment duration is not zero, and if there are at least 10 fragments (5 inactive and 5 active). If this condition is not met the metric value will be set to missing. To keep an overview of how many recording days met this criteria, GGIR part 5 stores variable Nvaliddays_AL10F at person level (Nvaliddays At Least 10 Fragments).
+- Metrics Gini and CoV are only calculated if there are at least 10 fragments (5 inactive and 5 active). If this condition is not met the metric value will be set to missing.
+- Metrics related to power law exponent alpha are only calculated if the standard deviation in fragment duration is not zero, and if there are at least 10 fragments (5 inactive and 5 active). If this condition is not met the metric value will be set to missing. 
 - Other metrics related to binary fragmentation (mean_dur_PA, mean_dur_IN, Nfrag_PA, Nfrag_IN), are calculated when there are at least 2 fragments (1 inactive, 1 active). If this condition is not met the value will is set to zero.
 - Metrics related to TP are calculated if: There is at least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this condition is not met the TP metric value is set to zero.
+
+To keep an overview of which recording days met the criteria for non-zero standard deviation and at least ten fragments, GGIR part 5 stores variable Nvaliddays_AL10F at person level (Nvaliddays At Least 10 Fragments), and SD_dur (standard deviation of fragment durations) at day level as well as aggregated per person.
 
 ## Why use data metric ENMO?
 
