@@ -79,10 +79,6 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     if (length(cut) > 0) {
       outputfinal = outputfinal[,-cut]
     }
-    cut2 = which(sapply(outputfinal, function(x)all(x=="")) == TRUE)# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
-    if (length(cut2) > 0) {
-      outputfinal = outputfinal[-cut2,]
-    }
     # split results to different spreadsheets in order to minimize individual filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
     uTRLi = as.character(unique(outputfinal$TRLi))
@@ -159,7 +155,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     options(warn=-1)
                     trynum = as.numeric(as.character(df[1:nr,ee]))
                     options(warn=0)
-                    if (length(which(is.na(trynum) == TRUE)) != nr & length(which(ignorevar == names(df)[ee])) == 0) {
+                    if (length(which(is.na(trynum) == TRUE)) != nr &
+                        length(which(ignorevar == names(df)[ee])) == 0) {
                       options(warn=-1)
                       class(df[,ee]) = "numeric"
                       options(warn=0)
@@ -194,7 +191,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
                     colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
                     AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = c("filename","daytype"))
-                  } 
+                  }
                   len = NULL
                   AggregateWDWE$len <- 0
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WD")] = 5 #weighting of weekdays
@@ -205,9 +202,31 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   .SD <- .N <- count <- a <- NULL
                   WeightedAggregate <- dt[,lapply(.SD,weighted.mean,w=len,na.rm=TRUE),by=list(filename)]
                   options(warn=0)
+                  add_missing_LUX = function(x, weeksegment=c()) {
+                    # missing columns, add these:
+                    if (length(weeksegment) > 0) {
+                      LUX_hour_variables_expected = paste0("LUX_hour_",0:23,"_day_",weeksegment)
+                    } else {
+                      LUX_hour_variables_expected = paste0("LUX_hour_",0:23,"_day")
+                    }
+                    dummy_df = as.data.frame(matrix(NaN,1, 24))
+                    colnames(dummy_df) = LUX_hour_variables_expected
+                    x = as.data.frame(merge(x, dummy_df, all.x = T))
+                    # re-order
+                    current_location = which(colnames(x) %in% LUX_hour_variables_expected == TRUE)
+                    neworder = sort(colnames(x)[current_location])
+                    x = cbind(x[,-current_location], x[,LUX_hour_variables_expected])
+                    return(x)
+                  }
+                  LUX_hour_variables = grep(pattern = "LUX_hour",x = colnames(WeightedAggregate), value=TRUE)
+                  if (length(LUX_hour_variables) > 0 & length(LUX_hour_variables) < 24) {
+                    WeightedAggregate = add_missing_LUX(WeightedAggregate)
+                  }
                   # merge them into one output data.frame (G)
-                  charcol = which(lapply(PlainAggregate, class) != "numeric" & names(PlainAggregate) != filename)
-                  numcol = which(lapply(PlainAggregate, class) == "numeric")
+                  LUX_hour_variables = colnames(PlainAggregate) %in% grep(x = colnames(PlainAggregate), pattern="LUX_hour", value=TRUE)
+                  charcol = which(lapply(PlainAggregate, class) != "numeric" & names(PlainAggregate) != filename & 
+                                    !(LUX_hour_variables))
+                  numcol = which(lapply(PlainAggregate, class) == "numeric" | LUX_hour_variables)
                   WeightedAggregate = as.data.frame(WeightedAggregate, stringsAsFactors = TRUE)
                   G = base::merge(PlainAggregate,WeightedAggregate,by="filename",all.x=TRUE)
                   p0b = paste0(names(PlainAggregate[,charcol]),".x")
@@ -222,14 +241,18 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   for (i in 1:length(p2)) {
                     names(G)[which(names(G)==p2[i])] = paste0(names(PlainAggregate[,numcol])[i],"_wei")
                   }
-                  
                   # expand output with weekday (WD) and weekend (WE) day aggregates
                   for (weeksegment in c("WD", "WE")) {
                     temp_aggregate = AggregateWDWE[which(AggregateWDWE$daytype==weeksegment),]
                     charcol = which(lapply(temp_aggregate, class) != "numeric" & names(temp_aggregate) != filename)
                     numcol = which(lapply(temp_aggregate, class) %in% c("numeric", "integer") == TRUE)
                     names(temp_aggregate)[numcol] = paste0(names(temp_aggregate)[numcol], "_", weeksegment)
-                    G = base::merge(G, temp_aggregate[,c(which(colnames(temp_aggregate) == "filename"), numcol)],
+                    temp_aggregate = temp_aggregate[,c(which(colnames(temp_aggregate) == "filename"), numcol)]
+                    LUX_hour_variables = grep(pattern = "LUX_hour",x = colnames(temp_aggregate), value=TRUE)
+                    if (length(LUX_hour_variables) > 0 & length(LUX_hour_variables) < 24) {
+                      temp_aggregate = add_missing_LUX(temp_aggregate, weeksegment)
+                    }
+                    G = base::merge(G, temp_aggregate,
                                     by="filename", all.x=TRUE)
                   }
                   G = G[,-which(names(G) %in% c("len", "daytype", "len_WE", "len_WD"))]
@@ -257,9 +280,10 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
                     df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
-                    mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2), stringsAsFactors = TRUE)
-                    mmm2 = data.frame(filename=mmm$Group.1,cc=mmm[,nameold], stringsAsFactors = TRUE)
-                    aggPerIndividual = merge(aggPerIndividual,mmm2,by="filename")
+                    mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2),
+                                        stringsAsFactors = TRUE)
+                    mmm2 = data.frame(filename=mmm$Group.1, cc=mmm[,nameold], stringsAsFactors = TRUE)
+                    aggPerIndividual = merge(aggPerIndividual, mmm2,by="filename")
                     names(aggPerIndividual)[which(names(aggPerIndividual)=="cc")] = namenew
                     foo34 = aggPerIndividual
                   }
