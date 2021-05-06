@@ -138,7 +138,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1,  .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
-  tryCatchResult = tryCatch({
+                                  tryCatchResult = tryCatch({
                                     # for (i in f0:f1) {
                                     if (length(ffdone) > 0) {
                                       if (length(which(ffdone == fnames.ms3[i])) > 0) {
@@ -622,6 +622,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                 L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
                                                                 M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
                                                               }
+                                                              if ("lightpeak" %in% colnames(ts)) {
+                                                                startM5 = which(ts$time == M5HOUR)
+                                                                dsummary[di,fi] = round(mean(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
+                                                                ds_names[fi] = paste("M",wini,"_mean_peakLUX",sep="");      fi = fi + 1
+                                                                dsummary[di,fi] = round(max(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
+                                                                ds_names[fi] = paste("M",wini,"_max_peakLUX",sep="");      fi = fi + 1
+                                                              }
                                                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                                                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                                                               if (L5HOUR != "not detected") {
@@ -743,7 +750,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]]), digits = 1)
                                                             dsummary[di,fi + 3] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
                                                             ds_names[fi:(fi+3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
-                                                            
                                                             # time in LUX ranges
                                                             # hard-coded thresholds, TO DO: move to function arguments
                                                             LUXthreshold = c(seq(0,1000, by = 50), 1500, 2000)
