@@ -776,22 +776,16 @@ The same `data_cleaning_file` argument discussed in the previous paragraph also 
 
 ### Fragmentation metrics
 
-When setting input argument as `frag.metrics="all"` to GGIR part 5 will perform behavioural fragmentation analysis. It is adviced to do this in combination with argument `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common for behavioural fragmentation research.
+When setting input argument as `frag.metrics="all"` GGIR part 5 will perform behavioural fragmentation analysis. It is adviced to do this in combination with argument `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature.
 
-A fragment is a defined as a sequence of epochs that belong to one of the four categories:
+In GGIR, a fragment is a defined as a sequence of epochs that belong to one of the four categories:
 
 1. Inactivity
 2. Light Physical Activity (LIPA)
 3. Moderate or Vigorous Physical Acitivty (MVPA)
-4. Physical activity (LIPA or MVPA)
+4. Physical activity (can be either LIPA or MVPA)
 
-Each of these categories represents the combination of bouted and unbouted time 
-the respective categories.
-
-Note that elsewhere in the part5 we use the term `block`. A `block` is a sequence of epochs
-that belong to the same behavioural class. This may sound similar to fragment, but
-behavioural class also distiguished subcategories, e.g. bouted and unbouted.
-
+Each of these categories represents the combination of bouted and unbouted time in the respective categories.
 The fragmentation metrics are applied in function `g.fragmentation`.
 
 **Literature about these metrics:**
@@ -805,12 +799,16 @@ The fragmentation metrics are applied in function `g.fragmentation`.
 
 **Conditions for calculation and value when condition is not met:**
 
-- Metrics Gini and CoV are only calculated if there are at least 10 fragments (5 inactive and 5 active). If this condition is not met the metric value will be set to missing.
-- Metrics related to power law exponent alpha are only calculated if the standard deviation in fragment duration is not zero, and if there are at least 10 fragments (5 inactive and 5 active). If this condition is not met the metric value will be set to missing. 
-- Other metrics related to binary fragmentation (mean_dur_PA, mean_dur_IN, Nfrag_PA, Nfrag_IN), are calculated when there are at least 2 fragments (1 inactive, 1 active). If this condition is not met the value will is set to zero.
-- Metrics related to TP are calculated if: There is at least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this condition is not met the TP metric value is set to zero.
+- Metrics `Gini` and `CoV` are only calculated if there are at least 10 fragments (e.g. 5 inactive and 5 active). If this condition is not met the metric value will be set to missing.
+- Metrics related to power law exponent alpha are also only calculated when there are at least 10 fragments, but with the additional condition that the standard deviation in fragment duration is not zero. If these conditions are not met the metric value will be set to missing.
+- Other metrics related to binary fragmentation (`mean_dur_PA` and `mean_dur_IN`), are calculated when there are at least 2 fragments (1 inactive, 1 active). If this condition is not met the value will is set to zero.
+- Metrics related to `TP` are calculated if: There is at least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this condition is not met the `TP` metric value is set to zero.
 
-To keep an overview of which recording days met the criteria for non-zero standard deviation and at least ten fragments, GGIR part 5 stores variable Nvaliddays_AL10F at person level (Nvaliddays At Least 10 Fragments), and SD_dur (standard deviation of fragment durations) at day level as well as aggregated per person.
+To keep an overview of which recording days met the criteria for non-zero standard deviation and at least ten fragments, GGIR part5 stores variable `Nvaliddays_AL10F` at person level (=Number of valid days with at least 10 fragments), and `SD_dur` (=standard deviation of fragment durations) at day level as well as aggregated per person.
+
+**Difference between fragments and blocks:**
+
+Elsewhere in the part5 we use the term `block`. A `block` is a sequence of epochs that belong to the same behavioural class. This may sound similar to the definition of a fragment, but for blocks we distinguish every behavioural class, which includes the subcategories such as bouted and unbouted behaviour. This means that variables `Nblock_day_total_IN` and `Nblock_day_total_LIG` are identical to `Nfrag_IN_day` and `Nfrag_LIPA_day`, respectively.
 
 ## Why use data metric ENMO?
 
