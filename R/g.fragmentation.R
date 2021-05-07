@@ -118,12 +118,12 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   if ("power" %in% frag.metrics | "CoV" %in% frag.metrics | "Gini" %in% frag.metrics) {
     output[["SD_dur_PA"]] = output[["SD_dur_IN"]] = NA
   }
+  DurationIN = frag2levels$length[which(frag2levels$value == 1)]
+  DurationPA = frag2levels$length[which(frag2levels$value == 0)]
+  output[["Nfrag_PA"]] = length(DurationPA)
+  output[["Nfrag_IN"]] = length(DurationIN)
   if (Nfrag2levels > 1) {
-    DurationIN = frag2levels$length[which(frag2levels$value == 1)]
-    DurationPA = frag2levels$length[which(frag2levels$value == 0)]
-    output[["Nfrag_PA"]] = length(DurationPA)
-    output[["Nfrag_IN"]] = length(DurationIN)
-    if ("mean" %in% frag.metrics){
+      if ("mean" %in% frag.metrics){
       output[["mean_dur_PA"]] = mean(DurationPA)
       output[["mean_dur_IN"]] = mean(DurationIN)
     }
