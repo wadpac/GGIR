@@ -776,7 +776,7 @@ The same `data_cleaning_file` argument discussed in the previous paragraph also 
 
 ### Fragmentation metrics
 
-When setting input argument as `frag.metrics="all"` GGIR part 5 will perform behavioural fragmentation analysis. It is adviced to do this in combination with argument `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature.
+When setting input argument as `frag.metrics="all"` GGIR part 5 will perform daytime behavioural fragmentation analysis. It is adviced to do this in combination with argument `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature.
 
 In GGIR, a fragment is a defined as a sequence of epochs that belong to one of the four categories:
 
@@ -785,7 +785,7 @@ In GGIR, a fragment is a defined as a sequence of epochs that belong to one of t
 3. Moderate or Vigorous Physical Acitivty (MVPA)
 4. Physical activity (can be either LIPA or MVPA)
 
-Each of these categories represents the combination of bouted and unbouted time in the respective categories.
+Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity physical activiy add up to a full day, as well as inactivity, LIPA and MVPA.
 The fragmentation metrics are applied in function `g.fragmentation`.
 
 **Literature about these metrics:**
