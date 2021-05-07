@@ -585,9 +585,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             endd = floor(WLH*10) /10 # rounding needed for non-integer window lengths
                                                             nwindow_f = (endd-wini) #number of windows for L5M5 analyses
                                                             ignore = FALSE
-                                                            if (endd <= wini | nwindow_f < 1) ignore = TRUE # day is shorter then time window, so ignore this # modified from < to <= on 21-1-2017
+                                                            if (endd <= wini | nwindow_f < 1) ignore = TRUE # day is shorter then time window, so ignore this
                                                             nwindow_f = nwindow_f * (60/reso)
                                                             if (ignore == FALSE) {
+                                                              # Calculate running window variables
                                                               ACCrunwin = matrix(0,nwindow_f,1)
                                                               TIMErunwin= matrix("",nwindow_f,1)
                                                               for (hri in 0:floor((((endd-wini)*(60/reso))-1))) {
@@ -600,34 +601,50 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                               ACCrunwin = ACCrunwin[is.na(ACCrunwin) == F]
                                                               TIMErunwin= TIMErunwin[is.na(ACCrunwin) == F]
                                                               if (length(ACCrunwin) > 0 & length(TIMErunwin) > 0) {
+                                                                # Derive day level variables
                                                                 L5HOUR = TIMErunwin[which(ACCrunwin == min(ACCrunwin))[1]]
                                                                 L5VALUE = min(ACCrunwin)
                                                                 M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
                                                                 M5VALUE = max(ACCrunwin)
+                                                                if ("lightpeak" %in% colnames(ts)) {
+                                                                  startM5 = which(ts$time == M5HOUR)
+                                                                  M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
+                                                                  M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
+                                                                }
                                                               } else {
                                                                 L5HOUR = M5HOUR = "not detected"
                                                                 L5VALUE = M5VALUE = ""
+                                                                if ("lightpeak" %in% colnames(ts)) {
+                                                                  M5_mean_peakLUX =  M5_max_peakLUX = ""
+                                                                }
                                                               }
                                                             }
-                                                            if (ignore == FALSE) dsummary[di,fi] = L5HOUR
-                                                            ds_names[fi] = paste("L",wini,"TIME",sep="");      fi = fi + 1
-                                                            if (ignore == FALSE) dsummary[di,fi] = L5VALUE
-                                                            ds_names[fi] = paste("L",wini,"VALUE",sep="");      fi = fi + 1
-                                                            if (ignore == FALSE) dsummary[di,fi] = M5HOUR
-                                                            ds_names[fi] = paste("M",wini,"TIME",sep="");      fi = fi + 1
-                                                            if (ignore == FALSE) dsummary[di,fi] = M5VALUE
-                                                            ds_names[fi] = paste("M",wini,"VALUE",sep="");      fi = fi + 1
+                                                            # Add variables calculated above to the output matrix
                                                             if (ignore == FALSE) {
+                                                              dsummary[di,fi] = L5HOUR
+                                                              dsummary[di,fi+1] = L5VALUE
+                                                              dsummary[di,fi+2] = M5HOUR
+                                                              dsummary[di,fi+3] = M5VALUE
+                                                            }
+                                                            ds_names[fi] = paste("L",wini,"TIME",sep="")
+                                                            ds_names[fi+1] = paste("L",wini,"VALUE",sep="")
+                                                            ds_names[fi+2] = paste("M",wini,"TIME",sep="")
+                                                            ds_names[fi+3] = paste("M",wini,"VALUE",sep="")
+                                                            fi = fi + 4
+                                                            if ("lightpeak" %in% colnames(ts)) {
+                                                              if (ignore == FALSE) {
+                                                                dsummary[di,fi] = M5_mean_peakLUX
+                                                                dsummary[di,fi+1] = M5_max_peakLUX
+                                                              }
+                                                              ds_names[fi] = paste("M",wini,"_mean_peakLUX",sep="")
+                                                              ds_names[fi+1] = paste("M",wini,"_max_peakLUX",sep="")
+                                                              fi = fi + 2
+                                                            }
+                                                            if (ignore == FALSE) {
+                                                              # Add also numeric time
                                                               if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
                                                                 L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR,tz=desiredtz))
                                                                 M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR,tz=desiredtz))
-                                                              }
-                                                              if ("lightpeak" %in% colnames(ts)) {
-                                                                startM5 = which(ts$time == M5HOUR)
-                                                                dsummary[di,fi] = round(mean(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
-                                                                ds_names[fi] = paste("M",wini,"_mean_peakLUX",sep="");      fi = fi + 1
-                                                                dsummary[di,fi] = round(max(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
-                                                                ds_names[fi] = paste("M",wini,"_max_peakLUX",sep="");      fi = fi + 1
                                                               }
                                                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                                                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
