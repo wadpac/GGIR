@@ -214,7 +214,6 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
   }
   if (do.enmoa == TRUE) {
     ENMOa = abs(EN - gravity)
-    ENMOa[which(ENMOa < 0)] = 0
     allmetrics$ENMOa = averageperws3(x=ENMOa,sf,ws3)
   }
   return(allmetrics)
