@@ -5,6 +5,7 @@
 \itemize{
   \item Part 5 fragmentation analysis added
   \item Part 5 report, added argument week_weekend_aggregate.part5
+  \item Part 5 intensity gradient now also extracted here for waking hours
   \item Part 5 LUX variables added (only works for GENEActiv at the moment)
   \item Part 2 and 5, Bout detection algorithm improved, see bout.metric 6
   \item Parts 1, 2, 3 and 5: Added argument maxNcores to control maximum number
