@@ -3,13 +3,22 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                            LEVELS = c(),
                            Lnames=c(), xmin=1) { 
   
-  # This function is loosely inspired from R package ActFrag by Junrui Di.
-  # in contract to R package ActFrag this function assumes
-  # that non-wear and missing values have already been taken care of outside this
-  # function. Further, the algorithms are not all exactly the same, and there are some
-  # additional metrics.
+  # This function is loosely inspired by R package ActFrag by Junrui Di.
+  # In contrast to R package ActFrag this function assumes
+  # that non-wear and missing values have already been taken care of (imputed)
+  # outside this function. Further, the algorithms are not all exactly the same,
+  # and there are some additional metrics.
+  # This function is called from GGIR g.part5 function and applied per waking
+  # hours of a day. This avoids the issue of dealing with ppending days,
+  # and allows us to test for behavioural differences between days of the week.
+  # It is well known that human behaviour can be driven by weekly rhythm. 
+  # Knowing fragmentation per day of the week allows us to account for this
+  # variation.
+  # Further, I am avoiding the term sedentary because sedentary implies
+  # that the activity type sitting  was classified, which is generally
+  # difficult to justify.
   
-  # LEVELS: vector with behavioural classes produced by GGIR
+    # LEVELS: vector with behavioural classes produced by GGIR
   # Lnames: Names of brehavioural classes.
   # frag.metrics: metric to define fragmentation
   # xmin is shortest recordable (not necessarily observed) boutlength
@@ -21,7 +30,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   }
   output = list()
   if (length(LEVELS) > 0) {
-    # convert to class names to numeric class ids for inactive, light and MVPA:
+    # convert to class names to numeric class ids for inactive, LIPA and MVPA:
     classes.in = c("day_IN_unbt", Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
     class.in.ids = which(Lnames %in%  classes.in) - 1 
     classes.lig = c("day_LIG_unbt", Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
@@ -32,7 +41,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   Nepochs = length(LEVELS)
   if (Nepochs > 1) { # metrics that require more than just binary
     #====================================================
-    # Convert LEVELS in three classes: Inactivity (1), Light/LIPA (2), and MVPA (3)
+    # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
     y = rep(0,Nepochs)
     y[which(LEVELS %in% class.in.ids)] = 1
     y[which(LEVELS %in% class.lig.ids)] = 2
@@ -45,7 +54,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["TP_IN2PA"]] = output[["TP_PA2IN"]] = 0
       output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
       output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
-      DurationLIPA = frag3levels$length[which(frag3levels$value == 2)] # all light fragments
+      DurationLIPA = frag3levels$length[which(frag3levels$value == 2)] # all LIPA fragments
       DurationMVPA = frag3levels$length[which(frag3levels$value == 3)] # all MVPA fragments
       Nfrag_LIPA = length(DurationLIPA)
       Nfrag_MVPA = length(DurationMVPA)
@@ -129,27 +138,31 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     }
     if ("NFragPM" %in% frag.metrics){
       # Identify to metric named fragmentation by Chastin,
-      # but renamed to be a more accurate reflection of the calculation
+      # but renamed into Number of Fragments Per Minutes to be 
+      # a better reflection of the calculation
       output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / sum(DurationPA)
       output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / sum(DurationIN)
     }
-    if (Nfrag2levels >= 10) { # minimum number of required fragments, because below metrics are less informative with a few metrics
+    # minimum number of required fragments (10 here this is the sum of the number
+    # of PA and IN fragments, so basically we allow for 5 PA and 5 IN fragments)
+    # because the metrics below are less informative with a few metrics
+    if (Nfrag2levels >= 10) { 
       SD0 = sd(DurationPA)
       SD1 = sd(DurationIN)
-      output[["SD_dur_PA"]] = SD0
+      output[["SD_dur_PA"]] = SD0 # maybe not a fragmentation metric, but helpful to understand other metrics
       output[["SD_dur_IN"]] = SD1
       if ("Gini" %in% frag.metrics){
         output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
         output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
       }
-      if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Boerema 2020
+      if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Blikman 2015
         output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
         output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
       }
       if ("power" %in% frag.metrics){
         calc_alpha = function(x, xmin) {
           nr = length(x)
-          alpha = 1+ nr/sum(log(x/(xmin))) # adapted to match Chastin 2010
+          alpha = 1+ nr/sum(log(x/(xmin))) # adapted to match Chastin 2010 instead of ActFrag
           return(alpha)
         }
         if (SD0 != 0) {
