@@ -660,7 +660,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
         # count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
-        count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa 
+        count = count + nrow(accmetrics) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa 
         rm(accmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
