@@ -14,7 +14,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
                    data_cleaning_file=c(),
                    includedaycrit.part5=2/3,
-                   frag.metrics = c(), iglevels=c()) {
+                   frag.metrics = c(), iglevels=c(),
+                   LUXthresholds = seq(0,15000, by = 500),
+                   LUXperhourAgg = "max") {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -768,31 +770,32 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi + 3] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
                                                             ds_names[fi:(fi+3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
                                                             # time in LUX ranges
-                                                            # hard-coded thresholds, TO DO: move to function arguments
-                                                            LUXthreshold = c(seq(0,1000, by = 50), 1500, 2000)
-                                                            Nluxt = length(LUXthreshold)
+                                                            Nluxt = length(LUXthresholds)
                                                             for (lti in 1:Nluxt) {
-                                                              dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthreshold[lti] &
-                                                                                                      ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthreshold[lti+1])) / (60/ws3new)
-                                                              ds_names[fi+lti-1] = paste0("LUX_min_",LUXthreshold[lti],"_",LUXthreshold[lti+1],"_day")
+                                                              dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti] &
+                                                                                                      ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthresholds[lti+1])) / (60/ws3new)
+                                                              ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
                                                             }
-                                                            dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthreshold[Nluxt])) / (60/ws3new)
-                                                            ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthreshold[lti],"_",LUXthreshold[lti+1],"_day")
+                                                            dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[Nluxt])) / (60/ws3new)
+                                                            ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
                                                             fi = fi + Nluxt+1
                                                             
                                                             # light per hour of the day, ignoring SPT window
                                                             hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
-                                                            lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), mean)
+                                                            if (LUXperhourAgg == "max") {
+                                                              lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), max)
+                                                            } else {
+                                                              lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), mean)
+                                                            }
                                                             colnames(lightperhour) = c("hour", "light")
                                                             lightperhour = base::merge(lightperhour, data.frame(hour = 0:23, light = rep(NA, 24)),
                                                                                        by =c("hour"), all.y=TRUE)
-                                                            lightperhour = lightperhour[,c("hour","light.x")]
+                                                            lightperhourn = lightperhour[,c("hour","light.x")]
                                                             colnames(lightperhour) = c("hour", "light")
                                                             dsummary[di,fi:(fi+23)] = lightperhour$light
                                                             ds_names[fi:(fi+23)] = paste0("LUX_hour_",lightperhour$hour,"_day")
                                                             fi = fi + 24
                                                           }
-                                                          
                                                           #===============================================
                                                           # FOLDER STRUCTURE
                                                           if (storefolderstructure == TRUE) {

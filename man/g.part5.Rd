@@ -23,8 +23,8 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
   data_cleaning_file=c(), includedaycrit.part5=2/3,
-  %frag.classes.day = c(),  frag.classes.spt = c(),
-                   frag.metrics=c(), iglevels=c())
+  frag.metrics=c(), iglevels=c(), LUXthresholds = seq(0,15000, by = 500),
+  LUXperhourAgg = "max")
 }
 \arguments{
   \item{datadir}{
@@ -189,23 +189,20 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
  save_ms5rawlevels is TRUE,  and it only affects the time
  series files stored.
  }
-  %\item{frag.classes.day}{
-  %Character vector with behavioural class name(s) to consider for daytime fragmentation analysis
-  %For example: c("day_IN_bts", "day_IN_unbt"). If the vector includes "day_IN_bts", "day_MVPA_bts" or
-  %"day_LIG_bts" the function will automatically include all bout duration variations of this bout type.
-  %}
-  %\item{frag.classes.spt}{
-  %Character vector with behavioural class name(s) to consider for spt fragmentation analysis.
-  %For example: "spt_sleep".
-  %}
-
  \item{frag.metrics}{
  Fragmentation metric(s) to use. See \link{g.fragmentation}
  }
  \item{iglevels}{
    See  \link{g.analyse}. If provided then the intensity gradient will be calculated
   }
- 
+\item{LUXthresholds}{
+Vector with numeric sequece corresponding to the thresholds used to calculated time
+spent in LUX ranges.
+}
+\item{LUXperhourAgg}{
+  Character to indicate how peak light values per 15 minutes
+  should be aggregated to hour level: "max" is maximum, "mean" is mean.
+}
 }
 \value{
   The function does not produce values but generates an RData file

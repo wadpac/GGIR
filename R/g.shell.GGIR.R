@@ -303,8 +303,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
   if (length(which(ls() == "week_weekend_aggregate.part5")) == 0) week_weekend_aggregate.part5=FALSE
-
-
+  if (length(which(ls() == "LUXthresholds")) == 0) LUXthresholds = seq(0,15000, by = 500)
+  if (length(which(ls() == "LUXperhourAgg")) == 0) LUXperhourAgg = "max"
+  
 
   # VISUAL REPORT
 
@@ -451,7 +452,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             # frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5, iglevels=iglevels)
+            includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
+            LUXthresholds=LUXthresholds, LUXperhourAgg=LUXperhourAgg)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
