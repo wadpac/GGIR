@@ -292,8 +292,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
-                                              ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "lightpeak")],
-                                                             by = list(ts$time_num), FUN= function(x) mean(x))
+                                              if ("lightpeak" %in% colnames(M$metalong)) {
+                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "lightpeak")],
+                                                               by = list(ts$time_num), FUN= function(x) mean(x))
+                                              } else {
+                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear")],
+                                                               by = list(ts$time_num), FUN= function(x) mean(x))
+                                              }
                                               ts$sibdetection = round(ts$sibdetection)
                                               ts$diur = round(ts$diur)
                                               ts$nonwear = round(ts$nonwear)
@@ -318,31 +323,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                               }
                                               Nts = nrow(ts)
                                             }
-                                            # Experimental coce 9 December 2020
-                                            # else if (part5_agg2_60seconds ==  FALSE & part5_roll2_60seconds == TRUE) {
-                                            #   ts$diur =  round(rollapply(ts$diur, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
-                                            #   ts$ACC =  rollapply(ts$ACC, width = 60/ws3, FUN = mean, align = "center", partial = TRUE)
-                                            #   ts$sibdetection = round(rollapply(ts$sibdetection, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
-                                            #   ts$nonwear = round(rollapply(ts$nonwear, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
-                                            #   #note: lightpeak was derived at a resolution less than 1 minut, so no need to smooth
-                                            #
-                                            #   ws3new = ws3 # stays the same, because we are not downsample as above
-                                            #   # extract nightsi again
-                                            #   time_POSIX = ts$time #as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)
-                                            #   tempp = unclass(time_POSIX)
-                                            #   if (is.na(tempp$sec[1]) == TRUE) {
-                                            #     tempp = unclass(as.POSIXlt(ts$time,tz=desiredtz))
-                                            #   }
-                                            #   sec = tempp$sec
-                                            #   min = tempp$min
-                                            #   hour = tempp$hour
-                                            #   if (dayborder == 0) {
-                                            #     nightsi = which(sec == 0 & min == 0 & hour == 0)
-                                            #   } else {
-                                            #     nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
-                                            #   }
-                                            #   Nts = nrow(ts)
-                                            # }
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -556,7 +536,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-
+                                                          
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
@@ -780,7 +760,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[Nluxt])) / (60/ws3new)
                                                             ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
                                                             fi = fi + Nluxt+1
-
+                                                            
                                                             # light per hour of the day, ignoring SPT window
                                                             hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
                                                             if (LUXperhourAgg == "max") {
@@ -886,25 +866,27 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-
-                                          if (length(output) > 0 & nrow(output) > 0) {
-                                            save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
-                                          }
+                                          
+                                          if (length(output) > 0) 
+                                            if (nrow(output) > 0) {
+                                              save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
+                                            }
                                         }
-                                        rm(output,dsummary)
                                       }
+                                      rm(output,dsummary)
                                     }
-                                    # } # For the for loop
-                                  }) # END tryCatch
+                                  }
+                                  # } # For the for loop
+                                }) # END tryCatch
                                   return(tryCatchResult)
-                                }
-  if (do.parallel == TRUE) {
-    on.exit(parallel::stopCluster(cl))
+}
+if (do.parallel == TRUE) {
+  on.exit(parallel::stopCluster(cl))
+}
+for (oli in 1:length(output_list)) { # logged error and warning messages
+  if (is.null(unlist(output_list[oli])) == FALSE) {
+    cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
+    print(unlist(output_list[oli])) # print any error and warnings observed
   }
-  for (oli in 1:length(output_list)) { # logged error and warning messages
-    if (is.null(unlist(output_list[oli])) == FALSE) {
-      cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
-      print(unlist(output_list[oli])) # print any error and warnings observed
-    }
-  }
+}
 }
