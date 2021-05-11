@@ -454,12 +454,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             # frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
-<<<<<<< HEAD
             includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
-            LUXthresholds=LUXthresholds, LUXperhourAgg=LUXperhourAgg)
-=======
-            includedaycrit.part5=includedaycrit.part5, maxNcores=maxNcores)
->>>>>>> issue417_nprocesses
+            LUXthresholds=LUXthresholds, LUXperhourAgg=LUXperhourAgg, maxNcores=maxNcores)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
