@@ -201,7 +201,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   fnames = sort(fnames)
   if (do.parallel == TRUE) {
-    closeAllConnections() # in case there is a still something running from last time, kill it.
     cores=parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {

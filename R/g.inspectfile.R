@@ -355,9 +355,6 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
-  if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
-    closeAllConnections()
-  }
   invisible(list(header=header,monc=monc,monn=monn,
                  dformc=dformc,dformn=dformn,sf=sf,filename=filename))
 }

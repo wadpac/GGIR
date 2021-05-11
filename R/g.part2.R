@@ -64,7 +64,6 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   #---------------------------------------
   cnt78 = 1
   if (do.parallel == TRUE) {
-    closeAllConnections() # in case there is a still something running from last time, kill it.
     cores=parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {

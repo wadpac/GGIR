@@ -89,5 +89,4 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir=datadir,filelist=FALSE)
   expect_equal(length(fnames),4)
-  closeAllConnections()
 })

@@ -293,9 +293,6 @@ g.readaccfile = function(filename,blocksize,blocknumber,selectdaysfile=c(),fileq
         P = c() ; switchoffLD = 1 #added 30-6-2012
         filequality$filetooshort = TRUE
       }
-      if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
-        closeAllConnections()
-      }
     } else {
       P = c()
     }
