@@ -810,6 +810,25 @@ To keep an overview of which recording days met the criteria for non-zero standa
 
 Elsewhere in the part5 we use the term `block`. A `block` is a sequence of epochs that belong to the same behavioural class. This may sound similar to the definition of a fragment, but for blocks we distinguish every behavioural class, which includes the subcategories such as bouted and unbouted behaviour. This means that variables `Nblock_day_total_IN` and `Nblock_day_total_LIG` are identical to `Nfrag_IN_day` and `Nfrag_LIPA_day`, respectively.
 
+
+**Differences with R package ActFrag:**
+
+The fragmentation functionality is loosely inspired on the great work done by
+Dr. Junrui Di and colleages in R package ActFrag, as described in
+Junrui Di (doi: 10.1101/182337). 
+
+However, we made a couple of a different decisions that may affect comparability:
+
+- GGIR derives fragmentation metrics for day. This allows us to avoid the issue of
+dealing with appending days. Further, it allows us to test for behavioural differences 
+between days of the week. It is well known that human behaviour can be driven by 
+weekly rhythms, e.g. work days versus weekend. Estimating fragmentation per day of 
+the week allows us to study and account for such possible variation. As with all other
+GGIR variables we also report recording level aggregates of the daily estimates.
+- Power law alpha exponent metrics were calculated according to Chastin 2010 using
+the theoretical minimum fragment duration instead of the observed minimum fragment
+duration.
+
 ## Why use data metric ENMO?
 
 In most studies we have been involved we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 Vincent wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the supperiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. Vincent is using ENMO because:
