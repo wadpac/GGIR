@@ -867,26 +867,26 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
                                           
-                                          if (length(output) > 0) 
+                                          if (length(output) > 0) {
                                             if (nrow(output) > 0) {
                                               save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
                                             }
+                                          }
                                         }
+                                        rm(output,dsummary)
                                       }
-                                      rm(output,dsummary)
                                     }
-                                  }
-                                  # } # For the for loop
-                                }) # END tryCatch
+                                    # } # For the for loop
+                                  }) # END tryCatch
                                   return(tryCatchResult)
-}
-if (do.parallel == TRUE) {
-  on.exit(parallel::stopCluster(cl))
-}
-for (oli in 1:length(output_list)) { # logged error and warning messages
-  if (is.null(unlist(output_list[oli])) == FALSE) {
-    cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
-    print(unlist(output_list[oli])) # print any error and warnings observed
+                                }
+  if (do.parallel == TRUE) {
+    on.exit(parallel::stopCluster(cl))
   }
-}
+  for (oli in 1:length(output_list)) { # logged error and warning messages
+    if (is.null(unlist(output_list[oli])) == FALSE) {
+      cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
+      print(unlist(output_list[oli])) # print any error and warnings observed
+    }
+  }
 }
