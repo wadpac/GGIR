@@ -24,7 +24,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   save_ms5raw_without_invalid=TRUE,
   data_cleaning_file=c(), includedaycrit.part5=2/3,
   frag.metrics=c(), iglevels=c(), LUXthresholds = seq(0,15000, by = 500),
-  LUXperhourAgg = "max")
+  LUXperhourAgg = "max",  maxNcores=c())
 }
 \arguments{
   \item{datadir}{
@@ -178,6 +178,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
   \item{save_ms5raw_without_invalid}{
   Boolean to indicate whether to remove invalid days from the time series output files.
+<<<<<<< HEAD
   Only used if save_ms5rawlevels is set to TRUE.
   }
 \item{data_cleaning_file}{
@@ -203,6 +204,22 @@ spent in LUX ranges.
   Character to indicate how peak light values per 15 minutes
   should be aggregated to hour level: "max" is maximum, "mean" is mean.
 }
+=======
+  Only used if save_ms5rawlevels is set to TRUE.
+  }
+  \item{data_cleaning_file}{
+  See \link{g.part4}. Note that in part 5 this affects both
+  the time series and the csv reports.
+  }
+  \item{includedaycrit.part5}{
+  See \link{g.report.part5}. Only used in this function if
+  save_ms5rawlevels is TRUE,  and it only affects the time
+  series files stored.
+  }
+  \item{maxNcores}{
+    See function \link{g.part1}
+  }
+>>>>>>> issue417_nprocesses
 }
 \value{
   The function does not produce values but generates an RData file

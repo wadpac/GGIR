@@ -14,7 +14,7 @@ on optional input arguments.
 \usage{
 g.shell.GGIR(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),
 f0=1,f1=0, do.report=c(2),overwrite=FALSE,visualreport=FALSE,
-viewingwindow=1,configfile=c(),myfun=c(),...)
+viewingwindow=1,configfile=c(),myfun=c(), ...)
 }
 \arguments{
   \item{mode}{

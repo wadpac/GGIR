@@ -16,7 +16,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    includedaycrit.part5=2/3,
                    frag.metrics = c(), iglevels=c(),
                    LUXthresholds = seq(0,15000, by = 500),
-                   LUXperhourAgg = "max") {
+                   LUXperhourAgg = "max", maxNcores=c()) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -108,7 +108,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
     cores=parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
-      cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
+      if (length(maxNcores) == 0) maxNcores = Ncores
+      Ncores2use = min(c(Ncores-1, maxNcores))
+      cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
@@ -316,7 +318,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                 nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
                                               }
                                               Nts = nrow(ts)
-                                            } 
+                                            }
                                             # Experimental coce 9 December 2020
                                             # else if (part5_agg2_60seconds ==  FALSE & part5_roll2_60seconds == TRUE) {
                                             #   ts$diur =  round(rollapply(ts$diur, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
@@ -324,7 +326,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             #   ts$sibdetection = round(rollapply(ts$sibdetection, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
                                             #   ts$nonwear = round(rollapply(ts$nonwear, width = 60/ws3, FUN = mean, align = "center", partial = TRUE))
                                             #   #note: lightpeak was derived at a resolution less than 1 minut, so no need to smooth
-                                            #   
+                                            #
                                             #   ws3new = ws3 # stays the same, because we are not downsample as above
                                             #   # extract nightsi again
                                             #   time_POSIX = ts$time #as.POSIXlt(iso8601chartime2POSIX(ts$time,tz=desiredtz),tz=desiredtz)
@@ -555,7 +557,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-                                                          
+
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
@@ -752,7 +754,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           #===============================================
                                                           # FRAGMENTATION for daytime hours only
                                                           if (length(frag.metrics) > 0) {
-                                                            frag.out = g.fragmentation(frag.metrics = frag.metrics, 
+                                                            frag.out = g.fragmentation(frag.metrics = frag.metrics,
                                                                                        LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
                                                                                        Lnames = Lnames, xmin = 60/ws3new)
                                                             # fragmentation values come with a lot of decimal places
@@ -779,7 +781,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[Nluxt])) / (60/ws3new)
                                                             ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
                                                             fi = fi + Nluxt+1
-                                                            
+
                                                             # light per hour of the day, ignoring SPT window
                                                             hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
                                                             if (LUXperhourAgg == "max") {
@@ -875,8 +877,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                           if (ncol(output) > lastcolumn) {
                                             emptycols = sapply(output, function(x)all(x==""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
                                             # ignore columns with the LUX hour
-                                            emptycols = which(emptycols == TRUE & 
-                                                                colnames(output) %in% 
+                                            emptycols = which(emptycols == TRUE &
+                                                                colnames(output) %in%
                                                                 grep(pattern = "LUX_hour|LUX_min|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
                                                                      x = colnames(output), value = TRUE) == FALSE)
                                             if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
@@ -885,7 +887,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-                                          
+
                                           if (length(output) > 0 & nrow(output) > 0) {
                                             save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
                                           }

@@ -23,7 +23,8 @@ window.summary.size=10,dayborder=0,
 bout.metric=2,closedbout=FALSE,desiredtz="",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA,
 iglevels = c(), IVIS.activity.metric=2, TimeSegments2ZeroFile = c(),
-qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10)
+qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10,
+maxNcores=c())
 }
 \arguments{
 \item{datadir}{
@@ -180,6 +181,9 @@ qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10)
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
   \item{MX.ig.min.dur}{see \link{g.getM5L5}}
+  \item{maxNcores}{
+    See function \link{g.part1}
+  }
 }
 \value{
  The function provides no values, it only ensures that other functions are called

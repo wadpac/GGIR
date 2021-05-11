@@ -38,7 +38,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
         myfun=c(),
         do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,
-        ...)
+        maxNcores=c(), ...)
 }
 \arguments{
   \item{datadir}{
@@ -230,6 +230,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{do.sgAnglez}{
   Boolean, see \link{g.getmeta})
+  }
+  \item{maxNcores}{
+    Maximum number of cores to use when argument do.parallel is set to true.
+    GGIR by default uses the maximum number of available cores, but this argument
+    allows you to set a lower maximum.
   }
   \item{...}{
    Any input arguments needed for function \link{read.myacc.csv} if you
