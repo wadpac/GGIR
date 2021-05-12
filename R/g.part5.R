@@ -221,8 +221,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                         }
                                         ts$nonwear = 0 # initialise column
                                         ts$nonwear = nonwear
+                                        lightpeak_available = "lightpeak" %in% colnames(M$metalong)
                                         # Check if temperature and light are availble
-                                        if ("lightpeak" %in% colnames(M$metalong)) {
+                                        if (lightpeak_available == TRUE) {
                                           luz = M$metalong$lightpeak
                                           # luz = luz[rep(seq_len(nrow(luz)), each = (IMP$windowsizes[2]/IMP$windowsizes[1])), ]
                                           luz = rep(luz,each=(IMP$windowsizes[2]/IMP$windowsizes[1]))
@@ -234,7 +235,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                           ts$lightpeak = 0 # initialise column
                                           ts$lightpeak = luz
                                         }
-                                        rm(IMP,M,I)
+                                        rm(IMP, M ,I)
                                         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
                                           x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
                                           return(sum(x2))
@@ -292,7 +293,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
-                                              if ("lightpeak" %in% colnames(M$metalong)) {
+                                              if (lightpeak_available == TRUE) {
                                                 ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "lightpeak")],
                                                                by = list(ts$time_num), FUN= function(x) mean(x))
                                               } else {
@@ -589,7 +590,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                 L5VALUE = min(ACCrunwin)
                                                                 M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
                                                                 M5VALUE = max(ACCrunwin)
-                                                                if ("lightpeak" %in% colnames(ts)) {
+                                                                if (lightpeak_available == TRUE) {
                                                                   startM5 = which(ts$time == M5HOUR)
                                                                   M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
                                                                   M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
@@ -597,7 +598,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                               } else {
                                                                 L5HOUR = M5HOUR = "not detected"
                                                                 L5VALUE = M5VALUE = ""
-                                                                if ("lightpeak" %in% colnames(ts)) {
+                                                                if (lightpeak_available == TRUE) {
                                                                   M5_mean_peakLUX =  M5_max_peakLUX = ""
                                                                 }
                                                               }
