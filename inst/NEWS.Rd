@@ -5,6 +5,8 @@
 \section{Changes in version 2.3-3 (GitHub-only-release date:04-05-2021)}{
 \itemize{
   \item Part 1 fixed bug related with ENMOa calculation which made the metashort data frame to be empty
+  \item Part 2 fixed bug to report generation in part 2
+  \item Fixed bug related to visualization report when a file has not been processed in part 4
 }
 }
 \section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
