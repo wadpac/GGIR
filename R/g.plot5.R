@@ -63,7 +63,9 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         ws2 = M$windowsizes[2]
         daysummary_tmp = daysummary[which(daysummary$filename == fnamesmeta[i]),]
         nightsummary = c()
-        load(paste(ms4,"/",dir(ms4)[which(dir(ms4) == dir(metasleep)[i])],sep="")) #to load summary sleep
+        if(file.exists(paste(ms4,"/",dir(ms4)[which(dir(ms4) == dir(metasleep)[i])],sep=""))){
+                load(paste(ms4,"/",dir(ms4)[which(dir(ms4) == dir(metasleep)[i])],sep="")) #to load summary sleep
+        }
         summarysleep_tmp = nightsummary
         # note that the reports are generated from the raw sleep classification (part4) and no attempt is made to clean it up,
         # by deleting nights for which no diary was available or not enough accelerometer data was available
