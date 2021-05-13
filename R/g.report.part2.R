@@ -156,6 +156,9 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       if (length(C$npoints) == 0) {
         C$npoints = " "
       }
+      if (length(C$tempoffset) == 0) {
+        C$tempoffset = c(0, 0, 0)
+      }
       if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
       QC = data.frame(filename=fnames[i],
                       file.corrupt=M$filecorrupt,
