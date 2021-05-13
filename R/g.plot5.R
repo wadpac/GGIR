@@ -65,6 +65,12 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         nightsummary = c()
         if(file.exists(paste(ms4,"/",dir(ms4)[which(dir(ms4) == dir(metasleep)[i])],sep=""))){
                 load(paste(ms4,"/",dir(ms4)[which(dir(ms4) == dir(metasleep)[i])],sep="")) #to load summary sleep
+        } else {
+                plot.new()
+                plot.window( xlim=c(-5,5), ylim=c(-5,5) )
+                text(x = 2.5, y = 2.5, "Not generated because part 4 data was not generated", adj = 1)
+                dev.off()
+                next()
         }
         summarysleep_tmp = nightsummary
         # note that the reports are generated from the raw sleep classification (part4) and no attempt is made to clean it up,
