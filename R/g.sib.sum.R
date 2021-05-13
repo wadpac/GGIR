@@ -86,7 +86,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
               }
             }
             if (cnt  > 800) {
-              sib.cla.sum = rbind(sib.cla.sum, as.data.frame(matrix(1000,0,9)))
+              sib.cla.sum = rbind(sib.cla.sum, as.data.frame(matrix(0,1000,9)))
             }
           }
         }
