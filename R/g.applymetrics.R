@@ -27,12 +27,21 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
   do.bfx = metrics2do$do.bfx
   do.bfy = metrics2do$do.bfy
   do.bfz = metrics2do$do.bfz
+  do.zcx = metrics2do$do.zcx
+  do.zcy = metrics2do$do.zcy
+  do.zcz = metrics2do$do.zcz
   allmetrics = c()
   averageperws3 = function(x,sf,ws3) {
     x2 =cumsum(c(0,x))
     select = seq(1,length(x2),by=sf*ws3)
     x3 = diff(x2[round(select)]) / abs(diff(round(select)))
   }
+  sumperws3 = function(x,sf,ws3) {
+    x2 =cumsum(c(0,x))
+    select = seq(1,length(x2),by=sf*ws3)
+    x3 = diff(x2[round(select)])
+  }
+  
   if (sf <= (hb *2)) { #avoid having a higher filter boundary higher than sf/2
     hb = round(sf/2) - 1
   }
@@ -113,7 +122,66 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
     if (do.bfz == TRUE) {
       allmetrics$BFZ = averageperws3(x=data_processed[,3], sf, ws3)
     }
-    allmetrics$BFEN = averageperws3(x=EuclideanNorm(data_processed),sf,ws3)
+    if (do.bfen == TRUE) {
+      allmetrics$BFEN = averageperws3(x=EuclideanNorm(data_processed),sf,ws3)
+    }
+    
+
+  }
+  if (do.zcx == TRUE | do.zcy == TRUE | do.zcz == TRUE) { # Zero crossing count
+    # 1) Work with z-axis, as this is most sensitive axis for Actiwatch (te Lindert 2013)
+    # Sadeh reported to have used the y-axis but did not specify the orientation of
+    # the y-axis in their accelerometer. Assuming that actigraphy manufacturers
+    # used consistent orientation to re-use Sadeh algortihm, we will
+    # follow Actiwatch's approach
+    # An advantage of z-axis is that it's orientation relative to wrist
+    # is consistent across brands
+    # 2) apply band-pass filter to mimic old-sensor
+    # probably necessary to experiment with exact configuration
+    # 0.25 - 11 Hertz
+    # to be in line with Ancoli Isreal's paper
+    data_processed = process_axes(data, filtertype="pass", cut_point=c(0.25, 4), 2, sf)
+    # 2) apply stop-band to minic old sensitivity
+    # 0.05g threshold
+    # unclear what to base this on, but we need some threshold
+    # 3) identify zero-crossing:
+    # http://rug.mnhn.fr/seewave/HTML/MAN/zcr.html
+    # A = c(1, 3, 1, -1, -1, -1, 0, 1, 1, 1, 0, 1, 1)
+    # A[which(A >= 0)] = 1
+    # A[which(A < 0)] = -1
+    zil = c()
+    if (do.zcx == TRUE) zil = 1
+    if (do.zcy == TRUE) zil = c(zil, 2)
+    if (do.zcz == TRUE) zil = c(zil, 3)
+    Ndat = nrow(data_processed)
+    for (zi in zil) {
+      # remove small values
+      smallvalues = which(abs(data_processed[,zi]) < 0.1)
+      if (length(smallvalues) > 0) {
+        data_processed[smallvalues, zi] = 0
+      }
+      rm(smallvalues)
+      # output binary time series zeros and ones with 1 for zero-crossing
+      data_processed[,zi] = ifelse(test = data_processed[,zi] >= 0,yes = 1, no = -1)
+      # detect zero-crossings
+      zerocross = function(x, Ndat) {
+        return(abs(sign(x[2:Ndat]) - sign(x[1:(Ndat-1)])) * 0.5)
+      }
+      if (zi == 1) {
+        allmetrics$ZCX = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
+      } else if (zi == 2) {
+        allmetrics$ZCY = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
+      } else if (zi == 3) {
+        allmetrics$ZCZ = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
+      }
+    }
+    # in part 3 we then do 
+    # aggregate (sum) per minute
+    # Sadeh 1987 then got values up to 280
+    # 280 = 60 x 2 x frequency of movement
+    # which would mean near 2.33 Hertz average
+    # movement frequencies, which 
+    # may have reflected walking
   }
   #================================================
   # Low-pass filtering related metrics

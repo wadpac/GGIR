@@ -10,6 +10,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
                      do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
                      do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
+                     do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
                      do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,
@@ -59,7 +60,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                           do.dev_roll_med_acc_z, do.enmoa,do.lfen,
                           do.lfx, do.lfy, do.lfz,
                           do.hfx, do.hfy, do.hfz,
-                          do.bfx, do.bfy, do.bfz, stringsAsFactors = TRUE)
+                          do.bfx, do.bfy, do.bfz,
+                          do.zcx, do.zcy, do.zcz, stringsAsFactors = TRUE)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
@@ -68,7 +70,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                    do.anglex,do.angley,do.anglez,
                    do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
                    do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,do.enmoa, do.lfen,
-                   do.lfx, do.lfy, do.lfz,  do.hfx, do.hfy, do.hfz,  do.bfx, do.bfy, do.bfz))
+                   do.lfx, do.lfy, do.lfz,  do.hfx, do.hfy, do.hfz,  do.bfx, do.bfy, do.bfz,
+                   do.zcx, do.zcy, do.zcz))
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
@@ -529,6 +532,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         BFX =  accmetrics$BFX
         BFY =  accmetrics$BFY
         BFZ =  accmetrics$BFZ
+        ZCX =  accmetrics$ZCX
+        ZCY =  accmetrics$ZCY
+        ZCZ =  accmetrics$ZCZ
 
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
@@ -634,6 +640,15 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         if (do.bfz == TRUE) {
           metashort[count:(count-1+length(BFZ)),col_msi] = BFZ; col_msi = col_msi + 1
+        }
+        if (do.zcx == TRUE) {
+          metashort[count:(count-1+length(ZCX)),col_msi] = ZCX; col_msi = col_msi + 1
+        }
+        if (do.zcy == TRUE) {
+          metashort[count:(count-1+length(ZCY)),col_msi] = ZCY; col_msi = col_msi + 1
+        }
+        if (do.zcz == TRUE) {
+          metashort[count:(count-1+length(ZCZ)),col_msi] = ZCZ; col_msi = col_msi + 1
         }
         if (extract.sgmetrics == TRUE) {
           if (ncol(metashort) < (col_msi + do.sgAccEN + do.sgAnglex + do.sgAngley + do.sgAnglez - 1)) {
@@ -907,7 +922,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
                           "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
                           "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa","LFEN",
-                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ")
+                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ", 
+                          "ZCX", "ZCY", "ZCZ")
     if (extract.sgmetrics == TRUE) {
       # metrics related to separated gravity (only available when using accelerometer+gyroscope data)
       metricnames_short = c(metricnames_short, "sgAccEN", "sgAnglex", "sgAngley", "sgAnglez")
@@ -920,7 +936,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                            do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                            do.enmoa,do.lfen,
                                                            do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
-                                                           do.bfx, do.bfy, do.bfz, do.sgAccEN, do.sgAnglex, do.sgAngley, do.sgAnglez)])
+                                                           do.bfx, do.bfy, do.bfz, do.zcx, do.zcy, do.zcz,
+                                                           do.sgAccEN, do.sgAnglex, do.sgAngley, do.sgAnglez)])
     } else {
       metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
                                                              do.anglex,do.angley,do.anglez,
@@ -928,7 +945,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                              do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
                                                              do.enmoa,do.lfen,
                                                              do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
-                                                             do.bfx, do.bfy, do.bfz)])
+                                                             do.bfx, do.bfy, do.bfz, do.zcx, do.zcy, do.zcz)])
     }
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
