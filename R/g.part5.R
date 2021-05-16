@@ -130,7 +130,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                          "g.part5.addfirstwake", "g.part5.addsib",
                          "g.part5.definedays", "g.part5.fixmissingnight",
                          "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
-                         "g.part5.savetimeseries")
+                         "g.part5.savetimeseries", "g.sibreport")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
@@ -310,19 +310,21 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # does not depend on bout detection criteria or
                                             # window definitions.
                                             if (do.sibreport  == TRUE) {
-                                              sibreport = sibreport(ts, ID, ws3new)
+                                              sibreport = g.sibreport(ts, ID, ws3new)
                                               if ("angle" %in% colnames(ts)) {
                                                 ts = ts[, -which(colnames(ts) == "angle")]
                                               }
                                               # store in csv file:
-                                              ms5.sibreport = "/meta/ms5.outraw/sibreport"
+                                              ms5.sibreport = "/meta/ms5.outraw/sib.reports"
                                               if (!file.exists(paste(metadatadir,ms5.sibreport,sep=""))) {
                                                 dir.create(file.path(metadatadir,ms5.sibreport))
                                               }
                                               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],".csv")
                                               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
                                               # TO DO:
-                                              # - Add filter for sibs
+                                              # - Create repo with test scripts
+                                              # - Training and add filter to discriminate naps for non-naps
+                                              # - Add option to only add sibreport objeect to RData files, but not to csvf ile
                                               # - Store sib summary in part 5 report
                                             }
                                             
