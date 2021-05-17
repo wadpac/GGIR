@@ -6,7 +6,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste(names(input)[i],"=",input[i],sep="")
-      if (class(unlist(input[i])) == "character") {
+      if (class(unlist(input[i])) == "character" & length(unlist(input[i])) == 1) {
         txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
       }
       eval(parse(text=txt))
@@ -112,7 +112,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                   if (isna == TRUE) { # it is a vector with characters
                     vecchar = unlist(strsplit(unlist(strsplit(config[ci,2],"\\(|\\)"))[2],","))
                     if (config[ci,1] == "timewindow") timewindow = vecchar
-                    
+
                   } else {
                     txt = paste(as.character(config[ci,1]),"=",config[ci,2],"",sep="")
                   }
@@ -128,13 +128,14 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
   }
   # obtain default parameter values if not provided:
-  
+
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
   if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
   if (exists("myfun") == FALSE)  myfun = c()
-  
+  if (exists("maxNcores") == FALSE)  maxNcores = c()
+
   if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
@@ -185,11 +186,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
-  
+
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
-  
+
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
   if (exists("maxdur") == FALSE)  maxdur = 0
@@ -216,18 +217,21 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("window.summary.size") == FALSE) window.summary.size = 10
   if (exists("dayborder") == FALSE)  dayborder = 0
   if (exists("iglevels") == FALSE)  iglevels = c()
+  if (length(iglevels) > 0) {
+    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
+  }
   if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 2
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
   if (exists("MX.ig.min.dur") == FALSE)  MX.ig.min.dur = 10
-  
-  
+
+
   # PART 3
   if (exists("anglethreshold") == FALSE)  anglethreshold = 5
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  
+
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -252,7 +256,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
-  if (exists("bout.metric") == FALSE)  bout.metric = 4 # changed on 13-04-2020, because it is what we have been recommending all the time
+  if (exists("bout.metric") == FALSE)  bout.metric = 6
   if (exists("closedbout") == FALSE)  closedbout = FALSE
   if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
   if (exists("boutcriter.lig") == FALSE)  boutcriter.lig = 0.8
@@ -269,7 +273,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("save_ms5raw_without_invalid") == FALSE) save_ms5raw_without_invalid = TRUE
   if (exists("includedaycrit.part5") == FALSE) includedaycrit.part5 = 2/3
   if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
-  
+  if (exists("frag.metrics") == FALSE) frag.metrics = c()
+  if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
+
   # Related to (r)ead (m)yacc (c)sv file:
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
@@ -297,15 +303,18 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
-  
-  
+  if (length(which(ls() == "week_weekend_aggregate.part5")) == 0) week_weekend_aggregate.part5=FALSE
+  if (length(which(ls() == "LUXthresholds")) == 0) LUXthresholds = seq(0,15000, by = 500)
+  if (length(which(ls() == "LUXperhourAgg")) == 0) LUXperhourAgg = "max"
+
+
   # VISUAL REPORT
-  
+
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
-  
-  
+
+
   GGIRversion = ""
   SI = sessionInfo()
   try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
@@ -319,7 +328,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
   cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
-  
+
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
@@ -340,7 +349,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,
             do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
             do.enmoa = do.enmoa,
-            do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz, 
+            do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz,
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
             do.sgAccEN=do.sgAccEN, do.sgAnglex=do.sgAnglex,
@@ -371,7 +380,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
             rmc.col.wear=rmc.col.wear,
             rmc.doresample=rmc.doresample,
-            myfun=myfun)
+            myfun=myfun, maxNcores=maxNcores)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -391,7 +400,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_windowsize_minutes = IVIS_windowsize_minutes,
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur)
+            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur,
+            maxNcores=maxNcores)
   }
   if (dopart3 == TRUE) {
     cat('\n')
@@ -402,7 +412,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun)
+            myfun=myfun, maxNcores=maxNcores)
   }
   if (dopart4 == TRUE) {
     cat('\n')
@@ -437,12 +447,15 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             boutdur.in = boutdur.in,
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
-            overwrite=overwrite,desiredtz=desiredtz,dayborder=dayborder,
+            overwrite=overwrite,desiredtz=desiredtz, bout.metric=bout.metric,dayborder=dayborder,
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
+            # frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
+            frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5)
+            includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
+            LUXthresholds=LUXthresholds, LUXperhourAgg=LUXperhourAgg, maxNcores=maxNcores)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -506,11 +519,12 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms5.out < f0) f0 = 1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
-    
+
     g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
-                   minimum_MM_length.part5=minimum_MM_length.part5)
+                   minimum_MM_length.part5=minimum_MM_length.part5,
+                   week_weekend_aggregate.part5=week_weekend_aggregate.part5)
   }
   if (visualreport == TRUE) {
     cat('\n')

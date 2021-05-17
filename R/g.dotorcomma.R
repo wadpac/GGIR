@@ -48,7 +48,6 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
       try(expr={deci = GENEAread::read.bin(binfile=inputfile,start=1,end=3,mmap.load=FALSE,calibrate=TRUE)},silent=TRUE)
-      # on.exit(closeAllConnections())
       if(is.na(as.numeric(deci$data.out[2,2])) == T & getOption("OutDec") == ".") decn = ","
     }
   } else if (dformat == 3) {

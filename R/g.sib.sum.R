@@ -35,7 +35,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
           colnames(sleep.t) = colnames(sleep)
           invalid.t = invalid[qqq1:qqq2]
           for (j in 1:ncol(sleep.t)) { #sleep definitions
-            nsleepperiods = length(which(diff(sleep.t[,j]) == 1))     
+            nsleepperiods = length(which(diff(sleep.t[,j]) == 1))
             if (nsleepperiods > 0) {
               start_sp = which(diff(sleep.t[,j]) == 1)
               end_sp = which(diff(sleep.t[,j]) == -1)
@@ -50,7 +50,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
             }
             colnames(sib.cla.sum)[1:9] = c("night", "definition", "start.time.day",
                                            "nsib.periods", "tot.sib.dur.hrs",
-                                           "fraction.night.invalid", 
+                                           "fraction.night.invalid",
                                            "sib.period", "sib.onset.time",
                                            "sib.end.time")
             NepochsInDay = (60/ws3)*1440
@@ -86,7 +86,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
               }
             }
             if (cnt  > 800) {
-              sib.cla.sum = rbind(sib.cla.sum, as.data.frame(matrix(1000,0,9)))
+              sib.cla.sum = rbind(sib.cla.sum, as.data.frame(matrix(0,1000,9)))
             }
           }
         }

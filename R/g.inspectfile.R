@@ -239,7 +239,6 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       H = genea$header
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile=datafile, more = F)
-      # on.exit(closeAllConnections())
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
     }
@@ -356,9 +355,6 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
-  if ("gzfile" %in% showConnections(all = T)[,1] == TRUE) {
-    closeAllConnections()
-  }
   invisible(list(header=header,monc=monc,monn=monn,
                  dformc=dformc,dformn=dformn,sf=sf,filename=filename))
 }

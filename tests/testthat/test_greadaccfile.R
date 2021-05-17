@@ -43,10 +43,7 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   Mwav = expect_warning(g.getmeta(wavfile, desiredtz=desiredtz, windowsize = c(1,300,300)))
   expect_true(Mwav$filetooshort)
   expect_false(Mwav$filecorrupt)
-  
-  options(warn=-1) # to ignore GENEAread warnings
   IGA = g.inspectfile(GAfile, desiredtz = desiredtz)
-  options(warn=0) # to ignore GENEAread warnings
   expect_equal(IGA$monc,2)
   expect_equal(IGA$dformc,1)
   expect_equal(IGA$sf,85.7)
@@ -57,8 +54,6 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   MGA = expect_warning(g.getmeta(GAfile, desiredtz=desiredtz, windowsize = c(1,300,300)))
   expect_true(MGA$filetooshort)
   expect_true(MGA$filecorrupt)
-  
-  
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat=4,mon=4, desiredtz = desiredtz)
   expect_equal(decn,".")
@@ -74,9 +69,9 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
                            decn=".",dayborder,ws=3, desiredtz = desiredtz, PreviousEndPage = 1,inspectfileobject=Igenea)
   wav_read = expect_warning(g.readaccfile(wavfile,blocksize=2,blocknumber=1,filequality=filequality,selectdaysfile = c(),
                              decn=".",dayborder,ws=3, desiredtz = desiredtz, PreviousEndPage = 1,inspectfileobject=Iwav))
+  
   GA_read = expect_warning(g.readaccfile(GAfile,blocksize=2,blocknumber=1,filequality=filequality,selectdaysfile = c(),
                                           decn=".",dayborder,ws=3, desiredtz = desiredtz, PreviousEndPage = 1,inspectfileobject=IGA))
-  
   expect_equal(cwa_read$P$header$blocks,145)
   expect_equal(round(cwa_read$P$data[200,6], digits=4),4.1133)
   
@@ -94,5 +89,4 @@ test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir=datadir,filelist=FALSE)
   expect_equal(length(fnames),4)
-  closeAllConnections()
 })

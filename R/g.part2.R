@@ -8,7 +8,7 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
                    window.summary.size=10,dayborder=0,bout.metric=2,closedbout=FALSE,desiredtz="",
                    IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA, iglevels = c(),
                    IVIS.activity.metric=2, TimeSegments2ZeroFile=c(), qM5L5  = c(), do.parallel = TRUE,
-                   myfun=c(), MX.ig.min.dur=10) {
+                   myfun=c(), MX.ig.min.dur=10, maxNcores=c()) {
   snloc= 1
   if (is.numeric(qwindow)) {
     qwindow = qwindow[order(qwindow)]
@@ -64,11 +64,12 @@ g.part2 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1, hrs.d
   #---------------------------------------
   cnt78 = 1
   if (do.parallel == TRUE) {
-    closeAllConnections() # in case there is a still something running from last time, kill it.
     cores=parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
-      cl <- parallel::makeCluster(Ncores-1) #not to overload your computer
+      if (length(maxNcores) == 0) maxNcores = Ncores
+      Ncores2use = min(c(Ncores-1, maxNcores))
+      cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))

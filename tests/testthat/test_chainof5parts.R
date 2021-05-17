@@ -114,20 +114,21 @@ test_that("chainof5parts", {
           strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
                      loglocation= sleeplog_fn,
                      overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel,
-          save_ms5rawlevels=TRUE)
+          # frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
+          frag.metrics="all", save_ms5rawlevels=TRUE)
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(121))
+  expect_that(ncol(output),equals(149))
   expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
-  expect_that(nrow(TSFILE),equals(4601)) 
+  expect_that(nrow(TSFILE),equals(4601))
   expect_that(ncol(TSFILE),equals(10))
   expect_that(length(unique(TSFILE$class_id)),equals(9))
  #--------------------------------------------
@@ -281,8 +282,8 @@ test_that("chainof5parts", {
   colnames(SDF) = c("Monitor","Day1","Day2")
   selectdaysfile = "selectdaysfile.csv"
   write.csv(SDF, file = selectdaysfile)
-  
-  
+
+
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
           do.parallel = do.parallel,myfun=myfun,
           studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = FALSE,
@@ -293,7 +294,7 @@ test_that("chainof5parts", {
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen=TRUE,
           do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen=TRUE, do.sgAccEN=FALSE,
           do.enmoa = TRUE,selectdaysfile=selectdaysfile)
-  
+
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 24)
@@ -305,14 +306,14 @@ test_that("chainof5parts", {
   expect_equal(round(mean(M$metashort$roll_med_acc_z, na.rm = T),digits=3), 0.007)
   expect_equal(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T),digits=3), 0.007)
   expect_equal(round(mean(M$metashort$ENMOa, na.rm = T),digits=3), 0.03)
-  
+
   SDF = "output_test/meta/raw/123A_testaccfile.csv_day1.RData"
   expect_true(file.exists(SDF))
   load(SDF)
   expect_that(nrow(data),equals(390600))
   expect_that(round(mean(data),digits=3),equals(0.266))
-  
-  
+
+
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn,recursive=TRUE)
   if (file.exists(fn)) file.remove(fn)
