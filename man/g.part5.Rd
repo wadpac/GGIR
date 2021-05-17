@@ -23,8 +23,10 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
   data_cleaning_file=c(), includedaycrit.part5=2/3,
-  frag.metrics=c(), iglevels=c(), LUXthresholds = seq(0,15000, by = 500),
-  LUXperhourAgg = "max",  maxNcores=c())
+  frag.metrics=c(), iglevels=c(), LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
+  LUX_agg_metric = "FractionAbove1000",  maxNcores=c(),
+    LUX_cal_constant = c(), LUX_cal_exponent = c(),
+    LUX_day_segments = 0:23)
 }
 \arguments{
   \item{datadir}{
@@ -200,13 +202,27 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     Vector with numeric sequece corresponding to the thresholds used to calculated time
     spent in LUX ranges.
   }
-  \item{LUXperhourAgg}{
+  \item{LUX_agg_metric}{
     Character to indicate how peak light values per 15 minutes
-    should be aggregated to hour level: "max" is maximum, "mean" is mean.
+    should be aggregated to day segment level: "FractionAbove1000" (default),
+    "max", or "mean".
   }
   \item{maxNcores}{
     See function \link{g.part1}
   }
+  \item{LUX_cal_constant}{
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX 
+    LUX values are converted based on formula y = constant * exp(x * exponent)
+  }
+  \item{LUX_cal_exponent}{
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX 
+    LUX values are converted based on formula y = constant * exp(x * exponent)
+  }
+  \item{LUX_day_segments}{
+    Numeric vector with hours at which the day should be segmented for
+    the LUX analysis.
+  }
+  
 }
 \value{
   The function does not produce values but generates an RData file

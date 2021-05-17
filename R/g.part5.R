@@ -15,8 +15,11 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    data_cleaning_file=c(),
                    includedaycrit.part5=2/3,
                    frag.metrics = c(), iglevels=c(),
-                   LUXthresholds = seq(0,15000, by = 500),
-                   LUXperhourAgg = "max", maxNcores=c()) {
+                   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
+                   LUX_agg_metric = "FractionAbove1000", maxNcores=c(),
+                   LUX_cal_constant = c(),
+                   LUX_cal_exponent = c(),
+                   LUX_day_segments = c()) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -225,6 +228,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                         # Check if temperature and light are availble
                                         if (lightpeak_available == TRUE) {
                                           luz = M$metalong$lightpeak
+                                          if (length(LUX_cal_constant) > 0 &
+                                              length(LUX_cal_exponent) > 0) { # re-calibrate light
+                                            luz = LUX_cal_constant * exp(LUX_cal_exponent * luz)
+                                          }
                                           # luz = luz[rep(seq_len(nrow(luz)), each = (IMP$windowsizes[2]/IMP$windowsizes[1])), ]
                                           luz = rep(luz,each=(IMP$windowsizes[2]/IMP$windowsizes[1]))
                                           if (length(luz) > Nts) {
@@ -292,7 +299,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
                                                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
-                                              ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
+                                              ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
                                               if (lightpeak_available == TRUE) {
                                                 ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "lightpeak")],
                                                                by = list(ts$time_num), FUN= function(x) mean(x))
@@ -754,29 +761,67 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             # time in LUX ranges
                                                             Nluxt = length(LUXthresholds)
                                                             for (lti in 1:Nluxt) {
-                                                              dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti] &
-                                                                                                      ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthresholds[lti+1])) / (60/ws3new)
-                                                              ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
+                                                              if (lti < Nluxt) {
+                                                                dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti] &
+                                                                                                        ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthresholds[lti+1])) / (60/ws3new)
+                                                                ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
+                                                              } else {
+                                                                dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti])) / (60/ws3new)
+                                                                ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_inf_day")
+                                                              }
                                                             }
-                                                            dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[Nluxt])) / (60/ws3new)
-                                                            ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
-                                                            fi = fi + Nluxt+1
-                                                            
+                                                            fi = fi + Nluxt
                                                             # light per hour of the day, ignoring SPT window
-                                                            hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
-                                                            if (LUXperhourAgg == "max") {
-                                                              lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), max)
-                                                            } else {
-                                                              lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), mean)
+                                                            print(LUX_day_segments)
+                                                            first_hour_seg = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
+                                                            for (ldi in 1:(length(LUX_day_segments)-1)) { # round all hours to bottom of its class
+                                                              tmpl = which(first_hour_seg >= LUX_day_segments[ldi] &
+                                                                             first_hour_seg <  LUX_day_segments[ldi+1])
+                                                              if(length(tmpl) > 0) {
+                                                                first_hour_seg[tmpl] = LUX_day_segments[ldi]
+                                                              }
                                                             }
-                                                            colnames(lightperhour) = c("hour", "light")
-                                                            lightperhour = base::merge(lightperhour, data.frame(hour = 0:23, light = rep(NA, 24)),
-                                                                                       by =c("hour"), all.y=TRUE)
-                                                            lightperhourn = lightperhour[,c("hour","light.x")]
-                                                            colnames(lightperhour) = c("hour", "light")
-                                                            dsummary[di,fi:(fi+23)] = lightperhour$light
-                                                            ds_names[fi:(fi+23)] = paste0("LUX_hour_",lightperhour$hour,"_day")
-                                                            fi = fi + 24
+                                                            if (LUX_agg_metric == "max") {
+                                                              lightperseg = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(first_hour_seg), max)
+                                                            } else if (LUX_agg_metric == "mean") {
+                                                              lightperseg = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(first_hour_seg), mean)
+                                                            } else if (LUX_agg_metric == "FractionAbove1000") { #fraction of time with LUX above thousand
+                                                              time_above_thousand = function(x, ws3new) {
+                                                                ratio_valid = length(which(is.na(x) == FALSE)) / length(x)
+                                                                if (ratio_valid >= 0.5) { # require at least 50% of window to have value
+                                                                  timeabove1000 = length(which(x > 1000))
+                                                                  timespent = round(timeabove1000 / length(x), digits=2) # express as proportion of window
+                                                                } else {
+                                                                  timespent = NA
+                                                                }
+                                                                return(timespent)
+                                                              }
+                                                              lightperseg = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], 
+                                                                                       by =  list(first_hour_seg), time_above_thousand, ws3new)
+                                                            }
+                                                            colnames(lightperseg) = c("seg", "light")
+                                                            if (24 %in% LUX_day_segments) LUX_day_segments = LUX_day_segments[which(LUX_day_segments != 24)] # remove end of day
+                                                            Nsegs = length(LUX_day_segments)
+                                                            lightperseg = base::merge(lightperseg, 
+                                                                                       data.frame(seg= LUX_day_segments, 
+                                                                                                  light = rep(NA, Nsegs)),
+                                                                                       by =c("seg"), all.y=TRUE)
+                                                            lightperseg = lightperseg[,c("seg","light.x")]
+                                                            colnames(lightperseg) = c("seg", "light")
+                                                            dsummary[di,fi:(fi+(Nsegs-1))] = lightperseg$light
+                                                            LUX_day_segments = c(LUX_day_segments, 24) # end of day back in
+                                                            end_of_segment = LUX_day_segments[which(lightperseg$seg %in% LUX_day_segments) + 1]
+                                                            ds_names[fi:(fi+(Nsegs-1))] = paste0("LUXmetric_",lightperseg$seg,"-",end_of_segment, "hr_day")
+                                                            fi = fi + Nsegs
+                                                            # dsummary[di,fi:(fi+3)] = c(length(which(lightperhour$light >= 0)),
+                                                            #                     length(which(lightperhour$light >= 0.25)),
+                                                            #                     length(which(lightperhour$light >= 0.5)),
+                                                            #                     length(which(lightperhour$light >= 0.75)))
+                                                            # ds_names[fi:(fi+3)] = c("LUX_Nhour_atleast_0_day",
+                                                            #                       "LUX_NhourWith_atleast_25_day",
+                                                            #                       "LUX_NhourWith_atleast_50_day",
+                                                            #                       "LUX_NhourWith_atleast_70_day")
+                                                            # fi = fi + 4
                                                           }
                                                           #===============================================
                                                           # FOLDER STRUCTURE
@@ -859,7 +904,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # ignore columns with the LUX hour
                                             emptycols = which(emptycols == TRUE &
                                                                 colnames(output) %in%
-                                                                grep(pattern = "LUX_hour|LUX_min|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
+                                                                grep(pattern = "LUXmetric_|LUX_min|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
                                                                      x = colnames(output), value = TRUE) == FALSE)
                                             if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
                                             # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
