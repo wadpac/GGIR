@@ -203,7 +203,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   .SD <- .N <- count <- a <- NULL
                   WeightedAggregate <- dt[,lapply(.SD,weighted.mean,w=len,na.rm=TRUE),by=list(filename)]
                   options(warn=0)
-                  add_missing_LUX = function(x, weeksegment=c()) {
+                  add_missing_LUX = function(x, LUX_day_segments, weeksegment=c()) {
                     # missing columns, add these:
                     NLUXseg = length(LUX_day_segments)
                     if (length(weeksegment) > 0) {
@@ -221,8 +221,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     return(x)
                   }
                   LUX_hour_variables = grep(pattern = "LUXmetric_",x = colnames(WeightedAggregate), value=TRUE)
-                  if (length(LUX_hour_variables) > 0 & length(LUX_hour_variables) < 24) {
-                    WeightedAggregate = add_missing_LUX(WeightedAggregate)
+                  if (length(LUX_hour_variables) > 0 & length(LUX_hour_variables) < 24 & length(LUX_day_segments) > 0) {
+                    WeightedAggregate = add_missing_LUX(WeightedAggregate, LUX_day_segments, weeksegment=c())
                   }
                   # merge them into one output data.frame (G)
                   LUX_hour_variables = colnames(PlainAggregate) %in% grep(x = colnames(PlainAggregate), pattern="LUXmetric_", value=TRUE)
@@ -251,8 +251,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     names(temp_aggregate)[numcol] = paste0(names(temp_aggregate)[numcol], "_", weeksegment)
                     temp_aggregate = temp_aggregate[,c(which(colnames(temp_aggregate) == "filename"), numcol)]
                     LUX_hour_variables = grep(pattern = "LUXmetric_",x = colnames(temp_aggregate), value=TRUE)
-                    if (length(LUX_hour_variables) > 0 & length(LUX_hour_variables) < 24) {
-                      temp_aggregate = add_missing_LUX(temp_aggregate, weeksegment)
+                    if (length(LUX_hour_variables) > 0 & length(LUX_hour_variables) < 24 & length(LUX_day_segments) > 0) {
+                      temp_aggregate = add_missing_LUX(temp_aggregate, LUX_day_segments, weeksegment)
                     }
                     G = base::merge(G, temp_aggregate,
                                     by="filename", all.x=TRUE)
