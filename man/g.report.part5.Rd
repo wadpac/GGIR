@@ -13,7 +13,8 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                           data_cleaning_file=c(),
                           includedaycrit.part5=2/3,
                           minimum_MM_length.part5=23,
-                          week_weekend_aggregate.part5=FALSE)
+                          week_weekend_aggregate.part5=FALSE,
+                          LUX_day_segments=c())
 }
 \arguments{
   \item{metadatadir}{
@@ -49,6 +50,9 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
    Boolean to indicate whether week and weekend-days aggregates
    should be stored. This is turned off by default as it generates a 
    large number of extra columns in the output report.
+   }
+   \item{LUX_day_segments}{
+    see \link{g.part5}
    }
 }
 \value{

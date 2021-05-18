@@ -26,7 +26,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   frag.metrics=c(), iglevels=c(), LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
   LUX_agg_metric = "FractionAbove1000",  maxNcores=c(),
     LUX_cal_constant = c(), LUX_cal_exponent = c(),
-    LUX_day_segments = 0:23)
+    LUX_day_segments = c())
 }
 \arguments{
   \item{datadir}{
