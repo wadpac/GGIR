@@ -310,11 +310,12 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("LUX_cal_exponent") == FALSE) LUX_cal_exponent = c()
   if (exists("LUX_day_segments") == FALSE) LUX_day_segments = c()
   
-  
-  LUX_day_segments = sort(unique(round(LUX_day_segments)))
-  if (length(LUX_day_segments) != 0) {
-    if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
-    if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
+  if (length(LUX_day_segments) > 0) {
+    LUX_day_segments = sort(unique(round(LUX_day_segments)))
+    if (length(LUX_day_segments) != 0) {
+      if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
+      if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
+    }
   }
   # VISUAL REPORT
 
