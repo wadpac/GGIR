@@ -304,18 +304,16 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("rmc.doresample") == FALSE) rmc.doresample = FALSE
   if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
   if (exists("week_weekend_aggregate.part5") == FALSE) week_weekend_aggregate.part5=FALSE
-  if (exists("LUXthresholds") == FALSE) LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000)
-  if (exists("LUX_agg_metric") == FALSE) LUX_agg_metric = "FractionAbove1000"
+  if (exists("LUXthresholds") == FALSE) LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000)
   if (exists("LUX_cal_constant") == FALSE) LUX_cal_constant = c()
   if (exists("LUX_cal_exponent") == FALSE) LUX_cal_exponent = c()
   if (exists("LUX_day_segments") == FALSE) LUX_day_segments = c()
   
   if (length(LUX_day_segments) > 0) {
     LUX_day_segments = sort(unique(round(LUX_day_segments)))
-    if (length(LUX_day_segments) != 0) {
-      if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
-      if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
-    }
+    if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
+    if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
+    
   }
   # VISUAL REPORT
 
@@ -464,7 +462,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
             includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
-            LUXthresholds=LUXthresholds, LUX_agg_metric=LUX_agg_metric, maxNcores=maxNcores,
+            LUXthresholds=LUXthresholds, maxNcores=maxNcores,
             LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
             LUX_day_segments=LUX_day_segments)
   }
@@ -535,8 +533,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
                    minimum_MM_length.part5=minimum_MM_length.part5,
-                   week_weekend_aggregate.part5=week_weekend_aggregate.part5,
-                   LUX_day_segments=LUX_day_segments)
+                   week_weekend_aggregate.part5=week_weekend_aggregate.part5)
   }
   if (visualreport == TRUE) {
     cat('\n')

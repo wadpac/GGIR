@@ -15,8 +15,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    data_cleaning_file=c(),
                    includedaycrit.part5=2/3,
                    frag.metrics = c(), iglevels=c(),
+                   maxNcores=c(),
                    LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
-                   LUX_agg_metric = "FractionAbove1000", maxNcores=c(),
                    LUX_cal_constant = c(),
                    LUX_cal_exponent = c(),
                    LUX_day_segments = c()) {
@@ -771,43 +771,99 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                               }
                                                             }
                                                             fi = fi + Nluxt
+                                                            sse2 = sse
+                                                            if (timewindowi =="WW") { # adjust sse such that we clear allignment of 4 hour blocks
+                                                              first_hour_seg = as.numeric(format(ts$time[sse2],"%H"))
+                                                              for (ldi in 1:(length(LUX_day_segments)-1)) { # round all hours to bottom of its class
+                                                                tmpl = which(first_hour_seg >= LUX_day_segments[ldi] &
+                                                                               first_hour_seg <  LUX_day_segments[ldi+1])
+                                                                if(length(tmpl) > 0) {
+                                                                  first_hour_seg[tmpl] = LUX_day_segments[ldi]
+                                                                }
+                                                              }
+                                                              Nepochperday = 24 * (3600 / ws3new)
+                                                              if (length(first_hour_seg) > Nepochperday) {
+                                                                first_hour_seg = first_hour_seg[1:Nepochperday]
+                                                              }
+                                                              if (length(sse2) > Nepochperday) {
+                                                                sse2 = sse2[1:Nepochperday]
+                                                              }
+                                                              # expanding first time segment
+                                                              expected_N_seg1 = (rep(LUX_day_segments,2)[which(LUX_day_segments == first_hour_seg[1])+1] - LUX_day_segments[which(LUX_day_segments == first_hour_seg[1])]) * 60 * (60/ws3new)
+                                                              actual_N_seg1 = length(which(first_hour_seg[1:round(Nepochperday*0.66)] == first_hour_seg[1]))
+                                                              missingN_seg1 = expected_N_seg1 - actual_N_seg1
+                                                              if (missingN_seg1 > 0) {
+                                                                sse2 = c((sse2[1]-missingN_seg1):(sse2[1]-1),sse2)
+                                                                first_hour_seg = c(rep(first_hour_seg[1], missingN_seg1), first_hour_seg)
+                                                              }
+                                                              # removing again the data after 24 hours to avoid overlap  Nepochperday = 24 * (3600 / ws3)
+                                                              if (length(first_hour_seg) > Nepochperday) {
+                                                                first_hour_seg = first_hour_seg[1:Nepochperday]
+                                                              }
+                                                              if (length(sse2) > Nepochperday) {
+                                                                sse2 = sse2[1:Nepochperday]
+                                                              }
+                                                              # if less than 24 hours makes sure that last incomplete segment is removed
+                                                              if (length(sse2) < Nepochperday) {
+                                                                last_seg = first_hour_seg[length(first_hour_seg)]
+                                                                N_last_seg = length(which(first_hour_seg[round(length(first_hour_seg)*0.5):length(first_hour_seg)] == last_seg))
+                                                                sse2 = sse2[1:(length(sse2) - N_last_seg)]
+                                                                first_hour_seg = first_hour_seg[1:(length(first_hour_seg) - N_last_seg)]
+                                                              }
+                                                            }
                                                             # Aggregation per segment of the window:
-                                                            first_hour_seg = as.numeric(format(ts$time[sse],"%H"))
-                                                            ts$diur[sse] == 0
-                                                            for (ldi in 1:(length(LUX_day_segments)-1)) { # round all hours to bottom of its class
-                                                              tmpl = which(first_hour_seg >= LUX_day_segments[ldi] &
-                                                                             first_hour_seg <  LUX_day_segments[ldi+1])
-                                                              if(length(tmpl) > 0) {
-                                                                first_hour_seg[tmpl] = LUX_day_segments[ldi]
-                                                              }
+                                                            # Function to help standardise metric per seg output across days and recordings
+                                                            standardise_luxperseg = function(x, LUX_day_segments, LUXmetricname = "") {
+                                                              colnames(x) = c("seg", "light")
+                                                              if (24 %in% LUX_day_segments) LUX_day_segments = LUX_day_segments[which(LUX_day_segments != 24)] # remove end of day
+                                                              Nsegs = length(LUX_day_segments)
+                                                              x = base::merge(x, data.frame(seg= LUX_day_segments, 
+                                                                                 light = rep(NA, Nsegs)),
+                                                                                        by =c("seg"), all.y=TRUE)
+                                                              x = x[,c("seg","light.x")]
+                                                              colnames(x) = c("seg", "light")
+                                                              LUX_day_segments = c(LUX_day_segments, 24) # end of day back in
+                                                              end_of_segment = LUX_day_segments[which(x$seg %in% LUX_day_segments) + 1]
+                                                              invisible(list(values = x$light,
+                                                                            names = paste0("LUX_",LUXmetricname,"_",x$seg,"-",end_of_segment, "hr_day"),
+                                                                            Nsegs = Nsegs))
                                                             }
-                                                            if (LUX_agg_metric == "max") {
-                                                              lightperseg = aggregate(ts$lightpeak[sse], by =  list(first_hour_seg), max)
-                                                            } else if (LUX_agg_metric == "mean") {
-                                                              lightperseg = aggregate(ts$lightpeak[sse], by =  list(first_hour_seg), mean)
-                                                            } else if (LUX_agg_metric == "FractionAbove1000") { #fraction of time with LUX above thousand
-                                                              fraction_above_thousand = function(x) {
-                                                                timeabove1000 = length(which(x > 1000))
-                                                                timespent = round(timeabove1000 / length(x), digits=2) # express as proportion of window
-                                                                return(timespent)
-                                                              }
-                                                              lightperseg = aggregate(ts$lightpeak[sse], 
-                                                                                       by =  list(first_hour_seg), fraction_above_thousand)
+                                                            
+                                                            # Fraction above 1000 LUX
+                                                            fraction_above_thousand = function(x) {
+                                                              timeabove1000 = length(which(x > 1000)) / (60/ws3new)
+                                                              return(timeabove1000)
                                                             }
-                                                            colnames(lightperseg) = c("seg", "light")
-                                                            if (24 %in% LUX_day_segments) LUX_day_segments = LUX_day_segments[which(LUX_day_segments != 24)] # remove end of day
-                                                            Nsegs = length(LUX_day_segments)
-                                                            lightperseg = base::merge(lightperseg, 
-                                                                                       data.frame(seg= LUX_day_segments, 
-                                                                                                  light = rep(NA, Nsegs)),
-                                                                                       by =c("seg"), all.y=TRUE)
-                                                            lightperseg = lightperseg[,c("seg","light.x")]
-                                                            colnames(lightperseg) = c("seg", "light")
-                                                            dsummary[di,fi:(fi+(Nsegs-1))] = lightperseg$light
-                                                            LUX_day_segments = c(LUX_day_segments, 24) # end of day back in
-                                                            end_of_segment = LUX_day_segments[which(lightperseg$seg %in% LUX_day_segments) + 1]
-                                                            ds_names[fi:(fi+(Nsegs-1))] = paste0("LUXmetric_",lightperseg$seg,"-",end_of_segment, "hr_day")
+                                                            LUXabove1000 = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), fraction_above_thousand)
+                                                            # Time awake
+                                                            countwake = function(x, ws3new) {
+                                                              return(length(which(x == 0)) / (60/ws3new))
+                                                            }
+                                                            LUXwaketime = aggregate(ts$diur[sse2], by =  list(first_hour_seg), countwake, ws3new)
+                                                            # Mean light
+                                                            LUXmean = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), mean)
+                                                            
+                                                            
+                                                            standardLPS = standardise_luxperseg(x= LUXabove1000, LUX_day_segments, LUXmetricname ="above1000")
+                                                            Nsegs = standardLPS$Nsegs
+                                                            dsummary[di,fi:(fi+(Nsegs-1))] = standardLPS$values
+                                                            ds_names[fi:(fi+(Nsegs-1))] = standardLPS$names
                                                             fi = fi + Nsegs
+                                                            
+                                                            standardLPS = standardise_luxperseg(x= LUXwaketime, LUX_day_segments, LUXmetricname ="timeawake")
+                                                            Nsegs = standardLPS$Nsegs
+                                                            dsummary[di,fi:(fi+(Nsegs-1))] = standardLPS$values
+                                                            ds_names[fi:(fi+(Nsegs-1))] = standardLPS$names
+                                                            fi = fi + Nsegs
+                                                            
+                                                            standardLPS = standardise_luxperseg(x= LUXmean, LUX_day_segments, LUXmetricname ="mean")
+                                                            Nsegs = standardLPS$Nsegs
+                                                            dsummary[di,fi:(fi+(Nsegs-1))] = standardLPS$values
+                                                            ds_names[fi:(fi+(Nsegs-1))] = standardLPS$names
+                                                            fi = fi + Nsegs
+                                                            
+                                                            
+                                                            
                                                           }
                                                           #===============================================
                                                           # FOLDER STRUCTURE
