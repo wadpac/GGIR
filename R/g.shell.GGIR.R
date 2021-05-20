@@ -533,7 +533,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
                    minimum_MM_length.part5=minimum_MM_length.part5,
-                   week_weekend_aggregate.part5=week_weekend_aggregate.part5)
+                   week_weekend_aggregate.part5=week_weekend_aggregate.part5,
+                   LUX_day_segments=LUX_day_segments)
   }
   if (visualreport == TRUE) {
     cat('\n')
