@@ -946,7 +946,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # ignore columns with the LUX hour
                                             emptycols = which(emptycols == TRUE &
                                                                 colnames(output) %in%
-                                                                grep(pattern = "LUXmetric_|LUX_min|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
+                                                                grep(pattern = "LUX_|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
                                                                      x = colnames(output), value = TRUE) == FALSE)
                                             if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
                                             # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
