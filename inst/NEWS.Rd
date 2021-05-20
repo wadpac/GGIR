@@ -31,7 +31,7 @@
   \item Part 3 bug fixed in recognition fraction night invalid for first night.
   Thanks Ruben Brondeel for spotting.
   \item Part 1 fixed warning related to closing connection to bin files. Thanks John Muschelli.
-  \item Part 2 fixed warning that depricated IVIS arugment does not exist
+  \item Part 2 fixed warning that deprecated IVIS arugment does not exist
 }
 }
 \section{Changes in version 2.3-0 (release date:17-02-2021)}{
