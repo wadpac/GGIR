@@ -841,8 +841,10 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             }
                                                             LUXwaketime = aggregate(ts$diur[sse2], by =  list(first_hour_seg), countwake, ws3new)
                                                             # Mean light
-                                                            LUXmean = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), mean)
-                                                            
+                                                            mymean = function(x) {
+                                                              return(round(mean(x, na.rm = T), digits=1))
+                                                            }
+                                                            LUXmean = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), mymean)
                                                             
                                                             standardLPS = standardise_luxperseg(x= LUXabove1000, LUX_day_segments, LUXmetricname ="above1000")
                                                             Nsegs = standardLPS$Nsegs
