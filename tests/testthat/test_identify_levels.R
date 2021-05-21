@@ -15,12 +15,12 @@ test_that("identify_levels", {
                              ws3=5,bout.metric=4)
   expect_that(as.numeric(table(levels$LEVELS))[1],equals(403))
   expect_that(as.numeric(table(levels$LEVELS)[3]),equals(553))
-  expect_that(as.numeric(table(levels$LEVELS)[5]),equals(4052))
+  expect_that(as.numeric(table(levels$LEVELS)[5]),equals(3522))
   expect_that(as.numeric(table(levels$LEVELS)[7]),equals(24))
   expect_that(as.numeric(table(levels$OLEVELS)[2]),equals(5085))
   expect_that(as.numeric(table(levels$OLEVELS)[4]),equals(28))
   expect_that(levels$Lnames[12],equals("day_LIG_bts_5"))
-  expect_that(as.numeric(table(as.numeric(levels$bc.in))[2]),equals(1144))
+  expect_that(as.numeric(table(as.numeric(levels$bc.in))[2]),equals(1752))
   
 })
 

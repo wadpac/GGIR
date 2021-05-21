@@ -9,6 +9,7 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
 
 name: R-CMD-check-full
 
@@ -33,6 +34,11 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - uses: uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Amsterdam"
+          timezoneMacos: "Asia/Singapore"
+          timezoneWindows: "America/New_York"
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-tinytex@master
       - run: tlmgr --version

@@ -1,11 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-\section{Changes in version 2.3-3 (GitHub-only-release date:31-05-2021)}{
+\section{Changes in version 2.3-3 (GitHub-only-release date:20-05-2021)}{
 \itemize{
+  \item Part 5 fragmentation analysis added
+  \item Part 5 report, added argument week_weekend_aggregate.part5
+  \item Part 5 intensity gradient now also extracted here for waking hours
+  \item Part 5 LUX variables added (beta-implementation)
+  \item Part 2 and 5, Bout detection algorithm improved, see bout.metric 6
+  \item Parts 1, 2, 3 and 5: Added argument maxNcores to control maximum number
+  of cores to be used in parallel processing mode
   \item Part 1 fixed bug related with ENMOa calculation which made the metashort data frame to be empty
-  \item Added argument maxNcores to control maximum number of cores to be used
+  \item Part 2 fixed bug to report generation in part 2
+  \item Fixed bug related to visualization report when a file has not been processed in part 4
 }
 }
 \section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
@@ -24,7 +31,7 @@
   \item Part 3 bug fixed in recognition fraction night invalid for first night.
   Thanks Ruben Brondeel for spotting.
   \item Part 1 fixed warning related to closing connection to bin files. Thanks John Muschelli.
-  \item Part 2 fixed warning that depricated IVIS arugment does not exist
+  \item Part 2 fixed warning that deprecated IVIS argument does not exist
 }
 }
 \section{Changes in version 2.3-0 (release date:17-02-2021)}{

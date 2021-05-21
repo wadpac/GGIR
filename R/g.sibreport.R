@@ -1,4 +1,4 @@
-g.sibreport = function(ts, ID, ws3new) {
+g.sibreport = function(ts, ID, epochlength) {
   dayind = which(ts$diur == 0)
   sib_starts = which(diff(c(0,ts$sibdetection[dayind],0)) == 1)
   sib_ends = which(diff(c(ts$sibdetection[dayind],0)) == -1)
@@ -16,10 +16,10 @@ g.sibreport = function(ts, ID, ws3new) {
     for (sibi in 1:Nsibs) {
       sibreport$start[sibi]  = as.character(ts$time[dayind][sib_starts[sibi]])
       sibreport$end[sibi] = as.character(ts$time[dayind][sib_ends[sibi]])
-      sibreport$duration[sibi] = ((sib_ends[sibi] - sib_starts[sibi]) + 1) / (60/ws3new)
+      sibreport$duration[sibi] = ((sib_ends[sibi] - sib_starts[sibi]) + 1) / (60/epochlength)
       boutind = sib_starts[sibi]:sib_ends[sibi]
-      minute_before = (sibi-(60/ws3new)):(sibi-1)
-      minute_after = (sibi+1):(sibi+(60/ws3new))
+      minute_before = (sibi-(60/epochlength)):(sibi-1)
+      minute_after = (sibi+1):(sibi+(60/epochlength))
       sibreport$mean_acc[sibi]  = round(mean(ts$ACC[dayind][boutind]), digits=3)
       sibreport$sd_acc[sibi]  = round(sd(ts$ACC[dayind][boutind]), digits=3)
       sibreport$sd_ang[sibi]  = round(sd(ts$angle[dayind][boutind]), digits=3)

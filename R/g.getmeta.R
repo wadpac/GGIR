@@ -99,7 +99,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     cat(paste("\nshort windowsize has now been automatically adjusted to: ",ws3," seconds in order to meet this criteria.\n",sep=""))
   }
   windowsizes = c(ws3,ws2,ws)
-  data = PreviousEndPage = starttime = wday = weekdays = wdayname = c()
+  data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
   
   monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
@@ -254,9 +254,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
       PreviousEndPage = accread$endpage
-      PreviousStartPage = accread$startpage
+      options(warn=-1) # to ignore warnings relating to failed mmap.load attempt
       rm(accread); gc()
+      options(warn=0) # to ignore warnings relating to failed mmap.load attempt
       if(mon == 5) { # if movisens, then read temperature
+        PreviousStartPage = accread$startpage
         temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
         P = cbind(P, temperature[1:nrow(P)])
         colnames(P)[4] = "temp"
