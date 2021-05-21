@@ -93,7 +93,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
       if (skip == 0) {  
         # Load previously stored meta-data from part1.R
         cat(paste(" ",i,sep=""))
-        IMP = M = c()
+        SUM = IMP = M = c()
         load(paste(metadatadir,"/meta/basic/meta_",fnames[i],sep=""))
         load(paste(metadatadir,"/meta/ms2.out/",fnames[i],sep=""))
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
@@ -105,17 +105,20 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           sptwindow_HDCZA_start = SLE$sptwindow_HDCZA_start
           tib.threshold = SLE$tib.threshold
           if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
-            id = as.character(unlist(strsplit(I$filename,"_"))[1])
+            ID = SUM$summary$ID
+            # id = as.character(unlist(strsplit(I$filename,"_"))[1])
             datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
             plottitle = " " #datename#"blablbalbal"# paste("File: ",i," | date: ",datename," | filename: ",fna2," | night: ",j,sep="")
             if (do.part3.pdf == TRUE) {
-              pdf(paste(metadatadir,"/meta/sleep.qc/graphperday_id_",id,"_",I$filename,".pdf",sep=""),width=8.2,height=11.7)
+              pdf(paste(metadatadir,"/meta/sleep.qc/graphperday_id_",ID, "_",I$filename,".pdf",sep=""),width=8.2,height=11.7)
               g.sib.plot(SLE,M,I,plottitle,nightsperpage=nightsperpage,desiredtz=desiredtz)
               dev.off()
             }
             sib.cla.sum = c()
             sib.cla.sum = g.sib.sum(SLE,M,ignorenonwear=ignorenonwear,desiredtz=desiredtz)
-            save(sib.cla.sum,L5list,sptwindow_HDCZA_end, sptwindow_HDCZA_start, tib.threshold, 
+            rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to allign sleeplog with recording
+            
+            save(sib.cla.sum,L5list,sptwindow_HDCZA_end, sptwindow_HDCZA_start, tib.threshold, rec_starttime, ID,
                  file=paste(metadatadir,"/meta/ms3.out/",fname,".RData",sep=""))
           }
         }

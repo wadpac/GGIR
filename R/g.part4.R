@@ -34,7 +34,21 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     dolog = FALSE
   }
   if (dolog == TRUE) {
-    LL = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum)
+    # for (m3i in 1:length( meta.sleep.folder)) {
+    getIDstartdate = function(x) {
+      rec_starttime = ID = c()
+      load(x)
+      invisible(list(ID=ID,rec_starttime=rec_starttime))
+    }
+    startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
+    if (length(startdates) > 0) {
+      startdates = data.table::rbindlist(startdates, fill=TRUE)
+      colnames(startdates) = c("ID", "startdate")
+      startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
+      LL = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum, startdates)
+    } else {
+      LL = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum)
+    }
     sleeplog = LL$sleeplog
     save(sleeplog,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))
   }

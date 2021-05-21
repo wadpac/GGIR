@@ -1,4 +1,4 @@
-g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidnum=TRUE) {
+g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidnum=TRUE,  startdates = c()) {
   cnt_time_notrecognise = 0
   #===============================
   # Load sleep log data...
@@ -15,6 +15,20 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidn
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ",(nrow(S)*nnights),2)
 
+  if (length(startdates) > 0) {
+    # (1) check whether sleeplog is in advanced format (with dates and/or naps or nonwear)
+    # if not skip
+    # if yes, do:
+    # (2) loop through IDs in sleeplog:
+    # (2a) try to match sleeplog ID with acc ID, if not possible skip ID
+    # (2b) check for each ID:
+    # - difference in days for start date of sleeplog and acc recording
+    # (2c) create new sleeplog consisting of:
+    # - original ID column
+    # - empty columns if relevant to make sleeplog match accelerometer recording, make sure coln1 argument is used
+    # - onset and wakup times of sleeplog, for this extract dates from sleeplog to check for missing days
+    # (2d) create nap and nonwear log
+  }
   cnt = 1
   for (i in 1:nnights) { #loop through nights
     SL = as.character(S[,coln1+((i-1)*2)])

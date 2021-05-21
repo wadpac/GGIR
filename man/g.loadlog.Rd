@@ -9,7 +9,7 @@ before storing the output in a dataframe
 }
 \usage{
 g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
-sleeplogidnum=TRUE)
+sleeplogidnum=TRUE, startdates)
 }
 \arguments{
   \item{loglocation}{
@@ -26,6 +26,10 @@ sleeplogidnum=TRUE)
 }
   \item{sleeplogidnum}{
   See \link{g.part4}
+}
+\item{startdates}{
+data.frame with column ID and startdate with recording identifiers and 
+respective start dates
 }
 }
 \value{
