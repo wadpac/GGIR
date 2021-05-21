@@ -34,7 +34,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/set-timezone-action@v1.1
+      - uses: uses: szenius/set-timezone@v1.0
         with:
           timezoneLinux: "Europe/Amsterdam"
           timezoneMacos: "Asia/Singapore"
