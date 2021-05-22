@@ -8,7 +8,7 @@ Creates sleeplog file in the format as expected by g.part4
 with dummy data (23:00 onset, 07:00 waking time for every night).
 }
 \usage{
-  create_test_sleeplog_csv(Nnights=7,storagelocation=c())
+  create_test_sleeplog_csv(Nnights=7,storagelocation=c(), advanced=FALSE)
 }
 \arguments{
   \item{Nnights}{
@@ -18,6 +18,10 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
     Location where the test file named testfile.csv will be stored
     If no value is provided then the function uses the current 
     working directory
+  }
+  \item{advanced}{
+    Boolean to indicate whether to create an advanced sleeplog that also includes
+    logs of nap times and nonwear
   }
 }
 \value{
