@@ -64,7 +64,15 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir,"/meta/sleeplog.RData",sep="")
   if (file.exists(sleeplogRDA) == TRUE){
+    sleeplog = logs_diaries = c()
     load(sleeplogRDA)
+    if (length(logs_diaries) > 0) {# new format
+      if (is.list(logs_diaries)) { # advanced format
+        sleeplog = logs_diaries$sleeplog
+      } else {
+        sleeplog = logs_diaries
+      }
+    }
   } else {
     sleeplog = c()
   }

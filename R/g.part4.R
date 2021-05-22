@@ -45,12 +45,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       startdates = data.table::rbindlist(startdates, fill=TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
-      LL = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum, startdates)
+      logs_diaries = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum, startdates)
     } else {
-      LL = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum)
+      logs_diaries = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum)
     }
-    sleeplog = LL$sleeplog
-    save(sleeplog,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))
+    sleeplog = logs_diaries$sleeplog
+    save(logs_diaries,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))
   }
   #------------------------------------------------
   # get list of accelerometer milestone data files from sleep (produced by g.part3)
