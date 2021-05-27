@@ -19,7 +19,7 @@ test_that("lux_per_segment is correctly calculated", {
   sse = 1001:9000
   LUX_day_segments = c(9, 15, 24)
   ws3new = 60
-  luxperseg = g.part5_lux_persegment(ts, sse, LUX_day_segments, ws3new)
+  luxperseg = g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new)
   
   
   expect_equal(round(luxperseg$values[3]), 12)

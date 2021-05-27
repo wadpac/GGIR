@@ -1,4 +1,4 @@
-g.part5_lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
+g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
   first_hour_seg = as.numeric(format(ts$time[sse],"%H"))
   for (ldi in 1:(length(LUX_day_segments)-1)) { # round all hours to bottom of its class
     tmpl = which(first_hour_seg >= LUX_day_segments[ldi] &
