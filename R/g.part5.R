@@ -135,7 +135,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                          "g.part5.addfirstwake", "g.part5.addsib",
                          "g.part5.definedays", "g.part5.fixmissingnight",
                          "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
-                         "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient")
+                         "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
+                         "g.part5.handle_lux_extremes")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
@@ -839,24 +840,24 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             }
                                                             
                                                             # Fraction above 1000 LUX
-                                                            fraction_above_thousand = function(x) {
+                                                            fraction_above_thousand = function(x, ws3new) {
                                                               timeabove1000 = length(which(x > 1000)) / (60/ws3new)
                                                               return(timeabove1000)
                                                             }
-                                                            LUXabove1000 = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), fraction_above_thousand)
+                                                            LUXabove1000 = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), fraction_above_thousand, ws3new)
                                                             # Time awake
                                                             countvalue = function(x, ws3new, value) {
                                                               return(length(which(x == value)) / (60/ws3new))
                                                             }
-                                                            LUXwaketime = aggregate(ts$diur[sse2], by =  list(first_hour_seg), countvalue=0, ws3new)
+                                                            LUXwaketime = aggregate(ts$diur[sse2], by =  list(first_hour_seg), FUN=countvalue, value=0, ws3new=ws3new)
                                                             # Mean light
                                                             mymean = function(x) {
                                                               return(round(mean(x, na.rm = T), digits=1))
                                                             }
                                                             LUXmean = aggregate(ts$lightpeak[sse2], by =  list(first_hour_seg), mymean)
                                                             # Time light imputed
-                                                            LUXlightimputed = aggregate(ts$lightpeak_imputationcode[sse2], by =  list(first_hour_seg), countvalue=1, ws3new)
-                                                            LUXlightignored = aggregate(ts$lightpeak_imputationcode[sse2], by =  list(first_hour_seg), countvalue=2, ws3new)
+                                                            LUXlightimputed = aggregate(ts$lightpeak_imputationcode[sse2], by =  list(first_hour_seg), FUN=countvalue, value=1, ws3new=ws3new)
+                                                            LUXlightignored = aggregate(ts$lightpeak_imputationcode[sse2], by =  list(first_hour_seg), FUN=countvalue, value=2, ws3new=ws3new)
                                                             
                                                             
                                                             
