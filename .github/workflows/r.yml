@@ -35,10 +35,10 @@ jobs:
     steps:
       - name: Set Timezone
         uses: szenius/set-timezone@v1.0
-          with:
-            timezoneLinux: "Europe/Amsterdam"
-            timezoneMacos: "Asia/Singapore"
-            timezoneWindows: "America/New_York"
+        with:
+          timezoneLinux: "Europe/Amsterdam"
+          timezoneMacos: "Asia/Singapore"
+          timezoneWindows: "America/New_York"
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-tinytex@master
       - run: tlmgr --version
