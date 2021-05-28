@@ -26,8 +26,8 @@ test_that("lux_per_segment is correctly calculated", {
   expect_equal(round(luxperseg$values[4]), 540)
   expect_equal(round(luxperseg$values[5]), 83)
   expect_equal(round(luxperseg$values[10]), 0)
-  expect_equal(luxperseg$names[10], "LUX_lightignored_15-24hr_day")
-  expect_equal(luxperseg$names[3], "LUX_timeawake_9-15hr_day" )
+  expect_equal(luxperseg$names[10], "LUX_ignored_15_24hr_day")
+  expect_equal(luxperseg$names[3], "LUX_timeawake_9_15hr_day" )
   
 })
 
