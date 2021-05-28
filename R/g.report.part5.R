@@ -203,7 +203,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   .SD <- .N <- count <- a <- NULL
                   WeightedAggregate <- dt[,lapply(.SD,weighted.mean,w=len,na.rm=TRUE),by=list(filename)]
                   options(warn=0)
-                  LUXmetrics = c("above1000", "timeawake", "mean")
+                  LUXmetrics = c("above1000", "timeawake", "mean", "imputed", "ignored")
                   add_missing_LUX = function(x, LUX_day_segments, weeksegment=c(), LUXmetrics) {
                     # missing columns, add these:
                     NLUXseg = length(LUX_day_segments)
