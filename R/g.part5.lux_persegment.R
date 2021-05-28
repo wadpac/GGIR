@@ -50,7 +50,7 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
     LUX_day_segments = c(LUX_day_segments, 24) # end of day back in
     end_of_segment = LUX_day_segments[which(x$seg %in% LUX_day_segments) + 1]
     invisible(list(values = x$light,
-                   names = paste0("LUX_",LUXmetricname,"_",x$seg,"-",end_of_segment, "hr_day")))
+                   names = paste0("LUX_",LUXmetricname,"_",x$seg,"_",end_of_segment, "hr_day")))
   }
   
   # Fraction above 1000 LUX
