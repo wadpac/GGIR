@@ -77,8 +77,8 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
   standardLPS1 = standardise_luxperseg(x= LUXabove1000, LUX_day_segments, LUXmetricname ="above1000")
   standardLPS2 = standardise_luxperseg(x= LUXwaketime, LUX_day_segments, LUXmetricname ="timeawake")
   standardLPS3 = standardise_luxperseg(x= LUXmean, LUX_day_segments, LUXmetricname ="mean")
-  standardLPS4 = standardise_luxperseg(x= LUXlightimputed, LUX_day_segments, LUXmetricname ="lightimputed")
-  standardLPS5 = standardise_luxperseg(x= LUXlightignored, LUX_day_segments, LUXmetricname ="lightignored")
+  standardLPS4 = standardise_luxperseg(x= LUXlightimputed, LUX_day_segments, LUXmetricname ="imputed")
+  standardLPS5 = standardise_luxperseg(x= LUXlightignored, LUX_day_segments, LUXmetricname ="ignored")
 
   values = c(standardLPS1$values, standardLPS2$values,
              standardLPS3$values, standardLPS4$values,
