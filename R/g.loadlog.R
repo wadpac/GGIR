@@ -4,7 +4,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
   
   #===============================
   # Load sleep log data...
-  S = read.csv(loglocation, sep=sleeplogsep)
+  S = read.csv(loglocation, sep=sleeplogsep, stringsAsFactors = FALSE)
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S))) > 0
   if (advanced_sleeplog ==  TRUE) {
@@ -18,6 +18,9 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       startdates = data.table::rbindlist(startdates, fill=TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
+      if (sleeplogidnum==TRUE) {
+        startdates$ID = as.numeric(startdates$ID)
+      }
     }
   }
   if (length(S) == 0) {
@@ -74,6 +77,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
               if (is.na(deltadate) == FALSE) {
                 if (deltadate < 60) {
                   startdate_sleeplog = startdate_sleeplog_tmp
+                  Sdates_correct = Sdates
                   break
                 }  else if (dateformat == "%Y/%d/%m") {
                   warning("\nDate format of sleeplog not recognised")
@@ -87,7 +91,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
           # loop over expect dates giving start date of sleeplog
           for (ni in 1:(length(expected_dates)-1)) { 
             # checking whether date exists in sleeplog
-            ind = which(Sdates == as.Date(expected_dates[ni]))
+            ind = which(Sdates_correct == as.Date(expected_dates[ni]))
             if (length(ind) > 0) {
               curdatecol = datecols[ind]
               nextdatecol =  datecols[which(datecols > curdatecol)[1]]
@@ -151,7 +155,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
         coln1 = 2
         colid = 1
         if (sleeplogidnum == TRUE) {
-          S[,1] = as.numeric(S[,1])
+          S[,1] = as.numeric(as.character(S[,1]))
         }
       }
     }
