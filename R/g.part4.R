@@ -4,7 +4,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
-                   excludefirst.part4=FALSE,excludelast.part4=FALSE) {
+                   excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep = ",") {
   
   
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
@@ -45,9 +45,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       startdates = data.table::rbindlist(startdates, fill=TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
-      logs_diaries = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum, startdates)
+      logs_diaries = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum, startdates, sleeplogsep)
     } else {
-      logs_diaries = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum)
+      logs_diaries = g.loadlog(loglocation, coln1, colid, nnights, sleeplogidnum, sleeplogsep)
     }
     sleeplog = logs_diaries$sleeplog
     save(logs_diaries,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))

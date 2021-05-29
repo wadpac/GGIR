@@ -5,7 +5,7 @@ test_that("gloadlog is able to load different log formats", {
   fn = "testsleeplogfile.csv"
   expect_true(file.exists(fn))
   startdates = data.frame(ID = "123", startdate = "2015-03-23")
-  logs = g.loadlog(loglocation=fn,coln1=2,colid=1,nnights=7,sleeplogidnum=TRUE,startdates = startdates)
+  logs = g.loadlog(loglocation=fn,coln1=2,colid=1,nnights=7,sleeplogidnum=TRUE,startdates = startdates, sleeplogsep=",")
   expect_equal(nrow(logs$sleeplog), 7)
   expect_equal(ncol(logs$sleeplog), 5)
   expect_equal(nrow(logs$nonwearlog), 7)

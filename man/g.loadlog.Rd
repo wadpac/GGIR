@@ -9,7 +9,7 @@ before storing the output in a dataframe
 }
 \usage{
 g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
-sleeplogidnum=TRUE, startdates)
+sleeplogidnum=TRUE, startdates, sleeplogsep=",")
 }
 \arguments{
   \item{loglocation}{
@@ -30,6 +30,9 @@ sleeplogidnum=TRUE, startdates)
 \item{startdates}{
 data.frame with column ID and startdate with recording identifiers and 
 respective start dates
+}
+\item{sleeplogsep}{
+  Value used as sep argument for reading sleeplog csv file.
 }
 }
 \value{

@@ -17,7 +17,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     relyonguider=FALSE, relyonsleeplog=FALSE, def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="",data_cleaning_file=c(),
-    excludefirst.part4=FALSE,excludelast.part4=FALSE)
+    excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep=",")
 }
 \arguments{
   \item{datadir}{
@@ -152,9 +152,12 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   ignored for the sleep assessment.
   }
   \item{excludelast.part4}{
-  If TRUE then the last night of the measurement are
-  ignored for the sleep assessment.
+    If TRUE then the last night of the measurement are
+    ignored for the sleep assessment.
   }
+  \item{sleeplogsep}{
+    See \link{g.loadlog}
+}
 }
 \value{
 

@@ -1,8 +1,9 @@
-g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),sleeplogidnum=TRUE,  startdates = c()) {
+g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
+                     sleeplogidnum=TRUE,  startdates = c(), sleeplogsep = ",") {
   cnt_time_notrecognise = 0
   #===============================
   # Load sleep log data...
-  S = read.csv(loglocation)
+  S = read.csv(loglocation, sep=sleeplogsep)
   if (length(S) == 0) {
     cat("\nCould not read sleeplog file, check that file path is correct.")
     cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
