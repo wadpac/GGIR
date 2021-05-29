@@ -15,13 +15,11 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
         invisible(list(ID=ID,rec_starttime=rec_starttime))
       }
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
-      
       startdates = data.table::rbindlist(startdates, fill=TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
     }
   }
-  
   if (length(S) == 0) {
     cat("\nCould not read sleeplog file, check that file path is correct.")
     cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
