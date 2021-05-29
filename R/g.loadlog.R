@@ -1,9 +1,27 @@
 g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
-                     sleeplogidnum=TRUE,  startdates = c(), sleeplogsep = ",") {
-  cnt_time_notrecognise = 0
+                     sleeplogidnum=TRUE,  sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
+  
+  
   #===============================
   # Load sleep log data...
   S = read.csv(loglocation, sep=sleeplogsep)
+  cnt_time_notrecognise = 0
+  advanced_sleeplog = length(grep(pattern = "date", x = colnames(S))) > 0
+  if (advanced_sleeplog ==  TRUE) {
+    if (length(meta.sleep.folder) > 0) {
+      getIDstartdate = function(x) {
+        rec_starttime = ID = c()
+        load(x)
+        invisible(list(ID=ID,rec_starttime=rec_starttime))
+      }
+      startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
+      
+      startdates = data.table::rbindlist(startdates, fill=TRUE)
+      colnames(startdates) = c("ID", "startdate")
+      startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
+    }
+  }
+  
   if (length(S) == 0) {
     cat("\nCould not read sleeplog file, check that file path is correct.")
     cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
@@ -15,7 +33,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
   }
   count = 1 # to keep track of row in new sleeplog matrix
   naplog = nonwearlog = newsleeplog = c()
-  if (length(startdates) > 0) {
+  if (advanced_sleeplog ==  TRUE) {
     # assumptions:
     # if date occurs in column names we assume it is an advanced sleeplogreport
     # columnames with onset|inbed|tobed|lightsout represent start of the main sleep/inbed window in a day
@@ -52,6 +70,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
                                "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat) 
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat)
+            
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
               deltadate = abs(as.numeric(startdate_sleeplog_tmp - startdate_acc))
               if (is.na(deltadate) == FALSE) {
@@ -113,7 +132,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       remove_empty_rows_cols = function(logmatrix, name) {
         logmatrix = as.data.frame(logmatrix[which((rowSums(logmatrix != "") != 0) == TRUE),which((colSums(logmatrix != "") != 0) == TRUE)])
         logmatrix = as.data.frame(logmatrix)
-        if (length(name) > 0) {
+        if (length(name) > 0 & nrow(logmatrix) > 0) {
           newnames = c("ID", "date", rep(paste0(name, 1:ncol(logmatrix)), each=2))
           colnames(logmatrix) = newnames[1:ncol(logmatrix)]
         }

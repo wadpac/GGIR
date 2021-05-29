@@ -9,7 +9,8 @@ before storing the output in a dataframe
 }
 \usage{
 g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
-sleeplogidnum=TRUE, startdates, sleeplogsep=",")
+sleeplogidnum=TRUE, sleeplogsep=",", meta.sleep.folder = c(),
+desiredtz="")
 }
 \arguments{
   \item{loglocation}{
@@ -27,13 +28,16 @@ sleeplogidnum=TRUE, startdates, sleeplogsep=",")
   \item{sleeplogidnum}{
   See \link{g.part4}
 }
-\item{startdates}{
-data.frame with column ID and startdate with recording identifiers and 
-respective start dates
-}
 \item{sleeplogsep}{
   Value used as sep argument for reading sleeplog csv file.
 }
+\item{meta.sleep.folder}{
+ Path to part3 milestone data, only specify if sleeplog includes dates
+}
+\item{desiredtz}{
+ See \link{g.part4}
+}
+
 }
 \value{
   Data frame with sleeplog

@@ -13,7 +13,7 @@ create_test_sleeplog_csv = function(Nnights=7,storagelocation=c(), advanced=FALS
   } else {
     times = c("07:00:00", "23:00:00", "13:00:00", "13:30:00", "15:00:00", "15:40:00",  "17:00:00", "17:15:00")
     # when creating calendar dates create one date extra compared with number of nights
-    dates = seq(as.Date("2015/03/25"), as.Date("2015/03/25")+Nnights+1, by = 1)
+    dates = seq(as.Date("2016/06/25"), as.Date("2016/06/25")+Nnights+1, by = 1)
     Cnames =c("_wakeup","_inbed","_nap1_start","_nap1_end","_nap2_start","_nap2_end","_nonwear1_off", "_nonwear1_on")
     names = "ID"
     log = c()
@@ -21,7 +21,7 @@ create_test_sleeplog_csv = function(Nnights=7,storagelocation=c(), advanced=FALS
       log = c(log, as.character(dates[di]), times)
       names = c(names, c(paste0("D",di,"_date"),paste0("D",di, Cnames)))
     }
-    sleeplog = as.data.frame(t(c("123",log)), stringsAsFactors = TRUE)
+    sleeplog = as.data.frame(t(c("123A",log)), stringsAsFactors = TRUE)
     colnames(sleeplog) = names
     write.table(sleeplog,file=paste0(storagelocation,"/testsleeplogfile.csv"),
                 row.names = FALSE,col.names = TRUE,sep=",",fileEncoding="UTF-8")

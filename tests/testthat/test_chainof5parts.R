@@ -4,7 +4,7 @@ test_that("chainof5parts", {
   skip_on_cran()
   Ndays = 2
   create_test_acc_csv(Nmin=Ndays*1440)
-  create_test_sleeplog_csv()
+  create_test_sleeplog_csv(advanced=FALSE)
   fn = "123A_testaccfile.csv"
   sleeplog_fn = "testsleeplogfile.csv"
   metadatadir = paste0(getwd(),"/output_test")
