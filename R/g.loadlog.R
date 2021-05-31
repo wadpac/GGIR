@@ -42,7 +42,6 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
     # columnames with nap represent nap start or end-times
     # columnames with nonwear represent nonwear start or end-times
     # dates are expressed as YYYY-mm-dd
-    
     datecols = grep(pattern = "date", x = colnames(S), value = FALSE)
     # if date occurs in column names we assume it is an advanced sleeplogreport
     if (length(datecols) > 0) { # if yes, do:
@@ -64,6 +63,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
         if (ID %in% startdates$ID == TRUE) { # matching ID in acc data, if not ignore ID
           startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)])
           startdate_sleeplog = S[i, datecols[1]]
+          Sdates_correct = c()
           # Detect data format in sleeplog:
           for (dateformat in c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m", 
                                "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m", 
@@ -71,63 +71,65 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
                                "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat) 
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat)
-            
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
               deltadate = abs(as.numeric(startdate_sleeplog_tmp - startdate_acc))
               if (is.na(deltadate) == FALSE) {
-                if (deltadate < 60) {
+                if (deltadate < 30) {
                   startdate_sleeplog = startdate_sleeplog_tmp
                   Sdates_correct = Sdates
                   break
-                }  else if (dateformat == "%Y/%d/%m") {
-                  warning("\nDate format of sleeplog not recognised")
                 }
               }
             }
           }
-          newsleeplog[count ,1] = ID
-          newsleeplog_times = c()
-          expected_dates = seq(startdate_sleeplog, startdate_sleeplog+nnights, by =1)
-          # loop over expect dates giving start date of sleeplog
-          for (ni in 1:(length(expected_dates)-1)) { 
-            # checking whether date exists in sleeplog
-            ind = which(Sdates_correct == as.Date(expected_dates[ni]))
-            if (length(ind) > 0) {
-              curdatecol = datecols[ind]
-              nextdatecol =  datecols[which(datecols > curdatecol)[1]]
-              onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
-              if (ni < (length(expected_dates)-1)) {
-                wakeupi = wakecols[which(wakecols > curdatecol & wakecols <  nextdatecol)[1]]
-              } else if (ni == length(expected_dates)-1) {
-                wakeupi = wakecols[which(wakecols > curdatecol)[1]]
-              }
-              if (length(onseti) == 1 & length(wakeupi) == 1) {
-                newsleeplog_times = c(newsleeplog_times, S[i,onseti], S[i,wakeupi])
+          if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
+            warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
+                           " not within 30 days of first date in accerometer recording"))
+          } else {
+            # only attempt to use sleeplog if start date could be recognisedd
+            newsleeplog[count ,1] = ID
+            newsleeplog_times = c()
+            expected_dates = seq(startdate_sleeplog, startdate_sleeplog+nnights, by =1)
+            # loop over expect dates giving start date of sleeplog
+            for (ni in 1:(length(expected_dates)-1)) { 
+              # checking whether date exists in sleeplog
+              ind = which(Sdates_correct == as.Date(expected_dates[ni]))
+              if (length(ind) > 0) {
+                curdatecol = datecols[ind]
+                nextdatecol =  datecols[which(datecols > curdatecol)[1]]
+                onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
+                if (ni < (length(expected_dates)-1)) {
+                  wakeupi = wakecols[which(wakecols > curdatecol & wakecols <  nextdatecol)[1]]
+                } else if (ni == length(expected_dates)-1) {
+                  wakeupi = wakecols[which(wakecols > curdatecol)[1]]
+                }
+                if (length(onseti) == 1 & length(wakeupi) == 1) {
+                  newsleeplog_times = c(newsleeplog_times, S[i,onseti], S[i,wakeupi])
+                } else {
+                  newsleeplog_times = c(newsleeplog_times, "", "")
+                }
+                # Also grap nap and non-wear info and put those in separate matrix:
+                naps = napcols[which(napcols  > curdatecol & napcols < nextdatecol)]
+                nonwears = nonwearcols[which(nonwearcols  > curdatecol & nonwearcols < nextdatecol)]
+                if (length(naps) > 0) {
+                  naplog[napcnt, 1] = ID
+                  naplog[napcnt, 2] = S[i, curdatecol]
+                  naplog[napcnt, 3:(2+length(naps))] = as.character(S[i, naps])
+                  napcnt = napcnt + 1
+                }
+                if (length(nonwears) > 0) {
+                  nonwearlog[nwcnt, 1] = ID
+                  nonwearlog[nwcnt, 2] = S[i, curdatecol]
+                  nonwearlog[nwcnt, 3:(2+length(nonwears))] = as.character(S[i, nonwears ])
+                  nwcnt = nwcnt + 1
+                }
               } else {
                 newsleeplog_times = c(newsleeplog_times, "", "")
               }
-              # Also grap nap and non-wear info and put those in separate matrix:
-              naps = napcols[which(napcols  > curdatecol & napcols < nextdatecol)]
-              nonwears = nonwearcols[which(nonwearcols  > curdatecol & nonwearcols < nextdatecol)]
-              if (length(naps) > 0) {
-                naplog[napcnt, 1] = ID
-                naplog[napcnt, 2] = S[i, curdatecol]
-                naplog[napcnt, 3:(2+length(naps))] = as.character(S[i, naps])
-                napcnt = napcnt + 1
-              }
-              if (length(nonwears) > 0) {
-                nonwearlog[nwcnt, 1] = ID
-                nonwearlog[nwcnt, 2] = S[i, curdatecol]
-                nonwearlog[nwcnt, 3:(2+length(nonwears))] = as.character(S[i, nonwears ])
-                nwcnt = nwcnt + 1
-              }
-              
-            } else {
-              newsleeplog_times = c(newsleeplog_times, "", "")
             }
+            newsleeplog[count ,2:(length(newsleeplog_times)+1)] = newsleeplog_times
+            count  = count + 1  
           }
-          newsleeplog[count ,2:(length(newsleeplog_times)+1)] = newsleeplog_times
-          count  = count + 1  
         }
       }
       # remove empty rows and columns:
