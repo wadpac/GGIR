@@ -29,25 +29,27 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   } else {
     dir.create(file.path(metadatadir,ms5.out))
   }
-  if (save_ms5rawlevels == TRUE) {
+  if (save_ms5rawlevels == TRUE | do.sibreport == TRUE) {
     ms5.outraw = "/meta/ms5.outraw"
     if (file.exists(paste(metadatadir,ms5.outraw,sep=""))) {
     } else {
       dir.create(file.path(metadatadir,ms5.outraw))
     }
-    # Create on subfolder per configuration
-    configurations = c()
-    for (TRLi in threshold.lig) {
-      for (TRMi in threshold.mod) {
-        for (TRVi in threshold.vig) {
-          configurations = c(configurations, paste0(TRLi,"_",TRMi,"_",TRVi))
+    if (save_ms5rawlevels == TRUE) {
+      # Create on subfolder per configuration
+      configurations = c()
+      for (TRLi in threshold.lig) {
+        for (TRMi in threshold.mod) {
+          for (TRVi in threshold.vig) {
+            configurations = c(configurations, paste0(TRLi,"_",TRMi,"_",TRVi))
+          }
         }
       }
-    }
-    for (hi in configurations) {
-      folder2create = paste0(metadatadir,ms5.outraw,"/",hi)
-      if (dir.exists(folder2create) == FALSE) {
-        dir.create(path = folder2create)
+      for (hi in configurations) {
+        folder2create = paste0(metadatadir,ms5.outraw,"/",hi)
+        if (dir.exists(folder2create) == FALSE) {
+          dir.create(path = folder2create)
+        }
       }
     }
   }
@@ -355,8 +357,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                               # - Add option to only add sibreport objeect to RData files, but not to csvf ile
                                               # - Store sib summary in part 5 report
                                             }
-
-
+                                            
+                                            
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -570,7 +572,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-
+                                                          
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
@@ -794,7 +796,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[Nluxt])) / (60/ws3new)
                                                             ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
                                                             fi = fi + Nluxt+1
-
+                                                            
                                                             # light per hour of the day, ignoring SPT window
                                                             hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
                                                             if (LUXperhourAgg == "max") {
@@ -900,7 +902,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-
+                                          
                                           if (length(output) > 0) {
                                             if (nrow(output) > 0) {
                                               save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))
