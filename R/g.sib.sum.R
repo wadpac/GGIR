@@ -3,7 +3,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   invalid = A$invalid
   if (ignorenonwear == TRUE) {
     if (length(which(A$invalid==1)) > 0) {
-      A[which(A$invalid==1), 2:ncol(A)] = 0
+      A[which(A$invalid==1), which(colnames(A) %in% c("time", "night") == FALSE)] = 0
     }
   }
   space = ifelse(length(unlist(strsplit(as.character(A$time[1])," "))) > 1,TRUE,FALSE)
