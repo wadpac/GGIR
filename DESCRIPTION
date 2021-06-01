@@ -14,8 +14,8 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                   person("Jairo H","Migueles",role="ctb"),
                   person("Matthew R","Patterson",role="ctb"),
                   person("Dan","Jackson",role="ctb"),
-                  person("Lena","Kushleyeva",role="ctb"))
-                  person("Mathilde","Chen",role="ctb"))
+                  person("Lena","Kushleyeva",role="ctb"),
+                  person("Mathilde","Chen",role="ctb"),
                   person("Manasa","Yerramalla",role="ctb"))
 Maintainer: Vincent T van Hees <v.vanhees@accelting.com>
 Description: A tool to process and analyse data collected with wearable raw acceleration sensors as described in Migueles and colleagues (JMPB 2019), and van Hees and colleagues (JApplPhysiol 2014; PLoSONE 2015). The package has been developed and tested for binary data from 'GENEActiv' <https://www.activinsights.com/> and GENEA devices (not for sale), .csv-export data from  'Actigraph' <https://actigraphcorp.com> devices, and .cwa and .wav-format data from 'Axivity' <https://axivity.com>. These devices are currently widely used in research on human daily physical activity. Further, the package can handle accelerometer data file from any other sensor brand providing that the data is stored in csv format and has either no header or a two column header. Also the package allows for external function embedding.
