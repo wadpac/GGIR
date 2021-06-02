@@ -15,8 +15,12 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    data_cleaning_file=c(),
                    includedaycrit.part5=2/3,
                    frag.metrics = c(), iglevels=c(),
-                   LUXthresholds = seq(0,15000, by = 500),
-                   LUXperhourAgg = "max", maxNcores=c(), do.sibreport = FALSE) {
+                   maxNcores=c(),
+                   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
+                   LUX_cal_constant = c(),
+                   LUX_cal_exponent = c(),
+                   LUX_day_segments = c(),
+                   do.sibreport = FALSE) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -142,7 +146,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                          "g.part5.addfirstwake", "g.part5.addsib",
                          "g.part5.definedays", "g.part5.fixmissingnight",
                          "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
-                         "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient", "g.sibreport")
+                         "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
+                         "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
@@ -235,15 +240,28 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                         # Check if temperature and light are availble
                                         if (lightpeak_available == TRUE) {
                                           luz = M$metalong$lightpeak
-                                          # luz = luz[rep(seq_len(nrow(luz)), each = (IMP$windowsizes[2]/IMP$windowsizes[1])), ]
-                                          luz = rep(luz,each=(IMP$windowsizes[2]/IMP$windowsizes[1]))
-                                          if (length(luz) > Nts) {
-                                            luz = luz[1:Nts]
-                                          } else if (length(luz) < Nts) {
-                                            luz = c(luz, rep(0,(Nts-nrow(luz))))
+                                          if (length(LUX_cal_constant) > 0 &
+                                              length(LUX_cal_exponent) > 0) { # re-calibrate light
+                                            luz = LUX_cal_constant * exp(LUX_cal_exponent * luz)
                                           }
-                                          ts$lightpeak = 0 # initialise column
+                                          handle_luz_extremes = g.part5.handle_lux_extremes(luz)
+                                          luz = handle_luz_extremes$lux
+                                          correction_log = handle_luz_extremes$correction_log
+                                          # repeate values to match resolution of other data
+                                          repeatvalues = function(x, windowsizes, Nts) {
+                                            x = rep(x,each=(windowsizes[2]/windowsizes[1]))
+                                            if (length(x) > Nts) {
+                                              x = x[1:Nts]
+                                            } else if (length(x) < Nts) {
+                                              x = c(x, rep(0,(Nts-length(x))))
+                                            }
+                                            return(x)
+                                          }
+                                          luz = repeatvalues(x = luz, windowsizes=IMP$windowsizes, Nts)
+                                          correction_log = repeatvalues(x = correction_log, windowsizes=IMP$windowsizes, Nts)
+                                          ts$lightpeak_imputationcode = ts$lightpeak = 0 # initialise column
                                           ts$lightpeak = luz
+                                          ts$lightpeak_imputationcode = correction_log
                                         }
                                         rm(IMP, M ,I)
                                         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
@@ -302,9 +320,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
                                                                       Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
-                                              ts$time_num = round(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
+                                              ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
                                               if (lightpeak_available == TRUE) {
-                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "angle", "lightpeak")],
+                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "angle", "lightpeak", "lightpeak_imputationcode")],
                                                                by = list(ts$time_num), FUN= function(x) mean(x))
                                               } else {
                                                 ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "angle")],
@@ -357,8 +375,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                               # - Add option to only add sibreport objeect to RData files, but not to csvf ile
                                               # - Store sib summary in part 5 report
                                             }
-                                            
-                                            
+
+
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -572,7 +590,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-                                                          
+
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
@@ -627,8 +645,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                 M5VALUE = max(ACCrunwin)
                                                                 if (lightpeak_available == TRUE) {
                                                                   startM5 = which(ts$time == M5HOUR)
-                                                                  M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
-                                                                  M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))]), digits=1)
+                                                                  M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))], na.rm = TRUE), digits=1)
+                                                                  M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1]+ (wini*60*(60/ws3new)))], na.rm = TRUE), digits=1)
                                                                 }
                                                               } else {
                                                                 L5HOUR = M5HOUR = "not detected"
@@ -778,40 +796,34 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             fi = fi + length(frag.out)
                                                           }
                                                           #===============================================
-                                                          # TEMPERATURE AND LIGHT, IF AVAILABLE
-                                                          if ("lightpeak" %in% colnames(ts)) {
+                                                          # LIGHT, IF AVAILABLE
+                                                          if ("lightpeak" %in% colnames(ts) & length(LUX_day_segments) > 0) {
                                                             # mean LUX
-                                                            dsummary[di,fi] =  round(max(ts$lightpeak[sse[ts$diur[sse] == 0]]), digits = 1)
-                                                            dsummary[di,fi + 1] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]]), digits = 1)
-                                                            dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]]), digits = 1)
-                                                            dsummary[di,fi + 3] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]]), digits = 1)
+                                                            dsummary[di,fi] =  round(max(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
+                                                            dsummary[di,fi + 1] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
+                                                            dsummary[di,fi + 2] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]], na.rm = TRUE), digits = 1)
+                                                            dsummary[di,fi + 3] =  round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]], na.rm = TRUE), digits = 1)
                                                             ds_names[fi:(fi+3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
                                                             # time in LUX ranges
                                                             Nluxt = length(LUXthresholds)
                                                             for (lti in 1:Nluxt) {
-                                                              dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti] &
-                                                                                                      ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthresholds[lti+1])) / (60/ws3new)
-                                                              ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
+                                                              if (lti < Nluxt) {
+                                                                dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti] &
+                                                                                                        ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthresholds[lti+1])) / (60/ws3new)
+                                                                ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
+                                                              } else {
+                                                                dsummary[di,fi+lti-1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti])) / (60/ws3new)
+                                                                ds_names[fi+lti-1] = paste0("LUX_min_",LUXthresholds[lti],"_inf_day")
+                                                              }
                                                             }
-                                                            dsummary[di,fi+Nluxt] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[Nluxt])) / (60/ws3new)
-                                                            ds_names[fi+Nluxt] = paste0("LUX_min_",LUXthresholds[lti],"_",LUXthresholds[lti+1],"_day")
-                                                            fi = fi + Nluxt+1
-                                                            
-                                                            # light per hour of the day, ignoring SPT window
-                                                            hourinday = as.numeric(format(ts$time[sse[ts$diur[sse] == 0]],"%H"))
-                                                            if (LUXperhourAgg == "max") {
-                                                              lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), max)
-                                                            } else {
-                                                              lightperhour = aggregate(ts$lightpeak[sse[ts$diur[sse] == 0]], by =  list(hourinday), mean)
+                                                            fi = fi + Nluxt
+                                                            if (timewindowi =="WW") {
+                                                              # LUX per segment of the day
+                                                              luxperseg = g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new)
+                                                              dsummary[di,fi:(fi+(length(luxperseg$values)-1))] = luxperseg$values
+                                                              ds_names[fi:(fi+(length(luxperseg$values)-1))] = luxperseg$names
+                                                              fi = fi + length(luxperseg$values)
                                                             }
-                                                            colnames(lightperhour) = c("hour", "light")
-                                                            lightperhour = base::merge(lightperhour, data.frame(hour = 0:23, light = rep(NA, 24)),
-                                                                                       by =c("hour"), all.y=TRUE)
-                                                            lightperhourn = lightperhour[,c("hour","light.x")]
-                                                            colnames(lightperhour) = c("hour", "light")
-                                                            dsummary[di,fi:(fi+23)] = lightperhour$light
-                                                            ds_names[fi:(fi+23)] = paste0("LUX_hour_",lightperhour$hour,"_day")
-                                                            fi = fi + 24
                                                           }
                                                           #===============================================
                                                           # FOLDER STRUCTURE
@@ -880,10 +892,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             }
                                           }
                                         }
-                                        # missing_sleeplog_used = which(is.logical(output$sleeplog_used) == "0")
-                                        # if (length(missing_sleeplog_used) > 0) {
-                                        #   output$sleeplog_used[missing_sleeplog_used] = "0"
-                                        # }
                                         # tidy up output data frame, because it may have a lot of empty rows and columns
                                         emptyrows = which(output[,1] == "" & output[,2] == "")
                                         if (length(emptyrows) > 0) output = output[-emptyrows,]
@@ -894,7 +902,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # ignore columns with the LUX hour
                                             emptycols = which(emptycols == TRUE &
                                                                 colnames(output) %in%
-                                                                grep(pattern = "LUX_hour|LUX_min|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
+                                                                grep(pattern = "LUX_|FRAG_|dur_|ACC_|Nbouts_|Nblocks_",
                                                                      x = colnames(output), value = TRUE) == FALSE)
                                             if (length(emptycols) > 0) emptycols = emptycols[which(emptycols > lastcolumn)]
                                             # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
@@ -902,7 +910,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-                                          
+
                                           if (length(output) > 0) {
                                             if (nrow(output) > 0) {
                                               save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))

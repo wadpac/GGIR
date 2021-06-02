@@ -23,8 +23,10 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
   data_cleaning_file=c(), includedaycrit.part5=2/3,
-  frag.metrics=c(), iglevels=c(), LUXthresholds = seq(0,15000, by = 500),
-  LUXperhourAgg = "max",  maxNcores=c(), do.sibreport=FALSE)
+  frag.metrics=c(), iglevels=c(), maxNcores=c(),
+  LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
+  LUX_cal_constant = c(), LUX_cal_exponent = c(),
+  LUX_day_segments = c(), do.sibreport=FALSE)
 }
 \arguments{
   \item{datadir}{
@@ -200,15 +202,23 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     Vector with numeric sequece corresponding to the thresholds used to calculated time
     spent in LUX ranges.
   }
-  \item{LUXperhourAgg}{
-    Character to indicate how peak light values per 15 minutes
-    should be aggregated to hour level: "max" is maximum, "mean" is mean.
-  }
   \item{maxNcores}{
     See function \link{g.part1}
   }
+  \item{LUX_cal_constant}{
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
+    LUX values are converted based on formula y = constant * exp(x * exponent)
+  }
+  \item{LUX_cal_exponent}{
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
+    LUX values are converted based on formula y = constant * exp(x * exponent)
+  }
+  \item{LUX_day_segments}{
+    Numeric vector with hours at which the day should be segmented for
+    the LUX analysis.
+  }
   \item{do.sibreport}{
-  Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
+    Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
   }
 }
 \value{

@@ -18,7 +18,8 @@ export(g.analyse,g.calibrate,g.getmeta
        g.part5.onsetwaketiming, g.part5.wakesleepwindows, g.part5.savetimeseries,
        get_nw_clip_block_params, get_starttime_weekday_meantemp_truncdata,
        ismovisens, g.readtemp_movisens, g.conv.actlog, separategravity,
-       g.applymetrics4sg, g.fragmentation, g.intensitygradient, g.sibreport)
+       g.applymetrics4sg, g.fragmentation, g.intensitygradient,
+       g.part5.handle_lux_extremes, g.part5.lux_persegment, g.sibreport)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
@@ -27,7 +28,7 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv",  "installed.packages
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
-           "quantile", "sd","coef", "lm")
+           "quantile", "sd","coef", "lm", "embed")
 importFrom("utils", "memory.limit", "memory.size", "tail")
 import(data.table)
 useDynLib(GGIR, .registration=TRUE)

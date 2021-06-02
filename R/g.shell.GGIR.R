@@ -256,7 +256,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
   if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
-  
+
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -278,40 +278,48 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("includedaycrit.part5") == FALSE) includedaycrit.part5 = 2/3
   if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
   if (exists("frag.metrics") == FALSE) frag.metrics = c()
-  if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
+  if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
 
   # Related to (r)ead (m)yacc (c)sv file:
-  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
-  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
-  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
-  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
-  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
-  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
-  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
-  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
-  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
-  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
-  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
-  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
-  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
-  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
-  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= ""
-  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
-  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
-  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
-  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
-  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
-  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
-  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
-  if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
-  if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  if (length(which(ls() == "part5_agg2_60seconds")) == 0) part5_agg2_60seconds = FALSE
-  if (length(which(ls() == "week_weekend_aggregate.part5")) == 0) week_weekend_aggregate.part5=FALSE
-  if (length(which(ls() == "LUXthresholds")) == 0) LUXthresholds = seq(0,15000, by = 500)
-  if (length(which(ls() == "LUXperhourAgg")) == 0) LUXperhourAgg = "max"
-  if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
+  if (exists("rmc.dec") == FALSE) rmc.dec="."
+  if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
+  if (exists("rmc.firstrow.header") == FALSE) rmc.firstrow.header=c()
+  if (exists("rmc.header.length") == FALSE) rmc.header.length= c()
+  if (exists("rmc.col.acc") == FALSE) rmc.col.acc = 1:3
+  if (exists("rmc.col.temp") == FALSE) rmc.col.temp = c()
+  if (exists("rmc.col.time") == FALSE) rmc.col.time=c()
+  if (exists("rmc.unit.acc") == FALSE) rmc.unit.acc = "g"
+  if (exists("rmc.unit.temp") == FALSE) rmc.unit.temp = "C"
+  if (exists("rmc.unit.time") == FALSE) rmc.unit.time = "POSIX"
+  if (exists("rmc.format.time") == FALSE) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
+  if (exists("rmc.bitrate") == FALSE) rmc.bitrate = c()
+  if (exists("rmc.dynamic_range") == FALSE) rmc.dynamic_range = c()
+  if (exists("rmc.unsignedbit") == FALSE) rmc.unsignedbit = TRUE
+  if (exists("rmc.origin") == FALSE) rmc.origin = "1970-01-01"
+  if (exists("rmc.desiredtz") == FALSE) rmc.desiredtz= ""
+  if (exists("rmc.sf") == FALSE) rmc.sf  = c()
+  if (exists("rmc.headername.sf") == FALSE) rmc.headername.sf = c()
+  if (exists("rmc.headername.sn") == FALSE) rmc.headername.sn = c()
+  if (exists("rmc.headername.recordingid") == FALSE) rmc.headername.recordingid = c()
+  if (exists("rmc.header.structure") == FALSE) rmc.header.structure = c()
+  if (exists("rmc.check4timegaps") == FALSE) rmc.check4timegaps = FALSE
+  if (exists("rmc.noise") == FALSE) rmc.noise = FALSE
+  if (exists("rmc.col.wear") == FALSE) rmc.col.wear = c()
+  if (exists("rmc.doresample") == FALSE) rmc.doresample = FALSE
+  if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
+  if (exists("week_weekend_aggregate.part5") == FALSE) week_weekend_aggregate.part5=FALSE
+  if (exists("LUXthresholds") == FALSE) LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000)
+  if (exists("LUX_cal_constant") == FALSE) LUX_cal_constant = c()
+  if (exists("LUX_cal_exponent") == FALSE) LUX_cal_exponent = c()
+  if (exists("LUX_day_segments") == FALSE) LUX_day_segments = c()
 
+  if (length(LUX_day_segments) > 0) {
+    LUX_day_segments = sort(unique(round(LUX_day_segments)))
+    if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
+    if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
+
+  }
+  if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
   # VISUAL REPORT
 
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
@@ -461,7 +469,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
             includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
-            LUXthresholds=LUXthresholds, LUXperhourAgg=LUXperhourAgg, maxNcores=maxNcores, do.sibreport=do.sibreport)
+            LUXthresholds=LUXthresholds, maxNcores=maxNcores,
+            LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
+            LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -530,7 +540,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
                    includenightcrit=includenightcrit,includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
                    minimum_MM_length.part5=minimum_MM_length.part5,
-                   week_weekend_aggregate.part5=week_weekend_aggregate.part5)
+                   week_weekend_aggregate.part5=week_weekend_aggregate.part5,
+                   LUX_day_segments=LUX_day_segments)
   }
   if (visualreport == TRUE) {
     cat('\n')

@@ -1,7 +1,7 @@
 library(GGIR)
 context("fragmentation")
 test_that("fragmentation calculates the expected fragmentation metric values", {
-  
+  skip_on_cran()
   Lnames = c("spt_sleep", "spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG",
              "day_IN_unbt", "day_LIG_unbt", "day_MOD_unbt", "day_VIG_unbt", "day_MVPA_bts_10", "day_IN_bts_30",
              "day_IN_bts_10_30", "day_LIG_bts_10")
