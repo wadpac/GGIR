@@ -1,10 +1,12 @@
-g.sibreport = function(ts, ID, epochlength) {
+g.sibreport = function(ts, ID, epochlength, logs_diaries=c()) {
   dayind = which(ts$diur == 0)
   sib_starts = which(diff(c(0,ts$sibdetection[dayind],0)) == 1)
   sib_ends = which(diff(c(ts$sibdetection[dayind],0)) == -1)
   Nsibs = length(sib_starts)
+  sibreport = c()
   if (Nsibs > 0) {
     sibreport = data.frame(ID= rep(ID, Nsibs),
+                           type = rep("sib", Nsibs),
                            start = character(Nsibs),
                            end = character(Nsibs),
                            duration = numeric(Nsibs),
@@ -31,5 +33,59 @@ g.sibreport = function(ts, ID, epochlength) {
       }
     }
   }
-  return(sibreport)
+  if (length(logs_diaries) > 0) {
+    # extract self-reported nonwear and naps
+    nonwearlog = logs_diaries$nonwearlog
+    naplog = logs_diaries$naplog
+    extract_logs = function(log, ID, logname) {
+      logreport = c()
+      if (length(log) > 0) {
+        relevant_rows = which(log$ID == ID)
+        if (length(relevant_rows) > 0) {
+          log = log[relevant_rows,] # extract ID
+          for (i in 1:nrow(log)) { # loop over lines (days)
+            tmp = log[i,] # convert into timestamps
+            date = tmp[,2]
+            times = tmp[,3:ncol(tmp)]
+            timestamps = sort(as.POSIXlt(paste0(date, " ", times)))
+            Nevents = floor(length(timestamps) / 2)
+            
+            logreport_tmp = data.frame(ID= rep(ID, Nevents),
+                                       type = rep(logname, Nevents),
+                                       start = character(Nevents),
+                                       end = character(Nevents))
+            if (length(Nevents) > 0) {
+              for (bi in 1:Nevents) {
+                logreport_tmp$start[bi]  = as.character(timestamps[(bi*2)-1])
+                logreport_tmp$end[bi] = as.character(timestamps[(bi*2)])
+              }
+              if (length(logreport) == 0) {
+                logreport = logreport_tmp
+              } else {
+                logreport = rbind(logreport, logreport_tmp)
+              }
+            }
+          }
+        }
+      }
+      return(logreport)
+    }
+    naplogreport = extract_logs(naplog, ID, logname="nap")
+    nonwearlogreport = extract_logs(nonwearlog, ID, logname="nonwear")  
+    logreport = sibreport
+    # append all together in one output data.frame
+    if (length(logreport) > 0) {
+      logreport = merge(logreport, naplogreport, by=c("ID", "type", "start", "end"), all=TRUE)
+    } else {
+      logreport = naplogreport
+    }
+    if (length(logreport) > 0) {
+      logreport = merge(logreport, nonwearlogreport, by=c("ID", "type", "start", "end"), all=TRUE)
+    } else {
+      logreport = nonwearlogreport
+    }
+  } else {
+    logreport = sibreport
+  }
+  return(logreport)
 }

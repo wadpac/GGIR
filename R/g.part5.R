@@ -80,7 +80,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
       }
     }
   } else {
-    sleeplog = c()
+    sleeplog = logs_diaries = c()
   }
   #------------------------------------------------
   # specify parameters
@@ -358,7 +358,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # does not depend on bout detection criteria or
                                             # window definitions.
                                             if (do.sibreport  == TRUE) {
-                                              sibreport = g.sibreport(ts, ID, epochlength=ws3new)
+                                              sibreport = g.sibreport(ts, ID, epochlength=ws3new, logs_diaries)
                                               if ("angle" %in% colnames(ts)) {
                                                 ts = ts[, -which(colnames(ts) == "angle")]
                                               }
@@ -370,13 +370,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],".csv")
                                               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
                                               # TO DO:
-                                              # - Create repo with test scripts
-                                              # - Training and add filter to discriminate naps for non-naps
-                                              # - Add option to only add sibreport objeect to RData files, but not to csvf ile
                                               # - Store sib summary in part 5 report
                                             }
-
-
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {

@@ -8,9 +8,16 @@ test_that("g.sibreport creates expected object", {
              ACC = 1:7, angle = 7:1)
   ID = 12345
   epochlength  = 60
-  SIBREPORT = g.sibreport(ts, ID, epochlength)
-  expect_equal(nrow(SIBREPORT), 1)
-  expect_equal(SIBREPORT$mean_acc, 4)
-  expect_equal(SIBREPORT$sd_ang, 1)
-  expect_equal(SIBREPORT$duration, 3)
+  nonwearlog = data.frame(ID=rep(ID, 5), date=seq(as.Date("2021-3-3"),as.Date("2021-3-7"), by=1),
+                          nonwear1=rep("15:00:00", 5), nonwear2=rep("15:30:00", 5))
+  naplog = data.frame(ID=rep(ID, 2), date=seq(as.Date("2021-3-3"),as.Date("2021-3-4"), by=1),
+                          nonwear1=rep("13:00:00", 2), nonwear2=rep("13:30:00", 2))
+  
+  logs_diaries = list(sleeplog=c(), nonwearlog=nonwearlog, naplog=naplog)
+  source("~/GGIR/R/g.sibreport.R")
+  SIBREPORT = g.sibreport(ts, ID, epochlength, logs_diaries)
+  expect_equal(nrow(SIBREPORT), 8)
+  expect_equal(mean(SIBREPORT$mean_acc, na.rm = TRUE), 4)
+  expect_equal(mean(SIBREPORT$sd_ang, na.rm = TRUE), 1)
+  expect_equal(mean(SIBREPORT$duration, na.rm = TRUE), 3)
 })

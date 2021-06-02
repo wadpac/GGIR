@@ -8,7 +8,7 @@
   for direct use by package user
 }
 \usage{
-  g.sibreport(ts, ID, epochlength)
+  g.sibreport(ts, ID, epochlength, logs_diaries=c())
 }
 \arguments{
   \item{ts}{
@@ -19,6 +19,9 @@
   }
   \item{epochlength}{
     Numeric to indicate epoch length in seconds in the ts object
+  }
+  \item{logs_diaries}{
+  Object produced by \link{g.loadlog} function
   }
 }
 \value{
