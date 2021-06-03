@@ -61,7 +61,7 @@ Our log of main changes is [here](https://cran.r-project.org/package=GGIR/news.h
 
 [Download and install R](https://cran.r-project.org/)
 
-[Download and install RStudio](https://rstudio.com/products/rstudio/) (optional, but recommended)
+[Download and install RStudio](https://www.rstudio.com/products/rstudio/) (optional, but recommended)
 
 Download GGIR with its dependencies, you can do this with one command from the console command line:
 
