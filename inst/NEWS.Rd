@@ -2,7 +2,7 @@
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
-\section{Changes in version 2.4-0 (release date:01-06-2021)}{
+\section{Changes in version 2.4-0 (release date:03-06-2021)}{
 \itemize{
   \item Part 5 LUX variables per segment of the day improved
   \item Removing calls to closeAllConnections as requested by CRAN
