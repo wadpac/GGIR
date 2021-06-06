@@ -171,7 +171,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = sib.cla.sum = c()
+      HDCZA_end = HDCZA_start = L5list = sib.cla.sum = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
@@ -297,7 +297,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           # def.noc.sleep is an input argument the GGIR user can use
           # to specify what detection strategy is used in the absense of a sleep diary
           
-          if (length(def.noc.sleep) == 0 | length(sptwindow_HDCZA_start) == 0) {
+          if (length(def.noc.sleep) == 0 | length(HDCZA_start) == 0) {
             # use L5+/-6hr algorithm if HDCZA fails OR if the user explicitely asks for it (length zero argument)
             guider = "notavailable"
             if (length(L5list) > 0) {
@@ -305,26 +305,26 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               defaultSptWake = L5list[j] + 6
               guider = "L512"
             }
-          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(sptwindow_HDCZA_start) != 0) {
+          } else if (length(def.noc.sleep) == 1 | length(loglocation) != 0 & length(HDCZA_start) != 0) {
             # use HDCZA algorithm (inside the g.sib.det function) as backup for sleeplog OR if user explicitely asks for it
-            defaultSptOnset = sptwindow_HDCZA_start[j]
-            defaultSptWake = sptwindow_HDCZA_end[j]
+            defaultSptOnset = HDCZA_start[j]
+            defaultSptWake = HDCZA_end[j]
             guider = "HDCZA"
             if (is.na(defaultSptOnset) == TRUE) { # If HDCZA was not derived for this night, use average estimate for other nights
-              availableestimate = which(is.na(sptwindow_HDCZA_start) == FALSE)
+              availableestimate = which(is.na(HDCZA_start) == FALSE)
               cleaningcode = 6
               if (length(availableestimate) > 0) {
-                defaultSptOnset = mean(sptwindow_HDCZA_start[availableestimate])
+                defaultSptOnset = mean(HDCZA_start[availableestimate])
               } else {
                 defaultSptOnset = L5list[j] - 6
                 guider = "L512"
               }
             }
             if (is.na(defaultSptWake) == TRUE) { # If HDCZA was not derived for this night, use average estimate for other nights
-              availableestimate = which(is.na(sptwindow_HDCZA_end) == FALSE)
+              availableestimate = which(is.na(HDCZA_end) == FALSE)
               cleaningcode = 6
               if (length(availableestimate) > 0) {
-                defaultSptWake = mean(sptwindow_HDCZA_end[availableestimate])
+                defaultSptWake = mean(HDCZA_end[availableestimate])
               } else {
                 defaultSptWake = L5list[j] + 6
                 guider = "L512"

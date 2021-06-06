@@ -205,7 +205,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             *length(unique(timewindow))),nfeatures)
                                       di = 1
                                       fi = 1
-                                      sptwindow_HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
+                                      HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
                                       if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
                                         summarysleep_tmp = summarysleep
                                         #======================================================================
@@ -318,7 +318,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
                                             # Add first waking up time, if it is missing:
                                             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
-                                                                      Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
+                                                                      Nepochsinhour, Nts, HDCZA_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
                                               if (lightpeak_available == TRUE) {
