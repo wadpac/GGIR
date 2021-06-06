@@ -1,9 +1,9 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                      myfun=c()) {
+                     myfun=c()) {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
-
+  
   dstime_handling_check = function(tmpTIME=tmpTIME,spt_estimate=spt_estimate,tz=c(),
                                    calc_HDCZA_end=c(), calc_HDCZA_start=c()) {
     time_HDCZA_start =iso8601chartime2POSIX(tmpTIME[spt_estimate$HDCZA_start],tz=tz)
@@ -115,7 +115,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           cnt = cnt+ 1
         }
       }
-
+      
       cnt = 1
       sleep = as.data.frame(sleep, stringsAsFactors = TRUE)
       for (i in timethreshold) {
@@ -129,7 +129,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     }
     #-------------------------------------------------------------------
     # detect midnights
-
     detemout = g.detecmidnight(time,desiredtz, dayborder=0) # ND, # for sleep dayborder is always 0, it is the summary of sleep that will be dayborder specific
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
@@ -138,24 +137,54 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     if (countmidn != 0) {
       if (countmidn == 1) {
         tooshort = 1
-        lastmidnight = time[length(time)]
-        lastmidnighti = length(time)
+        lastmidnight = midnights[length(midnights)]
+        lastmidnighti = midnightsi[length(midnights)]
         firstmidnight = time[1]
         firstmidnighti = 1
-        qqq1 = midnightsi[1] + (twd[1]*(3600/ws3)) #noon
-        qqq2 = midnightsi[1] + (twd[2]*(3600/ws3)) #noon
+      } else {
+        cut = which(as.numeric(midnightsi) == 0)
+        if (length(cut) > 0) {
+          midnights = midnights[-cut]
+          midnightsi = midnightsi[-cut]
+        }
+        lastmidnight = midnights[length(midnights)]
+        lastmidnighti = midnightsi[length(midnights)]
+        firstmidnight = midnights[1]
+        firstmidnighti = midnightsi[1]
+      }
+      for (j in 1:(countmidn)) { #-1
+        qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #noon
+        qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #noon
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
-        night[qqq1:qqq2] = 1
+        night[qqq1:qqq2] = j
         detection.failed = FALSE
         #------------------------------------------------------------------
-        # Estimate Sleep Period Time Window, because this will be used by g.part4 if sleeplog is not available
+        # calculate L5 because this is used as back-up approach
+        tmpACC = ACC[qqq1:qqq2]
+        windowRL = round((3600/ws3)*5)
+        if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
+        if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
+          cat("Warning: time window shorter than 5 hours which makes it impossible to identify L5")
+          L5 = 0
+        } else {
+          ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
+          L5 = which(ZRM == min(ZRM))[1]
+          if (sd(ZRM) == 0) {
+            L5 = c()
+          } else {
+            L5 = (L5  / (3600/ ws3)) + 12
+          }
+          if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
+        }
+        L5list[j] = L5
+        # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = angle[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
         spt_estimate = HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
-                                   perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                   spt_max_gap = spt_max_gap)
+                             perc = perc, spt_threshold = spt_threshold,
+                             sptblocksize = sptblocksize, spt_max_gap = spt_max_gap)
         if (length(spt_estimate$HDCZA_end) != 0 & length(spt_estimate$HDCZA_start) != 0) {
           if (spt_estimate$HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
@@ -166,123 +195,32 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
             if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
               spt_estimate = HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
-                                         perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                         spt_max_gap = spt_max_gap)
+                                   perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
+                                   spt_max_gap = spt_max_gap)
               if (spt_estimate$HDCZA_start+newqqq1 >= newqqq2) {
                 spt_estimate$HDCZA_start = (newqqq2-newqqq1)-1
               }
             } else {
               daysleep_offset  = 0
             }
-          }
+          } 
           if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
             startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
             startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-            HDCZA_end[1] = spt_estimate$HDCZA_end/(3600/ws3) + startTimeRecord
-            HDCZA_start[1] = spt_estimate$HDCZA_start/(3600/ws3)  + startTimeRecord
+            HDCZA_end[j] = (spt_estimate$HDCZA_end/(3600/ws3)) + startTimeRecord + daysleep_offset
+            HDCZA_start[j] = (spt_estimate$HDCZA_start/(3600/ws3)) + startTimeRecord + daysleep_offset
           } else {
-            HDCZA_end[1] = (spt_estimate$HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
-            HDCZA_start[1] = (spt_estimate$HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
+            HDCZA_end[j] = (spt_estimate$HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
+            HDCZA_start[j] = (spt_estimate$HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
           }
-          HDCZA_end[1] = dstime_handling_check(tmpTIME=tmpTIME,spt_estimate=spt_estimate,
-                                                         tz=desiredtz,calc_HDCZA_end=HDCZA_end[1],
-                                                         calc_HDCZA_start=HDCZA_start[1])
-          tib.threshold[1] = spt_estimate$tib.threshold
+          HDCZA_end[j] = dstime_handling_check(tmpTIME=tmpTIME,spt_estimate=spt_estimate,
+                                               tz=desiredtz,calc_HDCZA_end=HDCZA_end[j],
+                                               calc_HDCZA_start=HDCZA_start[j])
+          tib.threshold[j] = spt_estimate$tib.threshold
         }
-        #------------------------------------------------------------------
-        # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
-        tmpACC = ACC[qqq1:qqq2]
-        windowRL = round((3600/ws3)*5)
-        if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
-        if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
-          cat("Warning: time window shorter than 5 hours which makes it impossible to identify L5")
-          L5 = 0
-        } else {
-          ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
-
-          L5 = which(ZRM == min(ZRM))[1]
-          if (sd(ZRM) == 0) {
-            L5 = c()
-          } else {
-            L5 = (L5  / (3600/ ws3)) + 12
-          }
-          if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
-        }
-        L5list[1] = L5
-
-      } else { #more than one midnight
-        cut = which(as.numeric(midnightsi) == 0)
-        if (length(cut) > 0) {
-          midnights = midnights[-cut]
-          midnightsi = midnightsi[-cut]
-        }
-        lastmidnight = midnights[length(midnights)]
-        lastmidnighti = midnightsi[length(midnights)]
-        firstmidnight = midnights[1]
-        firstmidnighti = midnightsi[1]
-        for (j in 1:(countmidn)) { #-1
-          qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #noon
-          qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #noon
-          if (qqq2 > length(time))  qqq2 = length(time)
-          if (qqq1 < 1)             qqq1 = 1
-          night[qqq1:qqq2] = j
-          #------------------------------------------------------------------
-          # calculate L5 because this is used as back-up approach
-          tmpACC = ACC[qqq1:qqq2]
-          windowRL = round((3600/ws3)*5)
-          if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
-          ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
-          L5 = which(ZRM == min(ZRM))[1]
-          if (sd(ZRM) == 0) {
-            L5 = c()
-          } else {
-            L5 = (L5  / (3600/ ws3)) + 12
-          }
-          if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
-          L5list[j] = L5
-          # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
-          tmpANGLE = angle[qqq1:qqq2]
-          tmpTIME = time[qqq1:qqq2]
-          daysleep_offset = 0
-          spt_estimate = HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
-                                     perc = perc, spt_threshold = spt_threshold,
-                                     sptblocksize = sptblocksize, spt_max_gap = spt_max_gap)
-          if (length(spt_estimate$HDCZA_end) != 0 & length(spt_estimate$HDCZA_start) != 0) {
-            if (spt_estimate$HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
-              # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
-              daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
-              newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
-              newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
-              if (newqqq2 > length(angle)) newqqq2 = length(angle)
-              # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
-              if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-                spt_estimate = HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
-                                           perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                           spt_max_gap = spt_max_gap)
-                if (spt_estimate$HDCZA_start+newqqq1 >= newqqq2) {
-                  spt_estimate$HDCZA_start = (newqqq2-newqqq1)-1
-                }
-              } else {
-                daysleep_offset  = 0
-              }
-            } 
-            if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
-              startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
-              startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-              HDCZA_end[j] = (spt_estimate$HDCZA_end/(3600/ws3)) + startTimeRecord + daysleep_offset
-              HDCZA_start[j] = (spt_estimate$HDCZA_start/(3600/ws3)) + startTimeRecord + daysleep_offset
-            } else {
-              HDCZA_end[j] = (spt_estimate$HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
-              HDCZA_start[j] = (spt_estimate$HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
-            }
-            HDCZA_end[j] = dstime_handling_check(tmpTIME=tmpTIME,spt_estimate=spt_estimate,
-                                                tz=desiredtz,calc_HDCZA_end=HDCZA_end[j],
-                                                calc_HDCZA_start=HDCZA_start[j])
-            tib.threshold[j] = spt_estimate$tib.threshold
-          }
-        }
-        detection.failed = FALSE
       }
+      detection.failed = FALSE
+      # }
     } else {
       cat("No midnights found")
       detection.failed = TRUE
