@@ -495,6 +495,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleepparam";      fi = fi + 1
                                                           dayofinterst = which(recDates == date)
                                                           if (length(dayofinterst) > 0) {
+                                                            dayofinterst = dayofinterst[1]
                                                             dsummary[di,fi:(fi+5)] = c(summarysleep_tmp2$night[dayofinterst],
                                                                                        summarysleep_tmp2$daysleeper[dayofinterst],
                                                                                        summarysleep_tmp2$cleaningcode[dayofinterst],
