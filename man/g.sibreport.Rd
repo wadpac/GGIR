@@ -8,7 +8,7 @@
   for direct use by package user
 }
 \usage{
-  g.sibreport(ts, ID, epochlength, logs_diaries=c())
+  g.sibreport(ts, ID, epochlength, logs_diaries=c(), desiredtz="")
 }
 \arguments{
   \item{ts}{
@@ -22,6 +22,9 @@
   }
   \item{logs_diaries}{
   Object produced by \link{g.loadlog} function
+  }
+  \item{desiredtz}{
+    See \link{g.getmeta}
   }
 }
 \value{

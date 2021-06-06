@@ -358,7 +358,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # does not depend on bout detection criteria or
                                             # window definitions.
                                             if (do.sibreport  == TRUE) {
-                                              sibreport = g.sibreport(ts, ID, epochlength=ws3new, logs_diaries)
+                                              sibreport = g.sibreport(ts, ID, epochlength=ws3new, logs_diaries, desiredtz = desiredtz)
                                               if ("angle" %in% colnames(ts)) {
                                                 ts = ts[, -which(colnames(ts) == "angle")]
                                               }

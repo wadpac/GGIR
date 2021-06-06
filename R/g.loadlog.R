@@ -1,7 +1,7 @@
 g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
                      sleeplogidnum=TRUE,  sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
-  
+  dateformat_correct = "%Y-%m-%d" # set default value
   #===============================
   # Load sleep log data...
   S = read.csv(loglocation, sep=sleeplogsep, stringsAsFactors = FALSE)
@@ -77,6 +77,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
                 if (deltadate < 30) {
                   startdate_sleeplog = startdate_sleeplog_tmp
                   Sdates_correct = Sdates
+                  dateformat_correct = dateformat
                   break
                 }
               }
@@ -134,7 +135,8 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       }
       # remove empty rows and columns:
       remove_empty_rows_cols = function(logmatrix, name) {
-        logmatrix = as.data.frame(logmatrix[which((rowSums(logmatrix != "") != 0) == TRUE),which((colSums(logmatrix != "") != 0) == TRUE)])
+        logmatrix = as.data.frame(logmatrix[which((rowSums(logmatrix != "") != 0) == TRUE),
+                                            which((colSums(logmatrix != "") != 0) == TRUE)])
         logmatrix = as.data.frame(logmatrix)
         if (length(name) > 0 & nrow(logmatrix) > 0) {
           newnames = c("ID", "date", rep(paste0(name, 1:ncol(logmatrix)), each=2))
@@ -214,5 +216,6 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
   names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]
-  invisible(list(sleeplog=sleeplog, nonwearlog=nonwearlog, naplog=naplog))
+  invisible(list(sleeplog=sleeplog, nonwearlog=nonwearlog, naplog=naplog, 
+                 dateformat = dateformat_correct))
 }

@@ -1,4 +1,4 @@
-g.sibreport = function(ts, ID, epochlength, logs_diaries=c()) {
+g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
   dayind = which(ts$diur == 0)
   sib_starts = which(diff(c(0,ts$sibdetection[dayind],0)) == 1)
   sib_ends = which(diff(c(ts$sibdetection[dayind],0)) == -1)
@@ -37,6 +37,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c()) {
     # extract self-reported nonwear and naps
     nonwearlog = logs_diaries$nonwearlog
     naplog = logs_diaries$naplog
+    dateformat = logs_diaries$dateformat
     extract_logs = function(log, ID, logname) {
       logreport = c()
       if (length(log) > 0) {
@@ -45,24 +46,26 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c()) {
           log = log[relevant_rows,] # extract ID
           for (i in 1:nrow(log)) { # loop over lines (days)
             tmp = log[i,] # convert into timestamps
-            date = tmp[,2]
-            times = tmp[,3:ncol(tmp)]
-            timestamps = sort(as.POSIXlt(paste0(date, " ", times)))
-            Nevents = floor(length(timestamps) / 2)
-            
-            logreport_tmp = data.frame(ID= rep(ID, Nevents),
-                                       type = rep(logname, Nevents),
-                                       start = character(Nevents),
-                                       end = character(Nevents))
-            if (length(Nevents) > 0) {
-              for (bi in 1:Nevents) {
-                logreport_tmp$start[bi]  = as.character(timestamps[(bi*2)-1])
-                logreport_tmp$end[bi] = as.character(timestamps[(bi*2)])
-              }
-              if (length(logreport) == 0) {
-                logreport = logreport_tmp
-              } else {
-                logreport = rbind(logreport, logreport_tmp)
+            # only attempt if there are actual timestamps to process
+            if (length(which(tmp[,3:ncol(tmp)] != "")) != 0) {
+              date = as.Date(as.character(tmp[,2]), format=dateformat)
+              times = as.character(unlist(tmp[,3:ncol(tmp)]))
+              timestamps = sort(as.POSIXlt(paste0(date, " ", times), tz = desiredtz))
+              Nevents = floor(length(timestamps) / 2)
+              logreport_tmp = data.frame(ID= rep(ID, Nevents),
+                                         type = rep(logname, Nevents),
+                                         start = rep("", Nevents),
+                                         end = rep("", Nevents), stringsAsFactors = FALSE)
+              if (length(Nevents) > 0) {
+                for (bi in 1:Nevents) {
+                  logreport_tmp$start[bi]  = as.character(timestamps[(bi*2)-1])
+                  logreport_tmp$end[bi] = as.character(timestamps[(bi*2)])
+                }
+                if (length(logreport) == 0) {
+                  logreport = logreport_tmp
+                } else {
+                  logreport = rbind(logreport, logreport_tmp)
+                }
               }
             }
           }

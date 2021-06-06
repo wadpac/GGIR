@@ -13,7 +13,8 @@ test_that("g.sibreport creates expected object", {
   naplog = data.frame(ID=rep(ID, 2), date=seq(as.Date("2021-3-3"),as.Date("2021-3-4"), by=1),
                           nonwear1=rep("13:00:00", 2), nonwear2=rep("13:30:00", 2))
   
-  logs_diaries = list(sleeplog=c(), nonwearlog=nonwearlog, naplog=naplog)
+  logs_diaries = list(sleeplog=c(), nonwearlog=nonwearlog, 
+                      naplog=naplog, dateformat="%Y-%m-%d")
   source("~/GGIR/R/g.sibreport.R")
   SIBREPORT = g.sibreport(ts, ID, epochlength, logs_diaries)
   expect_equal(nrow(SIBREPORT), 8)
