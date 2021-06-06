@@ -74,14 +74,14 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c()) {
     nonwearlogreport = extract_logs(nonwearlog, ID, logname="nonwear")  
     logreport = sibreport
     # append all together in one output data.frame
-    if (length(logreport) > 0) {
+    if (length(logreport) > 0 & length(naplogreport) > 0) {
       logreport = merge(logreport, naplogreport, by=c("ID", "type", "start", "end"), all=TRUE)
-    } else {
+    } else if (length(logreport) == 0 & length(naplogreport) > 0) {
       logreport = naplogreport
     }
-    if (length(logreport) > 0) {
+    if (length(logreport) > 0 & length(nonwearlogreport) > 0) {
       logreport = merge(logreport, nonwearlogreport, by=c("ID", "type", "start", "end"), all=TRUE)
-    } else {
+    } else if (length(logreport) == 0 & length(nonwearlogreport) > 0) {
       logreport = nonwearlogreport
     }
   } else {
