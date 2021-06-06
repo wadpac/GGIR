@@ -1,5 +1,6 @@
 HDCZA = function(angle, perc = 10, spt_threshold = 15,
                            sptblocksize = 30, spt_max_gap = 60, ws3 = 5, constrain2range = FALSE) {
+  SPTE_start = SPTE_end = c()
   medabsdi = function(angle) {
     #50th percentile, do not use mean because that will be outlier sensitive
     angvar = stats::median(abs(diff(angle))) 
@@ -53,15 +54,15 @@ HDCZA = function(angle, perc = 10, spt_threshold = 15,
     insptdurations = e5 - s5
     longestinspt = which(insptdurations == max(insptdurations))
     if (length(longestinspt) > 1) longestinspt = longestinspt[ceiling(length(longestinspt)/2)]
-    HDCZA_start = s5[longestinspt] - 1
-    HDCZA_end = e5[longestinspt] - 1
-    if (HDCZA_start == 0) HDCZA_start = 1
+    SPTE_start = s5[longestinspt] - 1
+    SPTE_end = e5[longestinspt] - 1
+    if (SPTE_start == 0) SPTE_start = 1
   } else {
-    HDCZA_end = c()
-    HDCZA_start = c()
+    SPTE_end = c()
+    SPTE_start = c()
     tib.threshold = c()
   }
   tib.threshold = pp
-  invisible(list(HDCZA_start=HDCZA_start,
-                 HDCZA_end=HDCZA_end, tib.threshold=tib.threshold))
+  invisible(list(SPTE_start=SPTE_start,
+                 SPTE_end=SPTE_end, tib.threshold=tib.threshold))
 }

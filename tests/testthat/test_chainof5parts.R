@@ -181,7 +181,7 @@ test_that("chainof5parts", {
 
   #----------------------------------------------------------------------
   # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonguider=TRUE
-  HDCZA_end = c(37,37) # turn into midday
+  SPTE_end = c(37,37) # turn into midday
   row2copy = which(sib.cla.sum$sib.onset.time == "2016-06-24T05:10:15+0100")
   newrow = sib.cla.sum[row2copy,]
   newrow$sib.onset.time = "2016-06-24T12:30:15+0100"
@@ -189,7 +189,7 @@ test_that("chainof5parts", {
   sib.cla.sum = rbind(sib.cla.sum,newrow)
   sib.cla.sum = sib.cla.sum[order(sib.cla.sum$sib.onset.time),]
   sib.cla.sum$sib.period[1:11] = 1:11
-  save(L5list, HDCZA_end, HDCZA_start, sib.cla.sum, tib.threshold, file= rn3[1])
+  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file= rn3[1])
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
@@ -219,7 +219,7 @@ test_that("chainof5parts", {
   sib.cla.sum$start.time.day = changetime(sib.cla.sum$start.time.day)
   sib.cla.sum$sib.onset.time  = changetime(sib.cla.sum$sib.onset.time)
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
-  save(L5list, HDCZA_end, HDCZA_start, sib.cla.sum, tib.threshold, file= rn3[1])
+  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file= rn3[1])
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
@@ -245,7 +245,7 @@ test_that("chainof5parts", {
   sib.cla.sum$start.time.day = changetime(sib.cla.sum$start.time.day)
   sib.cla.sum$sib.onset.time  = changetime(sib.cla.sum$sib.onset.time)
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
-  save(L5list, HDCZA_end, HDCZA_start, sib.cla.sum, tib.threshold, file= rn3[1])
+  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file= rn3[1])
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
                          idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
