@@ -58,7 +58,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
     packages2passon = 'GGIR'
     errhand = 'pass'
   } else { # pass on functions
-    functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX", "g.sib.plot", "g.sib.sum")
+    functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX", "g.sib.plot", "g.sib.sum", "HDCZA")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
