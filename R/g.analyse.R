@@ -185,9 +185,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   longitudinal_axis_id = ""
   epochday = 24*60*(60/ws3)
   Ndays = floor(nrow(IMP$metashort)/epochday)
-  Nhalfdays = floor(Ndays/2)
   if (length(which(c("anglex","angley","anglez") %in% colnames(IMP$metashort) == FALSE)) == 0 &
       Ndays >= 2) {
+    Nhalfdays = Ndays - 1
     CorrA = rep(0,3)
     cnt = 1
     for (anglename in  c("anglex","angley","anglez") ) {
