@@ -1,23 +1,29 @@
-HDCZA = function(angle, perc = 10, spt_threshold = 15,
-                           sptblocksize = 30, spt_max_gap = 60, ws3 = 5, constrain2range = FALSE) {
+HASPT = function(angle, perc = 10, spt_threshold = 15,
+                 sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
+                 constrain2range = FALSE, HASPT.algo="HDCZA") {
   SPTE_start = SPTE_end = c()
-  medabsdi = function(angle) {
-    #50th percentile, do not use mean because that will be outlier sensitive
-    angvar = stats::median(abs(diff(angle))) 
-    return(angvar)
+  if (HASPT.algo == "HDCZA") { # original, default
+    medabsdi = function(angle) {
+      #50th percentile, do not use mean because that will be outlier sensitive
+      angvar = stats::median(abs(diff(angle))) 
+      return(angvar)
+    }
+    k1 = 5 * (60/ws3)
+    x = zoo::rollapply(angle, width=k1, FUN=medabsdi) # 5 minute rolling median of the absolute difference
+    nomov = rep(0,length(x)) # no movement
+    inspttime = rep(NA,length(x))
+    pp = quantile(x,probs=c(perc/100)) * spt_threshold
+    if (constrain2range == TRUE) {
+      if (pp < 0.13) pp = 0.13
+      if (pp > 0.50) pp = 0.50
+    } else {
+      if (pp == 0) pp = 0.20
+    }
+    nomov[which(x < pp)] = 1
+    
+  } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
+    nomov[which(abs(angle) < 45)] = 1
   }
-  k1 = 5 * (60/ws3)
-  x = zoo::rollapply(angle, width=k1, FUN=medabsdi) # 5 minute rolling median of the absolute difference
-  nomov = rep(0,length(x)) # no movement
-  inspttime = rep(NA,length(x))
-  pp = quantile(x,probs=c(perc/100)) * spt_threshold
-  if (constrain2range == TRUE) {
-    if (pp < 0.13) pp = 0.13
-    if (pp > 0.50) pp = 0.50
-  } else {
-    if (pp == 0) pp = 0.20
-  }
-  nomov[which(x < pp)] = 1
   nomov = c(0,nomov,0)
   s1 = which(diff(nomov) == 1) #start of blocks in spt
   e1 = which(diff(nomov) == -1) #end of blocks in spt
@@ -26,7 +32,7 @@ HDCZA = function(angle, perc = 10, spt_threshold = 15,
     s2 = s1[sptblock] # only keep the sptblocks that are long enough
     e2 = e1[sptblock] # only keep the sptblocks that are long enough
     for (j in 1:length(s2)){
-      inspttime[ s2[j]:e2[j]] = 1 #record these blocks in the inspttime vector
+      inspttime[s2[j]:e2[j]] = 1 #record these blocks in the inspttime vector
     }
     # fill up gaps in time between spt blocks
     outofspt = rep(0,length(inspttime))

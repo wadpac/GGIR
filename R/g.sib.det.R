@@ -1,6 +1,7 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                     myfun=c()) {
+                     myfun=c(), sensor.location="wrist",
+                     HASPT.algo = "HDCZA") {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
   
@@ -67,13 +68,26 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   if (ND > 0.2) {
     #========================================================================
     # timestamps
-    time = as.character(IMP$metashort[1:nD,1])
+    time = as.character(IMP$metashort[,1])
     # angle
     if (length(which(colnames(IMP$metashort)=="anglez")) == 0) {
       cat("metric anglez was not extracted, please make sure that anglez  is extracted")
     }
-    angle = as.numeric(as.matrix(IMP$metashort[1:nD,which(colnames(IMP$metashort)=="anglez")]))
-    ACC = as.numeric(as.matrix(IMP$metashort[1:nD,which(colnames(IMP$metashort)==acc.metric)]))
+    angle = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)=="anglez")]))
+    anglex = angley = c()
+    do.HASPT.hip = FALSE
+    if (sensor.location == "hip" & "anglex" %in% colnames(IMP$metashort) &
+        "angley" %in% colnames(IMP$metashort) &
+        "anglez" %in% colnames(IMP$metashort)) {
+      do.HASPT.hip= TRUE
+      if (length(colnames(IMP$metashort)=="anglex") > 0) {
+        anglex =  IMP$metashort[,which(colnames(IMP$metashort)=="anglex")]
+      }
+      if (length(colnames(IMP$metashort)=="angley") > 0) {
+        angley =  IMP$metashort[,which(colnames(IMP$metashort)=="angley")]
+      }
+    }
+    ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)==acc.metric)]))
     night = rep(0,length(angle))
     if (length(which(is.na(angle) ==TRUE)) > 0) {
       if (which(is.na(angle) ==TRUE)[1] == length(angle)) {
@@ -153,7 +167,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         firstmidnighti = midnightsi[1]
       }
       for (j in 1:(countmidn)) { #-1
-        print(paste0("night ",j))
+        # print(paste0("night ",j))
         qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #noon
         qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #noon
         if (qqq2 > length(time))  qqq2 = length(time)
@@ -183,9 +197,30 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         tmpANGLE = angle[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
-        spt_estimate = HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
+        if (do.HASPT.hip == TRUE) {
+          HASPT.algo = "HorAngle"
+          count_updown = matrix(0,3,2)
+          count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
+          count_updown[2,]= sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
+          count_updown[3,] = sort(c(length(which(angle[qqq1:qqq2] < 45)), length(which(angle[qqq1:qqq2] > 45))))
+          ratio_updown = count_updown[,1] / count_updown[,2]
+          validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
+          if (length(validval) > 0) {
+            ratio_updown[validval] = ratio_updown
+            longitudinal_axis = which.max(ratio_updown)
+          } else {
+            longitudinal_axis = 2 # y-axis as fall back option if detection does not work
+          }
+          if (longitudinal_axis == 1) {
+            tmpANGLE = anglex[qqq1:qqq2]
+          } else if (longitudinal_axis == 2) {
+            tmpANGLE = angley[qqq1:qqq2]
+          }
+        }
+        spt_estimate = HASPT(angle=tmpANGLE,ws3=ws3,constrain2range=constrain2range,
                              perc = perc, spt_threshold = spt_threshold,
-                             sptblocksize = sptblocksize, spt_max_gap = spt_max_gap)
+                             sptblocksize = sptblocksize, spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo)
+        # print(spt_estimate)
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end+qqq1 >= qqq2-(1*(3600/ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
@@ -195,9 +230,9 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             if (newqqq2 > length(angle)) newqqq2 = length(angle)
             # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
             if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-              spt_estimate = HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
+              spt_estimate = HASPT(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
                                    perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                   spt_max_gap = spt_max_gap)
+                                   spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo)
               if (spt_estimate$SPTE_start+newqqq1 >= newqqq2) {
                 spt_estimate$SPTE_start = (newqqq2-newqqq1)-1
               }
@@ -215,8 +250,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             SPTE_start[j] = (spt_estimate$SPTE_start/(3600/ws3)) + 12 + daysleep_offset
           }
           SPTE_end[j] = dstime_handling_check(tmpTIME=tmpTIME,spt_estimate=spt_estimate,
-                                               tz=desiredtz,calc_SPTE_end=SPTE_end[j],
-                                               calc_SPTE_start=SPTE_start[j])
+                                              tz=desiredtz,calc_SPTE_end=SPTE_end[j],
+                                              calc_SPTE_start=SPTE_start[j])
           tib.threshold[j] = spt_estimate$tib.threshold
         }
       }

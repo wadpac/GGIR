@@ -11,7 +11,7 @@
   g.sib.det(M, IMP, I, twd=c(-12,12), anglethreshold = 5, 
               timethreshold = c(5,10), acc.metric = "ENMO",
               desiredtz="", constrain2range=TRUE, 
-              myfun=c())
+              myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA")
 }
 \arguments{
   \item{M}{
@@ -44,9 +44,16 @@
   \item{constrain2range}{
     See \link{g.part3}
   }
-\item{myfun}{
+  \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
+  }
+  \item{sensor.location}{
+    See \link{g.part3}
+  }
+  \item{HASPT.algo}{
+   Character to indicate what heuristic algorithm to use for detecting the SPT
+   window, see \link{HASPT}
   }
 }
 \value{

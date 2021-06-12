@@ -234,7 +234,17 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-
+  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
+  if (exists("sensor.location") == FALSE) sensor.location = "wrist"
+  if (sensor.location == "hip") {
+    if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
+      warning("\nWhen working with hip data all three angle metrics are needed.")
+      do.anglex = do.angley = do.anglez = TRUE
+    }
+    if (HASPT.algo != "HorAngle") {
+      warning("\nChanging HASPT.algo to HorAngle")
+    }
+  }
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -425,7 +435,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun, maxNcores=maxNcores)
+            myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location)
   }
   if (dopart4 == TRUE) {
     cat('\n')

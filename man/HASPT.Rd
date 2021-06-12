@@ -1,16 +1,16 @@
-\name{HDCZA}
-\alias{HDCZA}
+\name{HASPT}
+\alias{HASPT}
 \title{
-  Heuristic algorithm looking at Distribution of Change in Z-Angle (HDCZA).
+  Heuristic Algorithms estimating SPT window.
 }
 \description{
-  HDCZA algorithm for estimating the SPT window.
   As used in function \link{g.sib.det}. Function is not intended for direct use
   by GGIR user.
 }
 \usage{
-HDCZA(angle, perc = 10, spt_threshold = 15, sptblocksize = 30, 
-      spt_max_gap = 60, ws3 = 5, constrain2range = FALSE)
+HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30, 
+      spt_max_gap = 60, ws3 = 5, constrain2range = FALSE,
+      HASPT.algo="HDCZA")
 }
 \arguments{
   \item{angle}{
@@ -21,7 +21,7 @@ HDCZA(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
     paper)
   }
   \item{spt_threshold}{
-    Numeric threshold used in HDCZA algorithm (default 15 corresponds to 
+    Numeric threshold used in HASPT algorithm (default 15 corresponds to 
     2018 paper)
   }
   \item{sptblocksize}{
@@ -36,6 +36,16 @@ HDCZA(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
   \item{constrain2range}{
     Bolean to indicate whether threshold should be constrained to a range
   }
+  \item{HASPT.algo}{
+    Character to indicate what algortihm should be used. Default "HDCZA" is 
+    Heuristic algorithm looking at Distribution of Change in Z-Angle as
+    described in van Hees et al. 2018. Other options included:
+    "HorAngle", which is based on HDCZA but replaces non-movement detection of 
+    the HDCZA algorithm by looking for time segments where the angle of the 
+    longitudinal sensor axis has an angle relative to the horizontal plane
+    between -45 and +45 degrees.
+  }
+  
 }
 \value{
   List with start and end times of the SPT window and the threshold as used.
