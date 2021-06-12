@@ -11,7 +11,6 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     k1 = 5 * (60/ws3)
     x = zoo::rollapply(angle, width=k1, FUN=medabsdi) # 5 minute rolling median of the absolute difference
     nomov = rep(0,length(x)) # no movement
-    inspttime = rep(NA,length(x))
     pp = quantile(x,probs=c(perc/100)) * spt_threshold
     if (constrain2range == TRUE) {
       if (pp < 0.13) pp = 0.13
@@ -22,8 +21,15 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     nomov[which(x < pp)] = 1
     
   } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
-    nomov[which(abs(angle) < 45)] = 1
+    x = angle
+    horizontal = which(abs(x) < 45)
+    nomov = rep(0,length(x)) # no movement
+    pp = NA
+    if (length(horizontal) > 0) {
+      nomov[horizontal] = 1
+    }
   }
+  inspttime = rep(NA,length(x))
   nomov = c(0,nomov,0)
   s1 = which(diff(nomov) == 1) #start of blocks in spt
   e1 = which(diff(nomov) == -1) #end of blocks in spt
