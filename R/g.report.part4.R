@@ -163,10 +163,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
               }
             }
           }
-          # ignore also all columns related to sleeplog and error, which were mainly used for methodological research
-          coldel = which(colnames(nightsummary) %in% c("guider_onset", "guider_wakeup", "guider_SptDuration",
-                                                       "error_onset", "error_wake", "error_dur",
-                                                       "guider_onset_ts", "guider_wakeup_ts") == TRUE)
+          # ignore also all columns related to error (difference between guider and final estimate,
+          # which were mainly used for methodological research
+          coldel = which(colnames(nightsummary) %in% c("error_onset", "error_wake", "error_dur") == TRUE)
           if (length(coldel) > 0) nightsummary = nightsummary[,-coldel]
         }
         NIDS = length(unique(nightsummary$ID))
