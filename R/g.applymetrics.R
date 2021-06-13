@@ -58,6 +58,9 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
         Wc = matrix(0,2,1)
         Wc[1,1] = lb / (sf/2)
         Wc[2,1] = hb / (sf/2)
+        if (sf/2 < hb | sf/2 < hb) {
+          warning("\nSample frequency ",sf," too low for calculating this metric.")
+        }
         return(signal::butter(n,Wc,type=c("pass")))
       }
       if (filtertype == "pass") {
@@ -165,7 +168,9 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
       data_processed[,zi] = ifelse(test = data_processed[,zi] >= 0,yes = 1, no = -1)
       # detect zero-crossings
       zerocross = function(x, Ndat) {
-        return(abs(sign(x[2:Ndat]) - sign(x[1:(Ndat-1)])) * 0.5)
+        tmp = abs(sign(x[2:Ndat]) - sign(x[1:(Ndat-1)])) * 0.5
+        tmp = c(tmp[1], tmp) # add value to ensure length aligns
+        return(tmp)
       }
       if (zi == 1) {
         allmetrics$ZCX = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
