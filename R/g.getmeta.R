@@ -537,7 +537,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         ZCX =  accmetrics$ZCX
         ZCY =  accmetrics$ZCY
         ZCZ =  accmetrics$ZCZ
-
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
