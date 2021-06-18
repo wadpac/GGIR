@@ -1,7 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 2.4-1 (GitHub-only-release date:29-07-2021)}{
+\itemize{
+  \item Part 1 resampling function expanded with option to choose interpolation technique
+}
+}
 \section{Changes in version 2.4-0 (release date:03-06-2021)}{
 \itemize{
   \item Part 5 LUX variables per segment of the day improved

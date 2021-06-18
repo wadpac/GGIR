@@ -17,8 +17,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // resample
-NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector time, int stop);
-RcppExport SEXP _GGIR_resample(SEXP rawSEXP, SEXP rawTimeSEXP, SEXP timeSEXP, SEXP stopSEXP) {
+NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector time, int stop, int type);
+RcppExport SEXP _GGIR_resample(SEXP rawSEXP, SEXP rawTimeSEXP, SEXP timeSEXP, SEXP stopSEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -26,7 +26,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type rawTime(rawTimeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type time(timeSEXP);
     Rcpp::traits::input_parameter< int >::type stop(stopSEXP);
-    rcpp_result_gen = Rcpp::wrap(resample(raw, rawTime, time, stop));
+    Rcpp::traits::input_parameter< int >::type type(typeSEXP);
+    rcpp_result_gen = Rcpp::wrap(resample(raw, rawTime, time, stop, type));
     return rcpp_result_gen;
 END_RCPP
 }

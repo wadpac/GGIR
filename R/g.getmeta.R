@@ -13,6 +13,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
                      do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,
+                     interpolationType=1,
                      ...) {
   #get input variables
   input = list(...)
@@ -242,7 +243,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps,
                               rmc.col.wear=rmc.col.wear,
-                              rmc.doresample=rmc.doresample)
+                              rmc.doresample=rmc.doresample,
+                              interpolationType=interpolationType)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -256,7 +258,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       options(warn=0) # to ignore warnings relating to failed mmap.load attempt
       if(mon == 5) { # if movisens, then read temperature
         PreviousStartPage = accread$startpage
-        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
+        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, 
+                                          PreviousEndPage, interpolationType=interpolationType)
         P = cbind(P, temperature[1:nrow(P)])
         colnames(P)[4] = "temp"
       }
@@ -542,7 +545,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
               myfun$timestamp = c()
             }
           }
-          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3)
+          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType=interpolationType)
         }
       }
       if (LD >= (ws*sf)) { #LD != 0

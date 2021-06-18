@@ -29,7 +29,8 @@
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
-                          rmc.doresample=FALSE)	
+                          rmc.doresample=FALSE,
+                          interpolationType=1)	
 }
 \arguments{
   \item{rmc.file}{
@@ -140,6 +141,9 @@
   \item{rmc.doresample}{
     Boolean to indicate whether to resample the data based on the available timestamps and extracted 
    sample rate from the file header
+  }
+  \item{interpolationType}{
+    See \link{g.getmeta}
   }
 
 }

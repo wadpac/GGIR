@@ -1,12 +1,15 @@
 #include <Rcpp.h>
+#include <cmath>
+#include <cfenv>
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector time, int stop) {
+NumericMatrix resample(NumericMatrix raw, NumericVector rawTime,
+                       NumericVector time, int stop, int type=1) {
   // raw is stop-by-N matrix with raw values of x, y, z, and optionally additional columns.
   // rawTime is vector with stop elements of raw time.
   // time is array with required time points.
-  // stop is the number of the last known point in raw and rawTime
+  // type is type of interpolation (1 = linear, 2 = nearest neighbour)
   // get number of columns
   int Ncols = raw.ncol();
   // Calculate the last resamplable point in time
@@ -15,16 +18,29 @@ NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector t
   for (; (last<nTime) && (time(last) <= u); last++);
   // Create output array
   NumericMatrix res(last,Ncols);
-//  NumericMatrix res(5,3);
-  //Main loop
-  int pos = 1; // It is right border of the interval to use
-  for (int p = 0; p < last; p++){ //p is number of point to calculate
-    for (; rawTime(pos) < time(p); pos++);
-    // Calculate value which is constant for this resampling
-    u = (time(p) - rawTime(pos - 1)) / (rawTime(pos) - rawTime(pos - 1));
-    for (int j = 0; j < Ncols; j++)
-      res(p, j) = u * (raw(pos ,j) - raw(pos - 1, j)) + raw(pos-1 ,j);
+  switch (type) {
+    case 1: { // linear
+      for (int j = 0; j < Ncols; j++) { //columns
+        int pos = 1; // It is right border of the interval to use    
+        for (int p = 0; p < last; p++) { //p is number of point to calculate
+          for (; rawTime(pos) < time(p); pos++);
+          u = (time(p) - rawTime(pos - 1)) / (rawTime(pos) - rawTime(pos - 1));
+          res(p, j) = u * (raw(pos ,j) - raw(pos - 1, j)) + raw(pos-1 ,j);
+        }  
+      }
+    }
+    break;
+    case 2: { //nearestNeighbour
+      for (int j = 0; j < Ncols; j++) { //columns
+        int pos = 1; // It is right border of the interval to use    
+        for (int p = 0; p < last; p++) { //p is number of point to calculate
+          for (; rawTime(pos) < time(p); pos++);
+          u = (time(p) - rawTime(pos - 1)) / (rawTime(pos) - rawTime(pos - 1));
+          res(p, j) = std::round(u) * (raw(pos ,j) - raw(pos - 1, j)) + raw(pos-1 ,j);
+        }  
+      }
+    }
+    break;
   }
-
   return res;
 }

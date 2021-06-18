@@ -11,7 +11,8 @@ then deleted. This is needed for memory management.
 \usage{
 g.readaccfile(filename,blocksize,blocknumber,
   selectdaysfile=c(),filequality, decn,dayborder,ws,desiredtz="",
-  PreviousEndPage=1,inspectfileobject=c(),configtz=c(), ...)
+  PreviousEndPage=1,inspectfileobject=c(),configtz=c(), 
+  interpolationType=1,...)
 }
 \arguments{
   \item{filename}{
@@ -55,6 +56,9 @@ and  filedoesnotholdday. All with the value TRUE or FALSE
   Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
   was configured. Only use this argument if the timezone of configuration and
   timezone in which recording took place are different.
+  }
+  \item{interpolationType}{
+    See \link{g.getmeta}
   }
   \item{...}{
    Any input arguments needed for function \link{read.myacc.csv} if you

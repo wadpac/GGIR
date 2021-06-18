@@ -15,7 +15,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
-                          rmc.doresample=FALSE) {
+                          rmc.doresample=FALSE,
+                          interpolationType=1) {
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -228,7 +229,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
     timeRes = as.vector(timeRes[1:nr])
     accelRes = matrix(0,nrow = nr, ncol = ncol(rawAccel), dimnames = list(NULL,colnames(rawAccel)))
     rawLast = nrow(rawAccel)
-    accelRes = resample(rawAccel, rawTime, timeRes, rawLast) # this is now the resampled acceleration data
+    accelRes = resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
     timeRes = as.POSIXlt(timeRes, origin=rmc.origin, tz = rmc.desiredtz)
     P = as.data.frame(accelRes, stringsAsFactors = TRUE)
