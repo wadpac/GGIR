@@ -70,7 +70,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% {
-    tryCatchResult = tryCatch({
+  tryCatchResult = tryCatch({
       # for (i in f0:f1) {
       FI = file.info(paste(metadatadir,"/meta/ms2.out/",fnames[i],sep=""))
       if (is.na(FI$size) == TRUE) FI$size = 0
@@ -126,8 +126,8 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
                  file=paste(metadatadir,"/meta/ms3.out/",fname,".RData",sep=""))
           }
         }
+        # } # for loop
       }
-      # } # for loop
   }) # END tryCatch
   return(tryCatchResult)
   }

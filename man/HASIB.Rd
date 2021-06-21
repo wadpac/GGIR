@@ -13,7 +13,8 @@
 }
 \arguments{
   \item{HASIB.algo}{
-    Character to indicator which sib algorithm should be used, default: "vanHees2015"
+    Character to indicator which sib algorithm should be used.
+    Default value: "vanHees2015". Other options: "Sadeh1994", "Galland2012"
   }
   \item{anglethreshold}{
     See \link{g.part3}
@@ -31,7 +32,7 @@
     See \link{g.getmeta}
   }
   \item{zeroCrossingCount}{
-    Vector with zero corrssing counts per epoch as required for Sadeh algortihm
+    Vector with zero crossing counts per epoch as required for Sadeh algortihm
   }
 }
 \value{

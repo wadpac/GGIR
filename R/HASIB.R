@@ -1,9 +1,48 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c(), 
                  time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c()) {
+  
+  sumperminutes = function(x, ws3) {
+    x2 =cumsum(c(0,x))
+    select = seq(1,length(x2),by=60/ws3)
+    x3 = diff(x2[select])
+  }
+  
+  create_rollfun_mat = function(x, Ncol) {
+    Nz = length(x)
+    # Generate matrix to ease applying rolling function
+    x_matrix = matrix(0, Nz+(Ncol-1), Ncol)
+    for (jj in 1:Ncol) {
+      x_matrix[jj:(Nz+jj-1), jj] = x
+      if (jj > 1) {
+        x_matrix[1:(jj-1), jj] = x[1]
+      }
+      if (jj < Ncol) {
+        x_matrix[((Nz-((Ncol-1)-jj)):Nz)+(Ncol-1), jj] = tail(x, 1)
+      }
+    }
+    return(x_matrix)
+  }
+  
+  reformat_output = function(x, time, ws3) {
+    # resample to original resolution
+    x = rep(x, each=(60/ws3))
+    # resize to match length of time
+    if (length(x) < length(time)) {
+      x = c(x,rep(0, length(time) - length(x)))
+    } else if (length(x) > length(time)) {
+      x = x[1:length(time)]
+    }
+    # format as expected matrix
+    sib_classification = matrix(0,length(x), 1)
+    sib_classification[,1] = as.matrix(x)
+    return(sib_classification)
+  }
+  #===============================
+  
   if (HASIB.algo == "vanHees2015") { # default
     cnt = 1
-    Nepochs = length(timethreshold) * length(anglethreshold)
-    sib_classification = matrix(0,length(anglez), Nepochs)
+    Ndefs = length(timethreshold) * length(anglethreshold)
+    sib_classification = matrix(0,length(anglez), Ndefs)
     for (i in timethreshold) {
       for (j in anglethreshold) {
         sdl1 = rep(0,length(time))
@@ -37,29 +76,12 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c
       }
     }
   } else if (HASIB.algo == "Sadeh1994") {
-    sib_classification =c()
-    # Aggregate per minute
-    sumperminutes = function(x, ws3) {
-      x2 =cumsum(c(0,x))
-      select = seq(1,length(x2),by=60/ws3)
-      x3 = diff(x2[select])
-    }
-    ZCpermin = sumperminutes(zeroCrossingCount, ws3=5)
-    Nz= length(ZCpermin)
-    # Fill matrix to ease applying rolling function
-    ZCpermin_matrix = matrix(0, Nz+10, 11)
-    for (jj in 1:11) {
-      ZCpermin_matrix[jj:(Nz+jj-1), jj] = ZCpermin
-      if (jj > 1) {
-        ZCpermin_matrix[1:(jj-1), jj] = ZCpermin[1]
-      }
-      if (jj < 11) {
-        ZCpermin_matrix[((Nz-(10-jj)):Nz)+10, jj] = tail(ZCpermin, 1)
-      }
-    }
+    ZCpermin = sumperminutes(zeroCrossingCount, ws3=ws3)
+    
+    ZCpermin_matrix = create_rollfun_mat(ZCpermin, Ncol=11)
     CalcSadehFT = function(x) {
       MeanW5 = mean(x, na.rm=TRUE)
-      SDlast = sd(x[1:6])
+      SDlast = sd(x[6:11]) #last five in this matrix means columns 6:11
       NAT = length(which(x > 50 & x < 100))
       LOGact = log(x[6]+1)
       return(data.frame(MeanW5=MeanW5, SDlast=SDlast,
@@ -70,8 +92,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c
     SadehFT = data.frame(matrix(unlist(SadehFT1), nrow=length(SadehFT1), byrow=TRUE))
     rm(SadehFT1)
     colnames(SadehFT) = c("MeanW5", "SDlast", "NAT", "LOGact")
-    
-    print(summary(SadehFT))
     # apply Sadeh algorithm
     PS = 7.601 - (0.065 * SadehFT$MeanW5) - (1.08 * SadehFT$NAT) - (0.056 * SadehFT$SDlast) - (0.703 * SadehFT$LOGact)
     PSscores = rep(0, length(PS))
@@ -79,14 +99,21 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c
     if (length(PSsibs) > 0) {
       PSscores[PSsibs] = 1
     }
-    # resample to original resolution
-    PSscores = rep(PSscores, each=(60/ws3))
-    if (length(PSscores) < length(zeroCrossingCount)) {
-      PSscores=c(PSscores,rep(0, length(zeroCrossingCount) - length(PSscores)))
-    }
-    sib_classification = PSscores
-  
+    # resample to original resolution and ensure length matches length of time
+    sib_classification = reformat_output(x=PSscores, time, ws3)
+    colnames(sib_classification)[1] = HASIB.algo
+  } else if (HASIB.algo == "Galland2012") {  
+    # Aggregate per minute
+    ZCpermin = sumperminutes(zeroCrossingCount, ws3=ws3)
+    mean_nonzero = mean(ZCpermin[which(ZCpermin != 0)])
+    CountScaled = ZCpermin / mean_nonzero
+    CountScaled_matrix = create_rollfun_mat(CountScaled, Ncol=7)
+    WeightCounts = abs(rowSums(CountScaled_matrix * c(1,3,5:1))) * 2.7 # intentional reversed order
+    WeightCounts = WeightCounts[-c(1:2)] # remove first two time stamps, to align with 5th element (7-5=2)
+    GallandScore = rep(0, length(WeightCounts))
+    GallandScore[which(WeightCounts < 1)] = 1
+    sib_classification = reformat_output(x=GallandScore, time, ws3)
+    colnames(sib_classification)[1] = HASIB.algo
   }
- 
   return(sib_classification)
 }

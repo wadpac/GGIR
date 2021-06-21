@@ -100,7 +100,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)==acc.metric)]))
     night = rep(0,length(anglez))
-    if (HASIB.algo == "Sadeh1994") { # extract zeroCrossingCount
+    if (HASIB.algo == "Sadeh1994" | HASIB.algo == "Galland2012") { # extract zeroCrossingCount
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("ZC",Sadeh_axis))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
     } else {
@@ -154,7 +154,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         firstmidnighti = midnightsi[1]
       }
       for (j in 1:(countmidn)) { #-1
-        # print(paste0("night ",j))
         qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #noon
         qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #noon
         if (qqq2 > length(time))  qqq2 = length(time)
@@ -242,7 +241,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         }
       }
       detection.failed = FALSE
-      # }
     } else {
       cat("No midnights found")
       detection.failed = TRUE

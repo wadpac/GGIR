@@ -237,18 +237,24 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
   if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
+
   if (sensor.location == "hip") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
       warning("\nWhen working with hip data all three angle metrics are needed.")
       do.anglex = do.angley = do.anglez = TRUE
     }
     if (HASPT.algo != "HorAngle") {
-      warning("\nChanging HASPT.algo to HorAngle")
+      warning("\nChanging HASPT.algo to HorAngle, required for hip data")
     }
   }
-  if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
-  if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
-    warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
+  if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
+    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
+    if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
+      warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
+    }
+    if (Sadeh_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
+    if (Sadeh_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
+    if (Sadeh_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
   }
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
