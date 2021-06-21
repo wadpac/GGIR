@@ -13,7 +13,7 @@
               desiredtz="", constrain2range=TRUE, 
               myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA",
               HASIB.algo = "vanHees2015",
-              Sadeh_axis = "y")
+              Sadeh_axis = "Y")
 }
 \arguments{
   \item{M}{

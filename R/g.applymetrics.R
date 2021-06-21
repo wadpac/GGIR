@@ -158,8 +158,9 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
     if (do.zcz == TRUE) zil = c(zil, 3)
     Ndat = nrow(data_processed)
     for (zi in zil) {
-      # remove small values
-      smallvalues = which(abs(data_processed[,zi]) < 0.1)
+      # remove small values, because accelerometers in those days where probably
+      # not sensitive to small accelerations
+      smallvalues = which(abs(data_processed[,zi]) < 0.01)
       if (length(smallvalues) > 0) {
         data_processed[smallvalues, zi] = 0
       }

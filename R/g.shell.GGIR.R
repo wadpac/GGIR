@@ -246,9 +246,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
       warning("\nChanging HASPT.algo to HorAngle")
     }
   }
-  if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "y"
-  if (Sadeh_axis %in% c("x","y","z") == FALSE) {
-    warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be x, y or z")
+  if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
+  if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
+    warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
   }
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()

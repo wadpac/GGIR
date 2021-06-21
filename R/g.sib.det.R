@@ -3,7 +3,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      myfun=c(), sensor.location = "wrist",
                      HASPT.algo = "HDCZA",
                      HASIB.algo = "vanHees2015",
-                     Sadeh_axis = "y") {
+                     Sadeh_axis = "Y") {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
   
@@ -101,7 +101,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)==acc.metric)]))
     night = rep(0,length(anglez))
     if (HASIB.algo == "Sadeh1994") { # extract zeroCrossingCount
-      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("zc",Sadeh_axis))]
+      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("ZC",Sadeh_axis))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
     } else {
       zeroCrossingCount = c()

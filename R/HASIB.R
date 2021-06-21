@@ -38,17 +38,55 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c
     }
   } else if (HASIB.algo == "Sadeh1994") {
     sib_classification =c()
-    # TO DO:
-    # downsample to 1 minute
+    # Aggregate per minute
+    sumperminutes = function(x, ws3) {
+      x2 =cumsum(c(0,x))
+      select = seq(1,length(x2),by=60/ws3)
+      x3 = diff(x2[select])
+    }
+    ZCpermin = sumperminutes(zeroCrossingCount, ws3=5)
+    Nz= length(ZCpermin)
+    # Fill matrix to ease applying rolling function
+    ZCpermin_matrix = matrix(0, Nz+10, 11)
+    for (jj in 1:11) {
+      ZCpermin_matrix[jj:(Nz+jj-1), jj] = ZCpermin
+      if (jj > 1) {
+        ZCpermin_matrix[1:(jj-1), jj] = ZCpermin[1]
+      }
+      if (jj < 11) {
+        ZCpermin_matrix[((Nz-(10-jj)):Nz)+10, jj] = tail(ZCpermin, 1)
+      }
+    }
+    CalcSadehFT = function(x) {
+      MeanW5 = mean(x, na.rm=TRUE)
+      SDlast = sd(x[1:6])
+      NAT = length(which(x > 50 & x < 100))
+      LOGact = log(x[6]+1)
+      return(data.frame(MeanW5=MeanW5, SDlast=SDlast,
+                        NAT=NAT, LOGact=LOGact))
+    }
+    SadehFT1 = apply(X = ZCpermin_matrix, MARGIN = 1, FUN = CalcSadehFT)
+    rm(ZCpermin_matrix)
+    SadehFT = data.frame(matrix(unlist(SadehFT1), nrow=length(SadehFT1), byrow=TRUE))
+    rm(SadehFT1)
+    colnames(SadehFT) = c("MeanW5", "SDlast", "NAT", "LOGact")
     
-    # zeroCrossingCount
-    
-    # apply algorithm
-    
+    print(summary(SadehFT))
+    # apply Sadeh algorithm
+    PS = 7.601 - (0.065 * SadehFT$MeanW5) - (1.08 * SadehFT$NAT) - (0.056 * SadehFT$SDlast) - (0.703 * SadehFT$LOGact)
+    PSscores = rep(0, length(PS))
+    PSsibs = which(PS >= 0)
+    if (length(PSsibs) > 0) {
+      PSscores[PSsibs] = 1
+    }
     # resample to original resolution
-    # convert into sib_classification obect
-    
-    # assign it a name?
+    PSscores = rep(PSscores, each=(60/ws3))
+    if (length(PSscores) < length(zeroCrossingCount)) {
+      PSscores=c(PSscores,rep(0, length(zeroCrossingCount) - length(PSscores)))
+    }
+    sib_classification = PSscores
+  
   }
+ 
   return(sib_classification)
 }
