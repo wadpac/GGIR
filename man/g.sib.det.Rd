@@ -11,7 +11,9 @@
   g.sib.det(M, IMP, I, twd=c(-12,12), anglethreshold = 5, 
               timethreshold = c(5,10), acc.metric = "ENMO",
               desiredtz="", constrain2range=TRUE, 
-              myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA")
+              myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA",
+              HASIB.algo = "vanHees2015",
+              Sadeh_axis = "y")
 }
 \arguments{
   \item{M}{
@@ -52,8 +54,15 @@
     See \link{g.part3}
   }
   \item{HASPT.algo}{
-   Character to indicate what heuristic algorithm to use for detecting the SPT
-   window, see \link{HASPT}
+    Character to indicate what heuristic algorithm to use for detecting the SPT
+    window, see \link{HASPT}
+  }
+  \item{HASIB.algo}{
+    Character to indicate what heuristic algorithm to use for detecting the SIB
+    window, see \link{HASIB}
+  }
+  \item{Sadeh_axis}{
+    Character to indicate which axis to use for the Sadeh algorithm.
   }
 }
 \value{

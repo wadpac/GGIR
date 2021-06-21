@@ -15,7 +15,8 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   acc.metric="ENMO", ignorenonwear=TRUE, overwrite=FALSE,
   desiredtz="",constrain2range=TRUE,
   do.part3.pdf=TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c(),
-  sensor.location="wrist", HASPT.algo="HDCZA")
+  sensor.location="wrist", HASPT.algo="HDCZA", HASIB.algo = "vanHees2015",
+  Sadeh_axis = "y")
 }
 \arguments{
   \item{metadatadir}{
@@ -83,6 +84,13 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   \item{HASPT.algo}{
    Character to indicate what heuristic algorithm to use for detecting the SPT
    window, see \link{HASPT}
+  }
+    \item{HASIB.algo}{
+   Character to indicate what heuristic algorithm to use for detecting the SIB
+   window, see \link{HASIB}
+  }
+  \item{Sadeh_axis}{
+    Character to indicated which axis to use for Sadeh algorithm, see \link{HASIB}
   }
 }
 \value{

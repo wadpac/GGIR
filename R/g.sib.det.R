@@ -1,7 +1,9 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                     myfun=c(), sensor.location="wrist",
-                     HASPT.algo = "HDCZA") {
+                     myfun=c(), sensor.location = "wrist",
+                     HASPT.algo = "HDCZA",
+                     HASIB.algo = "vanHees2015",
+                     Sadeh_axis = "y") {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
   
@@ -47,8 +49,6 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   ws2 = M$windowsizes[2]
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
-  Nsleep = length(timethreshold) * length(anglethreshold)
-  sleep = matrix(0,nD,Nsleep)
   #--------------------
   # get indicator of non-wear periods
   rout = IMP$rout
@@ -73,73 +73,60 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     if (length(which(colnames(IMP$metashort)=="anglez")) == 0) {
       cat("metric anglez was not extracted, please make sure that anglez  is extracted")
     }
-    angle = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)=="anglez")]))
+    fix_NA_invector = function(x){
+      if (length(which(is.na(x) ==TRUE)) > 0) {
+        x[which(is.na(x) == T)] = 0
+      }
+      return(x)
+    }
+    anglez = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)=="anglez")]))
+    anglez = fix_NA_invector(anglez)
+    
     anglex = angley = c()
     do.HASPT.hip = FALSE
-    if (sensor.location == "hip" & "anglex" %in% colnames(IMP$metashort) &
+    if (sensor.location == "hip" &
+        "anglex" %in% colnames(IMP$metashort) &
         "angley" %in% colnames(IMP$metashort) &
         "anglez" %in% colnames(IMP$metashort)) {
       do.HASPT.hip= TRUE
       if (length(colnames(IMP$metashort)=="anglex") > 0) {
         anglex =  IMP$metashort[,which(colnames(IMP$metashort)=="anglex")]
+        anglex = fix_NA_invector(anglex)
       }
       if (length(colnames(IMP$metashort)=="angley") > 0) {
         angley =  IMP$metashort[,which(colnames(IMP$metashort)=="angley")]
+        angley = fix_NA_invector(angley)
       }
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)==acc.metric)]))
-    night = rep(0,length(angle))
-    if (length(which(is.na(angle) ==TRUE)) > 0) {
-      if (which(is.na(angle) ==TRUE)[1] == length(angle)) {
-        angle[length(angle)] = angle[length(angle)-1]
-      }
+    night = rep(0,length(anglez))
+    if (HASIB.algo == "Sadeh1994") { # extract zeroCrossingCount
+      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("zc",Sadeh_axis))]
+      zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
+    } else {
+      zeroCrossingCount = c()
     }
     #==================================================================
-    # sleep detection if sleep is not provided by external function:
+    # 'sleep' detection if sleep is not provided by external function.
+    # Note that inside the code we call it sustained inactivity bouts
+    # to emphasize that we know that this is not actually neurological sleep
     getSleepFromExternalFunction = FALSE
     if (length(myfun) != 0) {
       if (myfun$colnames == "wake_sleep" & myfun$outputtype =="character") {
         getSleepFromExternalFunction = TRUE
       }
     }
-    angle[which(is.na(angle) == T)] = 0
     if (getSleepFromExternalFunction == FALSE) {
-      cnt = 1
-      for (i in timethreshold) {
-        for (j in anglethreshold) {
-          sdl1 = rep(0,length(time))
-          postch = which(abs(diff(angle)) > j) #posture change of at least j degrees
-          # count posture changes that happen less than once per ten minutes
-          q1 = c()
-          if (length(postch) > 1) {
-            q1 = which(diff(postch) > (i*(60/ws3))) #less than once per i minutes
-          }
-          if (length(q1) > 0) {
-            for (gi in 1:length(q1)) {
-              sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
-            }
-          } else { #possibly a day without wearing
-            if (length(postch) < 10) {  #possibly a day without wearing
-              sdl1[1:length(sdl1)] = 1 #periods with no posture change
-            } else {  #possibly a day with constantly posture changes
-              sdl1[1:length(sdl1)] = 0 #periodsposture change
-            }
-          }
-          sleep[,cnt] = sdl1
-          cnt = cnt+ 1
-        }
-      }
-      
-      cnt = 1
-      sleep = as.data.frame(sleep, stringsAsFactors = TRUE)
-      for (i in timethreshold) {
-        for (j in anglethreshold) {
-          colnames(sleep)[cnt] = paste("T",i,"A",j,sep="")
-          cnt = cnt + 1
-        }
-      }
+      sleep = HASIB(HASIB.algo = HASIB.algo, timethreshold=timethreshold,
+                    anglethreshold=anglethreshold, 
+                    time=time, anglez=anglez, ws3=ws3,
+                    zeroCrossingCount=zeroCrossingCount)
     } else { # getSleepFromExternalFunction == TRUE
-      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 # Code now uses the sleep estimates from the external function
+      # Code now uses the sleep estimates from the external function
+      # So, the assumption is that the external function provides a 
+      # character "Sleep" when it detects sleep
+      sleep = matrix(0, nD, 1)
+      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 
     }
     #-------------------------------------------------------------------
     # detect midnights
@@ -194,7 +181,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         }
         L5list[j] = L5
         # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
-        tmpANGLE = angle[qqq1:qqq2]
+        tmpANGLE = anglez[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
         if (do.HASPT.hip == TRUE) {
@@ -202,7 +189,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
           count_updown = matrix(0,3,2)
           count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
           count_updown[2,]= sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
-          count_updown[3,] = sort(c(length(which(angle[qqq1:qqq2] < 45)), length(which(angle[qqq1:qqq2] > 45))))
+          count_updown[3,] = sort(c(length(which(anglez[qqq1:qqq2] < 45)), length(which(anglez[qqq1:qqq2] > 45))))
           ratio_updown = count_updown[,1] / count_updown[,2]
           validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
           if (length(validval) > 0) {
@@ -220,17 +207,16 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         spt_estimate = HASPT(angle=tmpANGLE,ws3=ws3,constrain2range=constrain2range,
                              perc = perc, spt_threshold = spt_threshold,
                              sptblocksize = sptblocksize, spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo)
-        # print(spt_estimate)
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end+qqq1 >= qqq2-(1*(3600/ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
             daysleep_offset = 6 # hours in which the window of data sent to SPTE is moved fwd from noon
             newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
             newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
-            if (newqqq2 > length(angle)) newqqq2 = length(angle)
+            if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
-            if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-              spt_estimate = HASPT(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
+            if (newqqq1 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+              spt_estimate = HASPT(anglez[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
                                    perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
                                    spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo)
               if (spt_estimate$SPTE_start+newqqq1 >= newqqq2) {

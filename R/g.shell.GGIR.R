@@ -235,6 +235,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
   if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
+  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
   if (sensor.location == "hip") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
@@ -244,6 +245,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (HASPT.algo != "HorAngle") {
       warning("\nChanging HASPT.algo to HorAngle")
     }
+  }
+  if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "y"
+  if (Sadeh_axis %in% c("x","y","z") == FALSE) {
+    warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be x, y or z")
   }
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
@@ -435,7 +440,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location)
+            myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
+            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis)
   }
   if (dopart4 == TRUE) {
     cat('\n')
