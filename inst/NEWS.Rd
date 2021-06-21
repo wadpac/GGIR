@@ -4,12 +4,13 @@
 \section{Changes in version 2.4-1 (GitHub-only-release date:29-06-2021)}{
 \itemize{
   \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
-  \item Part 3 now option to tailor analysis for hip data
+  \item Part 3 now option to tailor SPT detection for hip data
+  \item Part 3 now option to select SIB algorithm, including: vanHees2015, Sadeh1994
   \item Part 4 now able to handle more advance sleeplogs that also contain nap
   and nonwear entries per date
+  \item Part 4 report now includes guider estimates also in 'cleaned' report
   \item Part 5 now able to export sustain inactivity bouts and self-reported
   naps and nonwear to csv report
-  \item Part 4 report now includes guider estimates also in 'cleaned' report
 }
 }
 \section{Changes in version 2.4-0 (release date:03-06-2021)}{
