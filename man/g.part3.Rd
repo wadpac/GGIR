@@ -16,7 +16,7 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   desiredtz="",constrain2range=TRUE,
   do.part3.pdf=TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c(),
   sensor.location="wrist", HASPT.algo="HDCZA", HASIB.algo = "vanHees2015",
-  HASIB_axis = "Z", longitudinal_axis=c())
+  Sadeh_axis = "Y", longitudinal_axis=c())
 }
 \arguments{
   \item{metadatadir}{
@@ -89,7 +89,7 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
    Character to indicate what heuristic algorithm to use for detecting the SIB
    window, see \link{HASIB}
   }
-  \item{HASIB_axis}{
+  \item{Sadeh_axis}{
     Character to indicated which axis to use for Sadeh algorithm, see \link{HASIB}
   }
   \item{longitudinal_axis}{

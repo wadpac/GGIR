@@ -17,7 +17,8 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     relyonguider=FALSE, relyonsleeplog=FALSE, def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="",data_cleaning_file=c(),
-    excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep=",")
+    excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep=",",
+    sleeplogType="SPT")
 }
 \arguments{
   \item{datadir}{
@@ -157,16 +158,19 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   }
   \item{sleeplogsep}{
     See \link{g.loadlog}
-}
+  }
+  \item{sleeplogType}{
+    Character to indicate type of sleeplog, default "SPT".
+    Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
+    of sleep latency and sleep efficiency.
+  }
 }
 \value{
-
-The function does not produce values but generates an RData file
-in the milestone subfolder ms4.out which incudes a dataframe
-named \code{nightsummary}. This dataframe is used in g.report.part4 to create
-two reports one per night and one per person. See package vignette 
-paragraph "Output part 4" for description of all the variables.
-
+  The function does not produce values but generates an RData file
+  in the milestone subfolder ms4.out which incudes a dataframe
+  named \code{nightsummary}. This dataframe is used in g.report.part4 to create
+  two reports one per night and one per person. See package vignette 
+  paragraph "Output part 4" for description of all the variables.
 }
 
 \examples{

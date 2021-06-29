@@ -4,7 +4,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
-                   excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep = ",") {
+                   excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep = ",",
+                   sleeplogType="SPT") {
   
   
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
@@ -61,6 +62,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                            "SleepDurationInSpt","duration_sib_wakinghours","number_sib_sleepperiod","number_sib_wakinghours",
                            "duration_sib_wakinghours_atleast15min",
                            "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
+                           "sleeplatency", "sleepefficiency",
+                           
                            "page","daysleeper","weekday","calendar_date","filename",
                            "cleaningcode","sleeplog_used","acc_available","guider")
   if (storefolderstructure == TRUE) {
@@ -165,9 +168,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         cnt67 = 2
       }
       if (storefolderstructure == FALSE) { # initialize part4 output matrix per recording (file)
-        nightsummary = as.data.frame(matrix(0,0,31))
-      } else {
         nightsummary = as.data.frame(matrix(0,0,33))
+      } else {
+        nightsummary = as.data.frame(matrix(0,0,35))
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
@@ -834,13 +837,21 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,19] = acc_onsetTS
                   nightsummary[sumi,20] = acc_wakeTS
                   #----------------------------------------------
-                  nightsummary[sumi,21] = tmp1
-                  nightsummary[sumi,22] = tmp4
-                  nightsummary[sumi,23] = pagei
-                  nightsummary[sumi,24] = daysleeper[j]
-                  nightsummary[sumi,25] = wdayname[j]
-                  nightsummary[sumi,26] = calendar_date[j]
-                  nightsummary[sumi,27] = fnames[i]
+                  nightsummary[sumi,21] = tmp1 #guider_onset_ts
+                  nightsummary[sumi,22] = tmp4 #guider_onset_ts
+                  if (sleeplogType == "TimeInBed") {
+                    #If guider isa  sleeplog and if the sleeplog recorded
+                    # time in bed then calculate:
+                    # sleep latency:
+                    nightsummary[sumi,23] = nightsummary[sumi,3] - nightsummary[sumi,7] 
+                    # sleep efficiency:
+                    nightsummary[sumi,24] = nightsummary[sumi,5] / nightsummary[sumi,14] 
+                  }
+                  nightsummary[sumi,25] = pagei
+                  nightsummary[sumi,26] = daysleeper[j]
+                  nightsummary[sumi,27] = wdayname[j]
+                  nightsummary[sumi,28] = calendar_date[j]
+                  nightsummary[sumi,29] = fnames[i]           
                   # nightsummary
                   #------------------------------------------------------------------------
                   # PLOT
@@ -906,14 +917,14 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   }
                   # PLOT
                   #------------------------------------------------------------------------
-                  nightsummary[sumi,28] = cleaningcode
-                  nightsummary[sumi,29] = sleeplog_used
-                  nightsummary[sumi,30] = acc_available
-                  nightsummary[sumi,31] = guider
+                  nightsummary[sumi,30] = cleaningcode
+                  nightsummary[sumi,31] = sleeplog_used
+                  nightsummary[sumi,32] = acc_available
+                  nightsummary[sumi,33] = guider
                   
                   if (storefolderstructure == TRUE) {
-                    nightsummary[sumi,32] = ffd[i] #full filename structure
-                    nightsummary[sumi,33] = ffp[i] #use the lowest foldername as foldername name
+                    nightsummary[sumi,34] = ffd[i] #full filename structure
+                    nightsummary[sumi,35] = ffp[i] #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 } #run through definitions
@@ -935,11 +946,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         if (length(nnights.list) == 0) { #if there were no nights to analyse
           nightsummary[sumi,1:2] = c(accid, 0)
           nightsummary[sumi,3:26] = NA
-          nightsummary[sumi,27] = fnames[i]
-          nightsummary[sumi,28] = 4 #cleaningcode = 4 (no nights of accelerometer available)
-          nightsummary[sumi,29:31] = c(FALSE, TRUE, "NA") #sleeplog_used acc_available
+          nightsummary[sumi,26] = fnames[i]
+          nightsummary[sumi,30] = 4 #cleaningcode = 4 (no nights of accelerometer available)
+          nightsummary[sumi,31:33] = c(FALSE, TRUE, "NA") #sleeplog_used acc_available
           if (storefolderstructure == TRUE) {
-            nightsummary[sumi,32:33] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi,34:35] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }

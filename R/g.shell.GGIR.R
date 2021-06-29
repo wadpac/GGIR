@@ -248,13 +248,15 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
   }
   if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
-    if (exists("HASIB_axis") == FALSE) HASIB_axis = "Y"
-    if (HASIB_axis %in% c("X","Y","Z") == FALSE) {
-      warning("\nArgument HASIB_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
+    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
+    if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
+      warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
     }
-    if (HASIB_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
-    if (HASIB_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
-    if (HASIB_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
+    if (Sadeh_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
+    if (Sadeh_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
+    if (Sadeh_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
+  } else { # vanHees2015
+    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Z"
   }
   if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
   
@@ -279,7 +281,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
   if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
-
+  if (exists("sleeplogType") == FALSE)  sleeplogType = "SPT"
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -449,7 +451,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
             myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
-            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, HASIB_axis=HASIB_axis,
+            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
             longitudinal_axis=longitudinal_axis)
   }
   if (dopart4 == TRUE) {
@@ -466,7 +468,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
             data_cleaning_file=data_cleaning_file,
             excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4,
-            sleeplogsep=sleeplogsep)
+            sleeplogsep=sleeplogsep, sleeplogType=sleeplogType)
   }
   if (dopart5 == TRUE) {
     cat('\n')
