@@ -20,7 +20,8 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    LUX_cal_constant = c(),
                    LUX_cal_exponent = c(),
                    LUX_day_segments = c(),
-                   do.sibreport = FALSE) {
+                   do.sibreport = FALSE,
+                   sleeplogidnum=FALSE) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -358,7 +359,13 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             # does not depend on bout detection criteria or
                                             # window definitions.
                                             if (do.sibreport  == TRUE) {
-                                              sibreport = g.sibreport(ts, ID, epochlength=ws3new, logs_diaries, desiredtz = desiredtz)
+                                              if (sleeplogidnum == TRUE) {
+                                                IDtmp = as.numeric(ID)
+                                              } else {
+                                                IDtmp = as.character(ID)
+                                              }
+                                              
+                                              sibreport = g.sibreport(ts, ID=IDtmp, epochlength=ws3new, logs_diaries, desiredtz = desiredtz)
                                               if ("angle" %in% colnames(ts)) {
                                                 ts = ts[, -which(colnames(ts) == "angle")]
                                               }

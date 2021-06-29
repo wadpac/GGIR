@@ -26,7 +26,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   frag.metrics=c(), iglevels=c(), maxNcores=c(),
   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
   LUX_cal_constant = c(), LUX_cal_exponent = c(),
-  LUX_day_segments = c(), do.sibreport=FALSE)
+  LUX_day_segments = c(), do.sibreport=FALSE, sleeplogidnum=FALSE)
 }
 \arguments{
   \item{datadir}{
@@ -219,6 +219,9 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
   \item{do.sibreport}{
     Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
+  }
+  \item{sleeplogidnum}{
+    See \link{g.part4}
   }
 }
 \value{

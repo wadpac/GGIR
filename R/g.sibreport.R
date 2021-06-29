@@ -49,10 +49,10 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
           for (i in 1:nrow(log)) { # loop over lines (days)
             tmp = log[i,] # convert into timestamps
             # only attempt if there are at least 2 timestamps to process
-            nonempty = which(tmp[,3:ncol(tmp)] != "")
+            nonempty = which(tmp[3:ncol(tmp)] != "")
             if (length(nonempty) > 1) {
-              date = as.Date(as.character(tmp[,2]), format=dateformat)
-              times = as.character(unlist(tmp[,3:ncol(tmp)]))
+              date = as.Date(as.character(tmp[1,2]), format=dateformat)
+              times = as.character(unlist(tmp[1,3:ncol(tmp)]))
               # ignore entries without start and/or end time
               t_to_remove = c()
               for (ji in 1:floor(length(times)/2)) {

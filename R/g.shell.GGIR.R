@@ -502,7 +502,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
             LUXthresholds=LUXthresholds, maxNcores=maxNcores,
             LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
-            LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport)
+            LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport,
+            sleeplogidnum=sleeplogidnum)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
