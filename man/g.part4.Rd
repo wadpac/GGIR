@@ -18,7 +18,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="",data_cleaning_file=c(),
     excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep=",",
-    sleeplogType="SPT")
+    sleepwindowType="SPT")
 }
 \arguments{
   \item{datadir}{
@@ -159,7 +159,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   \item{sleeplogsep}{
     See \link{g.loadlog}
   }
-  \item{sleeplogType}{
+  \item{sleepwindowType}{
     Character to indicate type of sleeplog, default "SPT".
     Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
     of sleep latency and sleep efficiency.

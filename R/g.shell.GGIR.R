@@ -245,6 +245,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
     if (HASPT.algo != "HorAngle") {
       warning("\nChanging HASPT.algo to HorAngle, required for hip data")
+      HASPT.algo = "HorAngle"
     }
   }
   if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
@@ -256,7 +257,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (Sadeh_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
     if (Sadeh_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
   } else { # vanHees2015
-    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Z"
+    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "" # not used
   }
   if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
   
@@ -281,7 +282,10 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
   if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
-  if (exists("sleeplogType") == FALSE)  sleeplogType = "SPT"
+  if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
+  if (HASPT.algo == "HorAngle") {
+    sleepwindowType = "TimeInBed"
+  }
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -468,7 +472,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
             data_cleaning_file=data_cleaning_file,
             excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4,
-            sleeplogsep=sleeplogsep, sleeplogType=sleeplogType)
+            sleeplogsep=sleeplogsep, sleepwindowType=sleepwindowType)
   }
   if (dopart5 == TRUE) {
     cat('\n')

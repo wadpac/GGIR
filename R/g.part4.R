@@ -5,7 +5,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
                    excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep = ",",
-                   sleeplogType="SPT") {
+                   sleepwindowType="SPT") {
   
   
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
@@ -839,7 +839,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   #----------------------------------------------
                   nightsummary[sumi,21] = tmp1 #guider_onset_ts
                   nightsummary[sumi,22] = tmp4 #guider_onset_ts
-                  if (sleeplogType == "TimeInBed") {
+                  if (sleepwindowType == "TimeInBed") {
                     #If guider isa  sleeplog and if the sleeplog recorded
                     # time in bed then calculate:
                     # sleep latency:
