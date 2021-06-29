@@ -3,7 +3,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      myfun=c(), sensor.location = "wrist",
                      HASPT.algo = "HDCZA",
                      HASIB.algo = "vanHees2015",
-                     Sadeh_axis = "Y") {
+                     HASIB_axis = "Z",
+                     longitudinal_axis = c()) {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
   
@@ -101,7 +102,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)==acc.metric)]))
     night = rep(0,length(anglez))
     if (HASIB.algo == "Sadeh1994" | HASIB.algo == "Galland2012") { # extract zeroCrossingCount
-      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("ZC",Sadeh_axis))]
+      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("ZC",HASIB_axis))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
     } else {
       zeroCrossingCount = c()
@@ -185,17 +186,19 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         daysleep_offset = 0
         if (do.HASPT.hip == TRUE) {
           HASPT.algo = "HorAngle"
-          count_updown = matrix(0,3,2)
-          count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
-          count_updown[2,]= sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
-          count_updown[3,] = sort(c(length(which(anglez[qqq1:qqq2] < 45)), length(which(anglez[qqq1:qqq2] > 45))))
-          ratio_updown = count_updown[,1] / count_updown[,2]
-          validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
-          if (length(validval) > 0) {
-            ratio_updown[validval] = ratio_updown
-            longitudinal_axis = which.max(ratio_updown)
-          } else {
-            longitudinal_axis = 2 # y-axis as fall back option if detection does not work
+          if (length(longitudinal_axis) == 0) { #only estimate long axis if not provided by user
+            count_updown = matrix(0,3,2)
+            count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
+            count_updown[2,]= sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
+            count_updown[3,] = sort(c(length(which(anglez[qqq1:qqq2] < 45)), length(which(anglez[qqq1:qqq2] > 45))))
+            ratio_updown = count_updown[,1] / count_updown[,2]
+            validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
+            if (length(validval) > 0) {
+              ratio_updown[validval] = ratio_updown
+              longitudinal_axis = which.max(ratio_updown)
+            } else {
+              longitudinal_axis = 2 # y-axis as fall back option if detection does not work
+            }
           }
           if (longitudinal_axis == 1) {
             tmpANGLE = anglex[qqq1:qqq2]

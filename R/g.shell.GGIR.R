@@ -248,14 +248,16 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
   }
   if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
-    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
-    if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
-      warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
+    if (exists("HASIB_axis") == FALSE) HASIB_axis = "Y"
+    if (HASIB_axis %in% c("X","Y","Z") == FALSE) {
+      warning("\nArgument HASIB_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
     }
-    if (Sadeh_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
-    if (Sadeh_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
-    if (Sadeh_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
+    if (HASIB_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
+    if (HASIB_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
+    if (HASIB_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
   }
+  if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
+  
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -447,7 +449,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
             myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
-            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis)
+            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, HASIB_axis=HASIB_axis,
+            longitudinal_axis=longitudinal_axis)
   }
   if (dopart4 == TRUE) {
     cat('\n')

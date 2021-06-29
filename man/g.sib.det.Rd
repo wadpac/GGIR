@@ -13,7 +13,7 @@
               desiredtz="", constrain2range=TRUE, 
               myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA",
               HASIB.algo = "vanHees2015",
-              Sadeh_axis = "Y")
+              HASIB_axis = "Z", longitudinal_axis=c())
 }
 \arguments{
   \item{M}{
@@ -61,8 +61,13 @@
     Character to indicate what heuristic algorithm to use for detecting the SIB
     window, see \link{HASIB}
   }
-  \item{Sadeh_axis}{
+  \item{HASIB_axis}{
     Character to indicate which axis to use for the Sadeh algorithm.
+  }
+  \item{longitudinal_axis}{
+    Integer, to indicate which axis is the longitudinal axis. 
+    If not provided function will estimate longitudinal axis. Only used when
+    sensor.location="hip" or HASPT.algo="HorAngle".
   }
 }
 \value{
