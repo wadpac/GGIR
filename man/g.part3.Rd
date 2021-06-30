@@ -16,7 +16,7 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   desiredtz="",constrain2range=TRUE,
   do.part3.pdf=TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c(),
   sensor.location="wrist", HASPT.algo="HDCZA", HASIB.algo = "vanHees2015",
-  Sadeh_axis = "Y", longitudinal_axis=c())
+  Sadeh_axis = "Y", longitudinal_axis=c(), HASPT.ignore.invalid=FALSE)
 }
 \arguments{
   \item{metadatadir}{
@@ -94,6 +94,9 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   }
   \item{longitudinal_axis}{
    Integer, see \link{g.sib.det}
+  }
+  \item{HASPT.ignore.invalid}{
+    See \link{HASPT}
   }
 }
 \value{

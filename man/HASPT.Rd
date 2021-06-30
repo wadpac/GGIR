@@ -10,7 +10,7 @@
 \usage{
 HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30, 
       spt_max_gap = 60, ws3 = 5, constrain2range = FALSE,
-      HASPT.algo="HDCZA", invalid)
+      HASPT.algo="HDCZA", invalid, HASPT.ignore.invalid=FALSE)
 }
 \arguments{
   \item{angle}{
@@ -47,6 +47,9 @@ HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
   }
   \item{invalid}{
     Integer vector with per epoch an indicator of valid(=0) or invalid(=1) epoch.
+  }
+  \item{HASPT.ignore.invalid}{
+    Boolean to indicate whether invalid time segments should be ignored
   }
 }
 \value{

@@ -237,7 +237,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
   if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
-
+  if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
   if (sensor.location == "hip") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
       warning("\nWhen working with hip data all three angle metrics are needed.")

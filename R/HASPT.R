@@ -1,6 +1,7 @@
 HASPT = function(angle, perc = 10, spt_threshold = 15,
                  sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 constrain2range = FALSE, HASPT.algo="HDCZA", invalid) {
+                 constrain2range = FALSE, HASPT.algo="HDCZA", invalid,
+                 HASPT.ignore.invalid=FALSE) {
   SPTE_start = SPTE_end = c()
   
   adjustlength = function(x, invalid) {
@@ -28,13 +29,21 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     } else {
       if (pp == 0) pp = 0.20
     }
-    invalid = adjustlength(x, invalid)
-    nomov[which(x < pp & invalid == 0)] = 1
+    if (HASPT.ignore.invalid == TRUE) {
+      invalid = adjustlength(x, invalid)
+      nomov[which(x < pp & invalid == 0)] = 1
+    } else {
+      nomov[which(x < pp)] = 1
+    }
     
   } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
     x = angle
-    invalid = adjustlength(x, invalid)
-    horizontal = which(abs(x) < 45 & invalid == 0)
+    if (HASPT.ignore.invalid == TRUE) {
+      invalid = adjustlength(x, invalid)
+      horizontal = which(abs(x) < 45 & invalid == 0)
+    } else {
+      horizontal = which(abs(x) < 45)
+    }
     nomov = rep(0,length(x)) # no movement
     pp = NA
     if (length(horizontal) > 0) {

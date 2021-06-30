@@ -13,7 +13,7 @@
               desiredtz="", constrain2range=TRUE, 
               myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA",
               HASIB.algo = "vanHees2015",
-              Sadeh_axis = "Y", longitudinal_axis=c())
+              Sadeh_axis = "Y", longitudinal_axis=c(), HASPT.ignore.invalid=FALSE)
 }
 \arguments{
   \item{M}{
@@ -69,6 +69,9 @@
     Integer, to indicate which axis is the longitudinal axis. 
     If not provided function will estimate longitudinal axis. Only used when
     sensor.location="hip" or HASPT.algo="HorAngle".
+  }
+   \item{HASPT.ignore.invalid}{
+    See \link{HASPT}
   }
 }
 \value{

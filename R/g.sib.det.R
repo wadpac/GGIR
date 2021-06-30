@@ -4,7 +4,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      HASPT.algo = "HDCZA",
                      HASIB.algo = "vanHees2015",
                      Sadeh_axis = "Y",
-                     longitudinal_axis = c()) {
+                     longitudinal_axis = c(),
+                     HASPT.ignore.invalid = FALSE) {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
   
@@ -209,7 +210,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         spt_estimate = HASPT(angle=tmpANGLE,ws3=ws3,constrain2range=constrain2range,
                              perc = perc, spt_threshold = spt_threshold,
                              sptblocksize = sptblocksize, spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo,
-                             invalid=invalid)
+                             invalid=invalid, HASPT.ignore.invalid = HASPT.ignore.invalid)
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end+qqq1 >= qqq2-(1*(3600/ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
@@ -221,7 +222,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             if (newqqq1 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
               spt_estimate = HASPT(anglez[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
                                    perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                   spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo, invalid=invalid)
+                                   spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo, invalid=invalid,
+                                   HASPT.ignore.invalid = HASPT.ignore.invalid)
               if (spt_estimate$SPTE_start+newqqq1 >= newqqq2) {
                 spt_estimate$SPTE_start = (newqqq2-newqqq1)-1
               }
