@@ -15,10 +15,11 @@ test_that("g.sibreport creates expected object", {
   
   logs_diaries = list(sleeplog=c(), nonwearlog=nonwearlog, 
                       naplog=naplog, dateformat="%Y-%m-%d")
-  source("~/GGIR/R/g.sibreport.R")
   SIBREPORT = g.sibreport(ts, ID, epochlength, logs_diaries)
   expect_equal(nrow(SIBREPORT), 8)
-  expect_equal(mean(SIBREPORT$mean_acc, na.rm = TRUE), 4)
-  expect_equal(mean(SIBREPORT$sd_ang, na.rm = TRUE), 1)
   expect_equal(mean(SIBREPORT$duration, na.rm = TRUE), 3)
+  expect_equal(mean(SIBREPORT$mean_acc_1min_before, na.rm = TRUE), 2)
+  expect_equal(mean(SIBREPORT$mean_acc_1min_after, na.rm = TRUE), 6)
+  expect_equal(SIBREPORT$start[8], "2021-03-03 15:02:00")
+  expect_equal(SIBREPORT$end[8], "2021-03-03 15:04:00")
 })
