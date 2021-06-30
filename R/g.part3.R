@@ -107,6 +107,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           SPTE_end = SLE$SPTE_end
           SPTE_start = SLE$SPTE_start
           tib.threshold = SLE$tib.threshold
+          longitudinal_axis = SLE$longitudinal_axis
           if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
             ID = SUM$summary$ID
             # id = as.character(unlist(strsplit(I$filename,"_"))[1])
@@ -121,7 +122,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
             sib.cla.sum = g.sib.sum(SLE,M,ignorenonwear=ignorenonwear,desiredtz=desiredtz)
             rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to allign sleeplog with recording
             
-            save(sib.cla.sum,L5list,SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
+            save(sib.cla.sum,L5list,SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID, longitudinal_axis,
                  file=paste(metadatadir,"/meta/ms3.out/",fname,".RData",sep=""))
           }
         }

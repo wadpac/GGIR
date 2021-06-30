@@ -4,7 +4,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
-                   excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep = ",",
+                   excludefirst.part4=FALSE, excludelast.part4=FALSE, sleeplogsep = ",",
                    sleepwindowType="SPT") {
   
   
@@ -65,7 +65,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                            "sleeplatency", "sleepefficiency",
                            
                            "page","daysleeper","weekday","calendar_date","filename",
-                           "cleaningcode","sleeplog_used","acc_available","guider")
+                           "cleaningcode","sleeplog_used","acc_available","guider", "longitudinal_axis")
   if (storefolderstructure == TRUE) {
     colnamesnightsummary  = c(colnamesnightsummary,"filename_dir","foldername")
   }
@@ -168,13 +168,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         cnt67 = 2
       }
       if (storefolderstructure == FALSE) { # initialize part4 output matrix per recording (file)
-        nightsummary = as.data.frame(matrix(0,0,33))
+        nightsummary = as.data.frame(matrix(0,0,34))
       } else {
-        nightsummary = as.data.frame(matrix(0,0,35))
+        nightsummary = as.data.frame(matrix(0,0,36))
       }
       colnames(nightsummary) = colnamesnightsummary
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      SPTE_end = SPTE_start = L5list = sib.cla.sum = c()
+      SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
@@ -685,7 +685,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   # if (nightsummary[sumi,3] > nightsummary[sumi,4]) {
                   #   nightsummary[sumi,5] = (36 - nightsummary[sumi,3]) + (nightsummary[sumi,4] - 12)
                   # } else {
-                  nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3] #sleep duration within Spt
+                  nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3] #duration Spt
                   # }
                   nightsummary[,5] = as.numeric(nightsummary[,5])
                   nightsummary[sumi,6] = defi #sleep definition
@@ -843,9 +843,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     #If guider isa  sleeplog and if the sleeplog recorded
                     # time in bed then calculate:
                     # sleep latency:
-                    nightsummary[sumi,23] = nightsummary[sumi,3] - nightsummary[sumi,7] 
+                    nightsummary[sumi,23] = nightsummary[sumi,3] - nightsummary[sumi,7] #sleeponset - guider_onset 
                     # sleep efficiency:
-                    nightsummary[sumi,24] = nightsummary[sumi,5] / nightsummary[sumi,14] 
+                    nightsummary[sumi,24] = nightsummary[sumi,14] / nightsummary[sumi,5]  #accumulated nocturnal sleep / SPT duration
                   }
                   nightsummary[sumi,25] = pagei
                   nightsummary[sumi,26] = daysleeper[j]
@@ -921,10 +921,14 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,31] = sleeplog_used
                   nightsummary[sumi,32] = acc_available
                   nightsummary[sumi,33] = guider
-                  
+                  if (length(longitudinal_axis) == 0) {
+                    nightsummary[sumi,34] = NA
+                  } else {
+                    nightsummary[sumi,34] = longitudinal_axis
+                  }
                   if (storefolderstructure == TRUE) {
-                    nightsummary[sumi,34] = ffd[i] #full filename structure
-                    nightsummary[sumi,35] = ffp[i] #use the lowest foldername as foldername name
+                    nightsummary[sumi,35] = ffd[i] #full filename structure
+                    nightsummary[sumi,36] = ffp[i] #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 } #run through definitions
@@ -949,8 +953,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           nightsummary[sumi,26] = fnames[i]
           nightsummary[sumi,30] = 4 #cleaningcode = 4 (no nights of accelerometer available)
           nightsummary[sumi,31:33] = c(FALSE, TRUE, "NA") #sleeplog_used acc_available
+          nightsummary[sumi,34] = NA
           if (storefolderstructure == TRUE) {
-            nightsummary[sumi,34:35] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi,35:36] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }
