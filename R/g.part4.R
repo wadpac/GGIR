@@ -442,6 +442,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           #now generate empty overview for this night / person
           dummyspo = matrix(0,1,5); dummyspo[1,1] = 1
           spo_day = c()
+          spo_day_exists = FALSE
           #============================================================================================
           for (loaddaysi in 1:loaddays) { #load twice if daysleeper because we also need data from the afternoon on the next day
             # now get accelerometer sleep detection
@@ -476,6 +477,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 if (daysleeper[j] == TRUE) {
                   tmpCmd = paste("spo_day",k,"= c()",sep="") ##
                   eval(parse(text = tmpCmd)) ##
+                  spo_day_exists = TRUE
                 }
               } else {
                 DD = g.create.sp.mat(nsp,spo,sleepdet.t,daysleep=daysleeper[j])
@@ -498,11 +500,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       }
                       tmpCmd = paste("spo_day",k,"= spo",sep="") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
+                      spo_day_exists = TRUE
                     } else {
                       tmpCmd = paste("spo_day",k,"= c()",sep="")
                       eval(parse(text = tmpCmd))
+                      spo_day_exists = TRUE
                     }
-                  } else if (loaddaysi == 2 & length(eval(parse(text = paste0("spo_day",k)))) > 0) { #length check added because day may have been skipped
+                  } else if (loaddaysi == 2 & spo_day_exists == TRUE) { #length check added because day may have been skipped
                     w2 = which(spo[,2] < 18) #only use periods starting before 6pm
                     if (length(w2) > 0) {
                       spo = as.matrix(spo[w2,])
@@ -843,9 +847,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     #If guider isa  sleeplog and if the sleeplog recorded
                     # time in bed then calculate:
                     # sleep latency:
-                    nightsummary[sumi,23] = nightsummary[sumi,3] - nightsummary[sumi,7] #sleeponset - guider_onset 
+                    nightsummary[sumi,23] = round(nightsummary[sumi,3] - nightsummary[sumi,7], digits=7) #sleeponset - guider_onset 
                     # sleep efficiency:
-                    nightsummary[sumi,24] = nightsummary[sumi,14] / nightsummary[sumi,5]  #accumulated nocturnal sleep / SPT duration
+                    nightsummary[sumi,24] = round(nightsummary[sumi,14] / nightsummary[sumi,5], digits=5)  #accumulated nocturnal sleep / SPT duration
                   }
                   nightsummary[sumi,25] = pagei
                   nightsummary[sumi,26] = daysleeper[j]
