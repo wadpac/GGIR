@@ -1,7 +1,17 @@
 HASPT = function(angle, perc = 10, spt_threshold = 15,
                  sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 constrain2range = FALSE, HASPT.algo="HDCZA") {
+                 constrain2range = FALSE, HASPT.algo="HDCZA", invalid) {
   SPTE_start = SPTE_end = c()
+  
+  adjustlength = function(x, invalid) {
+    if (length(invalid) > length(x)) {
+      invalid = invalid[1:length(x)]
+    } else if (length(invalid) < length(x)) {
+      invalid = c(invalid, rep(0, length(x) - length(invalid)))
+    }
+    return(invalid)
+  }
+  
   if (HASPT.algo == "HDCZA") { # original, default
     medabsdi = function(angle) {
       #50th percentile, do not use mean because that will be outlier sensitive
@@ -18,11 +28,13 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     } else {
       if (pp == 0) pp = 0.20
     }
-    nomov[which(x < pp)] = 1
+    invalid = adjustlength(x, invalid)
+    nomov[which(x < pp & invalid == 0)] = 1
     
   } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
     x = angle
-    horizontal = which(abs(x) < 45)
+    invalid = adjustlength(x, invalid)
+    horizontal = which(abs(x) < 45 & invalid == 0)
     nomov = rep(0,length(x)) # no movement
     pp = NA
     if (length(horizontal) > 0) {

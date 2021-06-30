@@ -10,7 +10,7 @@
 \usage{
 HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30, 
       spt_max_gap = 60, ws3 = 5, constrain2range = FALSE,
-      HASPT.algo="HDCZA")
+      HASPT.algo="HDCZA", invalid)
 }
 \arguments{
   \item{angle}{
@@ -45,7 +45,9 @@ HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
     longitudinal sensor axis has an angle relative to the horizontal plane
     between -45 and +45 degrees.
   }
-  
+  \item{invalid}{
+    Integer vector with per epoch an indicator of valid(=0) or invalid(=1) epoch.
+  }
 }
 \value{
   List with start and end times of the SPT window and the threshold as used.
