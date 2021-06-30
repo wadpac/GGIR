@@ -221,7 +221,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             if (newqqq1 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
               spt_estimate = HASPT(anglez[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
                                    perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                   spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo)
+                                   spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo, invalid=invalid)
               if (spt_estimate$SPTE_start+newqqq1 >= newqqq2) {
                 spt_estimate$SPTE_start = (newqqq2-newqqq1)-1
               }
