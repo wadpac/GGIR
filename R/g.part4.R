@@ -16,17 +16,17 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   #------------------------------------------------
   # check whether milestone 3 data exists, if not give warning
   ms3.out = "/meta/ms3.out"
-  if (file.exists(paste(metadatadir,ms3.out,sep=""))) {
+  if (file.exists(paste0(metadatadir,ms3.out))) {
   } else {
     cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
   }
   # check whether milestone 4 data exists, if no create folder
   ms4.out = "/meta/ms4.out"
-  if (file.exists(paste(metadatadir,ms4.out,sep=""))) {
+  if (file.exists(paste0(metadatadir,ms4.out))) {
   } else {
     dir.create(file.path(metadatadir,ms4.out))
   }
-  meta.sleep.folder = paste(metadatadir,"/meta/ms3.out",sep="")
+  meta.sleep.folder = paste0(metadatadir,"/meta/ms3.out")
   #------------------------------------------------
   # Get sleeplog data
   if (length(loglocation) > 0) {
@@ -39,7 +39,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                              sleeplogsep=sleeplogsep, meta.sleep.folder=meta.sleep.folder, 
                              desiredtz=desiredtz)
     sleeplog = logs_diaries$sleeplog
-    save(logs_diaries,file=paste(metadatadir,"/meta/sleeplog.RData",sep=""))
+    save(logs_diaries, file=paste0(metadatadir,"/meta/sleeplog.RData"))
   }
   #------------------------------------------------
   # get list of accelerometer milestone data files from sleep (produced by g.part3)
@@ -83,7 +83,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
   # check which files have already been processed, such that no double work is done
   ffdone = c()
   ms4.out = "/meta/ms4.out"
-  fnames.ms4 = dir(paste(metadatadir,ms4.out,sep=""))
+  fnames.ms4 = dir(paste0(metadatadir, ms4.out))
   fnames.ms4 = sort(fnames.ms4)
   ffdone = fnames.ms4
   # ffdone a matrix with all the binary filenames that have been processed
@@ -102,17 +102,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     } else {
       fnamesfull = datadir
     }
-    f16 = function(X) {
-      out = unlist(strsplit(X,"/"))
-      f16 = out[length(out)]
-    }
     f17 = function(X) {
       out = unlist(strsplit(X,"/"))
       f17 = out[(length(out)-1)]
     }
     ffd = ffp = rep("",length(fnamesfull))
     if (length(fnamesfull) > 0) {
-      fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
+      fnamesshort = basename(fnamesfull)
       foldername = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
       for (i in 1:length(fnames)) { #
         ff = as.character(unlist(strsplit(fnames[i],".RDa"))[1])
@@ -154,15 +150,15 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       }
     }
     if (skip == 0) {
-      cat(paste(" ",i,sep=""))
+      cat(paste0(" ", i))
       if (cnt67 == 1) { #only create new pdf if there is actually new plots to be generated
         if (do.visual == TRUE) { # keep pdf for QC purposes
-          pdf(file=paste(metadatadir,"/results/visualisation_sleep.pdf",sep=""),width=8.27,height=11.69)
+          pdf(file=paste0(metadatadir, "/results/visualisation_sleep.pdf"), width=8.27, height=11.69)
           par(mar=c(4,5,1,2)+0.1)
-          plot(c(0,0),c(1,1),xlim=c(12,36),ylim=c(0,nnpp),col="white",axes=FALSE,xlab="time",ylab="",
-               main=paste("Page ",pagei,sep=""))
-          axis(side=1, at = 12:36, labels = c(12:24,1:12),cex.axis=0.7)
-          abline(v=c(18,24,30),lwd=0.2,lty=2)
+          plot(c(0,0), c(1,1), xlim=c(12,36),ylim=c(0,nnpp),col="white", axes=FALSE, xlab="time", ylab="",
+               main=paste0("Page ", pagei))
+          axis(side=1, at = 12:36, labels = c(12:24,1:12), cex.axis=0.7)
+          abline(v=c(18,24,30), lwd=0.2, lty=2)
           abline(v=c(15,21,27,33),lwd=0.2,lty=3,col="grey")
         }
         cnt67 = 2
@@ -176,83 +172,14 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       sumi = 1 # counter to keep track of where we are in filling the output matrix 'nightsummary'
       SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
-      load(paste(meta.sleep.folder,"/",fnames[i],sep=""))
+      load(paste0(meta.sleep.folder,"/",fnames[i]))
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = desiredtz)
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = desiredtz)
-        #------------------------------------------------------
-        # extract the identifier from accelerometer data
-        if (idloc == 2 | idloc == 5) { #idloc is an argument to specify where the participant identifier can be found
-          if (idloc == 2) {
-            getCharBeforeUnderscore = function(x) {
-              return(as.character(unlist(strsplit(x,"_")))[1])
-            }
-          } else {
-            getCharBeforeUnderscore = function(x) {
-              return(as.character(unlist(strsplit(x," ")))[1])
-            }
-          }
-          accid = apply(as.matrix(as.character(fnames[i])),MARGIN=c(1),FUN=getCharBeforeUnderscore)
-          accid_bu = accid
-          getLastCharacterValue = function(x) {
-            tmp = as.character(unlist(strsplit(x,"")))
-            return(tmp[length(tmp)])
-          }
-          letter = apply(as.matrix(accid),MARGIN=c(1),FUN=getLastCharacterValue)
-          for (h in 1:length(accid)) {
-            options(warn=-1)
-            numletter = as.numeric(letter[h])
-            options(warn=0)
-            if (is.na(numletter) == TRUE) { # do not remove latest character if it is a number
-              accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
-            }
-          }
-          accid = suppressWarnings(as.numeric(accid))
-          #catch for files with only id in filename and for whom the above attempt to extract the id failed:
-          if (is.na(accid) == TRUE) accid = accid_bu
-        } else { # get id from filename
-          newaccid = fnames[i]
-          if (length(unlist(strsplit(newaccid,"_"))) > 1) newaccid = unlist(strsplit(newaccid,"_"))[1]
-          if (length(unlist(strsplit(newaccid," "))) > 1) newaccid = unlist(strsplit(newaccid," "))[1]
-          if (length(unlist(strsplit(newaccid,"[.]RDa"))) > 1) newaccid = unlist(strsplit(newaccid,"[.]RDa"))[1]
-          if (length(unlist(strsplit(newaccid,"[.]cs"))) > 1) newaccid = unlist(strsplit(newaccid,"[.]cs"))[1]
-          accid = newaccid[1]
-        }
-        # get matching identifier from sleeplog
-        if (dolog == TRUE) {
-          accid_num = suppressWarnings(as.numeric(accid))
-          if (sleeplogidnum == FALSE) {
-            wi = which(as.character(sleeplog$ID) == as.character(accid))
-            if (length(wi) == 0) {
-              wi_alternative = which(sleeplog$ID == accid_num)
-              if (length(wi_alternative) > 0) {
-                warning("\nArgument sleeplogidnum is set to FALSE, but it seems the identifiers are
-                    stored as numeric values, you may want to consider changing sleeplogidnum to TRUE")
-              } else {
-                warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
-                           code expects format: ",as.character(accid[1])))
-              }
-            }
-          } else {
-            wi = which(sleeplog$ID == accid_num)
-            if (length(wi) == 0) {
-              wi_alternative = which(as.character(sleeplog$ID) == as.character(accid))
-              if (length(wi_alternative) > 0) {
-                warning("\nArgument sleeplogidnum is set to TRUE, but it seems the identifiers are
-                    stored as character values, you may want to consider changing sleeplogidnum to TRUE")
-              } else {
-                
-                if (is.na(accid_num) == TRUE) { # format probably incorrect
-                  warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
-                           code expects format: ",as.character(accid[1])))
-                }
-              }
-            }
-          }
-          
-        } else {
-          wi = 1
-        }
+        # extract the identifier from accelerometer data and matching indices of sleeplog:
+        idwi = g.part4_extractid(idloc, fname = fnames[i], dolog, sleeplogidnum, sleeplog)
+        accid = idwi$accid
+        wi = idwi$matching_indices_sleeplog
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
         if (length(nnights) == 0) {
@@ -391,10 +318,10 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               xHR = as.numeric(x[1])
               xMI = as.numeric(x[2])
               xSE = as.numeric(x[3])
-              if (xHR < 10) xHR = paste("0",xHR,sep="")
-              if (xMI < 10) xMI = paste("0",xMI,sep="")
-              if (xSE < 10) xSE = paste("0",xSE,sep="")
-              x = paste(xHR,":",xMI,":",xSE,sep="")
+              if (xHR < 10) xHR = paste0("0",xHR)
+              if (xMI < 10) xMI = paste0("0",xMI)
+              if (xSE < 10) xSE = paste0("0",xSE)
+              x = paste0(xHR,":",xMI,":",xSE)
               return(x)
             }
             tmp1 = doubleDigitClocktime(tmp1)
@@ -475,7 +402,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 spo[1,2:4] = 0
                 spo[1,5] = k
                 if (daysleeper[j] == TRUE) {
-                  tmpCmd = paste("spo_day",k,"= c()",sep="") ##
+                  tmpCmd = paste0("spo_day",k,"= c()")
                   eval(parse(text = tmpCmd)) ##
                   spo_day_exists = TRUE
                 }
@@ -498,11 +425,11 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       } else {
                         spo[which(spo[,2] <= 18),2] = 18 #turn start times on 1st day before 6pm to 6pm
                       }
-                      tmpCmd = paste("spo_day",k,"= spo",sep="") #spo needs to be rememered specific to definition
+                      tmpCmd = paste0("spo_day",k,"= spo") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
                       spo_day_exists = TRUE
                     } else {
-                      tmpCmd = paste("spo_day",k,"= c()",sep="")
+                      tmpCmd = paste0("spo_day",k,"= c()")
                       eval(parse(text = tmpCmd))
                       spo_day_exists = TRUE
                     }
@@ -517,17 +444,17 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                         spo[which(spo[,3] > 18),3] = 18 #turn end times on 2nd day after 6pm to 6pm
                       }
                       spo[,2:3] = spo[,2:3]+ 24 # + 24 to create continues timelines for day 2 relative to day 1
-                      tmpCmd = paste("spo_day2",k,"= spo",sep="") #spo needs to be rememered specific to definition
+                      tmpCmd = paste0("spo_day2",k,"= spo") #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
                       
                     } else {
-                      tmpCmd = paste("spo_day2",k,"= c()",sep="")
+                      tmpCmd = paste0("spo_day2",k,"= c()")
                       eval(parse(text = tmpCmd))
                     }
                     #attach days together as being one day
-                    name1 = paste("spo_day",k,sep="")
-                    name2 = paste("spo_day2",k,sep="")
-                    tmpCmd = paste("spo = rbind(",name1,",",name2,")",sep="")
+                    name1 = paste0("spo_day", k)
+                    name2 = paste0("spo_day2", k)
+                    tmpCmd = paste0("spo = rbind(",name1,",",name2,")")
                     eval(parse(text=tmpCmd))
                   }
                 }
@@ -618,7 +545,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.6)
               idlabels = rep(0,nnpp)
               plot(c(0,0),c(1,1),xlim=c(12,36),ylim=c(0,nnpp),col="white",axes=FALSE,xlab="time",ylab="",
-                   main=paste("Page ",pagei,sep=""))
+                   main=paste0("Page ",pagei))
               axis(side=1, at = 12:36, labels = c(12:24,1:12),cex.axis=0.7)
               abline(v=c(18,24,30),lwd=0.2,lty=2)
               abline(v=c(15,21,27,33),lwd=0.2,lty=3,col="grey")
@@ -640,7 +567,6 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 rowswithdefi = which(spocum[,5] == defi)
                 if(length(rowswithdefi) > 1) { # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi,]
-                  
                   # in DST it can be that a double hour is not recognized as part of the SPT
                   correct01010pattern = function(x) {
                     x = as.numeric(x)
@@ -686,11 +612,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   if (nightsummary[sumi,3] == nightsummary[sumi,4] & nightsummary[sumi,4] == 18) { # sleeping from 6pm to 6pm (probably non-wear)
                     nightsummary[sumi,4] = nightsummary[sumi,4] + 24
                   }
-                  # if (nightsummary[sumi,3] > nightsummary[sumi,4]) {
-                  #   nightsummary[sumi,5] = (36 - nightsummary[sumi,3]) + (nightsummary[sumi,4] - 12)
-                  # } else {
                   nightsummary[sumi,5] = nightsummary[sumi,4] - nightsummary[sumi,3] #duration Spt
-                  # }
                   nightsummary[,5] = as.numeric(nightsummary[,5])
                   nightsummary[sumi,6] = defi #sleep definition
                   #------------------------------------
@@ -881,7 +803,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       cleaningcriterion = 2
                     }
                     if (doplot == TRUE & cleaningcode < cleaningcriterion) {
-                      idlabels[cnt] = paste("ID",accid," night",j,sep="")
+                      idlabels[cnt] = paste0("ID",accid," night",j)
                       den = 20
                       defii = which(undef == defi)
                       qtop = ((defii / length(undef))*0.6) - 0.3
@@ -894,9 +816,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                           }
                         }
                         if (spocum.t[pli,4] == 1) {
-                          colb = rainbow(length(undef),start=0.7,end=1) #"dodgerblue"
+                          colb = rainbow(length(undef), start=0.7, end=1)
                         } else {
-                          colb =  rainbow(length(undef),start=0.2,end=0.4) #"darkgreen"
+                          colb =  rainbow(length(undef), start=0.2, end=0.4)
                         }
                         if (spocum.t[pli,2] > spocum.t[pli,3]) {
                           rect(xleft=spocum.t[pli,2], ybottom=(cnt+qbot), xright=36, ytop=(cnt+qtop),col=colb[defii],border=NA) #lwd=0.2,
@@ -963,7 +885,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
           sumi = sumi + 1
         }
-        save(nightsummary,file=paste(metadatadir,ms4.out,"/",fnames[i],sep=""))
+        save(nightsummary, file = paste0(metadatadir, ms4.out,"/", fnames[i]))
       }
     }
   } #end of loop through acc files
@@ -971,7 +893,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     if (cnt-1 != (nnpp+1)) {
       zerolabel = which(idlabels == 0)
       if (length(zerolabel) > 0) idlabels[zerolabel] = " "
-      axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.5)
+      axis(side=2, at = 1:nnpp, labels = idlabels, las=1, cex.axis=0.5)
     }
     dev.off()
     cnt67 = 1
