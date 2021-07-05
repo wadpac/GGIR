@@ -30,7 +30,7 @@ test_that("Part 1 can run with all metrics", {
   expect_that(round(mean(M$metashort$LFENMO),digits=4),equals(0.0442))
   expect_that(round(mean(M$metashort$HFENplus),digits=4),equals(0.0904))
   expect_that(round(mean(M$metashort$MAD),digits=4),equals(0.0073))
-  expect_that(round(mean(M$metashort$ZCX),digits=4),equals(22.6551))
+  expect_that(round(mean(M$metashort$ZCX),digits=4),equals(17.4165))
    
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
