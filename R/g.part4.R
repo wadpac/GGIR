@@ -240,6 +240,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
             guider = "HDCZA"
+            if (sleepwindowType == "TimeInBed") {
+              guider = "HorAngle"
+            }
             if (is.na(defaultSptOnset) == TRUE) { # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
               cleaningcode = 6
