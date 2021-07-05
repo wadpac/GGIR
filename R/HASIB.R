@@ -106,7 +106,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c
     # Aggregate per minute
     ZCpermin = sumperminutes(zeroCrossingCount, ws3=ws3)
     mean_nonzero = mean(ZCpermin[which(ZCpermin != 0)])
-    CountScaled = ZCpermin / 30 #mean_nonzero #because 30 is the only validated approach
+    CountScaled = ZCpermin / mean_nonzero
     CountScaled_matrix = create_rollfun_mat(CountScaled, Ncol=7)
     WeightCounts = abs(rowSums(CountScaled_matrix * c(1,3,5:1))) * 2.7 # intentional reversed order
     WeightCounts = WeightCounts[-c(1:2)] # remove first two time stamps, to align with 5th element (7-5=2)
