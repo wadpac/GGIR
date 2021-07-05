@@ -134,9 +134,12 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
     # 1) apply band-pass filter to mimic old-sensor
     # probably necessary to experiment with exact configuration
     # 0.25 - 3 Hertz to be in line with Ancoli Isreal's paper from 2003,
-    # although please be aware that specific boundaries differs between Actigraph brands
-    # we do secod order filter because if it was an analog filter it was 
-    # most likely not very steep
+    # and online "Motionlogger User’s Guide Version 2K1.1" from Ambulatory Monitoring,
+    # Inc. Ardsley, New York 10502
+    # Be aware that specific boundaries differs between Actigraph brands that copied the
+    # Sadeh algorithm 
+    # We use a second order filter because if it was an analog filter it was 
+    # most likely not very steep filter.
     data_processed = process_axes(data, filtertype="pass", cut_point=c(0.25, 3), 2, sf)
     zil = c()
     
