@@ -128,38 +128,27 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
     if (do.bfen == TRUE) {
       allmetrics$BFEN = averageperws3(x=EuclideanNorm(data_processed),sf,ws3)
     }
-    
-
   }
   if (do.zcx == TRUE | do.zcy == TRUE | do.zcz == TRUE) { # Zero crossing count
-    # 1) Work with z-axis, as this is most sensitive axis for Actiwatch (te Lindert 2013)
-    # Sadeh reported to have used the y-axis but did not specify the orientation of
-    # the y-axis in their accelerometer. Assuming that actigraphy manufacturers
-    # used consistent orientation to re-use Sadeh algortihm, we will
-    # follow Actiwatch's approach
-    # An advantage of z-axis is that it's orientation relative to wrist
-    # is consistent across brands
-    # 2) apply band-pass filter to mimic old-sensor
+    
+    # 1) apply band-pass filter to mimic old-sensor
     # probably necessary to experiment with exact configuration
-    # 0.25 - 11 Hertz
-    # to be in line with Ancoli Isreal's paper
-    data_processed = process_axes(data, filtertype="pass", cut_point=c(0.25, 4), 2, sf)
-    # 2) apply stop-band to minic old sensitivity
-    # 0.05g threshold
-    # unclear what to base this on, but we need some threshold
-    # 3) identify zero-crossing:
-    # http://rug.mnhn.fr/seewave/HTML/MAN/zcr.html
-    # A = c(1, 3, 1, -1, -1, -1, 0, 1, 1, 1, 0, 1, 1)
-    # A[which(A >= 0)] = 1
-    # A[which(A < 0)] = -1
+    # 0.25 - 3 Hertz to be in line with Ancoli Isreal's paper from 2003,
+    # although please be aware that specific boundaries differs between Actigraph brands
+    # we do secod order filter because if it was an analog filter it was 
+    # most likely not very steep
+    data_processed = process_axes(data, filtertype="pass", cut_point=c(0.25, 3), 2, sf)
     zil = c()
+    
+    # 2) Sadeh reported to have used the y-axis but did not specify the orientation of
+    # the y-axis in their accelerometer. Therefore, we keep selection of axis flexible for the user
     if (do.zcx == TRUE) zil = 1
     if (do.zcy == TRUE) zil = c(zil, 2)
     if (do.zcz == TRUE) zil = c(zil, 3)
     Ndat = nrow(data_processed)
     for (zi in zil) {
-      # remove small values, because accelerometers in those days where probably
-      # not sensitive to small accelerations
+      # 3) apply stop-band to minic old sensitivity
+      # 0.01g threshold based on book by Tyron "Activity Measurementy in Psychology And Medicine"
       smallvalues = which(abs(data_processed[,zi]) < 0.01)
       if (length(smallvalues) > 0) {
         data_processed[smallvalues, zi] = 0
@@ -167,7 +156,9 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
       rm(smallvalues)
       # output binary time series zeros and ones with 1 for zero-crossing
       data_processed[,zi] = ifelse(test = data_processed[,zi] >= 0,yes = 1, no = -1)
-      # detect zero-crossings
+      # 4) detect zero-crossings
+      # The exact algorithm for the original monitor not found, maybe it happened analog
+      # we will use: http://rug.mnhn.fr/seewave/HTML/MAN/zcr.html
       zerocross = function(x, Ndat) {
         tmp = abs(sign(x[2:Ndat]) - sign(x[1:(Ndat-1)])) * 0.5
         tmp = c(tmp[1], tmp) # add value to ensure length aligns
@@ -181,13 +172,10 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
         allmetrics$ZCZ = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
       }
     }
-    # in part 3 we then do 
-    # aggregate (sum) per minute
-    # Sadeh 1987 then got values up to 280
-    # 280 = 60 x 2 x frequency of movement
-    # which would mean near 2.33 Hertz average
-    # movement frequencies, which 
-    # may have reflected walking
+    # Note that this is per epoch, in GGIR part 3 we aggregate (sum) this per minute
+    # to follow Sadeh. In Sadeh 1987 this resulted in values up to 280
+    # 280 = 60 x 2 x frequency of movement which would mean near 2.33 Hertz average
+    # movement frequencies, which may have reflected walking
   }
   #================================================
   # Low-pass filtering related metrics
