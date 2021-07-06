@@ -497,7 +497,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 # spo is now a matrix of onset and wake for each sleep period (episode)
                 for (evi in 1:nrow(spo)) { #Now classify as being part of the SPT window or not
                   if (spo[evi,2] < SptWake & spo[evi,3] > SptOnset) { # = acconset < logwake  & accwake > logonset
-                    spo[evi,4] = 1 #nocturnal = all acc periods that end after diary onset and start before diary wake
+                    if (sleepwindowType == "TimeInBed") {
+                      if (spo[evi,3] < SptWake & spo[evi,2] > SptOnset) { # if using a time in bed reference, then sleep can never start before time in bed
+                        spo[evi,4] = 1 #nocturnal = all acc periods that start after diary onset and end before diary wake
+                      }
+                    } else {
+                      spo[evi,4] = 1 #nocturnal = all acc periods that end after diary onset and start before diary wake
+                    }
                     # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS
                     if (relyonguider == TRUE | relyonguider_thisnight == TRUE) { #if TRUE then sleeplog value is assigned to accelerometer-based value for onset and wake up
                       if ((spo[evi,2] < SptWake & spo[evi,3] > SptWake) | (spo[evi,2] < SptWake & spo[evi,3] < spo[evi,2])) {
