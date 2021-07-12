@@ -5,7 +5,7 @@ numUnpack <- function(pack) {
     .Call(`_GGIR_numUnpack`, pack)
 }
 
-resample <- function(raw, rawTime, time, stop) {
-    .Call(`_GGIR_resample`, raw, rawTime, time, stop)
+resample <- function(raw, rawTime, time, stop, type = 1L) {
+    .Call(`_GGIR_resample`, raw, rawTime, time, stop, type)
 }
 

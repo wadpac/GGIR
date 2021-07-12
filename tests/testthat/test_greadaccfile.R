@@ -2,6 +2,7 @@ library(GGIR)
 context("g.readaccfile")
 test_that("g.readaccfile and g.inspectfile can read genea and cwa file correctly", {
   skip_on_cran()
+  
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
   binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIR")[1]
   wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]

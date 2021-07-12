@@ -38,6 +38,7 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
   if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = FALSE
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
+  if (length(which(ls() == "interpolationType")) == 0) interpolationType = 1
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1) chunksize = 1
   if (chunksize < 0.4) chunksize = 0.4
@@ -154,7 +155,8 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
                             rmc.headername.recordingid = rmc.headername.sn,
                             rmc.header.structure = rmc.header.structure,
                             rmc.check4timegaps = rmc.check4timegaps,
-                            rmc.doresample=rmc.doresample)
+                            rmc.doresample=rmc.doresample,
+                            interpolationType=interpolationType)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
@@ -254,7 +256,8 @@ g.calibrate = function(datafile, spherecrit=0.3,minloadcrit=72,printsummary=TRUE
           } else if (mon == 1 | mon == 3) {
             use.temp = FALSE
           } else if (mon == 5) {
-            temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
+            temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage,
+                                              interpolationType=interpolationType)
             data = cbind(data, temperature[1:nrow(data)])
             colnames(data)[4] = "temp"
             temperaturecolumn = 4
