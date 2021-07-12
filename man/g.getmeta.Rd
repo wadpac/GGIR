@@ -14,24 +14,24 @@ data procuded by GENEActiv and Actigraph
 }
 \usage{
 g.getmeta(datafile, desiredtz = "", 
-windowsizes = c(5, 900, 3600),daylimit = FALSE, 
-offset = c(0,0,0), scale = c(1,1,1),
-tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
-do.lfenmo = FALSE, do.en = FALSE,
-do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE,
-do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
-do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
-do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
-do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
-do.enmoa = FALSE, do.lfen = FALSE, 
-do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
-                     do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
-                     do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
-                     lb = 0.2,hb = 15, n = 4,
-meantempcal=c(),chunksize=c(),
-selectdaysfile=c(),dayborder=0,dynrange=c(),configtz=c(),
-myfun=c(),
-do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,...)
+  windowsizes = c(5, 900, 3600),daylimit = FALSE, 
+  offset = c(0,0,0), scale = c(1,1,1),
+  tempoffset = c(0,0,0),do.bfen = FALSE, do.enmo = TRUE,
+  do.lfenmo = FALSE, do.en = FALSE,
+  do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE,
+  do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
+  do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,
+  do.roll_med_acc_z=FALSE,do.dev_roll_med_acc_x=FALSE,
+  do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
+  do.enmoa = FALSE, do.lfen = FALSE, 
+  do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
+  do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
+  do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
+  lb = 0.2,hb = 15, n = 4,
+  meantempcal=c(),chunksize=c(), selectdaysfile=c(),dayborder=0,
+  dynrange=c(),configtz=c(), myfun=c(), do.sgAccEN=TRUE, do.sgAnglex=FALSE,
+  do.sgAngley=FALSE, do.sgAnglez=FALSE,
+  interpolationType=1, ...)
 }
 \arguments{
   \item{datafile}{name of accelerometer file
@@ -194,7 +194,10 @@ below 1 is recommended.
   (see \link{separategravity}) and use this to calculate the angle of the z-axis
   relative to the horizontal plane.
   }
-  
+  \item{interpolationType}{
+   Integer to indicate type of interpolation to be used when resampling
+   time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour
+  }
   \item{...}{
    Please ignore. Only used by the code internally when called from within
    g.part1 with selectdaysfile specific.

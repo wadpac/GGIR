@@ -1,11 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-\section{Changes in version 2.4-1 (release date:14-07-2021)}{
+\section{Changes in version 2.4-2 (release date:20-07-2021)}{
 \itemize{
-  \item Numeric timing of MX-metrics in part5 output changes to be hour of the day
-  \item Lux per segment variables now treat lux during SPT as zeros
+  \item Numeric timing of MX-metrics in part5 output changed to be hour of the day
+  \item Lux per segment variables now turn LUX during SPT as zeros
+}
+}
+\section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
+\itemize{
+  \item Part 1 fixed bug related to g.getmeta reading movisens files
+  \item Part 1 resampling function expanded with option to choose interpolation technique
+  \item Part 3 fixed bug introduced in 2.4-0 making it impossible to process long
+  recordings with many sustained inactivity bouts
 }
 }
 \section{Changes in version 2.4-0 (release date:03-06-2021)}{

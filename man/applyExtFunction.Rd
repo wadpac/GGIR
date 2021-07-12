@@ -13,7 +13,7 @@
   is a list as detailed below.
 }
 \usage{
-  applyExtFunction(data, myfun, sf, ws3)
+  applyExtFunction(data, myfun, sf, ws3, interpolationType=1)
   
 }
 \arguments{
@@ -31,6 +31,9 @@
   }
   \item{ws3}{
     Short epoch size (first value of windowsizes in \link{g.getmeta}).
+  }
+  \item{interpolationType}{
+    See \link{g.getmeta}
   }
 }
 \value{
