@@ -6,6 +6,8 @@
 \itemize{
   \item Part 1 fixed bug related to g.getmeta reading movisens files
   \item Part 1 resampling function expanded with option to choose interpolation technique
+  \item Part 3 fixed bug introduced in 2.4-0 making it impossible to process long 
+  recordings with many sustained inactivity bouts
 }
 }
 \section{Changes in version 2.4-0 (release date:03-06-2021)}{
