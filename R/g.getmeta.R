@@ -251,11 +251,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
       PreviousEndPage = accread$endpage
+      startpage = accread$startpage
       options(warn=-1) # to ignore warnings relating to failed mmap.load attempt
       rm(accread); gc()
       options(warn=0) # to ignore warnings relating to failed mmap.load attempt
       if(mon == 5) { # if movisens, then read temperature
-        PreviousStartPage = accread$startpage
+        PreviousStartPage = startpage
         temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
         P = cbind(P, temperature[1:nrow(P)])
         colnames(P)[4] = "temp"
