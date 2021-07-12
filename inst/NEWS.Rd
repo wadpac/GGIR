@@ -5,6 +5,7 @@
 \section{Changes in version 2.4-1 (GitHub-only-release date:20-07-2021)}{
 \itemize{
   \item Part 1 fixed bug related to g.getmeta reading movisens files
+  \item Part 1 resampling function expanded with option to choose interpolation technique
 }
 }
 \section{Changes in version 2.4-0 (release date:03-06-2021)}{
