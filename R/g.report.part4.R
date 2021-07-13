@@ -28,13 +28,14 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     }
     if (length(f1) == 0 | f1 > length(fnames))  f1 = length(fnames)
     #-----------------------------------------------------
-    nightsummary2 = as.data.frame(matrix(0,0,35)) 
+    nightsummary2 = as.data.frame(matrix(0,0,36)) 
     colnames(nightsummary2) = c("ID", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
                                 "guider_onset", "guider_wakeup", "guider_SptDuration",
                                 "error_onset", "error_wake", "error_dur",
                                 "fraction_night_invalid",
                                 "SleepDurationInSpt", "WASO", "duration_sib_wakinghours",
-                                "number_sib_sleepperiod","number_sib_wakinghours",
+                                "number_sib_sleepperiod",
+                                "number_of_awakenings", "number_sib_wakinghours",
                                 "duration_sib_wakinghours_atleast15min",
                                 "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                                 "sleeplatency", "sleepefficiency",

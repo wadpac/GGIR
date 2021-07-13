@@ -9,7 +9,7 @@
   \item Part 4 now able to handle more advance sleeplogs that also contain nap
   and nonwear entries per date
   \item Part 4 report now includes guider estimates also in 'cleaned' report
-  \item Part 4 WASO added
+  \item Part 4 WASO and NOA (Number of awakenings) added to output
   \item Part 4 Able to handle time in bed diaries/algorithms
   \item Part 5 now able to export sustain inactivity bouts and self-reported
   naps and nonwear to csv report
