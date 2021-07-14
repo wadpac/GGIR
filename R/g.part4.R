@@ -5,7 +5,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                    storefolderstructure=FALSE,
                    overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
                    excludefirst.part4=FALSE, excludelast.part4=FALSE, sleeplogsep = ",",
-                   sleepwindowType="SPT") {
+                   sleepwindowType="SPT", sensor.location="wrist") {
   
   
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
@@ -250,7 +250,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
             guider = "HDCZA"
-            if (sleepwindowType == "TimeInBed") {
+            if (sleepwindowType == "TimeInBed" & sensor.location == "hip") {
               guider = "HorAngle"
             }
             if (is.na(defaultSptOnset) == TRUE) { # If SPTE was not derived for this night, use average estimate for other nights

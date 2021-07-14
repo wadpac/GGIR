@@ -18,7 +18,7 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="",data_cleaning_file=c(),
     excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep=",",
-    sleepwindowType="SPT")
+    sleepwindowType="SPT", sensor.location="wrist")
 }
 \arguments{
   \item{datadir}{
@@ -163,6 +163,10 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     Character to indicate type of sleeplog, default "SPT".
     Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
     of sleep latency and sleep efficiency.
+  }
+  \item{sensor.location}{
+    Character to indicate sensor location, used to help assess which heuristic 
+    lgorithm was used in part3 for SPT window detection.
   }
 }
 \value{

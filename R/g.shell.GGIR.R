@@ -472,7 +472,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
             data_cleaning_file=data_cleaning_file,
             excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4,
-            sleeplogsep=sleeplogsep, sleepwindowType=sleepwindowType)
+            sleeplogsep=sleeplogsep, sleepwindowType=sleepwindowType, sensor.location=sensor.location)
   }
   if (dopart5 == TRUE) {
     cat('\n')
