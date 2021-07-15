@@ -1,4 +1,5 @@
-g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = "", configtz = c()) {
+g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = "",
+                     configtz = c(), interpolationType=1) {
 
   if (length(configtz) == 0) configtz = desiredtz
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
@@ -405,9 +406,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     ###########################################################################
     # resampling of measurements
     last = pos+200;
-    if (pos+200>nr)
-      last = nr
-    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
+    if (pos+200>nr) last = nr
+    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast, type=interpolationType)
     # put result to specified position
     last = nrow(tmp) + pos - 1
     if (last>=pos) {
@@ -459,9 +459,8 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
     ###########################################################################
     # resampling of measurements
     last = pos+200;
-    if (pos+200>nr)
-      last = nr
-    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast)
+    if (pos+200>nr) last = nr
+    tmp = resample(rawAccel, rawTime, timeRes[pos:last], rawLast, type=interpolationType)
     # put result to specified position
     last = nrow(tmp) + pos - 1
     if (last>=pos){

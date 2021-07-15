@@ -14,6 +14,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
                      do.sgAccEN=TRUE, do.sgAnglex=FALSE, do.sgAngley=FALSE, do.sgAnglez=FALSE,
+                     interpolationType=1,
                      ...) {
   #get input variables
   input = list(...)
@@ -78,7 +79,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     # bugs after waiting for the data to be load
     check_myfun(myfun, windowsizes)
   }
-  
+
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -100,7 +101,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
-  
+
   monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
   filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
                            filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -147,7 +148,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   sf = INFI$sf
   hvars = g.extractheadervars(INFI)
   deviceSerialNumber = hvars$deviceSerialNumber
-  if (mon == 3) { 
+  if (mon == 3) {
     # If Actigraph then try to specify dynamic range based on Actigraph model
     if (length(grep(pattern = "CLE", x = deviceSerialNumber)) == 1) {
       dynrange = 6
@@ -173,7 +174,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   options(warn=-1)
   if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
-  
+
   ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat,  rmc.dynamic_range)
@@ -245,7 +246,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps,
                               rmc.col.wear=rmc.col.wear,
-                              rmc.doresample=rmc.doresample)
+                              rmc.doresample=rmc.doresample,
+                              interpolationType=interpolationType)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -254,12 +256,14 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       NFilePagesSkipped = filequality$NFilePagesSkipped
       switchoffLD = accread$switchoffLD
       PreviousEndPage = accread$endpage
+      startpage = accread$startpage
       options(warn=-1) # to ignore warnings relating to failed mmap.load attempt
       rm(accread); gc()
       options(warn=0) # to ignore warnings relating to failed mmap.load attempt
       if(mon == 5) { # if movisens, then read temperature
-        PreviousStartPage = accread$startpage
-        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage, PreviousEndPage)
+        PreviousStartPage = startpage
+        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage,
+                                          PreviousEndPage, interpolationType=interpolationType)
         P = cbind(P, temperature[1:nrow(P)])
         colnames(P)[4] = "temp"
       }
@@ -485,15 +489,15 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           # TO DO:
           # - derive features from acclocal and gvector
           # - add these new features to the output
-        } 
-        
+        }
+
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
         if (extract.sgmetrics == TRUE) {
-          sg.metrics2do = data.frame(do.sgAccEN, 
+          sg.metrics2do = data.frame(do.sgAccEN,
                                      do.sgAnglex, do.sgAngley, do.sgAnglez,
                                                   stringsAsFactors = TRUE)
-          sgmetrics = g.applymetrics4sg(acclocal = acclocal, gvector=gvector, 
+          sgmetrics = g.applymetrics4sg(acclocal = acclocal, gvector=gvector,
                                         sf=sf,ws3=ws3,sg.metrics2do=sg.metrics2do)
           sgmetrics = lapply(sgmetrics,round,n_decimal_places)
           sgAccEN = sgmetrics$sgAccEN
@@ -505,8 +509,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         # round decimal places, because due to averaging we get a lot of information
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics,round,n_decimal_places)
-        
-        
+
+
         BFEN = accmetrics$BFEN
         ENMO = accmetrics$ENMO
         ENMOa = accmetrics$ENMOa
@@ -547,7 +551,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
               myfun$timestamp = c()
             }
           }
-          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3)
+          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType=interpolationType)
         }
       }
       if (LD >= (ws*sf)) { #LD != 0
@@ -676,7 +680,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
         # count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
-        count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa 
+        count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
         rm(accmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)

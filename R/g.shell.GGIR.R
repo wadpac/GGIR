@@ -189,7 +189,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
-
+  if (exists("interpolationType") == FALSE)  interpolationType=1
+  
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
@@ -422,7 +423,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
             rmc.col.wear=rmc.col.wear,
             rmc.doresample=rmc.doresample,
-            myfun=myfun, maxNcores=maxNcores)
+            myfun=myfun, maxNcores=maxNcores,
+            interpolationType=interpolationType)
   }
   if (dopart2 == TRUE) {
     cat('\n')

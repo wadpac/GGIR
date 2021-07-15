@@ -1,5 +1,5 @@
 ---
-title: "Accelerometer data processing with GGIR" 
+title: "Accelerometer data processing with GGIR"
 output:
    html_document:
     toc : true
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## What is GGIR?
 
-[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per recording, per day of measurement, and (optionally) per segment of a day of measurement, including estimates of physical activity, inactivity and sleep. 
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per recording, per day of measurement, and (optionally) per segment of a day of measurement, including estimates of physical activity, inactivity and sleep.
 We published an overview paper of GGIR in 2019 [link](https://doi.org/10.1123/jmpb.2018-0063).
 
 This vignette provides a general introduction on how to use GGIR and interpret the output, additionally you can find a [introduction video](https://youtu.be/RuFBCAqFJ2M) and a [mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to use your own algorithms for raw data then GGIR facilitates this with it's external function embedding feature, documented in a separate vignette: [Embedding external functions in GGIR](https://CRAN.R-project.org/package=GGIR). Further, if you want to read more about GGIR's ability to handle gyroscope sensor data, see the separate vignette: [Sensor fusion with GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly being used by research groups acros the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package GGIR would not have been possible without the support of the contributors listed in the author list at [GGIR](https://CRAN.R-project.org/package=GGIR), with specific code contributions over time since April 2016 (when GGIR development moved to git) shown [here](https://github.com/wadpac/GGIR/graphs/contributors).
@@ -622,7 +622,8 @@ Nvaliddays_WE | Number of valid weekend days, where the days that start on Satur
 NcleaningcodeX | Number of days that had cleaning code X for the corresponding sleep analysis in part 4. In case of MM analysis this refers to the night at the end of the day.
 Nvaliddays_AL10F_WD	| Number of valid week days with at least 10 fragments (5 inactivity or 5 inactive)
 Nvaliddays_AL10F_WE	| Number of valid weekend days with at least 10 fragments (5 inactivity or 5 inactive)
-
+`_wei` | weighted average of weekend and week dyas, using a 2/5 ratio, see above.
+`_pla` | plain average of all days, see above
 
 # Motivation and clarification
 
@@ -703,13 +704,13 @@ Although many data points are collected we decide to only work with aggregated v
 
 ## Sleep analysis
 
-In GGIR sleep analysis has been implemented in part 3 and 4. Here the objective is to detect the Sleep Period Time window (often in bed at night). To do so, **sustained inactivity bouts (abbreviated as SIB)** are detected with the heuristic algorithm proposed in 2015 [link](https://doi.org/10.1371/journal.pone.0142533) which looks for periods of time where the z-angle does not change by more than 5 degrees for at least 5 minutes. SIBs can occur anytime in the day. In order to differentiate SIBs that correspond to daytime rest/naps from SIBs that correspond to the main Sleep Period Time window (abbreviated as SPT), a guiding method referred as **guider** is used. All SIBs that overlap with the window defined by guider are considered as sleep within the SPT window. The start of the first SIB identified as sleep period and the end of the last SIB identified as sleep period define the beginning and the end of the SPT window. In this way the classification relies on the accelerometer for detecting the timing of sleep onset and waking up time, but the guider tells it in what part of the day it should look, as SPT window will be defined only if SIB is detected during the guider specified window. 
+In GGIR sleep analysis has been implemented in part 3 and 4. Here the objective is to detect the Sleep Period Time window (often in bed at night). To do so, **sustained inactivity bouts (abbreviated as SIB)** are detected with the heuristic algorithm proposed in 2015 [link](https://doi.org/10.1371/journal.pone.0142533) which looks for periods of time where the z-angle does not change by more than 5 degrees for at least 5 minutes. SIBs can occur anytime in the day. In order to differentiate SIBs that correspond to daytime rest/naps from SIBs that correspond to the main Sleep Period Time window (abbreviated as SPT), a guiding method referred as **guider** is used. All SIBs that overlap with the window defined by guider are considered as sleep within the SPT window. The start of the first SIB identified as sleep period and the end of the last SIB identified as sleep period define the beginning and the end of the SPT window. In this way the classification relies on the accelerometer for detecting the timing of sleep onset and waking up time, but the guider tells it in what part of the day it should look, as SPT window will be defined only if SIB is detected during the guider specified window.
 
 ### Guiders
 
 The guiding method as introduced above can be one of the following methods:
 
--	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533). 
+-	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533).
 -	**Guider = HDCZA**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, designed for studies where no sleep log is avialable. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
 -	**Guider = L5+/-12**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). Twelve hour window centred around the least active 5 hours of the day.
 - **Guider = setwindow**: Window times are specified by user, constant at specific clock times with argument `def.noc.sleep`.
@@ -785,17 +786,17 @@ In GGIR, a fragment is a defined as a sequence of epochs that belong to one of t
 3. Moderate or Vigorous Physical Acitivty (MVPA)
 4. Physical activity (can be either LIPA or MVPA)
 
-Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity amd physical activiy add up to a full day, as well as inactivity, LIPA and MVPA.
+Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity and physical activiy add up to a full day, as well as inactivity, LIPA and MVPA.
 The fragmentation metrics are applied in function `g.fragmentation`.
 
 **Literature about these metrics:**
 
 - Coefficient of Variance (`CoV`) is calculated according to Blikman et al. doi: 10.1016/j.apmr.2014.08.023
-- Transition probability (`TP`) is calculated as 1 divided by the mean fragment duration.
+- Transition probability (`TP`) from Inactivity (IN) to Physical activity (IN2PA) and from Physical activity to inactivity (PA2IN) are calculated as 1 divided by the mean fragment duration. The transition probability from Inactivity to LIPA and MVPA are calculated as: (Total duration in IN followed by LIPA or MVPA, respectively, divided by total duration in IN) divided by the average duration in IN.
 - Gini index is calculated with function `Gini` from the `ineq` R package, and with it's argument `corr` set to TRUE.
 - Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to Chastin et al. doi: 10.1016/j.gaitpost.2009.09.002.
 - Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation` in Chastin et al. doi: 10.1093/ageing/afr075, but it is renamed here to be a more specific reflection of the calculation. The term
-`fragmentation` seems too generic given that all fragmentation metrics inform us about fragmentation.
+`fragmentation` appears too generic given that all fragmentation metrics inform us about fragmentation.
 
 **Conditions for calculation and value when condition is not met:**
 
@@ -815,14 +816,14 @@ Elsewhere in the part5 we use the term `block`. A `block` is a sequence of epoch
 
 The fragmentation functionality is loosely inspired on the great work done by
 Dr. Junrui Di and colleages in R package ActFrag, as described in
-Junrui Di (doi: 10.1101/182337). 
+Junrui Di (doi: 10.1101/182337).
 
 However, we made a couple of a different decisions that may affect comparability:
 
 - GGIR derives fragmentation metrics for day. This allows us to avoid the issue of
-dealing with appending days. Further, it allows us to test for behavioural differences 
-between days of the week. It is well known that human behaviour can be driven by 
-weekly rhythms, e.g. work days versus weekend. Estimating fragmentation per day of 
+dealing with appending days. Further, it allows us to test for behavioural differences
+between days of the week. It is well known that human behaviour can be driven by
+weekly rhythms, e.g. work days versus weekend. Estimating fragmentation per day of
 the week allows us to study and account for such possible variation. As with all other
 GGIR variables we also report recording level aggregates of the daily estimates.
 - Power law alpha exponent metrics were calculated according to Chastin 2010 using
