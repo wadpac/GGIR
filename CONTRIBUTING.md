@@ -15,6 +15,7 @@ The sections below outline the steps in each case.
 
 1. use the search functionality [here](https://groups.google.com/g/RpackageGGIR) to see if someone already experienced the same issue;
 2. if your search did not yield any relevant results, start a new conversation.
+
 ## Bugs
 
 1. use the search functionality [here](https://github.com/wadpac/GGIR/issues) to see if someone already filed the same issue;
