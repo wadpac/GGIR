@@ -10,8 +10,9 @@ The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.ht
 
 ## Contribution guidelines:
 We always welcome contributions to the package.
+If you want to contribute to the development of GGIR, have a look at the [contribution guidelines](CONTRIBUTING.md).
 
-### When you are familiar with GitHub:
+<!-- ### When you are familiar with GitHub:
 We work with [GitHub Flow](https://guides.github.com/introduction/flow/) branching model.
 
 Key steps:
@@ -45,7 +46,7 @@ With this new release structure I will use the following version coding. **A.B-C
 
 - A increases with major changes that affect backward compatibility with previous releases like changes in function names, function arguments or file format.
 - B increases with every CRAN release.
-- C increases with every GitHub release.
+- C increases with every GitHub release. -->
 
 ### Images usaged
 The copyright of the GGIR logo as contained in the file vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The Netherlands), please contact v.vanhees@accelting.com to ask for permission to use this logo.
