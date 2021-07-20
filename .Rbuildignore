@@ -7,3 +7,6 @@ prepareNewRelease.R
 ^Meta$
 ^pdf_vignettes_for_github_only
 ^\.github
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+RELEASE_CYCLE.md
