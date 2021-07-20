@@ -8,7 +8,9 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      HASPT.ignore.invalid = FALSE) {
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
-  
+  # Abbreviaton SPTE = Sleep Period Time Estimate, although in case of HorAngle it is the Time in Bed estimate
+  # but then we would have to come up with yet another term to represent the main sleep and/or time in bed window of the day
+  # So, out of convenience I keep the object name SPTE. 
   dstime_handling_check = function(tmpTIME=tmpTIME,spt_estimate=spt_estimate,tz=c(),
                                    calc_SPTE_end=c(), calc_SPTE_start=c()) {
     time_SPTE_start =iso8601chartime2POSIX(tmpTIME[spt_estimate$SPTE_start],tz=tz)
@@ -31,7 +33,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     Nhoursdata = floor(length(tmpTIME) / (3600/ws3))
     delta_t1_t0 = (t1+24) - t0
     if (length(time_SPTE_end_hr) > 0 & length(time_SPTE_start_hr) > 0) {
-      if (Nhoursdata > (delta_t1_t0 + 0.1) &  # time has moved backward (autumn)  so SPTE_end also needs to move backward
+      if (Nhoursdata > (delta_t1_t0 + 0.1) &  # time has moved backward (autumn) so SPTE_end also needs to move backward
           (time_SPTE_end_hr > 1 | time_SPTE_end_hr < 12) &
           (time_SPTE_start_hr < 1 | time_SPTE_start_hr > 12)) { #extra DST hour not recognized
         calc_SPTE_end = calc_SPTE_end - 1
@@ -47,8 +49,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   # get variables
   nD = nrow(IMP$metashort)
   mon = I$monn
-  ws3 = M$windowsizes[1]
-  ws2 = M$windowsizes[2]
+  ws3 = M$windowsizes[1] #short epoch size
+  ws2 = M$windowsizes[2] # medium length epoch size used for non-wear detection
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
   #--------------------
@@ -155,9 +157,9 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         firstmidnight = midnights[1]
         firstmidnighti = midnightsi[1]
       }
-      for (j in 1:(countmidn)) { #-1
-        qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #noon
-        qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #noon
+      for (j in 1:(countmidn)) { #Looping over the midnight
+        qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #preceding noon
+        qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #next noon
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
         night[qqq1:qqq2] = j
@@ -213,7 +215,8 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                              invalid=invalid, HASPT.ignore.invalid = HASPT.ignore.invalid)
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end+qqq1 >= qqq2-(1*(3600/ws3))) {
-            # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
+            # if estimated SPT ends within one hour of noon, re-run with larger window
+            # to be able to detect daysleepers
             daysleep_offset = 6 # hours in which the window of data sent to SPTE is moved fwd from noon
             newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
             newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
