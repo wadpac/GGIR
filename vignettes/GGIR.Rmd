@@ -98,7 +98,7 @@ In this paragraph we will guide you through the main arguments relevant for 99% 
 
 The reason why it split up in parts is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts.
 
-By looking up the documentation of the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible ([link to pdf manual](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf)). All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is a shell around those functions.
+By looking up the documentation of the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible ([link to pdf manual](ttps://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is a shell around those functions.
 
 You will probably never need to think about most of the arguments listed above, because the default values are fine and a lot of arguments are only included to facilitate methodological studies where researchers want to have control over everything.
 
@@ -141,17 +141,45 @@ For an explanation on how sleep is detected see section [Sleep analysis][Sleep a
 
 - If you want the sleep analysis to be guided by a sleeplog (diary) then use `loglocation`, `colid`, `coln1`, and `nnights` to configure this.
 - `ignorenonwear`
-- If you want to create a visualisation of how sleep period time and sustained inactivity bouts match throughout a day then consider `do.visual`, `outliers.only`, and `criterror`.
+- If you want to create a visualisation of how sleep period time and sustained inactivity bouts match throughout a day then consider arguments `do.visual`, `outliers.only`, and `criterror`.
 - If you want to exclude the first and last night from the sleep analysis then used `excludefirstlast`.
 - `def.noc.sleep` specifies how the sleep period time window should be estimated if no sleeplog is used.
 - `includenightcrit` Minimum number of valid hours per night (24 hour window between noon and noon or 6pm-6pm).
 
-Some more detail about using a sleeplog: Argument 'loglocation' is the location of the spreadsheet (csv) with sleep log information. The spreadsheet needs to have the following structure: one column for participant id, and then followed by alternatingly one column for onset time and one column for waking
-time (see example below). There can be multiple sleeplogs in the same spreadsheet. The first raw of the spreadsheet needs to be filled with column names, it does not matter what these column names are. Timestamps are to be stored without date as in hh:mm:ss. If onset corresponds to lights out or intention to fall asleep, then it is the end-users responsibility to account for this in the interpretation of the results.
+Some more detail about using a sleeplog: Argument 'loglocation' is the location of the spreadsheet (csv) with sleep log information. GGIR facilitates two possible structures:
 
-```{r, out.width = "700px",echo=FALSE}
-knitr::include_graphics("sleeplogexample.jpg")
-```
+#### Basic sleep log:
+
+Example of a basic sleeplog:
+
+ID | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_N4 | wakeup_N4 |
+---|---|---|---|---|---|---|---|---
+123 | 22:00:00 | 09:00:00 | 21:00:00 | 08:00:00 | 23:45:00 | 06:30:00 | 00:00:00 | 06:00:00 
+345 | 22:00:00 | 09:00:00 |  |  | 23:45:00 | 06:30:00 | 00:00:00 | 06:00:00 
+
+- One column for participant id, this does not have to be the first column. Specify which column it is with  argument `colid`.
+- Alternatingly one column for onset time and one column for waking time. Specify which column is the column for the first night by argument `coln1`, in the above example `coln1=2`.
+- Timestamps are to be stored without date as in hh:mm:ss with hour values ranging between 0 and 23 (not 24). If onset corresponds to lights out or intention to fall asleep, then it specify `sleepwindowType = "TimeInBed"`.
+- There can be multiple sleeplogs in the same spreadsheet. Each row represening a single recording. 
+- First row: The first row of the spreadsheet needs to be filled with column names. For the basic sleep log format it does not matter what these column names are.
+
+
+#### Advanced sleep log:
+
+Example of an advanced sleeplog for two recordings:
+
+ID | D1_date | D1_wakeup | D1_inbed | D1_nap_start | D1_nap_end | D1_nonwear1_off | D1_nonwear1_on | D2_date | D2_wakeup | D2_inbed | D2_nap_start | D2_nap_end
+---|---|---|---|---|---|---|---|---|---|---|---|---
+123 | 30/03/2015 |  09:00:00 | 22:00:00 | 11:15:00 | 11:45:00 | 13:35:00 | 14:10:00 | 31/03/2015 | 08:30:00 | 22:30:00 | 10:20:00 | 10:55:00
+567 | 20/04/2015 |  09:00:00 | 22:00:00 |  |  |  | | 21/04/2015 | 08:30:00 | 22:30:00 |  | 
+
+Relative to the basic sleeplog format the advanced sleep log format comes with the following changes:
+
+- Before the start of each calendar date there is a column with the calendar date. GGIR has been designed to recognise and handle any date format but assumes that you have used the same date format consistently through the sleeplog.
+- Per calendar date there is a column for wakeup time and followed by a column for onset or in-bed time. Note that this is different from the basic sleep log, where wakeup time follows the column for onset or in-bed time. So, the advanced sleep log is more calendar date oriented. However, if the sleep onset time is at 2am, you should still fill in the 02:00:00, even thought it is the 02:00:00 of the next calendar date.
+- You can add columns relating to napping time and nonwear time. These are not used for the sleep analysis, but exported in g.part5 to facilitate napping analysis, see argument `do.sibreport`.
+- Column names are critical for the advanced sleeplog format: Date columns are recognised by GGIR as any column name with the word "date" in it. The advanced sleep log format is recognised by GGIR by looking out for the occurance of at least two columnnames with the word "date" in their name. Wakeup times are recognised with the words "wakeup" in the column name. Sleeponset, to bed or in bed times are recognised as the columns with any of the following character combinations in their name: "onset", "inbed", "tobed", or "lightsout". Napping times are recognised by columns with the word "nap" in their name. Nonwear times are recognised by columns with the word "nonwear" in their name.
+- Leave cells for missing values blank.
 
 ### Key arguments related to time use analysis
 
