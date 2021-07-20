@@ -5,6 +5,7 @@ test_that("HASIB generate correct output", {
              as.POSIXlt(x = "2021-3-3 16:05:00", tz="Europe/Amsterdam"), by = 5)
   tmp = c(rep(0, 10), 10, 20, 30, rep(30, 310), 20, 10, -5, -20, 0, -15, -30, rep(-40, 400))
   anglez = c(tmp, rep(0, length(time) - length(tmp)))
+  set.seed(1245)
   zeroCrossingCount = round(abs(rnorm(n = length(anglez), mean = 0, sd = 50)))
   zeroCrossingCount[40:500] = 0
   vanHees2015 = HASIB(HASIB.algo = "vanHees2015", timethreshold=5, anglethreshold=5, 
