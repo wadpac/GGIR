@@ -33,21 +33,19 @@ This vignette provides a general introduction on how to use GGIR and interpret t
 
 **Cite GGIR:**
 
-When you use GGIR in publications do not forget to cite it properly to make your analysis reproducible for others and to give credit to it's developers. See paragraph on [citing GGIR](#Citing GGIR) for details.
+When you use GGIR in publications do not forget to cite it properly to make your analysis reproducible for others and to give credit to it's developers. See paragraph on [citing GGIR][Citing GGIR] for details.
 
 
 ## Contributing, Support, and Keeping up to date
 
-**How to contribute to code?**
+**How to contribute to the code?**
 
-The development version of GGIR can be found on [github](https://github.com/wadpac/GGIR), which is also where you will find guidance on how to contribute to the package development.  Open source software may be for free, but the time investment to develop it is never for free. Therefore, we welcome contributions to GGIR in time investment, constructive feedback, financially, or otherwise.
+The development version of GGIR can be found on [github](https://github.com/wadpac/GGIR), which is also where you will find [guidance](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md) on how to contribute.
 
 
 **How can I get service and support?**
 
-If anything is not clear in the documentation, please let us know via either the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues).
-
-GGIR is open source software and does not come with service or support guarantees. However, as user-community you can help each other via the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please use these public platform rather than private e-mails such that others can learn from your conversations.
+GGIR is open source software and does not come with service or support guarantees. However, as user-community you can help each other via the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please use these public platform rather than private e-mails such that other users can learn from the conversations.
 
 If you need dedicated support with the use of GGIR or need someone to adapt GGIR then Vincent van Hees is available as [indpendent consultant](https://accelting.com/).
 
@@ -76,8 +74,9 @@ install.packages("GGIR", dependencies = TRUE)
     - [ActiGraph](https://actigraphcorp.com/) .csv. Note for Actigraph users:
 In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absense of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
+    - [Movisens](https://www.movisens.com/en/) with data stored in file sturctures.
     - Genea (an accelerometer that is not available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
-    - Any other accelerometer brand that generates csv output, see function documentation for function read.myacc.csv.
+    - Any other accelerometer brand that generates csv output, such as [Shimmer](http://www.shimmersensing.com/), see function documentation for function read.myacc.csv.
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
@@ -97,9 +96,9 @@ In this paragraph we will guide you through the main arguments relevant for 99% 
 - Part 4: o	Labels the sustained inactive periods detected in Part 3 as sleep, or daytime sustained inactivity, per night and per file
 - Part 5: Derives sleep and physical activity characteristics by re-using information derived in part 2, 3 and 4. Total time in intensity categories, the number of bouts, time spent in bouts and average acceleration (overall activity) is calculated.
 
-The reason why it split up in part is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts.
+The reason why it split up in parts is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts.
 
-By looking up the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible. All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is nothing more than a wrapper around those functions.
+By looking up the documentation of the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible ([link to pdf manual](https://cran.r-project.org/web/packages/GGIR/GGIR.pdf)). All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is a shell around those functions.
 
 You will probably never need to think about most of the arguments listed above, because the default values are fine and a lot of arguments are only included to facilitate methodological studies where researchers want to have control over everything.
 
@@ -138,7 +137,7 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 
 ### Key arguments related to sleep analysis
 
-For an explanation on how sleep is detected see section [Sleep analysis](#Sleep analysis).
+For an explanation on how sleep is detected see section [Sleep analysis][Sleep analysis].
 
 - If you want the sleep analysis to be guided by a sleeplog (diary) then use `loglocation`, `colid`, `coln1`, and `nnights` to configure this.
 - `ignorenonwear`
@@ -156,15 +155,15 @@ knitr::include_graphics("sleeplogexample.jpg")
 
 ### Key arguments related to time use analysis
 
-For an explanation on how time use analysis is performed see section [Waking-waking or 24 hour time-use analysis](#Waking-waking or 24 hour time-use analysis).
+For an explanation on how time use analysis is performed see section [Waking-waking or 24 hour time-use analysis][Waking-waking or 24 hour time-use analysis].
 
 - `excludefirstlast.part5` - whether to ignore the last and first day.
 - `includedaycrit.part5` - tell GGIR what fraction of the waking hours in a day (value below 1) is acceptable.
 - `minimum_MM_length.part5` - tell GGIR what the minimum length (hours) should be of the MM window in part 5.
-- `bout.metric` - choose metric for calculating bouts (we recommend default setting 4).
+- `bout.metric` - choose metric for calculating bouts (we recommend using the default setting).
 - Configure thresholds for acceleration levels (some may want to interpret this as intensity levels): `threshold.lig`, `threshold.mod`, `threshold.vig`.
 - Configure what fraction of a bout needs to meet the threshold (cut-point) crtieria `boutcriter.in`, `boutcriter.lig`, `boutcriter.mvpa`.  Note that bout.metric and the boutcriter arguments are complementary.
-When bout.metric = 4 combined with boutcriter.mvpa=0.8 means that an MVPA bout can have interruptions (i.e., the time out of MVPA intensity) that meet the following criteria:
+When bout.metric = 6 combined with boutcriter.mvpa=0.8 means that an MVPA bout can have interruptions (i.e., the time out of MVPA intensity) that meet the following criteria:
   (1) A single interruption can last < 1 min
   (2) Repeated interruptions are allowed provided that their total time does not exceed 20% of the bout duration
   (3) The time spent in the interruptions is included in the duration of the MVPA bout. For example: A 25-minute bout can have two 1 minute interruption, but not a single 2-minute interruption. Here, the full 25 minutes would count towards the duration of the MVPA bout.
@@ -176,32 +175,36 @@ When bout.metric = 4 combined with boutcriter.mvpa=0.8 means that an MVPA bout c
 Cut-points to estimate time spent in acceleration levels that are roughly liked to levels of energy metabolism have been proposed by:
 
 - [Esliger et al 2011](https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx): wrist and waist in adults.
-- [Schaefer et al 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/): wrist in 6-11 year old children.
-- [Roscoe et al 2017](https://link.springer.com/article/10.1007/s00431-017-2948-2): wrist in 4-5 year old pre-school children.
 - [Phillips et al 2013](https://www.jsams.org/article/S1440-2440(12)00112-0/fulltext): wrist and hip in 8-14 year olds.
-- [Vaha-Ypya et al 2015](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813): hip in adults.
-- [Hildebrand et al 2014](https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx) and [2016](https://onlinelibrary.wiley.com/doi/abs/10.1111/sms.12795): wrist and hip in 7-11 and 21-61 years old.
+- [Schaefer et al 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/): wrist in 6-11 year old children.
+- [Hildebrand et al 2014](https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx) and [2016](https://onlinelibrary.wiley.com/doi/abs/10.1111/sms.12795): wrist and hip in - [Vaha-Ypya et al 2015](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813): hip in adults.
+- [Roscoe et al 2017](https://link.springer.com/article/10.1007/s00431-017-2948-2): wrist in 4-5 year old pre-school children.
+7-11 and 21-61 years old.
+- [Sanders et al. 2018](https://doi.org/10.1080/02640414.2018.1555904): wrist and hip in older adults (mean: 69.6 years)
+- [Migueles et al  2021](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/): wrist and hip in older adults aged above 70 (mean: 78.7) years. 
+- [Fraysse et al. 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/): wrist in older adults aged above 70 (mean: 77) years.
 - If you are aware of any additional publications then let us know.
 
 The first four publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: It is still possible to use those cut-points with a simple cut-point scaling trick and by selecting the right acceleration metric as detailed below.
 
-**Esliger 2011, Phillips 2013:**
+**Esliger 2011, Phillips 2013, Fraysse 2020:**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
-- `threshold.lig = (LightCutPointFromPaper/80) * 1000`
-- `threshold.mod = (ModerateCutPointFromPaper/80) * 1000`
-- `threshold.vig = (VigorousCutPointFromPaper/80) * 1000`
-- `mvpathreshold = (ModerateCutPointFromPaper/80) * 1000`
+- `threshold.lig = (LightCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
+- `threshold.mod = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
+- `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
+- `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
+- The sampleRateInStudy was 80 for Esliger and Phillips and 100 for Fraysse.
 -	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Roscoe 2017:**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
-- `threshold.lig = (LightCutPointFromPaper/85.7) * 1000`
-- `threshold.mod = (ModerateCutPointFromPaper/85.7) * 1000`
-- `threshold.vig = (VigorousCutPointFromPaper/85.7) * 1000`
-- `mvpathreshold = (ModerateCutPointFromPaper/85.7) * 1000`
+- `threshold.lig = (LightCutPointFromPaper_in_gsecs/85.7) * 1000`
+- `threshold.mod = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
+- `threshold.vig = (VigorousCutPointFromPaper_in_gsecs/85.7) * 1000`
+- `mvpathreshold = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
 -	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
@@ -220,7 +223,7 @@ The first four publications make use of acceleration metrics that sum their valu
 -	Use default setting do.mad= TRUE, acc.metric=”MAD”
 -	Use the cut-points as provided by Vaha-Ypya directly. No need for scaling.
 
-**Hildebrand 2014 and Hildebrand 2016:**
+**Hildebrand 2014, Hildebrand 2016, Migueles 2021. Sanders 2018:**
 
 -	Use default setting do.enmo= TRUE, acc.metric=”ENMO”
 -	Use the cut-points as provided by Hildebrand directly. No need for scaling.
@@ -549,7 +552,7 @@ sleeponset | onset of sleep expressed in hours since the  midnight in the night 
 wakeup | waking up time express in the same way as sleeponset.
 sleeponset_ts | onset of sleep expressed as a timestamp hours:minutes:seconds
 daysleeper | if 0 then the person woke up before noon, if 1 then the person woke up after noon
-cleaningcode | See paragraph [Sleep and full day time-use analysis in GGIR](#Sleep and full day time-use analysis in GGIR).
+cleaningcode | See paragraph [Sleep and full day time-use analysis in GGIR][Sleep and full day time-use analysis in GGIR].
 dur_day_spt_min | Total length of daytime waking hours and spt combined (typically 24 hours for MM report).
 `dur_` | duration of a behavioral class that will be specified int he rest of the variable name
 `ACC_` | (average) acceleration according to default metric specific by acc.metric
@@ -704,18 +707,29 @@ Although many data points are collected we decide to only work with aggregated v
 
 ## Sleep analysis
 
-In GGIR sleep analysis has been implemented in part 3 and 4. Here the objective is to detect the Sleep Period Time window (often in bed at night). To do so, **sustained inactivity bouts (abbreviated as SIB)** are detected with the heuristic algorithm proposed in 2015 [link](https://doi.org/10.1371/journal.pone.0142533) which looks for periods of time where the z-angle does not change by more than 5 degrees for at least 5 minutes. SIBs can occur anytime in the day. In order to differentiate SIBs that correspond to daytime rest/naps from SIBs that correspond to the main Sleep Period Time window (abbreviated as SPT), a guiding method referred as **guider** is used. All SIBs that overlap with the window defined by guider are considered as sleep within the SPT window. The start of the first SIB identified as sleep period and the end of the last SIB identified as sleep period define the beginning and the end of the SPT window. In this way the classification relies on the accelerometer for detecting the timing of sleep onset and waking up time, but the guider tells it in what part of the day it should look, as SPT window will be defined only if SIB is detected during the guider specified window.
+In GGIR sleep analysis has been implemented in part 3 and 4. Sleep analysis comes at two levels: The identification of the main Sleep Period Time (SPT) window or the time in bed window (TIB), and the discrimination of sleep and wakefulness periods. The term sleep is somewhat controversion in the context of accelerometry, because accelerometer only capture lack of movement. To acknowledge this challenge GGIR refers to these classified sleep periods as **sustained inactivity bouts (abbreviated as SIB)**. 
+
+Current, GGIR offers the user the choice to identify SIB period using any of the following algorithms:
+
+- **vanHees2015:** Heuristic algorithm proposed in 2015 [link](https://doi.org/10.1371/journal.pone.0142533) which looks for periods of time where the z-angle does not change by more than 5 degrees for at least 5 minutes. This algorithm is the default.
+- **Sadeh1994:** The algortihm proposed by Sadeh et al. [link](https://doi.org/10.1093/sleep/17.3.201) that was originally designed for the AMA-32 device by Ambulatory Monitoring Inc. GGIR replicates the generated zero-crossing counts based on the available descriptions. Specify argument `HASIB.algo = “Sadeh1994"` to use this algorithm, and `Sadeh_axis = "Y"` to specify that the algorithm should use the Y-axis.
+- **Galland2012:** The count-scaled algortihm proposed by Galland et al. [link](http://dx.doi.org/10.1016/j.sleep.2012.01.018), which uses the same zero-crossing counts as calculated for the Sadeh algortihm. Specify argument `HASIB.algo = “Galland2012"` to use this algorithm, and `Sadeh_axis = "Y"` to specify that the algorithm should use the Y-axis.
+
+SIBs can occur anytime in the day. In order to differentiate SIBs that correspond to daytime rest/naps from SIBs that correspond to the main Sleep Period Time window (abbreviated as SPT), a guiding method referred as **guider** is used. All SIBs that overlap with the window defined by guider are considered as sleep within the SPT window. The start of the first SIB identified as sleep period and the end of the last SIB identified as sleep period define the beginning and the end of the SPT window. In this way the classification relies on the accelerometer for detecting the timing of sleep onset and waking up time, but the guider tells it in what part of the day it should look, as SPT window will be defined only if SIB is detected during the guider specified window.
+
+If a guider reflects the Time in Bed the interpretation of the Sleep Period Time, Sleep onset time and Wakeup time remains unchanged. However, we can then also assess sleep latency and and sleep efficiency.
 
 ### Guiders
 
 The guiding method as introduced above can be one of the following methods:
 
--	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533).
--	**Guider = HDCZA**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, designed for studies where no sleep log is avialable. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
+-	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533).See section [on sleep analysis related arguments][Key arguments related to sleep analysis] for a disucssion fo sleep log data formats. Specify argument `sleepwindowType` to clarify whether the sleeplog capture "TimeInBed" or "SPT". If it is set to "TimeInBed", GGIR will automatically expand its part 4 analyses with sleep latency and sleep efficiency assessment.
+-	**Guider = HDCZA**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, and is designed for studies where no sleep log is avialable. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
 -	**Guider = L5+/-12**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). Twelve hour window centred around the least active 5 hours of the day.
 - **Guider = setwindow**: Window times are specified by user, constant at specific clock times with argument `def.noc.sleep`.
+- **Guider = HorAngle**: Only used if argument `sensor.location="hip"`, because this will trigger the identification of the longitudinal axis based on 24-hour lagged correlation. YOu can also force GGIR to use a specific axis as longitudinal axis with argument `longitudinal_axis`. Next, it identifies when the horizontal axis is between -45 and 45 degrees and considers this a horizontal posture. Next, this is used to identify the largest time in bed period, by only considering horizontal time segments of at least 30 minutes, and then looking for longest horizontal period in the day where gaps of less than 60 minutes are ignored. Therefore, it is partially similar to the HDCZA algorithm. 
 
-GGIR uses by default the sleep log, if the sleep log is not available it falls back on the HDCZA algorithm, if this is not available it will falls back on the L5+/-12 definition, and if this is not available it will use the setwindow. The user can specify the priority with argument `def.noc.sleep`. So, when we refer to guider then we refer to one of these four methods.
+GGIR uses by default the sleep log, if the sleep log is not available it falls back on the HDCZA algorithm (or HorAngle if `sensor.location="hip"`). If HDCZA is not successful GGIR will falls back on the L5+/-12 definition, and if this is not available it will use the setwindow. The user can specify the priority with argument `def.noc.sleep`. So, when we refer to guider then we refer to one of these five methods.
 
 ### Daysleepers (nights workers)
 
@@ -740,7 +754,10 @@ All the information for each night is stored in the `results/QC` folder allowing
 -	If the study proposed a sleep log to the individuals, then nights are excluded for which the sleep log was not used as a guider (i.o.w. nights with cleaningcode not equal to 0 or variable sleep log used equals FALSE).
 -	If the study did not propose a sleep log to the individuals, then all nights are removed with cleaningcode higher than 1.
 
+Be aware that if using the full output and working with wrist accelerometer data, then missing entries in a sleep log that asks for Time in Bed will be replaced by HDCZA estimates of SPT. Therefore, extra caution should be taken when working with the full output.
+
 Notice that part 4 is focused on sleep research, by which the cleaned reported is the way it is. In the next section we will discuss the analysis done by part 5. There, the choice of guider may be considered less important, by which we use different criteria for including nights. So, you may see that a night that is excluded from the cleaned results in part 4 still appears in the cleaned results for part 5.
+
 
 ### Data_cleaning_file
 
@@ -832,18 +849,18 @@ duration.
 
 ## Why use data metric ENMO?
 
-In most studies we have been involved we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 Vincent wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the supperiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. Vincent is using ENMO because:
+In most studies we have been involved in we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 we wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the supperiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. We use ENMO as default because:
 
-1.	Has demonstrated value in describing variance in energy expenditure, correlated with questionnaire data, able to describe patterns in physical activity
-2.	Easy to describe mathematically and by that higher chances of reproducibility
-3.	Attempt to quantify the actual biomechanical acceleration in universal units. I prefer to avoid using abstract index for movement quantification
-4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN (which is essentially the same as the MAD metric recently used in literature). The few studies I am aware of who contested this, did not use auto-calibration by which ENMO was evalauted under unrealistic conditions. Metric ENMO depends by design on well calibrated acceleration signals, while metrics like HFEN and MAD are not affected by calibration offset. The metric HFENplus proposed in the 2013 paper may actually be a better candidate, but is more computationally heavy and more difficult to describe and replicate.
+1.	ENMO has demonstrated value in describing variance in energy expenditure, correlated with questionnaire data, able to describe patterns in physical activity
+2.	ENMO is easy to describe mathematically and by that higher chances of reproducibility
+3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units. We prefer to avoid using metrics that generate non-universal units of movement.
+4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and MAD.
 
-I recently wrote a blog post on this topic that you may find interesting: https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6
+See also the following blog post on the topic: https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6
 
 ## What does GGIR stand for?
 
-I (Vincent) wanted a short name and not to spend too much time finding it. At the time when I created GGIR I was working with GENEActiv and GENEA data In R, and that's how the name GGIR was born: Short, easy to remember, and as acronnym sufficiently vague to not be tight up with a specific functionality.
+I wanted a short name and not to spend too much time finding it. At the time when GGIR was created GGIR I was working with GENEActiv and GENEA data In R, and that's how the name GGIR was born: Short, easy to remember, and as acronnym sufficiently vague to not be tight up with a specific functionality.
 
 # Other Resources
 - The [GGIR package manual](https://CRAN.R-project.org/package=GGIR) provides documentation on individual functions.
