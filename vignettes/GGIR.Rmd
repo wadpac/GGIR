@@ -21,7 +21,6 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 # Introduction
 
 ## What is GGIR?
@@ -137,25 +136,27 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 
 ### Key arguments related to sleep analysis
 
-For an explanation on how sleep is detected see section [Sleep analysis][Sleep analysis].
+For an explanation on how sleep is detected and the specific role of the various function arguments see section [Sleep analysis][Sleep analysis].
 
-- If you want the sleep analysis to be guided by a sleeplog (diary) then use `loglocation`, `colid`, `coln1`, and `nnights` to configure this.
-- `ignorenonwear`
+- Arguments related to configuring the sleep detection algorithm: `anglethreshold`, `timethreshold`, `HASPT.algo`, `HASIB.algo`, `Sadeh_axis`, and `HASPT.ignore.invalid`.
+- `ignorenonwear` if set to TRUE then ignore detected monitor non-wear periods in the detection of sustained inactivity bouts to avoid confusion between monitor non-wear time.
 - If you want to create a visualisation of how sleep period time and sustained inactivity bouts match throughout a day then consider arguments `do.visual`, `outliers.only`, and `criterror`.
 - If you want to exclude the first and last night from the sleep analysis then used `excludefirstlast`.
 - `def.noc.sleep` specifies how the sleep period time window should be estimated if no sleeplog is used.
 - `includenightcrit` Minimum number of valid hours per night (24 hour window between noon and noon or 6pm-6pm).
+- `data_cleaning_file` to ginore specific nights for specific individuals, see also section about the [data cleaning file][Data_cleaning_file].
+- If you want the sleep analysis to be guided by a sleeplog (diary) then check out arguments `loglocation` which specifies the location of the spreadsheet (csv) with sleep log information. Further, use arguments `colid`, `coln1`, `nnights`, and `sleeplogsep` to specify the details of your sleep log structure. 
 
-Some more detail about using a sleeplog: Argument 'loglocation' is the location of the spreadsheet (csv) with sleep log information. GGIR facilitates two possible structures:
+GGIR facilitates two possible sleeplog file structures:
 
-#### Basic sleep log:
+#### Basic sleep log
 
 Example of a basic sleeplog:
 
-ID | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_N4 | wakeup_N4 |
+ID | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_N4 | ...
 ---|---|---|---|---|---|---|---|---
-123 | 22:00:00 | 09:00:00 | 21:00:00 | 08:00:00 | 23:45:00 | 06:30:00 | 00:00:00 | 06:00:00 
-345 | 22:00:00 | 09:00:00 |  |  | 23:45:00 | 06:30:00 | 00:00:00 | 06:00:00 
+123 | 22:00:00 | 09:00:00 | 21:00:00 | 08:00:00 | 23:45:00 | 06:30:00 | 00:00:00 | ...
+345 | 21:55:00 | 08:47:00 |  |  | 23:45:00 | 06:30:00 | 00:00:00 | ...
 
 - One column for participant id, this does not have to be the first column. Specify which column it is with  argument `colid`.
 - Alternatingly one column for onset time and one column for waking time. Specify which column is the column for the first night by argument `coln1`, in the above example `coln1=2`.
@@ -164,22 +165,24 @@ ID | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_
 - First row: The first row of the spreadsheet needs to be filled with column names. For the basic sleep log format it does not matter what these column names are.
 
 
-#### Advanced sleep log:
+#### Advanced sleep log
 
 Example of an advanced sleeplog for two recordings:
 
-ID | D1_date | D1_wakeup | D1_inbed | D1_nap_start | D1_nap_end | D1_nonwear1_off | D1_nonwear1_on | D2_date | D2_wakeup | D2_inbed | D2_nap_start | D2_nap_end
----|---|---|---|---|---|---|---|---|---|---|---|---
-123 | 30/03/2015 |  09:00:00 | 22:00:00 | 11:15:00 | 11:45:00 | 13:35:00 | 14:10:00 | 31/03/2015 | 08:30:00 | 22:30:00 | 10:20:00 | 10:55:00
-567 | 20/04/2015 |  09:00:00 | 22:00:00 |  |  |  | | 21/04/2015 | 08:30:00 | 22:30:00 |  | 
+ID | D1_date | D1_wakeup | D1_inbed | D1_nap_start | D1_nap_end | D1_nonwear1_off | D1_nonwear1_on | D2_date | ...
+---|---|---|---|---|---|---|---|---|---
+123 | 30/03/2015 |  09:00:00 | 22:00:00 | 11:15:00 | 11:45:00 | 13:35:00 | 14:10:00 | 31/03/2015 | ...
+567 | 20/04/2015 |  08:30:00 | 23:15:00 |          |          |          |          | 21/04/2015 | ...
 
 Relative to the basic sleeplog format the advanced sleep log format comes with the following changes:
 
-- Before the start of each calendar date there is a column with the calendar date. GGIR has been designed to recognise and handle any date format but assumes that you have used the same date format consistently through the sleeplog.
-- Per calendar date there is a column for wakeup time and followed by a column for onset or in-bed time. Note that this is different from the basic sleep log, where wakeup time follows the column for onset or in-bed time. So, the advanced sleep log is more calendar date oriented. However, if the sleep onset time is at 2am, you should still fill in the 02:00:00, even thought it is the 02:00:00 of the next calendar date.
-- You can add columns relating to napping time and nonwear time. These are not used for the sleep analysis, but exported in g.part5 to facilitate napping analysis, see argument `do.sibreport`.
-- Column names are critical for the advanced sleeplog format: Date columns are recognised by GGIR as any column name with the word "date" in it. The advanced sleep log format is recognised by GGIR by looking out for the occurance of at least two columnnames with the word "date" in their name. Wakeup times are recognised with the words "wakeup" in the column name. Sleeponset, to bed or in bed times are recognised as the columns with any of the following character combinations in their name: "onset", "inbed", "tobed", or "lightsout". Napping times are recognised by columns with the word "nap" in their name. Nonwear times are recognised by columns with the word "nonwear" in their name.
+- Recording are stored in rows, while all information per days are stored in columns.
+- Information per day is preceeded by one columns that holds the calendar date. GGIR has been designed to recognise and handle any date format but assumes that you have used the same date format consistently through the sleeplog.
+- Per calendar date there is a column for wakeup time and followed by a column for onset or in-bed time. Note that this is different from the basic sleep log, where wakeup time follows the column for onset or in-bed time. So, the advanced sleep log is calendar date oriented. However, if the sleep onset time is at 2am, you should still fill in the 02:00:00, even thought it is the 02:00:00 of the next calendar date.
+- You can add columns relating to napping time and nonwear time. These are not used for the sleep analysis in g.part3 and g.part4, but used in g.part5 to facilitate napping analysis, see argument `do.sibreport`. Multiple naps and multiple nonwear periods can be entered per day.
 - Leave cells for missing values blank.
+- Column names are critical for the advanced sleeplog format: Date columns are recognised by GGIR as any column name with the word "date" in it. The advanced sleep log format is recognised by GGIR by looking out for the occurance of at least two columnnames with the word "date" in their name. Wakeup times are recognised with the words "wakeup" in the column name. Sleeponset, to bed or in bed times are recognised as the columns with any of the following character combinations in their name: "onset", "inbed", "tobed", or "lightsout". Napping times are recognised by columns with the word "nap" in their name. Nonwear times are recognised by columns with the word "nonwear" in their name.
+
 
 ### Key arguments related to time use analysis
 
@@ -751,8 +754,8 @@ If a guider reflects the Time in Bed the interpretation of the Sleep Period Time
 
 The guiding method as introduced above can be one of the following methods:
 
--	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533).See section [on sleep analysis related arguments][Key arguments related to sleep analysis] for a disucssion fo sleep log data formats. Specify argument `sleepwindowType` to clarify whether the sleeplog capture "TimeInBed" or "SPT". If it is set to "TimeInBed", GGIR will automatically expand its part 4 analyses with sleep latency and sleep efficiency assessment.
--	**Guider = HDCZA**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, and is designed for studies where no sleep log is avialable. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
+-	**Guider = sleep log**: As presented in [before mentioned 2015 article](https://doi.org/10.1371/journal.pone.0142533).See section [on sleep analysis related arguments][Key arguments related to sleep analysis] for a discussion fo sleep log data formats. Specify argument `sleepwindowType` to clarify whether the sleeplog capture "TimeInBed" or "SPT". If it is set to "TimeInBed", GGIR will automatically expand its part 4 analyses with sleep latency and sleep efficiency assessment.
+-	**Guider = HDCZA**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, and is designed for studies where no sleep log is available. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
 -	**Guider = L5+/-12**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). Twelve hour window centred around the least active 5 hours of the day.
 - **Guider = setwindow**: Window times are specified by user, constant at specific clock times with argument `def.noc.sleep`.
 - **Guider = HorAngle**: Only used if argument `sensor.location="hip"`, because this will trigger the identification of the longitudinal axis based on 24-hour lagged correlation. YOu can also force GGIR to use a specific axis as longitudinal axis with argument `longitudinal_axis`. Next, it identifies when the horizontal axis is between -45 and 45 degrees and considers this a horizontal posture. Next, this is used to identify the largest time in bed period, by only considering horizontal time segments of at least 30 minutes, and then looking for longest horizontal period in the day where gaps of less than 60 minutes are ignored. Therefore, it is partially similar to the HDCZA algorithm. 
@@ -772,7 +775,7 @@ To monitor possible problems with the sleep assessment, the variable **cleaningc
 -	2: not enough valid accelerometer data based on the non-wear and clipping detection from part summarised over the present night where the argument `includenightcrit` indicates the minimum number of hours of valid data needed within those 24 hours.
 -	3: no accelerometer data available,
 -	4: there were no nights to be analysed for this person,
--	5: SPT estimated based on guider only, because either no SIB was found during the entire guider window, which complicates defining the start and end of the SPT, or the user specified the ID number of the recording and the night number in the _data_cleaning_file_ to tell GGIR to rely on the guider and not rely on the accelerometer data for this particular night
+-	5: SPT estimated based on guider only, because either no SIB was found during the entire guider window, which complicates defining the start and end of the SPT, or the user specified the ID number of the recording and the night number in the [data_cleaning_file][Data_cleaning_file] to tell GGIR to rely on the guider and not rely on the accelerometer data for this particular night
 -	6: no sleep log available and HDCZA also failed for this specific night then use average of HDCZA estimates from other nights in the recording as guider for this night. If HDCZA estimates are not available during the entire recording then use L5+/-12 estimate for this night. The last scenario seems highly unlikely in a recording where the accelerometer was worn for at least one day.
 
 ### Difference between cleaned and full output
