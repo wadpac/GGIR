@@ -3,14 +3,15 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.4-2 (GitHub-only-release date:20-07-2021)}{
 \itemize{
+  \item Part 4 legend added to visualisation
   \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
-}
+  }
 }
 \section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
 \itemize{
   \item Part 1 fixed bug related to g.getmeta reading movisens files
   \item Part 1 resampling function expanded with option to choose interpolation technique
-  \item Part 3 fixed bug introduced in 2.4-0 making it impossible to process long 
+  \item Part 3 fixed bug introduced in 2.4-0 making it impossible to process long
   recordings with many sustained inactivity bouts
 }
 }
