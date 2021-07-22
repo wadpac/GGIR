@@ -159,6 +159,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           axis(side=1, at = 12:36, labels = c(12:24,1:12),cex.axis=0.7)
           abline(v=c(18,24,30),lwd=0.2,lty=2)
           abline(v=c(15,21,27,33),lwd=0.2,lty=3,col="grey")
+          addlegend = TRUE
         }
         cnt67 = 2
       }
@@ -614,6 +615,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               abline(v=c(18,24,30),lwd=0.2,lty=2)
               abline(v=c(15,21,27,33),lwd=0.2,lty=3,col="grey")
               cnt = 1
+              addlegend = TRUE
             }
           }
           if (length(spocum) > 0) {
@@ -927,6 +929,16 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               }
             }
           }
+          if (addlegend == TRUE) {
+            colb_spt = rainbow(length(undef),start=0.7,end=1)
+            colb_day =  rainbow(length(undef),start=0.2,end=0.4)
+            colb = c(colb_spt, colb_day)
+            legnames = c(paste0(undef,"_spt"), paste0(undef,"_day"), "guider")
+            legend("topright", legend=legnames, 
+                   density=c(rep(NA,2*length(undef)), den), fill=c(colb,"black"), ncol = 5, cex=0.8)
+          } 
+          addlegend = FALSE
+          
           # END OF PLOT AND nightsummary MEASURES
           ##########################################################################
         } #nights
