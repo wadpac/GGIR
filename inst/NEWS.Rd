@@ -1,7 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 2.4-2 (GitHub-only-release date:20-07-2021)}{
+\itemize{
+  \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
+}
+}
 \section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
 \itemize{
   \item Part 1 fixed bug related to g.getmeta reading movisens files
