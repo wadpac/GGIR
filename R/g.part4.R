@@ -933,9 +933,10 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             colb_spt = rainbow(length(undef),start=0.7,end=1)
             colb_day =  rainbow(length(undef),start=0.2,end=0.4)
             colb = c(colb_spt, colb_day)
-            legnames = c(paste0(undef,"_spt"), paste0(undef,"_day"), "guider")
-            legend("topright", legend=legnames, 
-                   density=c(rep(NA,2*length(undef)), den), fill=c(colb,"black"), ncol = 5, cex=0.8)
+            legnames = c(paste0("sib",undef,"_spt"), paste0("sib",undef,"_day"), "guider, e.g. diary")
+            legend("top", legend=legnames, 
+                   density=c(rep(NA,2*length(undef)), 40), fill=c(colb,"black"), 
+                   border=c(colb,"black"), ncol = min(c(5,length(legnames))), cex=0.7)
           } 
           addlegend = FALSE
           
