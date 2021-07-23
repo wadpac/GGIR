@@ -18,6 +18,8 @@
   latency and sleep efficiency estimate if available
   \item Part 5 now able to export sustained inactivity bouts and self-reported
   naps and nonwear to csv report to aid nap analaysis
+  \item Part 4 legend added to visualisation
+  \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
 }
 }
 \section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
