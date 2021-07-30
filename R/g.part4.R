@@ -153,6 +153,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
     }
     if (skip == 0) {
       cat(paste0(" ", i))
+      addlegend = FALSE
       if (cnt67 == 1) { #only create new pdf if there is actually new plots to be generated
         if (do.visual == TRUE) { # keep pdf for QC purposes
           pdf(file=paste0(metadatadir, "/results/visualisation_sleep.pdf"), width=8.27, height=11.69)
