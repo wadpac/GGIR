@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.4-3 (GitHub-only-release date:08-09-2021)}{
+\itemize{
+  \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
+  }
+}
 \section{Changes in version 2.4-2 (GitHub-only-release date:20-07-2021)}{
 \itemize{
   \item Part 4 legend added to visualisation
