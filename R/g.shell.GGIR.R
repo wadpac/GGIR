@@ -190,7 +190,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
   if (exists("interpolationType") == FALSE)  interpolationType=1
-  
+
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
@@ -261,7 +261,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "" # not used
   }
   if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
-  
+
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
   if (length(loglocation) == 1) {
@@ -458,7 +458,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             constrain2range=constrain2range, do.parallel = do.parallel,
             myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
             HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
-            longitudinal_axis=longitudinal_axis)
+            longitudinal_axis=longitudinal_axis, do.part3.pdf=do.part3.pdf)
   }
   if (dopart4 == TRUE) {
     cat('\n')

@@ -8,7 +8,7 @@ Creates report from milestone data produced by \link{g.part2}. Not intended
   for direct use by package user
 }
 \usage{
-g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 7, 
+g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0, 
 selectdaysfile=c(), store.long=FALSE)
 }
 \arguments{

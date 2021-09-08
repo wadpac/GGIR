@@ -109,7 +109,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   if TRUE, calculate the angle of the z-axis relative to the horizontal plane
   (degrees) utilizing all three axes
   }
-  \item{do.enmoa}{if TRUE (default), calculate metric ENMOa which is equal to
+  \item{do.enmoa}{if TRUE, calculate metric ENMOa which is equal to
   metric ENMO but with the absolute taken from the Euclidean norm minus one.
   }
  \item{do.roll_med_acc_x}{ see \link{g.getmeta}
