@@ -26,6 +26,14 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
   # assume ID to be in first column
   actlog = actlog[which(actlog[,1] != ""),] # ignore rows for which there is no id
   actlog_vec = unlist(actlog) # turn into vector
+  # extract example date value
+  datecols = grep(pattern = "date|Date|DATE",  x = colnames(actlog), value = FALSE)
+  if (length(datecols) > 0) {
+    exampledates = unlist(actlog[,datecols])
+    exampledates = exampledates[which(!is.na(exampledates))]
+  } else {
+    exampledates = c()
+  }
   # find dates
   actlog_vec = sapply(actlog_vec, function(x) !all(is.na(as.Date(as.character(x),format=qwindow_dateformat))))
   Ndates = length(which(actlog_vec == TRUE))
@@ -84,7 +92,14 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
     qwindow$date =  as.Date(qwindow$date)  
   }
   if (is.na(qwindow$date[1]) == TRUE | class(qwindow$date[1]) != "Date") {
-    warning("\n Date not recognised in activity diary")
+    if (length(exampledates) > 0) {
+      warning(paste0("\n Date not recognised in activity diary. We expect format ", 
+                     qwindow_dateformat, " but we see ", paste0(head(exampledates), collapse=" "),
+                     ". You need to update the qwindow_dateformat argument, and check",
+                     " that dates are in a consistent format."))
+    } else {
+      warning("\n Date not recognised in activity diary")
+    }
   }
   return(qwindow)
 }

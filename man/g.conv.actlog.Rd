@@ -17,7 +17,8 @@
     First column headers followed by one row per recording, first column is recording ID,
     which needs to match with the ID GGIR extracts from the accelerometer file.
     Followed by date column in format "23-04-2017", where date format is specified by 
-    argument qwindow_dateformat (below). This is followed by 
+    argument qwindow_dateformat (below). Use the character combination date, Date or 
+    DATE in the column name. This is followed by 
     one or multiple columns with start times for the activity types in that day format in 
     hours:minutes:seconds. The header of the column will be used as label for each activity
     type. Insert a new date column before continuing with activity types for next day.
