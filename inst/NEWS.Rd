@@ -1,11 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-2 (release date:20-07-2021)}{
+\section{Changes in version 2.4-2 (GitHub-only-release date:20-09-2021)}{
 \itemize{
   \item Numeric timing of MX-metrics in part5 output changed to be hour of the day
   \item Lux per segment variables now turn LUX during SPT as zeros
-}
+  \item Part 4 legend added to visualisation
+  \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
+  }
 }
 \section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
 \itemize{

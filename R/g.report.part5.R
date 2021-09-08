@@ -332,7 +332,6 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                               | nom == "L10TIME" | nom == "M10TIME" | nom == "acc_available" | nom == "daytype")
                   names(OF4)[which(names(OF4)=="weekday")] = "startday"
                   OF4 = OF4[,-cut]
-                  OF4 = as.matrix(OF4)
                   OF4[which(is.na(OF4) == TRUE)] = ""
                   #Move Nvaliddays variables to the front of the spreadsheet
                   Nvaliddays_variables = grep(x = colnames(OF4), pattern = "Nvaliddays", value = FALSE)
