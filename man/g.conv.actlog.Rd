@@ -9,11 +9,14 @@
   
 }
 \usage{
-  g.conv.actlog(qwindow)	
+  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y")	
 }
 \arguments{
   \item{qwindow}{
     Path to csv files with activity log
+  }
+  \item{qwindow_dateformat}{
+    Character specifying the date format used in the activity log.
   }
 }
 \value{
