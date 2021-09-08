@@ -421,7 +421,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun, maxNcores=maxNcores)
+            myfun=myfun, maxNcores=maxNcores, do.part3.pdf=do.part3.pdf)
   }
   if (dopart4 == TRUE) {
     cat('\n')
