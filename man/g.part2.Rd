@@ -12,7 +12,7 @@ The variables in these reports are the same variables as described in
 }
 \usage{
 g.part2(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy = 1,
-hrs.del.start = 0.5,hrs.del.end = 0.5, maxdur = 7,
+hrs.del.start = 0.5,hrs.del.end = 0.5, maxdur = 0,
 includedaycrit = 16, L5M5window = c(0,24), M5L5res = 10,
 winhr = 5, qwindow=c(0,24), qlevels = c(0.1),
 ilevels = c(0,10), mvpathreshold = c(100),

@@ -1,4 +1,4 @@
-g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7,hrs.del.start=0,hrs.del.end =0,
+g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=0,hrs.del.start=0,hrs.del.end =0,
                    loglocation= c(),excludefirstlast.part5=FALSE,windowsizes=c(5,900,3600), acc.metric="ENMO",
                    boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,storefolderstructure=FALSE,
                    threshold.lig = c(40),
