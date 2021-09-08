@@ -23,6 +23,8 @@
     type. Insert a new date column before continuing with activity types for next day.
     Leave missing values empty. If an activitylog is used then individuals who do 
     not appear in the activitylog will still be processed with value c(0,24).
+    Dates with no activiy log data can be skipped, no need to have a column with the 
+    date followed by a column with the next date.
   }
   \item{qwindow_dateformat}{
     Character specifying the date format used in the activity log.

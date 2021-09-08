@@ -28,7 +28,6 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
   actlog_vec = unlist(actlog) # turn into vector
   # find dates
   actlog_vec = sapply(actlog_vec, function(x) !all(is.na(as.Date(as.character(x),format=qwindow_dateformat))))
-  
   Ndates = length(which(actlog_vec == TRUE))
   dim(actlog_vec) = c(nrow(actlog),ncol(actlog))
   # create new qwindow object to archive all extracted information
