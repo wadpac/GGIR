@@ -579,7 +579,7 @@ dur_day_spt_min | Duration this day window, including both waking hours and SPT.
 sleep_efficiency | Sleep efficiency (within the SPT window, not including sleep latency)
 L5TIME	| Timing of least active 5hrs, expressed as timestamp in the day
 M5TIME | Timing of most active 5hrs
-L5TIME_num, M5TIME_num | Timing of least/most active 5hrs, expressed as hours after previous midnight to make it comparable with numeric timestamps for sleep onset/waking up.
+L5TIME_num, M5TIME_num | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.
 L5VALUE	| Acceleration value for least active 5hrs
 M5VALUE	| Acceleration value for most active 5hrs
 `FRAG_` | All variables related to behavioural fragmentation analysis

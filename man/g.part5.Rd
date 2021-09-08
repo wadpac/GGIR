@@ -164,7 +164,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     Hour at which days start and end (default = 0), value = 4 would mean 4am
   }
   \item{winhr}{
-    see \link{g.getmeta}
+    see \link{g.analyse}
   }
   \item{save_ms5rawlevels}{
     Boolean, whether to save the time series classification (levels) as a csv files
