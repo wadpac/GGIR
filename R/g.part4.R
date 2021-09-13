@@ -796,7 +796,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     # sleep latency:
                     nightsummary[sumi,25] = round(nightsummary[sumi,3] - nightsummary[sumi,7], digits=7) #sleeponset - guider_onset 
                     # sleep efficiency:
-                    nightsummary[sumi,26] = round(nightsummary[sumi,14] / nightsummary[sumi,5], digits=5)  #accumulated nocturnal sleep / SPT duration
+                    nightsummary[sumi,26] = round(nightsummary[sumi,14] / nightsummary[sumi,9], digits=5)  #accumulated nocturnal sleep / guider
                   }
                   nightsummary[sumi,27] = pagei
                   nightsummary[sumi,28] = daysleeper[j]
