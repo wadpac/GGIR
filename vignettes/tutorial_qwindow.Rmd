@@ -9,7 +9,7 @@ output:
     number_sections: true
 urlcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Embedding external functions in GGIR}
+  %\VignetteIndexEntry{Argument qwindow in GGIR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 header-includes:
