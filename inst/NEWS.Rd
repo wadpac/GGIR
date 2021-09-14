@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.4-3 (GitHub-only-release date:17-09-2021)}{
+\itemize{
+  \item Part 1: The sensor fussion functionality introduced in version 2.2-2, as a bit
+  of an experimental development, has now been removed from GGIR as added value turned out
+  to be limited.
+}
+}
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{
 \itemize{
   \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
