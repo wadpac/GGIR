@@ -1,118 +1,58 @@
 g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
                      timethreshold = c(5,10), acc.metric = "ENMO", desiredtz="",constrain2range = TRUE,
-                      myfun=c()) {
+                     myfun=c(), sensor.location = "wrist",
+                     HASPT.algo = "HDCZA",
+                     HASIB.algo = "vanHees2015",
+                     Sadeh_axis = "Y",
+                     longitudinal_axis = c(),
+                     HASPT.ignore.invalid = FALSE) {
   #==============================================================
-  perc = 0.1; inbedthreshold = 15; bedblocksize = 30; outofbedsize = 60 # default configurations (keep hardcoded for now
-
-  sptwindow_HDCZA = function(angle, k =60, perc = 0.1, inbedthreshold = 15,
-                             bedblocksize = 30, outofbedsize = 60, ws3 = 5, constrain2range = FALSE) {
-    medabsdi = function(angle) {
-      angvar = stats::median(abs(diff(angle))) #50th percentile, do not use mean because that will be outlier dependent
-      return(angvar)
-    }
-    x = zoo::rollapply(angle, k, medabsdi) # 5 minute rolling median of the absolute difference
-    nomov = rep(0,length(x)) # no movement
-    inbedtime = rep(NA,length(x))
-    pp = quantile(x,probs=c(perc)) * inbedthreshold
-    if (constrain2range == TRUE) {
-      if (pp < 0.13) pp = 0.13 # needed because dummy data is inserted in psg study (this line will not be part of GGIR code)
-      if (pp > 0.50) pp = 0.50 # needed because dummy data is inserted in psg study (this line will not be part of GGIR code)
-    } else {
-      if (pp == 0) pp = 0.20
-    }
-    nomov[which(x < pp)] = 1
-    nomov = c(0,nomov,0)
-    s1 = which(diff(nomov) == 1) #start of blocks in bed
-    e1 = which(diff(nomov) == -1) #end of blocks in bed
-    bedblock = which((e1 - s1) > ((60/ws3)*bedblocksize*1)) #which are the blocks longer than bedblocksize in minutes?
-    if (length(bedblock) > 0) { #
-      s2 = s1[bedblock] # only keep the bedblocks that are long enough
-      e2 = e1[bedblock] # only keep the bedblocks that are long enough
-      for (j in 1:length(s2)){
-        inbedtime[ s2[j]:e2[j]] = 1 #record these blocks in the inbedtime vector
-      }
-      # fill up gaps in time between bed blocks
-      outofbed = rep(0,length(inbedtime))
-      outofbed[which(is.na(inbedtime) == TRUE)] = 1
-      outofbed = c(0,outofbed,0)
-      s3 = which(diff(outofbed) == 1) #start of blocks out of bed?
-      e3 = which(diff(outofbed) == -1) #end blocks out of bed?
-      outofbedblock = which((e3 - s3) < ((60/ws3)*outofbedsize*1))
-
-      if (length(outofbedblock) > 0) { # only fill up gap if there are gaps
-        s4 = s3[outofbedblock]
-        e4 = e3[outofbedblock]
-        if (length(s4) > 0) {
-          for (j in 1:length(s4)){
-            inbedtime[ s4[j]:e4[j]] = 1
-          }
-        }
-      }
-      if (length(inbedtime) == (length(x)+1)) inbedtime = inbedtime[1:(length(inbedtime)-1)]
-      # keep indices for longest in bed block:
-      inbedtime2 = rep(1,length(inbedtime))
-      inbedtime2[which(is.na(inbedtime) == TRUE)] = 0
-      s5 = which(diff(c(0,inbedtime2,0)) == 1) #start of blocks out of bed?
-      e5 = which(diff(c(0,inbedtime2,0)) == -1) #end blocks out of bed?
-      inbeddurations = e5 - s5
-      longestinbed = which(inbeddurations == max(inbeddurations))
-      if (length(longestinbed) > 1) longestinbed = longestinbed[ceiling(length(longestinbed)/2)]
-      sptwindow_HDCZA_start = s5[longestinbed] - 1
-      sptwindow_HDCZA_end = e5[longestinbed] - 1
-      if (sptwindow_HDCZA_start == 0) sptwindow_HDCZA_start = 1
-    } else {
-      sptwindow_HDCZA_end = c()
-      sptwindow_HDCZA_start = c()
-      tib.threshold = c()
-    }
-    tib.threshold = pp
-    invisible(list(sptwindow_HDCZA_start=sptwindow_HDCZA_start,
-                   sptwindow_HDCZA_end=sptwindow_HDCZA_end, tib.threshold=tib.threshold))
-  }
-  dstime_handling_check = function(tmpTIME=tmpTIME,inbedout=inbedout,tz=c(),
-                                   calc_sptwindow_HDCZA_end=c(), calc_sptwindow_HDCZA_start=c()) {
-    time_sptwindow_HDCZA_start =iso8601chartime2POSIX(tmpTIME[inbedout$sptwindow_HDCZA_start],tz=tz)
-    time_sptwindow_HDCZA_end =iso8601chartime2POSIX(tmpTIME[inbedout$sptwindow_HDCZA_end],tz=tz)
-    time_sptwindow_HDCZA_end_hr = as.numeric(format(time_sptwindow_HDCZA_end, format = "%H"))
-    time_sptwindow_HDCZA_start_hr = as.numeric(format(time_sptwindow_HDCZA_start, format = "%H"))
+  perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
+  # Abbreviaton SPTE = Sleep Period Time Estimate, although in case of HorAngle it is the Time in Bed estimate
+  # but then we would have to come up with yet another term to represent the main sleep and/or time in bed window of the day
+  # So, out of convenience I keep the object name SPTE. 
+  dstime_handling_check = function(tmpTIME=tmpTIME,spt_estimate=spt_estimate,tz=c(),
+                                   calc_SPTE_end=c(), calc_SPTE_start=c()) {
+    time_SPTE_start =iso8601chartime2POSIX(tmpTIME[spt_estimate$SPTE_start],tz=tz)
+    time_SPTE_end =iso8601chartime2POSIX(tmpTIME[spt_estimate$SPTE_end],tz=tz)
+    time_SPTE_end_hr = as.numeric(format(time_SPTE_end, format = "%H"))
+    time_SPTE_start_hr = as.numeric(format(time_SPTE_start, format = "%H"))
     t0 = as.numeric(format(iso8601chartime2POSIX(tmpTIME[1],tz=tz), format = "%H"))
     t1 = as.numeric(format(iso8601chartime2POSIX(tmpTIME[length(tmpTIME)],tz=tz), format = "%H"))
     if (is.na(t1) == TRUE | is.na(t0) == TRUE) {
       # if timestamp is stored in POSIX format (older versions of GGIR prior 2017)
       # for example when milestone data generated by old packages is now processed
       # then this part of the code is to facilitate consistency
-      time_sptwindow_HDCZA_start =as.POSIXlt(tmpTIME[inbedout$sptwindow_HDCZA_start],origin="1970-01-01",tz=tz)
-      time_sptwindow_HDCZA_end =as.POSIXlt(tmpTIME[inbedout$sptwindow_HDCZA_end],origin="1970-01-01",tz=tz)
-      time_sptwindow_HDCZA_end_hr = as.numeric(format(time_sptwindow_HDCZA_end, format = "%H"))
-      time_sptwindow_HDCZA_start_hr = as.numeric(format(time_sptwindow_HDCZA_start, format = "%H"))
+      time_SPTE_start =as.POSIXlt(tmpTIME[spt_estimate$SPTE_start],origin="1970-01-01",tz=tz)
+      time_SPTE_end =as.POSIXlt(tmpTIME[spt_estimate$SPTE_end],origin="1970-01-01",tz=tz)
+      time_SPTE_end_hr = as.numeric(format(time_SPTE_end, format = "%H"))
+      time_SPTE_start_hr = as.numeric(format(time_SPTE_start, format = "%H"))
       t0 = as.numeric(format(as.POSIXlt(tmpTIME[1],origin="1970-01-01",tz=tz), format = "%H"))
       t1 = as.numeric(format(as.POSIXlt(tmpTIME[length(tmpTIME)],origin="1970-01-01",tz=tz), format = "%H"))
     }
     Nhoursdata = floor(length(tmpTIME) / (3600/ws3))
     delta_t1_t0 = (t1+24) - t0
-    if (length(time_sptwindow_HDCZA_end_hr) > 0 & length(time_sptwindow_HDCZA_start_hr) > 0) {
-      if (Nhoursdata > (delta_t1_t0 + 0.1) &  # time has moved backward (autumn)  so sptwindow_HDCZA_end also needs to move backward
-          (time_sptwindow_HDCZA_end_hr > 1 | time_sptwindow_HDCZA_end_hr < 12) &
-          (time_sptwindow_HDCZA_start_hr < 1 | time_sptwindow_HDCZA_start_hr > 12)) { #extra DST hour not recognized
-        calc_sptwindow_HDCZA_end = calc_sptwindow_HDCZA_end - 1
-      } else if (Nhoursdata + 0.1 < delta_t1_t0 &  # time has moved forward (spring) so sptwindow_HDCZA_end also needs to move forward
-                 (time_sptwindow_HDCZA_end_hr > 1 | time_sptwindow_HDCZA_end_hr < 12) &
-                 (time_sptwindow_HDCZA_start_hr < 1 | time_sptwindow_HDCZA_start_hr > 12)) { #missing DST hour not recognized
-        calc_sptwindow_HDCZA_end = calc_sptwindow_HDCZA_end + 1
+    if (length(time_SPTE_end_hr) > 0 & length(time_SPTE_start_hr) > 0) {
+      if (Nhoursdata > (delta_t1_t0 + 0.1) &  # time has moved backward (autumn) so SPTE_end also needs to move backward
+          (time_SPTE_end_hr > 1 | time_SPTE_end_hr < 12) &
+          (time_SPTE_start_hr < 1 | time_SPTE_start_hr > 12)) { #extra DST hour not recognized
+        calc_SPTE_end = calc_SPTE_end - 1
+      } else if (Nhoursdata + 0.1 < delta_t1_t0 &  # time has moved forward (spring) so SPTE_end also needs to move forward
+                 (time_SPTE_end_hr > 1 | time_SPTE_end_hr < 12) &
+                 (time_SPTE_start_hr < 1 | time_SPTE_start_hr > 12)) { #missing DST hour not recognized
+        calc_SPTE_end = calc_SPTE_end + 1
       }
     }
-    return(calc_sptwindow_HDCZA_end)
+    return(calc_SPTE_end)
   }
   #==================================================
   # get variables
   nD = nrow(IMP$metashort)
   mon = I$monn
-  ws3 = M$windowsizes[1]
-  ws2 = M$windowsizes[2]
+  ws3 = M$windowsizes[1] #short epoch size
+  ws2 = M$windowsizes[2] # medium length epoch size used for non-wear detection
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
-  Nsleep = length(timethreshold) * length(anglethreshold)
-  sleep = matrix(0,nD,Nsleep)
   #--------------------
   # get indicator of non-wear periods
   rout = IMP$rout
@@ -132,150 +72,81 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
   if (ND > 0.2) {
     #========================================================================
     # timestamps
-    time = as.character(IMP$metashort[1:nD,1])
+    time = as.character(IMP$metashort[,1])
     # angle
     if (length(which(colnames(IMP$metashort)=="anglez")) == 0) {
       cat("metric anglez was not extracted, please make sure that anglez  is extracted")
     }
-    angle = as.numeric(as.matrix(IMP$metashort[1:nD,which(colnames(IMP$metashort)=="anglez")]))
-    ACC = as.numeric(as.matrix(IMP$metashort[1:nD,which(colnames(IMP$metashort)==acc.metric)]))
-    night = rep(0,length(angle))
-    if (length(which(is.na(angle) ==TRUE)) > 0) {
-      if (which(is.na(angle) ==TRUE)[1] == length(angle)) {
-        angle[length(angle)] = angle[length(angle)-1]
+    fix_NA_invector = function(x){
+      if (length(which(is.na(x) ==TRUE)) > 0) {
+        x[which(is.na(x) == T)] = 0
+      }
+      return(x)
+    }
+    anglez = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)=="anglez")]))
+    anglez = fix_NA_invector(anglez)
+    
+    anglex = angley = c()
+    do.HASPT.hip = FALSE
+    if (sensor.location == "hip" &
+        "anglex" %in% colnames(IMP$metashort) &
+        "angley" %in% colnames(IMP$metashort) &
+        "anglez" %in% colnames(IMP$metashort)) {
+      do.HASPT.hip= TRUE
+      if (length(colnames(IMP$metashort)=="anglex") > 0) {
+        anglex =  IMP$metashort[,which(colnames(IMP$metashort)=="anglex")]
+        anglex = fix_NA_invector(anglex)
+      }
+      if (length(colnames(IMP$metashort)=="angley") > 0) {
+        angley =  IMP$metashort[,which(colnames(IMP$metashort)=="angley")]
+        angley = fix_NA_invector(angley)
       }
     }
+    ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort)==acc.metric)]))
+    night = rep(0,length(anglez))
+    if (HASIB.algo == "Sadeh1994" | HASIB.algo == "Galland2012") { # extract zeroCrossingCount
+      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("ZC",Sadeh_axis))]
+      zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
+    } else {
+      zeroCrossingCount = c()
+    }
     #==================================================================
-    # sleep detection if sleep is not provided by external function:
+    # 'sleep' detection if sleep is not provided by external function.
+    # Note that inside the code we call it sustained inactivity bouts
+    # to emphasize that we know that this is not actually neurological sleep
     getSleepFromExternalFunction = FALSE
     if (length(myfun) != 0) {
       if (myfun$colnames == "wake_sleep" & myfun$outputtype =="character") {
         getSleepFromExternalFunction = TRUE
       }
     }
-    angle[which(is.na(angle) == T)] = 0
     if (getSleepFromExternalFunction == FALSE) {
-      cnt = 1
-      for (i in timethreshold) {
-        for (j in anglethreshold) {
-          sdl1 = rep(0,length(time))
-          postch = which(abs(diff(angle)) > j) #posture change of at least j degrees
-          # count posture changes that happen less than once per ten minutes
-          q1 = c()
-          if (length(postch) > 1) {
-            q1 = which(diff(postch) > (i*(60/ws3))) #less than once per i minutes
-          }
-          if (length(q1) > 0) {
-            for (gi in 1:length(q1)) {
-              sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
-            }
-          } else { #possibly a day without wearing
-            if (length(postch) < 10) {  #possibly a day without wearing
-              sdl1[1:length(sdl1)] = 1 #periods with no posture change
-            } else {  #possibly a day with constantly posture changes
-              sdl1[1:length(sdl1)] = 0 #periodsposture change
-            }
-          }
-          sleep[,cnt] = sdl1
-          cnt = cnt+ 1
-        }
-      }
-
-      cnt = 1
-      sleep = as.data.frame(sleep, stringsAsFactors = TRUE)
-      for (i in timethreshold) {
-        for (j in anglethreshold) {
-          colnames(sleep)[cnt] = paste("T",i,"A",j,sep="")
-          cnt = cnt + 1
-        }
-      }
+      sleep = HASIB(HASIB.algo = HASIB.algo, timethreshold=timethreshold,
+                    anglethreshold=anglethreshold, 
+                    time=time, anglez=anglez, ws3=ws3,
+                    zeroCrossingCount=zeroCrossingCount)
     } else { # getSleepFromExternalFunction == TRUE
-      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 # Code now uses the sleep estimates from the external function
+      # Code now uses the sleep estimates from the external function
+      # So, the assumption is that the external function provides a 
+      # character "Sleep" when it detects sleep
+      sleep = matrix(0, nD, 1)
+      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 
     }
     #-------------------------------------------------------------------
     # detect midnights
-
     detemout = g.detecmidnight(time,desiredtz, dayborder=0) # ND, # for sleep dayborder is always 0, it is the summary of sleep that will be dayborder specific
     midnights=detemout$midnights
     midnightsi=detemout$midnightsi
     countmidn = length(midnightsi)
-    tib.threshold = sptwindow_HDCZA_end = sptwindow_HDCZA_start = L5list = rep(NA,countmidn)
+    tib.threshold = SPTE_end = SPTE_start = L5list = rep(NA,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
         tooshort = 1
-        lastmidnight = time[length(time)]
-        lastmidnighti = length(time)
+        lastmidnight = midnights[length(midnights)]
+        lastmidnighti = midnightsi[length(midnights)]
         firstmidnight = time[1]
         firstmidnighti = 1
-        qqq1 = midnightsi[1] + (twd[1]*(3600/ws3)) #noon
-        qqq2 = midnightsi[1] + (twd[2]*(3600/ws3)) #noon
-        if (qqq2 > length(time))  qqq2 = length(time)
-        if (qqq1 < 1)             qqq1 = 1
-        night[qqq1:qqq2] = 1
-        detection.failed = FALSE
-        #------------------------------------------------------------------
-        # Estimate Sleep Period Time Window, because this will be used by g.part4 if sleeplog is not available
-        tmpANGLE = angle[qqq1:qqq2]
-        tmpTIME = time[qqq1:qqq2]
-        daysleep_offset = 0
-        inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
-                                   perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
-                                   outofbedsize = outofbedsize)
-        if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
-          if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
-            # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
-            daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
-            newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
-            newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
-            if (newqqq2 > length(angle)) newqqq2 = length(angle)
-            # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
-            if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-              inbedout = sptwindow_HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
-                                         perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
-                                         outofbedsize = outofbedsize)
-              if (inbedout$sptwindow_HDCZA_start+newqqq1 >= newqqq2) {
-                inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
-              }
-            } else {
-              daysleep_offset  = 0
-            }
-          }
-          if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
-            startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
-            startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-            sptwindow_HDCZA_end[1] = inbedout$sptwindow_HDCZA_end/(3600/ws3) + startTimeRecord
-            sptwindow_HDCZA_start[1] = inbedout$sptwindow_HDCZA_start/(3600/ws3)  + startTimeRecord
-          } else {
-            sptwindow_HDCZA_end[1] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
-            sptwindow_HDCZA_start[1] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
-          }
-          sptwindow_HDCZA_end[1] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
-                                                         tz=desiredtz,calc_sptwindow_HDCZA_end=sptwindow_HDCZA_end[1],
-                                                         calc_sptwindow_HDCZA_start=sptwindow_HDCZA_start[1])
-          tib.threshold[1] = inbedout$tib.threshold
-        }
-        #------------------------------------------------------------------
-        # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
-        tmpACC = ACC[qqq1:qqq2]
-        windowRL = round((3600/ws3)*5)
-        if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
-        if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
-          cat("Warning: time window shorter than 5 hours which makes it impossible to identify L5")
-          L5 = 0
-        } else {
-          ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
-
-          L5 = which(ZRM == min(ZRM))[1]
-          if (sd(ZRM) == 0) {
-            L5 = c()
-          } else {
-            L5 = (L5  / (3600/ ws3)) + 12
-          }
-          if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
-        }
-        L5list[1] = L5
-
-      } else { #more than one midnight
+      } else {
         cut = which(as.numeric(midnightsi) == 0)
         if (length(cut) > 0) {
           midnights = midnights[-cut]
@@ -285,17 +156,23 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
         lastmidnighti = midnightsi[length(midnights)]
         firstmidnight = midnights[1]
         firstmidnighti = midnightsi[1]
-        for (j in 1:(countmidn)) { #-1
-          qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #noon
-          qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #noon
-          if (qqq2 > length(time))  qqq2 = length(time)
-          if (qqq1 < 1)             qqq1 = 1
-          night[qqq1:qqq2] = j
-          #------------------------------------------------------------------
-          # calculate L5 because this is used in case the sleep diary is not available (added 17-11-2014)
-          tmpACC = ACC[qqq1:qqq2]
-          windowRL = round((3600/ws3)*5)
-          if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
+      }
+      for (j in 1:(countmidn)) { #Looping over the midnight
+        qqq1 = midnightsi[j] + (twd[1]*(3600/ws3)) #preceding noon
+        qqq2 = midnightsi[j] + (twd[2]*(3600/ws3)) #next noon
+        if (qqq2 > length(time))  qqq2 = length(time)
+        if (qqq1 < 1)             qqq1 = 1
+        night[qqq1:qqq2] = j
+        detection.failed = FALSE
+        #------------------------------------------------------------------
+        # calculate L5 because this is used as back-up approach
+        tmpACC = ACC[qqq1:qqq2]
+        windowRL = round((3600/ws3)*5)
+        if ((windowRL/2) == round(windowRL/2)) windowRL = windowRL+1
+        if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
+          cat("Warning: time window shorter than 5 hours which makes it impossible to identify L5")
+          L5 = 0
+        } else {
           ZRM = zoo::rollmean(x=c(tmpACC),k=windowRL,fill="extend",align="center") #
           L5 = which(ZRM == min(ZRM))[1]
           if (sd(ZRM) == 0) {
@@ -304,64 +181,85 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
             L5 = (L5  / (3600/ ws3)) + 12
           }
           if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
-          L5list[j] = L5
-          # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
-          tmpANGLE = angle[qqq1:qqq2]
-          tmpTIME = time[qqq1:qqq2]
-          daysleep_offset = 0
-          inbedout = sptwindow_HDCZA(tmpANGLE,ws3=ws3,constrain2range=constrain2range,
-                                     perc = perc, inbedthreshold = inbedthreshold,
-                                     bedblocksize = bedblocksize, outofbedsize = outofbedsize)
-          if (length(inbedout$sptwindow_HDCZA_end) != 0 & length(inbedout$sptwindow_HDCZA_start) != 0) {
-            if (inbedout$sptwindow_HDCZA_end+qqq1 >= qqq2-(1*(3600/ws3))) {
-              # if estimated SPT ends within one hour of noon, re-run with larger window to be able to detect daysleepers
-              daysleep_offset = 6 # hours in which the window of data sent to HDCZA is moved fwd from noon
-              newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
-              newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
-              if (newqqq2 > length(angle)) newqqq2 = length(angle)
-              # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
-              if (newqqq1 < length(angle) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-                inbedout = sptwindow_HDCZA(angle[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
-                                           perc = perc, inbedthreshold = inbedthreshold, bedblocksize = bedblocksize,
-                                           outofbedsize = outofbedsize)
-                if (inbedout$sptwindow_HDCZA_start+newqqq1 >= newqqq2) {
-                  inbedout$sptwindow_HDCZA_start = (newqqq2-newqqq1)-1
-                }
-              } else {
-                daysleep_offset  = 0
-              }
-            } 
-            if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into HDCZA was after noon
-              startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
-              startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
-              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + startTimeRecord + daysleep_offset
-              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + startTimeRecord + daysleep_offset
+        }
+        L5list[j] = L5
+        # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
+        tmpANGLE = anglez[qqq1:qqq2]
+        tmpTIME = time[qqq1:qqq2]
+        daysleep_offset = 0
+        if (do.HASPT.hip == TRUE) {
+          HASPT.algo = "HorAngle"
+          if (length(longitudinal_axis) == 0) { #only estimate long axis if not provided by user
+            count_updown = matrix(0,3,2)
+            count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
+            count_updown[2,]= sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
+            count_updown[3,] = sort(c(length(which(anglez[qqq1:qqq2] < 45)), length(which(anglez[qqq1:qqq2] > 45))))
+            ratio_updown = count_updown[,1] / count_updown[,2]
+            validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
+            if (length(validval) > 0) {
+              ratio_updown[validval] = ratio_updown
+              longitudinal_axis = which.max(ratio_updown)
             } else {
-              sptwindow_HDCZA_end[j] = (inbedout$sptwindow_HDCZA_end/(3600/ws3)) + 12 + daysleep_offset
-              sptwindow_HDCZA_start[j] = (inbedout$sptwindow_HDCZA_start/(3600/ws3)) + 12 + daysleep_offset
+              longitudinal_axis = 2 # y-axis as fall back option if detection does not work
             }
-            sptwindow_HDCZA_end[j] = dstime_handling_check(tmpTIME=tmpTIME,inbedout=inbedout,
-                                                tz=desiredtz,calc_sptwindow_HDCZA_end=sptwindow_HDCZA_end[j],
-                                                calc_sptwindow_HDCZA_start=sptwindow_HDCZA_start[j])
-            tib.threshold[j] = inbedout$tib.threshold
+          }
+          if (longitudinal_axis == 1) {
+            tmpANGLE = anglex[qqq1:qqq2]
+          } else if (longitudinal_axis == 2) {
+            tmpANGLE = angley[qqq1:qqq2]
           }
         }
-        detection.failed = FALSE
+        spt_estimate = HASPT(angle=tmpANGLE,ws3=ws3,constrain2range=constrain2range,
+                             perc = perc, spt_threshold = spt_threshold,
+                             sptblocksize = sptblocksize, spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo,
+                             invalid=invalid, HASPT.ignore.invalid = HASPT.ignore.invalid)
+        if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
+          if (spt_estimate$SPTE_end+qqq1 >= qqq2-(1*(3600/ws3))) {
+            # if estimated SPT ends within one hour of noon, re-run with larger window
+            # to be able to detect daysleepers
+            daysleep_offset = 6 # hours in which the window of data sent to SPTE is moved fwd from noon
+            newqqq1 = qqq1+(daysleep_offset*(3600/ws3))
+            newqqq2 = qqq2+(daysleep_offset*(3600/ws3))
+            if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
+            # only try to extract SPT again if it is possible to extrat a window of more than there is more than 23 hour
+            if (newqqq1 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+              spt_estimate = HASPT(anglez[newqqq1:newqqq2],ws3=ws3,constrain2range=constrain2range,
+                                   perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
+                                   spt_max_gap = spt_max_gap, HASPT.algo=HASPT.algo, invalid=invalid,
+                                   HASPT.ignore.invalid = HASPT.ignore.invalid)
+              if (spt_estimate$SPTE_start+newqqq1 >= newqqq2) {
+                spt_estimate$SPTE_start = (newqqq2-newqqq1)-1
+              }
+            } else {
+              daysleep_offset  = 0
+            }
+          } 
+          if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into SPTE was after noon
+            startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
+            startTimeRecord = sum(as.numeric(startTimeRecord[c("hour","min","sec")]) / c(1,60,3600))
+            SPTE_end[j] = (spt_estimate$SPTE_end/(3600/ws3)) + startTimeRecord + daysleep_offset
+            SPTE_start[j] = (spt_estimate$SPTE_start/(3600/ws3)) + startTimeRecord + daysleep_offset
+          } else {
+            SPTE_end[j] = (spt_estimate$SPTE_end/(3600/ws3)) + 12 + daysleep_offset
+            SPTE_start[j] = (spt_estimate$SPTE_start/(3600/ws3)) + 12 + daysleep_offset
+          }
+          SPTE_end[j] = dstime_handling_check(tmpTIME=tmpTIME,spt_estimate=spt_estimate,
+                                              tz=desiredtz,calc_SPTE_end=SPTE_end[j],
+                                              calc_SPTE_start=SPTE_start[j])
+          tib.threshold[j] = spt_estimate$tib.threshold
+        }
       }
+      detection.failed = FALSE
     } else {
       cat("No midnights found")
       detection.failed = TRUE
     }
     metatmp = data.frame(time,invalid,night=night,sleep = sleep, stringsAsFactors = T)
   } else {
-    metatmp =c()
-    L5list = c()
-    sptwindow_HDCZA_end = c()
-    sptwindow_HDCZA_start = c()
-    tib.threshold = c()
+    metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = c()
     detection.failed = TRUE
   }
   invisible(list(output = metatmp, detection.failed=detection.failed, L5list=L5list,
-                 sptwindow_HDCZA_end =sptwindow_HDCZA_end, sptwindow_HDCZA_start=sptwindow_HDCZA_start,
-                 tib.threshold=tib.threshold))
+                 SPTE_end =SPTE_end, SPTE_start=SPTE_start,
+                 tib.threshold=tib.threshold, longitudinal_axis=longitudinal_axis))
 }

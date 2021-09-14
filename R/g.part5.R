@@ -1,4 +1,4 @@
-g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7,hrs.del.start=0,hrs.del.end =0,
+g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=0,hrs.del.start=0,hrs.del.end =0,
                    loglocation= c(),excludefirstlast.part5=FALSE,windowsizes=c(5,900,3600), acc.metric="ENMO",
                    boutcriter.mvpa=0.8,boutcriter.in=0.9,boutcriter.lig=0.8,storefolderstructure=FALSE,
                    threshold.lig = c(40),
@@ -19,7 +19,9 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                    LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
                    LUX_cal_constant = c(),
                    LUX_cal_exponent = c(),
-                   LUX_day_segments = c()) {
+                   LUX_day_segments = c(),
+                   do.sibreport = FALSE,
+                   sleeplogidnum=FALSE) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -32,25 +34,27 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   } else {
     dir.create(file.path(metadatadir,ms5.out))
   }
-  if (save_ms5rawlevels == TRUE) {
+  if (save_ms5rawlevels == TRUE | do.sibreport == TRUE) {
     ms5.outraw = "/meta/ms5.outraw"
     if (file.exists(paste(metadatadir,ms5.outraw,sep=""))) {
     } else {
       dir.create(file.path(metadatadir,ms5.outraw))
     }
-    # Create on subfolder per configuration
-    configurations = c()
-    for (TRLi in threshold.lig) {
-      for (TRMi in threshold.mod) {
-        for (TRVi in threshold.vig) {
-          configurations = c(configurations, paste0(TRLi,"_",TRMi,"_",TRVi))
+    if (save_ms5rawlevels == TRUE) {
+      # Create on subfolder per configuration
+      configurations = c()
+      for (TRLi in threshold.lig) {
+        for (TRMi in threshold.mod) {
+          for (TRVi in threshold.vig) {
+            configurations = c(configurations, paste0(TRLi,"_",TRMi,"_",TRVi))
+          }
         }
       }
-    }
-    for (hi in configurations) {
-      folder2create = paste0(metadatadir,ms5.outraw,"/",hi)
-      if (dir.exists(folder2create) == FALSE) {
-        dir.create(path = folder2create)
+      for (hi in configurations) {
+        folder2create = paste0(metadatadir,ms5.outraw,"/",hi)
+        if (dir.exists(folder2create) == FALSE) {
+          dir.create(path = folder2create)
+        }
       }
     }
   }
@@ -67,9 +71,17 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir,"/meta/sleeplog.RData",sep="")
   if (file.exists(sleeplogRDA) == TRUE){
+    sleeplog = logs_diaries = c()
     load(sleeplogRDA)
+    if (length(logs_diaries) > 0) {# new format
+      if (is.list(logs_diaries)) { # advanced format
+        sleeplog = logs_diaries$sleeplog
+      } else {
+        sleeplog = logs_diaries
+      }
+    }
   } else {
-    sleeplog = c()
+    sleeplog = logs_diaries = c()
   }
   #------------------------------------------------
   # specify parameters
@@ -136,7 +148,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                          "g.part5.definedays", "g.part5.fixmissingnight",
                          "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
                          "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
-                         "g.part5.handle_lux_extremes", "g.part5.lux_persegment")
+                         "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
@@ -194,7 +206,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             *length(unique(timewindow))),nfeatures)
                                       di = 1
                                       fi = 1
-                                      sptwindow_HDCZA_end = c() # if it is not loaded from part3 milestone data then this will be the default
+                                      SPTE_end = c() # if it is not loaded from part3 milestone data then this will be the default
                                       if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
                                         summarysleep_tmp = summarysleep
                                         #======================================================================
@@ -307,14 +319,14 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
                                             # Add first waking up time, if it is missing:
                                             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
-                                                                      Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3)
+                                                                      Nepochsinhour, Nts, SPTE_end, ws3)
                                             if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
                                               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz=desiredtz)) / 60) * 60
                                               if (lightpeak_available == TRUE) {
-                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "lightpeak", "lightpeak_imputationcode")],
+                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "angle", "lightpeak", "lightpeak_imputationcode")],
                                                                by = list(ts$time_num), FUN= function(x) mean(x))
                                               } else {
-                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear")],
+                                                ts = aggregate(ts[,c("ACC","sibdetection","diur","nonwear", "angle")],
                                                                by = list(ts$time_num), FUN= function(x) mean(x))
                                               }
                                               ts$sibdetection = round(ts$sibdetection)
@@ -340,6 +352,32 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                 nightsi = which(sec == 0 & min == (dayborder-floor(dayborder))*60 & hour == floor(dayborder)) #shift the definition of midnight if required
                                               }
                                               Nts = nrow(ts)
+                                            }
+                                            #===============================================
+                                            # GENERATE SIB report
+                                            # We can do this at this point in the code, because it
+                                            # does not depend on bout detection criteria or
+                                            # window definitions.
+                                            if (do.sibreport  == TRUE) {
+                                              if (sleeplogidnum == TRUE) {
+                                                IDtmp = as.numeric(ID)
+                                              } else {
+                                                IDtmp = as.character(ID)
+                                              }
+                                              
+                                              sibreport = g.sibreport(ts, ID=IDtmp, epochlength=ws3new, logs_diaries, desiredtz = desiredtz)
+                                              if ("angle" %in% colnames(ts)) {
+                                                ts = ts[, -which(colnames(ts) == "angle")]
+                                              }
+                                              # store in csv file:
+                                              ms5.sibreport = "/meta/ms5.outraw/sib.reports"
+                                              if (!file.exists(paste(metadatadir,ms5.sibreport,sep=""))) {
+                                                dir.create(file.path(metadatadir,ms5.sibreport))
+                                              }
+                                              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],".csv")
+                                              write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
+                                              # TO DO:
+                                              # - Store sib summary in part 5 report
                                             }
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
@@ -464,6 +502,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleepparam";      fi = fi + 1
                                                           dayofinterst = which(recDates == date)
                                                           if (length(dayofinterst) > 0) {
+                                                            dayofinterst = dayofinterst[1]
                                                             dsummary[di,fi:(fi+5)] = c(summarysleep_tmp2$night[dayofinterst],
                                                                                        summarysleep_tmp2$daysleeper[dayofinterst],
                                                                                        summarysleep_tmp2$cleaningcode[dayofinterst],
@@ -554,7 +593,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-                                                          
+
                                                           for (levelsc in 0:(length(Lnames)-1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_",Lnames[levelsc+1],"_mg",sep="");      fi = fi + 1
@@ -781,7 +820,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                                             fi = fi + Nluxt
                                                             if (timewindowi =="WW") {
                                                               # LUX per segment of the day
-                                                              luxperseg = g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new) 
+                                                              luxperseg = g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new)
                                                               dsummary[di,fi:(fi+(length(luxperseg$values)-1))] = luxperseg$values
                                                               ds_names[fi:(fi+(length(luxperseg$values)-1))] = luxperseg$names
                                                               fi = fi + length(luxperseg$values)
@@ -872,7 +911,7 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=7
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-                                          
+
                                           if (length(output) > 0) {
                                             if (nrow(output) > 0) {
                                               save(output,file=paste(metadatadir,ms5.out,"/",fnames.ms3[i],sep=""))

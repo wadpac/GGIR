@@ -1,13 +1,28 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-2 (GitHub-only-release date:20-09-2021)}{
+\section{Changes in version 2.4-2 (GitHub-only-release date:14-07-2021)}{
 \itemize{
+  \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
+  \item Part 3 now option to tailor SPT detection for hip data by using horizontal
+    longitudinal angle as indicator of lying
+  \item Part 3 code restructured to estimate SPT and SIB in separated function (HASIB and HASPT)
+  such that g.sib.det is more readable.
+  \item Part 3 now option to select SIB algorithm, including: vanHees2015, Sadeh1994,
+  and Galland2012
+  \item Part 4 now able to handle more advance sleeplog format that also contain nap
+  and nonwear entries per date
+  \item Part 4 report now includes guider estimates also in 'cleaned' report
+  \item Part 4 WASO and NOA (Number of awakenings) added to output
+  \item Part 4 Able to handle time in bed diaries/algorithms, and generates sleep
+  latency and sleep efficiency estimate if available
+  \item Part 5 now able to export sustained inactivity bouts and self-reported
+  naps and nonwear to csv report to aid nap analaysis
   \item Part 5 numeric timing of MX-metrics changed to be hour of the day
   \item Part 5 Lux per segment variables now turn LUX during SPT to zero
   \item Part 4 legend added to visualisation
   \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
-  }
+}
 }
 \section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
 \itemize{

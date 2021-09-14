@@ -1,4 +1,4 @@
-g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfile=c(), store.long=FALSE) {
+g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfile=c(), store.long=FALSE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {

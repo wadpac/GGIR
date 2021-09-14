@@ -14,18 +14,20 @@ Typical users should work with function g.shell.GGIR only.
 g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   acc.metric="ENMO", ignorenonwear=TRUE, overwrite=FALSE,
   desiredtz="",constrain2range=TRUE,
-  do.part3.pdf=TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c())
+  do.part3.pdf=TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c(),
+  sensor.location="wrist", HASPT.algo="HDCZA", HASIB.algo = "vanHees2015",
+  Sadeh_axis = "Y", longitudinal_axis=c(), HASPT.ignore.invalid=FALSE)
 }
 \arguments{
   \item{metadatadir}{
-  Directory that holds a folder 'meta' and inside this a folder 'basic'
-  which contains the milestone data produced by g.part1. The folderstructure
-  is normally created by g.part1 and g.shell.GGIR will recognise what
-  the value of metadatadir is.
+    Directory that holds a folder 'meta' and inside this a folder 'basic'
+    which contains the milestone data produced by g.part1. The folderstructure
+    is normally created by g.part1 and g.shell.GGIR will recognise what
+    the value of metadatadir is.
   }
   \item{f0}{
-  File index to start with (default = 1). Index refers to the filenames
-  sorted in increasing order
+    File index to start with (default = 1). Index refers to the filenames
+    sorted in increasing order
   }
   \item{f1}{
    File index to finish with (defaults to number of files available)
@@ -56,15 +58,15 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   \item{desiredtz}{
     See \link{g.getmeta}
   }
-   \item{constrain2range}{
-   Whether or not to constrain the range of threshold used in the diary free
-   Sleep period time window detection
+  \item{constrain2range}{
+    Whether or not to constrain the range of threshold used in the diary free
+    Sleep period time window detection
   }
   \item{do.part3.pdf}{
-   Whether to generate a pdf for part 3 (default is TRUE). Turning this off
-   could speed up the processing.
+    Whether to generate a pdf for part 3 (default is TRUE). Turning this off
+    could speed up the processing.
   }
-    \item{do.parallel}{
+  \item{do.parallel}{
     Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
   }
   \item{myfun}{
@@ -74,10 +76,32 @@ g.part3(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
   \item{maxNcores}{
     See function \link{g.part1}
   }
+  \item{sensor.location}{
+    Character to indicate sensor location, default is wrist.
+    If it is hip HDCZA algorithm also requires longitudinal axis of sensor to be
+    between -45 and +45 degrees.
+  }
+  \item{HASPT.algo}{
+   Character to indicate what heuristic algorithm to use for detecting the SPT
+   window, see \link{HASPT}
+  }
+    \item{HASIB.algo}{
+   Character to indicate what heuristic algorithm to use for detecting the SIB
+   window, see \link{HASIB}
+  }
+  \item{Sadeh_axis}{
+    Character to indicated which axis to use for Sadeh algorithm, see \link{HASIB}
+  }
+  \item{longitudinal_axis}{
+   Integer, see \link{g.sib.det}
+  }
+  \item{HASPT.ignore.invalid}{
+    See \link{HASPT}
+  }
 }
 \value{
-The function provides no values, it only ensures that other functions
-are called and that their output is stored in .RData files.
+  The function provides no values, it only ensures that other functions
+  are called and that their output is stored in .RData files.
 \cr
 \itemize{
 \item \code{night} nightnumber

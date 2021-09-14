@@ -36,7 +36,7 @@ NumericMatrix resample(NumericMatrix raw, NumericVector rawTime,
         for (int p = 0; p < last; p++) { //p is number of point to calculate
           for (; rawTime(pos) < time(p); pos++);
           u = (time(p) - rawTime(pos - 1)) / (rawTime(pos) - rawTime(pos - 1));
-          res(p, j) = std::round(u) * (raw(pos ,j) - raw(pos - 1, j)) + raw(pos-1 ,j);
+          res(p, j) = std::ceil(u-0.5f) * (raw(pos ,j) - raw(pos - 1, j)) + raw(pos-1 ,j);
         }  
       }
     }

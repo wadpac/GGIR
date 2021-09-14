@@ -1,5 +1,5 @@
 g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, 
-                               Nepochsinhour, Nts, sptwindow_HDCZA_end, ws3new) {
+                               Nepochsinhour, Nts, SPTE_end, ws3new) {
   # Note related to if first and last night were ignored in part 4:
   # - diur lacks the first and last night at this point in the code.
   # - nightsi has all the midnights, so it is possible to check here
@@ -15,8 +15,8 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
   firstwake = which(diff(ts$diur) == -1)[1]
   firstonset = which(diff(ts$diur) == 1)[1]
   
-  if (is.na(sptwindow_HDCZA_end[1]) == TRUE) {
-    sptwindow_HDCZA_end = sptwindow_HDCZA_end[which(is.na(sptwindow_HDCZA_end) == FALSE)]
+  if (is.na(SPTE_end[1]) == TRUE) {
+    SPTE_end = SPTE_end[which(is.na(SPTE_end) == FALSE)]
   }
   # test whether wake for second day is missing
   # if the full sleep period happens before midnights
@@ -46,18 +46,18 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
           wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
           if (wake_night1_index > Nts) wake_night1_index = Nts
           if (wake_night1_index < 1) wake_night1_index = 1
-        } else { # use HDCZA algorithm as plan B
-          wake_night1_index = nightsi[1] + round((sptwindow_HDCZA_end[1]-24) * Nepochsinhour)
+        } else { # use SPTE algorithm as plan B
+          wake_night1_index = nightsi[1] + round((SPTE_end[1]-24) * Nepochsinhour)
         }
-      } else { # use HDCZA algorithm as plan B
-        wake_night1_index = nightsi[1] + round((sptwindow_HDCZA_end[1]-24) * Nepochsinhour)
+      } else { # use SPTE algorithm as plan B
+        wake_night1_index = nightsi[1] + round((SPTE_end[1]-24) * Nepochsinhour)
       }
-    } else if (length(sptwindow_HDCZA_end) > 0 & length(sleeplog) == 0) {
-      # use HDCZA algortihm for waking up after first night
+    } else if (length(SPTE_end) > 0 & length(sleeplog) == 0) {
+      # use SPTE algortihm for waking up after first night
       # if there was no sleep log
-      if (is.na(sptwindow_HDCZA_end[1]) == FALSE) {
-        if (sptwindow_HDCZA_end[1] != 0) {
-          wake_night1_index = round((sptwindow_HDCZA_end[1]-24)* Nepochsinhour)
+      if (is.na(SPTE_end[1]) == FALSE) {
+        if (SPTE_end[1] != 0) {
+          wake_night1_index = round((SPTE_end[1]-24)* Nepochsinhour)
         }
       }
     }

@@ -17,7 +17,8 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
     relyonguider=FALSE, relyonsleeplog=FALSE, def.noc.sleep=1,
     storefolderstructure=FALSE,overwrite=FALSE,
     desiredtz="",data_cleaning_file=c(),
-    excludefirst.part4=FALSE,excludelast.part4=FALSE)
+    excludefirst.part4=FALSE,excludelast.part4=FALSE, sleeplogsep=",",
+    sleepwindowType="SPT", sensor.location="wrist")
 }
 \arguments{
   \item{datadir}{
@@ -152,18 +153,28 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   ignored for the sleep assessment.
   }
   \item{excludelast.part4}{
-  If TRUE then the last night of the measurement are
-  ignored for the sleep assessment.
+    If TRUE then the last night of the measurement are
+    ignored for the sleep assessment.
+  }
+  \item{sleeplogsep}{
+    See \link{g.loadlog}
+  }
+  \item{sleepwindowType}{
+    Character to indicate type of sleeplog, default "SPT".
+    Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
+    of sleep latency and sleep efficiency.
+  }
+  \item{sensor.location}{
+    Character to indicate sensor location, used to help assess which heuristic 
+    lgorithm was used in part3 for SPT window detection.
   }
 }
 \value{
-
-The function does not produce values but generates an RData file
-in the milestone subfolder ms4.out which incudes a dataframe
-named \code{nightsummary}. This dataframe is used in g.report.part4 to create
-two reports one per night and one per person. See package vignette 
-paragraph "Output part 4" for description of all the variables.
-
+  The function does not produce values but generates an RData file
+  in the milestone subfolder ms4.out which incudes a dataframe
+  named \code{nightsummary}. This dataframe is used in g.report.part4 to create
+  two reports one per night and one per person. See package vignette 
+  paragraph "Output part 4" for description of all the variables.
 }
 
 \examples{

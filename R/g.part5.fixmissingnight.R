@@ -22,12 +22,20 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
   }
   potentialnight = min(summarysleep_tmp2$night):max(summarysleep_tmp2$night)
   missingnight = which(as.numeric(potentialnight) %in% as.numeric(summarysleep_tmp2$night) == FALSE)
+  
+  if ("guider_wakeup" %in% colnames(summarysleep_tmp2) == TRUE) {
+    guider_onset = "guider_onset"
+    guider_wakeup = "guider_wakeup"
+  } else {
+    guider_onset = "guider_inbedStart"
+    guider_wakeup = "guider_inbedEnd"
+  }
   if (length(missingnight) > 0) {
     for (mi in missingnight) {
       missingNight = potentialnight[mi]
       newnight = summarysleep_tmp2[1,]
       newnight[which(names(newnight) %in% c("ID","night", "sleepparam","filename","filename_dir","foldername") == FALSE)] = NA
-      newnight$wakeup = newnight$guider_wakeup = newnight$sleeponset = newnight$guider_onset = NA
+      newnight$wakeup = newnight[,guider_wakeup] = newnight$sleeponset = newnight[,guider_onset] = NA
       newnight$night = missingNight
       newnight$calendar_date = format(as.Date(as.POSIXlt(summarysleep_tmp2$calendar_date[mi-1],format="%d/%m/%Y") + (36*3600)), "%d/%m/%Y")
       timesplit = as.numeric(unlist(strsplit(as.character(newnight$calendar_date),"/"))) # remove leading zeros
@@ -43,8 +51,8 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
           if (is.na(sleeplogonset) == FALSE & is.na(sleeplogonset) == FALSE) {
             sleeplogonset_hr = clock2numtime(sleeplogonset)
             sleeplogwake_hr= clock2numtime(sleeplogwake)
-            newnight$sleeponset = newnight$guider_onset = sleeplogonset_hr
-            newnight$wakeup = newnight$guider_wakeup = sleeplogwake_hr
+            newnight$sleeponset = newnight[,guider_onset] = sleeplogonset_hr
+            newnight$wakeup = newnight[,guider_wakeup] = sleeplogwake_hr
             if (sleeplogwake_hr > 36) {
               newnight$daysleeper = 1
               newnight$sleeponset_ts = hr_to_clocktime(sleeplogonset_hr)
