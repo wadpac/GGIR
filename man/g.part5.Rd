@@ -10,7 +10,7 @@ based on bouted periods as well as non-bouted periods.
 }
 \usage{
 g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
-  maxdur=7, hrs.del.start=0, hrs.del.end =0,
+  maxdur=0, hrs.del.start=0, hrs.del.end =0,
   loglocation= c(), excludefirstlast.part5=FALSE,
   windowsizes=c(5,900,3600),acc.metric="ENMO", boutcriter.mvpa=0.8,
   boutcriter.in=0.9, boutcriter.lig=0.8, storefolderstructure=FALSE,
@@ -26,7 +26,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   frag.metrics=c(), iglevels=c(), maxNcores=c(),
   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
   LUX_cal_constant = c(), LUX_cal_exponent = c(),
-  LUX_day_segments = c())
+  LUX_day_segments = c(), do.sibreport=FALSE, sleeplogidnum=FALSE)
 }
 \arguments{
   \item{datadir}{
@@ -53,8 +53,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     midnight is used for imputation, see \link{g.impute}
   }
   \item{maxdur}{
-    how many DAYS after start of experiment did experiment
-    definitely stop? (set to zero if unknown = default), see \link{g.impute}
+    Depricated, g.part5 does not use argument maxdur any longer.
   }
   \item{hrs.del.start}{
     how many HOURS after start of experiment did wearing of monitor start?,
@@ -206,16 +205,22 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     See function \link{g.part1}
   }
   \item{LUX_cal_constant}{
-    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX 
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
     LUX values are converted based on formula y = constant * exp(x * exponent)
   }
   \item{LUX_cal_exponent}{
-    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX 
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
     LUX values are converted based on formula y = constant * exp(x * exponent)
   }
   \item{LUX_day_segments}{
     Numeric vector with hours at which the day should be segmented for
     the LUX analysis.
+  }
+  \item{do.sibreport}{
+    Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
+  }
+  \item{sleeplogidnum}{
+    See \link{g.part4}
   }
 }
 \value{

@@ -27,12 +27,21 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
   do.bfx = metrics2do$do.bfx
   do.bfy = metrics2do$do.bfy
   do.bfz = metrics2do$do.bfz
+  do.zcx = metrics2do$do.zcx
+  do.zcy = metrics2do$do.zcy
+  do.zcz = metrics2do$do.zcz
   allmetrics = c()
   averageperws3 = function(x,sf,ws3) {
     x2 =cumsum(c(0,x))
     select = seq(1,length(x2),by=sf*ws3)
     x3 = diff(x2[round(select)]) / abs(diff(round(select)))
   }
+  sumperws3 = function(x,sf,ws3) {
+    x2 =cumsum(c(0,x))
+    select = seq(1,length(x2),by=sf*ws3)
+    x3 = diff(x2[round(select)])
+  }
+  
   if (sf <= (hb *2)) { #avoid having a higher filter boundary higher than sf/2
     hb = round(sf/2) - 1
   }
@@ -49,6 +58,9 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
         Wc = matrix(0,2,1)
         Wc[1,1] = lb / (sf/2)
         Wc[2,1] = hb / (sf/2)
+        if (sf/2 < hb | sf/2 < hb) {
+          warning("\nSample frequency ",sf," too low for calculating this metric.")
+        }
         return(signal::butter(n,Wc,type=c("pass")))
       }
       if (filtertype == "pass") {
@@ -113,7 +125,60 @@ g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
     if (do.bfz == TRUE) {
       allmetrics$BFZ = averageperws3(x=data_processed[,3], sf, ws3)
     }
-    allmetrics$BFEN = averageperws3(x=EuclideanNorm(data_processed),sf,ws3)
+    if (do.bfen == TRUE) {
+      allmetrics$BFEN = averageperws3(x=EuclideanNorm(data_processed),sf,ws3)
+    }
+  }
+  if (do.zcx == TRUE | do.zcy == TRUE | do.zcz == TRUE) { # Zero crossing count
+    
+    # 1) apply band-pass filter to mimic old-sensor
+    # probably necessary to experiment with exact configuration
+    # 0.25 - 3 Hertz to be in line with Ancoli Isreal's paper from 2003,
+    # and online "Motionlogger Users Guide Version 2K1.1" from Ambulatory Monitoring,
+    # Inc. Ardsley, New York 10502
+    # Be aware that specific boundaries differs between Actigraph brands that copied the
+    # Sadeh algorithm 
+    # We use a second order filter because if it was an analog filter it was 
+    # most likely not very steep filter.
+    data_processed = process_axes(data, filtertype="pass", cut_point=c(0.25, 3), 2, sf)
+    zil = c()
+    
+    # 2) Sadeh reported to have used the y-axis but did not specify the orientation of
+    # the y-axis in their accelerometer. Therefore, we keep selection of axis flexible for the user
+    if (do.zcx == TRUE) zil = 1
+    if (do.zcy == TRUE) zil = c(zil, 2)
+    if (do.zcz == TRUE) zil = c(zil, 3)
+    Ndat = nrow(data_processed)
+    for (zi in zil) {
+      # 3) apply stop-band to minic old sensitivity
+      # 0.01g threshold based on book by Tyron "Activity Measurementy in Psychology And Medicine"
+      smallvalues = which(abs(data_processed[,zi]) < 0.01)
+      if (length(smallvalues) > 0) {
+        data_processed[smallvalues, zi] = 0
+      }
+      rm(smallvalues)
+      # output binary time series zeros and ones with 1 for zero-crossing
+      data_processed[,zi] = ifelse(test = data_processed[,zi] >= 0,yes = 1, no = -1)
+      # 4) detect zero-crossings
+      # The exact algorithm for the original monitor not found, maybe it happened analog
+      # we will use: http://rug.mnhn.fr/seewave/HTML/MAN/zcr.html
+      zerocross = function(x, Ndat) {
+        tmp = abs(sign(x[2:Ndat]) - sign(x[1:(Ndat-1)])) * 0.5
+        tmp = c(tmp[1], tmp) # add value to ensure length aligns
+        return(tmp)
+      }
+      if (zi == 1) {
+        allmetrics$ZCX = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
+      } else if (zi == 2) {
+        allmetrics$ZCY = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
+      } else if (zi == 3) {
+        allmetrics$ZCZ = sumperws3(zerocross(data_processed[,zi], Ndat), sf, ws3)
+      }
+    }
+    # Note that this is per epoch, in GGIR part 3 we aggregate (sum) this per minute
+    # to follow Sadeh. In Sadeh 1987 this resulted in values up to 280
+    # 280 = 60 x 2 x frequency of movement which would mean near 2.33 Hertz average
+    # movement frequencies, which may have reflected walking
   }
   #================================================
   # Low-pass filtering related metrics

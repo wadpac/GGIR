@@ -55,7 +55,8 @@ Dataframe with metric values in columns average per epoch (ws3)
   do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
   do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
                           do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
-                          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE)
+                          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
+                          do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE)
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 }
 

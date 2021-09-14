@@ -1,6 +1,6 @@
 g.sib.plot = function(SLE,M,I,plottitle,nightsperpage=7,desiredtz="") { #IMP,
   A = SLE$output
-  invalid = A$invalid
+  # invalid = A$invalid
   night = A$night
   sleep = A[,(which(colnames(A)=="night")+1):ncol(A)]
   D = as.matrix(M$metashort) #IMP$

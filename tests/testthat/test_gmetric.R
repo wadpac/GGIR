@@ -36,6 +36,7 @@ test_that("g.getmetric calculates the correct metric values", {
                           do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
                           do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
                           do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
+                          do.zcx=TRUE, do.zcy=FALSE, do.zcz=FALSE,
                           stringsAsFactors = TRUE)
   HH = g.applymetrics(data, n=n, sf=sf, ws3=1 , metrics2do)
   expect_equal(round(sum(HH$BFEN),digits=1), 208.3)
@@ -52,4 +53,5 @@ test_that("g.getmetric calculates the correct metric values", {
   expect_equal(round(sum(HH$dev_roll_med_acc_y),digits=1), 117.6)
   expect_equal(round(sum(HH$dev_roll_med_acc_z),digits=1), 116.6)
   expect_equal(round(sum(HH$ENMOa),digits=1),142.0)
+  expect_equal(round(sum(HH$zcx),digits=1),0)
 })

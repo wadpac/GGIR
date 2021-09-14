@@ -9,32 +9,33 @@ Creates report from milestone data produced by \link{g.part4}. Not intended
 }
 \usage{
 g.report.part4(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),
-  f1=c(),storefolderstructure=TRUE, data_cleaning_file=c())
-  
+  f1=c(),storefolderstructure=TRUE, data_cleaning_file=c(), sleepwindowType = "SPT")
 }
 \arguments{
   \item{datadir}{
-  see \link{g.part4}
+    see \link{g.part4}
   }
   \item{metadatadir}{
-  see \link{g.part4}
+    see \link{g.part4}
   }
   \item{loglocation}{
-  see \link{g.part4}
+    see \link{g.part4}
   }
   \item{f0}{
-  see \link{g.part4}
+    see \link{g.part4}
   }
   \item{f1}{
-  see \link{g.part4}
+    see \link{g.part4}
   }
   \item{storefolderstructure}{
-  see \link{g.part4}
+    see \link{g.part4}
   }
-    \item{data_cleaning_file}{
-  see \link{g.part4}
+  \item{data_cleaning_file}{
+    see \link{g.part4}
   }
-
+  \item{sleepwindowType}{
+    see \link{g.part4}
+  }
 }
 \value{
 Function does not produce data, but only writes reports

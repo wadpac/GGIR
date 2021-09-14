@@ -186,13 +186,14 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   epochday = 24*60*(60/ws3)
   Ndays = floor(nrow(IMP$metashort)/epochday)
   if (length(which(c("anglex","angley","anglez") %in% colnames(IMP$metashort) == FALSE)) == 0 &
-      Ndays >= 3) {
+      Ndays >= 2) {
+    Nhalfdays = Ndays - 1
     CorrA = rep(0,3)
     cnt = 1
     for (anglename in  c("anglex","angley","anglez") ) {
       if (sd(IMP$metashort[,anglename]) > 0) {
-        CorrA[cnt] = stats::cor(IMP$metashort[1:((Ndays-1)*epochday), anglename],
-                                IMP$metashort[(epochday+1):(Ndays*epochday), anglename])
+        CorrA[cnt] = stats::cor(IMP$metashort[1:(Nhalfdays*epochday), anglename],
+                                IMP$metashort[(((Ndays-Nhalfdays)*epochday)+1):(Ndays*epochday), anglename])
       } else {
         CorrA[cnt] = NA
       }
@@ -204,7 +205,6 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       longitudinal_axis_id = ""
     }
   }
-  
   #--------------------------------------
   # Analysis of the average day
   # Derivation of distribution characteristics of the average day: quantiles (percentiles) and L5M5 method

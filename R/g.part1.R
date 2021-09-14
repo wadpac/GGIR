@@ -9,6 +9,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
                    do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
                    do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
+                   do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
@@ -208,7 +209,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
         do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
         do.dev_roll_med_acc_z + do.enmoa + do.lfx + do.lfy + do.lfz + do.hfx + 
-        do.hfy + do.hfz + do.bfx +  do.bfy + do.bfz
+        do.hfy + do.hfz + do.bfx +  do.bfy + do.bfz + do.zcx + do.zcy + do.zcz
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -503,6 +504,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz, 
                       do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
                       do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz, 
+                      do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
                       do.sgAccEN=do.sgAccEN, do.sgAnglex=do.sgAnglex,
                       do.sgAngley=do.sgAngley, do.sgAnglez=do.sgAnglez,
                       lb = lb, hb = hb,  n = n,
