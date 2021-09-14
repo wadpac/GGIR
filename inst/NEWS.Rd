@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-2 (GitHub-only-release date:14-07-2021)}{
+\section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{
 \itemize{
   \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
   \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
