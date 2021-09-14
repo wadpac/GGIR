@@ -4,11 +4,12 @@
 \section{Changes in version 2.4-2 (GitHub-only-release date:27-07-2021)}{
 \itemize{
   \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
+  \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
   \item Part 3 now option to tailor SPT detection for hip data by using horizontal
     longitudinal angle as indicator of lying
   \item Part 3 code restructured to estimate SPT and SIB in separated function (HASIB and HASPT)
   such that g.sib.det is more readable.
-  \item Part 3 now option to select SIB algorithm, including: vanHees2015, Sadeh1994, 
+  \item Part 3 now option to select SIB algorithm, including: vanHees2015, Sadeh1994,
   and Galland2012
   \item Part 4 now able to handle more advance sleeplog format that also contain nap
   and nonwear entries per date
