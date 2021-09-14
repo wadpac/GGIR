@@ -275,7 +275,9 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                                       "SleepDurationInSpt", "number_sib_sleepperiod",
                                       "duration_sib_wakinghours", "number_of_awakenings",
                                       "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", 
-                                      "sleeplatency", "sleepefficiency"))
+                                      "sleeplatency", "sleepefficiency",
+                                      "guider_inbedDuration", "guider_inbedStart", "guider_inbedEnd",
+                                      "guider_SptDuration", "guider_onset", "guider_wakeup"))
             weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[1])]
             if (dotwice == 1) {
               for (k in 1:3) {
@@ -327,7 +329,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
               for (j in 1:length(udef)) {
                 weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[j])]
                 for (k in 1:3) {
-                  if (ncol(personSummary) < (cnt + 22)) { # expand personSummary matrix if there is a change that is not big enough
+                  if (ncol(personSummary) < (cnt + 35)) { # expand personSummary matrix if there is a change that is not big enough
                     expansion = as.matrix(personSummary[,(cnt+1):ncol(personSummary)])
                     if (nrow(expansion) != nrow(personSummary)) expansion = t(expansion)
                     personSummary = cbind(personSummary,expansion)
@@ -406,7 +408,24 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                     personSummary[i,(cnt+4)] = sd(nightsummary.tmp$sleeplatency[indexUdef],na.rm=TRUE)
                     personSummarynames = c(personSummarynames,paste("sleeplatency_",TW,"_",udefn[j],"_mn",sep=""),
                                            paste("sleeplatency_",TW,"_",udefn[j],"_sd",sep=""))
-                    cnt = cnt + 4
+                    
+                    
+                    personSummary[i,(cnt+5)] = mean(nightsummary.tmp$guider_inbedStart[indexUdef],na.rm=TRUE)
+                    personSummary[i,(cnt+6)] = sd(nightsummary.tmp$guider_inbedStart[indexUdef],na.rm=TRUE)
+                    personSummarynames = c(personSummarynames,paste("guider_inbedStart_",TW,"_",udefn[j],"_mn",sep=""),
+                                           paste("guider_inbedStart_",TW,"_",udefn[j],"_sd",sep=""))
+                    
+                    personSummary[i,(cnt+7)] = mean(nightsummary.tmp$guider_inbedEnd[indexUdef],na.rm=TRUE)
+                    personSummary[i,(cnt+8)] = sd(nightsummary.tmp$guider_inbedEnd[indexUdef],na.rm=TRUE)
+                    personSummarynames = c(personSummarynames,paste("guider_inbedEnd_",TW,"_",udefn[j],"_mn",sep=""),
+                                           paste("guider_inbedEnd_",TW,"_",udefn[j],"_sd",sep=""))
+                    
+                    personSummary[i,(cnt+9)] = mean(nightsummary.tmp$guider_inbedDuration[indexUdef],na.rm=TRUE)
+                    personSummary[i,(cnt+10)] = sd(nightsummary.tmp$guider_inbedDuration[indexUdef],na.rm=TRUE)
+                    personSummarynames = c(personSummarynames,paste("guider_inbedDuration_",TW,"_",udefn[j],"_mn",sep=""),
+                                           paste("guider_inbedDuration_",TW,"_",udefn[j],"_sd",sep=""))
+                    
+                    cnt = cnt + 10
                   }
                 }
               }
