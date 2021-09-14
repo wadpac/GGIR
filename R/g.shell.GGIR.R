@@ -228,7 +228,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 2
   if (exists("qM5L5") == FALSE)  qM5L5 = c()
   if (exists("MX.ig.min.dur") == FALSE)  MX.ig.min.dur = 10
-
+  if (exists("qwindow_dateformat") == FALSE)  qwindow_dateformat = "%d-%m-%Y"
+  
 
   # PART 3
   if (exists("anglethreshold") == FALSE)  anglethreshold = 5
@@ -445,7 +446,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
             IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
             qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur,
-            maxNcores=maxNcores)
+            maxNcores=maxNcores, qwindow_dateformat=qwindow_dateformat)
   }
   if (dopart3 == TRUE) {
     cat('\n')

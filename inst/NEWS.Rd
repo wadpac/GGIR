@@ -4,6 +4,7 @@
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-07-2021)}{
 \itemize{
   \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
+  \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
   \item Part 3 now option to tailor SPT detection for hip data by using horizontal
     longitudinal angle as indicator of lying
   \item Part 3 code restructured to estimate SPT and SIB in separated function (HASIB and HASPT)

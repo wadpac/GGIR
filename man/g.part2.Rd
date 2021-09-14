@@ -24,7 +24,7 @@ bout.metric=2,closedbout=FALSE,desiredtz="",
 IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA,
 iglevels = c(), IVIS.activity.metric=2, TimeSegments2ZeroFile = c(),
 qM5L5=c(), do.parallel = TRUE, myfun=c(), MX.ig.min.dur=10,
-maxNcores=c())
+maxNcores=c(), qwindow_dateformat="\%d-\%m-\%Y")
 }
 \arguments{
 \item{datadir}{
@@ -183,6 +183,9 @@ maxNcores=c())
   \item{MX.ig.min.dur}{see \link{g.getM5L5}}
   \item{maxNcores}{
     See function \link{g.part1}
+  }
+  \item{qwindow_dateformat}{
+    See function \link{g.conv.actlog}
   }
 }
 \value{

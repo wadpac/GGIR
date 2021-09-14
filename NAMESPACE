@@ -26,7 +26,7 @@ importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
              "lines", "mtext", "text", "arrows", "segments")
 importFrom("utils", "read.csv", "sessionInfo", "write.csv",  "installed.packages")
-importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar","write.table", "head")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed")
