@@ -26,7 +26,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   frag.metrics=c(), iglevels=c(), maxNcores=c(),
   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
   LUX_cal_constant = c(), LUX_cal_exponent = c(),
-  LUX_day_segments = c())
+  LUX_day_segments = c(), do.sibreport=FALSE, sleeplogidnum=FALSE)
 }
 \arguments{
   \item{datadir}{
@@ -205,16 +205,22 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     See function \link{g.part1}
   }
   \item{LUX_cal_constant}{
-    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX 
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
     LUX values are converted based on formula y = constant * exp(x * exponent)
   }
   \item{LUX_cal_exponent}{
-    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX 
+    Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
     LUX values are converted based on formula y = constant * exp(x * exponent)
   }
   \item{LUX_day_segments}{
     Numeric vector with hours at which the day should be segmented for
     the LUX analysis.
+  }
+  \item{do.sibreport}{
+    Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
+  }
+  \item{sleeplogidnum}{
+    See \link{g.part4}
   }
 }
 \value{

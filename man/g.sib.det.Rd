@@ -11,7 +11,9 @@
   g.sib.det(M, IMP, I, twd=c(-12,12), anglethreshold = 5, 
               timethreshold = c(5,10), acc.metric = "ENMO",
               desiredtz="", constrain2range=TRUE, 
-              myfun=c())
+              myfun=c(), sensor.location = "wrist", HASPT.algo="HDCZA",
+              HASIB.algo = "vanHees2015",
+              Sadeh_axis = "Y", longitudinal_axis=c(), HASPT.ignore.invalid=FALSE)
 }
 \arguments{
   \item{M}{
@@ -44,9 +46,32 @@
   \item{constrain2range}{
     See \link{g.part3}
   }
-\item{myfun}{
+  \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
+  }
+  \item{sensor.location}{
+    See \link{g.part3}
+  }
+  \item{HASPT.algo}{
+    Character to indicate what heuristic algorithm to use for detecting the SPT
+    window, see \link{HASPT}
+  }
+  \item{HASIB.algo}{
+    Character to indicate what heuristic algorithm to use for detecting the SIB
+    window, see \link{HASIB}
+  }
+  \item{Sadeh_axis}{
+    Character to indicate which axis to use for the Sadeh1994 algorithm, and 
+    other algortihms that related on count-based Actigraphy such as Galland2012.
+  }
+  \item{longitudinal_axis}{
+    Integer, to indicate which axis is the longitudinal axis. 
+    If not provided function will estimate longitudinal axis. Only used when
+    sensor.location="hip" or HASPT.algo="HorAngle".
+  }
+   \item{HASPT.ignore.invalid}{
+    See \link{HASPT}
   }
 }
 \value{

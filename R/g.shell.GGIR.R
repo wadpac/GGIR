@@ -175,6 +175,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("do.bfx") == FALSE)  do.bfx = FALSE
   if (exists("do.bfy") == FALSE)  do.bfy = FALSE
   if (exists("do.bfz") == FALSE)  do.bfz = FALSE
+  if (exists("do.zcx") == FALSE)  do.zcx = FALSE
+  if (exists("do.zcy") == FALSE)  do.zcy = FALSE
+  if (exists("do.zcz") == FALSE)  do.zcz = FALSE
   if (exists("do.sgAccEN") == FALSE)  do.sgAccEN = TRUE
   if (exists("do.sgAnglex") == FALSE)  do.sgAnglex = FALSE
   if (exists("do.sgAngley") == FALSE)  do.sgAngley = FALSE
@@ -187,7 +190,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
   if (exists("interpolationType") == FALSE)  interpolationType=1
-  
+
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
@@ -232,6 +235,32 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
+  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
+  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
+  if (exists("sensor.location") == FALSE) sensor.location = "wrist"
+  if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
+  if (sensor.location == "hip") {
+    if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
+      warning("\nWhen working with hip data all three angle metrics are needed.")
+      do.anglex = do.angley = do.anglez = TRUE
+    }
+    if (HASPT.algo != "HorAngle") {
+      warning("\nChanging HASPT.algo to HorAngle, required for hip data")
+      HASPT.algo = "HorAngle"
+    }
+  }
+  if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
+    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
+    if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
+      warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
+    }
+    if (Sadeh_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
+    if (Sadeh_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
+    if (Sadeh_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
+  } else { # vanHees2015
+    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "" # not used
+  }
+  if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
 
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
@@ -253,7 +282,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
   if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
   if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
-
+  if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
+  if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
+  if (HASPT.algo == "HorAngle") {
+    sleepwindowType = "TimeInBed"
+  }
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
@@ -309,13 +342,14 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("LUX_cal_constant") == FALSE) LUX_cal_constant = c()
   if (exists("LUX_cal_exponent") == FALSE) LUX_cal_exponent = c()
   if (exists("LUX_day_segments") == FALSE) LUX_day_segments = c()
-  
+
   if (length(LUX_day_segments) > 0) {
     LUX_day_segments = sort(unique(round(LUX_day_segments)))
     if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
     if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
-    
+
   }
+  if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
   # VISUAL REPORT
 
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
@@ -360,6 +394,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz,
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
+            do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
             do.sgAccEN=do.sgAccEN, do.sgAnglex=do.sgAnglex,
             do.sgAngley=do.sgAngley, do.sgAnglez=do.sgAnglez,
             printsummary=printsummary,
@@ -421,7 +456,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
             ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
             constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun, maxNcores=maxNcores, do.part3.pdf=do.part3.pdf)
+            myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
+            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
+            longitudinal_axis=longitudinal_axis, do.part3.pdf=do.part3.pdf)
   }
   if (dopart4 == TRUE) {
     cat('\n')
@@ -436,7 +473,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
             storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
             data_cleaning_file=data_cleaning_file,
-            excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4)
+            excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4,
+            sleeplogsep=sleeplogsep, sleepwindowType=sleepwindowType, sensor.location=sensor.location)
   }
   if (dopart5 == TRUE) {
     cat('\n')
@@ -466,7 +504,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
             LUXthresholds=LUXthresholds, maxNcores=maxNcores,
             LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
-            LUX_day_segments=LUX_day_segments)
+            LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport,
+            sleeplogidnum=sleeplogidnum)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -520,7 +559,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
     if (f1 == 0) f1 = N.files.ms4.out
     g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation =loglocation,f0=f0,f1=f1,
-                   storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file)
+                   storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file,
+                   sleepwindowType=sleepwindowType)
   }
   if (length(which(do.report == 5)) > 0) {
     cat('\n')
