@@ -20,11 +20,9 @@ test_that("lux_per_segment is correctly calculated", {
   LUX_day_segments = c(9, 15, 24)
   ws3new = 60
   luxperseg = g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new)
-  
-  
   expect_equal(round(luxperseg$values[3]), 12)
   expect_equal(round(luxperseg$values[4]), 540)
-  expect_equal(round(luxperseg$values[5]), 83)
+  expect_equal(round(luxperseg$values[5]), 3)
   expect_equal(round(luxperseg$values[10]), 0)
   expect_equal(luxperseg$names[10], "LUX_ignored_15_24hr_day")
   expect_equal(luxperseg$names[3], "LUX_timeawake_9_15hr_day" )

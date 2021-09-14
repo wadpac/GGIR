@@ -690,7 +690,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=0
                                                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
                                                               if (L5HOUR != "not detected") {
                                                                 time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
-                                                                if (time_num < 12) time_num = time_num + 24
                                                                 dsummary[di,fi] = time_num
                                                               } else {
                                                                 dsummary[di,fi] = NA
@@ -700,7 +699,6 @@ g.part5 = function(datadir=c(),metadatadir=c(),f0=c(),f1=c(),strategy=1,maxdur=0
                                                             if (ignore == FALSE) {
                                                               if (M5HOUR != "not detected") {
                                                                 time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(M5HOUR," "))[2],":"))) * c(3600,60,1)) / 3600
-                                                                if (time_num < 12) time_num = time_num + 24
                                                                 dsummary[di,fi] = time_num
                                                               } else {
                                                                 dsummary[di,fi] = NA

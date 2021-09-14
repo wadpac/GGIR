@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-2 (GitHub-only-release date:27-07-2021)}{
+\section{Changes in version 2.4-2 (GitHub-only-release date:14-07-2021)}{
 \itemize{
   \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
   \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
@@ -19,6 +19,8 @@
   latency and sleep efficiency estimate if available
   \item Part 5 now able to export sustained inactivity bouts and self-reported
   naps and nonwear to csv report to aid nap analaysis
+  \item Part 5 numeric timing of MX-metrics changed to be hour of the day
+  \item Part 5 Lux per segment variables now turn LUX during SPT to zero
   \item Part 4 legend added to visualisation
   \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
 }
