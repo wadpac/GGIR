@@ -287,6 +287,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
   if (HASPT.algo == "HorAngle") {
     sleepwindowType = "TimeInBed"
+  } else if (HASPT.algo != "HorAngle" & HASPT.algo != "sleep log") {
+    sleepwindowType = "SPT"
   }
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
