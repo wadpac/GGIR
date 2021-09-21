@@ -330,7 +330,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                 weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[j])]
                 for (k in 1:3) {
                   if (ncol(personSummary) < (cnt + 35)) { # expand personSummary matrix if there is a change that is not big enough
-                    expansion = as.matrix(personSummary[,(cnt+1):ncol(personSummary)])
+                    expansion = matrix(NA, nrow(personSummary), 35)
                     if (nrow(expansion) != nrow(personSummary)) expansion = t(expansion)
                     personSummary = cbind(personSummary,expansion)
                   }
@@ -353,6 +353,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                   personSummary[i,(cnt+4)] = sd(nightsummary.tmp$SleepDurationInSpt[indexUdef],na.rm=TRUE)
                   personSummarynames = c(personSummarynames,paste("SleepDurationInSpt_",TW,"_",udefn[j],"_mn",sep=""),
                                          paste("SleepDurationInSpt_",TW,"_",udefn[j],"_sd",sep=""))
+                
                   personSummary[i,(cnt+5)] = mean(nightsummary.tmp$WASO[indexUdef], na.rm=TRUE)
                   personSummary[i,(cnt+6)] = sd(nightsummary.tmp$WASO[indexUdef], na.rm=TRUE)
                   personSummarynames = c(personSummarynames,paste("WASO_",TW,"_",udefn[j],"_mn",sep=""),
