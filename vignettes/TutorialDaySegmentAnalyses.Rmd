@@ -1,0 +1,97 @@
+---
+title: "Day segment analyses with GGIR"
+author: "Vincent van Hees"
+date: "September 21 2021"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: yes
+urlcolor: blue
+vignette: |
+  %\VignetteIndexEntry{Day segment analyses with GGIR}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, echo=FALSE, out.width = "100%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Introduction
+
+Is person more active in the morning or in the afternoon? Are these people more active during their work hours or their leisure time?
+Questions like these can be answered with GGIR but you first have to specify a few parameters.
+
+The main input argument to be specified is `qwindow`, which can be used the following ways:
+- To specify the clock hours in the day based on which the segmented day analyses should take place.
+- To specify an activity diary based on the segment data analyses should take place.
+
+In the following sections I will discuss both scenarios.
+
+# Clock hour-based segmentation
+
+## Specifying qwindow
+
+A numeric vector with the hours at which the segmentation should take place.
+If zero and twenty-four, the start and end of the day, are not explicitly provided in the 
+vector GGIR will add them. Please find below some example values for qwindow.
+The number of values used by qwindow is unlimited, but be aware that some of the analyses are
+impossible for very small windows.
+
+
+qwindow value | Resulting segment(s) to be analysed
+-------------------| -------------------
+c(0,24) | midnight to following midnight (24 hours), the full day is the only segment.
+c(8,24) | midnight-8:00 (8 hour segment), 8:00-midnight (16 hour segment), and midnight-midnight (24 hour segment).
+c(6,11, 13, 17) | midnight-6:00 (6 hour segment), 6:00-11:00 (5 hour segment), 11:00-13:00 (2 hour segment), 13:00-17:00 (4 hour segment), 17:00-midnight (7 hour segment), and midnight-midnight (24 hour segment).
+c(0:24) | 25 segments: 24 segments of 1 hour corresponding to each hour of the day, and midnight-midnight (24 hour segment).    
+
+Day Saving Time (DST) is taken into account when identifying the start of the day, but
+not when identifying the day segments. In other words, a 23 hour days is processed as the 24 hours after the first midnight.
+I have implemented it this way to ensure that segment length are identical across days of the week, which is needed for interpretation.
+
+## Example
+
+
+# Diary-based segmentation
+
+
+## Specifying qwindow
+
+All days in the recording will be segmented based on these values. If you want
+    to use a day specific segmentation then you can set qwindow to be
+    the full path to activity diary file. See documentation g.conv.actlog.
+    for details.
+
+## Example
+
+
+# Analyses performed per day segment
+
+The analyses that GGIR per segment of the day, include:
+- Acceleration distribution if argument `ilevels` is specified
+- Number of valid hours of data
+- LXMX analysis, which stands for least and most active X hours of the segment.
+- Time spent in Moderate or Vigorous Physical Activity.
+
+...
+
+
+```{R,eval=FALSE}
+examplefunction = function(x) {
+  y = x + 1
+  return(y)
+}
+```
