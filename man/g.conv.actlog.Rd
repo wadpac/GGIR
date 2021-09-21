@@ -13,7 +13,7 @@
 }
 \arguments{
   \item{qwindow}{
-    Path to csv files with activity log. Expected format of the activity diary is:
+    Path to csv file with activity log. Expected format of the activity diary is:
     First column headers followed by one row per recording, first column is recording ID,
     which needs to match with the ID GGIR extracts from the accelerometer file.
     Followed by date column in format "23-04-2017", where date format is specified by 
