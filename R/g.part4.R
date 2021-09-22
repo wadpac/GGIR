@@ -914,7 +914,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           nightsummary[sumi,3:30] = NA
           nightsummary[sumi,31] = fnames[i]
           nightsummary[sumi,32] = 4 #cleaningcode = 4 (no nights of accelerometer available)
-          nightsummary[sumi,33:35] = c(FALSE, TRUE) #sleeplog_used acc_available
+          nightsummary[sumi,33:34] = c(FALSE, TRUE) #sleeplog_used acc_available
           nightsummary[sumi,35:36] = NA
           if (storefolderstructure == TRUE) {
             nightsummary[sumi,37:38] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
