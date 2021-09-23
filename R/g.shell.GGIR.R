@@ -178,10 +178,6 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("do.zcx") == FALSE)  do.zcx = FALSE
   if (exists("do.zcy") == FALSE)  do.zcy = FALSE
   if (exists("do.zcz") == FALSE)  do.zcz = FALSE
-  if (exists("do.sgAccEN") == FALSE)  do.sgAccEN = TRUE
-  if (exists("do.sgAnglex") == FALSE)  do.sgAnglex = FALSE
-  if (exists("do.sgAngley") == FALSE)  do.sgAngley = FALSE
-  if (exists("do.sgAnglez") == FALSE)  do.sgAnglez = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
@@ -396,8 +392,6 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
             do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
-            do.sgAccEN=do.sgAccEN, do.sgAnglex=do.sgAnglex,
-            do.sgAngley=do.sgAngley, do.sgAnglez=do.sgAnglez,
             printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,

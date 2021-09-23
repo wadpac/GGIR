@@ -6,6 +6,9 @@
   \item Part 5 LUX per segment calculation bug fixes.
   \item Part 4 number of awakenings is now also in the output per user request
   \item Vignette expanded with documentation on non-default variables in part 4 csv report
+  \item Part 1: The sensor fussion functionality introduced in version 2.2-2, as a bit
+  of an experimental development, has now been removed from GGIR as added value turned out
+  to be limited.
 }
 }
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{
