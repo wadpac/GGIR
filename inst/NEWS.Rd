@@ -1,8 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-3 (GitHub-only-release date:17-09-2021)}{
+\section{Changes in version 2.4-3 (GitHub-only-release date:25-09-2021)}{
 \itemize{
+  \item Part 5 LUX per segment calculation bug fixes.
+  \item Part 4 number of awakenings is now also in the output per user request
+  \item Vignette expanded with documentation on non-default variables in part 4 csv report
   \item Part 1: The sensor fussion functionality introduced in version 2.2-2, as a bit
   of an experimental development, has now been removed from GGIR as added value turned out
   to be limited.
