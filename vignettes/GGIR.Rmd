@@ -520,16 +520,35 @@ filename | Name of the accelerometer file
 cleaningcode | see paragraph 'Waking-waking or 24 hour time-use analaysis').
 sleeplog_used | Whether a sleep log was used (TRUE/FALSE)
 acc_available | Whether accelerometer data was available (TRUE/FALSE).
+WASO | Wake After Sleep Onset: SptDuration - SleepDurationInSpt
+SptDuration | Sleep Period Time window duration: wakeup - sleeponset
 error_onset | Difference between sleeponset and guider_onset (this variable is only available in the full report as stored in the QC folder)
 error_wake | Difference between wakeup and guider_wake (this variable is only available in the full report as stored in the QC folder)
+
+
+#### Non-default variables in part 4 csv report
+
+These additional are only stored if you used a sleeplog that captures time in bed, 
+or when using guider HorAngle for hip-worn accelerometer data. If either of these 
+applies set argument `sleepwindowType` to "TimeInBed".
+
+(Part of) variable name |   Description
+------------------------ | ------------------------------------------------------
+guider_guider_inbedStart | Time of getting in bed
+guider_guider_inbedEnd | Time of getting out of bed
+guider_inbedDuration | Time in Bed: guider_inbedEnd - guider_inbedStart
+sleepefficiency | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration
+sleeplatency | Sleep latency, calculated as: sleeponset - guider_inbedStart
+
 
 ### Person level summaries
 
 - part4_summary_sleep_cleaned.csv
 - QC/part4_summary_sleep_full.csv
 
-In the person level report the variabls are derivatives of the variables in the night level summary.
-Please fine below extra clarification on a few of the variable names for which the meaning may not be obvious:
+In the person level report the variables are derived from the variables in the night
+level summary. Minor extentions to the variable names explain how variables are aggregated across the days.
+Please find below extra clarification on a few of the variable names for which the meaning may not be obvious:
 
 (Part of) variable name | Description
 ------------------------ | ------------------------------------------------------
@@ -610,7 +629,6 @@ nonwear_perc_day_spt | Non-wear percentage during the whole day, including wakin
 dur_day_min | Duration of waking hours within this day window
 dur_spt_min | Duration of Sleep Period Time wihtin this day window.
 dur_day_spt_min | Duration this day window, including both waking hours and SPT.
-sleep_efficiency | Sleep efficiency (within the SPT window, not including sleep latency)
 L5TIME	| Timing of least active 5hrs, expressed as timestamp in the day
 M5TIME | Timing of most active 5hrs
 L5TIME_num, M5TIME_num | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.
@@ -748,7 +766,7 @@ Current, GGIR offers the user the choice to identify SIB period using any of the
 
 SIBs can occur anytime in the day. In order to differentiate SIBs that correspond to daytime rest/naps from SIBs that correspond to the main Sleep Period Time window (abbreviated as SPT), a guiding method referred as **guider** is used. All SIBs that overlap with the window defined by guider are considered as sleep within the SPT window. The start of the first SIB identified as sleep period and the end of the last SIB identified as sleep period define the beginning and the end of the SPT window. In this way the classification relies on the accelerometer for detecting the timing of sleep onset and waking up time, but the guider tells it in what part of the day it should look, as SPT window will be defined only if SIB is detected during the guider specified window.
 
-If a guider reflects the Time in Bed the interpretation of the Sleep Period Time, Sleep onset time and Wakeup time remains unchanged. However, we can then also assess sleep latency and and sleep efficiency.
+If a guider (explained below) reflects the Time in Bed the interpretation of the Sleep Period Time, Sleep onset time and Wakeup time remains unchanged. However, we can then also assess sleep latency and and sleep efficiency, which will be included in the report.
 
 ### Guiders
 
@@ -758,7 +776,9 @@ The guiding method as introduced above can be one of the following methods:
 -	**Guider = HDCZA**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). The HDCZA algorithm does not require access to a sleep log, and is designed for studies where no sleep log is available. The time segment over which the HDCZA is derived are by default from noon to noon. However, if the HDCZA ends between 11am and noon then it will be applied again but to a 6pm-6pm window.
 -	**Guider = L5+/-12**: As presented in [our 2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z). Twelve hour window centred around the least active 5 hours of the day.
 - **Guider = setwindow**: Window times are specified by user, constant at specific clock times with argument `def.noc.sleep`.
-- **Guider = HorAngle**: Only used if argument `sensor.location="hip"`, because this will trigger the identification of the longitudinal axis based on 24-hour lagged correlation. YOu can also force GGIR to use a specific axis as longitudinal axis with argument `longitudinal_axis`. Next, it identifies when the horizontal axis is between -45 and 45 degrees and considers this a horizontal posture. Next, this is used to identify the largest time in bed period, by only considering horizontal time segments of at least 30 minutes, and then looking for longest horizontal period in the day where gaps of less than 60 minutes are ignored. Therefore, it is partially similar to the HDCZA algorithm. 
+- **Guider = HorAngle**: Only used if argument `sensor.location="hip"`, because this will trigger the identification of the longitudinal axis based on 24-hour lagged correlation. You can also force GGIR to use a specific axis as longitudinal axis with argument `longitudinal_axis`. Next, it identifies when the horizontal axis is between -45 and 45 degrees and considers this a horizontal posture. Next, this is used to identify the largest time in bed period, by only considering horizontal time segments of at least 30 minutes, and then looking for longest horizontal period in the day where gaps of less than 60 minutes are ignored. Therefore, it is partially similar to the HDCZA algorithm. When "HorAngle" is used, `sleepwindowType` is automatically set to "TimeInBed".
+
+For all guiders other than "HorAngle" and "sleep log" argument `sleepwindowType` is automatically switched to "SPT", such that no attempt is made to estimate sleep latency or sleep efficiency.
 
 GGIR uses by default the sleep log, if the sleep log is not available it falls back on the HDCZA algorithm (or HorAngle if `sensor.location="hip"`). If HDCZA is not successful GGIR will falls back on the L5+/-12 definition, and if this is not available it will use the setwindow. The user can specify the priority with argument `def.noc.sleep`. So, when we refer to guider then we refer to one of these five methods.
 
@@ -788,7 +808,6 @@ All the information for each night is stored in the `results/QC` folder allowing
 Be aware that if using the full output and working with wrist accelerometer data, then missing entries in a sleep log that asks for Time in Bed will be replaced by HDCZA estimates of SPT. Therefore, extra caution should be taken when working with the full output.
 
 Notice that part 4 is focused on sleep research, by which the cleaned reported is the way it is. In the next section we will discuss the analysis done by part 5. There, the choice of guider may be considered less important, by which we use different criteria for including nights. So, you may see that a night that is excluded from the cleaned results in part 4 still appears in the cleaned results for part 5.
-
 
 ### Data_cleaning_file
 
@@ -880,12 +899,13 @@ duration.
 
 ## Why use data metric ENMO?
 
-In most studies we have been involved in we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 we wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the supperiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. We use ENMO as default because:
+In most studies we have been involved in we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 we wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the superiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. We use ENMO as default because:
 
 1.	ENMO has demonstrated value in describing variance in energy expenditure, correlated with questionnaire data, able to describe patterns in physical activity
 2.	ENMO is easy to describe mathematically and by that higher chances of reproducibility
 3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units. We prefer to avoid using metrics that generate non-universal units of movement.
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and MAD.
+5.  Studies who criticised ENMO failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, while the auto-calibration procedure was never designed for short lasting lab settings. It needs free-living data to work well.
 
 See also the following blog post on the topic: https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6
 
