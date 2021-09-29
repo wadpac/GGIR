@@ -58,8 +58,11 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         qwindow_times = as.character(unlist(qwindow$qwindow_times[currentdate]))
         qwindow_names = as.character(unlist(qwindow$qwindow_names[currentdate]))
         qwindow = qwindow_values_backup = unlist(qwindow$qwindow_values[currentdate])
+        qwindow_names = qwindow_names[!is.na(qwindow)]
+        qwindow_times = qwindow_times[!is.na(qwindow)]
       }
       qwindow = qwindow[!is.na(qwindow)]
+      
       if (length(qwindow) == 1) qwindow = c()
       if (length(qwindow) == 0 | length(currentdate) == 0)  {
         qwindow_times = c("00:00","24:00")
