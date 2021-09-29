@@ -17,16 +17,16 @@ combination with the epoch length as defined in g.getmeta.
 }
 \usage{
 g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24),
-quantiletype = 7, L5M5window = c(0, 24), M5L5res = 10,
-includedaycrit = 16, ilevels = c(),
-winhr = 5, idloc = 1,snloc=1,mvpathreshold = c(),
-boutcriter=c(),mvpadur=c(1,5,10),
-selectdaysfile=c(),window.summary.size=10,
-dayborder=0,bout.metric = 1,
-closedbout=FALSE,desiredtz = "",
-IVIS_windowsize_minutes = 60,
-IVIS_epochsize_seconds = NA, iglevels = c(),IVIS.activity.metric=2,
-qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
+ quantiletype = 7, L5M5window = c(0, 24), M5L5res = 10,
+ includedaycrit = 16, ilevels = c(),
+ winhr = 5, idloc = 1, snloc=1, mvpathreshold = c(),
+ boutcriter=c(), mvpadur=c(1,5,10),
+ selectdaysfile=c(), window.summary.size=10,
+ dayborder=0, bout.metric = 1,
+ closedbout=FALSE, desiredtz = "",
+ IVIS_windowsize_minutes = 60,
+ IVIS_epochsize_seconds = NA, iglevels = c(), IVIS.activity.metric=2,
+ qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
 }
 
 \arguments{
@@ -86,11 +86,14 @@ qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
     Vector of window size(s) (unit: hours) of L5 and M5 analysis (dedault = 5 hours)
   }
   \item{idloc}{
-    If value = 1 (default) the code assumes that ID number is stored in the
-    obvious header field. If value = 2 the code uses the character string preceding
-    the character '_' in the filename as the ID number.
-    If value = 5 the code uses the character string preceding
-    the first space ' ' in the filename as the ID number
+    If idloc = 1 (default) the code assumes that ID number is stored in the
+    obvious header field. Note that for ActiGraph data the ID never stored in the file
+    header. 
+    For value set to 2, 5, 6, and 7, GGIR looks at the filename and extracts the
+    character string preceding the first occurance of a '_', ' ' (space), '.' (dot),
+    and '-', respecitvely.
+    You may have noticed that idloc 3 and 4 are skipped, they were used for one study
+    in 2012, and not actively maintained anymore, but because it is legacy code not omitted.
   }
   \item{snloc}{
     If value = 1 (default) the code assumes that device serial number is stored in
@@ -167,8 +170,6 @@ qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
   An exaplantion of all the columns in the data.frame and subsequent csv reports
   can be found in the package vignette (Output part 2).
 }
-
-
 \examples{
 data(data.getmeta)
 data(data.inspectfile)
