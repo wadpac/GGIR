@@ -67,7 +67,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                            "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                            "sleeplatency", "sleepefficiency",
                            "page","daysleeper","weekday","calendar_date","filename",
-                           "cleaningcode","sleeplog_used","acc_available","guider", "longitudinal_axis")
+                           "cleaningcode","sleeplog_used","acc_available","guider", "SleepRegularityIndex", "longitudinal_axis")
   if (storefolderstructure == TRUE) {
     colnamesnightsummary  = c(colnamesnightsummary,"filename_dir","foldername")
   }
@@ -168,9 +168,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         cnt67 = 2
       }
       if (storefolderstructure == FALSE) { # initialize part4 output matrix per recording (file)
-        nightsummary = as.data.frame(matrix(0,0,36))
+        nightsummary = as.data.frame(matrix(0,0,37))
       } else {
-        nightsummary = as.data.frame(matrix(0,0,38))
+        nightsummary = as.data.frame(matrix(0,0,39))
       }
       colnames(nightsummary) = colnamesnightsummary
       if (sleepwindowType == "TimeInBed") {
@@ -185,6 +185,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder,"/",fnames[i]))
+      if (exists("RSI") == FALSE) RSI = NA
       if (nrow(sib.cla.sum) != 0) { #there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = desiredtz)
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = desiredtz)
@@ -872,14 +873,15 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,33] = sleeplog_used
                   nightsummary[sumi,34] = acc_available
                   nightsummary[sumi,35] = guider
+                  nightsummary[sumi,36] = SRI # Sleep Regularity Index
                   if (length(longitudinal_axis) == 0) {
-                    nightsummary[sumi,36] = NA
+                    nightsummary[sumi,37] = NA
                   } else {
-                    nightsummary[sumi,36] = longitudinal_axis
+                    nightsummary[sumi,37] = longitudinal_axis
                   }
                   if (storefolderstructure == TRUE) {
-                    nightsummary[sumi,37] = ffd[i] #full filename structure
-                    nightsummary[sumi,38] = ffp[i] #use the lowest foldername as foldername name
+                    nightsummary[sumi,38] = ffd[i] #full filename structure
+                    nightsummary[sumi,39] = ffp[i] #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 } #run through definitions
@@ -915,9 +917,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           nightsummary[sumi,31] = fnames[i]
           nightsummary[sumi,32] = 4 #cleaningcode = 4 (no nights of accelerometer available)
           nightsummary[sumi,33:34] = c(FALSE, TRUE) #sleeplog_used acc_available
-          nightsummary[sumi,35:36] = NA
+          nightsummary[sumi,35:37] = NA
           if (storefolderstructure == TRUE) {
-            nightsummary[sumi,37:38] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi,38:39] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }

@@ -23,4 +23,12 @@ test_that("SleepRegularityIndex gives output as expected", {
   # Use dummy data in function call:
   SRI = SleepRegularityIndex(data=testdata, epochsize = 5, desiredtz= tz)
   expect_equal(SRI, 80)
+  # Scenario 2, perfect regularity
+  testdata2 = data.frame(time=time, sleep=rep(0,length(time)))
+  SRI2 = SleepRegularityIndex(data=testdata2, epochsize = 5, desiredtz= tz)
+  expect_equal(SRI2, 100)
+  # Scenario 3, perfect irregularity
+  testdata3 = data.frame(time=time, sleep=1:length(time))
+  SRI3 = SleepRegularityIndex(data=testdata3, epochsize = 5, desiredtz= tz)
+  expect_equal(SRI3, -100)
 })

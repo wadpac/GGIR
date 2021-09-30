@@ -40,7 +40,8 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                                 "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                                 "sleeplatency", "sleepefficiency",
                                 "page","daysleeper","weekday","calendar_date","filename",
-                                "cleaningcode","sleeplog_used","acc_available","guider", "longitudinal_axis")
+                                "cleaningcode","sleeplog_used","acc_available","guider", "SleepRegularityIndex",
+                                "longitudinal_axis")
     if (sleepwindowType == "TimeInBed") {
       colnames(nightsummary2) = gsub(replacement = "guider_inbedStart",  
                                     pattern = "guider_onset", x = colnames(nightsummary2))
@@ -126,7 +127,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     #=============
     skip = FALSE
     if (length(nightsummary2) != 0) {
-      NumberNotNA = length(which(is.na(nightsummary2[,3:24]) == FALSE))
+      NumberNotNA = length(which(is.na(nightsummary2[,3:25]) == FALSE))
       if (NumberNotNA == 0) {
         skip = TRUE
         warning("\nCannot create report part 4 report, because no sleep estimates present in milestone data.")
@@ -277,7 +278,8 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                                       "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", 
                                       "sleeplatency", "sleepefficiency", "number_of_awakenings",
                                       "guider_inbedDuration", "guider_inbedStart", "guider_inbedEnd",
-                                      "guider_SptDuration", "guider_onset", "guider_wakeup"))
+                                      "guider_SptDuration", "guider_onset", "guider_wakeup",
+                                      "SleepRegularityIndex"))
             weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[1])]
             if (dotwice == 1) {
               for (k in 1:3) {
@@ -329,8 +331,8 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
               for (j in 1:length(udef)) {
                 weekday = nightsummary.tmp$weekday[which(nightsummary.tmp$sleepparam == udef[j])]
                 for (k in 1:3) {
-                  if (ncol(personSummary) < (cnt + 35)) { # expand personSummary matrix if there is a change that is not big enough
-                    expansion = matrix(NA, nrow(personSummary), 35)
+                  if (ncol(personSummary) < (cnt + 36)) { # expand personSummary matrix if there is a change that is not big enough
+                    expansion = matrix(NA, nrow(personSummary), 36)
                     if (nrow(expansion) != nrow(personSummary)) expansion = t(expansion)
                     personSummary = cbind(personSummary,expansion)
                   }
@@ -403,7 +405,11 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
                   personSummary[i,(cnt+23)] = sd(nightsummary.tmp$wakeup[indexUdef],na.rm=TRUE)
                   personSummarynames = c(personSummarynames,paste("wakeup_",TW,"_",udefn[j],"_mn",sep=""),
                                          paste("wakeup_",TW,"_",udefn[j],"_sd",sep=""))
-                  cnt = cnt + 23
+                  
+                  personSummary[i,(cnt+24)] = mean(nightsummary.tmp$SleepRegularityIndex[indexUdef],na.rm=TRUE)
+                  personSummarynames = c(personSummarynames,"SleepRegularityIndex")
+                  
+                  cnt = cnt + 25
                   if (sleepwindowType == "TimeInBed") {
                     personSummary[i,(cnt+1)] = mean(nightsummary.tmp$sleepefficiency[indexUdef],na.rm=TRUE)
                     personSummary[i,(cnt+2)] = sd(nightsummary.tmp$sleepefficiency[indexUdef],na.rm=TRUE)
@@ -468,18 +474,16 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
         if (nrow(nightsummary) == 0) {
           print("report not stored, because no results available")
         } else {
+          notSRI = which(colnames(nightsummary) != "SleepRegularityIndex")
           if (dotwice == 1) {
-            write.csv(nightsummary,file=paste(resultfolder,"/results/QC/part4_nightsummary_sleep_full.csv",sep=""),row.names=FALSE)
+            write.csv(nightsummary[,notSRI],file=paste(resultfolder,"/results/QC/part4_nightsummary_sleep_full.csv",sep=""),row.names=FALSE)
             write.csv(personSummary,file=paste(resultfolder,"/results/QC/part4_summary_sleep_full.csv",sep=""),row.names=FALSE)
           } else {
-            write.csv(nightsummary,file=paste(resultfolder,"/results/part4_nightsummary_sleep_cleaned.csv",sep=""),row.names=FALSE)
+            write.csv(nightsummary[,notSRI],file=paste(resultfolder,"/results/part4_nightsummary_sleep_cleaned.csv",sep=""),row.names=FALSE)
             write.csv(personSummary,file=paste(resultfolder,"/results/part4_summary_sleep_cleaned.csv",sep=""),row.names=FALSE)
           }
         }
       }  
-      # this code is now part of g.part4
-      # SI = sessionInfo() 
-      # save(SI,file=paste(resultfolder,"/results/QC/sessioninfo_part4.RData",sep=""))
     }
   }
 }

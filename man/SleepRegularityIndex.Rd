@@ -21,7 +21,8 @@
   }
 }
 \value{
-  Numeric value with Sleep Regularity Index.
+  Numeric value with Sleep Regularity Index, which by definition must lie in the 
+  range -100 (complete irregularity) to 100 (perfect regularity).
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
