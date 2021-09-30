@@ -17,7 +17,7 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti,
   doquan, qlevels, quantiletype, doilevels, 
   ilevels, iglevels, domvpa,
   mvpathreshold, boutcriter, closedbout,
-  bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
+  bout.metric, mvpadur, mvpanames, wdaycode, ID,
   deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz, MX.ig.min.dur=10)
 }
 
@@ -26,8 +26,8 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti,
 \item{ndays}{Number of days in file} 
 \item{firstmidnighti}{see \link{g.detecmidnight}}
 \item{time}{timestamp column from metalong converted to character}
-\item{nfeatures}{estimate of number of variables that
-need to be stored in the output matrix}
+\item{nfeatures}{estimate of number of variables that need to be stored in
+the output matrix}
 \item{window.summary.size}{see \link{g.analyse}} 
 \item{qwindow}{see \link{g.analyse}}
 \item{midnightsi}{see \link{g.detecmidnight}}
@@ -69,13 +69,10 @@ quality check derived with g.impute}
 \item{closedbout}{see \link{g.analyse}}
 \item{bout.metric}{see \link{g.analyse}} 
 \item{mvpadur}{see \link{g.analyse}}
-\item{mvpanames}{Matrix with 6 columns and 1 row
-holding the names for the six mvpa variables}
+\item{mvpanames}{Matrix with 6 columns and 1 row holding the names for the six 
+mvpa variables}
 \item{wdaycode}{Equal to M$wday as produced by \link{g.getmeta}}
-\item{IDd}{As produced by \link{g.extractheadervars}}
-\item{ID}{As produced by \link{g.extractheadervars}}
-\item{ID2}{gnerated inside \link{g.analyse} either a copy of ID, or
-as character string before the first hyphen}
+\item{ID}{Person Identification number, this can be numeric or character}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
 \item{qM5L5}{see \link{g.getM5L5}}
 \item{ExtFunColsi}{column index of metahosrt where metric is stored}

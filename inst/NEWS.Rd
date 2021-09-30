@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-3 (GitHub-only-release date:25-09-2021)}{
+\section{Changes in version 2.4-3 (GitHub-only-release date:29-09-2021)}{
 \itemize{
   \item Part 5 LUX per segment calculation bug fixes.
   \item Part 4 number of awakenings is now also in the output per user request
@@ -9,6 +9,8 @@
   \item Part 1: The sensor fussion functionality introduced in version 2.2-2, as a bit
   of an experimental development, has now been removed from GGIR as added value turned out
   to be limited.
+  \item Part 2: ID extraction code tidied up, and idloc argument options added.
+  \item Part 2: when activity log can now also have empty days.
 }
 }
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{

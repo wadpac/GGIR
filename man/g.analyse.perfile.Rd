@@ -1,14 +1,14 @@
 \name{g.analyse.perfile}
 \alias{g.analyse.perfile}
 \title{
- Function supports \link{g.analyse}. Not intended for direct use by user.
+  Function supports \link{g.analyse}. Not intended for direct use by user.
 }
 \description{
-Generates recording specific analyses and fills corresponding
-output matrix, \link{g.analyse}.
+  Generates recording specific analyses and fills corresponding
+  output matrix, \link{g.analyse}.
 }
 \usage{
-g.analyse.perfile(ID, ID2, IDd, fname, deviceSerialNumber,
+g.analyse.perfile(ID, fname, deviceSerialNumber,
   BodyLocation, startt, I, LC2, LD, dcomplscore,
   LMp, LWp, C, lookat, AveAccAve24hr, 
   colnames_to_lookat, QUAN,  ML5AD,
@@ -21,9 +21,7 @@ g.analyse.perfile(ID, ID2, IDd, fname, deviceSerialNumber,
 }
 
 \arguments{
-\item{ID}{see \link{g.analyse.perday}}
-\item{ID2}{see \link{g.analyse.perday}}
-\item{IDd}{see \link{g.analyse.perday}}
+\item{ID}{Person Identification number, this can be numeric or character}
 \item{fname}{see \link{g.analyse.perday}}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
 \item{BodyLocation}{as produced by \link{g.extractheadervars}}
@@ -65,7 +63,10 @@ the average day produced by \link{g.analyse.avday}}
 \item{IVIS_windowsize_minutes}{see \link{g.IVIS}}
 \item{IVIS_epochsize_seconds}{see \link{g.IVIS}}
 \item{qwindow}{see \link{g.analyse}}
-\item{longitudinal_axis_id}{Index of axis for which the angle correlates most strongly across 24 hoursas calculated inside g.analyse. For hip worn accelerometer this helps to check which axis was the veritcal axis. The estimate may not be informative for other attachment locations.}
+\item{longitudinal_axis_id}{Index of axis for which the angle correlates most 
+  strongly across 24 hoursas calculated inside g.analyse. For hip worn 
+  accelerometer this helps to check which axis was the veritcal axis. 
+  The estimate may not be informative for other attachment locations.}
 
 }
 \value{
