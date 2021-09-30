@@ -67,7 +67,8 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                            "sleeponset_ts","wakeup_ts","guider_onset_ts", "guider_wakeup_ts",
                            "sleeplatency", "sleepefficiency",
                            "page","daysleeper","weekday","calendar_date","filename",
-                           "cleaningcode","sleeplog_used","acc_available","guider", "SleepRegularityIndex", "longitudinal_axis")
+                           "cleaningcode","sleeplog_used","acc_available","guider", 
+                           "SleepRegularityIndex", "longitudinal_axis")
   if (storefolderstructure == TRUE) {
     colnamesnightsummary  = c(colnamesnightsummary,"filename_dir","foldername")
   }
@@ -798,7 +799,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                     nightsummary[sumi,25] = round(nightsummary[sumi,3] - nightsummary[sumi,7], digits=7) #sleeponset - guider_onset 
                     # sleep efficiency:
                     nightsummary[sumi,26] = round(nightsummary[sumi,14] / nightsummary[sumi,9], digits=5)  #accumulated nocturnal sleep / guider
-                  }
+                  } 
                   nightsummary[sumi,27] = pagei
                   nightsummary[sumi,28] = daysleeper[j]
                   nightsummary[sumi,29] = wdayname[j]
@@ -873,7 +874,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,33] = sleeplog_used
                   nightsummary[sumi,34] = acc_available
                   nightsummary[sumi,35] = guider
-                  nightsummary[sumi,36] = SRI # Sleep Regularity Index
+                  nightsummary[sumi,36] = SleepRegularityIndex # calculated in g.part3
                   if (length(longitudinal_axis) == 0) {
                     nightsummary[sumi,37] = NA
                   } else {
@@ -922,6 +923,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             nightsummary[sumi,38:39] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
+        }
+        if (sleepwindowType != "TimeInBed") {
+          nightsummary = nightsummary[, which(colnames(nightsummary) %in% c("sleeplatency", "sleepefficiency") == FALSE)]
         }
         save(nightsummary, file = paste0(metadatadir, ms4.out,"/", fnames[i]))
       }

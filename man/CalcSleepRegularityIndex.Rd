@@ -1,5 +1,5 @@
-\name{SleepRegularityIndex}
-\alias{SleepRegularityIndex}
+\name{CalcSleepRegularityIndex}
+\alias{CalcSleepRegularityIndex}
 \title{
   Calculates Sleep Regularity Index
 }
@@ -7,7 +7,7 @@
   Calculates Sleep Regularity Index proposed by Phillips and colleagues in 2017
 }
 \usage{
-  SleepRegularityIndex(data = c(), epochsize = c(), desiredtz= c())
+  CalcSleepRegularityIndex(data = c(), epochsize = c(), desiredtz= c())
 }
 \arguments{
   \item{data}{

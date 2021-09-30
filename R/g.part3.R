@@ -108,9 +108,11 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
           
           # SleepRegulartiyIndex calculation
           if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
-            SRI = SleepRegularityIndex(data = SLE$output, epochsize = M$windowsizes[1], desiredtz=desiredtz)
+            SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output, 
+                                                            epochsize = M$windowsizes[1], 
+                                                            desiredtz=desiredtz)
           } else {
-            SRI = NA
+            SleepRegularityIndex = NA
           }
           L5list = SLE$L5list
           SPTE_end = SLE$SPTE_end
@@ -132,7 +134,7 @@ g.part3 = function(metadatadir=c(),f0,f1,anglethreshold = 5,timethreshold = 5,
             rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to allign sleeplog with recording
             
             save(sib.cla.sum,L5list,SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
-                 longitudinal_axis, SRI,
+                 longitudinal_axis, SleepRegularityIndex,
                  file=paste(metadatadir,"/meta/ms3.out/",fname,".RData",sep=""))
           }
         }

@@ -28,7 +28,7 @@ g.report.part4 = function(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),f
     }
     if (length(f1) == 0 | f1 > length(fnames))  f1 = length(fnames)
     #-----------------------------------------------------
-    nightsummary2 = as.data.frame(matrix(0,0,36)) 
+    nightsummary2 = as.data.frame(matrix(0,0,37)) 
     colnames(nightsummary2) = c("ID", "night","sleeponset", "wakeup", "SptDuration", "sleepparam", 
                                 "guider_onset", "guider_wakeup", "guider_SptDuration",
                                 "error_onset", "error_wake", "error_dur",

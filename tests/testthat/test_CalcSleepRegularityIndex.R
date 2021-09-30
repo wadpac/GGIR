@@ -1,6 +1,6 @@
 library(GGIR)
-context("SleepRegularityIndex")
-test_that("SleepRegularityIndex gives output as expected", {
+context("CalcSleepRegularityIndex")
+test_that("CalcSleepRegularityIndex gives output as expected", {
   # Create dummy data:
   tz = "Europe/Amsterdam"
   time = seq(from = as.POSIXlt(x="2020-01-01 00:01:10",tz=tz), 
@@ -19,16 +19,16 @@ test_that("SleepRegularityIndex gives output as expected", {
   sleep[(NID*4+R1):(NID*4+R3)] = 1
   sleep[(NID*5+R2):(NID*5+R3)] = 1
   sleep = sleep[1:length(time)]
-  testdata = data.frame(time=time, sleep=sleep)
+  testdata = data.frame(time=time, invalid = rep(0, length(time)), sleep=sleep)
   # Use dummy data in function call:
-  SRI = SleepRegularityIndex(data=testdata, epochsize = 5, desiredtz= tz)
+  SRI = CalcSleepRegularityIndex(data=testdata, epochsize = 5, desiredtz= tz)
   expect_equal(SRI, 80)
   # Scenario 2, perfect regularity
   testdata2 = data.frame(time=time, sleep=rep(0,length(time)))
-  SRI2 = SleepRegularityIndex(data=testdata2, epochsize = 5, desiredtz= tz)
+  SRI2 = CalcSleepRegularityIndex(data=testdata2, epochsize = 5, desiredtz= tz)
   expect_equal(SRI2, 100)
   # Scenario 3, perfect irregularity
   testdata3 = data.frame(time=time, sleep=1:length(time))
-  SRI3 = SleepRegularityIndex(data=testdata3, epochsize = 5, desiredtz= tz)
+  SRI3 = CalcSleepRegularityIndex(data=testdata3, epochsize = 5, desiredtz= tz)
   expect_equal(SRI3, -100)
 })
