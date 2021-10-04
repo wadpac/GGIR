@@ -4,7 +4,11 @@
   Calculates Sleep Regularity Index
 }
 \description{
-  Calculates Sleep Regularity Index proposed by Phillips and colleagues in 2017
+  Calculates Sleep Regularity Index per day pair. Absense of missing data is not used 
+  as a criteria for calculation. However, missing data criteria are used in g.part4 
+  where the output of this function is used.
+  Therefore, this function is inspired by the algorithm proposed by Phillips and 
+  colleagues in 2017 but not an exact copy.
 }
 \usage{
   CalcSleepRegularityIndex(data = c(), epochsize = c(), desiredtz= c())
@@ -21,8 +25,10 @@
   }
 }
 \value{
-  Numeric value with Sleep Regularity Index, which by definition must lie in the 
-  range -100 (complete irregularity) to 100 (perfect regularity).
+  Data.frame with columns: day (day number); Sleep Regularity Index, which by definition must lie in the 
+  range -100 (reversed regularity), to 0 (random pattern), to 100 (perfect regularity);
+  weekday (e.g. Wednesday); frac_valid, number between 0 and 1 indicating the fraction of the 24 hour
+  period for which valid data was available in both the current and the next day, and; date.
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>

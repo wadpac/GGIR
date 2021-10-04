@@ -874,7 +874,18 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,33] = sleeplog_used
                   nightsummary[sumi,34] = acc_available
                   nightsummary[sumi,35] = guider
-                  nightsummary[sumi,36] = SleepRegularityIndex # calculated in g.part3
+                  
+                  # Extract SRI for this night
+                  nightsummary[sumi,36] = NA
+                  if (!exists("SleepRegularityIndex")) SleepRegularityIndex = NA
+                  SRI = SleepRegularityIndex
+                  if (is.data.frame(SRI) == TRUE) {
+                    SRIindex = which(SRI$date == calendar_date[j] &
+                                       SRI$frac_valid > (includenightcrit/24))
+                    if (length(SRIindex) > 0) {
+                      nightsummary[sumi,36] = SRI$SleepRegularityIndex[SRIindex[1]] 
+                    }
+                  }
                   if (length(longitudinal_axis) == 0) {
                     nightsummary[sumi,37] = NA
                   } else {
