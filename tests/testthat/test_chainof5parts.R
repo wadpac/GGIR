@@ -186,15 +186,17 @@ test_that("chainof5parts", {
   newrow = sib.cla.sum[row2copy,]
   newrow$sib.onset.time = "2016-06-24T12:30:15+0100"
   newrow$sib.end.time = "2016-06-24T12:45:15+0100"
-  sib.cla.sum = rbind(sib.cla.sum,newrow)
+  sib.cla.sum = rbind(sib.cla.sum, newrow)
   sib.cla.sum = sib.cla.sum[order(sib.cla.sum$sib.onset.time),]
   sib.cla.sum$sib.period[1:11] = 1:11
-  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file= rn3[1])
-  expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-                         idloc=2,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
-                         excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonguider=TRUE,desiredtz=desiredtz,
-                         storefolderstructure=TRUE, overwrite=TRUE))
+  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
+  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+                         idloc = 2, loglocation = c(), do.visual = TRUE,
+                         outliers.only = FALSE, excludefirstlast = FALSE,
+                         criterror = 0, includenightcrit = 0, nnights = 7,
+                         colid = 1, coln1 = 2, relyonguider = TRUE,
+                         desiredtz = desiredtz, storefolderstructure = TRUE, 
+                         overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -202,8 +204,8 @@ test_that("chainof5parts", {
 
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(0))
-  expect_that(round(nightsummary$SptDuration[1],digits=2),equals(16.14))
+  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(0))
+  expect_that(round(nightsummary$SptDuration[1], digits=2), equals(16.14))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------
@@ -217,20 +219,21 @@ test_that("chainof5parts", {
     return(x)
   }
   sib.cla.sum$start.time.day = changetime(sib.cla.sum$start.time.day)
-  sib.cla.sum$sib.onset.time  = changetime(sib.cla.sum$sib.onset.time)
+  sib.cla.sum$sib.onset.time = changetime(sib.cla.sum$sib.onset.time)
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
-  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file= rn3[1])
-  expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-                         idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
-                         excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonguider=TRUE,desiredtz=desiredtz,
-                         storefolderstructure=TRUE, overwrite=TRUE))
+  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
+  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+                         idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, 
+                         outliers.only = FALSE, excludefirstlast = FALSE, criterror = 0,
+                         includenightcrit = 0, nnights = 7, colid = 1, coln1 = 2,
+                         relyonguider = TRUE, desiredtz = desiredtz,
+                         storefolderstructure = TRUE, overwrite = TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(10))
-  expect_that(round(nightsummary$SptDuration[1],digits=4),equals(7))
+  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(10))
+  expect_that(round(nightsummary$SptDuration[1],digits=4), equals(7))
 
   #----------------------------------------------------------------------
   # Part 4 - DST-1
@@ -246,47 +249,49 @@ test_that("chainof5parts", {
   sib.cla.sum$sib.onset.time  = changetime(sib.cla.sum$sib.onset.time)
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
   save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file= rn3[1])
-  expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-                         idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
-                         excludefirstlast=FALSE,criterror = 0,includenightcrit=0,nnights=7,colid=1,coln1=2,
-                         relyonguider=FALSE,desiredtz=desiredtz,
-                         storefolderstructure=TRUE, overwrite=TRUE))
+  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+                         idloc = 2, loglocation = sleeplog_fn, do.visual=TRUE,
+                         outliers.only = FALSE, excludefirstlast = FALSE,
+                         criterror = 0, includenightcrit = 0, nnights = 7,
+                         colid = 1, coln1 = 2, relyonguider = FALSE, 
+                         desiredtz = desiredtz, storefolderstructure = TRUE,
+                         overwrite = TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
-  expect_that(round(nightsummary$SptDuration[1],digits=4),equals(13.075))
+  expect_that(round(nightsummary$number_sib_wakinghours[1], digits=4), equals(6))
+  expect_that(round(nightsummary$SptDuration[1], digits=4), equals(13.075))
   #---------------------
   # Part 1 with external function and selectdaysfile:
   exampleExtFunction = function(data=c(), parameters=c()) {
     data = data.frame(data, agglevel=round((1:nrow(data))/(30*60*15)))
-    output = aggregate(data,by=list(data$agglevel),FUN=mean)
+    output = aggregate(data, by=list(data$agglevel), FUN=mean)
     output = output[,-c(1,2, ncol(output))]
     return(output)
   }
   myfun =  list(FUN=exampleExtFunction,
                 parameters = 1.1,
-                expected_sample_rate= 3, # resample data to 30 Hertz before applying function
-                expected_unit="mg",
+                expected_sample_rate = 3, # resample data to 30 Hertz before applying function
+                expected_unit = "mg",
                 minlength = 15,
                 outputres = 15,
-                colnames=c("A","B","C"),
-                outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
+                colnames = c("A","B","C"),
+                outputtype = "numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
-                timestamp=as.numeric(Sys.time())) # for unit test only
+                timestamp = as.numeric(Sys.time())) # for unit test only
   # create selectdaysfile
-  SDF = matrix("",1,3)
-  SDF[1,1] = "MOS2D12345678"
-  SDF[1,2:3] =  c("23-05-2016","24-05-2016")
-  colnames(SDF) = c("Monitor","Day1","Day2")
+  SDF = matrix("", 1, 3)
+  SDF[1, 1] = "MOS2D12345678"
+  SDF[1, 2:3] =  c("23-05-2016", "24-05-2016")
+  colnames(SDF) = c("Monitor", "Day1", "Day2")
   selectdaysfile = "selectdaysfile.csv"
   write.csv(SDF, file = selectdaysfile)
 
 
-  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
+  g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE, desiredtz = desiredtz,
           do.parallel = do.parallel,myfun=myfun,
-          studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = FALSE,
+          studyname = "test",do.enmo = TRUE,do.anglez=TRUE,do.cal = FALSE,
           windowsizes = c(15,300,3600),
            chunksize= 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
           do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,
