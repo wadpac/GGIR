@@ -68,7 +68,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                            "sleeplatency", "sleepefficiency",
                            "page","daysleeper","weekday","calendar_date","filename",
                            "cleaningcode","sleeplog_used","acc_available","guider", 
-                           "SleepRegularityIndex", "longitudinal_axis")
+                           "SleepRegularityIndex", "SriFractionValid","longitudinal_axis")
   if (storefolderstructure == TRUE) {
     colnamesnightsummary  = c(colnamesnightsummary,"filename_dir","foldername")
   }
@@ -157,22 +157,19 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
       addlegend = FALSE
       if (cnt67 == 1) { #only create new pdf if there is actually new plots to be generated
         if (do.visual == TRUE) { # keep pdf for QC purposes
-          pdf(file=paste0(metadatadir, "/results/visualisation_sleep.pdf"), width=8.27, height=11.69)
-          par(mar=c(4,5,1,2)+0.1)
-          plot(c(0,0), c(1,1), xlim=c(12,36),ylim=c(0,nnpp),col="white", axes=FALSE, xlab="time", ylab="",
-               main=paste0("Page ", pagei))
-          axis(side=1, at = 12:36, labels = c(12:24,1:12), cex.axis=0.7)
-          abline(v=c(18,24,30), lwd=0.2, lty=2)
-          abline(v=c(15,21,27,33),lwd=0.2,lty=3,col="grey")
+          pdf(file = paste0(metadatadir, "/results/visualisation_sleep.pdf"), width = 8.27, height = 11.69)
+          par(mar = c(4,5,1,2) + 0.1)
+          plot(c(0, 0), c(1, 1), xlim = c(12, 36), ylim = c(0, nnpp), col = "white",
+               axes = FALSE, xlab = "time", ylab = "",
+               main = paste0("Page ", pagei))
+          axis(side = 1, at = 12:36, labels = c(12:24, 1:12), cex.axis = 0.7)
+          abline(v = c(18, 24, 30), lwd = 0.2, lty = 2)
+          abline(v = c(15, 21, 27, 33), lwd = 0.2, lty = 3, col = "grey")
           addlegend = TRUE
         }
         cnt67 = 2
       }
-      if (storefolderstructure == FALSE) { # initialize part4 output matrix per recording (file)
-        nightsummary = as.data.frame(matrix(0,0,37))
-      } else {
-        nightsummary = as.data.frame(matrix(0,0,39))
-      }
+      nightsummary = as.data.frame(matrix(0, 0, length(colnamesnightsummary)))
       colnames(nightsummary) = colnamesnightsummary
       if (sleepwindowType == "TimeInBed") {
         colnames(nightsummary) = gsub(replacement = "guider_inbedStart",  
@@ -209,9 +206,10 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
         # create overview of which night numbers in the file that have a value and are not equal to zero
         nnights.list = nnightlist
         nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]
-        if (excludefirstlast==TRUE & excludelast.part4 == FALSE & excludefirst.part4 == FALSE) {#exclude first and last night
+        if (excludefirstlast == TRUE & excludelast.part4 == FALSE &
+            excludefirst.part4 == FALSE) {#exclude first and last night
           if (length(nnights.list) >= 3) {
-            nnights.list = nnights.list[2:(length(nnights.list)-1)]
+            nnights.list = nnights.list[2:(length(nnights.list) - 1)]
           } else {
             nnights.list = c()
           }
@@ -223,13 +221,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
         } else if (excludelast.part4 == TRUE & excludefirst.part4 == FALSE) {
           if (length(nnights.list) >= 2) {
-            nnights.list = nnights.list[1:(length(nnights.list)-1)]
+            nnights.list = nnights.list[1:(length(nnights.list) - 1)]
           } else {
             nnights.list = c()
           }
         }
         # initialize variables calendardate and daysleeper from the nnights.list variable
-        calendar_date = wdayname = rep("",length(nnights.list))
+        calendar_date = wdayname = rep("", length(nnights.list))
         # daysleeper variable to keep track of whether the person woke up after noon or a certain day
         daysleeper = rep(FALSE,length(nnights.list))
         ###########################################################
@@ -346,7 +344,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
             #------------------------------------------------------------------
             # does sleep period overlap with noon? If yes, then classify as daysleeper
             if (SptWake > 12 & SptOnset < 12) daysleeper[j] = TRUE
-            if (SptWake > 12 & SptOnset>SptWake) daysleeper[j] = TRUE
+            if (SptWake > 12 & SptOnset > SptWake) daysleeper[j] = TRUE
             # change time stamps to be a continues time
             if (SptOnset < 12) SptOnset = SptOnset + 24 #shift 24 hours to create continues time
             if (SptWake <= 12) SptWake = SptWake + 24 #shift 24 hours to create continues time
@@ -364,7 +362,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           }
           #-----------------------------------------
           #plan analysis according to knowledge about whether it is a daysleeper or not
-          if (excludefirstlast==FALSE) { #if you are not excluding the last day
+          if (excludefirstlast == FALSE) { #if you are not excluding the last day
             if (daysleeper[j] == TRUE & j != max(nnights.list)) { #and is a daysleeper and not the last night
               loaddays = 2
             } else {
@@ -391,7 +389,7 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           for (loaddaysi in 1:loaddays) { #load twice if daysleeper because we also need data from the afternoon on the next day
             # now get accelerometer sleep detection
             qq = sib.cla.sum
-            sleepdet = qq[which(qq$night == (j+(loaddaysi-1))),] ##
+            sleepdet = qq[which(qq$night == (j + (loaddaysi - 1))),]
             if (nrow(sleepdet) == 0) {
               if (spocumi == 1) {
                 spocum = dummyspo
@@ -419,12 +417,12 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                 spo[1,2:4] = 0
                 spo[1,5] = k
                 if (daysleeper[j] == TRUE) {
-                  tmpCmd = paste0("spo_day",k,"= c()")
+                  tmpCmd = paste0("spo_day", k, "= c()")
                   eval(parse(text = tmpCmd)) ##
                   spo_day_exists = TRUE
                 }
               } else {
-                DD = g.create.sp.mat(nsp,spo,sleepdet.t,daysleep=daysleeper[j])
+                DD = g.create.sp.mat(nsp, spo, sleepdet.t, daysleep = daysleeper[j])
                 if (loaddaysi == 1) { # newly added 25/11/2015
                   wdayname[j] = DD$wdayname
                   calendar_date[j] = DD$calendar_date
@@ -465,13 +463,13 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                       eval(parse(text = tmpCmd))
                       
                     } else {
-                      tmpCmd = paste0("spo_day2",k,"= c()")
+                      tmpCmd = paste0("spo_day2", k, "= c()")
                       eval(parse(text = tmpCmd))
                     }
                     #attach days together as being one day
                     name1 = paste0("spo_day", k)
                     name2 = paste0("spo_day2", k)
-                    tmpCmd = paste0("spo = rbind(",name1,",",name2,")")
+                    tmpCmd = paste0("spo = rbind(", name1, ",", name2, ")")
                     eval(parse(text=tmpCmd))
                   }
                 }
@@ -567,9 +565,10 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
               }
               axis(side=2, at = 1:nnpp,labels = idlabels,las=1,cex.axis=0.6)
               idlabels = rep(0,nnpp)
-              plot(c(0,0),c(1,1),xlim=c(12,36),ylim=c(0,nnpp),col="white",axes=FALSE,xlab="time",ylab="",
-                   main=paste0("Page ",pagei))
-              axis(side=1, at = 12:36, labels = c(12:24,1:12),cex.axis=0.7)
+              plot(c(0,0), c(1,1), xlim = c(12,36), ylim = c(0,nnpp), col = "white",
+                   axes = FALSE, xlab = "time", ylab = "",
+                   main = paste0("Page ", pagei))
+              axis(side = 1, at = 12:36, labels = c(12:24,1:12),cex.axis=0.7)
               abline(v=c(18,24,30),lwd=0.2,lty=2)
               abline(v=c(15,21,27,33),lwd=0.2,lty=3,col="grey")
               cnt = 1
@@ -874,26 +873,30 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
                   nightsummary[sumi,33] = sleeplog_used
                   nightsummary[sumi,34] = acc_available
                   nightsummary[sumi,35] = guider
-                  
                   # Extract SRI for this night
-                  nightsummary[sumi,36] = NA
-                  if (!exists("SleepRegularityIndex")) SleepRegularityIndex = NA
+                  nightsummary[sumi,36:37] = NA
+                  if (!exists("SleepRegularityIndex")) {
+                    SleepRegularityIndex = NA
+                  }
                   SRI = SleepRegularityIndex
                   if (is.data.frame(SRI) == TRUE) {
-                    SRIindex = which(SRI$date == calendar_date[j] &
+                    calendar_date_asDate = as.Date(calendar_date[j], format= "%d/%m/%Y")
+                    calendar_date_reformat  = as.character(format(x = calendar_date_asDate, format="%d/%m/%Y"))
+                    SRIindex = which(SRI$date == calendar_date_reformat &
                                        SRI$frac_valid > (includenightcrit/24))
                     if (length(SRIindex) > 0) {
-                      nightsummary[sumi,36] = SRI$SleepRegularityIndex[SRIindex[1]] 
+                      nightsummary[sumi,36] = SRI$SleepRegularityIndex[SRIindex[1]]
+                      nightsummary[sumi,37] = SRI$frac_valid[SRIindex[1]] 
                     }
                   }
                   if (length(longitudinal_axis) == 0) {
-                    nightsummary[sumi,37] = NA
+                    nightsummary[sumi,38] = NA
                   } else {
-                    nightsummary[sumi,37] = longitudinal_axis
+                    nightsummary[sumi,38] = longitudinal_axis
                   }
                   if (storefolderstructure == TRUE) {
-                    nightsummary[sumi,38] = ffd[i] #full filename structure
-                    nightsummary[sumi,39] = ffp[i] #use the lowest foldername as foldername name
+                    nightsummary[sumi,39] = ffd[i] #full filename structure
+                    nightsummary[sumi,40] = ffp[i] #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 } #run through definitions
@@ -929,9 +932,9 @@ g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation =
           nightsummary[sumi,31] = fnames[i]
           nightsummary[sumi,32] = 4 #cleaningcode = 4 (no nights of accelerometer available)
           nightsummary[sumi,33:34] = c(FALSE, TRUE) #sleeplog_used acc_available
-          nightsummary[sumi,35:37] = NA
+          nightsummary[sumi,35:38] = NA
           if (storefolderstructure == TRUE) {
-            nightsummary[sumi,38:39] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi,39:40] = c(ffd[i], ffp[i]) #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }
