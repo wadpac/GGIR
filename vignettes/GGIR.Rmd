@@ -46,7 +46,7 @@ The development version of GGIR can be found on [github](https://github.com/wadp
 
 GGIR is open source software and does not come with service or support guarantees. However, as user-community you can help each other via the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please use these public platform rather than private e-mails such that other users can learn from the conversations.
 
-If you need dedicated support with the use of GGIR or need someone to adapt GGIR then Vincent van Hees is available as [indpendent consultant](https://accelting.com/).
+If you need dedicated support with the use of GGIR or need someone to adapt GGIR then Vincent van Hees is available as [indpendent consultant](https://www.accelting.com/).
 
 **Change log**
 
@@ -97,7 +97,7 @@ In this paragraph we will guide you through the main arguments relevant for 99% 
 
 The reason why it split up in parts is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts.
 
-By looking up the documentation of the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible ([link to pdf manual](ttps://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is a shell around those functions.
+By looking up the documentation of the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible ([link to pdf manual](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is a shell around those functions.
 
 You will probably never need to think about most of the arguments listed above, because the default values are fine and a lot of arguments are only included to facilitate methodological studies where researchers want to have control over everything.
 
@@ -524,6 +524,7 @@ WASO | Wake After Sleep Onset: SptDuration - SleepDurationInSpt
 SptDuration | Sleep Period Time window duration: wakeup - sleeponset
 error_onset | Difference between sleeponset and guider_onset (this variable is only available in the full report as stored in the QC folder)
 error_wake | Difference between wakeup and guider_wake (this variable is only available in the full report as stored in the QC folder)
+SleepRegularityIndex | The Sleep Regularity Index as proposed by Phillips et al. 2017 https://www.nature.com/articles/s41598-017-03171-4, but calculated per day-pair to enable user to study patterns across across days and decide which day pairs are included at the personal level aggregate.
 
 
 #### Non-default variables in part 4 csv report
