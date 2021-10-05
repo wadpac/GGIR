@@ -34,8 +34,6 @@ g.part3 = function(metadatadir = c(), f0, f1, anglethreshold = 5,timethreshold =
     ffdone = c()
   }
   nightsperpage = 7
-  
-  
   if (do.parallel == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
@@ -62,7 +60,7 @@ g.part3 = function(metadatadir = c(), f0, f1, anglethreshold = 5,timethreshold =
     errhand = 'pass'
   } else { # pass on functions
     functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX", 
-                         "g.sib.plot", "g.sib.sum", "HASPT", "HASIB")
+                         "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex")
     errhand = 'stop'
   }
   fe_dopar = foreach::`%dopar%`
@@ -85,11 +83,8 @@ g.part3 = function(metadatadir = c(), f0, f1, anglethreshold = 5,timethreshold =
       #check whether file has already been processed
       #by comparing filename to read with list of processed files
       if (length(ffdone) > 0) {
-        if (length(which(ffdone == fname)) > 0) { 
-          skip = 1 #skip this file because it was analysed before")
-        } else {
-          skip = 0 #do not skip this file
-        }
+        # 1=skip this file because it was analysed before"), 0 =do not skip file
+        skip = ifelse(test = length(which(ffdone == fname)) > 0, yes = 1, no = 0)
       } else {
         skip = 0
       }
@@ -124,9 +119,8 @@ g.part3 = function(metadatadir = c(), f0, f1, anglethreshold = 5,timethreshold =
           longitudinal_axis = SLE$longitudinal_axis
           if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
             ID = SUM$summary$ID
-            # id = as.character(unlist(strsplit(I$filename,"_"))[1])
             datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
-            plottitle = " " #datename#"blablbalbal"# paste("File: ",i," | date: ",datename," | filename: ",fna2," | night: ",j,sep="")
+            plottitle = " "
             if (do.part3.pdf == TRUE) {
               pdf(paste(metadatadir, "/meta/sleep.qc/graphperday_id_", ID, "_",
                         I$filename, ".pdf", sep = ""), width = 8.2, height = 11.7)
