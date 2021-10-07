@@ -29,8 +29,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-Is person more active in the morning or in the afternoon? Are these people more active during their work hours or their leisure time?
-Questions like these can be answered with GGIR but you first have to specify a few parameters.
+Is this specific person more active in the morning or in the afternoon? Are those people more active during their work hours or their leisure time? Questions like these can be answered with GGIR but you first have to specify a few parameters.
 
 The main input argument to be specified is `qwindow`, which can be used the following ways:
 - To specify the clock hours in the day based on which the segmented day analyses should take place.
