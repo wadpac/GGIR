@@ -107,25 +107,26 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
   during waking hours then set to TRUE, in all other scenarios
   set to FALSE (default).
   }
-   \item{relyonsleeplog}{
+  \item{relyonsleeplog}{
     Now replaced by relyonguider. Values provided to argument
     relyonsleeplog will be passed on to argument relyonguider to not
     preserve functionality of old R script.
   }
   \item{def.noc.sleep}{
-  The time window during which sustained inactivity will be assumed
-  to represent sleep, e.g. def.noc.sleep=c(21,9). This is only
-  used if no sleep log entry is available. If def.noc.sleep is
-  left blank 'def.noc.sleep=c()' then the 12 hour window centred
-  at the least active 5 hours of the 24 hour period will be used
-  instead. Here, L5 is hardcoded and will not change by changing
-  argument winhr in function \link{g.part2}. If def.noc.sleep is filled
-  with a single integer, e.g. def.noc.sleep=c(1) then the window
-  will be detected with the method as described in van Hees et al.
-  2018 Scientific Reports.
+    The time window during which sustained inactivity will be assumed
+    to represent sleep, e.g. def.noc.sleep=c(21,9). This is only
+    used if no sleep log entry is available. If def.noc.sleep is
+    left blank 'def.noc.sleep=c()' then the 12 hour window centred
+    at the least active 5 hours of the 24 hour period will be used
+    instead. Here, L5 is hardcoded and will not change by changing
+    argument winhr in function \link{g.part2}. If def.noc.sleep is filled
+    with a single integer, e.g. def.noc.sleep=c(1) then the window
+    will be detected with based on built in algorithms.
+    See argument HASPT.algo from \link{HASPT} for specifying which of those
+    algorithms to use.
   }
   \item{storefolderstructure}{
-  Store folder structure of the accelerometer data
+    Store folder structure of the accelerometer data
   }
   \item{overwrite}{
     Overwrite previously generated milestone data by this function
@@ -134,8 +135,8 @@ sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
  }
  \item{desiredtz}{
     See \link{g.getmeta}
-  }
-  \item{data_cleaning_file}{
+ }
+ \item{data_cleaning_file}{
   Optional path to a csv file you create that holds four
   columns: ID, day_part5, relyonguider_part4, 
   and night_part4. ID should hold the participant ID.
