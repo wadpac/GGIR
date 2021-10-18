@@ -61,6 +61,13 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
     if (length(nextday) == 3000) {
       nextday = nextday[1:2880]
     }
+    
+    if (length(thisday) == 2760) {
+      nextday = nextday[1:2760]
+    }
+    if (length(nextday) == 2760) {
+      thisday = thisday[1:2760]
+    }
     # print(paste0(length(is.na(data$sleepstate[thisday])), " ", length(is.na(data$sleepstate[nextday]))))
     testNA = c(is.na(data$sleepstate[thisday]) | is.na(data$sleepstate[nextday]))
     SummedValue = sum(ifelse(test = EqualState[which(testNA == FALSE)] == TRUE, yes = 1, no = 0))
