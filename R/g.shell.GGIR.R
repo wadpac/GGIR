@@ -232,8 +232,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
-  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
+  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"; def.noc.sleep=1
+  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"; def.noc.sleep=1
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
   if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
   if (sensor.location == "hip") {
@@ -243,7 +243,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     }
     if (HASPT.algo != "HorAngle") {
       warning("\nChanging HASPT.algo to HorAngle, required for hip data")
-      HASPT.algo = "HorAngle"
+      HASPT.algo = "HorAngle"; def.noc.sleep=1
     }
   }
   if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
@@ -283,6 +283,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
   if (HASPT.algo == "HorAngle") {
     sleepwindowType = "TimeInBed"
+  }
+  if (length(loglocation) == 0 | HASPT.algo != "HorAngle") {
+    sleepwindowType = "SPT"
   }
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
