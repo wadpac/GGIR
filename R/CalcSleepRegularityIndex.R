@@ -61,7 +61,6 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
     if (length(nextday) == 3000) {
       nextday = nextday[1:2880]
     }
-    
     if (length(thisday) == 2760) {
       nextday = nextday[1:2760]
     }
