@@ -238,11 +238,12 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
   if (sensor.location == "hip") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
-      warning("\nWhen working with hip data all three angle metrics are needed.")
+      warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
+                     "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."))
       do.anglex = do.angley = do.anglez = TRUE
     }
     if (HASPT.algo != "HorAngle") {
-      warning("\nChanging HASPT.algo to HorAngle, required for hip data")
+      warning("\nChanging HASPT.algo to HorAngle, because sensor.location is set as hip")
       HASPT.algo = "HorAngle"; def.noc.sleep=1
     }
   }
@@ -282,9 +283,11 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
   if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
   if (HASPT.algo == "HorAngle") {
+    warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
     sleepwindowType = "TimeInBed"
   }
-  if (length(loglocation) == 0 | HASPT.algo != "HorAngle") {
+  if ((length(loglocation) == 0 | HASPT.algo != "HorAngle") & sleepwindowType != "SPT") {
+    warning("\nAuto-updating sleepwindowType to SPT because nog sleeplog used and neither HASPT.algo HorAngle used.")
     sleepwindowType = "SPT"
   }
   # PART 5
@@ -369,7 +372,16 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
-  cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
+  cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir")
+  cat("\n")
+  cat("\n   Further, to make your research reproducibile and interpretable it is critical that you report:")
+  cat("\n     (1) Accelerometer brand and product name.")
+  cat("\n     (2) How you configured the accelerometer.")
+  cat("\n     (3) Study protocol and instructions given to the participants.")
+  cat("\n     (4) GGIR version.")
+  cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
+  cat("\n     (6) A description of how you post-processed or cleaned GGIR output.")
+  cat("\n     (7) How reported outcomes relate to variable names in GGIR output.")
 
   if (dopart1 == TRUE) {
     cat('\n')
