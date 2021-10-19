@@ -214,11 +214,14 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 - [Sanders et al. 2018](https://doi.org/10.1080/02640414.2018.1555904): wrist and hip in older adults (mean: 69.6 years)
 - [Migueles et al  2021](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/): wrist and hip in older adults aged above 70 (mean: 78.7) years. 
 - [Fraysse et al. 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/): wrist in older adults aged above 70 (mean: 77) years.
+- [Dibben et al. (2020)](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7): wrist- and hip in adults with heart failure (mean age 71)
 - If you are aware of any additional publications then let us know.
 
-The first four publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: It is still possible to use those cut-points with a simple cut-point scaling trick and by selecting the right acceleration metric as detailed below.
+Some publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: It is still possible to use those cut-points with a simple cut-point scaling trick and by selecting the relevant GGIR acceleration metric as detailed below. Note that GGIR intentionally does not sum values per epoch because it makes cut-points sample frequency dependent, which complicates comparisons across studies. In the calculations below we account for this by dividing the proposed cut-point by the sample frequency in the original study.
 
-**Esliger 2011, Phillips 2013, Fraysse 2020:**
+In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors prior to cut-point development. This is expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on metrics which rely on the assumption of accurate calibration such as metircs: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013 and Dibben 2020 which is effecitvely based on ENMO.
+
+**Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
 - `threshold.lig = (LightCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
@@ -226,6 +229,8 @@ The first four publications make use of acceleration metrics that sum their valu
 - `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - The sampleRateInStudy was 80 for Esliger and Phillips and 100 for Fraysse.
+- Dibben et al. 2020 does not report sample frequency by which their cut-points are 
+not reproducible, because the 'n' in their equation is unknown.
 -	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
