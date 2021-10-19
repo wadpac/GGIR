@@ -75,7 +75,7 @@ In ActiLife you have the option to export data with timestamps. Please do not do
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
     - [Movisens](https://www.movisens.com/en/) with data stored in file sturctures.
     - Genea (an accelerometer that is not available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
-    - Any other accelerometer brand that generates csv output, such as [Shimmer](http://www.shimmersensing.com/), see function documentation for function read.myacc.csv.
+    - Any other accelerometer brand that generates csv output, such as [Shimmer](https://shimmersensing.com/), see function documentation for function read.myacc.csv.
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
