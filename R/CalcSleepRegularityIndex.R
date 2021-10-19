@@ -55,17 +55,20 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
     nextday = which(data$date == uniqueDates[i + 1] & data$SecInDay < (24*3600))
     EqualState = c(data$sleepstate[thisday] == data$sleepstate[nextday])
     # print(paste0(length(thisday), " ", length(nextday)))
-    if (length(thisday) == 3000) {
-      thisday = thisday[1:2880]
+    ne25 = ((3600*25)/epochsize)
+    ne24 = ((3600*24)/epochsize)
+    ne23 = ((3600*23)/epochsize)
+    if (length(thisday) == ne25) {
+      thisday = thisday[1:ne24]
     }
-    if (length(nextday) == 3000) {
-      nextday = nextday[1:2880]
+    if (length(nextday) == ne25) {
+      nextday = nextday[1:ne24]
     }
-    if (length(thisday) == 2760) {
-      nextday = nextday[1:2760]
+    if (length(thisday) == ne23) {
+      nextday = nextday[1:ne23]
     }
-    if (length(nextday) == 2760) {
-      thisday = thisday[1:2760]
+    if (length(nextday) == ne23) {
+      thisday = thisday[1:ne23]
     }
     # print(paste0(length(is.na(data$sleepstate[thisday])), " ", length(is.na(data$sleepstate[nextday]))))
     testNA = c(is.na(data$sleepstate[thisday]) | is.na(data$sleepstate[nextday]))
