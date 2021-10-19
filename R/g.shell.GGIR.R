@@ -381,7 +381,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   cat("\n     (4) GGIR version.")
   cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
   cat("\n     (6) A description of how you post-processed or cleaned GGIR output.")
-  cat("\n     (7) How reported outcomes relate to variable names in GGIR output.")
+  cat("\n     (7) How reported outcomes relate to the variable names in GGIR output.")
 
   if (dopart1 == TRUE) {
     cat('\n')
