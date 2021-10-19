@@ -83,7 +83,8 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           if (length(della) > 0) summarysleep_tmp = summarysleep_tmp[-della,]
         }
         # do not include days with no meaningful data
-        d2excludeb = d2exclude = which(daysummary_tmp$N.valid.hours < 0.5)
+        threshold_hrs_of_data_per_day = 0.5
+        d2excludeb = d2exclude = which(daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
         n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
                                        | summarysleep_tmp$SptDuration == 0)
         if (length(d2exclude) > 0) {
@@ -345,7 +346,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             if (g == 1) {
               t0 = 1
               t1 = nightsi[g]-1
-              if ((t1 - t0) < (0.5*(60/ws3)*60)) {
+              if ((t1 - t0) < (threshold_hrs_of_data_per_day*(60/ws3)*60)) {
                 skip = TRUE
               }
             } else if (g > 1 & g < nplots) {
@@ -354,7 +355,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             }  else if (g == nplots) {
               t0 = nightsi[g-1]
               t1 = length(time)
-              if ((t1 - t0) < (0.5*(60/ws3)*60)) {
+              if ((t1 - t0) < (threshold_hrs_of_data_per_day*(60/ws3)*60)) {
                 skip = TRUE
               }
             }
