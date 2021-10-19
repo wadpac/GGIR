@@ -10,6 +10,7 @@
   to be limited.
   \item Part 2: ID extraction code tidied up, and new idloc argument options added.
   \item Part 2: Activity log can now also have empty days.
+  \item Part 2: Now also exported in long format if qwindow has length longer than 2.
   \item Part 3 and 4 expanded with Sleep Regularity Index.
   \item Part 4 number of awakenings is now also in the output per user request.
   \item Part 5 LUX per segment calculation bug fixes.
