@@ -122,14 +122,19 @@ In the subfolder `results` you will then find three files:
 In both `part2_summary.csv` and `part2_daysummary.csv` the column names tell you the day segment they correspond to. For example, column names ending with `_18-24hr` refer to the time segment 18:00-24:00. In `part2_daysummary_longformat.csv` the time segment is clarified via columns qwindow_timestamps and qwindow_name.
 
 
-
 # Analyses performed per day segment
 
 The analyses that GGIR per segment of the day, include:
-- Acceleration distribution if argument `ilevels` is specified
-- Number of valid hours of data
-- LXMX analysis, which stands for least and most active X hours of the segment.
-- Intensity gradient analysis
-- Time spent in Moderate or Vigorous Physical Activity (MVPA).
+- Acceleration distribution if argument `ilevels` is specified. You will recognise these in the variable names such as `[0,36)_ENMO_mg` which means time spent between 0 and 36 mg defined by acceleration metric ENMO.
+- Number of valid hours of data. You will recognise these as `N_valid_hours_in_window` which tells yoyu the number of
+valid hours per time window, and `N_valid_hours` which is the number of valid hours per day.
+- LXMX analysis, which stands for least and most active X hours of the segment. You will recognise these variable names
+like `L5hr_ENMO_mg` which is the start time of the least active five hours defined by metric ENMO, and `L5_ENMO_mg` which is the average acceleration for those hours.
+- Intensity gradient analysis. You will find these as variables that start with `ig_gradient_` See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_2) of GGIR part 2 output in the main GGIR vignette for further details.
+- Time spent in Moderate or Vigorous Physical Activity (MVPA). You will find these as variables such as `MVPA_E5S_T201_ENMO` or
+`MVPA_E5S_B1M80%_T201_ENMO`. See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_2) of GGIR part 2 output in the main GGIR vignette for further details.
+
+
+
 
 ...
