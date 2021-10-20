@@ -28,11 +28,11 @@ knitr::opts_chunk$set(echo = TRUE)
 [GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per recording, per day of measurement, and (optionally) per segment of a day of measurement, including estimates of physical activity, inactivity and sleep.
 We published an overview paper of GGIR in 2019 [link](https://doi.org/10.1123/jmpb.2018-0063).
 
-This vignette provides a general introduction on how to use GGIR and interpret the output, additionally you can find a [introduction video](https://youtu.be/RuFBCAqFJ2M) and a [mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to use your own algorithms for raw data then GGIR facilitates this with it's external function embedding feature, documented in a separate vignette: [Embedding external functions in GGIR](https://CRAN.R-project.org/package=GGIR). Further, if you want to read more about GGIR's ability to handle gyroscope sensor data, see the separate vignette: [Sensor fusion with GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly being used by research groups across the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package GGIR would not have been possible without the support of the contributors listed in the author list at [GGIR](https://CRAN.R-project.org/package=GGIR), with specific code contributions over time since April 2016 (when GGIR development moved to git) shown [here](https://github.com/wadpac/GGIR/graphs/contributors).
+This vignette provides a general introduction on how to use GGIR and interpret the output, additionally you can find a [introduction video](https://youtu.be/RuFBCAqFJ2M) and a [mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to use your own algorithms for raw data then GGIR facilitates this with it's external function embedding feature, documented in a separate vignette: [Embedding external functions in GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly being used by research groups across the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package GGIR would not have been possible without the support of the contributors listed in the author list at [GGIR](https://CRAN.R-project.org/package=GGIR), with specific code contributions over time since April 2016 (when GGIR development moved to git) shown [here](https://github.com/wadpac/GGIR/graphs/contributors).
 
 **Cite GGIR:**
 
-When you use GGIR in publications do not forget to cite it properly to make your analysis reproducible for others and to give credit to it's developers. See paragraph on [citing GGIR][Citing GGIR] for details.
+When you use GGIR in publications do not forget to cite it properly to make your analysis reproducible for others and to give credit to it's developers. See paragraph on [Citing GGIR](#CitingGGIR) for details.
 
 
 ## Contributing, Support, and Keeping up to date
@@ -136,7 +136,7 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 
 ### Key arguments related to sleep analysis
 
-For an explanation on how sleep is detected and the specific role of the various function arguments see section [Sleep analysis][Sleep analysis].
+For an explanation on how sleep is detected and the specific role of the various function arguments see section [Sleep analysis](#Sleep_analysis).
 
 - Arguments related to configuring the sleep detection algorithm: `anglethreshold`, `timethreshold`, `HASPT.algo`, `HASIB.algo`, `Sadeh_axis`, and `HASPT.ignore.invalid`.
 - `ignorenonwear` if set to TRUE then ignore detected monitor non-wear periods in the detection of sustained inactivity bouts to avoid confusion between monitor non-wear time.
@@ -144,7 +144,7 @@ For an explanation on how sleep is detected and the specific role of the various
 - If you want to exclude the first and last night from the sleep analysis then used `excludefirstlast`.
 - `def.noc.sleep` specifies how the sleep period time window should be estimated if no sleeplog is used.
 - `includenightcrit` Minimum number of valid hours per night (24 hour window between noon and noon or 6pm-6pm).
-- `data_cleaning_file` to ginore specific nights for specific individuals, see also section about the [data cleaning file][Data_cleaning_file].
+- `data_cleaning_file` to ginore specific nights for specific individuals, see also section [Data cleaning file](#Data_cleaning_file).
 - If you want the sleep analysis to be guided by a sleeplog (diary) then check out arguments `loglocation` which specifies the location of the spreadsheet (csv) with sleep log information. Further, use arguments `colid`, `coln1`, `nnights`, and `sleeplogsep` to specify the details of your sleep log structure. 
 
 GGIR facilitates two possible sleeplog file structures:
@@ -186,7 +186,7 @@ Relative to the basic sleeplog format the advanced sleep log format comes with t
 
 ### Key arguments related to time use analysis
 
-For an explanation on how time use analysis is performed see section [Waking-waking or 24 hour time-use analysis][Waking-waking or 24 hour time-use analysis].
+For an explanation on how time use analysis is performed see section [Waking-waking or 24 hour time-use analysis](#Waking-waking_or_24_hour).
 
 - `excludefirstlast.part5` - whether to ignore the last and first day.
 - `includedaycrit.part5` - tell GGIR what fraction of the waking hours in a day (value below 1) is acceptable.
@@ -214,12 +214,16 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 - [Sanders et al. 2018](https://doi.org/10.1080/02640414.2018.1555904): wrist and hip in older adults (mean: 69.6 years)
 - [Migueles et al  2021](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/): wrist and hip in older adults aged above 70 (mean: 78.7) years. 
 - [Fraysse et al. 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/): wrist in older adults aged above 70 (mean: 77) years.
-- [Dibben et al. (2020)](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7): wrist- and hip in adults with heart failure (mean age 71)
+- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7): wrist- and hip in adults with heart failure (mean age 71)
 - If you are aware of any additional publications then let us know.
 
-Some publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: It is still possible to use those cut-points with a simple cut-point scaling trick and by selecting the relevant GGIR acceleration metric as detailed below. Note that GGIR intentionally does not sum values per epoch because it makes cut-points sample frequency dependent, which complicates comparisons across studies. In the calculations below we account for this by dividing the proposed cut-point by the sample frequency in the original study.
+**Acceleration metric not available in GGIR?**
+Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: Those metrics are effectively the same as the metrics included in GGIR but sum rather than average their raw values per epoch. So, to use their cut-point we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant.
 
-In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors prior to cut-point development. This is expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on metrics which rely on the assumption of accurate calibration such as metircs: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013 and Dibben 2020 which is effectively based on ENMO.
+**Warning about validity in new studies**
+In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020. 
+
+Furthermore, studies that aimed to independently evaluate cut-point methods also seem to be failing in recognising this challenge. Therefore, it seems best to interpret cut-points as a crude boundary between intensity levels that should be interpreted with caution. Future methodological studies around cut-points are advised to account for accelerometer calibration error.
 
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
@@ -229,8 +233,7 @@ In all of the studies above, excluding Hildebrand et al. 2016, no effort was mad
 - `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - The sampleRateInStudy was 80 for Esliger and Phillips and 100 for Fraysse.
-- Dibben et al. 2020 does not report sample frequency by which their cut-points are 
-not reproducible, because the 'n' in their equation is unknown.
+- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replias we need the original sample frequency for that.
 -	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
@@ -267,7 +270,7 @@ not reproducible, because the 'n' in their equation is unknown.
 
 ### Example call
 
-So, if you consider all the arguments above you me may end up with a call to `g.shell.GGIR` that could look as follows.
+If you consider all the arguments above you me may end up with a call to `g.shell.GGIR` that could look as follows.
 
 ```{R,eval=FALSE}
 library(GGIR)
@@ -476,9 +479,9 @@ measurement | Day of measurement	Day number relative to start of the measurement
 L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO)
 L5_ENMO_mg_0-24h | Average acceleration for L5 (defined with metric ENMO)
 `[A,B)_mg_0-24h_ENMO` |	Time spent in minutes between (and including) acceleration value A in mg and (excluding) acceleration value B in mg based on metric ENMO
-ig_gradient_ENMO_0-24hr | Gradient from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
-ig_intercept_ENMO_0-24hr | Intercept from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
-ig_rsquared_ENMO_0-24hr | r squared from intensity gradient analysis (Rowlands et al 2018) based on metric ENMO for the time segment 0 to 24 hours
+ig_gradient_ENMO_0-24hr | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_Points__Accelerometer_Metrics_that.25.aspx) based on metric ENMO for the time segment 0 to 24 hours
+ig_intercept_ENMO_0-24hr | Intercept from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_Points__Accelerometer_Metrics_that.25.aspx)  based on metric ENMO for the time segment 0 to 24 hours
+ig_rsquared_ENMO_0-24hr | r squared from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_Points__Accelerometer_Metrics_that.25.aspx)  based on metric ENMO for the time segment 0 to 24 hours
 
 
 ## Output part 4 {.tabset}
@@ -501,7 +504,7 @@ sleeponset | Detected onset of sleep expressed as hours since the midnight of th
 wakeup | Detected waking time (after sleep period) expressed as hours since the midnight of the previous night.
 SptDuration | Difference between onset and waking time.
 sleepparam | Definition of sustained inactivity by accelerometer.
-guider | guider used (see paragraph 'Waking-waking or 24 hour time-use analysis').
+guider | guider used as discussed in paragraph [Sleep analysis](#Sleep_analysis).
 guider_onset | Start of Sleep Period Time window derived from the guider.
 guider_wake | End of Sleep Period Time window derived guider.
 guider_SptDuration | Time SPT duration derived from guider_wake and guider_onset.
@@ -521,14 +524,14 @@ daysleeper | If 0 then the person is a nightsleeper (sleep period did not overla
 weekday | Day of the week on which the night started
 calendardate | Calendar date on which the night started
 filename | Name of the accelerometer file
-cleaningcode | see paragraph 'Waking-waking or 24 hour time-use analysis').
+cleaningcode | see paragraph [Cleaningcode](#Cleaningcode).
 sleeplog_used | Whether a sleep log was used (TRUE/FALSE)
 acc_available | Whether accelerometer data was available (TRUE/FALSE).
 WASO | Wake After Sleep Onset: SptDuration - SleepDurationInSpt
 SptDuration | Sleep Period Time window duration: wakeup - sleeponset
 error_onset | Difference between sleeponset and guider_onset (this variable is only available in the full report as stored in the QC folder)
 error_wake | Difference between wakeup and guider_wake (this variable is only available in the full report as stored in the QC folder)
-SleepRegularityIndex | The Sleep Regularity Index as proposed by Phillips et al. 2017 https://www.nature.com/articles/s41598-017-03171-4, but calculated per day-pair to 
+SleepRegularityIndex | The Sleep Regularity Index as proposed by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to 
 enable user to study patterns across days.
 SriFractionValid | Fraction of the 24 hour period that was valid in both current as well
 as in matching timestamps for the next calendar day. See GGIR function manual for details.
@@ -610,7 +613,7 @@ sleeponset | onset of sleep expressed in hours since the  midnight in the night 
 wakeup | waking up time express in the same way as sleeponset.
 sleeponset_ts | onset of sleep expressed as a timestamp hours:minutes:seconds
 daysleeper | if 0 then the person woke up before noon, if 1 then the person woke up after noon
-cleaningcode | See paragraph [Sleep and full day time-use analysis in GGIR][Sleep and full day time-use analysis in GGIR].
+cleaningcode | See paragraph [Cleaningcode](#Cleaningcode).
 dur_day_spt_min | Total length of daytime waking hours and spt combined (typically 24 hours for MM report).
 `dur_` | duration of a behavioral class that will be specified int he rest of the variable name
 `ACC_` | (average) acceleration according to default metric specific by acc.metric
@@ -653,8 +656,8 @@ IN2MVPA | Inactivity fragments followed by MVPA
 `Gini_dur` | Gini index
 `CoV_dur` | Coefficient of Variation
 alpha | Power law exponent
-`x0.5` | Derived from power law exponent alpha, see Chastin 2010
-`W0.5` | Derived from power law exponent alpha, see Chastin 2010
+`x0.5` | Derived from power law exponent alpha, see [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
+`W0.5` | Derived from power law exponent alpha, see [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
 
 **Special note if you are working on compositional data analysis:**
 
@@ -708,7 +711,7 @@ An acceleration sensor works on the principle that acceleration is captured mech
 
 Reference:
 
-- van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. doi: 10.1152/japplphysiol.00421.2014. Epub 2014 Aug 7.
+- van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44.
 PMID: 25103964 [link](https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014)
 
 Key decisions to be made:
@@ -731,7 +734,7 @@ By visual inspection of >100 traces from a large observational study it turned o
 
 Reference:
 
-- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23;8(4):e61691. doi: 10.1371/journal.pone.0061691. Print 2013 [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
+- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23 [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
 
 Key decisions to be made:
 
@@ -750,7 +753,7 @@ The acceleration signal was screened for ‘clipping’. If more than 50% of the
 
 Reference:
 
-- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23;8(4):e61691. doi: 10.1371/journal.pone.0061691. Print 2013 [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+- van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. PLoS One. 2013 Apr 23 [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
 
 ## Why collapse information to epoch level?
 
@@ -765,7 +768,7 @@ Although many data points are collected we decide to only work with aggregated v
 4.	Collapsing the data to epoch summary measures may help to average out different noise levels and make sensor brands more comparable.
 
 
-## Sleep analysis
+## Sleep analysis {#Sleep_analysis}
 
 In GGIR sleep analysis has been implemented in part 3 and 4. Sleep analysis comes at two levels: The identification of the main Sleep Period Time (SPT) window or the time in bed window (TIB), and the discrimination of sleep and wakefulness periods. The term sleep is somewhat controversial in the context of accelerometry, because accelerometer only capture lack of movement. To acknowledge this challenge GGIR refers to these classified sleep periods as **sustained inactivity bouts (abbreviated as SIB)**. 
 
@@ -797,7 +800,7 @@ GGIR uses by default the sleep log, if the sleep log is not available it falls b
 
 If the guider indicates that the person woke up after noon, the sleep analysis in part 4 is performed again on a window from 6pm-6pm. In this way our method is sensitive to people who have their main sleep period starting before noon and ending after noon, referred as daysleeper=1 in daysummary.csv file, which you can interpret as night workers. Note that the L5+/-12 algorithm is not configured to identify daysleepers, it will only consider the noon-noon time window.
 
-### Cleaningcode
+### Cleaningcode {#Cleaningcode}
 
 To monitor possible problems with the sleep assessment, the variable **cleaningcode** is recorded for each night. Cleaningcode per night (noon-noon or 6pm-6pm as described above) can have one of the following values:
 
@@ -806,7 +809,7 @@ To monitor possible problems with the sleep assessment, the variable **cleaningc
 -	2: not enough valid accelerometer data based on the non-wear and clipping detection from part summarised over the present night where the argument `includenightcrit` indicates the minimum number of hours of valid data needed within those 24 hours.
 -	3: no accelerometer data available,
 -	4: there were no nights to be analysed for this person,
--	5: SPT estimated based on guider only, because either no SIB was found during the entire guider window, which complicates defining the start and end of the SPT, or the user specified the ID number of the recording and the night number in the [data_cleaning_file][Data_cleaning_file] to tell GGIR to rely on the guider and not rely on the accelerometer data for this particular night
+-	5: SPT estimated based on guider only, because either no SIB was found during the entire guider window, which complicates defining the start and end of the SPT, or the user specified the ID number of the recording and the night number in the [data_cleaning_file](#Data_cleaning_file) to tell GGIR to rely on the guider and not rely on the accelerometer data for this particular night
 -	6: no sleep log available and HDCZA also failed for this specific night then use average of HDCZA estimates from other nights in the recording as guider for this night. If HDCZA estimates are not available during the entire recording then use L5+/-12 estimate for this night. The last scenario seems highly unlikely in a recording where the accelerometer was worn for at least one day.
 
 ### Difference between cleaned and full output
@@ -820,13 +823,13 @@ Be aware that if using the full output and working with wrist accelerometer data
 
 Notice that part 4 is focused on sleep research, by which the cleaned reported is the way it is. In the next section we will discuss the analysis done by part 5. There, the choice of guider may be considered less important, by which we use different criteria for including nights. So, you may see that a night that is excluded from the cleaned results in part 4 still appears in the cleaned results for part 5.
 
-### Data_cleaning_file
+### Data cleaning file {#Data_cleaning_file}
 
 The package allows some adjustments to be made after data quality check. The `data_cleaning_file` argument allows you to specify individuals and nights for whom part4 should entirely rely on the guider (for example if we decide to use sleep log only information).
 The first column of this file should have header `ID` and there should be a column `relyonguider_part4` to specify the night.
 The `data_cleaning_file` allows you to tell GGIR which person(s) and night(s) should be omitted in part 4. The the night numbers to be excluded should be listed in a column `night_part4` as header.
 
-## Waking-waking or 24 hour time-use analysis
+## Waking-waking or 24 hour time-use analysis {#Waking-waking_or_24_hour}
 
 In part 5 the sleep estimates from part 4 are used to describe 24-hour time use. Part 5 allows you to do this in two ways: Literally 24 hours which start and end a calendar day (default midnight, but modifiable with argument `dayborder`) or from waking up to waking up. In GGIR we refer to the former as **MM** windows and to the latter as **WW** windows. The onset and waking times are guided by the estimates from part 4, but if they are missing part 5 will attempt to retrieve the estimate from the guider method, because even if the accelerometer was not worn during the night, or a sleep log is missing in a study where sleep log was proposed to the participants, estimates from a sleep log or HDCZA can still be considered a reasonable estimate of the SPT window in the context of 24-hour time use analysis.
 
@@ -849,9 +852,7 @@ The full part 5 output is stored in the `results/QC` folder. The default inclusi
 - No criteria is set for the amount of valid data during the SPT window, because all we are interested in part 5 is knowing the borders of the night and we trust that this was sufficiently estimated by part 4. If you disagree then please notice that all the days are included in the full report available in `results/QC` folder.
 - This means that argument `includenightcrit` as used for part 4 is not used in part 5.
 
-### Data_cleaning_file
-
-The same `data_cleaning_file` argument discussed in the previous paragraph also allows you to tell GGIR which person(s) and day(s) should be omitted in part 5. The the day numbers to be excluded should be listed in a column `day_part5` as header.
+The `data_cleaning_file` argument discussed in [Data_cleaning_file](#Data_cleaning_file) also allows you to tell GGIR which person(s) and day(s) should be omitted in part 5. The the day numbers to be excluded should be listed in a column `day_part5` as header.
 
 ### Fragmentation metrics
 
@@ -869,12 +870,12 @@ The fragmentation metrics are applied in function `g.fragmentation`.
 
 **Literature about these metrics:**
 
-- Coefficient of Variance (`CoV`) is calculated according to Blikman et al. doi: 10.1016/j.apmr.2014.08.023
+- Coefficient of Variance (`CoV`) is calculated according to [Blikman et al. 2014](https://www.archives-pmr.org/article/S0003-9993(14)01063-6/fulltext).
 - Transition probability (`TP`) from Inactivity (IN) to Physical activity (IN2PA) and from Physical activity to inactivity (PA2IN) are calculated as 1 divided by the mean fragment duration. The transition probability from Inactivity to LIPA and MVPA are calculated as: (Total duration in IN followed by LIPA or MVPA, respectively, divided by total duration in IN) divided by the average duration in IN.
 - Gini index is calculated with function `Gini` from the `ineq` R package, and with it's argument `corr` set to TRUE.
-- Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to Chastin et al. doi: 10.1016/j.gaitpost.2009.09.002.
-- Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation` in Chastin et al. doi: 10.1093/ageing/afr075, but it is renamed here to be a more specific reflection of the calculation. The term
-`fragmentation` appears too generic given that all fragmentation metrics inform us about fragmentation.
+- Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub).
+- Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation` in [Chastin et al. 2012](https://academic.oup.com/ageing/article/41/1/111/46538), but it is renamed here to be a more specific reflection of the calculation. The term
+`fragmentation` appears too generic given that all fragmentation metrics inform us about fragmentation. Please not that this is effectively the same metric as the transition probability, because total number divided by total sum in duration equals 1 divided by average duration. This is just different terminology for the same construct.
 
 **Conditions for calculation and value when condition is not met:**
 
@@ -894,7 +895,7 @@ Elsewhere in the part5 we use the term `block`. A `block` is a sequence of epoch
 
 The fragmentation functionality is loosely inspired on the great work done by
 Dr. Junrui Di and colleages in R package ActFrag, as described in
-Junrui Di (doi: 10.1101/182337).
+[Junrui Di et al. 2017](https://www.biorxiv.org/content/10.1101/182337v1).
 
 However, we made a couple of a different decisions that may affect comparability:
 
@@ -904,21 +905,21 @@ between days of the week. It is well known that human behaviour can be driven by
 weekly rhythms, e.g. work days versus weekend. Estimating fragmentation per day of
 the week allows us to study and account for such possible variation. As with all other
 GGIR variables we also report recording level aggregates of the daily estimates.
-- Power law alpha exponent metrics were calculated according to Chastin 2010 using
+- Power law alpha exponent metrics were calculated according to [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub) using
 the theoretical minimum fragment duration instead of the observed minimum fragment
 duration.
 
 ## Why use data metric ENMO?
 
-In most studies we have been involved in we used metric ENMO (Euclidean Norm Minus One with negative values rounded to zero). In 2013 we wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the superiority of any metric. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. We use ENMO as default because:
+Acceleration metric ENMO (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric in GGIR. In 2013 we wrote a paper in which he investigated different ways of summarising the raw acceleration data. In short, different metrics exist and there is very little literature to support the superiority of any metric at the time. As long as different studies use different metrics their findings will not be comparable. Therefore, the choice for metric ENMO is partially pragmatic. GGIR uses ENMO as default because:
 
 1.	ENMO has demonstrated value in describing variance in energy expenditure, correlated with questionnaire data, able to describe patterns in physical activity
-2.	ENMO is easy to describe mathematically and by that higher chances of reproducibility
-3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units. We prefer to avoid using metrics that generate non-universal units of movement.
-4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and MAD.
-5.  Studies who criticised ENMO failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, while the auto-calibration procedure was never designed for short lasting lab settings. It needs free-living data to work well.
+2.	ENMO is easy to describe mathematically and by that improves reproducibility across studies and software tools
+3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units.
+4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as MIMSunit, MAD, AI0.
+5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work.
 
-See also the following blog post on the topic: https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6
+See also [this](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) blog post on this topic.
 
 ## What does GGIR stand for?
 
@@ -929,13 +930,12 @@ I wanted a short name and not to spend too much time finding it. At the time I w
 - For general questions about how to use GGIR join our [google group/mailing list](https://groups.google.com/forum/#!forum/rpackageggir).
 - For bug reports please post them [here](https://github.com/wadpac/GGIR/issues).
 
-# Citing GGIR
-A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of the software.
+# Citing GGIR {#CitingGGIR}
+A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of open-source software.
 
 To do so, please report the GGIR version you used in the text. Additionally, please also cite:
 
 1. Migueles JH, Rowlands AV, et al. GGIR: A Research Community–Driven Open Source R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019. doi: 10.1123/jmpb.2018-0063.
-
 
 If your work depends on the quantification of **physical activity** then also cite:
 
