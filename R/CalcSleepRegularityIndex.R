@@ -41,14 +41,14 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
   SecSequence = seq(0, MaxSecInDay, by = epochsize) # Typical sequences of seconds in the day
   SecInDayTmp = rep(SecSequence, times = Ndays)
   DatesTmp = rep(uniqueDates, each = length(SecSequence))
-  temp_df = data.frame(SecInDay = SecInDayTmp, date = DatesTmp)
+  temp_df = data.frame(SecInDay = SecInDayTmp, date = DatesTmp, stringsAsFactors = FALSE)
   data = merge(x = data, y = temp_df, by.all = c("SecInDay", "date"), all = TRUE)
   
   # Calculations of Sleep Regularity Index per day pair
   NR = Ndays - 1
   SleepRegularityIndex = data.frame(day = 1:NR, SleepRegularityIndex = numeric(NR),
                           weekday = character(NR), frac_valid = numeric(NR), 
-                          date = character(NR))
+                          date = character(NR), stringsAsFactors = FALSE)
   Sys.setlocale("LC_TIME", "C")  # set language to English because that is what we use elsewhere in GGIR
   for (i in 1:(Ndays - 1)) { # Loop over all days
     thisday = which(data$date == uniqueDates[i] & data$SecInDay < (24*3600))
