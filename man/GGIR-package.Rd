@@ -23,7 +23,7 @@ citing the supporting publications (e.g. Migueles et al. 2019) in your publicati
 Package: \tab GGIR\cr
 Type: \tab Package\cr
 Version: \tab 2.4-3\cr
-Date: \tab 2021-09-29\cr
+Date: \tab 2021-10-20\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
