@@ -14,6 +14,8 @@
   \item Part 3 and 4 expanded with Sleep Regularity Index.
   \item Part 4 number of awakenings is now also in the output per user request.
   \item Part 5 LUX per segment calculation bug fixes.
+  \item visualreport code modified such that it visualises any day with at least 30 minutes of data
+  unless sleep could not be estimated from the corresponding night.
 }
 }
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{
