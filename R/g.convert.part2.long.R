@@ -18,7 +18,6 @@ g.convert.part2.long = function(daySUMMARY) {
     }
     return(out)
   }
-  
   convert2minutes = function(x) {
     x = as.numeric(x)
     hour = floor(x)
@@ -27,6 +26,27 @@ g.convert.part2.long = function(daySUMMARY) {
     if (nchar(hour) == 1) minutes = paste0("0",hour)
     time = paste0(hour,":",minutes)
     return(time)
+  }
+  
+  convert2clocktime = function(x) {
+    x2 = unlist(strsplit(x,"hr"))
+    if (length(x2) > 0) {
+      x3 = as.numeric(unlist(strsplit(x2[1],"-")))
+      myfun = function(y) {
+        for (i in 1:length(y)) {
+          if (y[i] < 10) {
+            y[i] = paste0(0,y[i])
+          } else {
+            y[i] = as.character(y[i])
+          }
+        }
+        return(y)
+      }
+      x4 = paste0(paste0(myfun(x3),":00"), collapse="-")
+    } else {
+      x4 = ""
+    }
+    return(x4)
   }
   
   getvar = function(x) {
@@ -40,7 +60,6 @@ g.convert.part2.long = function(daySUMMARY) {
   }
   #------------------------------
   # main code
-  
   # replace spaces by underscores, because melt function struggles with it later on
   colnames(daySUMMARY) = gsub(pattern = " ",replacement = "_", x = colnames(daySUMMARY))
   cn = names(daySUMMARY)
@@ -77,7 +96,6 @@ g.convert.part2.long = function(daySUMMARY) {
     }
     cnt = cnt+1
   }
-  
   # tidy up variable names
   Nvh.1 = which(colnames(df) == "N_valid_hours.1")
   Nh.1 = which(colnames(df) == "N_hours.1")
@@ -90,7 +108,13 @@ g.convert.part2.long = function(daySUMMARY) {
   col2NH = which(colnames(df) %in% c("N_valid_hours","N_hours") == TRUE)
   df = df[,c(1:max(col2NH),col2move,(max(col2NH)+1):(ncol(df)-2))]
   # re-place underscore to hyphen
-  rplc = which(df$qwindow_timestamps == "00:00_24:00")
+  skip.qwindow_name.conversion = FALSE
+  if (all(df$qwindow_timestamps == df$qwindow_names)) { # using qwindow vector without diary
+    df$qwindow_timestamps = sapply(X = df$timesegment2, FUN = convert2clocktime)
+    skip.qwindow_name.conversion = TRUE
+  }
+  
+  rplc = which(df$qwindow_timestamps == "00:00 24:00")
   if (length(rplc) > 0) {
     df$qwindow_timestamps[rplc] = "00:00-24:00"
   }
@@ -134,13 +158,15 @@ g.convert.part2.long = function(daySUMMARY) {
   }
   df = df[, -which(colnames(df) %in% c("qwindow_names"))]
   redundant_rows = which(df$N_valid_hours_in_window == "" & df$N_hours_in_window  == "" & 
-            apply(df[16:ncol(df)],1,FUN=function(x) any(x=="")) &
-            df[,ncol(df)-1] == "" & df[,ncol(df)] == "" | df$qwindow_timestamps =="not_calculated")
+                           apply(df[16:ncol(df)],1,FUN=function(x) any(x=="")) &
+                           df[,ncol(df)-1] == "" & df[,ncol(df)] == "" | df$qwindow_timestamps =="not_calculated")
   if (length(redundant_rows) > 0) df = df[-redundant_rows,]
   colnames(df)[which(colnames(df) == "timesegment2")] = "qwindow_name"
-  if (qwindownumeric == FALSE) {
-    df$qwindow_name[which(df$qwindow_name == "0-24hr")] = "daystart-dayendhr"
+  if (skip.qwindow_name.conversion == FALSE) {
+    if (qwindownumeric == FALSE) {
+      df$qwindow_name[which(df$qwindow_name == "0-24hr")] = "daystart-dayendhr"
+    }
+    df$qwindow_name = substr(df$qwindow_name,1,nchar(df$qwindow_name)-2) # remove last two characters, because they are hr
   }
-  df$qwindow_name = substr(df$qwindow_name,1,nchar(df$qwindow_name)-2) # remove last two characters, because they are hr
   return(df)
 }

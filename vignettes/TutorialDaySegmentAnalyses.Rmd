@@ -1,0 +1,140 @@
+---
+title: "Day segment analyses with GGIR"
+author: "Vincent van Hees"
+date: "September 21 2021"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: yes
+urlcolor: blue
+vignette: |
+  %\VignetteIndexEntry{Day segment analyses with GGIR}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, echo=FALSE, out.width = "100%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Is this specific person more active in the morning or in the afternoon? Are those people more active during their work hours or their leisure time? Questions like these can be answered with GGIR but you first have to specify a few parameters.
+
+The main input argument to be specified is `qwindow`, which can be used the following ways:
+- To specify the clock hours in the day based on which the segmented day analyses should take place.
+- To specify an activity log based on the segment data analyses should take place.
+
+In the following sections I will discuss both scenarios.
+
+# Clock hour-based segmentation
+
+To perform clock hour segmentation, you will need to provide function g.shell.GGIR with
+argument qwindow and assign it a numeric vector with the hours for the segmentation.
+If `qwindow=c(0,24)`, the start and end of the day, are not explicitly provided in the 
+vector GGIR will add them. Please find below some example values for qwindow.
+The number of values used by qwindow is unlimited, but be aware that some of the analyses are
+impossible for very small windows.
+
+qwindow value | Resulting segment(s) to be analysed
+-------------------| -------------------
+c(0,24) | midnight to following midnight (24 hours), the full day is the only segment.
+c(8,24) | midnight-8:00 (8 hour segment), 8:00-midnight (16 hour segment), and midnight-midnight (24 hour segment).
+c(6,11, 13, 17) | midnight-6:00 (6 hour segment), 6:00-11:00 (5 hour segment), 11:00-13:00 (2 hour segment), 13:00-17:00 (4 hour segment), 17:00-midnight (7 hour segment), and midnight-midnight (24 hour segment).
+c(0:24) | 25 segments: 24 segments of 1 hour corresponding to each hour of the day, and midnight-midnight (24 hour segment).    
+
+Day Saving Time (DST) is taken into account when identifying the start of the day, but
+not when identifying the day segments. In other words, a 23 hour days is processed as the 24 hours after the first midnight.
+I have implemented it this way to ensure that segment length are identical across days of the week, which is needed for interpretation.
+
+See examples section below.
+
+
+# Activity-log segmentation
+
+To perform activity-log based segmentation, you will need to provide function `g.shell.GGIR` with
+argument `qwindow` and assign it the full path to your activity log in `.csv format`.
+
+## Expected format of the activity log:
+
+First row represents the column headers after which each row represents one recording.
+
+The column is expected to hold the recording ID, which needs to match with the ID GGIR extracts from the accelerometer file. If unsure, apply g.shell.GGIR to some example files using the default argument settings. The ID column in the part 2 .csv reports will show how the participant ID is extracted by GGIR. If no ID is extracted, see documentation for argument `idloc`, which helps you to specify the location of the participant in the file name or file header. If ID extraction fails the accelerometer files cannot be matched with the corresponding acitivity log entries. Once you have run GGIR you will be able to verify this by inspecting hte part2_summary.csv file. Check that the correct ID values in the ID column and if they match with the ID values the activitylog.
+The ID column is followed by a date column for the first log day. To ensure GGIR recognises this date correctly specify argument  `qwindow_dateformat`, e.g. the default is `"\%d-\%m-\%Y"`, which 23-2-2021 to indicate the 23rd of February 2021. If your date is formatted as 2-23-21 then specify`"\%md-\%d-\%y"`. The column name of the date column needs to include the character combination "date" or "Date" or "DATE".
+
+The date column is followed by one or multiple columns with start times for the activity types in that day format in hours:minutes:seconds. Do not provide dates in these cells. The header of the column will be used as label for each activity type. 
+Insert a new date column before continuing with activity types for next day. Leave missing values empty. 
+
+**Note:**
+- If an activity log is used then individuals who do  not appear in the activitylog will still be processed with value c(0,24).
+- Dates with no activiy log data can be skipped, no need to have a column with the date followed by a column with the next date.
+
+
+See examples section below.
+
+
+## Example
+
+To use this on your data, provide argument qwindow to the g.shell.GGIR function call
+as explained in the central [GGIR vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html).
+
+### When using clock-hour based segmentation:
+
+```{R,eval=FALSE}
+library("GGIR")
+g.shell.GGIR(datadir = "/your/data/directory",
+             outputdir = "/your/output/directory",
+             mode = 1:2, # <= run GGIR parts 1 and 2
+             do.report = 2, # <= generate csv-report for GGIR part 2
+             qwindow = c(0, 6, 12, 18, 24))
+```
+
+
+### When using activity log based segmentation:
+
+```{R,eval=FALSE}
+library("GGIR")
+g.shell.GGIR(datadir = "/your/data/directory",
+             outputdir = "/your/output/directory",
+             mode = 1:2, # <= run GGIR parts 1 and 2
+             do.report = 2, # <= generate csv-report for GGIR part 2
+             qwindow = "/path/to/your/activity/log.csv")
+```
+
+
+After running this code GGIR creates an output folder in the output directory as specified with argument outputdir.
+In the subfolder `results` you will then find three files:
+
+- `part2_summary.csv` the recording level summary, with 1 row per recording and in recording level aggregates of day segments in columns. 
+- `part2_daysummary.csv` the day level summary, with 1 row per day and day segment specific outcomes in columns.
+- `part2_daysummary_longformat.csv` the day level summary in long format, such that each row represents one segment from one day in one recording.
+
+In both `part2_summary.csv` and `part2_daysummary.csv` the column names tell you the day segment they correspond to. For example, column names ending with `_18-24hr` refer to the time segment 18:00-24:00. In `part2_daysummary_longformat.csv` the time segment is clarified via columns qwindow_timestamps and qwindow_name.
+
+
+# Analyses performed per day segment
+
+The analyses that GGIR per segment of the day, include:
+- Acceleration distribution if argument `ilevels` is specified. You will recognise these in the variable names such as `[0,36)_ENMO_mg` which means time spent between 0 and 36 mg defined by acceleration metric ENMO.
+- Number of valid hours of data. You will recognise these as `N_valid_hours_in_window` which tells yoyu the number of
+valid hours per time window, and `N_valid_hours` which is the number of valid hours per day.
+- LXMX analysis, which stands for least and most active X hours of the segment. You will recognise these variable names
+like `L5hr_ENMO_mg` which is the start time of the least active five hours defined by metric ENMO, and `L5_ENMO_mg` which is the average acceleration for those hours.
+- Intensity gradient analysis. You will find these as variables that start with `ig_gradient_` See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_2) of GGIR part 2 output in the main GGIR vignette for further details.
+- Time spent in Moderate or Vigorous Physical Activity (MVPA). You will find these as variables such as `MVPA_E5S_T201_ENMO` or
+`MVPA_E5S_B1M80%_T201_ENMO`. See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_2) of GGIR part 2 output in the main GGIR vignette for further details.
+
+
+
+
+...

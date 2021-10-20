@@ -6,7 +6,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             winhr, L5M5window, M5L5res,
                             doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                             mvpathreshold, boutcriter, closedbout,
-                            bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
+                            bout.metric, mvpadur, mvpanames, wdaycode, ID,
                             deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz="",
                             MX.ig.min.dur=10) {
   if (length(selectdaysfile) > 0 & ndays == 2) {
@@ -58,7 +58,11 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         qwindow_times = as.character(unlist(qwindow$qwindow_times[currentdate]))
         qwindow_names = as.character(unlist(qwindow$qwindow_names[currentdate]))
         qwindow = qwindow_values_backup = unlist(qwindow$qwindow_values[currentdate])
+        qwindow_names = qwindow_names[!is.na(qwindow)]
+        qwindow_times = qwindow_times[!is.na(qwindow)]
       }
+      qwindow = qwindow[!is.na(qwindow)]
+      
       if (length(qwindow) == 1) qwindow = c()
       if (length(qwindow) == 0 | length(currentdate) == 0)  {
         qwindow_times = c("00:00","24:00")
@@ -111,7 +115,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     if (qqq2 > nrow(metashort)) qqq2 = nrow(metashort)
     vari = as.matrix(metashort[qqq1:qqq2,])
     val = qcheck[qqq1:qqq2]
-    nvalidhours_qwindow = rep(0,length(qwindow) - 1)
+    nvalidhours_qwindow = rep(0, length(qwindow) - 1)
     nhours_qwindow = rep(0,length(qwindow) - 1)
     # Ignore qwindow values that are not possible for this day
     LENVAL_hours = length(val)/ (60*(60/ws3)) #11.2
@@ -172,28 +176,20 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         }
       }
     }
+    
     val = as.numeric(val)
     nvalidhours = length(which(val == 0))/ (3600/ws3) #valid hours per day (or half a day)
     nhours = length(val) / (3600/ws3) #valid hours per day (or half a day)
     #start collecting information about the day
     fi = 1
-    daysummary[di,fi] = unlist(strsplit(fname,"_"))[1] #participant ID
-    if (idloc == 2) {
-      daysummary[di,fi] = unlist(strsplit(fname,"_"))[1] #id
-    } else if (idloc == 4) {
-      daysummary[di,fi] = IDd
-    } else if (idloc == 1) {
-      daysummary[di,fi] = ID
-    } else if (idloc == 3) {
-      daysummary[di,fi] = ID2
-    }
+    daysummary[di,fi] = ID
     idremember = daysummary[di,fi]
     ds_names[fi] = "ID";      fi = fi + 1
     daysummary[di,fi] = fname
     ds_names[fi] = "filename";  fi = fi + 1
     calendardate = unlist(strsplit(as.character(vari[1,1])," "))[1]
     daysummary[di,fi] = calendardate
-    daysummary[di,(fi+1)] =BodyLocation
+    daysummary[di,(fi+1)] = BodyLocation
     daysummary[di,(fi+2)] = nvalidhours
     daysummary[di,(fi+3)] = nhours
     ds_names[fi:(fi+3)] = c("calendar_date","bodylocation","N valid hours","N hours")

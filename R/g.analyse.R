@@ -42,7 +42,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     cat("Matrices 'metalong' and 'metashort' are not compatible")
   }
   #----------------------
-  # Pelotas specific
+  # Extract ID centrally
+  
+  # This part is specific to how data Pelotas cohort was stored.
+  # It is legacy code from 2012, for later projects I tried to avoid
+  # ending up with dataset specific solutions
   ID2 = ID
   iID2 = iID
   if (idloc == 3) { #remove hyphen in id-name for Pelotas id-numbers
@@ -60,22 +64,33 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     ID2 = get_char_before_hyphen(ID)
     iID2 = get_char_before_hyphen(iID)
   }
+  ID_NAs = which(ID == "NA")
+  ID2_NAs = which(ID == "NA")
+  if (length(ID_NAs) > 0) ID[ID_NAs] =iID[ID_NAs]
+  if (length(ID2_NAs) > 0) ID2[ID2_NAs] =iID2[ID2_NAs]
+  if (idloc == 2) { # default is idloc=1, where ID just stays ID
+    ID = unlist(strsplit(fname,"_"))[1]
+  } else if (idloc == 3) {
+    ID = ID2
+  } else if (idloc == 4) {
+    ID = IDd
+  } else if (idloc == 5) {
+    ID = unlist(strsplit(fname," "))[1]
+  } else if (idloc == 6) {
+    ID = unlist(strsplit(fname,"[.]"))[1]
+  } else if (idloc == 7) {
+    ID = unlist(strsplit(fname,"-"))[1]
+  }
+  if (length(ID) == 0) { # If ID could not be extracted
+    ID = basename(fname)
+  }
+  #--------------------------------------------------------------
+  
   # Extract qwindow if an activity log is provided:
   qwindow_actlog =FALSE
   if (is.data.frame(qwindow) == TRUE) {
     qwindow_actlog = TRUE
-    if (idloc == 2) {
-      IDt = unlist(strsplit(fname,"_"))[1] #id
-    } else if (idloc == 5) {
-      IDt = unlist(strsplit(fname," "))[1] #id
-    } else if (idloc == 4) {
-      IDt = IDd
-    } else if (idloc == 1) {
-      IDt = ID
-    } else if (idloc == 3) {
-      IDt = ID2
-    }
-    qwindow = qwindow[which(qwindow$ID == IDt),]
+    qwindow = qwindow[which(qwindow$ID == ID),]
   }
   # # Time window for L5 & M5 analysis (commented out because this is now defined further down)
   # t0_LFMF = L5M5window[1] #start in 24 hour clock hours
@@ -234,7 +249,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
                                      mvpathreshold, boutcriter, closedbout,
-                                     bout.metric, mvpadur, mvpanames, wdaycode, IDd, ID, ID2,
+                                     bout.metric, mvpadur, mvpanames, wdaycode, ID, 
                                      deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz, MX.ig.min.dur)
     daysummary= output_perday$daysummary
     ds_names=output_perday$ds_names
@@ -290,9 +305,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     cat("file skipped for general average caculation because not enough data")
   }
   rm(metalong); rm(metashort)
-  ID[which(ID == "NA")] =iID[which(ID == "NA")]
-  ID2[which(ID2 == "NA")] =iID2[which(ID2 == "NA")]
-  output_perfile = g.analyse.perfile(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+  
+  output_perfile = g.analyse.perfile(ID, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
                                      LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                                      ML5AD_names, igfullr, igfullr_names,
                                      daysummary, ds_names, includedaycrit, strategy, hrs.del.start,

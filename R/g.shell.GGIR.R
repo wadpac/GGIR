@@ -232,18 +232,19 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"
-  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
+  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"; def.noc.sleep=1
+  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"; def.noc.sleep=1
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
   if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
   if (sensor.location == "hip") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
-      warning("\nWhen working with hip data all three angle metrics are needed.")
+      warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
+                     "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."))
       do.anglex = do.angley = do.anglez = TRUE
     }
     if (HASPT.algo != "HorAngle") {
-      warning("\nChanging HASPT.algo to HorAngle, required for hip data")
-      HASPT.algo = "HorAngle"
+      warning("\nChanging HASPT.algo to HorAngle, because sensor.location is set as hip")
+      HASPT.algo = "HorAngle"; def.noc.sleep=1
     }
   }
   if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
@@ -282,7 +283,12 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
   if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
   if (HASPT.algo == "HorAngle") {
+    warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
     sleepwindowType = "TimeInBed"
+  }
+  if ((length(loglocation) == 0 | HASPT.algo != "HorAngle") & sleepwindowType != "SPT") {
+    warning("\nAuto-updating sleepwindowType to SPT because nog sleeplog used and neither HASPT.algo HorAngle used.")
+    sleepwindowType = "SPT"
   }
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
@@ -366,8 +372,17 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
-  cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir \n")
-
+  cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir")
+  cat("\n")
+  cat("\n   To make your research reproducible and interpretable always report:")
+  cat("\n     (1) Accelerometer brand and product name")
+  cat("\n     (2) How you configured the accelerometer")
+  cat("\n     (3) Study protocol and wear instructions given to the participants")
+  cat("\n     (4) GGIR version")
+  cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
+  cat("\n     (6) How you post-processed / cleaned GGIR output")
+  cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
+  
   if (dopart1 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))

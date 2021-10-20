@@ -647,30 +647,30 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         TS1W = TS2W = TS3W = TS4W = TS5W = TS6W = TS7W = CWav = NWav = matrix(0,nmin,1)
         crit = ((window/window2)/2)+1
         for (h in 1: nmin) { #number of windows
-          cliphoc1 = (((h-1)*window2)+ window2*0.5 ) - window2*0.5 #does not use "window"
-          cliphoc2 = (((h-1)*window2)+ window2*0.5 ) + window2*0.5
+          cliphoc1 = (((h-1)*window2) + window2*0.5 ) - window2*0.5 #does not use "window"
+          cliphoc2 = (((h-1)*window2) + window2*0.5 ) + window2*0.5
           if (h <= crit) {
             hoc1 = 1
             hoc2 = window
           } else if (h >= (nmin - crit)) {
-            hoc1 = (nmin-crit)*window2
+            hoc1 = (nmin - crit)*window2
             hoc2 = nmin*window2 #end of data
           } else if (h > crit & h < (nmin - crit)) {
-            hoc1=(((h-1)*window2)+ window2*0.5 ) - window*0.5
-            hoc2=(((h-1)*window2)+ window2*0.5 ) + window*0.5
+            hoc1 = (((h - 1)*window2) + window2*0.5 ) - window*0.5
+            hoc2 = (((h - 1)*window2) + window2*0.5 ) + window*0.5
           }
           if (length(rmc.col.wear) > 0) {
-            wearTable = table(wearcol[(1+hoc1):hoc2], useNA = FALSE)
+            wearTable = table(wearcol[(1 + hoc1):hoc2], useNA = FALSE)
             NWav[h,1] = as.logical(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
           }
           for (jj in  1:3) {
             #hoc1 & hoc2 = edges of windows
             #window is bigger& window2 is smaller one
-            sdwacc = sd(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
-            maxwacc = max(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
-            minwacc = min(as.numeric(data[(1+hoc1):hoc2,jj]),na.rm=TRUE)
-            CW[h,jj] = length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres))
-            if (length(which(abs(as.numeric(data[(1+cliphoc1):cliphoc2,jj])) > clipthres*1.5)) > 0) {
+            sdwacc = sd(as.numeric(data[(1 + hoc1):hoc2,jj]), na.rm = TRUE)
+            maxwacc = max(as.numeric(data[(1 + hoc1):hoc2,jj]), na.rm = TRUE)
+            minwacc = min(as.numeric(data[(1 + hoc1):hoc2,jj]), na.rm = TRUE)
+            CW[h,jj] = length(which(abs(as.numeric(data[(1 + cliphoc1):cliphoc2,jj])) > clipthres))
+            if (length(which(abs(as.numeric(data[(1 + cliphoc1):cliphoc2,jj])) > clipthres*1.5)) > 0) {
               CW[h,jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
             }
             absrange = abs(maxwacc - minwacc)
@@ -691,8 +691,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           CWav[h,1] = max(c(CW[h,1],CW[h,2],CW[h,3])) #indicator of clipping
         }
         col_mli = 2
-        metalong[count2:((count2-1)+nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
-        metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
+        metalong[count2:((count2 - 1)+nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
+        metalong[(count2):((count2 - 1)+nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
         if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5) { #going from sample to ws2
           if (mon == 2 | (mon == 4 & dformat == 4)) {
             #light (running mean)

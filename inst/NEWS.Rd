@@ -1,14 +1,21 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.4-3 (GitHub-only-release date:25-09-2021)}{
+\section{Changes in version 2.4-3 (GitHub-only-release date:20-10-2021)}{
 \itemize{
-  \item Part 5 LUX per segment calculation bug fixes.
-  \item Part 4 number of awakenings is now also in the output per user request
   \item Vignette expanded with documentation on non-default variables in part 4 csv report
+  \item Vignette added with a tutorial on how to do segmented day analysis
   \item Part 1: The sensor fussion functionality introduced in version 2.2-2, as a bit
   of an experimental development, has now been removed from GGIR as added value turned out
   to be limited.
+  \item Part 2: ID extraction code tidied up, and new idloc argument options added.
+  \item Part 2: Activity log can now also have empty days.
+  \item Part 2: Now also exported in long format if qwindow has length longer than 2.
+  \item Part 3 and 4 expanded with Sleep Regularity Index.
+  \item Part 4 number of awakenings is now also in the output per user request.
+  \item Part 5 LUX per segment calculation bug fixes.
+  \item visualreport code modified such that it visualises any day with at least 30 minutes of data
+  unless sleep could not be estimated from the corresponding night.
 }
 }
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{
