@@ -194,7 +194,15 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   # PART 2
   if (exists("strategy") == FALSE)  strategy = 1
   if (exists("maxdur") == FALSE)  maxdur = 0
+  if (exists("hrs.del.start") == TRUE & strategy != 1 & hrs.del.start != 0) {
+    warning("\nSetting argument hrs.del.start in combination with strategy = ", strategy," is not meaningful, because this is only used when straytegy = 1")
+    rm(hrs.del.start)
+  }
   if (exists("hrs.del.start") == FALSE)  hrs.del.start = 0
+  if (exists("hrs.del.end") == TRUE & strategy != 1 & hrs.del.end != 0) {
+    warning("\nSetting argument hrs.del.end in combination with strategy = ", strategy," is not meaningful, because this is only used when straytegy = 1")
+    rm(hrs.del.end)
+  }
   if (exists("hrs.del.end") == FALSE)  hrs.del.end = 0
   if (exists("includedaycrit") == FALSE)  includedaycrit = 16
   if (exists("M5L5res") == FALSE)  M5L5res = 10
@@ -204,6 +212,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("ilevels") == FALSE)  ilevels = c()
   if (exists("mvpathreshold") == FALSE)  mvpathreshold = 100
   if (exists("boutcriter") == FALSE)  boutcriter = 0.8
+  if (exists("ndayswindow") == TRUE & strategy != 3 & ndayswindow != 7) {
+    warning("\nSetting argument ndayswindow in combination with strategy = ", strategy," is not meaningful, because this is only used when straytegy = 3")
+  }
   if (exists("ndayswindow") == FALSE)  ndayswindow = 7
   if (exists("do.imp") == FALSE) do.imp = TRUE
   if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
@@ -211,7 +222,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
   if (length(mvpadur) != 3) {
     mvpadur = c(1,5,10)
-    warning("mvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
+    warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
   }
   if (exists("epochvalues2csv") == FALSE)  epochvalues2csv = FALSE
   if (exists("window.summary.size") == FALSE) window.summary.size = 10
@@ -312,7 +323,6 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
   if (exists("frag.metrics") == FALSE) frag.metrics = c()
   if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
-
   # Related to (r)ead (m)yacc (c)sv file:
   if (exists("rmc.dec") == FALSE) rmc.dec="."
   if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
