@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.5-0 (release date:29-10-2021)}{
+\itemize{
+  \item Documentation updates
+}
+}
 \section{Changes in version 2.4-3 (GitHub-only-release date:20-10-2021)}{
 \itemize{
   \item Vignette expanded with documentation on non-default variables in part 4 csv report
