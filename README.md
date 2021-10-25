@@ -10,7 +10,7 @@ The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.ht
 
 ## Contribution guidelines:
 We always welcome contributions to the package.
-If you want to contribute to the development of GGIR, have a look at the [contribution guidelines](CONTRIBUTING.md).
+If you want to contribute to the development of GGIR, have a look at the [contribution guidelines](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md).
 
 ### Images usaged
 The copyright of the GGIR logo as contained in the file vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The Netherlands), please contact v.vanhees@accelting.com to ask for permission to use this logo.
