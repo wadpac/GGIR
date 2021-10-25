@@ -1,16 +1,17 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.5-0 (release date:29-10-2021)}{
+\section{Changes in version 2.5-0 (release date:25-10-2021)}{
 \itemize{
-  \item Documentation updates
+  \item Minor updates to function documentation and vignettes
+  \item visualreport: Date now shows as month with a number rather than a number to avoid confusion in US
 }
 }
 \section{Changes in version 2.4-3 (GitHub-only-release date:20-10-2021)}{
 \itemize{
   \item Vignette expanded with documentation on non-default variables in part 4 csv report
   \item Vignette added with a tutorial on how to do segmented day analysis
-  \item Part 1: The sensor fussion functionality introduced in version 2.2-2, as a bit
+  \item Part 1: The sensor fusion functionality introduced in version 2.2-2, as a bit
   of an experimental development, has now been removed from GGIR as added value turned out
   to be limited.
   \item Part 2: ID extraction code tidied up, and new idloc argument options added.
@@ -40,7 +41,7 @@
   \item Part 4 Able to handle time in bed diaries/algorithms, and generates sleep
   latency and sleep efficiency estimate if available
   \item Part 5 now able to export sustained inactivity bouts and self-reported
-  naps and nonwear to csv report to aid nap analaysis
+  naps and nonwear to csv report to aid nap analysis
   \item Part 5 numeric timing of MX-metrics changed to be hour of the day
   \item Part 5 Lux per segment variables now turn LUX during SPT to zero
   \item Part 4 legend added to visualisation

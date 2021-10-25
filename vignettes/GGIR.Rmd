@@ -13,7 +13,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo=FALSE, out.width = "100%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
@@ -522,7 +522,7 @@ guider_wake_ts | guider_wake formatted as a timestamp
 page | pdf page on which the visualisation can be found
 daysleeper | If 0 then the person is a nightsleeper (sleep period did not overlap with noon) if value=1 then the person is a daysleeper (sleep period did overlap with noon)
 weekday | Day of the week on which the night started
-calendardate | Calendar date on which the night started
+calendardate | Calendar date on which the night started in day/month/year format.
 filename | Name of the accelerometer file
 cleaningcode | see paragraph [Cleaningcode](#Cleaningcode).
 sleeplog_used | Whether a sleep log was used (TRUE/FALSE)
@@ -630,7 +630,7 @@ dur_day_spt_min | Total length of daytime waking hours and spt combined (typical
 Nblock | number of blocks of a certain behavioral class, not these are not bouts but a count of the number of times the behavioral class occurs without interruptions.
 WW | in filename refers to analyses based on the timewindow from waking to waking up
 MM | in filename refers to analyses done on windows between midnight and midnight
-calendar_date | calendar date on which the window started. So, for WW window this could mean that you have two windows starting on the same date.
+calendar_date | calendar date on which the window started in day/month/year format. So, for WW window this could mean that you have two windows starting on the same date.
 weekday | weekday on which the window started. So, for WW window this could mean that you have two windows starting on the weekday.
 `_total_IN` | total time spent in inactivity (no distinction between bouted or unbouted behavior, this is a simple count of the number of epochs that meet the threshold criteria.
 `_total_LIG` | total time spent in light activity.
@@ -971,6 +971,6 @@ If you used the **sleep detection without relying on sleep diary** then also cit
 The copyright of the GGIR logo lies with Accelting (Almere, The Netherlands), please contact v.vanhees@acceleting.com to ask for permission to use this logo.
 
 
-```{r, echo=FALSE, out.width = "75%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```

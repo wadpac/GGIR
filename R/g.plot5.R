@@ -588,10 +588,10 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
             curr_date_unclassed = unclass(as.POSIXlt(curr_date,desiredtz))
             title = paste("Day ",daycount,": ",
                           wdaynames[curr_date_unclassed$wday+1],
-                          " ",
-                          curr_date_unclassed$mday,"/",
-                          curr_date_unclassed$mon+1,"/",
-                          curr_date_unclassed$year+1900,sep="")
+                          " | ",
+                          curr_date_unclassed$mday, " ",
+                          month.abb[curr_date_unclassed$mon+1], " ",
+                          curr_date_unclassed$year+1900, sep="")
             rm(curr_date_unclassed)
             if (skip == FALSE) {
               YXLIM = c(-230,300)
