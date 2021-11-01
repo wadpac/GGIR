@@ -232,8 +232,8 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.mod = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- The sampleRateInStudy was 80 for Esliger and Phillips and 100 for Fraysse.
-- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replias we need the original sample frequency for that.
+- The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
+- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated we need the original sample frequency for that.
 -	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
