@@ -298,8 +298,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
     sleepwindowType = "TimeInBed"
   }
-  if ((length(loglocation) == 0 | HASPT.algo != "HorAngle") & sleepwindowType != "SPT") {
-    warning("\nAuto-updating sleepwindowType to SPT because nog sleeplog used and neither HASPT.algo HorAngle used.")
+  if (length(loglocation) == 0 & HASPT.algo != "HorAngle" & sleepwindowType != "SPT") {
+    warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.")
     sleepwindowType = "SPT"
   }
   # PART 5
