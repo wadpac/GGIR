@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.5-1 (GitHub-only-release date:03-11-2021)}{
+\itemize{
+  \item g.shell.GGIR: Removing forced assignment of sleepwindowType argument to "SPT"
+  \item g.shell.GGIR: Reviving setwindow option def.noc.sleep, which broke
+}
+}
 \section{Changes in version 2.5-0 (release date:25-10-2021)}{
 \itemize{
   \item Minor updates to function documentation and vignettes

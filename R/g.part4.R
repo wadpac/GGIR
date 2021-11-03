@@ -1,11 +1,12 @@
-g.part4 = function(datadir=c(),metadatadir=c(),f0=f0,f1=f1,idloc=1,loglocation = c(),
-                   colid = 1,coln1 = 2,nnights = 7,sleeplogidnum=FALSE,do.visual=FALSE,outliers.only = FALSE,
-                   excludefirstlast=FALSE,criterror = 1,includenightcrit=16,
-                   relyonguider=FALSE,relyonsleeplog=FALSE, def.noc.sleep=1,
-                   storefolderstructure=FALSE,
-                   overwrite=FALSE,desiredtz="",data_cleaning_file=c(),
-                   excludefirst.part4=FALSE, excludelast.part4=FALSE, sleeplogsep = ",",
-                   sleepwindowType="SPT", sensor.location="wrist") {
+g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1, idloc = 1,
+                   loglocation = c(), colid = 1, coln1 = 2, nnights = 7, sleeplogidnum = FALSE,
+                   do.visual = FALSE, outliers.only = FALSE,
+                   excludefirstlast = FALSE, criterror = 1, includenightcrit = 16,
+                   relyonguider = FALSE, relyonsleeplog = FALSE, def.noc.sleep = 1,
+                   storefolderstructure = FALSE,
+                   overwrite = FALSE, desiredtz = "", data_cleaning_file = c(),
+                   excludefirst.part4 = FALSE, excludelast.part4=FALSE, sleeplogsep = ",",
+                   sleepwindowType = "SPT", sensor.location = "wrist") {
   
   
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider=relyonsleeplog

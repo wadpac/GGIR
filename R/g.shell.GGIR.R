@@ -244,8 +244,9 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  if (exists("HASPT.algo") == FALSE) HASPT.algo = "HDCZA"; def.noc.sleep=1
-  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"; def.noc.sleep=1
+  if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
+  if (exists("HASPT.algo") == FALSE & length(def.noc.sleep) != 2) HASPT.algo = "HDCZA"
+  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
   if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
   if (sensor.location == "hip") {
@@ -287,7 +288,7 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=c()
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
   if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
-  if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
+  
   if (exists("do.visual") == FALSE)  do.visual=FALSE
   if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
   if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
@@ -298,8 +299,8 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
     warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
     sleepwindowType = "TimeInBed"
   }
-  if ((length(loglocation) == 0 | HASPT.algo != "HorAngle") & sleepwindowType != "SPT") {
-    warning("\nAuto-updating sleepwindowType to SPT because nog sleeplog used and neither HASPT.algo HorAngle used.")
+  if (length(loglocation) == 0 & HASPT.algo != "HorAngle" & sleepwindowType != "SPT") {
+    warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.")
     sleepwindowType = "SPT"
   }
   # PART 5
