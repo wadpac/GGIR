@@ -4,6 +4,21 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   #get input variables
   input = list(...)
   if (length(input) > 0) {
+    if (length(input) > 1) {
+      # Check for duplicated arguments
+      argNames = names(input)
+      dupArgNames = duplicated(argNames)
+      if (any(dupArgNames)) {
+        for (dupi in unique(argNames[dupArgNames])) {
+          dupArgValues = input[which(argNames %in% dupi)]
+          if (all(dupArgValues == dupArgValues[[1]])) { # double arguments, but no confusion about what value should be
+            warning(paste0("\nArgument ", dupi, " has been provided more than once in the same call, which can be confusing. Please fix."))
+          } else { # double arguments, and confusion about what value should be,
+            stop(paste0("\nArgument ", dupi, " has been provided more than once in the same call, which is ambiguous. Please fix."))
+          }
+        }
+      }
+    }
     for (i in 1:length(names(input))) {
       txt = paste(names(input)[i],"=",input[i],sep="")
       if (class(unlist(input[i])) == "character" & length(unlist(input[i])) == 1) {
