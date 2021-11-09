@@ -1,6 +1,6 @@
-g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1=0,
-                        do.report=c(2),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
-                        configfile =c(),myfun=c(), ...) {
+g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = c(), f0 = 1, f1 = 0,
+                        do.report = c(2), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
+                        configfile = c(), myfun = c(), ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
@@ -12,19 +12,19 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
         for (dupi in unique(argNames[dupArgNames])) {
           dupArgValues = input[which(argNames %in% dupi)]
           if (all(dupArgValues == dupArgValues[[1]])) { # double arguments, but no confusion about what value should be
-            warning(paste0("\nArgument ", dupi, " has been provided more than once in the same call, which can be confusing. Please fix."))
+            warning(paste0("\nArgument ", dupi, " has been provided more than once. Try to avoid this."))
           } else { # double arguments, and confusion about what value should be,
-            stop(paste0("\nArgument ", dupi, " has been provided more than once in the same call, which is ambiguous. Please fix."))
+            warning(paste0("\nArgument ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
           }
         }
       }
     }
     for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
+      txt = paste(names(input)[i], "=", input[i], sep = "")
       if (class(unlist(input[i])) == "character" & length(unlist(input[i])) == 1) {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+        txt = paste(names(input)[i], "='", unlist(input[i]), "'", sep = "")
       }
-      eval(parse(text=txt))
+      eval(parse(text = txt))
     }
   }
   if (length(which(ls() == "timewindow")) != 0) timewindow = input$timewindow
@@ -260,11 +260,15 @@ g.shell.GGIR = function(mode=1:5,datadir=c(),outputdir=c(),studyname=c(),f0=1,f1
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
-  if (exists("HASPT.algo") == FALSE & length(def.noc.sleep) != 2) HASPT.algo = "HDCZA"
+  if (exists("HASPT.algo") == FALSE & length(def.noc.sleep) != 2) {
+    HASPT.algo = "HDCZA"
+  } else if (length(def.noc.sleep) == 2) {
+    HASPT.algo = "notused"
+  }
   if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
   if (exists("sensor.location") == FALSE) sensor.location = "wrist"
   if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
-  if (sensor.location == "hip") {
+  if (sensor.location == "hip" &  HASPT.algo != "notused") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
       warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
                      "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."))
