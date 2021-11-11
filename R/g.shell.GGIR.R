@@ -314,7 +314,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
   if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
-  if (HASPT.algo == "HorAngle") {
+  if (HASPT.algo == "HorAngle" & sleepwindowType != "TimeInBed") {
     warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
     sleepwindowType = "TimeInBed"
   }
