@@ -58,9 +58,11 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       nonwearlog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       napcnt = 1
       nwcnt = 1
+      IDcouldNotBeMatched = TRUE
       for (i in 1:nrow(S)) { # loop through rows in sleeplog
         ID = S[i,colid]
         if (ID %in% startdates$ID == TRUE) { # matching ID in acc data, if not ignore ID
+          IDcouldNotBeMatched = FALSE
           startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)])
           startdate_sleeplog = S[i, datecols[1]]
           Sdates_correct = c()
@@ -132,6 +134,12 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
             count  = count + 1  
           }
         }
+      }
+      if (IDcouldNotBeMatched == TRUE) {
+        warning(paste0("\nNone of the IDs in the accelerometer data could be matched with",
+                       " the ID numbers in the sleeplog. You may want to check that the ID",
+                       " format in your sleeplog is consistent with the ID column in the GGIR part2 csv-report,", 
+                       " and that arguments coldid and sleeplogidnum are correctly set."))
       }
       # remove empty rows and columns:
       remove_empty_rows_cols = function(logmatrix, name) {
