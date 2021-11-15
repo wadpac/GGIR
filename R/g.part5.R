@@ -379,7 +379,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               # - store in ts object, such that it is exported as timeseries
                                               # - exatrct number and summed duration per day
                                               # - add unit test
-                                              print(head(sibreport))
                                               naps_nonwear = g.part5.classifyNaps(sibreport = sibreport, 
                                                                                   desiredtz = desiredtz,
                                                                                   possible_nap_window = possible_nap_window,
