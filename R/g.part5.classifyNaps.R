@@ -1,9 +1,11 @@
 g.part5.classifyNaps = function(sibreport=c(), desiredtz="", 
-                              possible_nap_window = c(9, 18), possible_nap_dur = c(15, 240)) {
+                              possible_nap_window = c(9, 18), possible_nap_dur = c(15, 240),
+                              nap_model = "hip3yr",
+                              HASIB.algo = "vanHees2015") {
   
   # possible_nap_window: window of clock hours during which naps are assumed to take place
   # possible_nap_dur: mininum and maximum nap duration in minutes
-  if (length(sibreport) > 0) {
+  if (length(sibreport) > 0 & nap_model %in% "hip3yr" & HASIB.algo %in% "vanHees2015") {
     sibs = which(sibreport$type == "sib")
     if (length(sibs) > 1) {
       sibreport = sibreport[sibs,]
@@ -11,11 +13,12 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
       sibreport$end = as.POSIXlt(sibreport$end, tz = desiredtz)
       # remove all short gaps between SIBs
       sibreport$gap2next = NA
-      sibreport$gap2next[sibs[1:(length(sibs) - 1)]] = sibreport$start[sibs[2:length(sibs)]] - sibreport$end[sibs[1:(length(sibs) - 1)]]
+      sibreport$gap2next[sibs[1:(length(sibs) - 1)]] = as.numeric(sibreport$start[sibs[2:length(sibs)]]) - as.numeric(sibreport$end[sibs[1:(length(sibs) - 1)]])
       iter = 1
       while (iter < nrow(sibreport)) {
         if (sibreport$gap2next[iter] < 300 & sibreport$type[iter] == "sib" & sibreport$type[iter + 1] == "sib") {
           sibreport$end[iter] = sibreport$end[iter + 1]
+          sibreport$mean_acc_1min_after[iter] = sibreport$mean_acc_1min_after[iter + 1]
           sibreport = sibreport[-(iter + 1),]
         }
         if (iter > nrow(sibreport) - 1) {
@@ -33,9 +36,13 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
       sibreport$date = as.Date(sibreport$start)
       sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
       # Calculate probability
-      sibreport$probability_nonwear = 1/(1 +  exp(-(-3.66653346337073 + (0.0547658553612778 * sibreport$acc_edge))))
       sibreport$probability_nap = rep(0, nrow(sibreport))
-      sibreport$probability_nap[which(sibreport$probability_nonwear <  0.0618820206717758)] = 1
+      if (nap_model == "hip3yr" & HASIB.algo == "vanHees2015") {
+        sibreport$probability_nonwear = 1/(1 +  exp(-(-3.66653346337073 + (0.0547658553612778 * sibreport$acc_edge))))
+        sibreport$probability_nap[which(sibreport$probability_nonwear <  0.0618820206717758)] = 1
+      } else {
+        sibreport = c()
+      }
     }
   } else {
     sibreport = c()

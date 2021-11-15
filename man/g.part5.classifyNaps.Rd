@@ -10,7 +10,8 @@
 \usage{
   g.part5.classifyNaps(sibreport = c(), desiredtz = "", 
         possible_nap_window = c(9, 18),
-        possible_nap_dur = c(15, 240))
+        possible_nap_dur = c(15, 240),
+        nap_model = "hip3yr", HASIB.algo = "vanHees2015")
 }
 \arguments{
   \item{sibreport}{
@@ -25,6 +26,13 @@
   }
   \item{possible_nap_dur}{
    Numeric vector of length two with range in duration (minutes) of a nap.
+  }
+  \item{nap_model}{
+    Character to specify classification model. Currently the only option is "hip3yr", which
+    corresponds to a model trained with hip data in 3-3.5 olds trained with parent diary data.
+  }
+  \item{HASIB.algo}{
+    See \link{g.part3}.
   }
 }
 \value{

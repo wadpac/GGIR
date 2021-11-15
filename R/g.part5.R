@@ -18,7 +18,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                    LUX_cal_exponent = c(),
                    LUX_day_segments = c(),
                    do.sibreport = FALSE,
-                   sleeplogidnum = FALSE) {
+                   sleeplogidnum = FALSE,
+                   possible_nap_window = c(9, 18),
+                   possible_nap_dur = c(15, 240),
+                   nap_model = "hip3yr", HASIB.algo ="vanHees2015") {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -374,11 +377,16 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
                                               # TO DO:
                                               # - store in ts object, such that it is exported as timeseries
-                                              # - exact number and summed duration per day
+                                              # - exatrct number and summed duration per day
                                               # - add unit test
-                                              naps_nonwear = g.part5.classifyNaps(sibreport = sibreport, desiredtz = desiredtz,
-                                                                                  possible_nap_window = c(9, 18),
-                                                                                  possible_nap_dur = c(15, 240))
+                                              print(head(sibreport))
+                                              naps_nonwear = g.part5.classifyNaps(sibreport = sibreport, 
+                                                                                  desiredtz = desiredtz,
+                                                                                  possible_nap_window = possible_nap_window,
+                                                                                  possible_nap_dur = possible_nap_dur,
+                                                                                  nap_model = nap_model,
+                                                                                  HASIB.algo = HASIB.algo)
+                                              
                                             }
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
