@@ -189,7 +189,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   }
   # check for jumps in time and impute
   if (rmc.check4timegaps == TRUE) {
-    deltatime = abs(diff(P$timestamp))
+    deltatime = abs(diff(as.numeric(P$timestamp)))
     gapsi = which(deltatime > 1) # gaps indices
     newP = c()
     if (length(gapsi) > 0) { # if gaps exist
