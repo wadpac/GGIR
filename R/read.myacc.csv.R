@@ -190,7 +190,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   # check for jumps in time and impute
   if (rmc.check4timegaps == TRUE) {
     deltatime = abs(diff(as.numeric(P$timestamp)))
-    gapsi = which(deltatime > 1) # gaps indices
+    gapsi = which(deltatime > 0.25) # look for gaps indices larger than a quarter of a second, because otherwise resampling may be able to address it
     newP = c()
     if (length(gapsi) > 0) { # if gaps exist
       if (length(sf) == 0) { # estimate sample frequency if not given in header
@@ -208,7 +208,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
           last_record[1,c("accx", "accy", "accz")] = c(1, 0, 0)
         }
         last_record[,c("accx", "accy", "accz")] = last_record[,c("accx", "accy", "accz")] / sqrt(sum(last_record[,c("accx", "accy", "accz")]^2))
-        dt = as.numeric(P$timestamp[gapsi[jk]+1] - P$timestamp[gapsi[jk]]) # difference in time
+        dt = as.numeric(difftime(P$timestamp[gapsi[jk]+1], P$timestamp[gapsi[jk]], units="secs")) # difference in time
         tmp = rep(seq_len(nrow(last_record)), each = dt*sf)
         newblock = as.data.frame(last_record[rep(seq_len(nrow(last_record)), each = dt*sf), ])
         # newblock = as.data.frame(matrix(0,dt*sf,ncol(P)), stringsAsFactors = TRUE)

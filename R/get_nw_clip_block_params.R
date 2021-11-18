@@ -47,12 +47,9 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
     racriter = 0.20
   } else if (monc == 0) {
     if (length(rmc.noise) == 0) {
-      warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
+      stop("Argument rmc.noise not specified, please specify expected noise level in g-units")
     }
     sdcriter = rmc.noise * 1.2
-    if (length(rmc.noise) == 0) {
-      stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
-    }
   }
   invisible(list(clipthres=clipthres, blocksize=blocksize, sdcriter=sdcriter, racriter=racriter))
 }
