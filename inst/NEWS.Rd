@@ -8,6 +8,7 @@
   \item g.shell.GGIR: Gives warning when user supplies double arguments.
   \item Part 4: Now warns when none of the IDs in the sleeplog could be matched with accelerometer data.
   \item Part 3: Fix #472 SRI calculation not possible when complete absence of sleep in recording
+  \item Part 2 & 5: Adding bout.metric = 7, which corrects for 1 epoch time shift in bout.metric = 6.
 }
 }
 \section{Changes in version 2.5-1 (GitHub-only-release date:03-11-2021)}{
