@@ -1,4 +1,4 @@
-g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=7,ws3=5) {
+g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=6,ws3=5) {
   p = which(x == 1)
   if (bout.metric == 1) { # MVPA definition as used in 2014
     # p are the indices for which the intensity criteria are met
@@ -127,7 +127,7 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
     x[xt != 2] = 0
     x[xt == 2] = 1
     boutcount = x
-  } else if (bout.metric == 6 | bout.metric == 7) {
+  } else if (bout.metric == 6) {
       x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
       xt = x
       #look for breaks larger than 1 minute
@@ -190,11 +190,7 @@ g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=
       p = p[which(p != 0)]
       # now mark all epochs that are covered by the remaining windows
       for (gi in 1:boutduration) {
-        if (bout.metric == 6) {
-          inde = p-half1+gi
-        } else if (bout.metric == 7) {
-          inde = p-half1+gi-1
-        }
+        inde = p-half1+gi
         xt[inde[which(inde > 0 & inde < length(xt))]] = 2
       }
       x[which(xt != 2)] = 0

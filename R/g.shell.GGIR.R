@@ -325,7 +325,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
   if (exists("includenightcrit") == FALSE)  includenightcrit=16
-  if (exists("bout.metric") == FALSE)  bout.metric = 7
+  if (exists("bout.metric") == FALSE)  bout.metric = 6
   if (exists("closedbout") == FALSE)  closedbout = FALSE
   if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
   if (exists("boutcriter.lig") == FALSE)  boutcriter.lig = 0.8
