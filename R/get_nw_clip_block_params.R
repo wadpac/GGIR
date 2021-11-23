@@ -3,6 +3,7 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
   blocksize = round(14512 * (sf/50) * chunksize)
   if (monc == 1) blocksize = round(21467 * (sf/80)  * chunksize)
   if (monc == 3 & dformat == 2) blocksize = round(blocksize)#round(blocksize/5) # Actigraph
+  if (monc == 3 & dformat == 6) blocksize = (24 * 3600) * chunksize
   if (monc == 4 & dformat == 3) blocksize = round(1440 * chunksize)
   if (monc == 4 & dformat == 4) blocksize = round(blocksize * 1.0043)
   if (monc == 4 & dformat == 2) blocksize = round(blocksize)

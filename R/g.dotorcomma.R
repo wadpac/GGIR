@@ -5,11 +5,11 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
   if (length(decn) == 0) decn = "." # assume . if not retrieved
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
+      txt = paste0(names(input)[i], "=", input[i])
       if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+        txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
       }
-      eval(parse(text=txt))
+      eval(parse(text = txt))
     }
   }
   #------------------------------------------------------------
@@ -26,9 +26,9 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
     # lot of zeros, which makes it impossible to detect decimal separator
     # "." will then be the default, which is not correct for "," systems.
     while (skiprows < 1000000) { #foundnonzero == FALSE & 
-      deci = as.matrix(read.csv(inputfile,skip = skiprows,nrow=10))
+      deci = as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10))
       skiprows = skiprows + 10000
-      if (length(unlist(strsplit(as.character(deci[2,2]),","))) > 1) {
+      if (length(unlist(strsplit(as.character(deci[2,2]), ","))) > 1) {
         decn = ","
         break() 
       }
@@ -37,26 +37,31 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
         if (numtemp != 0) break()
       }
     }
-    if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & getOption("OutDec") == ".") decn = ","
+    if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 1) {
     if (mon == 1) {
       # GENEA values are stroed in g without decimal place.
       # try(expr={deci = g.binread(inputfile,0,2)},silent=TRUE)
       # if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T) decn = ","
-    } else if (mon == 2 ){
-      if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
+    } else if (mon == 2 ) {
+      if ("GENEAread" %in% rownames(installed.packages()) == FALSE) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
-      try(expr={deci = GENEAread::read.bin(binfile=inputfile,start=1,end=3,mmap.load=FALSE,calibrate=TRUE)},silent=TRUE)
-      if(is.na(as.numeric(deci$data.out[2,2])) == T & getOption("OutDec") == ".") decn = ","
+      try(expr = {deci = GENEAread::read.bin(binfile = inputfile, start = 1,end = 3,mmap.load = FALSE, calibrate = TRUE)}, silent = TRUE)
+      if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == 3) {
-    try(expr={deci = g.wavread(wavfile=inputfile,start=1,end=10)},silent=TRUE)
-    if(is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & getOption("OutDec") == ".") decn = ","
+    try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)
+    if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {
-    try(expr={deci = g.cwaread(fileName = inputfile,start = 1, end = 10, desiredtz = desiredtz,
-                               interpolationType=1)$data},silent=TRUE)
-    if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & getOption("OutDec") == ".") decn = ","
+    try(expr = {deci = g.cwaread(fileName = inputfile,start = 1, end = 10, desiredtz = desiredtz,
+                               interpolationType = 1)$data},silent = TRUE)
+    if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
+  } else if (dformat == 6) { # .gt3x
+    try(expr = {deci = as.data.frame(read.gt3x::read.gt3x(path = inputfile,
+                                                       batch_begin = 1, batch_end = 10, 
+                                                       asDataFrame = TRUE))}, silent = TRUE)
+    if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   }
   dotorcomma = decn
 }

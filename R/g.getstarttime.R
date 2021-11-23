@@ -1,14 +1,12 @@
-g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile) { 
+g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectdaysfile) { 
   #get input variables (relevant when read.myacc.csv is used)
   #------------------------------------------------------------
   if (mon  == 1 & dformat == 1) {
     starttime = P$timestamps2[1]
-    lengthheader = nrow(header)
   } else if (mon  == 4 & dformat == 4) {
     starttime = P$data[1,1]
-    lengthheader = nrow(header)
-    starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
-    starttime = POSIXtime2iso8601(starttime,tz=desiredtz)
+    starttime = as.POSIXlt(starttime, tz = desiredtz, origin = "1970-01-01")
+    starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
   } else if (dformat == 3) { #wav
     starttime = c()
     #It seems that Axivity does not store timestamp in a consistent position
@@ -26,35 +24,29 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       if (length(which(vl == "Start")) > 0) {
         starttime = header$value[2]
       }
-
     }
     if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
     if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")])
-    lengthheader = nrow(header)
   } else if (mon == 2 & dformat == 1) {
     if (length(desiredtz) > 0) {
-      # starttime = as.POSIXlt(P$page.timestamps[1],tz=desiredtz)
-      # starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
       if (length(selectdaysfile) == 0) { # Tested way of getting starttime on GENEACtiv data
-        starttime = POSIXtime2iso8601(P$page.timestamps[1],tz=desiredtz)
+        starttime = POSIXtime2iso8601(P$page.timestamps[1], tz = desiredtz)
       } else { # Modified way of getting starttime from Millenium cohort data
-        starttime = POSIXtime2iso8601 (getFirstTimestamp(datafile, P$data.out[1,1]), tz = desiredtz)
+        starttime = POSIXtime2iso8601(getFirstTimestamp(datafile, P$data.out[1,1]), tz = desiredtz)
       }
       if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
         #needed for MaM study where first timestamp does not have clock time in it
-        starttime = POSIXtime2iso8601(P$page.timestamps[2],tz=desiredtz)
+        starttime = POSIXtime2iso8601(P$page.timestamps[2], tz = desiredtz)
       }
     } else {
       starttime = P$page.timestamps[1]
     }
-    lengthheader = nrow(header) #length(unlist(H))
   } else if (dformat == 2 & mon == 2) {
     starttime = as.character(P[1,1])
     starttime = as.POSIXlt(starttime)
-    lengthheader = 20
   } else if (dformat == 2 & (mon == 3 | mon == 4 | mon == 6)) {
     if (mon == 3 | mon == 6) {
-      tmph = read.csv(datafile,nrow=8,skip=1)
+      tmph = read.csv(datafile, nrow = 8, skip = 1)
       tmphi = 1
       while (tmphi < 10) {
         if (length(unlist(strsplit(as.character(tmph[tmphi,1]),"Start Time"))) > 1) {
@@ -71,14 +63,14 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
         }
         tmphi = tmphi + 1
       }
-      startdate = unlist(strsplit(as.character(tmph[tmphi,1]),"Start Date"))[2]
+      startdate = unlist(strsplit(as.character(tmph[tmphi,1]), "Start Date"))[2]
       startdate = as.character(unlist(strsplit(as.character(startdate)," ")))
       starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
     }
     if (mon == 4) {
       starttime = P[1,1]
-      starttime = as.POSIXlt(starttime,tz=desiredtz,origin="1970-01-01")
-      startdate = unlist(strsplit(as.character(starttime)," "))[1]
+      starttime = as.POSIXlt(starttime,tz = desiredtz,origin = "1970-01-01")
+      startdate = unlist(strsplit(as.character(starttime), " "))[1]
     } else {
       #-----------------------------------------
       #remove possible spaces in date or time
@@ -86,14 +78,14 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       newstartdate = startdate #20-11-2014
       if (length(startdate) > 1) {
         for (rpsi in 1:length(startdate)) {
-          if (length(unlist(strsplit(startdate[rpsi],"")))>1) {
+          if (length(unlist(strsplit(startdate[rpsi], ""))) > 1) {
             newstartdate = startdate[rpsi]
           }
         }
       }
       if (length(starttime) > 1) {
         for (rpsi in 1:length(starttime)) {
-          if (length(unlist(strsplit(starttime[rpsi],"")))>1) {
+          if (length(unlist(strsplit(starttime[rpsi], ""))) > 1) {
             newstarttime = starttime[rpsi]
           }
         }
@@ -103,14 +95,14 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
     }
     #-----------------------------------------
     # flexible four date/time formats
-    starttime = paste(startdate," ",starttime,sep="")
+    starttime = paste0(startdate," ",starttime)
     getOption("digits.secs")
     options(digits.secs = 3)
     if (mon == 3 | mon == 6) {
-      options(warn=-1)
-      topline = as.matrix(colnames(as.matrix(read.csv(datafile,nrow=1,skip=0))))
+      options(warn = -1)
+      topline = as.matrix(colnames(as.matrix(read.csv(datafile, nrow = 1, skip = 0))))
       topline = topline[1]  #To avoid dots
-      options(warn=0)
+      options(warn = 0)
       # Extraction of date format.
       # all formats to consider following R date formatting symbols:
       # Y year including century, y year excluding century, b month as character, m month as a number
@@ -174,14 +166,14 @@ g.getstarttime = function(datafile,P,header,mon,dformat,desiredtz,selectdaysfile
       }
       expectedformat = paste0('%',splitformat[1],sepa,'%',splitformat[2],sepa,'%',splitformat[3],' %H:%M:%S')
       Sys.setlocale("LC_TIME", "C")  # set language to English because that is what we use elsewhere in GGIR
-      starttime = as.POSIXlt(starttime,format=expectedformat)
-      lengthheader = 9
+      starttime = as.POSIXlt(starttime, format = expectedformat)
     }
   } else if (dformat == 5 & mon == 0) {
     starttime = P$data$timestamp[1]
-    lengthheader = nrow(P$header)
   } else if (mon == 5) {
     starttime = unisensR::readUnisensStartTime(datafile)
+  } else if (dformat == 6 & mon == 3) {
+    starttime = as.POSIXlt(as.character(P[1, 1]), tz = desiredtz)
   }
   return(starttime)
 }
