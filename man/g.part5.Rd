@@ -19,7 +19,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
   boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
   overwrite=FALSE, desiredtz="",
-  bout.metric=4, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE,
+  bout.metric=6, dayborder=0, save_ms5rawlevels=FALSE, do.parallel=TRUE,
   part5_agg2_60seconds = FALSE, save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
   data_cleaning_file=c(), includedaycrit.part5=2/3,
@@ -157,7 +157,7 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
     see \link{g.getmeta}
   }
   \item{bout.metric}{
-    See documnetion in \link{g.getbout} and
+    See documnetion in \link{g.getbout}
   }
   \item{dayborder}{
     Hour at which days start and end (default = 0), value = 4 would mean 4am
