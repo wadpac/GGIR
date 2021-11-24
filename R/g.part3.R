@@ -105,10 +105,14 @@ g.part3 = function(metadatadir = c(), f0, f1, anglethreshold = 5,timethreshold =
                           HASPT.ignore.invalid = HASPT.ignore.invalid)
           
           # SleepRegulartiyIndex calculation
-          if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
-            SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output, 
-                                                            epochsize = M$windowsizes[1], 
-                                                            desiredtz = desiredtz)
+          if (!is.null(SLE$output)) {
+            if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
+              SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output, 
+                                                              epochsize = M$windowsizes[1], 
+                                                              desiredtz = desiredtz)
+            } else {
+              SleepRegularityIndex = NA
+            }
           } else {
             SleepRegularityIndex = NA
           }

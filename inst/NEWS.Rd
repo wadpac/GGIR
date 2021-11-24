@@ -7,6 +7,7 @@
   feature that probaly few people use nowadays broke with the 2.5-0 release.
   \item g.shell.GGIR: Gives warning when user supplies double arguments.
   \item Part 4: Now warns when none of the IDs in the sleeplog could be matched with accelerometer data.
+  \item Part 3: Fix #472 SRI calculation not possible when complete absence of sleep in recording
 }
 }
 \section{Changes in version 2.5-1 (GitHub-only-release date:03-11-2021)}{

@@ -130,7 +130,7 @@ test_that("chainof5parts", {
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(4601))
   expect_that(ncol(TSFILE),equals(10))
-  expect_that(length(unique(TSFILE$class_id)),equals(9))
+  expect_that(length(unique(TSFILE$class_id)),equals(10))
  #--------------------------------------------
   #g.shell.GGIR
   suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,

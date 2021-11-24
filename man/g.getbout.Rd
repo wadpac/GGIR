@@ -7,8 +7,8 @@
   To detect bouts of behaviour in time series. The function is used by \link{g.analyse}
 }
 \usage{
-g.getbout(x, boutduration, boutcriter=0.8, closedbout=FALSE, 
-bout.metric=6,ws3=5)
+g.getbout(x, boutduration, boutcriter = 0.8, closedbout = FALSE, 
+bout.metric=6, ws3=5)
 }
 \arguments{
   \item{x}{vector of zeros and/or ones to be screened for bouts of ones
