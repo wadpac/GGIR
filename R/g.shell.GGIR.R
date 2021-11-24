@@ -297,6 +297,12 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (length(loglocation) == 1) {
     if (loglocation == "") loglocation = c() #inserted because some users mistakingly use this
   }
+  if (length(loglocation) == 0 & length(def.noc.sleep) != 1) {
+    warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
+                   " We assume you want to use the sleeplog and misunderstood",
+                   " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"))
+    def.noc.sleep = 1
+  }
   if (exists("coldid") == FALSE)  colid=1
   if (exists("coln1") == FALSE)  coln1=1
   if (exists("nnights") == FALSE)  nnights=c()

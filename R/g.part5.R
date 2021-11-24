@@ -7,7 +7,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                    threshold.vig = c(400), timewindow = c("MM","WW"),
                    boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
                    boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
-                   overwrite = FALSE, desiredtz = "", bout.metric = 4, dayborder = 0, 
+                   overwrite = FALSE, desiredtz = "", bout.metric = 4, dayborder = 0,
                    save_ms5rawlevels = FALSE, do.parallel = TRUE, part5_agg2_60seconds = FALSE,
                    save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
                    data_cleaning_file = c(), includedaycrit.part5 = 2/3,
@@ -362,7 +362,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               } else {
                                                 IDtmp = as.character(ID)
                                               }
-                                              
+
                                               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                                                       desiredtz = desiredtz)
                                               if ("angle" %in% colnames(ts)) {
@@ -379,13 +379,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               # - store in ts object, such that it is exported as timeseries
                                               # - exatrct number and summed duration per day
                                               # - add unit test
-                                              naps_nonwear = g.part5.classifyNaps(sibreport = sibreport, 
+                                              naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
                                                                                   desiredtz = desiredtz,
                                                                                   possible_nap_window = possible_nap_window,
                                                                                   possible_nap_dur = possible_nap_dur,
                                                                                   nap_model = nap_model,
                                                                                   HASIB.algo = HASIB.algo)
-                                              
+
                                             }
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
@@ -601,7 +601,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # AVERAGE ACC PER WINDOW
-                                                          
+
                                                           for (levelsc in 0:(length(Lnames) - 1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_", Lnames[levelsc + 1], "_mg", sep = "");      fi = fi + 1
@@ -916,7 +916,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
                                             if (length(emptycols) > 0) output = output[-emptycols]
                                           }
-                                          
+
                                           if (length(output) > 0) {
                                             if (nrow(output) > 0) {
                                               save(output, file = paste(metadatadir,
