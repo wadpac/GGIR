@@ -1,40 +1,40 @@
-g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
-                     daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
-                     do.bfen=FALSE, do.enmo=TRUE, do.lfenmo=FALSE,
-                     do.en=FALSE, do.hfen=FALSE,
-                     do.hfenplus=FALSE, do.mad=FALSE,
-                     do.anglex=FALSE, do.angley=FALSE, do.anglez=FALSE,
-                     do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE,
-                     do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE,
-                     do.dev_roll_med_acc_z=FALSE, do.enmoa=FALSE,
-                     do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
-                     do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
-                     do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
-                     do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
-                     lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
-                     dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
-                     interpolationType=1, imputeTimegaps=TRUE,
+g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
+                     daylimit = FALSE, offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
+                     do.bfen = FALSE, do.enmo = TRUE, do.lfenmo = FALSE,
+                     do.en = FALSE, do.hfen = FALSE,
+                     do.hfenplus = FALSE, do.mad = FALSE,
+                     do.anglex = FALSE, do.angley = FALSE, do.anglez = FALSE,
+                     do.roll_med_acc_x = FALSE, do.roll_med_acc_y = FALSE, do.roll_med_acc_z = FALSE,
+                     do.dev_roll_med_acc_x = FALSE, do.dev_roll_med_acc_y = FALSE,
+                     do.dev_roll_med_acc_z = FALSE, do.enmoa = FALSE,
+                     do.lfen = FALSE, do.lfx = FALSE, do.lfy = FALSE, do.lfz = FALSE,
+                     do.hfx = FALSE, do.hfy = FALSE, do.hfz = FALSE,
+                     do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE,
+                     do.zcx = FALSE, do.zcy = FALSE, do.zcz = FALSE,
+                     lb = 0.2, hb = 15,  n = 4, meantempcal = c(), chunksize = c(), selectdaysfile = c(),
+                     dayborder = 0, dynrange = c(), configtz = c(), myfun = c(),
+                     interpolationType = 1, imputeTimegaps = TRUE,
                      ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
+      txt = paste0(names(input)[i], "=", input[i])
       if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+        txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
       }
-      eval(parse(text=txt))
+      eval(parse(text = txt))
     }
   }
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
-  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
+  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec = "."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
-  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
-  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
+  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header = c()
+  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length = c()
   if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
   if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
-  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
+  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time = c()
   if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
   if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
   if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
@@ -43,7 +43,7 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
   if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
   if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
+  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz = "Europe/London"
   if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
   if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
   if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
@@ -55,9 +55,9 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
   metrics2do = data.frame(do.bfen, do.enmo,do.lfenmo,do.en,do.hfen,
                           do.hfenplus, do.mad,do.anglex,do.angley,do.anglez,
-                          do.roll_med_acc_x, do.roll_med_acc_y,do.roll_med_acc_z,
+                          do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
                           do.dev_roll_med_acc_x, do.dev_roll_med_acc_y,
-                          do.dev_roll_med_acc_z, do.enmoa,do.lfen,
+                          do.dev_roll_med_acc_z, do.enmoa, do.lfen,
                           do.lfx, do.lfy, do.lfz,
                           do.hfx, do.hfy, do.hfz,
                           do.bfx, do.bfy, do.bfz,
@@ -78,7 +78,7 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
     # bugs after waiting for the data to be load
     check_myfun(myfun, windowsizes)
   }
-
+  
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -100,7 +100,7 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
   }
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
-
+  
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -173,7 +173,7 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
   options(warn = -1)
   if (useRDA == FALSE) decn = g.dotorcomma(datafile, dformat, mon = mon, desiredtz = desiredtz, rmc.dec = rmc.dec)
   options(warn = 0)
-
+  
   ID = g.getidfromheaderobject(filename = filename, header = header, dformat = dformat, mon = mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat,  rmc.dynamic_range)
@@ -307,80 +307,37 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
         } else if (mon == 5) { #movisense
           data = as.matrix(P)
         } else if (dformat == 6) { #gt3x
-          #==========================
-          # # TO BE MOVED TO SEPARATE FUNCTION:
           if (imputeTimegaps == TRUE & dformat == 6) {
-            deltatime = abs(diff(as.numeric(P$time)))
-            gapsi = which(deltatime > 0.25) # look for gaps indices larger than a quarter of a second, because otherwise resampling may be able to address it
-            newP = c()
-            if (length(gapsi) > 0) { # if gaps exist
-              if (length(sf) == 0) { # estimate sample frequency if not given in header
-                sf = (P$time[gapsi[jk]] - P$time[1]) / (gapsi[1]-1)
+            deltatime = diff(P$time)
+            units(deltatime) = "secs"
+            deltatime = as.numeric(deltatime)
+            gapsi = which(deltatime > 0.25) # limit imputation to gaps larger than 0.25 seconds
+            NumberOfGaps = length(gapsi)
+            if (NumberOfGaps > 0) { 
+              # if gaps exist impute them by repeating the last known value
+              P$gap = 1
+              if (gapsi[1] < 2) {
+                gapsi = gapsi[2:length(gapsi)]
               }
-              newP = rbind(newP,P[1:gapsi[1],])
-              NumberOfGaps = length(gapsi)
-              for (jk in 1:NumberOfGaps) { # fill up gaps
-                # use average value from last second before gap for imputation
-                # this is flexible to both recording with and without temperature
-                non_time_colnames = colnames(P)[which(colnames(P) %in% "time" == FALSE)]
-                tmp = colMeans(P[(max(gapsi[jk] - sf, 1)):gapsi[jk], non_time_colnames])
-                last_record = t(as.data.frame(tmp))
-                if (all(last_record[1,c("X", "Y", "Z")] == c(0, 0, 0))) { # if it is only zero impute by c(1, 0, 0)
-                  last_record[1,c("X", "Y", "Z")] = c(1, 0, 0)
-                }
-                last_record[,c("X", "Y", "Z")] = last_record[,c("X", "Y", "Z")] / sqrt(sum(last_record[,c("X", "Y", "Z")]^2))
-                dt = as.numeric(difftime(P$time[gapsi[jk] + 1], P$time[gapsi[jk]], units = "secs")) # difference in time
-                largeGap = FALSE
-                if (dt > ((ws2 + 60)*sf)) {
-                  ## if time gap is > ws2 + 1 minute then
-                  # only impute just enugh time such that
-                  # there remains an integer number of ws2 windows in time gap
-                  # We will handle remaining time gaps at feature level
-                  dt = dt - floor(dt / (dt / (sf * ws2)))
-                  largeGap = TRUE
-                }
-                tmp = rep(seq_len(nrow(last_record)), each = dt*sf)
-                newblock = as.data.frame(last_record[rep(seq_len(nrow(last_record)), each = dt*sf), ])
-                
-                # add timestamps
-                if (largeGap == FALSE) {
-                  seqi = seq(P$time[gapsi[jk]], P$time[gapsi[jk] + 1] - (1/sf), by = 1/sf)
-                } else {
-                  seqi = seq(P$time[gapsi[jk]], (P$time[gapsi[jk]] + (dt*sf)) - (1/sf), by=1/sf)
-                }
-                if (length(seqi) >= nrow(newblock)) {
-                  newblock$time = seqi[1:nrow(newblock)]
-                  newblock = newblock[, colnames(P)] # reorder columns
-                  # colnames(newblock) = colnames(P)
-                  newP = rbind(newP, newblock)
-                  if (jk != NumberOfGaps) {
-                    newP = rbind(newP,P[((gapsi[jk]+1):gapsi[jk+1]),])
-                  } else {
-                    newP = rbind(newP,P[((gapsi[jk]+1):nrow(P)),]) # last block
-                  }
-                }
+              P$gap[gapsi - 1] = as.integer(deltatime[gapsi] * sf)
+              P <- as.data.frame(lapply(P, rep, P$gap))
+              #  normalise last known value to 1
+              i_normalise = which(P$gap != 1)
+              if (length(i_normalise) > 0) {
+                xyzCol = c("X", "Y", "Z")
+                P[i_normalise, xyzCol] = P[i_normalise, xyzCol] / rowMeans(sqrt(P[i_normalise, xyzCol]^2))
               }
-              P = newP
-              # identify remaining gaps longer than 1 hour
-              deltatime = abs(diff(P$time))
-              gapsi = which(deltatime > (ws2*sf)) # gaps indices
-              if (length(gapsi) > 0) {
-                gaps_in_data = TRUE
-              } else {
-                gaps_in_data = FALSE
-              }
+              # Timestamps are not imputed because from here onward GGIR does not need them
+              # Any problems with sample rate should have been fixed before this point
+              P = P[, which(colnames(P) != "gap")]
             }
+            data = as.matrix(P[,2:4])
           }
-          # END OF NEW FUNCTION
-          #==========================
-
-          data = as.matrix(P[,2:4])
         }
         #add left over data from last time
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
-        
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
                                                         P, header, desiredtz,
@@ -551,17 +508,6 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics, round, n_decimal_places)
         accmetrics = data.frame(sapply(accmetrics,c)) # collapse to data.frame
-        if (imputeTimegaps == TRUE & dformat == 6) {
-          if (gaps_in_data == TRUE) { 
-            # Impute the larger timegaps in the raw data at feature level
-            epochs2repeat = round(gapsi / (sf * ws3)) - 1
-            accmetrics$insert = 1
-            epochs2repeat = epochs2repeat[which(epochs2repeat > 0 & epochs2repeat <= nrow(accmetrics))]
-            accmetrics$insert[epochs2repeat] = round(deltatime[gapsi] / ws3) + 1
-            accmetrics <- as.data.frame(lapply(accmetrics, rep, accmetrics$insert))
-          }
-        }
-        
         BFEN = accmetrics$BFEN
         ENMO = accmetrics$ENMO
         ENMOa = accmetrics$ENMOa
@@ -814,21 +760,8 @@ g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
           col_mli = col_mli + 1
         }
         metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
-        
-        
-        if (imputeTimegaps == TRUE & dformat == 6) {
-          if (gaps_in_data == TRUE) { 
-            # Impute the larger timegaps in the raw data at feature level
-            metalong  = as.data.frame(metalong)
-            epochs2repeat = round(gapsi / (sf * ws2)) - 1
-            metalong_insert = rep(1, nrow(metalong))
-            epochs2repeat = epochs2repeat[which(epochs2repeat > 0 & epochs2repeat <= nrow(metalong))]
-            metalong_insert[epochs2repeat] = round(deltatime[gapsi] / ws2) + 1
-            metalong <- lapply(metalong, rep, metalong_insert)
-          }
-        }
         col_mli = col_mli + 1
-        count2  = count2 + nmin
+        count2 = count2 + nmin
         if (exists("data")) rm(data)
         if (exists("light")) rm(light)
         if (exists("temperature")) rm(temperature)
