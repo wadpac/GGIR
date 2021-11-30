@@ -66,10 +66,10 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
   gyro_available = FALSE
-  nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
-                   do.anglex,do.angley,do.anglez,
-                   do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                   do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,do.enmoa, do.lfen,
+  nmetrics = sum(c(do.bfen, do.enmo, do.lfenmo, do.en, do.hfen, do.hfenplus, do.mad,
+                   do.anglex, do.angley, do.anglez,
+                   do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
+                   do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z, do.enmoa, do.lfen,
                    do.lfx, do.lfy, do.lfz,  do.hfx, do.hfy, do.hfz,  do.bfx, do.bfy, do.bfz,
                    do.zcx, do.zcy, do.zcz))
   if (length(myfun) != 0) {
@@ -85,45 +85,45 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   #   #parameters
-  ws3 = windowsizes[1] ; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
+  ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * round(ws2/60))
     cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
-    cat(paste("\nlong windowsize has now been automatically adjusted to: ",ws2," seconds in order to meet this criteria.\n",sep=""))
+    cat(paste0("\nlong windowsize has now been automatically adjusted to: ", ws2, " seconds in order to meet this criteria.\n"))
   }
   if ((ws2/ws3) != round(ws2/ws3)) {
     def = c(1,5,10,15,20,30,60)
     def2 = abs(def - ws3)
     ws3 = as.numeric(def[which(def2 == min(def2))])
     cat("\nWARNING: The long windowsize needs to be a multitude of short windowsize. The \n")
-    cat(paste("\nshort windowsize has now been automatically adjusted to: ",ws3," seconds in order to meet this criteria.\n",sep=""))
+    cat(paste0("\nshort windowsize has now been automatically adjusted to: ", ws3, " seconds in order to meet this criteria.\n"))
   }
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
 
-  monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
-  filequality = data.frame(filetooshort=FALSE,filecorrupt=FALSE,
-                           filedoesnotholdday = FALSE,NFilePagesSkipped = 0, stringsAsFactors = TRUE)
+  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
+  filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
+                           filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
-  bsc_qc = data.frame(time=c(),size=c(), stringsAsFactors = FALSE)
+  bsc_qc = data.frame(time = c(), size = c(), stringsAsFactors = FALSE)
   # inspect file
   if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
     useRDA = FALSE
   }
-  options(warn=-1)
+  options(warn = -1)
   if (useRDA == FALSE) {
-    INFI = g.inspectfile(datafile, desiredtz=desiredtz,
-                         rmc.dec=rmc.dec,configtz=configtz,
+    INFI = g.inspectfile(datafile, desiredtz = desiredtz,
+                         rmc.dec = rmc.dec,configtz = configtz,
                          rmc.firstrow.acc = rmc.firstrow.acc,
                          rmc.firstrow.header = rmc.firstrow.header,
                          rmc.header.length = rmc.header.length,
                          rmc.col.acc = rmc.col.acc,
-                         rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                         rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                          rmc.unit.time = rmc.unit.time,
                          rmc.format.time = rmc.format.time,
@@ -141,7 +141,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     INFI = I
     sf = INFI$sf #= sf #new line
   }
-  options(warn=0)
+  options(warn = 0)
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
@@ -170,11 +170,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
   header = INFI$header
-  options(warn=-1)
-  if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
-  options(warn=0)
+  options(warn = -1)
+  if (useRDA == FALSE) decn = g.dotorcomma(datafile, dformat, mon = mon, desiredtz = desiredtz, rmc.dec = rmc.dec)
+  options(warn = 0)
 
-  ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
+  ID = g.getidfromheaderobject(filename = filename, header = header, dformat = dformat, mon = mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat,  rmc.dynamic_range)
   clipthres = ncb_params$clipthres
@@ -187,21 +187,21 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   nev = 80*10^7 # number expected values
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
-  metashort = matrix(" ",NR,(1+nmetrics)) #generating output matrix for acceleration signal
+  metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
   if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & length(rmc.col.temp) == 0)) {
     temp.available = FALSE
-  } else if (mon == 2 | (mon == 4 & dformat == 4)  | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)){
+  } else if (mon == 2 | (mon == 4 & dformat == 4)  | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)) {
     temp.available = TRUE
   }
   if (temp.available == FALSE) {
-    metalong = matrix(" ",((nev/(sf*ws2))+100),4) #generating output matrix for 15 minutes summaries
-  } else if (temp.available == TRUE & mon != 5){
-    metalong = matrix(" ",((nev/(sf*ws2))+100),7) #generating output matrix for 15 minutes summaries
-  } else if (temp.available == TRUE & mon == 5){
-    metalong = matrix(" ",((nev/(sf*ws2))+100),5) #generating output matrix for 15 minutes summaries
+    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
+  } else if (temp.available == TRUE & mon != 5) {
+    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7) #generating output matrix for 15 minutes summaries
+  } else if (temp.available == TRUE & mon == 5) {
+    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
   }
   #------------------------------------------
-  if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
+  if (length(unlist(strsplit(datafile, "[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
     useRDA = FALSE
@@ -213,25 +213,25 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   while (LD > 1) {
     P = c()
     if (i  == 1) {
-      cat(paste("\nLoading chunk: ",i,sep=""))
+      cat(paste0("\nLoading chunk: ", i))
     } else {
-      cat(paste(" ",i,sep=""))
+      cat(paste0(" ", i))
     }
-    options(warn=-1) #turn off warnings (code complains about unequal rowlengths
+    options(warn = -1) #turn off warnings (code complains about unequal rowlengths
     if (useRDA == FALSE) {
-      accread = g.readaccfile(filename=datafile,blocksize=blocksize,blocknumber=i,
+      accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                               selectdaysfile = selectdaysfile,
-                              filequality=filequality,decn=decn,
-                              dayborder=dayborder,ws=ws,desiredtz=desiredtz,
-                              PreviousEndPage=PreviousEndPage,
-                              inspectfileobject=INFI,
-                              configtz=configtz,
-                              rmc.dec=rmc.dec,
+                              filequality = filequality, decn = decn,
+                              dayborder = dayborder, ws = ws, desiredtz = desiredtz,
+                              PreviousEndPage = PreviousEndPage,
+                              inspectfileobject = INFI,
+                              configtz = configtz,
+                              rmc.dec = rmc.dec,
                               rmc.firstrow.acc = rmc.firstrow.acc,
                               rmc.firstrow.header = rmc.firstrow.header,
                               rmc.header.length = rmc.header.length,
                               rmc.col.acc = rmc.col.acc,
-                              rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                              rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
                               rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                               rmc.unit.time = rmc.unit.time,
                               rmc.format.time = rmc.format.time,
@@ -244,9 +244,9 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                               rmc.headername.recordingid = rmc.headername.sn,
                               rmc.header.structure = rmc.header.structure,
                               rmc.check4timegaps = rmc.check4timegaps,
-                              rmc.col.wear=rmc.col.wear,
-                              rmc.doresample=rmc.doresample,
-                              interpolationType=interpolationType)
+                              rmc.col.wear = rmc.col.wear,
+                              rmc.doresample = rmc.doresample,
+                              interpolationType = interpolationType)
       P = accread$P
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
@@ -256,13 +256,13 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       switchoffLD = accread$switchoffLD
       PreviousEndPage = accread$endpage
       startpage = accread$startpage
-      options(warn=-1) # to ignore warnings relating to failed mmap.load attempt
+      options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
       rm(accread); gc()
-      options(warn=0) # to ignore warnings relating to failed mmap.load attempt
-      if(mon == 5) { # if movisens, then read temperature
+      options(warn = 0) # to ignore warnings relating to failed mmap.load attempt
+      if (mon == 5) { # if movisens, then read temperature
         PreviousStartPage = startpage
         temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage,
-                                          PreviousEndPage, interpolationType=interpolationType)
+                                          PreviousEndPage, interpolationType = interpolationType)
         P = cbind(P, temperature[1:nrow(P)])
         colnames(P)[4] = "temp"
       }
@@ -272,7 +272,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       filedoesnotholdday = FALSE
       NFilePagesSkipped = 0
     }
-    options(warn=0) #turn on warnings
+    options(warn = 0) #turn on warnings
     #============
     #process data as read from binary file
     if (useRDA == TRUE) {
@@ -316,11 +316,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                                                         P, header, desiredtz,
                                                         sf, i, datafile,  ws2,
                                                         starttime, wday, weekdays, wdayname)
-        starttime=SWMT$starttime
-        meantemp=SWMT$meantemp
-        use.temp=SWMT$use.temp
-        wday=SWMT$wday; weekdays=SWMT$SWMT$weekdays; wdayname=SWMT$wdayname
-        desiredtz=SWMT$desiredtz; data=SWMT$data
+        starttime = SWMT$starttime
+        meantemp = SWMT$meantemp
+        use.temp = SWMT$use.temp
+        wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
+        desiredtz = SWMT$desiredtz; data = SWMT$data
         rm(SWMT)
         if (exists("P")) rm(P); gc()
         if (i != 0 & length(selectdaysfile) == 0 & exists("P")) rm(P); gc()
@@ -345,12 +345,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           }
           if ((LD - use) > 1) {
             # reading csv files
-            S = as.matrix(data[(use+1):LD,]) #store left over (included as.matrix)
+            S = as.matrix(data[(use + 1):LD,]) #store left over (included as.matrix)
             if (ncol(S) == 1) {
               S = t(S)
             }
           } else { #use all data
-            S = matrix(0,0,ncol(data))
+            S = matrix(0, 0, ncol(data))
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
@@ -363,7 +363,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(rmc.col.temp) > 0)) {
             if (mon == 2) {
               temperaturecolumn = 7; lightcolumn = 5
-            } else if (mon ==4) {
+            } else if (mon == 4) {
               temperaturecolumn = 5; lightcolumn = 7
               if (gyro_available == TRUE) {
                 temperaturecolumn = temperaturecolumn + 3
@@ -371,43 +371,43 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
               }
             } else if (mon == 5) {
               temperaturecolumn = 4
-            } else if (mon ==0) {
+            } else if (mon == 0) {
               temperaturecolumn = 5
             }
             if (mon != 0 & mon != 5) {
-              light = as.numeric(data[,lightcolumn])
+              light = as.numeric(data[, lightcolumn])
             }
             if (mon == 0 & length(rmc.col.wear) > 0) {
               wearcol = as.character(data[, which(colnames(data) == "wear")])
               suppressWarnings(storage.mode(wearcola) <- "logical")
             }
-            temperature = as.numeric(data[,temperaturecolumn])
+            temperature = as.numeric(data[, temperaturecolumn])
           }
           # Initialization of variables
           if (mon == 1) {
-            data = data[,1:3]
-            data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale) #rescale data
+            data = data[, 1:3]
+            data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
           } else if (mon == 4 & dformat == 3) {
-            data = data[,1:3]
-            data[,1:3] = scale(data[,1:3],center = -offset, scale = 1/scale) #rescale data
+            data = data[, 1:3]
+            data[, 1:3] = scale(data[, 1:3],center = -offset, scale = 1/scale) #rescale data
           } else if (mon == 4 & (dformat == 4 |  dformat == 2)) {
             extraction_succeeded = FALSE
             if (gyro_available == TRUE) {
               data[,5:7] = scale(data[,5:7],center = -offset, scale = 1/scale) #rescale data
               extraction_succeeded = TRUE
-              data = data[,2:7]
+              data = data[, 2:7]
             }
             if (extraction_succeeded == FALSE) {
-              data[,2:4] = scale(data[,2:4],center = -offset, scale = 1/scale) #rescale data
+              data[, 2:4] = scale(data[, 2:4],center = -offset, scale = 1/scale) #rescale data
               data = data[,2:4]
             }
           } else if (mon == 2 & dformat == 1) {
-            yy = as.matrix(cbind(as.numeric(data[,7]),as.numeric(data[,7]),as.numeric(data[,7])))
+            yy = as.matrix(cbind(as.numeric(data[, 7]),as.numeric(data[,7]),as.numeric(data[,7])))
             data = data[,2:4]
             data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
               scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
             rm(yy); gc()
-          } else if(mon == 5) {
+          } else if (mon == 5) {
             yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
             data = data[,1:3]
             data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
@@ -449,8 +449,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           # STORE THE RAW DATA
           # data[,1], data[,2], data[,3], starttime, (temperature, light)
           if (length(selectdaysfile) > 0) {
-            path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
-            raw_output_dir = paste0(path3,"/meta/raw")
+            path3 = paste0(outputdir,outputfolder) #where is output stored?
+            raw_output_dir = paste0(path3, "/meta/raw")
             if (!dir.exists(raw_output_dir)) {
               dir.create(raw_output_dir)
             }
@@ -460,23 +460,23 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
             if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 0)) {
               I = INFI
-              save(I,sf,wday,wdayname,decn,data,starttime,temperature,light,
-                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
+              save(I, sf, wday, wdayname, decn, data, starttime, temperature, light,
+                   file = paste0(raw_output_dir, "/", filename, "_day", i, ".RData"))
             } else if (mon == 5) {
-              save(I,sf,wday,wdayname,decn,data,starttime,temperature,
-                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
+              save(I, sf, wday, wdayname, decn, data, starttime, temperature,
+                   file = paste0(raw_output_dir, "/", filename, "_day", i, ".RData"))
             } else {
-              save(I,sf,wday,wdayname,decn,data,starttime,
-                   file = paste0(raw_output_dir,"/",filename,"_day",i,".RData",sep=""))
+              save(I, sf, wday, wdayname, decn, data, starttime,
+                   file = paste0(raw_output_dir, "/", filename, "_day", i, ".RData"))
             }
           }
         } else {
           #           load(datafile) # turned off because datafile will already be loaded (earlier on in script)
-          data = cbind(rep(0,nrow(data)),data)
+          data = cbind(rep(0, nrow(data)), data)
           LD = nrow(data)
         }
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
-        accmetrics = g.applymetrics(data = data,n=n,sf=sf,ws3=ws3,metrics2do=metrics2do, lb=lb,hb=hb)
+        accmetrics = g.applymetrics(data = data, n = n, sf = sf, ws3 = ws3, metrics2do = metrics2do, lb = lb, hb = hb)
         # round decimal places, because due to averaging we get a lot of information
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics,round,n_decimal_places)
@@ -522,119 +522,119 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
               myfun$timestamp = c()
             }
           }
-          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType=interpolationType)
+          OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType = interpolationType)
         }
       }
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
         #extend metashort and metalong if it is expected to be too short
-        if (count > (nrow(metashort) - (2.5*(3600/ws3) *24))) {
-          extension = matrix(" ",((3600/ws3) *24),ncol(metashort)) #add another day to metashort once you reach the end of it
+        if (count > (nrow(metashort) - (2.5*(3600/ws3) * 24))) {
+          extension = matrix(" ", ((3600/ws3) * 24), ncol(metashort)) #add another day to metashort once you reach the end of it
           metashort = rbind(metashort,extension)
-          extension2 = matrix(" ",((3600/ws2) *24),ncol(metalong)) #add another day to metashort once you reach the end of it
-          metalong = rbind(metalong,extension2)
+          extension2 = matrix(" ", ((3600/ws2) * 24), ncol(metalong)) #add another day to metashort once you reach the end of it
+          metalong = rbind(metalong, extension2)
           cat("\nvariable metashort extended\n")
         }
         col_msi = 2
         if (do.bfen == TRUE) {
-          metashort[count:(count-1+length(BFEN)),col_msi] = BFEN; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(BFEN)), col_msi] = BFEN; col_msi = col_msi + 1
         }
         if (do.enmo == TRUE) {
-          metashort[count:(count-1+length(ENMO)),col_msi] = ENMO; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(ENMO)), col_msi] = ENMO; col_msi = col_msi + 1
         }
         if (do.lfenmo == TRUE) {
-          metashort[count:(count-1+length(LFENMO)),col_msi] = LFENMO; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(LFENMO)), col_msi] = LFENMO; col_msi = col_msi + 1
         }
         if (do.en == TRUE) {
-          metashort[count:(count-1+length(EN_shortepoch)),col_msi] = EN_shortepoch; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(EN_shortepoch)), col_msi] = EN_shortepoch; col_msi = col_msi + 1
         }
         if (do.hfen == TRUE) {
-          metashort[count:(count-1+length(HFEN)),col_msi] = HFEN; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(HFEN)), col_msi] = HFEN; col_msi = col_msi + 1
         }
         if (do.hfenplus == TRUE) {
-          metashort[count:(count-1+length(HFENplus)),col_msi] = HFENplus; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(HFENplus)), col_msi] = HFENplus; col_msi = col_msi + 1
         }
         if (do.mad == TRUE) {
-          metashort[count:(count-1+length(MAD)),col_msi] = MAD; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(MAD)), col_msi] = MAD; col_msi = col_msi + 1
         }
         if (do.anglex == TRUE) {
-          metashort[count:(count-1+length(angle_x)),col_msi] = angle_x; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(angle_x)), col_msi] = angle_x; col_msi = col_msi + 1
         }
         if (do.angley == TRUE) {
-          metashort[count:(count-1+length(angle_y)),col_msi] = angle_y; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(angle_y)), col_msi] = angle_y; col_msi = col_msi + 1
         }
         if (do.anglez == TRUE) {
-          metashort[count:(count-1+length(angle_z)),col_msi] = angle_z; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(angle_z)), col_msi] = angle_z; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_x == TRUE) {
-          metashort[count:(count-1+length(roll_med_acc_x)),col_msi] = roll_med_acc_x; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(roll_med_acc_x)), col_msi] = roll_med_acc_x; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_y == TRUE) {
-          metashort[count:(count-1+length(roll_med_acc_y)),col_msi] = roll_med_acc_y; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(roll_med_acc_y)), col_msi] = roll_med_acc_y; col_msi = col_msi + 1
         }
         if (do.roll_med_acc_z == TRUE) {
-          metashort[count:(count-1+length(roll_med_acc_z)),col_msi] = roll_med_acc_z; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(roll_med_acc_z)), col_msi] = roll_med_acc_z; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_x == TRUE) {
-          metashort[count:(count-1+length(dev_roll_med_acc_x)),col_msi] = dev_roll_med_acc_x; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(dev_roll_med_acc_x)), col_msi] = dev_roll_med_acc_x; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_y == TRUE) {
-          metashort[count:(count-1+length(dev_roll_med_acc_y)),col_msi] = dev_roll_med_acc_y; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(dev_roll_med_acc_y)), col_msi] = dev_roll_med_acc_y; col_msi = col_msi + 1
         }
         if (do.dev_roll_med_acc_z == TRUE) {
-          metashort[count:(count-1+length(dev_roll_med_acc_z)),col_msi] = dev_roll_med_acc_z; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(dev_roll_med_acc_z)), col_msi] = dev_roll_med_acc_z; col_msi = col_msi + 1
         }
         if (do.enmoa == TRUE) {
-          metashort[count:(count-1+length(ENMOa)),col_msi] = ENMOa; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(ENMOa)), col_msi] = ENMOa; col_msi = col_msi + 1
         }
         if (do.lfen == TRUE) {
-          metashort[count:(count-1+length(LFEN)),col_msi] = LFEN; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(LFEN)), col_msi] = LFEN; col_msi = col_msi + 1
         }
         if (do.lfx == TRUE) {
-          metashort[count:(count-1+length(LFX)),col_msi] = LFX; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(LFX)), col_msi] = LFX; col_msi = col_msi + 1
         }
         if (do.lfy == TRUE) {
-          metashort[count:(count-1+length(LFY)),col_msi] = LFY; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(LFY)), col_msi] = LFY; col_msi = col_msi + 1
         }
         if (do.lfz == TRUE) {
-          metashort[count:(count-1+length(LFZ)),col_msi] = LFZ; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(LFZ)), col_msi] = LFZ; col_msi = col_msi + 1
         }
         if (do.hfx == TRUE) {
-          metashort[count:(count-1+length(HFX)),col_msi] = HFX; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(HFX)), col_msi] = HFX; col_msi = col_msi + 1
         }
         if (do.hfy == TRUE) {
-          metashort[count:(count-1+length(HFY)),col_msi] = HFY; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(HFY)), col_msi] = HFY; col_msi = col_msi + 1
         }
         if (do.hfz == TRUE) {
-          metashort[count:(count-1+length(HFZ)),col_msi] = HFZ; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(HFZ)), col_msi] = HFZ; col_msi = col_msi + 1
         }
         if (do.bfx == TRUE) {
-          metashort[count:(count-1+length(BFX)),col_msi] = BFX; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(BFX)), col_msi] = BFX; col_msi = col_msi + 1
         }
         if (do.bfy == TRUE) {
-          metashort[count:(count-1+length(BFY)),col_msi] = BFY; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(BFY)), col_msi] = BFY; col_msi = col_msi + 1
         }
         if (do.bfz == TRUE) {
-          metashort[count:(count-1+length(BFZ)),col_msi] = BFZ; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(BFZ)), col_msi] = BFZ; col_msi = col_msi + 1
         }
         if (do.zcx == TRUE) {
-          metashort[count:(count-1+length(ZCX)),col_msi] = ZCX; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(ZCX)), col_msi] = ZCX; col_msi = col_msi + 1
         }
         if (do.zcy == TRUE) {
-          metashort[count:(count-1+length(ZCY)),col_msi] = ZCY; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(ZCY)), col_msi] = ZCY; col_msi = col_msi + 1
         }
         if (do.zcz == TRUE) {
-          metashort[count:(count-1+length(ZCZ)),col_msi] = ZCZ; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(ZCZ)), col_msi] = ZCZ; col_msi = col_msi + 1
         }
         if (length(myfun) != 0) { # if an external function is applied.
-          NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
-          metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
+          NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
+          metashort[count:(count - 1 + nrow(OutputExternalFunction)), col_msi:(col_msi + NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
         # count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
         rm(accmetrics)
         # update blocksize depending on available memory
-        BlocksizeNew = updateBlocksize(blocksize=blocksize, bsc_qc=bsc_qc)
+        BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
         bsc_qc = BlocksizeNew$bsc_qc
         blocksize = BlocksizeNew$blocksize
         ##==================================================
@@ -644,11 +644,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         window = ws * sf #window size in samples
         nmin = floor(LD/(window2)) #nmin = minimum number of windows that fit in this block of data
         CW = NW = matrix(0,nmin,3) #CW is clipping, NW is non-wear
-        TS1W = TS2W = TS3W = TS4W = TS5W = TS6W = TS7W = CWav = NWav = matrix(0,nmin,1)
-        crit = ((window/window2)/2)+1
-        for (h in 1: nmin) { #number of windows
-          cliphoc1 = (((h-1)*window2) + window2*0.5 ) - window2*0.5 #does not use "window"
-          cliphoc2 = (((h-1)*window2) + window2*0.5 ) + window2*0.5
+        TS1W = TS2W = TS3W = TS4W = TS5W = TS6W = TS7W = CWav = NWav = matrix(0, nmin, 1)
+        crit = ((window/window2)/2) + 1
+        for (h in 1:nmin) { #number of windows
+          cliphoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window2 * 0.5 #does not use "window"
+          cliphoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window2 * 0.5
           if (h <= crit) {
             hoc1 = 1
             hoc2 = window
@@ -656,8 +656,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
             hoc1 = (nmin - crit)*window2
             hoc2 = nmin*window2 #end of data
           } else if (h > crit & h < (nmin - crit)) {
-            hoc1 = (((h - 1)*window2) + window2*0.5 ) - window*0.5
-            hoc2 = (((h - 1)*window2) + window2*0.5 ) + window*0.5
+            hoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window * 0.5
+            hoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window * 0.5
           }
           if (length(rmc.col.wear) > 0) {
             wearTable = table(wearcol[(1 + hoc1):hoc2], useNA = FALSE)
@@ -691,50 +691,50 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           CWav[h,1] = max(c(CW[h,1],CW[h,2],CW[h,3])) #indicator of clipping
         }
         col_mli = 2
-        metalong[count2:((count2 - 1)+nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
-        metalong[(count2):((count2 - 1)+nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
+        metalong[count2:((count2 - 1) + nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
+        metalong[(count2):((count2 - 1) + nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
         if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5) { #going from sample to ws2
           if (mon == 2 | (mon == 4 & dformat == 4)) {
             #light (running mean)
             lightc = cumsum(c(0,light))
-            select = seq(1,length(lightc),by=(ws2*sfold))
+            select = seq(1, length(lightc), by = (ws2 * sfold))
             lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
             rm(lightc); gc()
             #light (running max)
-            lightmax = matrix(0,length(lightmean),1)
+            lightmax = matrix(0, length(lightmean), 1)
             for (li in 1:(length(light)/(ws2*sfold))) {
-              tempm = max(light[((li-1)*(ws2*sfold)):(li*(ws2*sfold))])
+              tempm = max(light[((li - 1) * (ws2 * sfold)):(li * (ws2 * sfold))])
               if (length(tempm) > 0) {
                 lightmax[li] = tempm[1]
               } else {
-                lightmax[li] = max(light[((li-1)*(ws2*sfold)):(li*(ws2*sfold))])
+                lightmax[li] = max(light[((li - 1) * (ws2 * sfold)):(li * (ws2 * sfold))])
               }
             }
           }
           #temperature (running mean)
-          temperaturec = cumsum(c(0,temperature))
-          select = seq(1,length(temperaturec),by=(ws2*sfold))
+          temperaturec = cumsum(c(0, temperature))
+          select = seq(1, length(temperaturec), by = (ws2 * sfold))
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
           rm(temperaturec); gc()
         }
         #EN going from sample to ws2
-        ENc = cumsum(c(0,EN))
-        select = seq(1,length(ENc),by=(ws2*sf)) #<= EN is derived from data, so it needs the new sf
+        ENc = cumsum(c(0, EN))
+        select = seq(1, length(ENc), by = (ws2 * sf)) #<= EN is derived from data, so it needs the new sf
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
         rm(ENc, EN); gc()
         if (mon == 2 | (mon == 4 & dformat == 4)) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(lightmean, digits=n_decimal_places)
-          col_mli= col_mli + 1
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(lightmax, digits=n_decimal_places)
-          col_mli= col_mli + 1
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(temperatureb, digits=n_decimal_places)
-          col_mli= col_mli + 1
+          metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(lightmean, digits = n_decimal_places)
+          col_mli = col_mli + 1
+          metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(lightmax, digits = n_decimal_places)
+          col_mli = col_mli + 1
+          metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
+          col_mli = col_mli + 1
         } else if (mon == 5) {
-          metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(temperatureb, digits=n_decimal_places)
-          col_mli= col_mli + 1
+          metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
+          col_mli = col_mli + 1
         }
-        metalong[(count2):((count2-1)+nrow(NWav)),col_mli] = round(ENb, digits=n_decimal_places)
-        col_mli= col_mli + 1
+        metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
+        col_mli = col_mli + 1
         count2  = count2 + nmin
         if (exists("data")) rm(data)
         if (exists("light")) rm(light)
@@ -749,7 +749,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     if (ceiling(daylimit) != FALSE) {
       if (i == ceiling(daylimit)) { #to speed up testing only read first 'i' blocks of data
         LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
-        cat(paste("\nstopped reading data because this analysis is limited to ",ceiling(daylimit)," days\n",sep=""))
+        cat(paste0("\nstopped reading data because this analysis is limited to ", ceiling(daylimit), " days\n"))
       }
     }
     i = i + 1 #go to next block
@@ -763,19 +763,19 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     }
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
-      time5 = seq(starttime3,(starttime3+((nrow(metashort)-1)*ws3)),by=ws3)
-      if (length(selectdaysfile) > 0 & length(time5) > round((24*(3600/ws3))+1)) { # (Millenium cohort)
+      time5 = seq(starttime3, (starttime3 + ((nrow(metashort) - 1) * ws3)), by = ws3)
+      if (length(selectdaysfile) > 0 & length(time5) > round((24 * (3600/ws3)) + 1)) { # (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
-          I = g.inspectfile(datafile, desiredtz=desiredtz,
-                            rmc.dec=rmc.dec,configtz=configtz,
+          I = g.inspectfile(datafile, desiredtz = desiredtz,
+                            rmc.dec = rmc.dec, configtz = configtz,
                             rmc.firstrow.acc = rmc.firstrow.acc,
                             rmc.firstrow.header = rmc.firstrow.header,
                             rmc.header.length = rmc.header.length,
                             rmc.col.acc = rmc.col.acc,
-                            rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                            rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
                             rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                             rmc.unit.time = rmc.unit.time,
                             rmc.format.time = rmc.format.time,
@@ -791,33 +791,33 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
-        options(warn=-1)
+        options(warn = -1)
         char_deviceSerialNumber = is.na(as.numeric(deviceSerialNumber))
-        options(warn=0)
+        options(warn = 0)
         if (char_deviceSerialNumber ==  FALSE) {
           SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
         } else {
           SDFi = which(SDF$Monitor == deviceSerialNumber)
         }
-        dateday1 = as.character(SDF[SDFi,2])
-        dateday2 = as.character(SDF[SDFi,3])
-        dtday1 = as.POSIXlt(paste0(dateday1," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
-        dtday2 = as.POSIXlt(paste0(dateday2," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
+        dateday1 = as.character(SDF[SDFi, 2])
+        dateday2 = as.character(SDF[SDFi, 3])
+        dtday1 = as.POSIXlt(paste0(dateday1, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
+        dtday2 = as.POSIXlt(paste0(dateday2, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
         deltat = as.numeric(dtday2) - as.numeric(dtday1)
         delta_day = round(deltat / (3600*24)) - 1 # minus 1 because you naturally already
         # make a jump of 1 day
-        daych = seq(round((24*(3600/ws3))+1),length(time5),by=1)
-        if (length(daych) > (24*(3600/ws3))) {
-          daych = daych[1:(24*(3600/ws3))]
+        daych = seq(round((24 * (3600/ws3)) + 1),length(time5), by = 1)
+        if (length(daych) > (24 * (3600/ws3))) {
+          daych = daych[1:(24 * (3600/ws3))]
         }
-        time5[daych] = time5[daych] + (delta_day*24*3600) #+ 5
+        time5[daych] = time5[daych] + (delta_day * 24 * 3600) #+ 5
       }
       if (length(desiredtz) == 0) {
         print("desiredtz not specified, Europe/London used as default")
         desiredtz = "Europe/London"
       }
-      time6 = as.POSIXlt(time5,origin="1970-01-01",tz=desiredtz)
-      time6 = strftime(time6,format="%Y-%m-%dT%H:%M:%S%z")
+      time6 = as.POSIXlt(time5,origin = "1970-01-01", tz = desiredtz)
+      time6 = strftime(time6, format = "%Y-%m-%dT%H:%M:%S%z")
       metashort[,1] = as.character(time6)
     }
     cut2 = (count2):nrow(metalong) # how it was
@@ -826,19 +826,19 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     }
     if (nrow(metalong) > 2) {
       starttime4 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
-      time1 = seq(starttime4,(starttime4+(nrow(metalong)*ws2)-1),by=ws2)
-      if (length(selectdaysfile) > 0 & round((24*(3600/ws2))+1) < length(time1)) { # (Millenium cohort)
+      time1 = seq(starttime4,(starttime4 + (nrow(metalong) * ws2) - 1), by = ws2)
+      if (length(selectdaysfile) > 0 & round((24 * (3600/ws2)) + 1) < length(time1)) { # (Millenium cohort)
         #===================================================================
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
-          I = g.inspectfile(datafile, desiredtz=desiredtz,
-                            rmc.dec=rmc.dec,configtz=configtz,
+          I = g.inspectfile(datafile, desiredtz = desiredtz,
+                            rmc.dec = rmc.dec, configtz = configtz,
                             rmc.firstrow.acc = rmc.firstrow.acc,
                             rmc.firstrow.header = rmc.firstrow.header,
                             rmc.header.length = rmc.header.length,
                             rmc.col.acc = rmc.col.acc,
-                            rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
+                            rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
                             rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
                             rmc.unit.time = rmc.unit.time,
                             rmc.format.time = rmc.format.time,
@@ -857,34 +857,35 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         # deviceSerialNumber = hvars$deviceSerialNumber
         # SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
         if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
-          dateday1 = as.character(SDF[SDFi,2])
-          dateday2 = as.character(SDF[SDFi,3])
-          dtday1 = as.POSIXlt(paste0(dateday1," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
-          dtday2 = as.POSIXlt(paste0(dateday2," 01:00:00"),format="%d/%m/%Y %H:%M:%S")
+          dateday1 = as.character(SDF[SDFi, 2])
+          dateday2 = as.character(SDF[SDFi, 3])
+          dtday1 = as.POSIXlt(paste0(dateday1, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
+          dtday2 = as.POSIXlt(paste0(dateday2, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
           deltat = as.numeric(dtday2) - as.numeric(dtday1)
-          delta_day = round(deltat / (3600*24)) - 1 # minues 1 because you naturally already make a jump of 1 day
-          daych = seq(round((24*(3600/ws2))+1),length(time1),by=1)
-          time1[daych] = time1[daych] + (delta_day*24*3600) #+ 5
+          delta_day = round(deltat / (3600 * 24)) - 1 # minues 1 because you naturally already make a jump of 1 day
+          daych = seq(round((24 * (3600/ws2)) + 1), length(time1), by = 1)
+          time1[daych] = time1[daych] + (delta_day * 24 * 3600) #+ 5
         }
       }
       if (length(desiredtz) == 0) {
         print("desiredtz not specified, Europe/London used as default")
         desiredtz = "Europe/London"
       }
-      time2 = as.POSIXlt(time1,origin="1970-01-01",tz=desiredtz)
-      time2 = strftime(time2,format="%Y-%m-%dT%H:%M:%S%z")
-      metalong[,1] = as.character(time2)
+      time2 = as.POSIXlt(time1, origin = "1970-01-01", tz = desiredtz)
+      time2 = strftime(time2, format = "%Y-%m-%dT%H:%M:%S%z")
+      metalong[, 1] = as.character(time2)
     }
-    metricnames_short = c("timestamp","BFEN","ENMO","LFENMO","EN","HFEN","HFENplus","MAD",
-                          "anglex","angley","anglez","roll_med_acc_x","roll_med_acc_y","roll_med_acc_z",
-                          "dev_roll_med_acc_x","dev_roll_med_acc_y","dev_roll_med_acc_z","ENMOa","LFEN",
+    metricnames_short = c("timestamp", "BFEN", "ENMO", "LFENMO", "EN", "HFEN", "HFENplus", "MAD",
+                          "anglex", "angley", "anglez", "roll_med_acc_x", "roll_med_acc_y", "roll_med_acc_z",
+                          "dev_roll_med_acc_x", "dev_roll_med_acc_y", "dev_roll_med_acc_z", "ENMOa", "LFEN",
                           "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ", 
                           "ZCX", "ZCY", "ZCZ")
-    metricnames_short = as.character(metricnames_short[c(TRUE,do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
-                                                         do.anglex,do.angley,do.anglez,
-                                                         do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                                                         do.dev_roll_med_acc_x,do.dev_roll_med_acc_y,do.dev_roll_med_acc_z,
-                                                         do.enmoa,do.lfen,
+    metricnames_short = as.character(metricnames_short[c(TRUE, do.bfen, do.enmo, do.lfenmo, do.en,
+                                                         do.hfen, do.hfenplus, do.mad,
+                                                         do.anglex, do.angley, do.anglez,
+                                                         do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
+                                                         do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,
+                                                         do.enmoa, do.lfen,
                                                          do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
                                                          do.bfx, do.bfy, do.bfz, do.zcx, do.zcy, do.zcz)])
     # Following code is needed to make sure that algorithms that produce character value
@@ -912,10 +913,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
       metalong[,ncolml] = as.numeric(metalong[,ncolml])
     }
   } else {
-    metalong=metashort=wday=wdayname=windowsizes = c()
+    metalong = metashort = wday = wdayname = windowsizes = c()
   }
   # detach(accmetrics,warn.conflicts = FALSE)
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
-  invisible(list(filecorrupt=filecorrupt,filetooshort=filetooshort,NFilePagesSkipped=NFilePagesSkipped,
-                 metalong=metalong, metashort=metashort,wday=wday,wdayname=wdayname,windowsizes=windowsizes,bsc_qc=bsc_qc))
+  invisible(list(filecorrupt = filecorrupt, filetooshort = filetooshort, NFilePagesSkipped = NFilePagesSkipped,
+                 metalong = metalong, metashort = metashort, wday = wday, wdayname = wdayname,
+                 windowsizes = windowsizes, bsc_qc = bsc_qc))
 }
