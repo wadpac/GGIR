@@ -1,4 +1,4 @@
-g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
+g.getmeta = function(datafile, desiredtz = "",windowsizes = c(5,900,3600),
                      daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
                      do.bfen=FALSE, do.enmo=TRUE, do.lfenmo=FALSE,
                      do.en=FALSE, do.hfen=FALSE,
@@ -13,7 +13,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                      do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
                      lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
                      dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
-                     interpolationType=1,
+                     interpolationType=1, imputeTimegaps=TRUE,
                      ...) {
   #get input variables
   input = list(...)
@@ -87,7 +87,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   #   #parameters
   ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
   if ((ws2/60) != round(ws2/60)) {
-    ws2 = as.numeric(60 * round(ws2/60))
+    ws2 = as.numeric(60 * ceiling(ws2/60))
     cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
     cat(paste0("\nlong windowsize has now been automatically adjusted to: ", ws2, " seconds in order to meet this criteria.\n"))
   }
@@ -284,15 +284,15 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     }
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (useRDA == FALSE) {
-        if (mon == 1 & dformat == 1) {
+        if (mon == 1 & dformat == 1) { # GENEA bin
           data = P$rawxyz / 1000 #convert mg output to g for genea
-        } else if (mon == 2  & dformat == 1) {
+        } else if (mon == 2  & dformat == 1) { # GENEActiv bin
           data = P$data.out
-        } else if (dformat == 2) {
+        } else if (dformat == 2) { #csv Actigraph/GENEActiv
           data = P #as.matrix(P,dimnames = list(rownames(P),colnames(P)))
-        } else if (dformat == 3) {
+        } else if (dformat == 3) { #wav
           data = P$rawxyz
-        } else if (dformat == 4) {
+        } else if (dformat == 4) { #cwa
           if (P$header$hardwareType == "AX6") { # cwa AX6
             gyro_available = TRUE
           }
@@ -302,15 +302,85 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           }
           data = P$data
           P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
-        } else if (dformat == 5) {
+        } else if (dformat == 5) { # ad-hoc csv
           data = P$data
-        } else if (mon == 5) {
+        } else if (mon == 5) { #movisense
           data = as.matrix(P)
+        } else if (dformat == 6) { #gt3x
+          #==========================
+          # # TO BE MOVED TO SEPARATE FUNCTION:
+          if (imputeTimegaps == TRUE & dformat == 6) {
+            deltatime = abs(diff(as.numeric(P$time)))
+            gapsi = which(deltatime > 0.25) # look for gaps indices larger than a quarter of a second, because otherwise resampling may be able to address it
+            newP = c()
+            if (length(gapsi) > 0) { # if gaps exist
+              if (length(sf) == 0) { # estimate sample frequency if not given in header
+                sf = (P$time[gapsi[jk]] - P$time[1]) / (gapsi[1]-1)
+              }
+              newP = rbind(newP,P[1:gapsi[1],])
+              NumberOfGaps = length(gapsi)
+              for (jk in 1:NumberOfGaps) { # fill up gaps
+                # use average value from last second before gap for imputation
+                # this is flexible to both recording with and without temperature
+                non_time_colnames = colnames(P)[which(colnames(P) %in% "time" == FALSE)]
+                tmp = colMeans(P[(max(gapsi[jk] - sf, 1)):gapsi[jk], non_time_colnames])
+                last_record = t(as.data.frame(tmp))
+                if (all(last_record[1,c("X", "Y", "Z")] == c(0, 0, 0))) { # if it is only zero impute by c(1, 0, 0)
+                  last_record[1,c("X", "Y", "Z")] = c(1, 0, 0)
+                }
+                last_record[,c("X", "Y", "Z")] = last_record[,c("X", "Y", "Z")] / sqrt(sum(last_record[,c("X", "Y", "Z")]^2))
+                dt = as.numeric(difftime(P$time[gapsi[jk] + 1], P$time[gapsi[jk]], units = "secs")) # difference in time
+                largeGap = FALSE
+                if (dt > ((ws2 + 60)*sf)) {
+                  ## if time gap is > ws2 + 1 minute then
+                  # only impute just enugh time such that
+                  # there remains an integer number of ws2 windows in time gap
+                  # We will handle remaining time gaps at feature level
+                  dt = dt - floor(dt / (dt / (sf * ws2)))
+                  largeGap = TRUE
+                }
+                tmp = rep(seq_len(nrow(last_record)), each = dt*sf)
+                newblock = as.data.frame(last_record[rep(seq_len(nrow(last_record)), each = dt*sf), ])
+                
+                # add timestamps
+                if (largeGap == FALSE) {
+                  seqi = seq(P$time[gapsi[jk]], P$time[gapsi[jk] + 1] - (1/sf), by = 1/sf)
+                } else {
+                  seqi = seq(P$time[gapsi[jk]], (P$time[gapsi[jk]] + (dt*sf)) - (1/sf), by=1/sf)
+                }
+                if (length(seqi) >= nrow(newblock)) {
+                  newblock$time = seqi[1:nrow(newblock)]
+                  newblock = newblock[, colnames(P)] # reorder columns
+                  # colnames(newblock) = colnames(P)
+                  newP = rbind(newP, newblock)
+                  if (jk != NumberOfGaps) {
+                    newP = rbind(newP,P[((gapsi[jk]+1):gapsi[jk+1]),])
+                  } else {
+                    newP = rbind(newP,P[((gapsi[jk]+1):nrow(P)),]) # last block
+                  }
+                }
+              }
+              P = newP
+              # identify remaining gaps longer than 1 hour
+              deltatime = abs(diff(P$time))
+              gapsi = which(deltatime > (ws2*sf)) # gaps indices
+              if (length(gapsi) > 0) {
+                gaps_in_data = TRUE
+              } else {
+                gaps_in_data = FALSE
+              }
+            }
+          }
+          # END OF NEW FUNCTION
+          #==========================
+
+          data = as.matrix(P[,2:4])
         }
         #add left over data from last time
         if (nrow(S) > 0) {
           data = rbind(S,data)
         }
+        
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
                                                         P, header, desiredtz,
@@ -479,9 +549,19 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         accmetrics = g.applymetrics(data = data, n = n, sf = sf, ws3 = ws3, metrics2do = metrics2do, lb = lb, hb = hb)
         # round decimal places, because due to averaging we get a lot of information
         # that only slows down computation and increases storage size
-        accmetrics = lapply(accmetrics,round,n_decimal_places)
-
-
+        accmetrics = lapply(accmetrics, round, n_decimal_places)
+        accmetrics = data.frame(sapply(accmetrics,c)) # collapse to data.frame
+        if (imputeTimegaps == TRUE & dformat == 6) {
+          if (gaps_in_data == TRUE) { 
+            # Impute the larger timegaps in the raw data at feature level
+            epochs2repeat = round(gapsi / (sf * ws3)) - 1
+            accmetrics$insert = 1
+            epochs2repeat = epochs2repeat[which(epochs2repeat > 0 & epochs2repeat <= nrow(accmetrics))]
+            accmetrics$insert[epochs2repeat] = round(deltatime[gapsi] / ws3) + 1
+            accmetrics <- as.data.frame(lapply(accmetrics, rep, accmetrics$insert))
+          }
+        }
+        
         BFEN = accmetrics$BFEN
         ENMO = accmetrics$ENMO
         ENMOa = accmetrics$ENMOa
@@ -734,6 +814,19 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           col_mli = col_mli + 1
         }
         metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
+        
+        
+        if (imputeTimegaps == TRUE & dformat == 6) {
+          if (gaps_in_data == TRUE) { 
+            # Impute the larger timegaps in the raw data at feature level
+            metalong  = as.data.frame(metalong)
+            epochs2repeat = round(gapsi / (sf * ws2)) - 1
+            metalong_insert = rep(1, nrow(metalong))
+            epochs2repeat = epochs2repeat[which(epochs2repeat > 0 & epochs2repeat <= nrow(metalong))]
+            metalong_insert[epochs2repeat] = round(deltatime[gapsi] / ws2) + 1
+            metalong <- lapply(metalong, rep, metalong_insert)
+          }
+        }
         col_mli = col_mli + 1
         count2  = count2 + nmin
         if (exists("data")) rm(data)
@@ -756,7 +849,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   # deriving timestamps
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
-    # cut = (count+1):nrow(metashort) # how it was
     cut = count:nrow(metashort)
     if (length(cut) > 1) {
       metashort = as.matrix(metashort[-cut,])
@@ -850,7 +942,8 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
                             rmc.headername.sn = rmc.headername.sn,
                             rmc.headername.recordingid = rmc.headername.sn,
                             rmc.header.structure = rmc.header.structure,
-                            rmc.check4timegaps = rmc.check4timegaps)
+                            rmc.check4timegaps = rmc.check4timegaps,
+                            imputeTimegaps = TRUE)
         }
         # Next three lines commented out, because this was also calculated 50 lines earlier
         # hvars = g.extractheadervars(I)

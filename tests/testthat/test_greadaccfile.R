@@ -16,7 +16,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(Igt3x$monc, 3)
   expect_equal(Igt3x$dformc, 6)
   expect_equal(Igt3x$sf, 30)
-  IDH = g.getidfromheaderobject(gt3xfile, Igt3x$header, mon = 4,dformat = 6)
+  IDH = g.getidfromheaderobject(gt3xfile, Igt3x$header, mon = 3,dformat = 6)
   expect_equal(IDH, gt3xfile)
   EHV = g.extractheadervars(Igt3x)
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
@@ -115,5 +115,6 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   #also test one small other function:
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
-  expect_equal(length(fnames), 4)
+  expect_equal(length(fnames$fnames), 5)
+  expect_equal(length(fnames$fnamesfull), 5)
 })

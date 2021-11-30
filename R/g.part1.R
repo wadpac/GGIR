@@ -14,8 +14,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
                    lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit = 72, printsummary = TRUE, print.filename = FALSE, overwrite = FALSE,
                    backup.cal.coef = "retrieve", selectdaysfile = c(), dayborder = 0, dynrange = c(),
-                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2, myfun = c(),
-                   maxNcores = c(), interpolationType = 1, ...) {
+                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 1, myfun = c(),
+                   maxNcores = c(), interpolationType = 1, imputeTimegaps = TRUE, ...) {
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -68,17 +68,29 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
   filelist = isfilelist(datadir)
   if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
 
-  #Extra code to handle raw accelerometer data in Raw data format:
-  # list of all csv and bin files
-  fnames = datadir2fnames(datadir,filelist)
+  # list all accelerometer files
+  dir2fn = datadir2fnames(datadir,filelist)
+  fnames = dir2fn$fnames
+  fnamesfull = dir2fn$fnamesfull
+  # check whether these are movisens files
+  is.mv = ismovisens(datadir)
+  if (filelist == FALSE & is.mv == TRUE) {
+    fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
+    fnames = dir(datadir, recursive = FALSE)
+  }
   # check whether these are RDA
   if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
     useRDA = FALSE
   }
-  # check whether these are movisens files
-  is.mv = ismovisens(datadir)
+  if (useRDA == FALSE) {
+    filesizes = file.info(fnamesfull)$size # in bytes
+    bigEnough = which(filesizes/1e6 > minimumFileSizeMB)
+    fnamesfull = fnamesfull[bigEnough]
+    fnames = fnames[bigEnough]
+  }
+  
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
@@ -102,36 +114,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
     dir.create(file.path(outputdir, outputfolder, "results"))
     dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
   }
-  path3 = paste0(outputdir,outputfolder) #where is output stored?
+  path3 = paste0(outputdir, outputfolder) #where is output stored?
   use.temp = TRUE;
   daylimit = FALSE
 
-  #=================================================================
-  # Other parameters:
-  #--------------------------------
-  if (filelist == FALSE) {
-    fnamesfull = c(dir(datadir, recursive = TRUE, pattern = "[.]csv", full.names = TRUE),
-                   dir(datadir, recursive = TRUE, pattern = "[.]bin", full.names = TRUE),
-                   dir(datadir, recursive = TRUE, pattern = "[.]wav", full.names = TRUE),
-                   dir(datadir, recursive = TRUE, pattern = "[.]cwa", full.names = TRUE))
-    if (is.mv == TRUE) {
-      fnamesfull = dir(datadir,recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
-      fnames = dir(datadir, recursive = FALSE)
-      }
-  } else {
-    fnamesfull = datadir
-  }
-  if (useRDA == FALSE) {
-    filesizes = file.info(fnamesfull)$size # in bytes
-    toosmall = which(filesizes/1e6 > minimumFileSizeMB)
-    fnamesfull = fnamesfull[toosmall]
-    fnames = fnames[toosmall]
-  }
-  if (length(dir(datadir, recursive = TRUE, pattern = "[.]gt3")) > 0) {
-    warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
-                   "at the moment GGIR is not able to process this file format.",
-                   "Please convert to csv format with ActiLife software."))
-  }
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
@@ -535,7 +521,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
                       rmc.col.wear = rmc.col.wear,
                       rmc.doresample = rmc.doresample,
                       myfun = myfun,
-                      interpolationType = interpolationType)
+                      interpolationType = interpolationType,
+                      imputeTimegaps = imputeTimegaps)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
@@ -560,7 +547,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
             }
             fnames = unique(fnames)
           } else if (is.mv == FALSE) {
-            fnames = datadir2fnames(datadir,filelist) #GGIR::
+            dir2fn = datadir2fnames(datadir,filelist)
+            fnames = dir2fn$fnames
+            fnamesfull = dir2fn$fnamesfull
           }
           # check whether these are RDA
           if (length(unlist(strsplit(fnames[1], "[.]RD"))) > 1) {
