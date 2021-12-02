@@ -6,6 +6,7 @@
 \description{
   Classify Naps from identified sustained inactivty bouts, based on model
   that was originally trained with hip-worn accelerometer data in 3-3.5 year olds.
+  Assume that metric ENMO is used and HASIB.algo is set to vanHees2015.
 }
 \usage{
   g.part5.classifyNaps(sibreport = c(), desiredtz = "", 

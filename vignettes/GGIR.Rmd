@@ -658,6 +658,8 @@ IN2MVPA | Inactivity fragments followed by MVPA
 alpha | Power law exponent
 `x0.5` | Derived from power law exponent alpha, see [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
 `W0.5` | Derived from power law exponent alpha, see [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
+nap_number | Total number of naps, only calculate when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps`.
+nap_totalduration | Total nap duration, only calculate when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps`.
 
 **Special note if you are working on compositional data analysis:**
 

@@ -38,8 +38,9 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
       # Calculate probability
       sibreport$probability_nap = rep(0, nrow(sibreport))
       if (nap_model == "hip3yr" & HASIB.algo == "vanHees2015") {
-        sibreport$probability_nonwear = 1/(1 +  exp(-(-3.66653346337073 + (0.0547658553612778 * sibreport$acc_edge))))
-        sibreport$probability_nap[which(sibreport$probability_nonwear <  0.0618820206717758)] = 1
+        sibreport$probability_nonwear = 1/(1 +  exp(-(-3.56347023 + (0.04303106 * sibreport$acc_edge))))
+        
+        sibreport$probability_nap[which(sibreport$probability_nonwear <  0.0688203077670859)] = 1
       } else {
         sibreport = c()
       }

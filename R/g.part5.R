@@ -7,7 +7,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                    threshold.vig = c(400), timewindow = c("MM","WW"),
                    boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
                    boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
-                   overwrite = FALSE, desiredtz = "", bout.metric = 4, dayborder = 0,
+                   overwrite = FALSE, desiredtz = "", bout.metric = 6, dayborder = 0,
                    save_ms5rawlevels = FALSE, do.parallel = TRUE, part5_agg2_60seconds = FALSE,
                    save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
                    data_cleaning_file = c(), includedaycrit.part5 = 2/3,
@@ -118,11 +118,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
   # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
   # setup parallel backend to use many processors
   if (do.parallel == TRUE) {
-    cores=parallel::detectCores()
+    cores = parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
       if (length(maxNcores) == 0) maxNcores = Ncores
-      Ncores2use = min(c(Ncores-1, maxNcores))
+      Ncores2use = min(c(Ncores - 1, maxNcores))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {
@@ -171,7 +171,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                     # skip files from ms3 if there is no equivalent in ms4
                                     selp = which(fnames.ms4 == fnames.ms3[i])
                                     if (length(selp) > 0) {
-                                      if (file.exists(paste(metadatadir, "/meta/ms4.out/", fnames.ms4[selp], sep = "")) == FALSE) {
+                                      if (file.exists(paste0(metadatadir, "/meta/ms4.out/", fnames.ms4[selp])) == FALSE) {
                                         skip = 1
                                       }
                                     } else {
@@ -185,14 +185,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         cat(paste0(" ", i, " (", unlist(strsplit(as.character(t2), " "))[2], ")"))
                                         t1 = Sys.time()
                                       } else {
-                                        cat(paste(" ", i, sep = ""))
+                                        cat(paste0(" ", i))
                                       }
                                       # load output g.part2
                                       selp = which(fnames.ms2 == fnames.ms3[i]) # so, fnames.ms3[i] is the reference point for filenames
-                                      load(file = paste(metadatadir, "/meta/ms2.out/", fnames.ms2[selp], sep = ""))
+                                      load(file = paste0(metadatadir, "/meta/ms2.out/", fnames.ms2[selp]))
                                       # load output g.part4
                                       selp = which(fnames.ms4 == fnames.ms3[i])
-                                      load(file = paste(metadatadir,"/meta/ms4.out/", fnames.ms4[selp], sep = ""))
+                                      load(file = paste0(metadatadir,"/meta/ms4.out/", fnames.ms4[selp]))
                                       summarysleep = nightsummary
                                       rm(nightsummary)
                                       idindex = which(summarysleep$filename == fnames.ms3[i])
@@ -210,7 +210,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         summarysleep_tmp = summarysleep
                                         #======================================================================
                                         # load output g.part1
-                                        selp = which(fnames.ms1 == paste("meta_", fnames.ms3[i],sep=""))
+                                        selp = which(fnames.ms1 == paste0("meta_", fnames.ms3[i]))
                                         if (length(selp) != 1) {
                                           cat("Warning: Milestone data part 1 could not be retrieved")
                                         }
@@ -282,18 +282,18 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         # Remove impossible entries:
                                         pko = which(summarysleep_tmp$sleeponset == 0 & summarysleep_tmp$wakeup == 0 & summarysleep_tmp$SptDuration == 0)
                                         if (length(pko) > 0) {
-                                          summarysleep_tmp = summarysleep_tmp2[-pko,]
+                                          summarysleep_tmp = summarysleep_tmp[-pko,]
                                         }
                                         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
-                                          ws3new=ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
+                                          ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
                                           if (part5_agg2_60seconds == TRUE) {
                                             ts = ts_backup
                                           }
                                           # extract time and from that the indices for midnights
-                                          time_POSIX = iso8601chartime2POSIX(ts$time,tz=desiredtz)
+                                          time_POSIX = iso8601chartime2POSIX(ts$time,tz = desiredtz)
                                           tempp = unclass(time_POSIX)
                                           if (is.na(tempp$sec[1]) == TRUE) {
-                                            tempp = unclass(as.POSIXlt(ts$time,tz=desiredtz))
+                                            tempp = unclass(as.POSIXlt(ts$time, tz = desiredtz))
                                           }
                                           sec = tempp$sec
                                           min = tempp$min
@@ -375,17 +375,22 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               }
                                               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],".csv")
                                               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
-                                              # TO DO:
-                                              # - store in ts object, such that it is exported as timeseries
-                                              # - exatrct number and summed duration per day
-                                              # - add unit test
+                                              # nap detection
                                               naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
                                                                                   desiredtz = desiredtz,
                                                                                   possible_nap_window = possible_nap_window,
                                                                                   possible_nap_dur = possible_nap_dur,
                                                                                   nap_model = nap_model,
                                                                                   HASIB.algo = HASIB.algo)
-
+                                              # store in ts object, such that it is exported in as time series
+                                              ts$nap = 0
+                                              napsindices = which(naps_nonwear$probability_nap == 1)
+                                              if (length(napsindices) > 0) {
+                                                for (nni in napsindices) {
+                                                  napwindow = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                                                  if (length(napwindow) > 0) ts$nap[napwindow] = 1
+                                                }
+                                              }
                                             }
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
@@ -466,7 +471,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           # variables from part 4, we simply extract them
                                                           # from the new time series
                                                           # Note that this means that for MM windows there can be multiple or no wake or onsets
-                                                          date = as.Date(ts$time[qqq[1]+1])
+                                                          date = as.Date(ts$time[qqq[1] + 1])
                                                           if (add_one_day_to_next_date == TRUE & timewindowi == "WW") { # see below for explanation
                                                             date = date + 1
                                                             add_one_day_to_next_date = FALSE
@@ -511,7 +516,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           dayofinterst = which(recDates == date)
                                                           if (length(dayofinterst) > 0) {
                                                             dayofinterst = dayofinterst[1]
-                                                            dsummary[di,fi:(fi+5)] = c(summarysleep_tmp2$night[dayofinterst],
+                                                            dsummary[di,fi:(fi + 5)] = c(summarysleep_tmp2$night[dayofinterst],
                                                                                        summarysleep_tmp2$daysleeper[dayofinterst],
                                                                                        summarysleep_tmp2$cleaningcode[dayofinterst],
                                                                                        summarysleep_tmp2$guider[dayofinterst],
@@ -550,7 +555,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi] = "TRMi";      fi = fi + 1
                                                           dsummary[di,fi] = TRVi
                                                           ds_names[fi] = "TRVi";      fi = fi + 1
-                                                          wlih = ((qqq2-qqq1) + 1)/((60/ws3new)*60)
+                                                          wlih = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
                                                           if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
                                                           sse = qqq1:qqq2
                                                           #============================================================
@@ -572,7 +577,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           test_remember = c(di,fi)
                                                           for (levelsc in 0:(length(Lnames) - 1)) {
                                                             dsummary[di,fi] = (length(which(LEVELS[sse] == levelsc)) * ws3new) / 60
-                                                            ds_names[fi] = paste0("dur_",Lnames[levelsc+1],"_min");      fi = fi + 1
+                                                            ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
                                                           }
                                                           for (g in 1:4) {
                                                             dsummary[di, (fi + (g - 1))] = (length(which(OLEVELS[sse] == g)) * ws3new) / 60
@@ -600,8 +605,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                                                            ts$diur[sse] == 1)) / length(which(ts$diur[sse] == 1))
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
+                                                          # NAPS (estimation)
+                                                          if (do.sibreport == TRUE & "nap" %in% colnames(ts)) {
+                                                            dsummary[di,fi] = length(which(diff(c(-1, which(ts$nap[sse] == 1 & ts$diur[sse] == 0))) > 1))
+                                                            ds_names[fi] = "nap_number";      fi = fi + 1
+                                                            dsummary[di,fi] = round((sum(ts$nap[sse[which(ts$nap[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
+                                                            ds_names[fi] = "nap_totalduration";      fi = fi + 1
+                                                          }
+                                                          #===============================================
                                                           # AVERAGE ACC PER WINDOW
-
                                                           for (levelsc in 0:(length(Lnames) - 1)) {
                                                             dsummary[di,fi] = mean(ts$ACC[sse[LEVELS[sse] == levelsc]], na.rm = TRUE)
                                                             ds_names[fi] = paste("ACC_", Lnames[levelsc + 1], "_mg", sep = "");      fi = fi + 1
@@ -855,7 +867,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                                                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
                                                     # save time series to csv files
-                                                    g.part5.savetimeseries(ts[, c("time", "ACC", "diur", "nonwear", "guider", "window")], LEVELS,
+                                                    if (do.sibreport == TRUE) {
+                                                      napcol = "nap"
+                                                    } else {
+                                                      napcol = c()
+                                                    }
+                                                    g.part5.savetimeseries(ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napcol)], LEVELS,
                                                                            desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid,
                                                                            DaCleanFile = DaCleanFile,
                                                                            includedaycrit.part5 = includedaycrit.part5, ID = ID)
