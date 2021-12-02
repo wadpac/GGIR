@@ -1,5 +1,5 @@
 g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes = c(5,900,3600),
-                   desiredtz = "",chunksize=c(), studyname = c(),
+                   desiredtz = "", chunksize = c(), studyname = c(),
                    do.enmo = TRUE, do.lfenmo = FALSE, do.en = FALSE,
                    do.bfen = FALSE, do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE,
                    do.anglex = FALSE, do.angley = FALSE, do.anglez = FALSE,
@@ -52,7 +52,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-
+  
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -67,7 +67,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
-
   # list all accelerometer files
   dir2fn = datadir2fnames(datadir,filelist)
   fnames = dir2fn$fnames
@@ -90,7 +89,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
     fnamesfull = fnamesfull[bigEnough]
     fnames = fnames[bigEnough]
   }
-  
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
@@ -115,9 +113,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
     dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
   }
   path3 = paste0(outputdir, outputfolder) #where is output stored?
-  use.temp = TRUE;
+  use.temp = TRUE
   daylimit = FALSE
-
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
@@ -157,7 +154,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
       tmp5 = fnamesfull
       phase = apply(X = as.matrix(fnamesfull), MARGIN = 1, FUN = f17)
       tmp6 = phase
-      }
+    }
   } else {
     stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
                 "in the directory specified with argument datadir"))
@@ -173,7 +170,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste0(outputdir, outputfolder, "/meta/basic"))
-
+  
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
@@ -210,7 +207,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
       Ncores2use = min(c(Ncores - 1, maxNcores))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
-
+      
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       do.parallel = FALSE
@@ -234,344 +231,344 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                          "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv",
                          "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                         "g.extractheadervars")
+                         "g.extractheadervars", "g.imputeTimegaps")
     errhand = 'stop'
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
   }
   `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
-                                .export = functions2passon, .errorhandling = errhand) %myinfix% {
-    tryCatchResult = tryCatch({
-      # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
-      if (print.filename == TRUE) {
-        cat(paste0("\nFile name: ",fnames[i]))
-      }
-      if (filelist == TRUE) {
-        datafile = as.character(fnames[i])
-      } else {
-        datafile = paste0(datadir,"/",fnames[i])
-      }
-      #=========================================================
-      #check whether file has already been processed
-      #by comparing filename to read with list of processed files
-      fnames_without = as.character(unlist(strsplit(as.character(fnames[i]),".csv"))[1])
-      #remove / if it was a list
-      fnames_without2 = fnames_without
-      teimp = unlist(strsplit(as.character(fnames_without),"/"))
-      if (length(teimp) > 1) {
-        fnames_without2 = teimp[length(teimp)]
-      } else {
-        fnames_without2 = fnames_without
-      }
-      fnames_without = fnames_without2
-      withoutRD = unlist(strsplit(fnames_without,"[.]RD"))
-      if (length(withoutRD) > 1) {
-        fnames_without = withoutRD[1]
-      }
-      if (length(ffdone) > 0) {
-        ffdone_without = 1:length(ffdone) #dummy variable
-        for (index in 1:length(ffdone)) {
-          ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
-        }
-        if (length(which(ffdone_without == fnames_without)) > 0) {
-          skip = 1 #skip this file because it was analysed before")
-        } else {
-          skip = 0 #do not skip this file
-        }
-      } else {
-        skip = 0
-      }
-      if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-        useRDA = TRUE
-      } else {
-        useRDA = FALSE
-      }
-      #=============================================================
-      # Inspect file (and store output later on)
-      options(warn = -1) #turn off warnings
-      if (useRDA == FALSE) {
-        I = g.inspectfile(datafile, desiredtz = desiredtz,
-                          rmc.dec = rmc.dec,configtz = configtz,
-                          rmc.firstrow.acc = rmc.firstrow.acc,
-                          rmc.firstrow.header = rmc.firstrow.header,
-                          rmc.header.length = rmc.header.length,
-                          rmc.col.acc = rmc.col.acc,
-                          rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
-                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                          rmc.unit.time = rmc.unit.time,
-                          rmc.format.time = rmc.format.time,
-                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                          rmc.unsignedbit = rmc.unsignedbit,
-                          rmc.origin = rmc.origin,
-                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                          rmc.headername.sf = rmc.headername.sf,
-                          rmc.headername.sn = rmc.headername.sn,
-                          rmc.headername.recordingid = rmc.headername.sn,
-                          rmc.header.structure = rmc.header.structure,
-                          rmc.check4timegaps = rmc.check4timegaps)
-      } else {
-        load(datafile) # to do: would be nice to only load the object I and not the entire datafile
-        I$filename = fnames[i]
-      }
-      options(warn = 0) #turn on warnings
-      if (overwrite == TRUE) skip = 0
-      if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
-        cat(paste0("\nP1 file ",i))
-        turn.do.cal.back.on = FALSE
-        if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
-          do.cal = FALSE
-          turn.do.cal.back.on = TRUE
-        }
-        data_quality_report_exists = file.exists(paste0(outputdir, "/", outputfolder,
-                                                        "/results/QC/data_quality_report.csv"))
-        assigned.backup.cal.coef = FALSE
-        if (length(backup.cal.coef) > 0) {
-          if (backup.cal.coef == "retrieve") {
-            if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
-              backup.cal.coef = paste0(outputdir, outputfolder, "/results/QC/data_quality_report.csv")
-              assigned.backup.cal.coef = TRUE
-            }
-          } else if (backup.cal.coef == "redo") { #ignore the backup calibration coefficients, and derive them again
-            backup.cal.coef = c()
-            assigned.backup.cal.coef = TRUE
-          } else if (backup.cal.coef != "redo" & backup.cal.coef != "retrieve") {
-            # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
-            assigned.backup.cal.coef = TRUE
-          }
-        }
-        #data_quality_report.csv does not exist and there is also no ot
-        if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
-        #--------------------------------------
-        if (do.cal == TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
-          # cat(paste0("\n",rep('-',options()$width),collapse=''))
-          cat("\n")
-          cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-          C = g.calibrate(datafile, spherecrit = spherecrit,
-                          minloadcrit = minloadcrit,printsummary = printsummary, chunksize = chunksize,
-                          windowsizes = windowsizes,selectdaysfile = selectdaysfile,dayborder = dayborder,
-                          desiredtz = desiredtz,
-                          rmc.dec = rmc.dec,configtz = configtz,
-                          rmc.firstrow.acc = rmc.firstrow.acc,
-                          rmc.firstrow.header = rmc.firstrow.header,
-                          rmc.header.length = rmc.header.length,
-                          rmc.col.acc = rmc.col.acc,
-                          rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
-                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                          rmc.unit.time = rmc.unit.time,
-                          rmc.format.time = rmc.format.time,
-                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                          rmc.unsignedbit = rmc.unsignedbit,
-                          rmc.origin = rmc.origin,
-                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                          rmc.headername.sf = rmc.headername.sf,
-                          rmc.headername.sn = rmc.headername.sn,
-                          rmc.headername.recordingid = rmc.headername.sn,
-                          rmc.header.structure = rmc.header.structure,
-                          rmc.check4timegaps = rmc.check4timegaps,
-                          rmc.noise = rmc.noise,
-                          rmc.col.wear = rmc.col.wear,
-                          rmc.doresample = rmc.doresample)
-        } else {
-          C = list(cal.error.end = 0, cal.error.start = 0)
-          C$scale = c(1, 1, 1)
-          C$offset = c(0, 0, 0)
-          C$tempoffset =  c(0, 0, 0)
-          C$QCmessage = "Autocalibration not done"
-          C$npoints = 0
-          C$nhoursused = 0
-          C$use.temp = use.temp
-        }
-        if (turn.do.cal.back.on == TRUE) {
-          do.cal = TRUE
-        }
-        cal.error.end = C$cal.error.end
-        cal.error.start = C$cal.error.start
-        if (length(cal.error.start) == 0) {
-          #file too shortcorrupt to even calculate basic calibration value
-          cal.error.start = NA
-        }
-        check.backup.cal.coef = FALSE
-        if (is.na(cal.error.start) == T | length(cal.error.end) == 0) {
-          C$scale = c(1, 1, 1); C$offset = c(0, 0, 0); C$tempoffset = c(0, 0, 0)
-          check.backup.cal.coef = TRUE
-        } else {
-          if (cal.error.start < cal.error.end) {
-            C$scale = c(1, 1, 1); C$offset = c(0, 0, 0); C$tempoffset=  c(0, 0, 0)
-            check.backup.cal.coef = TRUE
-          }
-        }
-        if (length(backup.cal.coef) > 0) check.backup.cal.coef = TRUE
-        #if calibration fails then check whether calibration coefficients are provided in a separate csv-spreadsheet
-        # this csv spreadhseet needs to be created by the end-user and should contain:
-        # column with names of the accelerometer files
-        # three columns respectively named scale.x, scale.y, and scale.z
-        # three columns respectively named offset.x, offset.y, and offset.z
-        # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
-        # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
-        if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) {
-          bcc.data = read.csv(backup.cal.coef)
-          cat("\nRetrieving previously derived calibration coefficients")
-          bcc.data$filename = as.character(bcc.data$filename)
-          for (nri in 1:nrow(bcc.data)) {
-            tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
-            if (length(tmp) > 1) {
-              bcc.data$filename[nri] = tmp[2]
-              bcc.data$filename[nri] = unlist(strsplit(bcc.data$filename[nri],".RData"))[1]
-            }
-          }
-          if (length(which(as.character(bcc.data$filename) == fnames[i])) > 0) {
-            bcc.i = which(bcc.data$filename == fnames[i])
-            bcc.cal.error.start = which(colnames(bcc.data) == "cal.error.start")
-            bcc.cal.error.end = which(colnames(bcc.data) == "cal.error.end")
-            bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
-            bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
-            bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
-            C$scale = as.numeric(bcc.data[bcc.i[1], bcc.scalei])
-            C$offset = as.numeric(bcc.data[bcc.i[1], bcc.offseti])
-            C$tempoffset =  as.numeric(bcc.data[bcc.i[1], bcc.temp.offseti])
-            cat(paste0("\nRetrieved Calibration error (g) before: ", as.numeric(bcc.data[bcc.i[1], bcc.cal.error.start])))
-            cat(paste0("\nRetrieved Callibration error (g) after: ", as.numeric(bcc.data[bcc.i[1], bcc.cal.error.end])))
-            cat(paste0("\nRetrieved offset correction ", c("x","y","z"),": ", C$offset))
-            cat(paste0("\nRetrieved scale correction ", c("x","y","z"),": ", C$scale))
-            cat(paste0("\nRetrieved tempoffset correction ", c("x","y","z"),": ", C$tempoffset))
-            cat("\n")
-          } else {
-            # cat("\nNo matching filename found in backup.cal.coef\n")
-            # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
-            if (do.cal == TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
-              cat("\n")
-              cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-              C = g.calibrate(datafile, spherecrit = spherecrit,
-                              minloadcrit = minloadcrit, printsummary = printsummary, chunksize = chunksize,
-                              windowsizes = windowsizes, selectdaysfile = selectdaysfile, dayborder = dayborder,
-                              desiredtz = desiredtz, rmc.dec = rmc.dec, configtz = configtz,
-                              rmc.firstrow.acc = rmc.firstrow.acc,
-                              rmc.firstrow.header = rmc.firstrow.header,
-                              rmc.header.length = rmc.header.length,
-                              rmc.col.acc = rmc.col.acc,
-                              rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
-                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                              rmc.unit.time = rmc.unit.time,
-                              rmc.format.time = rmc.format.time,
-                              rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                              rmc.unsignedbit = rmc.unsignedbit,
-                              rmc.origin = rmc.origin,
-                              rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                              rmc.headername.sf = rmc.headername.sf,
-                              rmc.headername.sn = rmc.headername.sn,
-                              rmc.headername.recordingid = rmc.headername.sn,
-                              rmc.header.structure = rmc.header.structure,
-                              rmc.check4timegaps = rmc.check4timegaps,
-                              rmc.noise = rmc.noise,
-                              interpolationType = interpolationType)
-            }
-          }
-        }
-        #------------------------------------------------
-        cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
-        M = g.getmeta(datafile,
-                      do.bfen = do.bfen,
-                      do.enmo = do.enmo,
-                      do.lfenmo = do.lfenmo,
-                      do.lfen = do.lfen,
-                      do.en = do.en,
-                      do.hfen = do.hfen,
-                      do.hfenplus = do.hfenplus,
-                      do.mad = do.mad,
-                      do.anglex = do.anglex, do.angley = do.angley, do.anglez = do.anglez,
-                      do.roll_med_acc_x = do.roll_med_acc_x,
-                      do.roll_med_acc_y = do.roll_med_acc_y,
-                      do.roll_med_acc_z = do.roll_med_acc_z,
-                      do.dev_roll_med_acc_x = do.dev_roll_med_acc_x, 
-                      do.dev_roll_med_acc_y = do.dev_roll_med_acc_y, 
-                      do.dev_roll_med_acc_z = do.dev_roll_med_acc_z,
-                      do.enmoa = do.enmoa,
-                      do.lfx = do.lfx, do.lfy = do.lfy, do.lfz = do.lfz, 
-                      do.hfx = do.hfx, do.hfy = do.hfy, do.hfz = do.hfz,
-                      do.bfx = do.bfx, do.bfy = do.bfy, do.bfz = do.bfz, 
-                      do.zcx = do.zcx, do.zcy = do.zcy, do.zcz = do.zcz,
-                      lb = lb, hb = hb,  n = n,
-                      desiredtz = desiredtz, daylimit = daylimit, windowsizes = windowsizes,
-                      tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
-                      meantempcal = C$meantempcal, chunksize = chunksize,
-                      selectdaysfile = selectdaysfile,
-                      outputdir = outputdir,
-                      outputfolder = outputfolder,
-                      dayborder = dayborder, dynrange = dynrange,
-                      rmc.dec = rmc.dec, configtz = configtz,
-                      rmc.firstrow.acc = rmc.firstrow.acc,
-                      rmc.firstrow.header = rmc.firstrow.header,
-                      rmc.header.length = rmc.header.length,
-                      rmc.col.acc = rmc.col.acc,
-                      rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
-                      rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                      rmc.unit.time = rmc.unit.time,
-                      rmc.format.time = rmc.format.time,
-                      rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                      rmc.unsignedbit = rmc.unsignedbit,
-                      rmc.origin = rmc.origin,
-                      rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                      rmc.headername.sf = rmc.headername.sf,
-                      rmc.headername.sn = rmc.headername.sn,
-                      rmc.headername.recordingid = rmc.headername.sn,
-                      rmc.header.structure = rmc.header.structure,
-                      rmc.check4timegaps = rmc.check4timegaps,
-                      rmc.noise = rmc.noise,
-                      rmc.col.wear = rmc.col.wear,
-                      rmc.doresample = rmc.doresample,
-                      myfun = myfun,
-                      interpolationType = interpolationType,
-                      imputeTimegaps = imputeTimegaps)
-        #------------------------------------------------
-        cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
-        # remove directory in filename if present
-        filename = unlist(strsplit(fnames[i],"/"))
-        if (length(filename) > 0) {
-          filename = filename[length(filename)]
-        } else {
-          filename = fnames[i]
-        }
-        filename_dir = tmp5[i]; filefoldername = tmp6[i]
-        if (length(unlist(strsplit(fnames[1], "[.]RD"))) == 1) { # to avoid getting .RData.RData
-          filename = paste0(filename, ".RData")
-        }
-        save(M, I, C, filename_dir, filefoldername, file = paste0(path3, "/meta/basic/meta_", filename))
-        # as metadatdir is not known derive it:
-        metadatadir = c()
-        if (length(datadir) > 0) {
-          # list of all csv and bin files
-          if (is.mv == TRUE) {
-            for (filei in 1:length(fnames)) {
-              fnames[[filei]] = strsplit(fnames[[filei]], "/")[[1]][1]
-            }
-            fnames = unique(fnames)
-          } else if (is.mv == FALSE) {
-            dir2fn = datadir2fnames(datadir,filelist)
-            fnames = dir2fn$fnames
-            fnamesfull = dir2fn$fnamesfull
-          }
-          # check whether these are RDA
-          if (length(unlist(strsplit(fnames[1], "[.]RD"))) > 1) {
-            useRDA = TRUE
-          } else {
-            useRDA = FALSE
-          }
-        } else {
-          useRDA = FALSE
-        }
-        if (filelist == TRUE | useRDA == TRUE) {
-          metadatadir = paste0(outputdir, "/output_", studyname)
-        } else {
-          outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
-          metadatadir = paste0(outputdir, "/output_", outputfoldername)
-        }
-        rm(M); rm(I); rm(C)
-        # } # for loop
-      }
-    }) # END tryCatch
-    return(tryCatchResult)
-  }
+                                 .export = functions2passon, .errorhandling = errhand) %myinfix% {
+                                   tryCatchResult = tryCatch({
+                                     # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
+                                     if (print.filename == TRUE) {
+                                       cat(paste0("\nFile name: ",fnames[i]))
+                                     }
+                                     if (filelist == TRUE) {
+                                       datafile = as.character(fnames[i])
+                                     } else {
+                                       datafile = paste0(datadir,"/",fnames[i])
+                                     }
+                                     #=========================================================
+                                     #check whether file has already been processed
+                                     #by comparing filename to read with list of processed files
+                                     fnames_without = as.character(unlist(strsplit(as.character(fnames[i]),".csv"))[1])
+                                     #remove / if it was a list
+                                     fnames_without2 = fnames_without
+                                     teimp = unlist(strsplit(as.character(fnames_without),"/"))
+                                     if (length(teimp) > 1) {
+                                       fnames_without2 = teimp[length(teimp)]
+                                     } else {
+                                       fnames_without2 = fnames_without
+                                     }
+                                     fnames_without = fnames_without2
+                                     withoutRD = unlist(strsplit(fnames_without,"[.]RD"))
+                                     if (length(withoutRD) > 1) {
+                                       fnames_without = withoutRD[1]
+                                     }
+                                     if (length(ffdone) > 0) {
+                                       ffdone_without = 1:length(ffdone) #dummy variable
+                                       for (index in 1:length(ffdone)) {
+                                         ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
+                                       }
+                                       if (length(which(ffdone_without == fnames_without)) > 0) {
+                                         skip = 1 #skip this file because it was analysed before")
+                                       } else {
+                                         skip = 0 #do not skip this file
+                                       }
+                                     } else {
+                                       skip = 0
+                                     }
+                                     if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
+                                       useRDA = TRUE
+                                     } else {
+                                       useRDA = FALSE
+                                     }
+                                     #=============================================================
+                                     # Inspect file (and store output later on)
+                                     options(warn = -1) #turn off warnings
+                                     if (useRDA == FALSE) {
+                                       I = g.inspectfile(datafile, desiredtz = desiredtz,
+                                                         rmc.dec = rmc.dec,configtz = configtz,
+                                                         rmc.firstrow.acc = rmc.firstrow.acc,
+                                                         rmc.firstrow.header = rmc.firstrow.header,
+                                                         rmc.header.length = rmc.header.length,
+                                                         rmc.col.acc = rmc.col.acc,
+                                                         rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
+                                                         rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                                                         rmc.unit.time = rmc.unit.time,
+                                                         rmc.format.time = rmc.format.time,
+                                                         rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                                                         rmc.unsignedbit = rmc.unsignedbit,
+                                                         rmc.origin = rmc.origin,
+                                                         rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                                                         rmc.headername.sf = rmc.headername.sf,
+                                                         rmc.headername.sn = rmc.headername.sn,
+                                                         rmc.headername.recordingid = rmc.headername.sn,
+                                                         rmc.header.structure = rmc.header.structure,
+                                                         rmc.check4timegaps = rmc.check4timegaps)
+                                     } else {
+                                       load(datafile) # to do: would be nice to only load the object I and not the entire datafile
+                                       I$filename = fnames[i]
+                                     }
+                                     options(warn = 0) #turn on warnings
+                                     if (overwrite == TRUE) skip = 0
+                                     if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
+                                       cat(paste0("\nP1 file ",i))
+                                       turn.do.cal.back.on = FALSE
+                                       if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
+                                         do.cal = FALSE
+                                         turn.do.cal.back.on = TRUE
+                                       }
+                                       data_quality_report_exists = file.exists(paste0(outputdir, "/", outputfolder,
+                                                                                       "/results/QC/data_quality_report.csv"))
+                                       assigned.backup.cal.coef = FALSE
+                                       if (length(backup.cal.coef) > 0) {
+                                         if (backup.cal.coef == "retrieve") {
+                                           if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
+                                             backup.cal.coef = paste0(outputdir, outputfolder, "/results/QC/data_quality_report.csv")
+                                             assigned.backup.cal.coef = TRUE
+                                           }
+                                         } else if (backup.cal.coef == "redo") { #ignore the backup calibration coefficients, and derive them again
+                                           backup.cal.coef = c()
+                                           assigned.backup.cal.coef = TRUE
+                                         } else if (backup.cal.coef != "redo" & backup.cal.coef != "retrieve") {
+                                           # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
+                                           assigned.backup.cal.coef = TRUE
+                                         }
+                                       }
+                                       #data_quality_report.csv does not exist and there is also no ot
+                                       if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
+                                       #--------------------------------------
+                                       if (do.cal == TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
+                                         # cat(paste0("\n",rep('-',options()$width),collapse=''))
+                                         cat("\n")
+                                         cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+                                         C = g.calibrate(datafile, spherecrit = spherecrit,
+                                                         minloadcrit = minloadcrit,printsummary = printsummary, chunksize = chunksize,
+                                                         windowsizes = windowsizes,selectdaysfile = selectdaysfile,dayborder = dayborder,
+                                                         desiredtz = desiredtz,
+                                                         rmc.dec = rmc.dec,configtz = configtz,
+                                                         rmc.firstrow.acc = rmc.firstrow.acc,
+                                                         rmc.firstrow.header = rmc.firstrow.header,
+                                                         rmc.header.length = rmc.header.length,
+                                                         rmc.col.acc = rmc.col.acc,
+                                                         rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
+                                                         rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                                                         rmc.unit.time = rmc.unit.time,
+                                                         rmc.format.time = rmc.format.time,
+                                                         rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                                                         rmc.unsignedbit = rmc.unsignedbit,
+                                                         rmc.origin = rmc.origin,
+                                                         rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                                                         rmc.headername.sf = rmc.headername.sf,
+                                                         rmc.headername.sn = rmc.headername.sn,
+                                                         rmc.headername.recordingid = rmc.headername.sn,
+                                                         rmc.header.structure = rmc.header.structure,
+                                                         rmc.check4timegaps = rmc.check4timegaps,
+                                                         rmc.noise = rmc.noise,
+                                                         rmc.col.wear = rmc.col.wear,
+                                                         rmc.doresample = rmc.doresample)
+                                       } else {
+                                         C = list(cal.error.end = 0, cal.error.start = 0)
+                                         C$scale = c(1, 1, 1)
+                                         C$offset = c(0, 0, 0)
+                                         C$tempoffset =  c(0, 0, 0)
+                                         C$QCmessage = "Autocalibration not done"
+                                         C$npoints = 0
+                                         C$nhoursused = 0
+                                         C$use.temp = use.temp
+                                       }
+                                       if (turn.do.cal.back.on == TRUE) {
+                                         do.cal = TRUE
+                                       }
+                                       cal.error.end = C$cal.error.end
+                                       cal.error.start = C$cal.error.start
+                                       if (length(cal.error.start) == 0) {
+                                         #file too shortcorrupt to even calculate basic calibration value
+                                         cal.error.start = NA
+                                       }
+                                       check.backup.cal.coef = FALSE
+                                       if (is.na(cal.error.start) == T | length(cal.error.end) == 0) {
+                                         C$scale = c(1, 1, 1); C$offset = c(0, 0, 0); C$tempoffset = c(0, 0, 0)
+                                         check.backup.cal.coef = TRUE
+                                       } else {
+                                         if (cal.error.start < cal.error.end) {
+                                           C$scale = c(1, 1, 1); C$offset = c(0, 0, 0); C$tempoffset=  c(0, 0, 0)
+                                           check.backup.cal.coef = TRUE
+                                         }
+                                       }
+                                       if (length(backup.cal.coef) > 0) check.backup.cal.coef = TRUE
+                                       #if calibration fails then check whether calibration coefficients are provided in a separate csv-spreadsheet
+                                       # this csv spreadhseet needs to be created by the end-user and should contain:
+                                       # column with names of the accelerometer files
+                                       # three columns respectively named scale.x, scale.y, and scale.z
+                                       # three columns respectively named offset.x, offset.y, and offset.z
+                                       # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
+                                       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
+                                       if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) {
+                                         bcc.data = read.csv(backup.cal.coef)
+                                         cat("\nRetrieving previously derived calibration coefficients")
+                                         bcc.data$filename = as.character(bcc.data$filename)
+                                         for (nri in 1:nrow(bcc.data)) {
+                                           tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
+                                           if (length(tmp) > 1) {
+                                             bcc.data$filename[nri] = tmp[2]
+                                             bcc.data$filename[nri] = unlist(strsplit(bcc.data$filename[nri],".RData"))[1]
+                                           }
+                                         }
+                                         if (length(which(as.character(bcc.data$filename) == fnames[i])) > 0) {
+                                           bcc.i = which(bcc.data$filename == fnames[i])
+                                           bcc.cal.error.start = which(colnames(bcc.data) == "cal.error.start")
+                                           bcc.cal.error.end = which(colnames(bcc.data) == "cal.error.end")
+                                           bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
+                                           bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
+                                           bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
+                                           C$scale = as.numeric(bcc.data[bcc.i[1], bcc.scalei])
+                                           C$offset = as.numeric(bcc.data[bcc.i[1], bcc.offseti])
+                                           C$tempoffset =  as.numeric(bcc.data[bcc.i[1], bcc.temp.offseti])
+                                           cat(paste0("\nRetrieved Calibration error (g) before: ", as.numeric(bcc.data[bcc.i[1], bcc.cal.error.start])))
+                                           cat(paste0("\nRetrieved Callibration error (g) after: ", as.numeric(bcc.data[bcc.i[1], bcc.cal.error.end])))
+                                           cat(paste0("\nRetrieved offset correction ", c("x","y","z"),": ", C$offset))
+                                           cat(paste0("\nRetrieved scale correction ", c("x","y","z"),": ", C$scale))
+                                           cat(paste0("\nRetrieved tempoffset correction ", c("x","y","z"),": ", C$tempoffset))
+                                           cat("\n")
+                                         } else {
+                                           # cat("\nNo matching filename found in backup.cal.coef\n")
+                                           # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
+                                           if (do.cal == TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
+                                             cat("\n")
+                                             cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+                                             C = g.calibrate(datafile, spherecrit = spherecrit,
+                                                             minloadcrit = minloadcrit, printsummary = printsummary, chunksize = chunksize,
+                                                             windowsizes = windowsizes, selectdaysfile = selectdaysfile, dayborder = dayborder,
+                                                             desiredtz = desiredtz, rmc.dec = rmc.dec, configtz = configtz,
+                                                             rmc.firstrow.acc = rmc.firstrow.acc,
+                                                             rmc.firstrow.header = rmc.firstrow.header,
+                                                             rmc.header.length = rmc.header.length,
+                                                             rmc.col.acc = rmc.col.acc,
+                                                             rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
+                                                             rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                                                             rmc.unit.time = rmc.unit.time,
+                                                             rmc.format.time = rmc.format.time,
+                                                             rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                                                             rmc.unsignedbit = rmc.unsignedbit,
+                                                             rmc.origin = rmc.origin,
+                                                             rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                                                             rmc.headername.sf = rmc.headername.sf,
+                                                             rmc.headername.sn = rmc.headername.sn,
+                                                             rmc.headername.recordingid = rmc.headername.sn,
+                                                             rmc.header.structure = rmc.header.structure,
+                                                             rmc.check4timegaps = rmc.check4timegaps,
+                                                             rmc.noise = rmc.noise,
+                                                             interpolationType = interpolationType)
+                                           }
+                                         }
+                                       }
+                                       #------------------------------------------------
+                                       cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
+                                       M = g.getmeta(datafile,
+                                                     do.bfen = do.bfen,
+                                                     do.enmo = do.enmo,
+                                                     do.lfenmo = do.lfenmo,
+                                                     do.lfen = do.lfen,
+                                                     do.en = do.en,
+                                                     do.hfen = do.hfen,
+                                                     do.hfenplus = do.hfenplus,
+                                                     do.mad = do.mad,
+                                                     do.anglex = do.anglex, do.angley = do.angley, do.anglez = do.anglez,
+                                                     do.roll_med_acc_x = do.roll_med_acc_x,
+                                                     do.roll_med_acc_y = do.roll_med_acc_y,
+                                                     do.roll_med_acc_z = do.roll_med_acc_z,
+                                                     do.dev_roll_med_acc_x = do.dev_roll_med_acc_x, 
+                                                     do.dev_roll_med_acc_y = do.dev_roll_med_acc_y, 
+                                                     do.dev_roll_med_acc_z = do.dev_roll_med_acc_z,
+                                                     do.enmoa = do.enmoa,
+                                                     do.lfx = do.lfx, do.lfy = do.lfy, do.lfz = do.lfz, 
+                                                     do.hfx = do.hfx, do.hfy = do.hfy, do.hfz = do.hfz,
+                                                     do.bfx = do.bfx, do.bfy = do.bfy, do.bfz = do.bfz, 
+                                                     do.zcx = do.zcx, do.zcy = do.zcy, do.zcz = do.zcz,
+                                                     lb = lb, hb = hb,  n = n,
+                                                     desiredtz = desiredtz, daylimit = daylimit, windowsizes = windowsizes,
+                                                     tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
+                                                     meantempcal = C$meantempcal, chunksize = chunksize,
+                                                     selectdaysfile = selectdaysfile,
+                                                     outputdir = outputdir,
+                                                     outputfolder = outputfolder,
+                                                     dayborder = dayborder, dynrange = dynrange,
+                                                     rmc.dec = rmc.dec, configtz = configtz,
+                                                     rmc.firstrow.acc = rmc.firstrow.acc,
+                                                     rmc.firstrow.header = rmc.firstrow.header,
+                                                     rmc.header.length = rmc.header.length,
+                                                     rmc.col.acc = rmc.col.acc,
+                                                     rmc.col.temp = rmc.col.temp, rmc.col.time = rmc.col.time,
+                                                     rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
+                                                     rmc.unit.time = rmc.unit.time,
+                                                     rmc.format.time = rmc.format.time,
+                                                     rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
+                                                     rmc.unsignedbit = rmc.unsignedbit,
+                                                     rmc.origin = rmc.origin,
+                                                     rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
+                                                     rmc.headername.sf = rmc.headername.sf,
+                                                     rmc.headername.sn = rmc.headername.sn,
+                                                     rmc.headername.recordingid = rmc.headername.sn,
+                                                     rmc.header.structure = rmc.header.structure,
+                                                     rmc.check4timegaps = rmc.check4timegaps,
+                                                     rmc.noise = rmc.noise,
+                                                     rmc.col.wear = rmc.col.wear,
+                                                     rmc.doresample = rmc.doresample,
+                                                     myfun = myfun,
+                                                     interpolationType = interpolationType,
+                                                     imputeTimegaps = imputeTimegaps)
+                                       #------------------------------------------------
+                                       cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
+                                       # remove directory in filename if present
+                                       filename = unlist(strsplit(fnames[i],"/"))
+                                       if (length(filename) > 0) {
+                                         filename = filename[length(filename)]
+                                       } else {
+                                         filename = fnames[i]
+                                       }
+                                       filename_dir = tmp5[i]; filefoldername = tmp6[i]
+                                       if (length(unlist(strsplit(fnames[1], "[.]RD"))) == 1) { # to avoid getting .RData.RData
+                                         filename = paste0(filename, ".RData")
+                                       }
+                                       save(M, I, C, filename_dir, filefoldername, file = paste0(path3, "/meta/basic/meta_", filename))
+                                       # as metadatdir is not known derive it:
+                                       metadatadir = c()
+                                       if (length(datadir) > 0) {
+                                         # list of all csv and bin files
+                                         if (is.mv == TRUE) {
+                                           for (filei in 1:length(fnames)) {
+                                             fnames[[filei]] = strsplit(fnames[[filei]], "/")[[1]][1]
+                                           }
+                                           fnames = unique(fnames)
+                                         } else if (is.mv == FALSE) {
+                                           dir2fn = datadir2fnames(datadir,filelist)
+                                           fnames = dir2fn$fnames
+                                           fnamesfull = dir2fn$fnamesfull
+                                         }
+                                         # check whether these are RDA
+                                         if (length(unlist(strsplit(fnames[1], "[.]RD"))) > 1) {
+                                           useRDA = TRUE
+                                         } else {
+                                           useRDA = FALSE
+                                         }
+                                       } else {
+                                         useRDA = FALSE
+                                       }
+                                       if (filelist == TRUE | useRDA == TRUE) {
+                                         metadatadir = paste0(outputdir, "/output_", studyname)
+                                       } else {
+                                         outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
+                                         metadatadir = paste0(outputdir, "/output_", outputfoldername)
+                                       }
+                                       rm(M); rm(I); rm(C)
+                                       # } # for loop
+                                     }
+                                   }) # END tryCatch
+                                   return(tryCatchResult)
+                                 }
   if (do.parallel == TRUE) {
     on.exit(parallel::stopCluster(cl))
   }
