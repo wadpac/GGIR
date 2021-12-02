@@ -345,7 +345,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
                                          cat("\n")
                                          cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
                                          C = g.calibrate(datafile, spherecrit = spherecrit,
-                                                         minloadcrit = minloadcrit,printsummary = printsummary, chunksize = chunksize,
+                                                         minloadcrit = minloadcrit, printsummary = printsummary, chunksize = chunksize,
                                                          windowsizes = windowsizes,selectdaysfile = selectdaysfile,dayborder = dayborder,
                                                          desiredtz = desiredtz,
                                                          rmc.dec = rmc.dec,configtz = configtz,
