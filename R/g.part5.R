@@ -356,7 +356,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                             # We can do this at this point in the code, because it
                                             # does not depend on bout detection criteria or
                                             # window definitions.
-                                            if (do.sibreport  == TRUE) {
+                                            if (do.sibreport  == TRUE & length(nap_model) > 0) {
                                               if (sleeplogidnum == TRUE) {
                                                 IDtmp = as.numeric(ID)
                                               } else {
@@ -606,7 +606,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # NAPS (estimation)
-                                                          if (do.sibreport == TRUE & "nap" %in% colnames(ts)) {
+                                                          if (do.sibreport == TRUE & "nap" %in% colnames(ts) & length(nap_model) > 0) {
                                                             dsummary[di,fi] = length(which(diff(c(-1, which(ts$nap[sse] == 1 & ts$diur[sse] == 0))) > 1))
                                                             ds_names[fi] = "nap_number";      fi = fi + 1
                                                             dsummary[di,fi] = round((sum(ts$nap[sse[which(ts$nap[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
