@@ -194,7 +194,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       H = PP$header
       sf = H$frequency
     } else if (dformat == 6) { # gt3
-      info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
+      info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
       sf = info[["Sample Rate"]]
     }
     invisible(list(dformat = dformat, mon = mon, sf = sf))

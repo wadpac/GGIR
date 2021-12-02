@@ -297,7 +297,7 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
             gyro_available = TRUE
           }
           if (P$header$hardwareType == "AX6") { # cwa AX6
-            # GGIR now ignores the AX6 gyroscope signals until added value has robustely been demonstrated
+            # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
             data = P$data[,-c(2:4)]
           }
           data = P$data
@@ -307,30 +307,9 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
         } else if (mon == 5) { #movisense
           data = as.matrix(P)
         } else if (dformat == 6) { #gt3x
-          if (imputeTimegaps == TRUE & dformat == 6) {
-            deltatime = diff(P$time)
-            units(deltatime) = "secs"
-            deltatime = as.numeric(deltatime)
-            gapsi = which(deltatime > 0.25) # limit imputation to gaps larger than 0.25 seconds
-            NumberOfGaps = length(gapsi)
-            if (NumberOfGaps > 0) { 
-              # if gaps exist impute them by repeating the last known value
-              P$gap = 1
-              if (gapsi[1] < 2) {
-                gapsi = gapsi[2:length(gapsi)]
-              }
-              P$gap[gapsi - 1] = as.integer(deltatime[gapsi] * sf)
-              P <- as.data.frame(lapply(P, rep, P$gap))
-              #  normalise last known value to 1
-              i_normalise = which(P$gap != 1)
-              if (length(i_normalise) > 0) {
-                xyzCol = c("X", "Y", "Z")
-                P[i_normalise, xyzCol] = P[i_normalise, xyzCol] / rowMeans(sqrt(P[i_normalise, xyzCol]^2))
-              }
-              # Timestamps are not imputed because from here onward GGIR does not need them
-              # Any problems with sample rate should have been fixed before this point
-              P = P[, which(colnames(P) != "gap")]
-            }
+          if (imputeTimegaps == TRUE) {
+            xyzCol = c("X", "Y", "Z")
+            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25)
             data = as.matrix(P[,2:4])
           }
         }
