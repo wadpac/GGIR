@@ -367,7 +367,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
 
                                               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                                                       desiredtz = desiredtz)
-                                            
+
                                               # store in csv file:
                                               ms5.sibreport = "/meta/ms5.outraw/sib.reports"
                                               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
@@ -382,8 +382,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                                                   possible_nap_dur = possible_nap_dur,
                                                                                   nap_model = nap_model,
                                                                                   HASIB.algo = HASIB.algo)
-                                              
-                                              
+
+
                                               # store in ts object, such that it is exported in as time series
                                               ts$nap1_nonwear2 = 0
                                               # napsindices = which(naps_nonwear$probability_nap == 1)
@@ -416,7 +416,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                     }
                                                     if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
                                                       # check again that there is not a lot of overlap with non-wear
-                                                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) { 
+                                                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
                                                         ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
                                                       }
                                                     }
@@ -424,7 +424,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                 }
                                               }
                                             }
-                                          
+
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {

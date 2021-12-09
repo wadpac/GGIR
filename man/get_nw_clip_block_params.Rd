@@ -23,7 +23,7 @@
     See \link{g.inspectfile}
   }
   \item{rmc.noise}{
-    Optional, please see \link{read.myacc.csv}
+    Noise level of acceleration signal in _g_-units, used when working ad-hoc data formats via \link{read.myacc.csv}.
   }
    \item{sf}{
     Numeric, sample frequency in Hertz

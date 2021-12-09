@@ -513,7 +513,8 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             constrain2range=constrain2range, do.parallel = do.parallel,
             myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
             HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
-            longitudinal_axis=longitudinal_axis, do.part3.pdf=do.part3.pdf)
+            longitudinal_axis=longitudinal_axis, do.part3.pdf=do.part3.pdf,
+            HASPT.ignore.invalid=HASPT.ignore.invalid)
   }
   if (dopart4 == TRUE) {
     cat('\n')
