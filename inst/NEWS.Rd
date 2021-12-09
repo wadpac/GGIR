@@ -1,15 +1,15 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.5-2 (GitHub-only-release date:20-12-2021)}{
+\section{Changes in version 2.5-2 (GitHub-only-release date:09-12-2021)}{
 \itemize{
-  \item Part 3: Make sure HASPT is skipped when use configures def.noc.sleep as a setwindow. This
+  \item Part 3: Now makes sure that HASPT is skipped when user configures def.noc.sleep as a set time window. This
   feature that probaly few people use nowadays broke with the 2.5-0 release.
-  \item g.shell.GGIR: Gives warning when user supplies double arguments.
+  \item g.shell.GGIR: Now gives warning when user supplies double arguments.
   \item Part 4: Now warns when none of the IDs in the sleeplog could be matched with accelerometer data.
   \item Part 1: read.myacc.csv fix bug with argument rmc.check4timegaps
   \item Part 3: Fix #472 SRI calculation not possible when complete absence of sleep in recording
-  \item Part 5: Nap detection added to report and time series. Note: currently optimised for 3.5 year olds with hip data.
+  \item Part 5: Experimental nap detection added to report and time series, currently only model for 3.5 year olds available.
 }
 }
 \section{Changes in version 2.5-1 (GitHub-only-release date:03-11-2021)}{
