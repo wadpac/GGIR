@@ -259,7 +259,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("timethreshold") == FALSE)  timethreshold = 5
   if (exists("constrain2range") == FALSE) constrain2range = TRUE
   if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  if (exists("def.noc.sleep") == FALSE)  def.noc.sleep=1
+  if (exists("def.noc.sleep") == FALSE)  def.noc.sleep = 1
   if (exists("HASPT.algo") == FALSE & length(def.noc.sleep) != 2) {
     HASPT.algo = "HDCZA"
   } else if (length(def.noc.sleep) == 2) {
@@ -320,7 +320,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
   if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
   if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
-  if (HASPT.algo == "HorAngle") {
+  if (HASPT.algo == "HorAngle" & sleepwindowType != "TimeInBed") {
     warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
     sleepwindowType = "TimeInBed"
   }
@@ -350,6 +350,10 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
   if (exists("frag.metrics") == FALSE) frag.metrics = c()
   if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
+  # Nap detection:
+  if (exists("nap_model") == FALSE) nap_model = c()
+  if (exists("possible_nap_window") == FALSE) possible_nap_window = c(9, 18)
+  if (exists("possible_nap_dur") == FALSE) possible_nap_dur = c(15, 240)
   # Related to (r)ead (m)yacc (c)sv file:
   if (exists("rmc.dec") == FALSE) rmc.dec="."
   if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
@@ -552,7 +556,10 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             LUXthresholds=LUXthresholds, maxNcores=maxNcores,
             LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
             LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport,
-            sleeplogidnum=sleeplogidnum)
+            sleeplogidnum=sleeplogidnum,
+            possible_nap_window = possible_nap_window,
+            possible_nap_dur = possible_nap_dur,
+            nap_model = nap_model, HASIB.algo = HASIB.algo)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
