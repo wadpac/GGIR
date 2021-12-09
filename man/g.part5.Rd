@@ -26,7 +26,9 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   frag.metrics=c(), iglevels=c(), maxNcores=c(),
   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
   LUX_cal_constant = c(), LUX_cal_exponent = c(),
-  LUX_day_segments = c(), do.sibreport=FALSE, sleeplogidnum=FALSE)
+  LUX_day_segments = c(), do.sibreport=FALSE, sleeplogidnum=FALSE,
+  possible_nap_window = c(9, 18), possible_nap_dur = c(15, 240),
+  nap_model = "hip3yr", HASIB.algo ="vanHees2015")
 }
 \arguments{
   \item{datadir}{
@@ -221,6 +223,18 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   }
   \item{sleeplogidnum}{
     See \link{g.part4}
+  }
+  \item{possible_nap_window}{
+    See \link{g.part5.classifyNaps}
+  }
+  \item{possible_nap_dur}{
+    See \link{g.part5.classifyNaps}
+  }
+  \item{nap_model}{
+    See \link{g.part5.classifyNaps}
+  }
+   \item{HASIB.algo}{
+    See \link{g.part3}.
   }
 }
 \value{
