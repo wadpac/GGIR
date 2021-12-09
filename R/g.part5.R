@@ -351,11 +351,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               }
                                               Nts = nrow(ts)
                                             }
+                                            if ("angle" %in% colnames(ts)) {
+                                              ts = ts[, -which(colnames(ts) == "angle")]
+                                            }
                                             #===============================================
-                                            # GENERATE SIB report
-                                            # We can do this at this point in the code, because it
-                                            # does not depend on bout detection criteria or
-                                            # window definitions.
+                                            # Use sib.report to classify naps, non-wear and integrate these in time series
+                                            # Done at this point in the code, because it
+                                            # does not depend on bout detection criteria or window definitions.
                                             if (do.sibreport  == TRUE & length(nap_model) > 0) {
                                               if (sleeplogidnum == TRUE) {
                                                 IDtmp = as.numeric(ID)
@@ -365,9 +367,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
 
                                               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                                                       desiredtz = desiredtz)
-                                              if ("angle" %in% colnames(ts)) {
-                                                ts = ts[, -which(colnames(ts) == "angle")]
-                                              }
+                                            
                                               # store in csv file:
                                               ms5.sibreport = "/meta/ms5.outraw/sib.reports"
                                               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
@@ -382,16 +382,49 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                                                   possible_nap_dur = possible_nap_dur,
                                                                                   nap_model = nap_model,
                                                                                   HASIB.algo = HASIB.algo)
+                                              
+                                              
                                               # store in ts object, such that it is exported in as time series
-                                              ts$nap = 0
-                                              napsindices = which(naps_nonwear$probability_nap == 1)
-                                              if (length(napsindices) > 0) {
-                                                for (nni in napsindices) {
-                                                  napwindow = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                                                  if (length(napwindow) > 0) ts$nap[napwindow] = 1
+                                              ts$nap1_nonwear2 = 0
+                                              # napsindices = which(naps_nonwear$probability_nap == 1)
+                                              # if (length(napsindices) > 0) {
+                                              for (nni in 1:nrow(naps_nonwear)) {
+                                                nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                                                if (length(nnc_window) > 0) {
+                                                  if (naps_nonwear$probability_nap[nni] == 1) {
+                                                    ts$nap1_nonwear2[nnc_window] = 1 # nap
+                                                  } else if (naps_nonwear$probability_nap[nni] == 0) {
+                                                    ts$nap1_nonwear2[nnc_window] = 2 # nonwear
+                                                  }
+                                                }
+                                              }
+                                              # impute non-naps episodes (non-wear)
+                                              nonwearindices = which(naps_nonwear$probability_nap == 0)
+                                              if (length(nonwearindices) > 0) {
+                                                for (nni in nonwearindices) {
+                                                  nwwindow_start = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                                                  if (length(nwwindow_start) > 0) {
+                                                    Nepochsin24Hours =  (60/ws3new) * 60 * 24
+                                                    if (nwwindow_start[1] > Nepochsin24Hours) {
+                                                      nwwindow = nwwindow_start - Nepochsin24Hours # impute time series with preceding day
+                                                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
+                                                        # if there is also a lot of overlap with non-wear there then do next day
+                                                        nwwindow = nwwindow_start + Nepochsin24Hours
+                                                      }
+                                                    } else {
+                                                      nwwindow = nwwindow_start + Nepochsin24Hours # if there is not preceding day use next day
+                                                    }
+                                                    if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
+                                                      # check again that there is not a lot of overlap with non-wear
+                                                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) { 
+                                                        ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
+                                                      }
+                                                    }
+                                                  }
                                                 }
                                               }
                                             }
+                                          
                                             ts$window = 0
                                             for (TRLi in threshold.lig) {
                                               for (TRMi in threshold.mod) {
@@ -606,10 +639,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # NAPS (estimation)
-                                                          if (do.sibreport == TRUE & "nap" %in% colnames(ts) & length(nap_model) > 0) {
-                                                            dsummary[di,fi] = length(which(diff(c(-1, which(ts$nap[sse] == 1 & ts$diur[sse] == 0))) > 1))
-                                                            ds_names[fi] = "nap_number";      fi = fi + 1
-                                                            dsummary[di,fi] = round((sum(ts$nap[sse[which(ts$nap[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
+                                                          if (do.sibreport == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(nap_model) > 0) {
+                                                            dsummary[di,fi] = length(which(diff(c(-1, which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0))) > 1))
+                                                            ds_names[fi] = "nap_count";      fi = fi + 1
+                                                            dsummary[di,fi] = round((sum(ts$nap1_nonwear2[sse[which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
                                                             ds_names[fi] = "nap_totalduration";      fi = fi + 1
                                                           }
                                                           #===============================================
@@ -868,11 +901,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
                                                     # save time series to csv files
                                                     if (do.sibreport == TRUE) {
-                                                      napcol = "nap"
+                                                      napNonwear_col = "nap1_nonwear2"
                                                     } else {
-                                                      napcol = c()
+                                                      napNonwear_col = c()
                                                     }
-                                                    g.part5.savetimeseries(ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napcol)], LEVELS,
+                                                    g.part5.savetimeseries(ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)], LEVELS,
                                                                            desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid,
                                                                            DaCleanFile = DaCleanFile,
                                                                            includedaycrit.part5 = includedaycrit.part5, ID = ID)
