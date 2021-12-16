@@ -292,7 +292,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     }
     if (startpage == 10) {
       startpage = 11
-      freadheader = FALSE
     }
     #--------------
     try(expr = {
