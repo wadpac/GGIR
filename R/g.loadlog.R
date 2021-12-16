@@ -21,6 +21,8 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       if (sleeplogidnum==TRUE) {
         startdates$ID = as.numeric(startdates$ID)
       }
+    } else {
+      warning("\nArgument meta.sleep.folder has not been specified")
     }
   }
   if (length(S) == 0) {
