@@ -270,27 +270,37 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
+    
     # load rows 11:13  to investigate whether the file has a header
-    testheader = as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
-                                                 dec = decn, showProgress = FALSE, header = FALSE),
-                               stringsAsFactors = TRUE)
+    # invisible because R complains about poor Actigraph file format,
+    # this is an an ActiGraph problem not a GGIR problem, so we ignore it
+    quiet <- function(x) { 
+      # from https://stackoverflow.com/a/54136863/5311763
+      sink(tempfile()) 
+      on.exit(sink()) 
+      invisible(force(x)) 
+    } 
+    testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
+                                                                          dec = decn, showProgress = FALSE,
+                                                        header = TRUE),
+                                                        stringsAsFactors = FALSE))
     if (suppressWarnings(is.na(as.numeric(testheader[1, 1]))) ==  FALSE) { # it has no header, first value is a number
       freadheader = FALSE
     } else { # it has a header, first value is a character
       freadheader = TRUE
       headerlength = 11
-      if (startpage == 10) {
-        startpage = 11
-        freadheader = FALSE
-      }
+    }
+    if (startpage == 10) {
+      startpage = 11
+      freadheader = FALSE
     }
     #--------------
     try(expr = {
-      P = as.data.frame(
+      P = quiet(as.data.frame(
         data.table::fread(filename, nrows = deltapage,
                           skip = startpage,
                           dec = decn, showProgress = FALSE, header = freadheader),
-        stringsAsFactors = TRUE)
+        stringsAsFactors = TRUE))
     }, silent = TRUE)
     if (length(P) > 1) {
       P = data.matrix(P) # as.matrix turned num to char if there are missing values.
