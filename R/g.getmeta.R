@@ -289,7 +289,18 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
         } else if (mon == 2  & dformat == 1) { # GENEActiv bin
           data = P$data.out
         } else if (dformat == 2) { #csv Actigraph/GENEActiv
-          data = P #as.matrix(P,dimnames = list(rownames(P),colnames(P)))
+          if (imputeTimegaps == TRUE) {
+            P = as.data.frame(P)
+            if (ncol(P) == 3) {
+              timeCol = c()
+              xyzCol = names(P)[1:3]
+            } else if (ncol(P) == 4) {
+              timeCol = names(P)[1]
+              xyzCol = names(P)[2:4]
+            }
+            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25)
+          }
+          data = as.matrix(P)
         } else if (dformat == 3) { #wav
           data = P$rawxyz
         } else if (dformat == 4) { #cwa
@@ -308,7 +319,6 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
           data = as.matrix(P)
         } else if (dformat == 6) { #gt3x
           if (imputeTimegaps == TRUE) {
-            xyzCol = c("X", "Y", "Z")
             P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25)
             data = as.matrix(P[,2:4])
           }

@@ -1,4 +1,16 @@
-g.imputeTimegaps = function(x, xyzCol, timeCol, sf, k=0.25) {
+g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25) {
+  remove_time_at_end = FALSE
+  if (length(timeCol) == 0) { # add temporary timecolumn to enable timegap imputation where there are zeros
+    dummytime = Sys.time()
+    adhoc_time = seq(dummytime, dummytime + (nrow(x) - 1) * (1/sf), by = 1/sf)
+    if (length(adhoc_time) < nrow(x)){ 
+      NotEnough = nrow(x) - length(adhoc_time)
+      adhoc_time = seq(dummytime, dummytime + (nrow(x) + NotEnough) * (1/sf), by = 1/sf)
+    }
+    x$time = adhoc_time[1:nrow(x)]
+    timeCol = "time"
+    remove_time_at_end = TRUE
+  }
   zeros = which(rowSums(x[,xyzCol]) == 0)
   if (length(zeros) > 0) {
     if (zeros[1] == 1) {
@@ -25,9 +37,12 @@ g.imputeTimegaps = function(x, xyzCol, timeCol, sf, k=0.25) {
     if (length(i_normalise) > 0) {
       x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / sqrt(rowSums(x[i_normalise, xyzCol]^2))
     }
-    # Timestamps are not imputed because from here onward GGIR does not need them
-    # Any problems with sample rate should have been fixed before this point
     x = x[, which(colnames(x) != "gap")]
+  }
+  # Note: Timestamps are not imputed because from here onward GGIR does not need them
+  # Any problems with sample rate should have been fixed during data loading
+  if (remove_time_at_end == TRUE) {
+    x = x[,-which(colnames(x) == "time")]
   }
   return(x)
 }

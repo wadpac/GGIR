@@ -8,6 +8,10 @@ library(testthat)
                  X = 1:N, Y = 1:N, Z = 1:N)
   xyzCol = c("X", "Y", "Z")
   
+  
+  x_without_time = data.frame(X = 1:N, Y = 1:N, Z = 1:N)
+  xyzCol = c("X", "Y", "Z")
+  
   x1 = x
   zeros = c(1:200, 6000:6500, 7000:7500, 8000:8500)
   x1[zeros, xyzCol] = 0
@@ -23,5 +27,14 @@ library(testthat)
   
   expect_equal(nrow(x2_imputed), N)
   expect_equal(sum(x2_imputed$X), 42225082)
+  
+  x3 = x_without_time
+  zeros = c(7000:7500, 8000:8500)
+  x3[zeros, xyzCol] = 0
+  x3_imputed = g.imputeTimegaps(x3, xyzCol, sf = sf, k = 2/sf)
+  
+  expect_equal(nrow(x3_imputed), N - 2)
+  expect_equal(sum(x3_imputed$X), 42225081)
+  
 })
  
