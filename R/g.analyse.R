@@ -83,6 +83,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   if (length(ID) == 0) { # If ID could not be extracted
     ID = basename(fname)
+    warning(paste0("\nUnable to extract ID from, ", fname, ". Using filname instead. ",
+                   " You may want to check argument idloc, which is currently set to ", idloc))
   }
   #--------------------------------------------------------------
   
