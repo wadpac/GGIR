@@ -31,6 +31,7 @@ epochsize = ws3 #epochsize in seconds
   do.zcx = metrics2do$do.zcx
   do.zcy = metrics2do$do.zcy
   do.zcz = metrics2do$do.zcz
+  do.brondcounts = metrics2do$do.brondcounts
   allmetrics = c()
   averagePerEpoch = function(x,sf,epochsize) {
     x2 = cumsum(c(0,x))
@@ -282,5 +283,17 @@ epochsize = ws3 #epochsize in seconds
     ENMOa = abs(EN - gravity)
     allmetrics$ENMOa = averagePerEpoch(x = ENMOa,sf,epochsize)
   }
+  #================================================
+  # Brond Counts
+  if (do.brondcounts == TRUE) {
+    if (ncol(data) == 4) data= data[,2:4]
+    mycounts = activityCounts::counts(data=data, hertz=sf,
+                      x_axis=1, y_axis=2, z_axis=3,
+                      start_time = Sys.time()) # ignoring timestamps, because GGIR has its own timestamps
+    allmetrics$BrondCount_x = mycounts[, 2]
+    allmetrics$BrondCount_y = mycounts[, 3]
+    allmetrics$BrondCount_z = mycounts[, 4]
+  }
+  
   return(allmetrics)
 } 

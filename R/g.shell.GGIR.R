@@ -193,6 +193,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("do.zcx") == FALSE)  do.zcx = FALSE
   if (exists("do.zcy") == FALSE)  do.zcy = FALSE
   if (exists("do.zcz") == FALSE)  do.zcz = FALSE
+  if (exists("do.brondcounts") == FALSE)  do.brondcounts = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5

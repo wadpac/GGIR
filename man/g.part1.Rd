@@ -31,7 +31,7 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
         do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
         do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
-        do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
+        do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE, do.brondcounts = FALSE,
         do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
         spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
@@ -148,6 +148,8 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{do.zcy}{ see \link{g.getmeta}
   }
   \item{do.zcz}{ see \link{g.getmeta}
+  }
+  \item{do.brondcounts}{ see \link{g.getmeta}
   }
   \item{do.cal}{
   Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and

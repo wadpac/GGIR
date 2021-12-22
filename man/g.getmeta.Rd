@@ -26,6 +26,7 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
           do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
           do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
+          do.brondcounts = FALSE,
           lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
           dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
           interpolationType=1,
@@ -205,6 +206,10 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   \item{do.zcz}{
     if TRUE, calculate zero-crossing count for the z-axis. For computation specifics
     see source code of function \link{g.applymetrics}.
+  }
+  \item{do.brondcounts}{
+    If TRUE, estimate the BrondCounts with R package activityCounts. We call them BrondCounts because
+    there are large number of acitivty counts in the physical activity and sleep research field. By calling them         Brond Counts we clarify that these are the counts proposed by Jan Brond and implemented in R by Ruben Brondeel.      The Brond Counts are intended to be an imitation of one the counts produced by one of the closed source ActiLife     software by ActiGraph.
   }
   \item{lb}{
     lower boundary of the frequency filter (in Hertz) as used in a variety of metrics.

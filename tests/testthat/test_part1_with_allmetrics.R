@@ -19,9 +19,9 @@ test_that("Part 1 can run with all metrics", {
           do.enmo = TRUE,do.lfenmo = TRUE,
           do.bfen = TRUE,
           do.hfenplus = TRUE,
-          do.mad = TRUE, do.sgAccEN=FALSE,do.zcx=TRUE,
-   windowsizes = c(15,3600,3600), do.parallel=FALSE,
-   minimumFileSizeMB=0)
+          do.mad = TRUE, do.sgAccEN=FALSE,do.zcx=TRUE, do.brondcounts=TRUE,
+          windowsizes = c(15,3600,3600), do.parallel=FALSE,
+          minimumFileSizeMB=0)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_that(ncol(M$metashort),equals(7))
@@ -31,7 +31,7 @@ test_that("Part 1 can run with all metrics", {
   expect_that(round(mean(M$metashort$HFENplus),digits=4),equals(0.0904))
   expect_that(round(mean(M$metashort$MAD),digits=4),equals(0.0073))
   expect_that(round(mean(M$metashort$ZCX),digits=4),equals(17.4165))
-   
+  
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
