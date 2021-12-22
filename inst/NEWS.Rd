@@ -6,6 +6,7 @@
 \itemize{
   \item Part 1: Depricating function g.metric as its functionality has been taken over by g.applymetrics.
   \item Part 2: Adding warning when ID cannot be extracted from file based on argument idloc.
+  \item Part 1: Adding BrondCounts as optional acceleration metric and dependency on activityCounts.
 }
 }
 

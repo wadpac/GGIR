@@ -286,14 +286,19 @@ epochsize = ws3 #epochsize in seconds
   #================================================
   # Brond Counts
   if (do.brondcounts == TRUE) {
-    if (ncol(data) == 4) data= data[,2:4]
-    mycounts = activityCounts::counts(data=data, hertz=sf,
+    if (ncol(data) > 3) data= data[,2:4]
+    mycounts = activityCounts::counts(data=data, hertz=sf, 
                       x_axis=1, y_axis=2, z_axis=3,
                       start_time = Sys.time()) # ignoring timestamps, because GGIR has its own timestamps
-    allmetrics$BrondCount_x = mycounts[, 2]
-    allmetrics$BrondCount_y = mycounts[, 3]
-    allmetrics$BrondCount_z = mycounts[, 4]
+    if (sf < 30) {
+      warning("\nNote: activityCounts not designed for handling sample frequencies below 30 Hertz")
+    }
+    # activityCount output is per second
+    # aggregate to our epoch size:
+    allmetrics$BrondCount_x = sumPerEpoch(mycounts[,2], sf=1, epochsize)
+    allmetrics$BrondCount_y = sumPerEpoch(mycounts[,3], sf=1, epochsize)
+    allmetrics$BrondCount_z = sumPerEpoch(mycounts[,4], sf=1, epochsize)
   }
-  
   return(allmetrics)
 } 
+

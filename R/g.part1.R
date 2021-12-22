@@ -504,6 +504,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
                       do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz, 
                       do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
+                      do.brondcounts=do.brondcounts,
                       lb = lb, hb = hb,  n = n,
                       desiredtz=desiredtz, daylimit=daylimit, windowsizes=windowsizes,
                       tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
@@ -576,7 +577,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
           metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
         }
-
         rm(M); rm(I); rm(C)
         # } # for loop
       }

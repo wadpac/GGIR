@@ -172,7 +172,7 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
   header = INFI$header
   options(warn=-1)
-  if (useRDA == FALSE) decn =g.dotorcomma(datafile,dformat,mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
+  if (useRDA == FALSE) decn =g.dotorcomma(datafile, dformat, mon=mon, desiredtz=desiredtz, rmc.dec = rmc.dec)
   options(warn=0)
 
   ID = g.getidfromheaderobject(filename=filename,header=header,dformat=dformat,mon=mon)
@@ -516,7 +516,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
         BrondCount_x = accmetrics$BrondCount_x
         BrondCount_y  = accmetrics$BrondCount_y
         BrondCount_z = accmetrics$BrondCount_z
-        
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
@@ -636,7 +635,6 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           metashort[count:(count-1+length(BrondCount_y)),col_msi] = BrondCount_y; col_msi = col_msi + 1
           metashort[count:(count-1+length(BrondCount_z)),col_msi] = BrondCount_z; col_msi = col_msi + 1
         }
-        
         if (length(myfun) != 0) { # if an external function is applied.
           NcolEF = ncol(OutputExternalFunction)-1 # number of extra columns needed
           metashort[count:(count-1+nrow(OutputExternalFunction)),col_msi:(col_msi+NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1

@@ -429,6 +429,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 1\n")
+    print(do.brondcounts)
     g.part1(datadir = datadir, outputdir = outputdir,
             f0 = f0, f1 = f1, windowsizes = windowsizes,
             desiredtz = desiredtz, chunksize = chunksize,
@@ -449,6 +450,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
             do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
+            do.brondcounts=do.brondcounts,
             printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
