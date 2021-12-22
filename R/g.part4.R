@@ -311,7 +311,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1, idloc = 1
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
             if (j == nnights.list[1] & dolog == FALSE) {
-              sleeplog.t = data.frame(matrix(0, length(nnightlist), 5))
+              sleeplog.t = data.frame(matrix(0, length(nnightlist), 5), stringsAsFactors = FALSE)
               names(sleeplog.t) = c("ID", "night", "duration", "sleeponset", "sleepwake")
             }
             sleeplog.t[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
