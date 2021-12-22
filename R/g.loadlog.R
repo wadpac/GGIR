@@ -21,6 +21,8 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       if (sleeplogidnum==TRUE) {
         startdates$ID = as.numeric(startdates$ID)
       }
+    } else {
+      warning("\nArgument meta.sleep.folder has not been specified")
     }
   }
   if (length(S) == 0) {
@@ -220,10 +222,12 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
     sleeplog = sleeplog[-c(which(sleeplog[,1] == 0)),]
     sleeplog_times = sleeplog_times[-c(which(sleeplog[,1] == 0)),]
   }
-  sleeplog= as.data.frame(sleeplog, stringsAsFactors = TRUE)
+  sleeplog= as.data.frame(sleeplog, stringsAsFactors = FALSE)
   names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]
+  # keep only the non-empty rows as they can only lead to confusion later on
+  sleeplog = sleeplog[which(is.na(sleeplog$duration) == FALSE),]
   invisible(list(sleeplog=sleeplog, nonwearlog=nonwearlog, naplog=naplog, 
                  dateformat = dateformat_correct))
 }

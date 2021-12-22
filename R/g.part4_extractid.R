@@ -47,9 +47,6 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplogidnum, sleeplog) {
         if (length(matching_indices_sleeplog_alternative) > 0) {
           warning("\nArgument sleeplogidnum is set to FALSE, but it seems the identifiers are
                     stored as numeric values, you may want to consider changing sleeplogidnum to TRUE")
-        } else {
-          warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]),", while
-                           code expects format: ",as.character(accid[1])))
         }
       }
     } else {
