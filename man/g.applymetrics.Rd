@@ -31,10 +31,10 @@
     should be extracted
   }
   \item{lb}{
-    see \link{g.metric}
+    Lower boundery of cut-off frequencies
   }
   \item{hb}{
-    see \link{g.metric}
+    Higher boundery of cut-off frequencies
   }
   
 }

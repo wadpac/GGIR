@@ -7,7 +7,7 @@ export(g.analyse,g.calibrate,g.getmeta
         g.detecmidnight,g.dotorcomma,g.downsample,getFirstTimestamp,
        getStartEndNumeric,getStartEnd, g.extractheadervars,
        g.getidfromheaderobject,g.getM5L5,
-        g.getstarttime,g.loadlog,g.metric,g.plot5,
+        g.getstarttime,g.loadlog, g.plot5,
         g.readaccfile,g.report.part2,g.report.part4,
        g.report.part5,g.sib.det,g.sib.plot,g.wavread,
        g.weardec,isfilelist,iso8601chartime2POSIX,is_this_a_dst_night,

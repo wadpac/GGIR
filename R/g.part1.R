@@ -246,7 +246,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
                          "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
-                         "iso8601chartime2POSIX", "g.metric", "datadir2fnames", "read.myacc.csv",
+                         "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                          "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
                          "g.extractheadervars")
     errhand = 'stop'
