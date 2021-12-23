@@ -49,55 +49,55 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
   }
   ts$sibdetection[s0s1] = 1
   
-  # following code was move to here, because otherwise it would repeated removing the last night in the loop          
-  # We are ignoring last night because the following day is potentially not complete e.g. by reduce protocol compliance
-  #=========
-  # If excludefirstlast was set to TRUE in part 4 then 
-  # SUSTAINED INACTIVITY BOUTS are not assessed for the time between
-  # the first midnight and the first noon
-  # because it is not used for sleep reports (first night is ignored in this case).
-  # Therefore, expand the SIB sibdetection to include this time segment, for part 5 only.
-  #----------------------------------------------------------------------
-  # Step 1: Identify time window that needs to be processed
-  redo1 = nightsi[1] - ((60/ws3)*60) # 1 hour before first midnight
-  if (redo1 < 1) redo1 = 1
-  redo2 = nightsi[1] + (14*(60/ws3)*60) # 14 hours after first midngiht
-  # Specify defintion of sustained inactivity bout
-  anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
-  tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
-  timethreshold = as.numeric(tempi[length(tempi)])
-  Nsleep = length(timethreshold) * length(anglethreshold)
-  sleep = matrix(0,length(ts$angle[redo1:redo2]),Nsleep)
-  ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
-  sdl1 = rep(0,length(ts$time[redo1:redo2]))
-  postch = which(abs(diff(ts$angle[redo1:redo2])) > anglethreshold) #posture change of at least j degrees
-  # count posture changes that happen less than once per ten minutes
-  q1 = c()
-  if (length(postch) > 1) {
-    q1 = which(diff(postch) > (timethreshold*(60/ws3))) #less than once per i minutes
-  }
-  if (length(q1) > 0) {
-    for (gi in 1:length(q1)) {
-      sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
+  if (length(grep(pattern = "A", j)) > 0 & length(grep(pattern = "T", j)) > 0) {
+    #=========
+    # If excludefirstlast was set to TRUE in part 4 then 
+    # SUSTAINED INACTIVITY BOUTS are not assessed for the time between
+    # the first midnight and the first noon
+    # because it is not used for sleep reports (first night is ignored in this case).
+    # Therefore, expand the SIB sibdetection to include this time segment, for part 5 only.
+    # This part of the code is only performed if using sib estimates based on vanHees2015
+    #----------------------------------------------------------------------
+    # Step 1: Identify time window that needs to be processed
+    redo1 = nightsi[1] - ((60/ws3)*60) # 1 hour before first midnight
+    if (redo1 < 1) redo1 = 1
+    redo2 = nightsi[1] + (14*(60/ws3)*60) # 14 hours after first midngiht
+    # Specify defintion of sustained inactivity bout
+    anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
+    tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
+    timethreshold = as.numeric(tempi[length(tempi)])
+    Nsleep = length(timethreshold) * length(anglethreshold)
+    sleep = matrix(0,length(ts$angle[redo1:redo2]),Nsleep)
+    ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
+    sdl1 = rep(0,length(ts$time[redo1:redo2]))
+    postch = which(abs(diff(ts$angle[redo1:redo2])) > anglethreshold) #posture change of at least j degrees
+    # count posture changes that happen less than once per ten minutes
+    q1 = c()
+    if (length(postch) > 1) {
+      q1 = which(diff(postch) > (timethreshold*(60/ws3))) #less than once per i minutes
     }
-  } else { #possibly a day without wearing
-    if (length(postch) < 5) {  #possibly a day without wearing
-      sdl1[1:length(sdl1)] = 1 #periods with no posture change
-    } else {  #possibly a day with constantly posture changes
-      sdl1[1:length(sdl1)] = 0 #periodsposture change
+    if (length(q1) > 0) {
+      for (gi in 1:length(q1)) {
+        sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
+      }
+    } else { #possibly a day without wearing
+      if (length(postch) < 5) {  #possibly a day without wearing
+        sdl1[1:length(sdl1)] = 1 #periods with no posture change
+      } else {  #possibly a day with constantly posture changes
+        sdl1[1:length(sdl1)] = 0 #periodsposture change
+      }
     }
+    # update variable sibdetection
+    if (redo2 > Nts) {
+      delta = redo2 - Nts
+      redo2 = Nts
+      sdl1 = sdl1[1:(length(sdl1)-delta)]
+    }
+    if (redo1 > Nts) {
+      redo1 = Nts
+      sdl1 = sdl1[1]
+    }
+    ts$sibdetection[redo1:redo2] = sdl1
   }
-  # update variable sibdetection
-  if (redo2 > Nts) {
-    delta = redo2 - Nts
-    redo2 = Nts
-    sdl1 = sdl1[1:(length(sdl1)-delta)]
-  }
-  if (redo1 > Nts) {
-    redo1 = Nts
-    sdl1 = sdl1[1]
-  }
-  ts$sibdetection[redo1:redo2] = sdl1
-  # if (length(ts$sibdetection == 1) > 0) ts$ACC[ts$sibdetection == 1] = 0 #turn all acceleration to zero if sustained inactivity bouts are detected
   return(ts)
 }

@@ -396,7 +396,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   }
   if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
   # VISUAL REPORT
-
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
