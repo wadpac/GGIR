@@ -24,7 +24,7 @@ test_that("Part 1 can run with all metrics", {
    minimumFileSizeMB=0)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_that(ncol(M$metashort),equals(7))
+  expect_that(ncol(M$metashort),equals(8))
   expect_that(nrow(M$metashort),equals(11280))
   expect_that(round(mean(M$metashort$BFEN),digits=4),equals(0.0413))
   expect_that(round(mean(M$metashort$LFENMO),digits=4),equals(0.0442))

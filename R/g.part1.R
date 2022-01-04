@@ -2,25 +2,29 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                    desiredtz = "",chunksize=c(),studyname=c(),
                    do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
                    do.bfen = FALSE,do.hfen=FALSE,do.hfenplus = FALSE, do.mad = FALSE,
-                   do.anglex=FALSE,do.angley=FALSE,do.anglez=FALSE,
                    do.enmoa = FALSE,
                    do.roll_med_acc_x=FALSE,do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
                    do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,do.dev_roll_med_acc_z=FALSE,
                    do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
                    do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
                    do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
-                   do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
                    backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
                    configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),
-                   maxNcores=c(), interpolationType=1, ...) {
+                   maxNcores=c(), interpolationType=1, params_metrics =c(), ...) {
+  #----------------------------------------------------------
+  # Extract and check parameters
+  input = list(...)
+  params = extract_params(params_metrics = params_metrics, params_sleep = c(), input)
+  params_metrics = params$params_metrics
+  params_sleep = params$params_sleep
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
+      txt = paste(names(input)[i], "=", input[i], sep="")
       if (class(unlist(input[i])) == "character") {
         txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
       }
@@ -205,10 +209,10 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
     Ncores = cores[1]
     if (Ncores > 3) {
       Nmetrics2calc = do.bfen + do.enmo + do.lfenmo + do.lfen + do.en + do.hfen + do.hfenplus + do.mad +
-        do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
+        params_metrics[["do.anglex"]] + params_metrics[["do.angley"]] + params_metrics[["do.angley"]] + do.roll_med_acc_x + do.roll_med_acc_y +
         do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
         do.dev_roll_med_acc_z + do.enmoa + do.lfx + do.lfy + do.lfz + do.hfx + 
-        do.hfy + do.hfz + do.bfx +  do.bfy + do.bfz + do.zcx + do.zcy + do.zcz
+        do.hfy + do.hfz + do.bfx +  do.bfy + do.bfz + params_metrics[["do.zcx"]] + params_metrics[["do.zcy"]] + params_metrics[["do.zcz"]]
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -492,7 +496,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       do.hfen=do.hfen,
                       do.hfenplus=do.hfenplus,
                       do.mad=do.mad,
-                      do.anglex=do.anglex, do.angley=do.angley, do.anglez=do.anglez,
+                      do.anglex=params_metrics[["do.anglex"]],
+                      do.angley=params_metrics[["do.angley"]], 
+                      do.anglez=params_metrics[["do.anglez"]],
                       do.roll_med_acc_x=do.roll_med_acc_x,
                       do.roll_med_acc_y=do.roll_med_acc_y,
                       do.roll_med_acc_z=do.roll_med_acc_z,
@@ -503,7 +509,9 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz, 
                       do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
                       do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz, 
-                      do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
+                      do.zcx=params_metrics[["do.zcx"]], 
+                      do.zcy=params_metrics[["do.zcy"]], 
+                      do.zcz=params_metrics[["do.zcz"]],
                       lb = lb, hb = hb,  n = n,
                       desiredtz=desiredtz, daylimit=daylimit, windowsizes=windowsizes,
                       tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,

@@ -1,17 +1,17 @@
 \name{g.part5}
 \alias{g.part5}
 \title{
-Merge output from physical activity and sleep analysis into one report
+  Merge output from physical activity and sleep analysis into one report
 }
 \description{
-Function to merge the output from g.part2 and g.part4 into one report enhanced with
-profiling of sleep and physical activity stratified across intensity levels and
-based on bouted periods as well as non-bouted periods.
+  Function to merge the output from g.part2 and g.part4 into one report enhanced with
+  profiling of sleep and physical activity stratified across intensity levels and
+  based on bouted periods as well as non-bouted periods.
 }
 \usage{
 g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   maxdur=0, hrs.del.start=0, hrs.del.end =0,
-  loglocation= c(), excludefirstlast.part5=FALSE,
+  excludefirstlast.part5=FALSE,
   windowsizes=c(5,900,3600),acc.metric="ENMO", boutcriter.mvpa=0.8,
   boutcriter.in=0.9, boutcriter.lig=0.8, storefolderstructure=FALSE,
   threshold.lig = c(40), threshold.mod = c(100),
@@ -26,9 +26,9 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   frag.metrics=c(), iglevels=c(), maxNcores=c(),
   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
   LUX_cal_constant = c(), LUX_cal_exponent = c(),
-  LUX_day_segments = c(), do.sibreport=FALSE, sleeplogidnum=FALSE,
+  LUX_day_segments = c(), do.sibreport=FALSE, 
   possible_nap_window = c(9, 18), possible_nap_dur = c(15, 240),
-  nap_model = "hip3yr", HASIB.algo ="vanHees2015")
+  nap_model = "hip3yr", params_sleep = c(), params_metrics = c(), ...)
 }
 \arguments{
   \item{datadir}{
@@ -64,14 +64,6 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   \item{hrs.del.end}{
     how many HOURS before the end of the experiment did wearing of monitor
     definitely end?, see \link{g.impute}
-  }
-  \item{loglocation}{
-    Location of the spreadsheet (csv) with sleep log information. The spreadsheet
-    needs to have the following structure: one column for participant id, and then
-    followed by alternatingly one column for onset time and one column for waking
-    time. Timestamps are to be stored without date as in 18:20:00. If onset corresponds
-    to lights out or intention to fall asleep, then it is the end-users responsibility
-    to account for this in the interpretation of the results.
   }
   \item{excludefirstlast.part5}{
     If TRUE then the first and last night of the measurement are ignored for the
@@ -221,9 +213,6 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   \item{do.sibreport}{
     Boolean to indicate whether to generate report for the sustained inactivity bouts (sib).
   }
-  \item{sleeplogidnum}{
-    See \link{g.part4}
-  }
   \item{possible_nap_window}{
     See \link{g.part5.classifyNaps}
   }
@@ -233,22 +222,29 @@ g.part5(datadir=c(), metadatadir=c(), f0=c(), f1=c(), strategy=1,
   \item{nap_model}{
     See \link{g.part5.classifyNaps}
   }
-   \item{HASIB.algo}{
-    See \link{g.part3}.
+  \item{params_sleep}{
+    List of parameters used for sleep analysis (GGIR part 3, 4, and 5): see documentation \link{g.part3}.
+  }
+  \item{params_metrics}{
+    List of parameters used for metrics extraction (GGIR part 1): see documentation \link{g.part1}.
+  }
+  \item{...}{
+    To enable compatibility with older GGIR version, user can also provide individual 
+    params_sleep parameters as separate argument, e.g. ignorenonwear = FALSE.
   }
 }
 \value{
   The function does not produce values but generates an RData file
-in the milestone subfolder ms5.out which incudes a dataframe
-named \code{output}. This dataframe is used in g.report.part5 to create
-two reports one per day and one per person. See package vignette
-paragraph "Output part 5" for description of all the variables.
+  in the milestone subfolder ms5.out which incudes a dataframe
+  named \code{output}. This dataframe is used in g.report.part5 to create
+  two reports one per day and one per person. See package vignette
+  paragraph "Output part 5" for description of all the variables.
 }
 \examples{
-\dontrun{
-  metadatadir = "C:/myfolder/meta"
-  g.part5(metadatadir=metadatadir)
-}
+  \dontrun{
+    metadatadir = "C:/myfolder/meta"
+    g.part5(metadatadir=metadatadir)
+  }
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>

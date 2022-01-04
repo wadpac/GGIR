@@ -16,7 +16,6 @@ test_that("Part 3 identifies 1-night scenario", {
   # 
   # Note: make sure to call g.shell.GGIR() with do.parallel = FALSE,
   # otherwise not all console output will be captured.
-
   out = capture.output(g.shell.GGIR(mode=c(1:3), datadir=fn, outputdir=getwd(), studyname="test", f0=1, f1=1,
                                     do.report=c(), visualreport=FALSE, viewingwindow=1,
                                     overwrite=TRUE, do.parallel = FALSE, minimumFileSizeMB=0), 

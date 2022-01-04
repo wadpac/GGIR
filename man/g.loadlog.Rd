@@ -14,19 +14,27 @@
 }
 \arguments{
   \item{loglocation}{
-    See \link{g.part4}
+    Location of the spreadsheet (csv) with sleep log information. 
+    See package vignette for explanation on expected format
   }
   \item{coln1}{
-    See \link{g.part4}
+    Column number in the sleep log spreadsheet where the onset of the first
+  night starts
   }
   \item{colid}{
-    See \link{g.part4}
+      Column number in the sleep log spreadsheet in which the participant
+  ID code is stored (default = 1)
+
   }
   \item{nnights}{
-    See \link{g.part4}
+    Number of nights for which sleep log information should be available.
+  It assumes that this is constant within a study. If sleep log information
+  is missing for certain nights then leave these blank
+  
   }
   \item{sleeplogidnum}{
-    See \link{g.part4}
+    Should the participant identifier as stored in the sleeplog be
+    interpretted as a number (TRUE=default) or a character (FALSE)?
   }
   \item{sleeplogsep}{
     Value used as sep argument for reading sleeplog csv file.

@@ -11,14 +11,14 @@
   Typical users should work with function g.shell.GGIR only.
 }
 \usage{
-g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE, do.part3.pdf = TRUE,
-  desiredtz="", do.parallel=TRUE, myfun=c(), maxNcores=c(),
-  params_sleep = c(), ...)
+g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE, 
+  desiredtz = "", do.part3.pdf = TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c(),
+  params_sleep = c(), params_metrics = c(), ...)
 }
 \arguments{
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
-    which contains the milestone data produced by g.part1. The folderstructure
+    which contains the milestone data produced by \link{g.part1}. The folderstructure
     is normally created by g.part1 and g.shell.GGIR will recognise what
     the value of metadatadir is.
   }
@@ -61,11 +61,67 @@ g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE, do.part3.pd
     ignorenonwear (character, see \link{g.sib.sum}), constrain2range (character, see \link{g.sib.det}),
     sensor.location (character, see \link{g.sib.det}),  HASPT.algo (character, see \link{HASPT}),
     HASIB.algo (character, see \link{HASIB}), Sadeh_axis (character, see \link{g.sib.det}),
-    longitudinal_axis (integer, see \link{g.sib.det}), HASPT.ignore.invalid (boolean, see \link{HASPT})
+    longitudinal_axis (integer, see \link{g.sib.det}), HASPT.ignore.invalid (boolean, see \link{HASPT}),
+    do.visual (boolean, see details), outliers.only (boolean, see details), excludefirstlast (boolean, see details), 
+    criterror (numeric, see details), includenightcrit (numeric, see details),
+    relyonguider (boolean, see details), relyonsleeplog (boolean, see details), def.noc.sleep (vector, see details),
+    excludefirst.part4 (boolean, see details), excludelast.part4 (boolean, see details), 
+    sleeplogsep (character, \link{g.loadlog}), sleepwindowType (character, see details).
+  }
+  \item{params_metrics}{
+    List of parameters used for metrics extraction (GGIR part 1): see documentation \link{g.part1}.
   }
   \item{...}{
-    To provide compatibility with older GGIR version. User can also provide individual params_sleep
-    parameters as separate argument, e.g. ignorenonwear = FALSE.
+    To enable compatibility with older GGIR version, user can also provide individual params_sleep parameters as separate argument, e.g. ignorenonwear = FALSE.
+  }
+}
+\details{
+ Explanation of sleep analysis parameters that are not documented elsewhere in the technical manual.
+ \cr
+  \itemize{
+    \item \code{do.visual} If g.part4 is run with do.visual == TRUE then
+      the function will generate a pdf with a visual representation of the
+      overlap between the sleeplog entries and the accelerometer detections.
+      This can be used to visualy verify that the sleeplog entries do
+      not come with obvious mistakes.
+    \item \code{outliers.only} Relevant for do.visual == TRUE. Outliers.only == FALSE will visualise
+      all available nights in the data. Outliers.only == TRUE will visualise
+      only for nights with a difference in onset or waking time
+      larger than the variable of argument criterror.
+    \item \code{excludefirstlast} If TRUE then the first and last night of the measurement are
+      ignored for the sleep assessment.
+    \item \code{criterror} Relevant for do.visual == TRUE and outliers.only == TRUE.
+      criterror specifies the number of minimum number of hours difference
+      between sleep log and  accelerometer estimate for the night to be
+      included in the visualisation
+    \item \code{includenightcrit} Minimum number of valid hours per night (24 hour window between noon and noon)
+    \item \code{relyonguider} If TRUE then sleep onset and waking time are defined based on
+      timestamps derived from the guider. If participants were instructed NOT to wear the accelerometer
+      during waking hours then set to TRUE, in all other scenarios
+      set to FALSE (default).
+    \item \code{relyonsleeplog} Now replaced by relyonguider. Values provided to argument
+      relyonsleeplog will be passed on to argument relyonguider to not
+      preserve functionality of old R script.
+    \item \code{def.noc.sleep} The time window during which sustained inactivity will be assumed
+      to represent sleep, e.g. def.noc.sleep=c(21,9). This is only
+      used if no sleep log entry is available. If def.noc.sleep is
+      left blank 'def.noc.sleep=c()' then the 12 hour window centred
+      at the least active 5 hours of the 24 hour period will be used
+      instead. Here, L5 is hardcoded and will not change by changing
+      argument winhr in function \link{g.part2}. If def.noc.sleep is filled
+      with a single integer, e.g. def.noc.sleep=c(1) then the window
+      will be detected with based on built in algorithms.
+      See argument HASPT.algo from \link{HASPT} for specifying which of those
+      algorithms to use.
+    \item \code{excludefirst.part4} If TRUE then the first night of the measurement are
+      ignored for the sleep assessment.
+    \item \code{excludelast.part4}
+      If TRUE then the last night of the measurement are
+      ignored for the sleep assessment.
+    \item \code{sleepwindowType}
+      Character to indicate type of sleeplog, default "SPT".
+      Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
+      of sleep latency and sleep efficiency.
   }
 }
 \value{

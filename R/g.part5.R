@@ -1,6 +1,7 @@
 g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 1,
                    maxdur = 0, hrs.del.start = 0, hrs.del.end = 0,
-                   loglocation = c(), excludefirstlast.part5 = FALSE, windowsizes = c(5,900,3600),
+                   # loglocation = c(),
+                   excludefirstlast.part5 = FALSE, windowsizes = c(5,900,3600),
                    acc.metric = "ENMO", boutcriter.mvpa = 0.8, boutcriter.in = 0.9,
                    boutcriter.lig = 0.8, storefolderstructure = FALSE,
                    threshold.lig = c(40), threshold.mod = c(100),
@@ -18,15 +19,24 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                    LUX_cal_exponent = c(),
                    LUX_day_segments = c(),
                    do.sibreport = FALSE,
-                   sleeplogidnum = FALSE,
+                   # sleeplogidnum = FALSE,
                    possible_nap_window = c(9, 18),
                    possible_nap_dur = c(15, 240),
-                   nap_model = "hip3yr", HASIB.algo ="vanHees2015") {
+                   nap_model = "hip3yr", params_sleep = c(), params_metrics = c(), ...) { #, HASIB.algo ="vanHees2015"
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
-  # in order to create a merged report of both physical activity and sleep
+    # in order to create a merged report of both physical activity and sleep
+  
+  #----------------------------------------------------------
+  # Extract and check parameters
+  input = list(...)
+  params = extract_params(params_sleep, params_metrics, input)
+  params_sleep = params$params_sleep
+  params_metrics = params$params_metrics
+  
+  
   #======================================================================
   # create new folder (if not existent) for storing milestone data
   ms5.out = "/meta/ms5.out"
@@ -359,7 +369,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                             # Done at this point in the code, because it
                                             # does not depend on bout detection criteria or window definitions.
                                             if (do.sibreport  == TRUE & length(nap_model) > 0) {
-                                              if (sleeplogidnum == TRUE) {
+                                              if (params_sleep[["sleeplogidnum"]] == TRUE) {
                                                 IDtmp = as.numeric(ID)
                                               } else {
                                                 IDtmp = as.character(ID)
@@ -381,7 +391,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                                                   possible_nap_window = possible_nap_window,
                                                                                   possible_nap_dur = possible_nap_dur,
                                                                                   nap_model = nap_model,
-                                                                                  HASIB.algo = HASIB.algo)
+                                                                                  HASIB.algo = params_sleep[["HASIB.algo"]])
 
 
                                               # store in ts object, such that it is exported in as time series
@@ -933,7 +943,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         # correct definition of sleep log availability for window = WW, because now it
                                         # also relies on sleep log from previous night
                                         whoareWW = which(output$window == "WW") # look up WW
-                                        if (length(loglocation) > 0) { #only do this if there is a sleep log
+                                        if (length(params_sleep[["loglocation"]]) > 0) { #only do this if there is a sleep log
                                           if (length(whoareWW) > 0) {
                                             whoareNOSL = which(output$sleeplog_used[whoareWW] == "0") #look up nights with no Sleeplog
                                             if (length(whoareNOSL) > 0) {

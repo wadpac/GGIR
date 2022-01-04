@@ -5,7 +5,7 @@ test_that("load_params can load parameters", {
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
   expect_equal(params$params_sleep[[8]], "Y")
-  expect_equal(length(params$params_sleep), 10)
+  expect_equal(length(params$params_sleep), 27)
   params_sleep = params$params_sleep
   # Test that parameter check does not generate warnings:
   expect_warning(check_params(params_sleep), regexp = NA)

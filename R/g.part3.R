@@ -1,38 +1,16 @@
 g.part3 = function(metadatadir = c(), f0, f1, 
-                   # anglethreshold = 5,timethreshold = 5, 
                    acc.metric = "ENMO", 
-                   # ignorenonwear = TRUE, 
                    overwrite = FALSE, desiredtz = "",
-                   # constrain2range = TRUE, 
                    do.part3.pdf = TRUE,
                    do.parallel = TRUE,
-                   myfun = c(), maxNcores = c(), 
-                   # sensor.location = "wrist",
-                   # HASPT.algo = "HDCZA",
-                   # HASIB.algo = "vanHees2015",
-                   # Sadeh_axis = "Y",
-                   # longitudinal_axis = c(),
-                   # HASPT.ignore.invalid = FALSE, 
-                   params_sleep=c(), ...) {
+                   myfun = c(), maxNcores = c(),
+                   params_sleep = c(), params_metrics = c(), ...) {
   #----------------------------------------------------------
-  # extract and check sleep parameters
-  if (length(params_sleep) == 0) {
-    params = load_params(group = "sleep")
-    params_sleep = params$params_sleep
-  }
-  # if parameters were manually assigned then add them to params_sleep object
+  # Extract and check parameters
   input = list(...)
-  if (length(input) > 0) {
-    argNames = names(input)
-    expected_sleep_params = names(params_sleep)
-    for (aN in argNames) {
-      if (exists(aN) == TRUE & aN %in% expected_sleep_params == TRUE) {
-        params_sleep[[aN]] = input[[aN]]    
-      }
-    }
-  }
-  # Check class of parameter values
-  check_params(params_sleep)
+  params = extract_params(params_sleep, params_metrics, input)
+  params_sleep = params$params_sleep
+  params_metrics = params$params_metrics
   #----------------------------------------------------------
   # create output directory if it does not exist
   if (!file.exists(paste(metadatadir, sep = ""))) {

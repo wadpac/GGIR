@@ -3,6 +3,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
                         configfile = c(), myfun = c(), ...) {
   #get input variables
   input = list(...)
+  #----------------------------------------------------------
+  # Extract and check parameters
+  params = extract_params(params_sleep = c(), params_metrics = c(), input) # load default parameters
+  params_sleep = params$params_sleep
+  params_metrics = params$params_metrics
   if (length(input) > 0) {
     if (length(input) > 1) {
       # Check for duplicated arguments
@@ -52,7 +57,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
-    if (length(which(mode == 3)) > 0) { dopart3 = TRUE; do.anglez = TRUE }
+    if (length(which(mode == 3)) > 0) { dopart3 = TRUE; params_metrics[["do.anglez"]] = TRUE }
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
@@ -95,8 +100,9 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     if (length(config) > 0) {
       LS = ls()
       LS = LS[-which(LS == c("config"))]
+      print(tail(config))
       for (ci in 1:nrow(config)) {
-        if (as.character(config[ci,1]) %in% LS == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR
+        if (as.character(config[ci, 1]) %in% c(LS, "") == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
           conv2logical = conv2num = c()
           suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
           suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
@@ -147,21 +153,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   
   #-------------------------------------------
   # SLEEP PARAMETERS
-  params = load_params(group = "sleep")
-  params_sleep = params$params_sleep
-  if (length(input) > 0) {
-    argNames = names(input)
-    expected_sleep_params = names(params_sleep)
-    for (aN in argNames) {
-      if (exists(aN) == TRUE & aN %in% expected_sleep_params == TRUE) {
-        params_sleep[[aN]] = input[[aN]]    
-      }
-    }
-  }
-  check_params(params_sleep)
-  
-  
-  
+
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
@@ -188,9 +180,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("do.hfen") == FALSE)  do.hfen = FALSE
   if (exists("do.hfenplus") == FALSE)  do.hfenplus = FALSE
   if (exists("do.mad") == FALSE)  do.mad = FALSE
-  if (exists("do.anglex") == FALSE)  do.anglex = FALSE
-  if (exists("do.angley") == FALSE)  do.angley = FALSE
-  if (exists("do.anglez") == FALSE)  do.anglez = FALSE
   if (exists("do.roll_med_acc_x") == FALSE)  do.roll_med_acc_x=FALSE
   if (exists("do.roll_med_acc_y") == FALSE)  do.roll_med_acc_y=FALSE
   if (exists("do.roll_med_acc_z") == FALSE)  do.roll_med_acc_z=FALSE
@@ -208,9 +197,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("do.bfx") == FALSE)  do.bfx = FALSE
   if (exists("do.bfy") == FALSE)  do.bfy = FALSE
   if (exists("do.bfz") == FALSE)  do.bfz = FALSE
-  if (exists("do.zcx") == FALSE)  do.zcx = FALSE
-  if (exists("do.zcy") == FALSE)  do.zcy = FALSE
-  if (exists("do.zcz") == FALSE)  do.zcz = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
@@ -273,82 +259,12 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   
 
   # PART 3
-  # if (exists("anglethreshold") == FALSE)  anglethreshold = 5
-  # if (exists("timethreshold") == FALSE)  timethreshold = 5
-  # if (exists("constrain2range") == FALSE) constrain2range = TRUE
-  # if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
-  if (exists("def.noc.sleep") == FALSE)  def.noc.sleep = 1
-  if (exists("HASPT.algo") == FALSE & length(def.noc.sleep) != 2) {
-    HASPT.algo = "HDCZA"
-  } else if (length(def.noc.sleep) == 2) {
-    HASPT.algo = "notused"
-  }
-  # if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
-  # if (exists("sensor.location") == FALSE) sensor.location = "wrist"
-  # if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
-  if (sensor.location == "hip" &  HASPT.algo != "notused") {
-    if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
-      warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
-                     "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."))
-      do.anglex = do.angley = do.anglez = TRUE
-    }
-    if (HASPT.algo != "HorAngle") {
-      warning("\nChanging HASPT.algo to HorAngle, because sensor.location is set as hip")
-      HASPT.algo = "HorAngle"; def.noc.sleep=1
-    }
-  }
-  if (HASIB.algo %in% c("Sadeh1994", "Galland2012") == TRUE) {
-    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "Y"
-    if (Sadeh_axis %in% c("X","Y","Z") == FALSE) {
-      warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
-    }
-    if (Sadeh_axis == "X" & do.zcx == FALSE) do.zcx =  TRUE
-    if (Sadeh_axis == "Y" & do.zcy == FALSE) do.zcy =  TRUE
-    if (Sadeh_axis == "Z" & do.zcz == FALSE) do.zcz =  TRUE
-  } else { # vanHees2015
-    if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "" # not used
-  }
-  # if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
-
-  # PART 4
-  if (exists("loglocation") == FALSE)  loglocation = c()
-  if (length(loglocation) == 1) {
-    if (loglocation == "") loglocation = c() #inserted because some users mistakingly use this
-  }
-  if (length(loglocation) == 0 & length(def.noc.sleep) != 1) {
-    warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
-                   " We assume you want to use the sleeplog and misunderstood",
-                   " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"))
-    def.noc.sleep = 1
-  }
-  if (exists("coldid") == FALSE)  colid=1
-  if (exists("coln1") == FALSE)  coln1=1
-  if (exists("nnights") == FALSE)  nnights=c()
-  if (exists("outliers.only") == FALSE)  outliers.only=FALSE
-  if (exists("excludefirstlast") == FALSE)  excludefirstlast=FALSE
-  if (exists("criterror") == FALSE)  criterror=3
-  if (exists("relyonguider") == FALSE)  relyonguider=FALSE
-  if (exists("relyonsleeplog") == FALSE)  relyonsleeplog=c()
-  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE)  relyonguider=relyonsleeplog
-  if (exists("sleeplogidnum") == FALSE)  sleeplogidnum=TRUE
   
-  if (exists("do.visual") == FALSE)  do.visual=FALSE
+  # PART 4
   if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
-  if (exists("excludefirst.part4") == FALSE) excludefirst.part4 = FALSE
-  if (exists("excludelast.part4") == FALSE)  excludelast.part4 = FALSE
-  if (exists("sleeplogsep") == FALSE)  sleeplogsep = ","
-  if (exists("sleepwindowType") == FALSE)  sleepwindowType = "SPT"
-  if (HASPT.algo == "HorAngle" & sleepwindowType != "TimeInBed") {
-    warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
-    sleepwindowType = "TimeInBed"
-  }
-  if (length(loglocation) == 0 & HASPT.algo != "HorAngle" & sleepwindowType != "SPT") {
-    warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.")
-    sleepwindowType = "SPT"
-  }
+ 
   # PART 5
   if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
-  if (exists("includenightcrit") == FALSE)  includenightcrit=16
   if (exists("bout.metric") == FALSE)  bout.metric = 6
   if (exists("closedbout") == FALSE)  closedbout = FALSE
   if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
@@ -454,7 +370,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             do.lfenmo = do.lfenmo, do.en = do.en,
             do.bfen = do.bfen, do.hfen=do.hfen,
             do.hfenplus = do.hfenplus, do.mad=do.mad,
-            do.anglex=do.anglex,do.angley=do.angley,do.anglez=do.anglez,
             do.roll_med_acc_x=do.roll_med_acc_x,
             do.roll_med_acc_y=do.roll_med_acc_y,
             do.roll_med_acc_z=do.roll_med_acc_z,
@@ -465,7 +380,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz,
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
-            do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
             printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
@@ -493,7 +407,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             rmc.col.wear=rmc.col.wear,
             rmc.doresample=rmc.doresample,
             myfun=myfun, maxNcores=maxNcores,
-            interpolationType=interpolationType)
+            interpolationType=interpolationType, params_metrics = params_metrics)
   }
   if (dopart2 == TRUE) {
     cat('\n')
@@ -521,17 +435,10 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 3\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
-    
-    
-    # params_sleep = list(anglethreshold=anglethreshold, timethreshold=timethreshold, 
-    #                     ignorenonwear=ignorenonwear, constrain2range=constrain2range, sensor.location=sensor.location,
-    #                     HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
-    #                     longitudinal_axis=longitudinal_axis, HASPT.ignore.invalid=HASPT.ignore.invalid, do.part3.pdf=do.part3.pdf)
-    g.part3(metadatadir=metadatadir,f0=f0, acc.metric = acc.metric,
-            f1=f1, overwrite=overwrite,desiredtz=desiredtz,
-             do.parallel = do.parallel,
-            myfun=myfun, maxNcores=maxNcores, 
-            params_sleep=params_sleep)
+    g.part3(metadatadir = metadatadir, f0 = f0, acc.metric = acc.metric,
+            f1 = f1, overwrite = overwrite, desiredtz = desiredtz, do.parallel = do.parallel,
+            myfun = myfun, maxNcores = maxNcores, 
+            params_sleep = params_sleep, params_metrics = params_metrics)
 
   }
   if (dopart4 == TRUE) {
@@ -539,26 +446,20 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 4\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
-    g.part4(datadir=datadir,metadatadir=metadatadir,loglocation = loglocation,
-            f0=f0,f1=f1,idloc=idloc, colid = colid,coln1 = coln1,nnights = nnights,
-            outliers.only = outliers.only,
-            excludefirstlast=excludefirstlast,criterror = criterror,
-            includenightcrit=includenightcrit,relyonguider=relyonguider,
-            sleeplogidnum=sleeplogidnum,def.noc.sleep=def.noc.sleep,do.visual = do.visual, #
-            storefolderstructure=storefolderstructure,overwrite=overwrite,desiredtz=desiredtz,
-            data_cleaning_file=data_cleaning_file,
-            excludefirst.part4= excludefirst.part4,excludelast.part4=excludelast.part4,
-            sleeplogsep=sleeplogsep, sleepwindowType=sleepwindowType, sensor.location=sensor.location)
+    g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1, idloc = idloc, 
+            storefolderstructure = storefolderstructure, overwrite = overwrite, desiredtz = desiredtz,
+            data_cleaning_file = data_cleaning_file,
+             params_sleep = params_sleep, params_metrics = params_metrics)
   }
   if (dopart5 == TRUE) {
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 5\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep=""))) # this is intentionally ms3 and not ms4, do not change!
-    g.part5(datadir=datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
+    g.part5(datadir = datadir, metadatadir =metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
             hrs.del.start=hrs.del.start,
             hrs.del.end=hrs.del.end,
-            loglocation=loglocation,excludefirstlast.part5=excludefirstlast.part5, acc.metric=acc.metric,
+            excludefirstlast.part5=excludefirstlast.part5, acc.metric=acc.metric,
             windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
             boutcriter.mvpa=boutcriter.mvpa,storefolderstructure=storefolderstructure,
             threshold.lig = threshold.lig,
@@ -572,17 +473,15 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
             part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
             save_ms5raw_without_invalid=save_ms5raw_without_invalid,
-            # frag.classes.day = frag.classes.day, frag.classes.spt = frag.classes.spt,
             frag.metrics = frag.metrics,
             data_cleaning_file=data_cleaning_file,
             includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
             LUXthresholds=LUXthresholds, maxNcores=maxNcores,
             LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
             LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport,
-            sleeplogidnum=sleeplogidnum,
             possible_nap_window = possible_nap_window,
             possible_nap_dur = possible_nap_dur,
-            nap_model = nap_model, HASIB.algo = HASIB.algo)
+            nap_model = nap_model, params_sleep = params_sleep, params_metrics = params_metrics)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -590,9 +489,9 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
                           "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
-                          "conv2logical", "conv2num", "SI") == FALSE)]
+                          "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames") == FALSE)]
   config.parameters = mget(LS) #lapply(mget(ls()), is.data.frame)
-  config.matrix = createConfigFile(config.parameters)
+  config.matrix = as.data.frame(createConfigFile(config.parameters))
   if (dir.exists(metadatadir)) {
     write.csv(config.matrix, file = paste0(metadatadir,"/config.csv"), row.names = FALSE)
   } else {
@@ -635,9 +534,9 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     if (N.files.ms4.out < f0) f0 = 1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
     if (f1 == 0) f1 = N.files.ms4.out
-    g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation =loglocation,f0=f0,f1=f1,
+    g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation = params_sleep[["loglocation"]],f0=f0,f1=f1,
                    storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file,
-                   sleepwindowType=sleepwindowType)
+                   sleepwindowType=params_sleep[["sleepwindowType"]])
   }
   if (length(which(do.report == 5)) > 0) {
     cat('\n')
@@ -648,8 +547,8 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
 
-    g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=loglocation,
-                   includenightcrit=includenightcrit,includedaycrit=includedaycrit,
+    g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=params_sleep[["loglocation"]],
+                   includenightcrit=params_sleep[["includenightcrit"]],includedaycrit=includedaycrit,
                    data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
                    minimum_MM_length.part5=minimum_MM_length.part5,
                    week_weekend_aggregate.part5=week_weekend_aggregate.part5,

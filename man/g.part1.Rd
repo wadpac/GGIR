@@ -23,22 +23,20 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         desiredtz = "",chunksize=c(),studyname=c(),
         do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
         do.bfen = FALSE, do.hfen=FALSE, do.hfenplus = FALSE,
-        do.mad = FALSE, do.anglex=FALSE, do.angley=FALSE,
-        do.anglez=FALSE, do.enmoa=FALSE,
+        do.mad = FALSE, do.enmoa=FALSE,
         do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE,
         do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE,
         do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
         do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
         do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
         do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
-        do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
         do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
         spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
         dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
         myfun=c(),
-        maxNcores=c(), interpolationType=1, ...)
+        maxNcores=c(), interpolationType=1, params_metrics=c(), ...)
 }
 \arguments{
   \item{datadir}{
@@ -96,18 +94,6 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{do.mad}{
   if TRUE, calculate metric MAD (Mean Amplitude Deviation), see \link{g.getmeta}
   }
-  \item{do.anglex}{
-  if TRUE, calculate the angle of the x-axis relative to the horizontal plane
-  (degrees) utilizing all three axes
-  }
-  \item{do.angley}{
-  if TRUE, calculate the angle of the y-axis relative to the horizontal plane
-  (degrees) utilizing all three axes
-  }
-  \item{do.anglez}{
-  if TRUE, calculate the angle of the z-axis relative to the horizontal plane
-  (degrees) utilizing all three axes
-  }
   \item{do.enmoa}{if TRUE, calculate metric ENMOa which is equal to
   metric ENMO but with the absolute taken from the Euclidean norm minus one.
   }
@@ -142,12 +128,6 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{do.bfy}{ see \link{g.getmeta}
   }
   \item{do.bfz}{ see \link{g.getmeta}
-  }
-   \item{do.zcx}{ see \link{g.getmeta}
-  }
-  \item{do.zcy}{ see \link{g.getmeta}
-  }
-  \item{do.zcz}{ see \link{g.getmeta}
   }
   \item{do.cal}{
   Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
@@ -230,9 +210,15 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   \item{interpolationType}{
    Integer, see \link{g.getmeta}
   }
+  \item{params_metrics}{
+    List of parameters used metrics:
+    do.anglex (boolean, see \link{g.getmeta}), do.angley (boolean, see \link{g.getmeta}),
+    do.anglez (boolean, see \link{g.getmeta}), do.zcx (boolean, see \link{g.getmeta}),
+    do.zcy (boolean, see \link{g.getmeta}), do.zcz (boolean, see \link{g.getmeta}),
+  }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
-    are working with a non-standard csv formatted files.
+    are working with a non-standard csv formatted files. To enable compatibility with older GGIR version, user can also          provide individual params_metrics parameters as separate argument, e.g. do.anglex = TRUE.
   }
 }
 \details{
