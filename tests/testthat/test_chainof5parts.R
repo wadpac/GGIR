@@ -80,8 +80,8 @@ test_that("chainof5parts", {
 
   #--------------------------------------------
   # part 3
-  g.part3(metadatadir=metadatadir,f0=1,f1=1,anglethreshold = 5,desiredtz=desiredtz,
-                     timethreshold = 5,ignorenonwear=FALSE,overwrite=TRUE,do.part3.pdf=TRUE,
+  g.part3(metadatadir = metadatadir, f0 = 1, f1 = 1, anglethreshold = 5,desiredtz = desiredtz,
+          timethreshold = 5,ignorenonwear = FALSE, overwrite = TRUE, do.part3.pdf = TRUE,
           do.parallel = do.parallel)
   dirname = "output_test/meta/ms3.out/"
   rn3 = dir(dirname,full.names = TRUE)

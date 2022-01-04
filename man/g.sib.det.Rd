@@ -30,10 +30,13 @@
     as hours relative to midnight.
   }
   \item{anglethreshold}{
-    See \link{g.part3}
+    Angle threshold (degrees) for sustained inactivity periods detection,
+   default = 5
   }
   \item{timethreshold}{
-    See \link{g.part3}
+    Time threshold (minutes) for sustained inactivity periods detection,
+    default = 5. This can be specified as multiple thresholds, each of
+    which will be implemented. For example, timethreshold = c(5,10)
   }
   \item{acc.metric}{
     Which one of the metrics do you want to consider to analyze L5. 
@@ -44,14 +47,17 @@
     See \link{g.part3}
   }
   \item{constrain2range}{
-    See \link{g.part3}
+    Whether or not to constrain the range of threshold used in the diary free
+    Sleep period time window detection
   }
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
   }
   \item{sensor.location}{
-    See \link{g.part3}
+    Character to indicate sensor location, default is wrist.
+    If it is hip HDCZA algorithm also requires longitudinal axis of sensor to be
+    between -45 and +45 degrees.
   }
   \item{HASPT.algo}{
     Character to indicate what heuristic algorithm to use for detecting the SPT

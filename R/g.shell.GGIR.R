@@ -144,6 +144,24 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   }
   # obtain default parameter values if not provided:
 
+  
+  #-------------------------------------------
+  # SLEEP PARAMETERS
+  params = load_params(group = "sleep")
+  params_sleep = params$params_sleep
+  if (length(input) > 0) {
+    argNames = names(input)
+    expected_sleep_params = names(params_sleep)
+    for (aN in argNames) {
+      if (exists(aN) == TRUE & aN %in% expected_sleep_params == TRUE) {
+        params_sleep[[aN]] = input[[aN]]    
+      }
+    }
+  }
+  check_params(params_sleep)
+  
+  
+  
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
@@ -151,7 +169,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("myfun") == FALSE)  myfun = c()
   if (exists("maxNcores") == FALSE)  maxNcores = c()
 
-  if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
+  # if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
   if (exists("print.filename") == FALSE)  print.filename = FALSE
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
   # PART 1
@@ -255,19 +273,19 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   
 
   # PART 3
-  if (exists("anglethreshold") == FALSE)  anglethreshold = 5
-  if (exists("timethreshold") == FALSE)  timethreshold = 5
-  if (exists("constrain2range") == FALSE) constrain2range = TRUE
-  if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
+  # if (exists("anglethreshold") == FALSE)  anglethreshold = 5
+  # if (exists("timethreshold") == FALSE)  timethreshold = 5
+  # if (exists("constrain2range") == FALSE) constrain2range = TRUE
+  # if (exists("do.part3.pdf") == FALSE) do.part3.pdf = TRUE
   if (exists("def.noc.sleep") == FALSE)  def.noc.sleep = 1
   if (exists("HASPT.algo") == FALSE & length(def.noc.sleep) != 2) {
     HASPT.algo = "HDCZA"
   } else if (length(def.noc.sleep) == 2) {
     HASPT.algo = "notused"
   }
-  if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
-  if (exists("sensor.location") == FALSE) sensor.location = "wrist"
-  if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
+  # if (exists("HASIB.algo") == FALSE) HASIB.algo = "vanHees2015"
+  # if (exists("sensor.location") == FALSE) sensor.location = "wrist"
+  # if (exists("HASPT.ignore.invalid") == FALSE) HASPT.ignore.invalid = FALSE
   if (sensor.location == "hip" &  HASPT.algo != "notused") {
     if (do.anglex == FALSE | do.angley == FALSE | do.anglez == FALSE) {
       warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
@@ -290,7 +308,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   } else { # vanHees2015
     if (exists("Sadeh_axis") == FALSE) Sadeh_axis = "" # not used
   }
-  if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
+  # if (exists("longitudinal_axis") == FALSE)  longitudinal_axis = c()
 
   # PART 4
   if (exists("loglocation") == FALSE)  loglocation = c()
@@ -503,14 +521,18 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 3\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
+    
+    
+    # params_sleep = list(anglethreshold=anglethreshold, timethreshold=timethreshold, 
+    #                     ignorenonwear=ignorenonwear, constrain2range=constrain2range, sensor.location=sensor.location,
+    #                     HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
+    #                     longitudinal_axis=longitudinal_axis, HASPT.ignore.invalid=HASPT.ignore.invalid, do.part3.pdf=do.part3.pdf)
     g.part3(metadatadir=metadatadir,f0=f0, acc.metric = acc.metric,
-            f1=f1,anglethreshold=anglethreshold,timethreshold=timethreshold,
-            ignorenonwear=ignorenonwear,overwrite=overwrite,desiredtz=desiredtz,
-            constrain2range=constrain2range, do.parallel = do.parallel,
-            myfun=myfun, maxNcores=maxNcores, sensor.location=sensor.location,
-            HASPT.algo = HASPT.algo, HASIB.algo =HASIB.algo, Sadeh_axis=Sadeh_axis,
-            longitudinal_axis=longitudinal_axis, do.part3.pdf=do.part3.pdf,
-            HASPT.ignore.invalid=HASPT.ignore.invalid)
+            f1=f1, overwrite=overwrite,desiredtz=desiredtz,
+             do.parallel = do.parallel,
+            myfun=myfun, maxNcores=maxNcores, 
+            params_sleep=params_sleep)
+
   }
   if (dopart4 == TRUE) {
     cat('\n')
