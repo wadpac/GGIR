@@ -25,7 +25,7 @@ g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24),
  dayborder=0, bout.metric = 1,
  closedbout=FALSE, desiredtz = "",
  IVIS_windowsize_minutes = 60,
- IVIS_epochsize_seconds = NA, iglevels = c(), IVIS.activity.metric=2,
+ IVIS_epochsize_seconds = c(), iglevels = c(), IVIS.activity.metric=2,
  qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
 }
 

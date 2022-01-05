@@ -1,19 +1,22 @@
 g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
-                   windowsizes = c(5,900,3600),
-                   desiredtz = "", studyname = c(),
-                   print.filename = FALSE, overwrite = FALSE,
-                   selectdaysfile = c(), dayborder = 0,
-                   configtz = c(), do.parallel = TRUE, myfun = c(),
-                   maxNcores = c(),  params_metrics = c(), params_rawdata = c(), ...) {
+                   studyname = c(), myfun = c(),
+                   params_metrics = c(), params_rawdata = c(),
+                   params_cleaning = c(),
+                   params_general = c(), ...) {
+  
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
-  params = extract_params(params_sleep = c(), params_metrics = c(), params_rawdata = c(), input) # load default parameters
-  params_sleep = params$params_sleep
+  params = extract_params(params_metrics = params_metrics,
+                          params_rawdata = params_rawdata,
+                          params_cleaning = params_cleaning,
+                          params_general = params_general,
+                          input = input) # load default parameters
   params_metrics = params$params_metrics
   params_rawdata = params$params_rawdata
+  params_cleaning = params$params_cleaning
+  params_general = params$params_general
   #get input variables (relevant when read.myacc.csv is used
-  input = list(...)
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste(names(input)[i], "=", input[i], sep="")
@@ -66,7 +69,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     dir.create(file.path(outputdir,outputfolder))
     dir.create(file.path(outputdir,outputfolder,"meta"))
     dir.create(file.path(outputdir,paste(outputfolder,"/meta",sep=""),"basic"))
-    if (length(selectdaysfile) > 0) {
+    if (length(params_cleaning[["selectdaysfile"]]) > 0) {
       dir.create(file.path(outputdir,paste(outputfolder,"/meta",sep=""),"raw"))
     }
     dir.create(file.path(outputdir,outputfolder,"results"))
@@ -170,7 +173,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   #=================================================================
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   fnames = sort(fnames)
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     cores=parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
@@ -200,11 +203,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
 
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
-      do.parallel = FALSE
+      params_general[["do.parallel"]] = FALSE
     }
   }
   t1 = Sys.time() # copied here
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
   }
   # check whether we are indevelopment mode:
@@ -226,12 +229,12 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
   }
-  `%myinfix%` = ifelse(do.parallel, foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+  `%myinfix%` = ifelse(params_general[["do.parallel"]], foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
                                 .export=functions2passon, .errorhandling=errhand) %myinfix% {
     tryCatchResult = tryCatch({
       # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
-      if (print.filename == TRUE) {
+      if (params_general[["print.filename"]] == TRUE) {
         cat(paste0("\nFile name: ",fnames[i]))
       }
       if (filelist == TRUE) {
@@ -278,8 +281,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # Inspect file (and store output later on)
       options(warn = -1) #turn off warnings
       if (useRDA == FALSE) {
-        I = g.inspectfile(datafile, desiredtz = desiredtz,
-                          configtz = configtz,
+        I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
+                          configtz = params_general[["configtz"]],
                           rmc.dec = params_rawdata[["rmc.dec"]],
                           rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                           rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
@@ -307,7 +310,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         I$filename = fnames[i]
       }
       options(warn = 0) #turn on warnings
-      if (overwrite == TRUE) skip = 0
+      if (params_general[["overwrite"]] == TRUE) skip = 0
       if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
         cat(paste0("\nP1 file ",i))
         turn.do.cal.back.on = FALSE
@@ -342,10 +345,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                           minloadcrit = params_rawdata[["minloadcrit"]],
                           printsummary = params_rawdata[["printsummary"]],
                           chunksize = params_rawdata[["chunksize"]],
-                          windowsizes = windowsizes, selectdaysfile = selectdaysfile,
-                          dayborder = dayborder,
-                          desiredtz = desiredtz,
-                          configtz = configtz,
+                          windowsizes = params_general[["windowsizes"]], selectdaysfile = params_cleaning[["selectdaysfile"]],
+                          dayborder = params_general[["dayborder"]],
+                          desiredtz = params_general[["desiredtz"]],
+                          configtz = params_general[["configtz"]],
                           rmc.dec = params_rawdata[["rmc.dec"]],
                           rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                           rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
@@ -445,9 +448,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                               minloadcrit = params_rawdata[["minloadcrit"]],
                               printsummary = params_rawdata[["printsummary"]],
                               chunksize = params_rawdata[["chunksize"]],
-                              windowsizes = windowsizes, selectdaysfile = selectdaysfile, 
-                              dayborder = dayborder, desiredtz = desiredtz,  
-                              configtz = configtz,
+                              windowsizes = params_general[["windowsizes"]], selectdaysfile = params_cleaning[["selectdaysfile"]], 
+                              dayborder = params_general[["dayborder"]], desiredtz = params_general[["desiredtz"]],  
+                              configtz = params_general[["configtz"]],
                               rmc.dec = params_rawdata[["rmc.dec"]],
                               rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                               rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
@@ -505,14 +508,15 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       do.zcy=params_metrics[["do.zcy"]], do.zcz=params_metrics[["do.zcz"]],
                       lb = params_metrics[["lb"]], hb = params_metrics[["hb"]],
                       n = params_metrics[["n"]],
-                      desiredtz=desiredtz, daylimit=daylimit, windowsizes=windowsizes,
+                      desiredtz=params_general[["desiredtz"]], daylimit=daylimit, windowsizes=params_general[["windowsizes"]],
                       tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
-                      meantempcal=C$meantempcal, chunksize=params_rawdata[["chunksize"]],
-                      selectdaysfile=selectdaysfile,
+                      meantempcal=C$meantempcal, 
+                      chunksize=params_rawdata[["chunksize"]],
+                      selectdaysfile=params_cleaning[["selectdaysfile"]],
                       outputdir=outputdir,
                       outputfolder=outputfolder,
-                      dayborder=dayborder, dynrange=params_rawdata[["dynrange"]],
-                      configtz=configtz,
+                      dayborder=params_general[["dayborder"]], dynrange=params_rawdata[["dynrange"]],
+                      configtz=params_general[["configtz"]],
                       rmc.dec = params_rawdata[["rmc.dec"]],
                       rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                       rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
@@ -588,7 +592,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }) # END tryCatch
     return(tryCatchResult)
   }
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     on.exit(parallel::stopCluster(cl))
   }
   for (oli in 1:length(output_list)) { # logged error and warning messages

@@ -1,28 +1,8 @@
-g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 1,
-                   maxdur = 0, hrs.del.start = 0, hrs.del.end = 0,
-                   # loglocation = c(),
-                   excludefirstlast.part5 = FALSE, windowsizes = c(5,900,3600),
-                   acc.metric = "ENMO", boutcriter.mvpa = 0.8, boutcriter.in = 0.9,
-                   boutcriter.lig = 0.8, storefolderstructure = FALSE,
-                   threshold.lig = c(40), threshold.mod = c(100),
-                   threshold.vig = c(400), timewindow = c("MM","WW"),
-                   boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
-                   boutdur.lig = c(1,5,10), winhr = 5, M5L5res = 10,
-                   overwrite = FALSE, desiredtz = "", bout.metric = 6, dayborder = 0,
-                   save_ms5rawlevels = FALSE, do.parallel = TRUE, part5_agg2_60seconds = FALSE,
-                   save_ms5raw_format = "csv", save_ms5raw_without_invalid=TRUE,
-                   data_cleaning_file = c(), includedaycrit.part5 = 2/3,
-                   frag.metrics = c(), iglevels=c(),
-                   maxNcores=c(),
-                   LUXthresholds = c(0, 500, 1000, 5000, 10000, 20000),
-                   LUX_cal_constant = c(),
-                   LUX_cal_exponent = c(),
-                   LUX_day_segments = c(),
-                   do.sibreport = FALSE,
-                   # sleeplogidnum = FALSE,
-                   possible_nap_window = c(9, 18),
-                   possible_nap_dur = c(15, 240),
-                   nap_model = "hip3yr", params_sleep = c(), params_metrics = c(), ...) { #, HASIB.algo ="vanHees2015"
+g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
+                   params_sleep = c(), params_metrics = c(),
+                   params_247 = c(), params_phyact = c(), 
+                   params_cleaning = c(), params_output = c(),
+                   params_general = c(), ...) { #, HASIB.algo ="vanHees2015"
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to Englishs
   # description: function called by g.shell.GGIR
@@ -32,29 +12,40 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
-  params = extract_params(params_sleep = c(), params_metrics = c(), params_rawdata = c(), input) # load default parameters
+  params = extract_params(params_sleep = params_sleep,
+                          params_metrics = params_metrics,
+                          params_247 = params_247,
+                          params_phyact = params_phyact,
+                          params_cleaning = params_cleaning,
+                          params_output = params_output,
+                          params_general = params_general,
+                          input = input)
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
-  
-  
+  params_247 = params$params_247
+  params_phyact = params$params_phyact
+  params_cleaning = params$params_cleaning
+  params_output = params$params_output
+  params_general = params$params_general
+
   #======================================================================
   # create new folder (if not existent) for storing milestone data
   ms5.out = "/meta/ms5.out"
   if (!file.exists(paste(metadatadir, ms5.out, sep = ""))) {
     dir.create(file.path(metadatadir, ms5.out))
   }
-  if (save_ms5rawlevels == TRUE | do.sibreport == TRUE) {
+  if (params_output[["save_ms5rawlevels"]] == TRUE | params_sleep[["do.sibreport"]] == TRUE) {
     ms5.outraw = "/meta/ms5.outraw"
     if (file.exists(paste(metadatadir, ms5.outraw, sep = ""))) {
     } else {
       dir.create(file.path(metadatadir, ms5.outraw))
     }
-    if (save_ms5rawlevels == TRUE) {
+    if (params_output[["save_ms5rawlevels"]] == TRUE) {
       # Create on subfolder per configuration
       configurations = c()
-      for (TRLi in threshold.lig) {
-        for (TRMi in threshold.mod) {
-          for (TRVi in threshold.vig) {
+      for (TRLi in params_phyact[["threshold.lig"]]) {
+        for (TRMi in params_phyact[["threshold.mod"]]) {
+          for (TRVi in params_phyact[["threshold.vig"]]) {
             configurations = c(configurations, paste0(TRLi, "_", TRMi, "_", TRVi))
           }
         }
@@ -97,25 +88,25 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
   wdaynames = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   nfeatures = 500
-  ws3 = windowsizes[1]
+  ws3 = params_general[["windowsizes"]][1]
   ds_names = rep("",nfeatures)
   di = 1
   cnt = 1
   fnames.ms3 = sort(fnames.ms3)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
-  boutdur.mvpa = sort(boutdur.mvpa,decreasing = TRUE)
-  boutdur.lig = sort(boutdur.lig,decreasing = TRUE)
-  boutdur.in = sort(boutdur.in,decreasing = TRUE)
-  if (save_ms5raw_format != "RData" & save_ms5raw_format != "csv") {
-    save_ms5raw_format = "csv"# specify as csv if user does not clearly specify format
+  params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
+  params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
+  params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
+  if (params_output[["save_ms5raw_format"]] != "RData" & params_output[["save_ms5raw_format"]] != "csv") {
+    params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
   }
   DaCleanFile = c()
-  if (length(data_cleaning_file) > 0) {
-    if (file.exists(data_cleaning_file)) DaCleanFile = read.csv(data_cleaning_file)
+  if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
+    if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
   }
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
-  if (storefolderstructure == TRUE) {
+  if (params_output[["storefolderstructure"]] == TRUE) {
     extractfilenames = function(x) as.character(unlist(strsplit(x,".RDa"))[1])
     referencefnames = sapply(fnames.ms3,extractfilenames)
     folderstructure = getfolderstructure(datadir,referencefnames)
@@ -127,21 +118,21 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
   #======================================================================
   # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
   # setup parallel backend to use many processors
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
-      if (length(maxNcores) == 0) maxNcores = Ncores
-      Ncores2use = min(c(Ncores - 1, maxNcores))
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
-      do.parallel = FALSE
+      params_general[["do.parallel"]] = FALSE
     }
   }
   t0 = t1 = Sys.time() # copied here
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir, ms5.out, ' for progress\n'))
   }
   # check whether we are in development mode:
@@ -163,7 +154,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
-  `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+  `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list = foreach::foreach(i = f0:f1,  .packages = packages2passon,
                                 .export = functions2passon, .errorhandling = errhand) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
                                   tryCatchResult = tryCatch({
@@ -177,7 +168,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                     } else {
                                       skip = 0
                                     }
-                                    if (overwrite == TRUE) skip = 0
+                                    if (params_general[["overwrite"]] == TRUE) skip = 0
                                     # skip files from ms3 if there is no equivalent in ms4
                                     selp = which(fnames.ms4 == fnames.ms3[i])
                                     if (length(selp) > 0) {
@@ -209,10 +200,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                       ID = summarysleep$ID[idindex[1]]
                                       ndays = nrow(summarysleep) #/ length(unique(summarysleep$sleepparam))
                                       dsummary = matrix("", ((nrow(summarysleep) + 12) * length(unique(summarysleep$sleepparam))
-                                                            * length(unique(threshold.lig))
-                                                            * length(unique(threshold.mod))
-                                                            * length(unique(threshold.vig))
-                                                            * length(unique(timewindow))),nfeatures)
+                                                            * length(unique(params_phyact[["threshold.lig"]]))
+                                                            * length(unique(params_phyact[["threshold.mod"]]))
+                                                            * length(unique(params_phyact[["threshold.vig"]]))
+                                                            * length(unique(params_output[["timewindow"]]))),nfeatures)
                                       di = 1
                                       fi = 1
                                       SPTE_end = c() # if it is not loaded from part3 milestone data then this will be the default
@@ -229,7 +220,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
                                         # extract key variables from the mile-stone data: time, acceleration and elevation angle
                                         # note that this is imputed ACCELERATION because we use this for describing behaviour:
-                                        ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,acc.metric] * 1000,
+                                        ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * 1000,
                                                         guider = rep("unknown", nrow(IMP$metashort)),
                                                         angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])) )
                                         Nts = nrow(ts)
@@ -250,9 +241,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         # Check if temperature and light are availble
                                         if (lightpeak_available == TRUE) {
                                           luz = M$metalong$lightpeak
-                                          if (length(LUX_cal_constant) > 0 &
-                                              length(LUX_cal_exponent) > 0) { # re-calibrate light
-                                            luz = LUX_cal_constant * exp(LUX_cal_exponent * luz)
+                                          if (length(params_247[["LUX_cal_constant"]]) > 0 &
+                                              length(params_247[["LUX_cal_exponent"]]) > 0) { # re-calibrate light
+                                            luz = params_247[["LUX_cal_constant"]] * exp(params_247[["LUX_cal_exponent"]] * luz)
                                           }
                                           handle_luz_extremes = g.part5.handle_lux_extremes(luz)
                                           luz = handle_luz_extremes$lux
@@ -286,7 +277,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         def = unique(S$definition)
                                         cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
                                         if (length(cut) > 0) S = S[-cut,]
-                                        if (part5_agg2_60seconds == TRUE) {
+                                        if (params_general[["part5_agg2_60seconds"]] == TRUE) {
                                           ts_backup = ts
                                         }
                                         # Remove impossible entries:
@@ -296,41 +287,41 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         }
                                         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
                                           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
-                                          if (part5_agg2_60seconds == TRUE) {
+                                          if (params_general[["part5_agg2_60seconds"]] == TRUE) {
                                             ts = ts_backup
                                           }
                                           # extract time and from that the indices for midnights
-                                          time_POSIX = iso8601chartime2POSIX(ts$time,tz = desiredtz)
+                                          time_POSIX = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
                                           tempp = unclass(time_POSIX)
                                           if (is.na(tempp$sec[1]) == TRUE) {
-                                            tempp = unclass(as.POSIXlt(ts$time, tz = desiredtz))
+                                            tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
                                           }
                                           sec = tempp$sec
                                           min = tempp$min
                                           hour = tempp$hour
-                                          if (dayborder == 0) {
+                                          if (params_general[["dayborder"]] == 0) {
                                             nightsi = which(sec == 0 & min == 0 & hour == 0)
                                           } else {
-                                            nightsi = which(sec == 0 & min == (dayborder - floor(dayborder)) * 60 & hour == floor(dayborder)) #shift the definition of midnight if required
+                                            nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
                                           }
                                           # create copy of only relevant part of sleep summary dataframe
                                           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
                                           S2 = S[S$definition == j,] # simplify to one definition
                                           # Add sustained inactivity bouts (sib) to the time series
-                                          ts = g.part5.addsib(ts, ws3new, Nts, S2, desiredtz, j,  nightsi)
+                                          ts = g.part5.addsib(ts, ws3new, Nts, S2, params_general[["desiredtz"]], j,  nightsi)
                                           # Fix missing nights in part 4 data:
                                           summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)
                                           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
                                           ts$diur = 0
                                           if (nrow(summarysleep_tmp2) > 0) {
                                             # Add defenition of wake and sleep windows in diur column of data.frame ts
-                                            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, desiredtz, nightsi,
+                                            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi,
                                                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
                                             # Add first waking up time, if it is missing:
                                             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
                                                                       Nepochsinhour, Nts, SPTE_end, ws3)
-                                            if (part5_agg2_60seconds == TRUE) { # Optionally aggregate to 1 minute epoch:
-                                              ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = desiredtz)) / 60) * 60
+                                            if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
+                                              ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
                                               if (lightpeak_available == TRUE) {
                                                 ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", "angle", "lightpeak", "lightpeak_imputationcode")],
                                                                by = list(ts$time_num), FUN = function(x) mean(x))
@@ -343,21 +334,22 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               ts$nonwear = round(ts$nonwear)
                                               names(ts)[1] = "time"
                                               # # convert back to iso8601 format
-                                              ts$time = as.POSIXlt(ts$time, origin = "1970-1-1", tz = desiredtz)
+                                              ts$time = as.POSIXlt(ts$time, origin = "1970-1-1", tz = params_general[["desiredtz"]])
                                               ws3new = 60 # change because below it is used to decide how many epochs are there in
                                               # extract nightsi again
                                               time_POSIX = ts$time
                                               tempp = unclass(time_POSIX)
                                               if (is.na(tempp$sec[1]) == TRUE) {
-                                                tempp = unclass(as.POSIXlt(ts$time, tz = desiredtz))
+                                                tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
                                               }
                                               sec = tempp$sec
                                               min = tempp$min
                                               hour = tempp$hour
-                                              if (dayborder == 0) {
+                                              if (params_general[["dayborder"]] == 0) {
                                                 nightsi = which(sec == 0 & min == 0 & hour == 0)
                                               } else {
-                                                nightsi = which(sec == 0 & min == (dayborder - floor(dayborder)) * 60 & hour == floor(dayborder)) #shift the definition of midnight if required
+                                                nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 &
+                                                                  hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
                                               }
                                               Nts = nrow(ts)
                                             }
@@ -368,7 +360,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                             # Use sib.report to classify naps, non-wear and integrate these in time series
                                             # Done at this point in the code, because it
                                             # does not depend on bout detection criteria or window definitions.
-                                            if (do.sibreport  == TRUE & length(nap_model) > 0) {
+                                            if (params_sleep[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
                                               if (params_sleep[["sleeplogidnum"]] == TRUE) {
                                                 IDtmp = as.numeric(ID)
                                               } else {
@@ -376,7 +368,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               }
 
                                               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
-                                                                      desiredtz = desiredtz)
+                                                                      desiredtz = params_general[["desiredtz"]])
 
                                               # store in csv file:
                                               ms5.sibreport = "/meta/ms5.outraw/sib.reports"
@@ -387,10 +379,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
                                               # nap detection
                                               naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
-                                                                                  desiredtz = desiredtz,
-                                                                                  possible_nap_window = possible_nap_window,
-                                                                                  possible_nap_dur = possible_nap_dur,
-                                                                                  nap_model = nap_model,
+                                                                                  desiredtz = params_general[["desiredtz"]],
+                                                                                  possible_nap_window = params_sleep[["possible_nap_window"]],
+                                                                                  possible_nap_dur = params_sleep[["possible_nap_dur"]],
+                                                                                  nap_model = params_sleep[["nap_model"]],
                                                                                   HASIB.algo = params_sleep[["HASIB.algo"]])
 
 
@@ -436,16 +428,19 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                             }
 
                                             ts$window = 0
-                                            for (TRLi in threshold.lig) {
-                                              for (TRMi in threshold.mod) {
-                                                for (TRVi in threshold.vig) {
+                                            for (TRLi in params_phyact[["threshold.lig"]]) {
+                                              for (TRMi in params_phyact[["threshold.mod"]]) {
+                                                for (TRVi in params_phyact[["threshold.vig"]]) {
                                                   # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
                                                   levels = identify_levels(ts,
                                                                            TRLi,TRMi,TRVi,
-                                                                           boutdur.mvpa,boutcriter.mvpa,
-                                                                           boutdur.lig,boutcriter.lig,
-                                                                           boutdur.in,boutcriter.in,
-                                                                           ws3new,bout.metric)
+                                                                           boutdur.mvpa = params_phyact[["boutdur.mvpa"]],
+                                                                           boutcriter.mvpa = params_phyact[["boutcriter.mvpa"]],
+                                                                           boutdur.lig = params_phyact[["boutdur.lig"]],
+                                                                           boutcriter.lig = params_phyact[["boutcriter.lig"]],
+                                                                           boutdur.in = params_phyact[["boutdur.in"]], 
+                                                                           boutcriter.in = params_phyact[["boutcriter.in"]],
+                                                                           ws3new, params_phyact[["bout.metric"]])
                                                   LEVELS = levels$LEVELS
                                                   OLEVELS = levels$OLEVELS
                                                   Lnames = levels$Lnames
@@ -463,7 +458,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                   FM = which(diff(ts$diur) == -1)
                                                   nightsi_bu = nightsi
                                                   # now 0.5+6+0.5 midnights and 7 days
-                                                  for (timewindowi in timewindow) {
+                                                  for (timewindowi in params_output[["timewindow"]]) {
                                                     nightsi = nightsi_bu
                                                     ts$guider = "unknown"
                                                     if (timewindowi == "WW") {
@@ -537,14 +532,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           # Add to dsummary output matrix
                                                           if (skiponset == FALSE) {
                                                             dsummary[di,fi] = onset
-                                                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[onseti]), tz = desiredtz, format = "%H:%M:%S"))
+                                                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[onseti]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
                                                           } else {
                                                             dsummary[di,fi:(fi + 1)] = rep(NA, 2)
                                                           }
                                                           ds_names[fi:(fi + 1)] = c("sleeponset", "sleeponset_ts");      fi = fi + 2
                                                           if (skipwake == FALSE) {
                                                             dsummary[di,fi] = wake
-                                                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[wakei]), tz = desiredtz, format = "%H:%M:%S"))
+                                                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[wakei]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
                                                           } else {
                                                             dsummary[di,fi:(fi + 1)] = rep(NA, 2)
                                                           }
@@ -649,7 +644,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # NAPS (estimation)
-                                                          if (do.sibreport == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(nap_model) > 0) {
+                                                          if (params_sleep[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(params_sleep[["nap_model"]]) > 0) {
                                                             dsummary[di,fi] = length(which(diff(c(-1, which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0))) > 1))
                                                             ds_names[fi] = "nap_count";      fi = fi + 1
                                                             dsummary[di,fi] = round((sum(ts$nap1_nonwear2[sse[which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
@@ -683,8 +678,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi] = paste("quantile_mostactive30min_mg", sep = "");      fi = fi + 1
                                                           #===============================================
                                                           # L5 M5, L10 M10...
-                                                          for (wini in winhr) {
-                                                            reso = M5L5res #resolution at 5 minutes
+                                                          for (wini in params_247[["winhr"]]) {
+                                                            reso = params_247[["M5L5res"]] #resolution at 5 minutes
                                                             endd = floor(WLH * 10) / 10 # rounding needed for non-integer window lengths
                                                             nwindow_f = (endd - wini) #number of windows for L5M5 analyses
                                                             ignore = FALSE
@@ -746,8 +741,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                             if (ignore == FALSE) {
                                                               # Add also numeric time
                                                               if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
-                                                                L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR, tz = desiredtz))
-                                                                M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR, tz = desiredtz))
+                                                                L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR, tz = params_general[["desiredtz"]]))
+                                                                M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR, tz = params_general[["desiredtz"]]))
                                                               }
                                                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                                                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
@@ -786,9 +781,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                             RLE = rle(bc.mvpa[bci, sse])
                                                             dsummary[di,fi+(bci-1)] = length(which(RLE$values == 1))
                                                             if (bci == 1) {
-                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_MVPA_bts_", boutdur.mvpa[bci])
+                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_MVPA_bts_", params_phyact[["boutdur.mvpa"]][bci])
                                                             } else {
-                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_MVPA_bts_", boutdur.mvpa[bci], "_", boutdur.mvpa[bci - 1])
+                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_MVPA_bts_", params_phyact[["boutdur.mvpa"]][bci], "_", params_phyact[["boutdur.mvpa"]][bci - 1])
                                                             }
                                                           }
                                                           fi = fi + bci
@@ -797,9 +792,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                             RLE = rle(bc.in[bci,sse])
                                                             dsummary[di,fi + (bci - 1)] = length(which(RLE$values == 1))
                                                             if (bci == 1) {
-                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_IN_bts_",boutdur.in[bci])
+                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_IN_bts_",params_phyact[["boutdur.in"]][bci])
                                                             } else {
-                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_IN_bts_", boutdur.in[bci],"_", boutdur.in[bci - 1])
+                                                              ds_names[fi + (bci - 1)] = paste0("Nbouts_day_IN_bts_", params_phyact[["boutdur.in"]][bci],"_", params_phyact[["boutdur.in"]][bci - 1])
                                                             }
                                                           }
                                                           fi = fi + bci
@@ -808,9 +803,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                             RLE = rle(bc.lig[bci,sse])
                                                             dsummary[di,fi + (bci - 1)] = length(which(RLE$values == 1))
                                                             if (bci ==1) {
-                                                              ds_names[fi+(bci - 1)] = paste0("Nbouts_day_LIG_bts_", boutdur.lig[bci])
+                                                              ds_names[fi+(bci - 1)] = paste0("Nbouts_day_LIG_bts_", params_phyact[["boutdur.lig"]][bci])
                                                             } else {
-                                                              ds_names[fi+(bci - 1)] = paste0("Nbouts_day_LIG_bts_", boutdur.lig[bci], "_", boutdur.lig[bci - 1])
+                                                              ds_names[fi+(bci - 1)] = paste0("Nbouts_day_LIG_bts_", params_phyact[["boutdur.lig"]][bci], "_", params_phyact[["boutdur.lig"]][bci - 1])
                                                             }
                                                           }
                                                           fi = fi + bci
@@ -829,17 +824,18 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           ds_names[fi:(fi + 3)] = c("Nblocks_day_total_IN", "Nblocks_day_total_LIG",
                                                                                   "Nblocks_day_total_MOD", "Nblocks_day_total_VIG")
                                                           fi = fi + 4
-                                                          dsummary[di, fi:(fi + 6)] = c(boutcriter.in, boutcriter.lig, boutcriter.mvpa,
-                                                                                      paste(boutdur.in, collapse = "_"),
-                                                                                      paste(boutdur.lig, collapse = "_"),
-                                                                                      paste(boutdur.mvpa, collapse = "_"), bout.metric)
+                                                          dsummary[di, fi:(fi + 6)] = c(params_phyact[["boutcriter.in"]], 
+                                                                                        params_phyact[["boutcriter.lig"]], params_phyact[["boutcriter.mvpa"]],
+                                                                                      paste(params_phyact[["boutdur.in"]], collapse = "_"),
+                                                                                      paste(params_phyact[["boutdur.lig"]], collapse = "_"),
+                                                                                      paste(params_phyact[["boutdur.mvpa"]], collapse = "_"), params_phyact[["bout.metric"]])
                                                           ds_names[fi:(fi + 6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                                                                                   "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
                                                           #===========================
                                                           # Intensity gradient over waking hours
-                                                          if (length(iglevels) > 0) {
-                                                            q55 = cut(ts$ACC[sse[ts$diur[sse] == 0]], breaks = iglevels, right = FALSE)
-                                                            x_ig = zoo::rollmean(iglevels, k = 2)
+                                                          if (length(params_247[["iglevels"]]) > 0) {
+                                                            q55 = cut(ts$ACC[sse[ts$diur[sse] == 0]], breaks = params_247[["iglevels"]], right = FALSE)
+                                                            x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
                                                             y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
                                                             dsummary[di,fi:(fi + 2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
                                                             ds_names[fi:(fi + 2)] = c("ig_gradient", "ig_intercept", "ig_rsquared")
@@ -847,8 +843,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           }
                                                           #===============================================
                                                           # FRAGMENTATION for daytime hours only
-                                                          if (length(frag.metrics) > 0) {
-                                                            frag.out = g.fragmentation(frag.metrics = frag.metrics,
+                                                          if (length(params_phyact[["frag.metrics"]]) > 0) {
+                                                            frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
                                                                                        LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
                                                                                        Lnames = Lnames, xmin = 60/ws3new)
                                                             # fragmentation values come with a lot of decimal places
@@ -858,7 +854,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           }
                                                           #===============================================
                                                           # LIGHT, IF AVAILABLE
-                                                          if ("lightpeak" %in% colnames(ts) & length(LUX_day_segments) > 0) {
+                                                          if ("lightpeak" %in% colnames(ts) & length(params_247[["LUX_day_segments"]]) > 0) {
                                                             # mean LUX
                                                             dsummary[di,fi] =  round(max(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
                                                             dsummary[di,fi + 1] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
@@ -866,21 +862,21 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                             dsummary[di,fi + 3] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]], na.rm = TRUE), digits = 1)
                                                             ds_names[fi:(fi + 3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
                                                             # time in LUX ranges
-                                                            Nluxt = length(LUXthresholds)
+                                                            Nluxt = length(params_247[["LUXthresholds"]])
                                                             for (lti in 1:Nluxt) {
                                                               if (lti < Nluxt) {
-                                                                dsummary[di, fi + lti - 1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti] &
-                                                                                                        ts$lightpeak[sse[ts$diur[sse] == 0]] < LUXthresholds[lti + 1])) / (60/ws3new)
-                                                                ds_names[fi + lti - 1] = paste0("LUX_min_", LUXthresholds[lti], "_", LUXthresholds[lti + 1], "_day")
+                                                                dsummary[di, fi + lti - 1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= params_247[["LUXthresholds"]][lti] &
+                                                                                                        ts$lightpeak[sse[ts$diur[sse] == 0]] < params_247[["LUXthresholds"]][lti + 1])) / (60/ws3new)
+                                                                ds_names[fi + lti - 1] = paste0("LUX_min_", params_247[["LUXthresholds"]][lti], "_", params_247[["LUXthresholds"]][lti + 1], "_day")
                                                               } else {
-                                                                dsummary[di, fi + lti - 1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= LUXthresholds[lti])) / (60/ws3new)
-                                                                ds_names[fi + lti - 1] = paste0("LUX_min_", LUXthresholds[lti], "_inf_day")
+                                                                dsummary[di, fi + lti - 1] =  length(which(ts$lightpeak[sse[ts$diur[sse] == 0]] >= params_247[["LUXthresholds"]][lti])) / (60/ws3new)
+                                                                ds_names[fi + lti - 1] = paste0("LUX_min_", params_247[["LUXthresholds"]][lti], "_inf_day")
                                                               }
                                                             }
                                                             fi = fi + Nluxt
                                                             if (timewindowi == "WW") {
                                                               # LUX per segment of the day
-                                                              luxperseg = g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new)
+                                                              luxperseg = g.part5.lux_persegment(ts, sse, params_247[["LUX_day_segments"]], ws3new)
                                                               dsummary[di,fi:(fi+(length(luxperseg$values)-1))] = luxperseg$values
                                                               ds_names[fi:(fi+(length(luxperseg$values)-1))] = luxperseg$names
                                                               fi = fi + length(luxperseg$values)
@@ -888,7 +884,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                           }
                                                           #===============================================
                                                           # FOLDER STRUCTURE
-                                                          if (storefolderstructure == TRUE) {
+                                                          if (params_output[["storefolderstructure"]] == TRUE) {
                                                             if ("filename_dir" %in% ds_names) fi = which( ds_names == "filename_dir")
                                                             dsummary[di,fi] = fullfilenames[i] #full filename structure
                                                             ds_names[fi] = "filename_dir"; fi = fi + 1
@@ -901,24 +897,24 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                       }
                                                     }
                                                   }
-                                                  if (save_ms5rawlevels == TRUE) {
+                                                  if (params_output[["save_ms5rawlevels"]] == TRUE) {
                                                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                                                     if (file.exists(legendfile) == FALSE) {
                                                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames)-1), stringsAsFactors = FALSE)
                                                       write.csv(legendtable, file = legendfile, row.names = FALSE)
                                                     }
                                                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
-                                                    rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
+                                                    rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",params_output[["save_ms5raw_format"]])
                                                     # save time series to csv files
-                                                    if (do.sibreport == TRUE) {
+                                                    if (params_sleep[["do.sibreport"]] == TRUE) {
                                                       napNonwear_col = "nap1_nonwear2"
                                                     } else {
                                                       napNonwear_col = c()
                                                     }
                                                     g.part5.savetimeseries(ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)], LEVELS,
-                                                                           desiredtz, rawlevels_fname, save_ms5raw_format, save_ms5raw_without_invalid,
+                                                                           desiredtz=params_general[["desiredtz"]], rawlevels_fname, params_output[["save_ms5raw_format"]], params_output[["save_ms5raw_without_invalid"]],
                                                                            DaCleanFile = DaCleanFile,
-                                                                           includedaycrit.part5 = includedaycrit.part5, ID = ID)
+                                                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID)
                                                   }
                                                 }
                                               }
@@ -932,7 +928,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                         }
                                         output = data.frame(dsummary,stringsAsFactors = FALSE)
                                         names(output) = ds_names
-                                        if (excludefirstlast.part5 == TRUE) {
+                                        if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
                                           output$window_number = as.numeric(output$window_number)
                                           cells2exclude = c(which(output$window_number == min(output$window_number,na.rm = TRUE)),
                                                             which(output$window_number == max(output$window_number,na.rm = TRUE)))
@@ -991,7 +987,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                   }) # END tryCatch
                                   return(tryCatchResult)
                                 }
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     on.exit(parallel::stopCluster(cl))
   }
   for (oli in 1:length(output_list)) { # logged error and warning messages

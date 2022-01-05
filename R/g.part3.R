@@ -1,16 +1,18 @@
-g.part3 = function(metadatadir = c(), f0, f1, 
-                   acc.metric = "ENMO", 
-                   overwrite = FALSE, desiredtz = "",
-                   do.part3.pdf = TRUE,
-                   do.parallel = TRUE,
-                   myfun = c(), maxNcores = c(),
-                   params_sleep = c(), params_metrics = c(), ...) {
+g.part3 = function(metadatadir = c(), f0, f1, myfun = c(), 
+                   params_sleep = c(), params_metrics = c(), 
+                   params_output = c(),
+                   params_general = c(), ...) {
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
-  params = extract_params(params_sleep = c(), params_metrics = c(), params_rawdata = c(), input) # load default parameters
+  params = extract_params(params_sleep = params_sleep,
+                          params_metrics = params_metrics,
+                          params_general=params_general, params_output = params_output, input = input) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
+  params_general = params$params_general
+  params_output = params$params_output
+
   #----------------------------------------------------------
   # create output directory if it does not exist
   if (!file.exists(paste(metadatadir, sep = ""))) {
@@ -37,21 +39,21 @@ g.part3 = function(metadatadir = c(), f0, f1,
     ffdone = c()
   }
   nightsperpage = 7
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
-      if (length(maxNcores) == 0) maxNcores = Ncores
-      Ncores2use = min(c(Ncores - 1, maxNcores))
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
-      do.parallel = FALSE
+      params_general[["do.parallel"]] = FALSE
     }
   }
   t1 = Sys.time() # copied here
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir,'/meta/ms3.out', ' for progress\n'))
   }
   # check whether we are indevelopment mode:
@@ -69,7 +71,7 @@ g.part3 = function(metadatadir = c(), f0, f1,
   fe_dopar = foreach::`%dopar%`
   fe_do = foreach::`%do%`
   i = 0 # declare i because foreach uses it, without declaring it
-  `%myinfix%` = ifelse(do.parallel, fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+  `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
   output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                 .export = functions2passon, .errorhandling = errhand) %myinfix% {
   tryCatchResult = tryCatch({
@@ -91,7 +93,7 @@ g.part3 = function(metadatadir = c(), f0, f1,
       } else {
         skip = 0
       }
-      if (overwrite == TRUE) skip = 0
+      if (params_general[["overwrite"]] == TRUE) skip = 0
       if (skip == 0) {  
         # Load previously stored meta-data from part1.R
         cat(paste(" ", i, sep = ""))
@@ -101,8 +103,8 @@ g.part3 = function(metadatadir = c(), f0, f1,
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           SLE = g.sib.det(M, IMP, I, twd = c(-12,12), timethreshold = params_sleep[["timethreshold"]],
                           anglethreshold = params_sleep[["anglethreshold"]],
-                          acc.metric = acc.metric, 
-                          desiredtz = desiredtz, constrain2range = params_sleep[["constrain2range"]], 
+                          acc.metric = params_general[["acc.metric"]], 
+                          desiredtz = params_general[["desiredtz"]], constrain2range = params_sleep[["constrain2range"]], 
                           myfun = myfun, sensor.location = params_sleep[["sensor.location"]], 
                           HASPT.algo = params_sleep[["HASPT.algo"]], HASIB.algo = params_sleep[["HASIB.algo"]], 
                           Sadeh_axis = params_sleep[["Sadeh_axis"]], longitudinal_axis = params_sleep[["longitudinal_axis"]],
@@ -113,7 +115,7 @@ g.part3 = function(metadatadir = c(), f0, f1,
             if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
               SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output, 
                                                               epochsize = M$windowsizes[1], 
-                                                              desiredtz = desiredtz)
+                                                              desiredtz = params_general[["desiredtz"]])
             } else {
               SleepRegularityIndex = NA
             }
@@ -129,14 +131,14 @@ g.part3 = function(metadatadir = c(), f0, f1,
             ID = SUM$summary$ID
             datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
             plottitle = " "
-            if (do.part3.pdf == TRUE) {
+            if (params_output[["do.part3.pdf"]] == TRUE) {
               pdf(paste(metadatadir, "/meta/sleep.qc/graphperday_id_", ID, "_",
                         I$filename, ".pdf", sep = ""), width = 8.2, height = 11.7)
-              g.sib.plot(SLE, M, I, plottitle ,nightsperpage = nightsperpage, desiredtz = desiredtz)
+              g.sib.plot(SLE, M, I, plottitle ,nightsperpage = nightsperpage, desiredtz = params_general[["desiredtz"]])
               dev.off()
             }
             sib.cla.sum = c()
-            sib.cla.sum = g.sib.sum(SLE, M, ignorenonwear = params_sleep[["ignorenonwear"]], desiredtz = desiredtz)
+            sib.cla.sum = g.sib.sum(SLE, M, ignorenonwear = params_sleep[["ignorenonwear"]], desiredtz = params_general[["desiredtz"]])
             rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to align sleeplog with recording
             save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                  longitudinal_axis, SleepRegularityIndex,
@@ -148,7 +150,7 @@ g.part3 = function(metadatadir = c(), f0, f1,
   }) # END tryCatch
   return(tryCatchResult)
   }
-  if (do.parallel == TRUE) {
+  if (params_general[["do.parallel"]] == TRUE) {
     on.exit(parallel::stopCluster(cl))
   }
   for (oli in 1:length(output_list)) { # logged error and warning messages

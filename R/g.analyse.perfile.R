@@ -4,7 +4,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
                              daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
                              hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                              qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                             IVIS_windowsize_minutes, IVIS_epochsize_seconds, qwindow, longitudinal_axis_id) {
+                             IVIS_windowsize_minutes, qwindow, longitudinal_axis_id) {
   filesummary = matrix(" ",1,100) #matrix to be stored with summary per participant
   s_names = rep(" ",ncol(filesummary))
   vi = 1

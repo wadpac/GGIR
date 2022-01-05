@@ -1,51 +1,192 @@
 extract_params = function(params_sleep = c(), params_metrics = c(),
-                          params_rawdata = c(), input = c()) {
-  #----------------------------------------------------------
-  # If no params are provide use defaults
+                          params_rawdata = c(), params_247 = c(),
+                          params_phyact = c(), params_cleaning = c(),
+                          params_output = c(), params_general = c(), input = c(), configfile_csv = c()) {
+  # Order of priority using parameters:
+  # 1. Arguments provided as direct input by user
+  # 2. Arguments provided via configuration file
+  # 3. Default values in parameter objects
+  #==================================================================================
+  # Get default values in parameter objects
   if (length(params_sleep) == 0) {
-    params = load_params(group = "sleep") # for now just load all parameters
+    params = load_params(group = "sleep")
     params_sleep = params$params_sleep
   }
   if (length(params_metrics) == 0) {
-    params = load_params(group = "metrics") # for now just load all parameters
+    params = load_params(group = "metrics")
     params_metrics = params$params_metrics
   }
   if (length(params_rawdata) == 0) {
-    params = load_params(group = "rawdata") # for now just load all parameters
+    params = load_params(group = "rawdata")
     params_rawdata = params$params_rawdata
   }
-  # If parameters were manually assigned then add them to params_sleep object, where 
-  # existing value is overwritten
+  if (length(params_rawdata) == 0) {
+    params = load_params(group = "rawdata")
+    params_rawdata = params$params_rawdata
+  }
+  if (length(params_247) == 0) {
+    params = load_params(group = "247")
+    params_247 = params$params_247
+  }
+  if (length(params_phyact) == 0) {
+    params = load_params(group = "phyact")
+    params_phyact = params$params_phyact
+  }
+  if (length(params_cleaning) == 0) {
+    params = load_params(group = "cleaning")
+    params_cleaning = params$params_cleaning
+  }
+  if (length(params_output) == 0) {
+    params = load_params(group = "output")
+    params_output = params$params_output
+  }
+  if (length(params_general) == 0) {
+    params = load_params(group = "general")
+    params_general = params$params_general
+  }
+  # #==================================================================================
+  # # Overwrite them by arguments provided via configuration file
+  # if (length(configfile_csv) > 0) {
+  #   config = read.csv(file = configfile_csv, stringsAsFactors = FALSE)
+  #   argNames = names(input)
+  #   print("extract_params")
+  #   if (nrow(config) > 1) {
+  #     for (ci in 1:nrow(config)) {
+  #       varName = as.character(config[ci, 1])
+  #       
+  #       
+  #       if (varName %in% c(argNames, "") == FALSE) {
+  #         if (varName == "do.anglex") {
+  #           print(varName)
+  #           print(config[ci,])
+  #         }
+  #         # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
+  #         
+  #         # establish variable class
+  #         conv2logical = conv2num = c()
+  #         suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
+  #         suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
+  #         if (length(conv2num) > 0) {
+  #           numi = is.na(conv2num) == FALSE
+  #         } else {
+  #           numi = FALSE
+  #         }
+  #         logi = FALSE
+  #         if (numi == FALSE & is.na(conv2logical) == FALSE) logi = TRUE
+  #         newValue = "notfound"
+  #         if (logi == TRUE) {
+  #           newValue = as.logical(config[ci,2])
+  #         } else if (numi == TRUE) {
+  #           newValue = as.numeric(config[ci,2])
+  #         } else if (numi == FALSE & logi == FALSE) {
+  #           if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
+  #             if (config[ci,2] == 'c()') {
+  #               if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
+  #               if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
+  #               # Note that we do not re-assign the c(), because they are the default for most arguments that
+  #               # can hold a c() anyway. def.noc.sleep is the only exception.
+  #             } else if (as.character(config[ci,2]) == "NULL") {
+  #               newValue = "c()"
+  #             } else if (config[ci,2] != 'c()' & as.character(config[ci,2]) != "NULL") {
+  #               if (grepl("c\\(", config[ci,2])) { # vector
+  #                 tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
+  #                 tmp = unlist(strsplit(tmp, ","))
+  #                 suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp))},silent=TRUE))
+  #                 if (length(isna) == 0) isna = FALSE
+  #                 if (isna == TRUE) { 
+  #                   newValue = tmp # vector of characters
+  #                 } else {
+  #                   newValue = as.numeric(tmp) # vector of numbers
+  #                 }
+  #               } else {
+  #                 newValue = paste0("'",config[ci,2],"'")
+  #               }
+  #             }
+  #           }
+  #         }
+  #         # Find argument in the various parameter objects
+  #         if (newValue != "notfound") {
+  #           if (varName %in% names(params_general)) {
+  #             params_general[[varName]] = newValue
+  #           } else {
+  #             if (varName %in% names(params_rawdata)) {
+  #               params_rawdata[[varName]] = newValue
+  #             } else {
+  #               if (varName %in% names(params_metrics)) {
+  #                 params_metrics[[varName]] = newValue
+  #               } else {
+  #                 if (varName %in% names(params_sleep)) {
+  #                   params_sleep[[varName]] = newValue
+  #                 } else {
+  #                   if (varName %in% names(params_phyact)) {
+  #                     params_phyact[[varName]] = newValue
+  #                   } else {
+  #                     if (varName %in% names(params_output)) {
+  #                       params_output[[varName]] = newValue
+  #                     } else {
+  #                       if (varName %in% names(params_247)) {
+  #                         params_247[[varName]] = newValue
+  #                       } else {
+  #                         warning("\nNot able to use variable from configuration file")
+  #                       }
+  #                     }  
+  #                   }
+  #                 } 
+  #               }
+  #             } 
+  #           }
+  #         }
+  #       }
+  #     }
+  #   }
+  # }
+  #==================================================================================
+  # Overwrite them by arguments provided as direct input by user
   if (length(input) > 0) {
     argNames = names(input)
     if (exists("relyonsleeplog") == TRUE)  params_sleep[["relyonguider"]] = params_sleep[["relyonsleeplog"]]
+    update_params = function(x, aN, input) {
+      if (is.null(input[[aN]])) {
+        x[[aN]] = "c()"
+      } else {
+        x[[aN]] = input[[aN]]
+      }
+      return(x)
+    }
     expected_sleep_params = names(params_sleep)
     expected_metrics_params = names(params_metrics)
     expected_rawdata_params = names(params_rawdata)
+    expected_247_params = names(params_247)
+    expected_phyact_params = names(params_phyact)
+    expected_cleaning_params = names(params_cleaning)
+    expected_output_params = names(params_output)
+    expected_general_params = names(params_general)
     for (aN in argNames) {
-      
       if (aN %in% expected_sleep_params == TRUE) { # Sleep
-        if (is.null(input[[aN]])) {
-          params_sleep[aN] = list(NULL)
-        } else {
-          params_sleep[[aN]] = input[[aN]]
-        }
-      } else if (aN %in% argNames == TRUE & aN %in% expected_metrics_params == TRUE) { # Metrics
-        if (is.null(input[[aN]])) {
-          params_metrics[aN] = list(NULL)
-        } else {
-          params_metrics[[aN]] = input[[aN]]
-        }
-      } else if (aN %in% argNames == TRUE & aN %in% expected_rawdata_params == TRUE) { # Rawdata
-        if (is.null(input[[aN]])) {
-          params_rawdata[aN] = list(NULL)
-        } else {
-          params_rawdata[[aN]] = input[[aN]]
-        }
+        params_sleep = update_params(x = params_sleep, aN, input)
+      } else if (aN %in% expected_metrics_params == TRUE) { # Metrics
+        params_metrics = update_params(x = params_metrics, aN, input)
+      } else if (aN %in% expected_rawdata_params == TRUE) { # Rawdata
+        params_rawdata = update_params(x = params_rawdata, aN, input)
+      } else if (aN %in% expected_247_params == TRUE) { # 247
+        params_247 = update_params(x = params_247, aN, input)
+      } else if (aN %in% expected_phyact_params == TRUE) { # phyact
+        params_phyact = update_params(x = params_phyact, aN, input)
+      } else if (aN %in% expected_cleaning_params == TRUE) { # cleaning
+        params_cleaning = update_params(x = params_cleaning, aN, input)
+      } else if (aN %in% expected_output_params == TRUE) { # output
+        params_output = update_params(x = params_output, aN, input)
+      } else if (aN %in% expected_general_params == TRUE) { # general
+        params_general = update_params(x = params_general, aN, input)
       }
     }
   }
-  # Check class of parameter values
-  params = check_params(params_sleep, params_metrics, params_rawdata)
+  #==================================================================================
+  # Check that all parameter values have expect data class
+  # and perform some checks on reasonable parameter combinations
+  params = check_params(params_sleep = params_sleep, params_metrics = params_metrics, 
+                        params_rawdata = params_rawdata, params_247 = params_247,
+                        params_phyact = params_phyact, params_cleaning = params_cleaning,
+                        params_output = params_output, params_general = params_general)
   return(params)
 }

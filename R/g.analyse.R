@@ -3,7 +3,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                       mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
                       window.summary.size=10,
                       dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz="",
-                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA, iglevels = c(),
+                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = c(), iglevels = c(),
                       IVIS.activity.metric=2, qM5L5 = c(), myfun=c(), MX.ig.min.dur = 10) {
   L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
@@ -314,7 +314,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
                                      hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                                      qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                                     IVIS_windowsize_minutes, IVIS_epochsize_seconds,qwindow, longitudinal_axis_id)
+                                     IVIS_windowsize_minutes, qwindow, longitudinal_axis_id)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
   if (length(selectdaysfile) > 0) {

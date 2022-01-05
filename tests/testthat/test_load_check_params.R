@@ -1,12 +1,22 @@
 library(GGIR)
 context("loading and checking params")
 test_that("load_params can load parameters", {
-  params = load_params(group=c("sleep","metrics"))
+  params = load_params()
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
   expect_equal(params$params_sleep[[8]], "Y")
-  expect_equal(length(params$params_sleep), 27)
+  expect_equal(params$params_cleaning[[7]], 0)
+  
+  # Test length of objects
+  expect_equal(length(params), 8)
+  expect_equal(length(params$params_sleep), 31)
   expect_equal(length(params$params_metrics), 33)
+  expect_equal(length(params$params_rawdata), 34)
+  expect_equal(length(params$params_247), 18)
+  expect_equal(length(params$params_cleaning), 13)
+  expect_equal(length(params$params_output), 11)
+  expect_equal(length(params$params_general), 11)
+  
   params_sleep = params$params_sleep
   # Test that parameter check does not generate warnings:
   expect_warning(check_params(params_sleep), regexp = NA)

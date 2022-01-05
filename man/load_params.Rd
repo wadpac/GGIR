@@ -8,11 +8,12 @@
   Not intended for direct use by GGIR users.
 }
 \usage{
-  load_params(group = c("sleep", "metrics", "rawdata"))
+  load_params(group = c("sleep", "metrics", "rawdata", "247",
+                        "phyact", "cleaning", "output", "general"))
 }
 \arguments{
   \item{group}{
-    Character vector with parameter groups to load, options: "sleep", "metrics", "rawdata"
+    Character vector with parameter groups to be loaded.
   }
 }
 \value{

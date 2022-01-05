@@ -7,22 +7,27 @@ createConfigFile = function(config.parameters = c()) {
   for (i in 1:length(config.parameters)) {
     NM = names(config.parameters)[i]
     out[i,1] = NM
-    if (NM == "params_sleep" | NM == "params_metrics") {
-      # Add sleep parameters as as individual rows
+    if (NM %in% c("params_247", "params_cleaning", "params_general",
+                  "params_metrics", "params_output",
+                  "params_phyact", "params_rawdata", "params_sleep")) {
+      # Replace NULL values before converting to data.frame
+      config.parameters[[i]] <- lapply(config.parameters[[i]], lapply, function(x)ifelse(is.null(x), "c()", x))
       Value = as.data.frame(t(data.frame(t(sapply(config.parameters[[i]],c)))))
       Value$col1 = row.names(Value)
-      if (NM == "params_sleep") {
-        Value$col3 = "Parameters sleep detection"
-      } else if (NM == "params_metrics") {
-        Value$col3 = "Parameters metrics"
-      }
+      Value$col3 = NM
       Value = Value[,c("col1", "V1", "col3")]
       colnames(out) = colnames(Value)
       out = rbind(out, Value) # append to the end
     } else {
       Value = config.parameters[[i]]
-      if (length(Value) == 0) Value = 'c()'
-      if (length(Value) > 1) Value = paste0("c(",paste(Value,collapse = ","),")")
+      if (length(Value) == 0) {
+        Value = 'c()'
+      } else if (Value == "NULL") {
+        Value = 'c()'
+      }
+      if (length(Value) > 1) {
+        Value = paste0("c(",paste(Value,collapse = ","),")")
+      }
       if (is.function(Value) == FALSE | is.list(Value) == FALSE) {
         out[i,2] = Value
       } else {
@@ -71,6 +76,8 @@ createConfigFile = function(config.parameters = c()) {
   out = as.data.frame(out, stringsAsFactors = TRUE)
   row.names(out) <- NULL
   colnames(out) = c("argument","value","context")
+  NULLvalue = which(out$value == "NULL")
+  if (length(NULLvalue) > 0) out$value[NULLvalue] = "c()"
   out$value = as.character(out$value)
   out = out[order(out$context),]
   return(out)

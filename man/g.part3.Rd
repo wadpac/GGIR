@@ -11,9 +11,9 @@
   Typical users should work with function g.shell.GGIR only.
 }
 \usage{
-g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE, 
-  desiredtz = "", do.part3.pdf = TRUE, do.parallel=TRUE, myfun=c(), maxNcores=c(),
-  params_sleep = c(), params_metrics = c(), ...)
+g.part3(metadatadir=c(), f0, f1, myfun=c(), 
+  params_sleep = c(), params_metrics = c(), params_output = c(), params_general = c(),
+  ...)
 }
 \arguments{
   \item{metadatadir}{
@@ -29,31 +29,9 @@ g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE,
   \item{f1}{
     File index to finish with (defaults to number of files available)
   }
-  \item{acc.metric}{
-    Which one of the metrics do you want to consider to analyze L5.
-    The metric of interest need to be calculated in M (see \link{g.part1})
-  }
-  \item{overwrite}{
-    Overwrite previously generated milestone data by this function for
-    this particular dataset? If FALSE then it will skip the previously
-    processed files (default = FALSE).
-  }
-  \item{desiredtz}{
-    See \link{g.getmeta}
-  }
-  \item{do.part3.pdf}{
-    Whether to generate a pdf for part 3 (default is TRUE). Turning this off
-    could speed up the processing.
-  }
-  \item{do.parallel}{
-    Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
-  }
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
-  }
-  \item{maxNcores}{
-    See function \link{g.part1}
   }
   \item{params_sleep}{
     List of parameters used for sleep analysis:
@@ -64,15 +42,22 @@ g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE,
     longitudinal_axis (integer, see \link{g.sib.det}), HASPT.ignore.invalid (boolean, see \link{HASPT}),
     do.visual (boolean, see details), outliers.only (boolean, see details), excludefirstlast (boolean, see details), 
     criterror (numeric, see details), includenightcrit (numeric, see details),
-    relyonguider (boolean, see details), relyonsleeplog (boolean, see details), def.noc.sleep (vector, see details),
-    excludefirst.part4 (boolean, see details), excludelast.part4 (boolean, see details), 
-    sleeplogsep (character, \link{g.loadlog}), sleepwindowType (character, see details).
+    def.noc.sleep (vector, see details); relyonguider, relyonsleeplog, excludefirst.part4, do.sibreport,
+    excludelast.part4 (all boolean, see details); sleeplogsep (character, \link{g.loadlog}), 
+    sleepwindowType (character, see details); possible_nap_window (numeric, see \link{g.part5.classifyNaps}), possible_nap_dur      (numeric, see \link{g.part5.classifyNaps});  nap_model (character, see \link{g.part5.classifyNaps})
   }
   \item{params_metrics}{
     List of parameters used for metrics extraction (GGIR part 1): see documentation \link{g.part1}.
   }
+  \item{params_output}{
+    List, see \link{g.part1}
+  }
+  \item{params_general}{
+    List, see \link{g.part1}
+  }
   \item{...}{
-    To enable compatibility with older GGIR version, user can also provide individual params_sleep parameters as separate argument, e.g. ignorenonwear = FALSE.
+    To enable compatibility with older GGIR version, user can also provide individual params_sleep 
+    parameters as separate argument, e.g. ignorenonwear = FALSE.
   }
 }
 \details{
@@ -122,6 +107,10 @@ g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE,
       Character to indicate type of sleeplog, default "SPT".
       Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
       of sleep latency and sleep efficiency.
+    \item \code{do.sibreport} Applied in g.part5. Boolean to indicate whether to generate report
+      for the sustained inactivity bouts (sib).
+   
+  
   }
 }
 \value{

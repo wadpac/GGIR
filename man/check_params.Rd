@@ -4,14 +4,17 @@
   Check default parameters
 }
 \description{
-  Checks paramter objects for class and logical combinations.
-  Not intended for direct use by GGIR users.
+  Checks parameter objects for class and logical combinations.
+  Called from \link{extract_params}. Not intended for direct use by GGIR users.
 }
 \usage{
-  check_params(params_sleep = c(), params_metrics = c(), params_rawdata = c())
+  check_params(params_sleep = c(), params_metrics = c(),
+                        params_rawdata = c(), params_247 = c(),
+                        params_phyact = c(), params_cleaning = c(),
+                         params_output = c(), params_general = c())
 }
 \arguments{
-  \item{params_sleep}{
+ \item{params_sleep}{
     List with sleep parameters
   }
   \item{params_metrics}{
@@ -19,6 +22,22 @@
   }
   \item{params_rawdata}{
     List with parameters related to raw data reading and processing
+  }
+  \item{params_247}{
+    List with parameters related to 24/7 behavioural analysis, which includes anything
+    that does not fit with physical activity or sleep research
+  }
+  \item{params_phyact}{
+    List with parameters related to physical activity analysis
+  }
+  \item{params_cleaning}{
+    List with parameters related to cleaning the time series, including masking and imputation
+  }
+  \item{params_output}{
+    List with parameters related to how GGIR stores its output
+  }
+  \item{params_general}{
+    List with parameters related to general topics
   }
 }
 \value{

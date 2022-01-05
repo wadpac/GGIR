@@ -3,39 +3,27 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
                         configfile = c(), myfun = c(), ...) {
   #get input variables
   input = list(...)
-  #----------------------------------------------------------
-  # Extract and check parameters
-  params = extract_params(params_sleep = c(), params_metrics = c(),
-                          params_rawdata = c(), input) # load default parameters
-  params_sleep = params$params_sleep
-  params_metrics = params$params_metrics
-  params_rawdata = params$params_rawdata
+  
+  # Check for duplicated arguments
   if (length(input) > 0) {
     if (length(input) > 1) {
-      # Check for duplicated arguments
       argNames = names(input)
       dupArgNames = duplicated(argNames)
-      if (any(dupArgNames)) {
+      if (any(dupArgNames)) { # Warn user about those duplicated arguments
         for (dupi in unique(argNames[dupArgNames])) {
           dupArgValues = input[which(argNames %in% dupi)]
-          if (all(dupArgValues == dupArgValues[[1]])) { # double arguments, but no confusion about what value should be
+          if (all(dupArgValues == dupArgValues[[1]])) { # duplicated arguments, but no confusion about what value should be
             warning(paste0("\nArgument ", dupi, " has been provided more than once. Try to avoid this."))
-          } else { # double arguments, and confusion about what value should be,
+          } else {# duplicated arguments, and confusion about what value should be,
             warning(paste0("\nArgument ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
           }
         }
       }
     }
-    for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i], "=", input[i], sep = "")
-      if (class(unlist(input[i])) == "character" & length(unlist(input[i])) == 1) {
-        txt = paste(names(input)[i], "='", unlist(input[i]), "'", sep = "")
-      }
-      eval(parse(text = txt))
-    }
   }
-  if (length(which(ls() == "timewindow")) != 0) timewindow = input$timewindow
-  # verify whether datadir is a directory or a list of files
+  
+  #===========================
+  # Establish default start / end file index to process
   filelist = isfilelist(datadir)
   if (dir.exists(outputdir) == FALSE) stop("\nDirectory specified by argument outputdir, does not exist")
   derivef0f1 = FALSE
@@ -52,6 +40,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
       f1 = length(datadir) #modified
     }
   }
+  # Establish which parts need to be processed:
   dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE
   if (length(which(mode == 0)) > 0) {
     dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE
@@ -59,10 +48,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
-    if (length(which(mode == 3)) > 0) { dopart3 = TRUE; params_metrics[["do.anglez"]] = TRUE }
+    if (length(which(mode == 3)) > 0) dopart3 = TRUE
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
+  
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
@@ -77,201 +67,66 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     useRDA = FALSE
   }
   if (filelist == TRUE | useRDA == TRUE) {
-    metadatadir = paste(outputdir,"/output_",studyname,sep="")
+    metadatadir = paste0(outputdir,"/output_",studyname)
   } else {
-    outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
-    metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
+    outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
+    metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-  config_file_in_outputdir = paste0(metadatadir,"/config.csv")
-  # Load config file if it exists:
-  if (dir.exists(metadatadir) | length(configfile) > 0) {
-    config = c()
-    # so if outputdir was not created (first time) and if configfile is no
-    # specified then we can safely assume that there is no configfile
-    if (length(configfile) > 0) {
-      if (file.exists(configfile)) {
-        config = read.csv(file = configfile, stringsAsFactors = FALSE)
-      } else {
-        stop("\nDo not supply argument configfile if the configfile does not exist yet")
-      }
-    } else if (length(configfile) == 0) {
-      # Note that, if both exist, we prioritise configfile over the configfile
-      # stored in outputdir.
-      if (file.exists(config_file_in_outputdir)) config = read.csv(file = config_file_in_outputdir, stringsAsFactors = FALSE)
-    }
-    if (length(config) > 0) {
-      LS = ls()
-      LS = LS[-which(LS == c("config"))]
-      for (ci in 1:nrow(config)) {
-        if (as.character(config[ci, 1]) %in% c(LS, "") == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
-          conv2logical = conv2num = c()
-          suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
-          suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
-          if (length(conv2num) > 0) {
-            numi = is.na(conv2num) == FALSE
-          } else {
-            numi = FALSE
-          }
-          logi = FALSE
-          if (numi == FALSE & is.na(conv2logical) == FALSE) logi = TRUE
-          if (logi == TRUE) {
-            txt = paste(as.character(config[ci,1]),"=",as.logical(config[ci,2]),"",sep="")
-          } else if (numi == TRUE) {
-            txt = paste(as.character(config[ci,1]),"=",as.numeric(config[ci,2]),"",sep="")
-          } else if (numi == FALSE & logi == FALSE) {
-            if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
-              if (config[ci,2] == 'c()') {
-                if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
-                if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
-                # Note that we do not re-assign the c(), because they are the default for most arguments that
-                # can hold a c() anyway. def.noc.sleep is the only exception.
-              } else if (config[ci,2] != 'c()') {
-                if (grepl("c\\(", config[ci,2])) { # vector of numbers
-                  tmp =  unlist(strsplit(unlist(strsplit(config[ci,2],"\\("))[2],","))[1]
-                  isna = c()
-                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp))},silent=TRUE))
-                  if (length(isna) == 0) isna = FALSE
-                  if (isna == TRUE) { # it is a vector with characters
-                    vecchar = unlist(strsplit(unlist(strsplit(config[ci,2],"\\(|\\)"))[2],","))
-                    if (config[ci,1] == "timewindow") timewindow = vecchar
-
-                  } else {
-                    txt = paste(as.character(config[ci,1]),"=",config[ci,2],"",sep="")
-                  }
-                } else {
-                  txt = paste(as.character(config[ci,1]),"='",config[ci,2],"'",sep="")
-                }
-              }
-            }
-          }
-          eval(parse(text=txt))
+  
+  # Configuration file - check whether it exists or auto-load
+  configfile_csv = c()
+  ex = "csv"
+  if (length(configfile) > 0) { # Get extension of file
+    ex = unlist(strsplit(basename(configfile), split="\\."))
+    ex = ex[length(ex)]
+  }
+  if (ex == "csv") { # at a later point there may also be other file extensions
+    if (dir.exists(metadatadir) | length(configfile) > 0) {
+      # so if outputdir was not created (first time) and if configfile is not
+      # specified then we can safely assume that there is no configfile
+      # and this section will be skipped, alternatively an attempt is
+      # made to retrieve settings from the configfile
+      if (length(configfile) > 0) {
+        if (!file.exists(configfile)) {
+          stop("\nDo not supply argument configfile if the configfile does not exist yet")
+        } else {
+          configfile_csv = configfile
         }
       }
+      if (dir.exists(metadatadir) & length(configfile) == 0) {
+        config_file_in_outputdir = paste0(metadatadir, "/config.csv")
+        # So, if both exist, we prioritise configfile over the configfile
+        # stored in outputdir and this is skipped
+        if (file.exists(config_file_in_outputdir)) configfile_csv = config_file_in_outputdir
+      }
     }
   }
-  # obtain default parameter values if not provided:
-
-  # GENERAL parameters:
-  if (exists("overwrite") == FALSE)   overwrite = FALSE
-  if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
-  if (exists("storefolderstructure") == FALSE)  storefolderstructure = FALSE
-  if (exists("myfun") == FALSE)  myfun = c()
-  if (exists("maxNcores") == FALSE)  maxNcores = c()
-
-  # if (exists("ignorenonwear") == FALSE)  ignorenonwear = TRUE
-  if (exists("print.filename") == FALSE)  print.filename = FALSE
-  if (exists("do.parallel") == FALSE)  do.parallel = TRUE
-  # PART 1
-  if (exists("selectdaysfile") == FALSE)  selectdaysfile = c()
-  if (exists("windowsizes") == FALSE)  windowsizes = c(5,900,3600)
-  if (exists("desiredtz") == FALSE)  desiredtz = ""
-  if (exists("configtz") == FALSE)  configtz = c()
-  if (exists("idloc") == FALSE) idloc = 1
   
-  if (length(myfun) != 0) { # Run check on myfun object
-    check_myfun(myfun, windowsizes)
-  }
+  #----------------------------------------------------------
+  # Extract parameters from user input, configfile and/or defaults.
+  params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
+  params_sleep = params$params_sleep
+  params_metrics = params$params_metrics
+  params_rawdata = params$params_rawdata
+  params_247 = params$params_247
+  params_phyact = params$params_phyact
+  params_cleaning = params$params_cleaning
+  params_output = params$params_output
+  params_general = params$params_general
 
-  # PART 2
-  if (exists("strategy") == FALSE)  strategy = 1
-  if (exists("maxdur") == FALSE)  maxdur = 0
   
-  if (exists("hrs.del.start") == FALSE)  hrs.del.start = 0
-  if (strategy != 1 & hrs.del.start != 0) {
-    warning("\nSetting argument hrs.del.start in combination with strategy = ", strategy," is not meaningful, because this is only used when straytegy = 1")
-    rm(hrs.del.start)
+  if (dopart3 == TRUE) {
+    params_metrics[["do.anglez"]] = TRUE
   }
-  if (exists("hrs.del.end") == FALSE)  hrs.del.end = 0
-  if (strategy != 1 & hrs.del.end != 0) {
-    warning("\nSetting argument hrs.del.end in combination with strategy = ", strategy," is not meaningful, because this is only used when straytegy = 1")
-    rm(hrs.del.end)
-  }
-  if (exists("includedaycrit") == FALSE)  includedaycrit = 16
-  if (exists("M5L5res") == FALSE)  M5L5res = 10
-  if (exists("winhr") == FALSE)  winhr = 5
-  if (exists("qwindow") == FALSE)  qwindow = c(0,24)
-  if (exists("qlevels") == FALSE)  qlevels = c()
-  if (exists("ilevels") == FALSE)  ilevels = c()
-  if (exists("mvpathreshold") == FALSE)  mvpathreshold = 100
-  if (exists("boutcriter") == FALSE)  boutcriter = 0.8
-  if (exists("ndayswindow") == FALSE)  ndayswindow = 7
-  if (strategy != 3 & ndayswindow != 7) {
-    warning("\nSetting argument ndayswindow in combination with strategy = ", strategy," is not meaningful, because this is only used when straytegy = 3")
-  }
-  if (exists("do.imp") == FALSE) do.imp = TRUE
-  if (exists("IVIS_windowsize_minutes") == FALSE)  IVIS_windowsize_minutes=60
-  if (exists("IVIS_epochsize_seconds") == FALSE)  IVIS_epochsize_seconds=NA
-  if (exists("mvpadur") == FALSE)  mvpadur = c(1,5,10) # related to part 2 (functionality to anticipate part 5)
-  if (length(mvpadur) != 3) {
-    mvpadur = c(1,5,10)
-    warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
-  }
-  if (exists("epochvalues2csv") == FALSE)  epochvalues2csv = FALSE
-  if (exists("window.summary.size") == FALSE) window.summary.size = 10
-  if (exists("dayborder") == FALSE)  dayborder = 0
-  if (exists("iglevels") == FALSE)  iglevels = c()
-  if (length(iglevels) > 0) {
-    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
-  }
-  if (exists("TimeSegments2ZeroFile") == FALSE) TimeSegments2ZeroFile = c()
-  if (exists("IVIS.activity.metric") == FALSE)  IVIS.activity.metric = 2
-  if (exists("qM5L5") == FALSE)  qM5L5 = c()
-  if (exists("MX.ig.min.dur") == FALSE)  MX.ig.min.dur = 10
-  if (exists("qwindow_dateformat") == FALSE)  qwindow_dateformat = "%d-%m-%Y"
   
-
-  # PART 3
-  
-  # PART 4
-  if (exists("data_cleaning_file") == FALSE) data_cleaning_file = c()
- 
-  # PART 5
-  if (exists("excludefirstlast.part5") == FALSE)  excludefirstlast.part5=FALSE
-  if (exists("bout.metric") == FALSE)  bout.metric = 6
-  if (exists("closedbout") == FALSE)  closedbout = FALSE
-  if (exists("boutcriter.in") == FALSE)  boutcriter.in = 0.9
-  if (exists("boutcriter.lig") == FALSE)  boutcriter.lig = 0.8
-  if (exists("boutcriter.mvpa") == FALSE)  boutcriter.mvpa = 0.8
-  if (exists("threshold.lig") == FALSE)  threshold.lig = 40
-  if (exists("threshold.mod") == FALSE)  threshold.mod = 100
-  if (exists("threshold.vig") == FALSE)  threshold.vig = 400
-  if (exists("timewindow") == FALSE)  timewindow = c("MM","WW")
-  if (exists("boutdur.mvpa") == FALSE)  boutdur.mvpa = c(1,5,10)
-  if (exists("boutdur.in") == FALSE)  boutdur.in = c(10,20,30)
-  if (exists("boutdur.lig") == FALSE)  boutdur.lig = c(1,5,10)
-  if (exists("save_ms5rawlevels") == FALSE) save_ms5rawlevels = FALSE
-  if (exists("save_ms5raw_format") == FALSE) save_ms5raw_format = "csv"
-  if (exists("save_ms5raw_without_invalid") == FALSE) save_ms5raw_without_invalid = TRUE
-  if (exists("includedaycrit.part5") == FALSE) includedaycrit.part5 = 2/3
-  if (exists("minimum_MM_length.part5") == FALSE) minimum_MM_length.part5 = 23
-  if (exists("frag.metrics") == FALSE) frag.metrics = c()
-  if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
-  # Nap detection:
-  if (exists("nap_model") == FALSE) nap_model = c()
-  if (exists("possible_nap_window") == FALSE) possible_nap_window = c(9, 18)
-  if (exists("possible_nap_dur") == FALSE) possible_nap_dur = c(15, 240)
-  # Related to (r)ead (m)yacc (c)sv file:
-  if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
-  if (exists("week_weekend_aggregate.part5") == FALSE) week_weekend_aggregate.part5=FALSE
-  if (exists("LUXthresholds") == FALSE) LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000)
-  if (exists("LUX_cal_constant") == FALSE) LUX_cal_constant = c()
-  if (exists("LUX_cal_exponent") == FALSE) LUX_cal_exponent = c()
-  if (exists("LUX_day_segments") == FALSE) LUX_day_segments = c()
-
-  if (length(LUX_day_segments) > 0) {
-    LUX_day_segments = sort(unique(round(LUX_day_segments)))
-    if (LUX_day_segments[1] != 0) LUX_day_segments = c(0, LUX_day_segments)
-    if (LUX_day_segments[length(LUX_day_segments)] != 24) LUX_day_segments = c(LUX_day_segments, 24)
-
+  if (length(myfun) != 0) { # Run check on myfun object, if provided
+    warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
+            " user from specifying argument myfun as this poses a security risk.")
+    check_myfun(myfun, params_general[["windowsizes"]])
   }
-  if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
-  # VISUAL REPORT
-
-  if (exists("viewingwindow") == FALSE)  viewingwindow = 1
-  if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
-  if (exists("visualreport") == FALSE)  visualreport = FALSE
-
-
+  
+  #-----------------------------------------------------------
+  # Print GGIR header to console
   GGIRversion = ""
   SI = sessionInfo()
   try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
@@ -295,184 +150,137 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   cat("\n     (6) How you post-processed / cleaned GGIR output")
   cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
   
+  #-----------------------------------------------------------
+  # Now run GGIR parts 1-5
+  print_console_header = function(headerTitle) {
+    cat('\n')
+    cat(paste0(rep('_', options()$width), collapse = ''))
+    cat("\n",headerTitle,"\n")
+  }
+  
   if (dopart1 == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_', options()$width), collapse = ''))
-    cat("\nPart 1\n")
-    g.part1(datadir = datadir, outputdir = outputdir,
-            f0 = f0, f1 = f1, windowsizes = windowsizes,
-            desiredtz = desiredtz, studyname = studyname, 
-            print.filename = print.filename, overwrite = overwrite,
-            selectdaysfile = selectdaysfile, dayborder = dayborder,
-            configtz = configtz, do.parallel = do.parallel, 
-            myfun = myfun, maxNcores = maxNcores,
-            params_metrics = params_metrics,
-            params_rawdata = params_rawdata)
+    print_console_header("Part 1")
+    g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1, 
+            studyname = studyname, myfun = myfun, 
+            params_rawdata = params_rawdata, params_metrics = params_metrics,
+            params_cleaning = params_cleaning, params_general = params_general)
   }
+  
   if (dopart2 == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_', options()$width), collapse = ''))
-    cat("\nPart 2\n")
+    print_console_header("Part 2")
     if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/basic")))
-    g.part2(datadir =datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy = strategy,
-            hrs.del.start = hrs.del.start,hrs.del.end = hrs.del.end,
-            maxdur =  maxdur, includedaycrit = includedaycrit,
-            M5L5res = M5L5res, winhr = winhr,
-            qwindow=qwindow, qlevels = qlevels,
-            ilevels = ilevels, mvpathreshold = mvpathreshold,
-            boutcriter = boutcriter,ndayswindow=ndayswindow,idloc=idloc,do.imp=do.imp,
-            storefolderstructure=storefolderstructure,overwrite=overwrite,epochvalues2csv=epochvalues2csv,
-            mvpadur=mvpadur,selectdaysfile=selectdaysfile,bout.metric=bout.metric,window.summary.size=window.summary.size,
-            dayborder=dayborder,closedbout=closedbout,desiredtz=desiredtz,
-            IVIS_windowsize_minutes = IVIS_windowsize_minutes,
-            IVIS_epochsize_seconds = IVIS_epochsize_seconds, iglevels = iglevels,
-            IVIS.activity.metric=IVIS.activity.metric, TimeSegments2ZeroFile = TimeSegments2ZeroFile,
-            qM5L5=qM5L5, do.parallel = do.parallel, myfun=myfun, MX.ig.min.dur=MX.ig.min.dur,
-            maxNcores=maxNcores, qwindow_dateformat=qwindow_dateformat)
+    g.part2(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
+            myfun = myfun, params_cleaning = params_cleaning,
+            params_247 = params_247, params_phyact = params_phyact,
+            params_output = params_output,
+            params_general = params_general)
   }
+  
   if (dopart3 == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_', options()$width), collapse = ''))
-    cat("\nPart 3\n")
+    print_console_header("Part 3")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
-    g.part3(metadatadir = metadatadir, f0 = f0, acc.metric = acc.metric,
-            f1 = f1, overwrite = overwrite, desiredtz = desiredtz, do.parallel = do.parallel,
-            myfun = myfun, maxNcores = maxNcores, 
-            params_sleep = params_sleep, params_metrics = params_metrics)
-
+    g.part3(metadatadir = metadatadir, f0 = f0, f1 = f1, myfun = myfun,
+            params_sleep = params_sleep, params_metrics = params_metrics,
+            params_general = params_general)
   }
   if (dopart4 == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nPart 4\n")
+    print_console_header("Part 4")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
-    g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1, idloc = idloc, 
-            storefolderstructure = storefolderstructure, overwrite = overwrite, desiredtz = desiredtz,
-            data_cleaning_file = data_cleaning_file,
-             params_sleep = params_sleep, params_metrics = params_metrics)
+    g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1, 
+            params_sleep = params_sleep, params_metrics = params_metrics,
+            params_general = params_general, params_output = params_output,
+            params_cleaning = params_cleaning)
   }
   if (dopart5 == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nPart 5\n")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep=""))) # this is intentionally ms3 and not ms4, do not change!
-    g.part5(datadir = datadir, metadatadir =metadatadir,f0=f0,f1=f1,
-            acc.metric=acc.metric,
-            storefolderstructure=storefolderstructure,
-            overwrite=overwrite,desiredtz=desiredtz, 
-            dayborder=dayborder,
-            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
-            save_ms5raw_format=save_ms5raw_format,
-            save_ms5raw_without_invalid=save_ms5raw_without_invalid,
-            part5_agg2_60seconds=part5_agg2_60seconds, 
-            data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5,
-            
-            strategy=strategy,
-            maxdur=maxdur,
-            hrs.del.start=hrs.del.start,
-            hrs.del.end=hrs.del.end,
-            excludefirstlast.part5=excludefirstlast.part5,
-            windowsizes=windowsizes,
-            boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
-            boutcriter.mvpa=boutcriter.mvpa,
-            threshold.lig = threshold.lig,
-            threshold.mod = threshold.mod,
-            threshold.vig = threshold.vig,timewindow=timewindow,
-            boutdur.mvpa = boutdur.mvpa,
-            boutdur.in = boutdur.in,
-            boutdur.lig = boutdur.lig,
-            winhr = winhr,M5L5res = M5L5res,
-            bout.metric=bout.metric,
-            
-            frag.metrics = frag.metrics,
-             iglevels=iglevels,
-            
-            LUXthresholds=LUXthresholds, maxNcores=maxNcores,
-            LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
-            LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport,
-            possible_nap_window = possible_nap_window,
-            possible_nap_dur = possible_nap_dur,
-            nap_model = nap_model, params_sleep = params_sleep, params_metrics = params_metrics)
+    print_console_header("Part 5")
+    if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/ms3.out"))) # this is intentionally ms3 and not ms4, do not change!
+    g.part5(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
+            params_sleep = params_sleep, params_metrics = params_metrics,
+            params_general = params_general, params_output = params_output,
+            params_cleaning = params_cleaning, params_247 = params_247,
+            params_phyact = params_phyact)
   }
-  #--------------------------------------------------
-  # Store configuration parameters in config file
-  LS = ls()
-  LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
-                          "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
-                          "configfile", "filelist", "outputfoldername", "numi", "logi",
-                          "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames") == FALSE)]
-  config.parameters = mget(LS) #lapply(mget(ls()), is.data.frame)
-  config.matrix = as.data.frame(createConfigFile(config.parameters))
-  if (dir.exists(metadatadir)) {
-    write.csv(config.matrix, file = paste0(metadatadir,"/config.csv"), row.names = FALSE)
-  } else {
-    if (dir.exists(datadir) == FALSE) {
-      warning("\nCould not write config file because studyname or datadir are not correctly specified.")
-    }
-  }
+  # #--------------------------------------------------
+  # # Store configuration parameters in config file
+  # LS = ls()
+  # LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
+  #                         "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
+  #                         "configfile", "filelist", "outputfoldername", "numi", "logi",
+  #                         "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
+  #                         "print_console_header", "configfile_csv", "myfun", "ex") == FALSE)]
+  # config.parameters = mget(LS)
+  # config.matrix = as.data.frame(createConfigFile(config.parameters))
+  # if (dir.exists(metadatadir)) {
+  #   write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
+  # } else {
+  #   if (dir.exists(datadir) == FALSE) {
+  #     warning("\nCould not write config file because studyname or datadir are not correctly specified.")
+  #   }
+  # }
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
-  if (length(which(do.report==4 | do.report==5)) > 0 | visualreport==TRUE) {
-    if (file.exists(paste(metadatadir,"/meta/ms4.out",sep=""))) {
+  if (length(which(do.report == 4 | do.report == 5)) > 0 | visualreport == TRUE) {
+    if (file.exists(paste0(metadatadir,"/meta/ms4.out"))) {
     } else {
       cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
       cat("before you can use argument visualreport or create a report for part 4\n")
-      # stop()
     }
   }
   if (length(which(do.report == 2)) > 0) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nReport part 2\n")
-    N.files.ms2.out = length(dir(paste(metadatadir,"/meta/ms2.out",sep="")))
+    print_console_header("Report part 2")
+    N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
     if (N.files.ms2.out < f0) f0 = 1
     if (N.files.ms2.out < f1) f1 = N.files.ms2.out
     if (f1 == 0) f1 = N.files.ms2.out
-    if (length(qwindow) > 2 | is.character(qwindow)) {
+    if (length(params_247[["qwindow"]]) > 2 | is.character(params_247[["qwindow"]])) {
       store.long = TRUE
     } else {
       store.long = FALSE
     }
-    g.report.part2(metadatadir=metadatadir, f0=f0, f1=f1, maxdur=maxdur,
-                   selectdaysfile=selectdaysfile, store.long=store.long)
+    g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
+                   maxdur = params_cleaning[["maxdur"]],
+                   selectdaysfile = params_cleaning[["selectdaysfile"]],
+                   store.long = store.long)
   }
   if (length(which(do.report == 4)) > 0) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nReport part 4\n")
-    N.files.ms4.out = length(dir(paste(metadatadir,"/meta/ms4.out",sep="")))
+    print_console_header("Report part 4")
+    N.files.ms4.out = length(dir(paste0(metadatadir, "/meta/ms4.out")))
     if (N.files.ms4.out < f0) f0 = 1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
     if (f1 == 0) f1 = N.files.ms4.out
-    g.report.part4(datadir=datadir,metadatadir=metadatadir,loglocation = params_sleep[["loglocation"]],f0=f0,f1=f1,
-                   storefolderstructure=storefolderstructure, data_cleaning_file=data_cleaning_file,
-                   sleepwindowType=params_sleep[["sleepwindowType"]])
+    g.report.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
+                   loglocation = params_sleep[["loglocation"]],
+                   storefolderstructure = params_output[["storefolderstructure"]],
+                   data_cleaning_file = params_cleaning[["data_cleaning_file"]],
+                   sleepwindowType = params_sleep[["sleepwindowType"]])
   }
   if (length(which(do.report == 5)) > 0) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nReport part 5\n")
-    N.files.ms5.out = length(dir(paste(metadatadir,"/meta/ms5.out",sep="")))
+    print_console_header("Report part 5")
+    N.files.ms5.out = length(dir(paste0(metadatadir, "/meta/ms5.out")))
     if (N.files.ms5.out < f0) f0 = 1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
     if (f1 == 0) f1 = N.files.ms5.out
-
-    g.report.part5(metadatadir=metadatadir,f0=f0,f1=f1,loglocation=params_sleep[["loglocation"]],
-                   includenightcrit=params_sleep[["includenightcrit"]],includedaycrit=includedaycrit,
-                   data_cleaning_file=data_cleaning_file, includedaycrit.part5=includedaycrit.part5,
-                   minimum_MM_length.part5=minimum_MM_length.part5,
-                   week_weekend_aggregate.part5=week_weekend_aggregate.part5,
-                   LUX_day_segments=LUX_day_segments)
+    g.report.part5(metadatadir = metadatadir, f0 = f0, f1 = f1,
+                   loglocation = params_sleep[["loglocation"]],
+                   includenightcrit = params_sleep[["includenightcrit"]],
+                   includedaycrit = params_cleaning[["includedaycrit"]],
+                   data_cleaning_file = params_cleaning[["data_cleaning_file"]],
+                   includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
+                   minimum_MM_length.part5 = params_cleaning[["minimum_MM_length.part5"]],
+                   week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
+                   LUX_day_segments = params_247[["LUX_day_segments"]])
   }
   if (visualreport == TRUE) {
-    cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
-    cat("\nGenerate visual reports\n")
-    # f1 = length(dir(paste(metadatadir,"/meta/ms4.out",sep=""))) # Note: I have moved this line to the g.plot5 function.
-    g.plot5(metadatadir=metadatadir,dofirstpage=dofirstpage,
-            viewingwindow=viewingwindow,f0=f0,f1=f1,overwrite=overwrite,desiredtz = desiredtz,
-            metric=acc.metric,threshold.lig,threshold.mod,threshold.vig)
+    print_console_header("Generate visual reports")
+    g.plot5(metadatadir = metadatadir, f0 = f0, f1 = f1,
+            dofirstpage = params_output[["dofirstpage"]],
+            viewingwindow = params_output[["viewingwindow"]],
+            overwrite = params_general[["overwrite"]],
+            desiredtz = params_general[["desiredtz"]],
+            metric = params_general[["acc.metric"]],
+            threshold.lig = params_phyact[["threshold.lig"]],
+            threshold.mod = params_phyact[["threshold.mod"]],
+            threshold.vig = params_phyact[["threshold.vig"]])
   }
 }

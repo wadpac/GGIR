@@ -42,20 +42,20 @@ test_that("chainof5parts", {
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.00796))
   expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=3),equals(0.417))
-  # part 2 with strategy = 2 and iglevels = TRUE
+  # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 2,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels= TRUE,
+          maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels = TRUE,
           do.parallel = do.parallel,myfun=c(), winhr=16, MX.ig.min.dur = 14)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=3),equals(0.029))
-  expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day),digits=2),equals(1))
-  expect_equal(round(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]),digits=2), -1.11)
+  expect_that(round(mean(IMP$metashort$ENMO),digits = 3), equals(0.029))
+  expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 2),equals(1))
+  expect_equal(round(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), digits = 2), -1.11)
   # part 2 with strategy = 1
-  g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
+  g.part2(datadir=fn, metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
           strategy = 1,overwrite=TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0,qM5L5=c(0.2,0.4),winhr=c(3,10),
           do.parallel = do.parallel,myfun=c())
@@ -71,7 +71,7 @@ test_that("chainof5parts", {
   expect_that(nrow(IMP$metashort),equals(11280))
   expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
-  expect_that(ncol(SUM$daysummary), equals(34))
+  expect_that(ncol(SUM$daysummary), equals(32))
   expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3),equals(88.988))
   expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3),equals(37.15))
 
@@ -123,7 +123,7 @@ test_that("chainof5parts", {
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
   expect_that(ncol(output),equals(149))
-  expect_that(round(as.numeric(output$wakeup[2]),digits=4),equals(35.9958))
+  expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(35.9958))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
@@ -133,8 +133,9 @@ test_that("chainof5parts", {
   expect_that(length(unique(TSFILE$class_id)),equals(10))
  #--------------------------------------------
   #g.shell.GGIR
-  suppressWarnings(g.shell.GGIR(mode=c(2,3,4,5),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
-                          do.report=c(2,4,5),overwrite=FALSE,visualreport=FALSE,viewingwindow=1,
+  suppressWarnings(g.shell.GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
+                                studyname = "test", f0 = 1, f1 = 1,
+                          do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
                           do.parallel = do.parallel, minimumFileSizeMB=minimumFileSizeMB))
   suppressWarnings(g.shell.GGIR(mode=c(),datadir=fn,outputdir=getwd(),studyname="test",f0=1,f1=1,
                                 do.report=c(),overwrite=FALSE,visualreport=TRUE,viewingwindow=1,
@@ -167,7 +168,7 @@ test_that("chainof5parts", {
   #--------------------------------------------
   # part 4 without sleeplog
   expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-                         idloc=2,loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
+                         idloc=2, loglocation = c(), do.visual=TRUE,outliers.only = FALSE,
                          excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
                          relyonguider=FALSE,desiredtz=desiredtz,
                          storefolderstructure=TRUE, overwrite=TRUE))

@@ -19,14 +19,10 @@
 }
 \usage{
 g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
-        windowsizes = c(5,900,3600),
-        desiredtz = "", studyname = c(),
-        print.filename = FALSE, overwrite = FALSE,
-        selectdaysfile = c(), dayborder = 0,
-        configtz = c(), do.parallel = TRUE, 
-        myfun = c(), maxNcores = c(), 
-        params_metrics = c(), params_rawdata = c(), ...)
+        studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),  
+        params_cleaning = c(), params_general = c(), ...)
 }
+
 \arguments{
   \item{datadir}{
     Directory where the accelerometer files are stored or list of accelerometer
@@ -44,54 +40,15 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   \item{f1}{
     File index to finish with (defaults to number of files available)
   }
-  \item{windowsizes}{
-   see \link{g.getmeta}
-  }
-  \item{desiredtz}{
-    see \link{g.getmeta}
-  }
   \item{studyname}{
     If the datadir is a folder then the study will be given the name of the
     data directory. If datadir is a list of filenames then the studyname will be used
     as name for the analysis
   }
-  \item{print.filename}{
-    Whether to print the filename before before analysing it (default is FALSE).
-    Printing the filename can be useful to investigate problems (e.g. to verify that
-    which file is being read).
-  }
-  \item{overwrite}{
-    Overwrite previously generated milestone data by this function for this
-    particular dataset. If FALSE then it will skip the previously processed files
-    (default = FALSE).
-  }
-  \item{selectdaysfile}{
-    Optional functionality. Character pointing at a csv file holding the relationship
-    between device serial numbers (first column) and measurement dates of interest
-    (second and third column). The date format should be dd/mm/yyyy. And the first row
-    if the csv file is assumed to have a character variable names, e.g. "serialnumber"
-    "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
-    directory in a new subfolder named 'raw'.
-  }
-  \item{dayborder}{
-    Hour at which days start and end (default = 0), value = 4 would mean 4 am
-  }
-  \item{configtz}{
-    Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
-    was configured. Only use this argument if the timezone of configuration and
-    timezone in which recording took place are different.
-  }
-  \item{do.parallel}{
-    Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available.
-  }
+  
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
-  }
-  \item{maxNcores}{
-    Maximum number of cores to use when argument do.parallel is set to true.
-    GGIR by default uses the maximum number of available cores, but this argument
-    allows you to set a lower maximum.
   }
   \item{params_metrics}{
     List of parameters used metrics:
@@ -111,6 +68,25 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     dynrange (numeric, see \link{g.getmeta}), minimumFileSizeMB (numeric, see details),
     interpolationType (numeric, see \link{g.getmeta}), and all argument from function \link{read.myacc.csv}
     that start with "rmc.".
+  }
+  \item{params_cleaning}{
+    List of parameters releated to data cleaning, imputation or masking: 
+    strategy, hrs.del.start, hrs.del.end, maxdur, ndayswindow (all numeric, see \link{g.impute})
+    includedaycrit (numeric, see \link{g.analyse}), do.imp (boolean, see details)
+    selectdaysfile (character, see \link{g.analyse})
+    TimeSegments2ZeroFile (character, see details), data_cleaning_file (character, see details)
+    excludefirstlast.part5 (boolean, see details),
+    includedaycrit.part5 (numeric, see \link{g.report.part5})
+  }
+  \item{params_general}{
+    List of general parameters used accors GGIR: overwrite (boolean, see details),
+    selectdaysfile (character, see details), configtz (character, see \link{g.getmeta}),
+    dayborder (numeric, see details),  do.parallel (boolean, see details), maxNcores (numeric, see details).
+    windowsizes, idloc (all numeric, see \link{g.analyse})
+    desiredtz (character, see \link{g.getmeta})
+    acc.metric (character, see details), part5_agg2_60seconds (boolean, see details)
+    print.filename (boolean, see details)
+    
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
@@ -150,7 +126,52 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
       collects several MBs per hour, the default setting should only skip the very short files.
     \item \code{do.cal}  Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
-      recommended setting is TRUE
+      recommended setting is TRUE.
+  }
+  \cr
+  
+  Explanation of cleaning parameters that are not documented elsewhere in the technical manual.
+  \cr
+  \itemize{
+    \item \code{do.imp} Whether to impute missing values (e.g. suspected of monitor non-wear) or not
+      by \link{g.impute}. Default and recommended setting is TRUE
+      \item \code{TimeSegments2ZeroFil}  Csv-file holding the data.frame used for argument 
+      TimeSegments2Zero in function \link{g.impute}
+    \item \code{data_cleaning_file} Optional path to a csv file you create that holds four
+      columns: ID, day_part5, relyonguider_part4, and night_part4. ID should hold the participant ID.
+      Columns day_part5 and night_part4 allow you to specify which day(s) and
+      night(s) need to be excluded from part 5 and 4, respectively. So, this will be done regardless
+      of whether the rest of GGIR thinks those day(s)/night(s)
+      are valid. Column relyonguider_part4 allows you to specify for which nights 
+      part 4 should fully rely on the guider. See also package vignette.
+    \item \code{excludefirstlast.part5} If TRUE then the first and last night of the measurement are ignored for the
+      leep assessment.
+    
+  }
+  
+  \cr
+  Explanation of general parameters that are not documented elsewhere in the technical manual.
+  \cr
+  \itemize{
+    \item \code{overwrite} Overwrite previously generated milestone data by this function for this
+    particular dataset. If FALSE then it will skip the previously processed files
+    (default = FALSE).
+    \item \code{selectdaysfile} Do not used, this is legacy code for one specific data study. Character pointing at
+    a csv file holding the relationship between device serial numbers (first column) and measurement dates of interest
+    (second and third column). The date format should be dd/mm/yyyy. And the first row
+    if the csv file is assumed to have a character variable names, e.g. "serialnumber"
+    "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
+    directory in a new subfolder named 'raw'.
+    \item \code{dayborder} Hour at which days start and end (default = 0), value = 4 would mean 4 am
+    \item \code{do.parallel} Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available).
+    \item \code{maxNcores} Maximum number of cores to use when argument do.parallel is set to true.
+    GGIR by default uses the maximum number of available cores, but this argument
+    allows you to set a lower maximum.
+    \item \code{acc.metric}  Which one of the metrics do you want to consider to analyze L5.
+    The metric of interest need to be calculated in M.
+    \item \code{part5_agg2_60seconds} Boolean whether to use aggregate epochs to 60 seconds as part of the part 5 analysis.
+    \item \code{print.filename} Whether to print the filename before before analysing it (default is FALSE).
+    Printing the filename can be useful to investigate problems (e.g. to verify that which file is being read).
   }
 }
 \value{
