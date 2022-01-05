@@ -1,11 +1,12 @@
 library(GGIR)
 context("loading and checking params")
 test_that("load_params can load parameters", {
-  params = load_params(group="sleep")
+  params = load_params(group=c("sleep","metrics"))
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
   expect_equal(params$params_sleep[[8]], "Y")
   expect_equal(length(params$params_sleep), 27)
+  expect_equal(length(params$params_metrics), 33)
   params_sleep = params$params_sleep
   # Test that parameter check does not generate warnings:
   expect_warning(check_params(params_sleep), regexp = NA)

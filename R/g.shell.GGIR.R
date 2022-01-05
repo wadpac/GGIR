@@ -150,10 +150,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   }
   # obtain default parameter values if not provided:
 
-  
-  #-------------------------------------------
-  # SLEEP PARAMETERS
-
   # GENERAL parameters:
   if (exists("overwrite") == FALSE)   overwrite = FALSE
   if (exists("acc.metric") == FALSE)  acc.metric = "ENMO"
@@ -173,34 +169,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("desiredtz") == FALSE)  desiredtz = ""
   if (exists("configtz") == FALSE)  configtz = c()
   if (exists("chunksize") == FALSE)  chunksize = 1
-  if (exists("do.enmo") == FALSE)  do.enmo = TRUE
-  if (exists("do.lfenmo") == FALSE)  do.lfenmo = FALSE
-  if (exists("do.en") == FALSE)  do.en = FALSE
-  if (exists("do.bfen") == FALSE)  do.bfen = FALSE
-  if (exists("do.hfen") == FALSE)  do.hfen = FALSE
-  if (exists("do.hfenplus") == FALSE)  do.hfenplus = FALSE
-  if (exists("do.mad") == FALSE)  do.mad = FALSE
-  if (exists("do.roll_med_acc_x") == FALSE)  do.roll_med_acc_x=FALSE
-  if (exists("do.roll_med_acc_y") == FALSE)  do.roll_med_acc_y=FALSE
-  if (exists("do.roll_med_acc_z") == FALSE)  do.roll_med_acc_z=FALSE
-  if (exists("do.dev_roll_med_acc_x") == FALSE)  do.dev_roll_med_acc_x=FALSE
-  if (exists("do.dev_roll_med_acc_y") == FALSE)  do.dev_roll_med_acc_y=FALSE
-  if (exists("do.dev_roll_med_acc_z") == FALSE)  do.dev_roll_med_acc_z=FALSE
-  if (exists("do.enmoa") == FALSE)  do.enmoa = FALSE
-  if (exists("do.lfen") == FALSE)  do.lfen = FALSE
-  if (exists("do.lfx") == FALSE)  do.lfx = FALSE
-  if (exists("do.lfy") == FALSE)  do.lfy = FALSE
-  if (exists("do.lfz") == FALSE)  do.lfz = FALSE
-  if (exists("do.hfx") == FALSE)  do.hfx = FALSE
-  if (exists("do.hfy") == FALSE)  do.hfy = FALSE
-  if (exists("do.hfz") == FALSE)  do.hfz = FALSE
-  if (exists("do.bfx") == FALSE)  do.bfx = FALSE
-  if (exists("do.bfy") == FALSE)  do.bfy = FALSE
-  if (exists("do.bfz") == FALSE)  do.bfz = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
-  if (exists("hb") == FALSE)  hb = 15
-  if (exists("lb") == FALSE)  lb = 0.5
-  if (exists("n") == FALSE)  n = 4
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
   if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
@@ -366,25 +335,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             f0 = f0, f1 = f1, windowsizes = windowsizes,
             desiredtz = desiredtz, chunksize = chunksize,
             studyname = studyname, minloadcrit = minloadcrit,
-            do.enmo = do.enmo,
-            do.lfenmo = do.lfenmo, do.en = do.en,
-            do.bfen = do.bfen, do.hfen=do.hfen,
-            do.hfenplus = do.hfenplus, do.mad=do.mad,
-            do.roll_med_acc_x=do.roll_med_acc_x,
-            do.roll_med_acc_y=do.roll_med_acc_y,
-            do.roll_med_acc_z=do.roll_med_acc_z,
-            do.dev_roll_med_acc_x=do.dev_roll_med_acc_x,
-            do.dev_roll_med_acc_y=do.dev_roll_med_acc_y,
-            do.dev_roll_med_acc_z=do.dev_roll_med_acc_z,
-            do.enmoa = do.enmoa,
-            do.lfx=do.lfx, do.lfy=do.lfy, do.lfz=do.lfz,
-            do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
-            do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
             printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,
             selectdaysfile=selectdaysfile,dayborder=dayborder,
-            dynrange=dynrange, configtz=configtz, do.lfen=do.lfen, hb=hb, lb=lb, n=n,
+            dynrange=dynrange, configtz=configtz, 
             do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB,
             rmc.dec=rmc.dec,
             rmc.firstrow.acc = rmc.firstrow.acc,

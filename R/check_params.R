@@ -40,12 +40,20 @@ check_params = function(params_sleep = c(), params_metrics = c()) {
     check_class("Sleep", params = params_sleep, parname = "HASPT.ignore.invalid", parclass = "boolean")
   } 
   if (length(params_metrics) > 0) { # Check class of metrics parameters
-    check_class("Metrics", params = params_metrics, parname = "do.anglex", parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parname = "do.angley", parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parname = "do.anglez", parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parname = "do.zcx", parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parname = "do.zcy", parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parname = "do.zcz", parclass = "boolean")
+    metrics2check = c("do.anglex", "do.angley", "do.anglez",
+                      "do.zcx", "do.zcy", "do.zcz",
+                      "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
+                      "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z", 
+                      "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z", 
+                      "do.bfen", "do.hfen", "do.hfenplus", "do.lfen", 
+                      "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
+                      "do.bfx", "do.bfy", "do.bfz")
+    for (mi in metrics2check) {
+      check_class("Metrics", params = params_metrics, parname = mi, parclass = "boolean")
+    }
+    check_class("Metrics", params = params_metrics, parname = "hb", parclass = "numeric")
+    check_class("Metrics", params = params_metrics, parname = "lb", parclass = "numeric")
+    check_class("Metrics", params = params_metrics, parname = "n", parclass = "numeric")
   }
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical

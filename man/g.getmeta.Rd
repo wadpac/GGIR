@@ -248,6 +248,7 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     Integer to indicate type of interpolation to be used when resampling
     time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour
   }
+  
   \item{...}{
     Please ignore. Only used by the code internally when called from within
     g.part1 with selectdaysfile specific.

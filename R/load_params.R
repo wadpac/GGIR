@@ -33,12 +33,21 @@ load_params = function(group = c("sleep", "metrics")) {
                         do.visual = FALSE)
   }
   if ("metrics" %in% group) {  
-    params_metrics = list(do.anglex = FALSE,
-                          do.angley = FALSE,
-                          do.anglez = TRUE,
-                          do.zcx = FALSE,
-                          do.zcy = FALSE,
-                          do.zcz = FALSE)
+    params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
+                          do.zcx = FALSE, do.zcy = FALSE, do.zcz = FALSE,
+                          do.enmo = TRUE, do.lfenmo = FALSE, do.en = FALSE,
+                          do.mad = FALSE, do.enmoa = FALSE,
+                          do.roll_med_acc_x = FALSE,
+                          do.roll_med_acc_y = FALSE,
+                          do.roll_med_acc_z = FALSE,
+                          do.dev_roll_med_acc_x = FALSE,
+                          do.dev_roll_med_acc_y = FALSE,
+                          do.dev_roll_med_acc_z = FALSE,
+                          do.bfen = FALSE, do.hfen = FALSE, do.hfenplus = FALSE, do.lfen = FALSE,
+                          do.lfx = FALSE, do.lfy = FALSE, do.lfz = FALSE,
+                          do.hfx = FALSE, do.hfy = FALSE, do.hfz = FALSE,
+                          do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE,
+                          hb = 15, lb = 0.2, n = 4)
   }
   # }
   invisible(list(params_sleep = params_sleep, params_metrics=params_metrics))

@@ -1,36 +1,27 @@
 \name{g.part1}
 \alias{g.part1}
 \title{
-function to load and pre-process acceleration files
+  function to load and pre-process acceleration files
 }
 \description{
-Calls function \link{g.getmeta} and \link{g.calibrate}, and converts the
-output to .RData-format which will be the input for \link{g.part2}. Here,
-the function generates a folder structure to keep track of various output files.
-The reason why these \link{g.part1} and \link{g.part2} are not merged as one
-generic shell function is because g.part1 takes much
-longer to and involves only minor decisions of interest to the movement scientist.
-Function g.part2 on the other hand is relatively fast and comes with all the
-decisions that directly impact on the variables that are of interest to the
-movement scientist. Therefore, the user may want to run g.part1 overnight
-or on a computing cluster, while g.part2 can then be the main playing ground
-for the movement scientist. Function \link{g.shell.GGIR} provides the main shell
-that allows for operating g.part1 and g.part2.
+  Calls function \link{g.getmeta} and \link{g.calibrate}, and converts the
+  output to .RData-format which will be the input for \link{g.part2}. Here,
+  the function generates a folder structure to keep track of various output files.
+  The reason why these \link{g.part1} and \link{g.part2} are not merged as one
+  generic shell function is because g.part1 takes much
+  longer to and involves only minor decisions of interest to the movement scientist.
+  Function g.part2 on the other hand is relatively fast and comes with all the
+  decisions that directly impact on the variables that are of interest to the
+  movement scientist. Therefore, the user may want to run g.part1 overnight
+  or on a computing cluster, while g.part2 can then be the main playing ground
+  for the movement scientist. Function \link{g.shell.GGIR} provides the main shell
+  that allows for operating g.part1 and g.part2.
 }
 \usage{
 g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         windowsizes = c(5,900,3600),
         desiredtz = "",chunksize=c(),studyname=c(),
-        do.enmo = TRUE,do.lfenmo = FALSE,do.en = FALSE,
-        do.bfen = FALSE, do.hfen=FALSE, do.hfenplus = FALSE,
-        do.mad = FALSE, do.enmoa=FALSE,
-        do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE,
-        do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE,
-        do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE,
-        do.lfen = FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
-        do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
-        do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE, 
-        do.cal = TRUE,lb = 0.2, hb = 15, n = 4,
+        do.cal = TRUE,
         spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
@@ -40,118 +31,49 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
 }
 \arguments{
   \item{datadir}{
-  Directory where the accelerometer files are stored or list of accelerometer
-  filenames and directories
+    Directory where the accelerometer files are stored or list of accelerometer
+    filenames and directories
   }
   \item{outputdir}{
-  Directory where the output needs to be stored. Note that this function will
-  attempt to create folders in this directory and uses those folder to organise
-  output
+    Directory where the output needs to be stored. Note that this function will
+    attempt to create folders in this directory and uses those folder to organise
+    output
   }
   \item{f0}{
-   File index to start with (default = 1). Index refers to the filenames sorted
-   in increasing order
+    File index to start with (default = 1). Index refers to the filenames sorted
+    in increasing order
   }
   \item{f1}{
-   File index to finish with (defaults to number of files available)
+    File index to finish with (defaults to number of files available)
   }
   \item{windowsizes}{
    see \link{g.getmeta}
   }
   \item{desiredtz}{
-  see \link{g.getmeta}
+    see \link{g.getmeta}
   }
   \item{chunksize}{
-  see \link{g.getmeta}
+    see \link{g.getmeta}
   }
   \item{studyname}{
-  If the datadir is a folder then the study will be given the name of the
-  data directory. If datadir is a list of filenames then the studyname will be used
-  as name for the analysis
-  }
-  \item{do.bfen}{
-  if TRUE, calculate metric BFEN with band-pass filter configuration set by
-  \code{lb} and \code{hb}, see \link{g.getmeta}
-  }
-  \item{do.enmo}{
-  if TRUE (default), calculate metric ENMO, see \link{g.getmeta}
-  }
-  \item{do.lfenmo}{
-  if TRUE, calculate metric LFENMO with low-pass filter configuration set by
-  \code{hb},see \link{g.getmeta}
-  }
-  \item{do.en}{
-  if TRUE, calculate metric EN, see \link{g.getmeta}
-  }
-  \item{do.hfen}{
-  if TRUE, calculate metric HFEN with low-pass filter configuration set by
-  \code{hb}, see \link{g.getmeta}
-  }
-  \item{do.hfenplus}{
-  if TRUE, calculate metric HFENplus with band-pass filter configuration set
-  by \code{lb} and \code{hb}, see \link{g.getmeta}
-  }
-  \item{do.mad}{
-  if TRUE, calculate metric MAD (Mean Amplitude Deviation), see \link{g.getmeta}
-  }
-  \item{do.enmoa}{if TRUE, calculate metric ENMOa which is equal to
-  metric ENMO but with the absolute taken from the Euclidean norm minus one.
-  }
- \item{do.roll_med_acc_x}{ see \link{g.getmeta}
-  }
-  \item{do.roll_med_acc_y}{ see \link{g.getmeta}
-  }
-  \item{do.roll_med_acc_z}{ see \link{g.getmeta}
-  }
-  \item{do.dev_roll_med_acc_x}{ see \link{g.getmeta}
-  }
-  \item{do.dev_roll_med_acc_y}{ see \link{g.getmeta}
-  }
-  \item{do.dev_roll_med_acc_z}{see \link{g.getmeta}
-  }
-  \item{do.lfen}{ see \link{g.getmeta}
-  }
-  \item{do.lfx}{ see \link{g.getmeta}
-  }
-  \item{do.lfy}{ see \link{g.getmeta}
-  }
-  \item{do.lfz}{ see \link{g.getmeta}
-  }
-  \item{do.hfx}{ see \link{g.getmeta}
-  }
-  \item{do.hfy}{ see \link{g.getmeta}
-  }
-  \item{do.hfz}{ see \link{g.getmeta}
-  }
-   \item{do.bfx}{ see \link{g.getmeta}
-  }
-  \item{do.bfy}{ see \link{g.getmeta}
-  }
-  \item{do.bfz}{ see \link{g.getmeta}
+    If the datadir is a folder then the study will be given the name of the
+    data directory. If datadir is a list of filenames then the studyname will be used
+    as name for the analysis
   }
   \item{do.cal}{
-  Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
-  recommended setting is TRUE
-  }
-  \item{lb}{
-  lower boundary of the frequency filter (in Hertz)
-  }
-  \item{hb}{
-  upper boundary of the frequency filter (in Hertz), see \link{g.getmeta}
-  }
-  \item{n}{
-  order of the frequency filter, see \link{g.getmeta}
+    Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
+    recommended setting is TRUE
   }
   \item{spherecrit}{
-  see \link{g.calibrate} the minimum required acceleration value (in g) on both
-  sides of 0 g for each axis. Used to judge whether the sphere is sufficiently
-  populated
+    see \link{g.calibrate} the minimum required acceleration value (in g) on both
+    sides of 0 g for each axis. Used to judge whether the sphere is sufficiently
+    populated
   }
   \item{minloadcrit}{
-  see \link{g.calibrate} the minimum number of hours the code needs to read for the
-  autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
-  other values will be ceiled). After loading these hours only extra data is loaded
-  if calibration error has not be reduced to under 0.01 g.
+    see \link{g.calibrate} the minimum number of hours the code needs to read for the
+    autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
+    other values will be ceiled). After loading these hours only extra data is loaded
+    if calibration error has not be reduced to under 0.01 g.
   }
   \item{printsummary}{
     see \link{g.calibrate} if TRUE will print a summary when done
@@ -182,8 +104,8 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     Hour at which days start and end (default = 0), value = 4 would mean 4 am
   }
   \item{dynrange}{
-   Optional, provide dynamic range for accelerometer data to overwrite hardcoded
-   6 g for GENEA and 8 g for other brands
+    Optional, provide dynamic range for accelerometer data to overwrite hardcoded
+    6 g for GENEA and 8 g for other brands
   }
   \item{configtz}{
     Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
@@ -208,17 +130,21 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
     allows you to set a lower maximum.
   }
   \item{interpolationType}{
-   Integer, see \link{g.getmeta}
+    Integer, see \link{g.getmeta}
   }
   \item{params_metrics}{
     List of parameters used metrics:
-    do.anglex (boolean, see \link{g.getmeta}), do.angley (boolean, see \link{g.getmeta}),
-    do.anglez (boolean, see \link{g.getmeta}), do.zcx (boolean, see \link{g.getmeta}),
-    do.zcy (boolean, see \link{g.getmeta}), do.zcz (boolean, see \link{g.getmeta}),
+    Including Boolean indicators of which metrics to extract, as discussed in see \link{g.getmeta}):
+    do.anglex, do.angley, do.anglez, do.zcx, do.zcy, do.zcz, do.bfen, do.enmo, do.lfenmo, do.en,
+    do.hfen, do.hfenplus, do.mad, do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
+    do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z, do.enmoa,
+    do.lfen, do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,do.bfx, do.bfy, do.bfz.
+    Further, the list should included: lb, hb, and n (all numeric, see \link{g.getmeta})
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
-    are working with a non-standard csv formatted files. To enable compatibility with older GGIR version, user can also          provide individual params_metrics parameters as separate argument, e.g. do.anglex = TRUE.
+    are working with a non-standard csv formatted files. To enable compatibility with older GGIR version, 
+    user can also provide individual params_metrics parameters as separate argument, e.g. do.anglex = TRUE.
   }
 }
 \details{

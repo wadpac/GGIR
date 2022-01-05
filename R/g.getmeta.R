@@ -53,11 +53,12 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  metrics2do = data.frame(do.bfen, do.enmo,do.lfenmo,do.en,do.hfen,
-                          do.hfenplus, do.mad,do.anglex,do.angley,do.anglez,
-                          do.roll_med_acc_x, do.roll_med_acc_y,do.roll_med_acc_z,
+  
+  metrics2do = data.frame(do.bfen, do.enmo, do.lfenmo, do.en, do.hfen,
+                          do.hfenplus, do.mad, do.anglex, do.angley, do.anglez,
+                          do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
                           do.dev_roll_med_acc_x, do.dev_roll_med_acc_y,
-                          do.dev_roll_med_acc_z, do.enmoa,do.lfen,
+                          do.dev_roll_med_acc_z, do.enmoa, do.lfen, 
                           do.lfx, do.lfy, do.lfz,
                           do.hfx, do.hfy, do.hfz,
                           do.bfx, do.bfy, do.bfz,
@@ -66,10 +67,11 @@ g.getmeta = function(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
   gyro_available = FALSE
-  nmetrics = sum(c(do.bfen,do.enmo,do.lfenmo,do.en,do.hfen,do.hfenplus,do.mad,
-                   do.anglex,do.angley,do.anglez,
-                   do.roll_med_acc_x,do.roll_med_acc_y,do.roll_med_acc_z,
-                   do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,do.enmoa, do.lfen,
+  nmetrics = sum(c(do.bfen, do.enmo, do.lfenmo, do.en, do.hfen, do.hfenplus, do.mad,
+                   do.anglex, do.angley, do.anglez,
+                   do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
+                   do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,
+                   do.enmoa, do.lfen,
                    do.lfx, do.lfy, do.lfz,  do.hfx, do.hfy, do.hfz,  do.bfx, do.bfy, do.bfz,
                    do.zcx, do.zcy, do.zcz))
   if (length(myfun) != 0) {
