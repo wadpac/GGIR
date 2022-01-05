@@ -233,7 +233,8 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
    see \link{g.part1}
   }
   \item{dynrange}{
-   see \link{g.part1}
+   Optional, provide dynamic range for accelerometer data to overwrite hardcoded
+    6 g for GENEA and 8 g for other brands
   }
   \item{configtz}{
     Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer

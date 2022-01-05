@@ -8,7 +8,7 @@ g.part3 = function(metadatadir = c(), f0, f1,
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
-  params = extract_params(params_sleep, params_metrics, input)
+  params = extract_params(params_sleep = c(), params_metrics = c(), params_rawdata = c(), input) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   #----------------------------------------------------------

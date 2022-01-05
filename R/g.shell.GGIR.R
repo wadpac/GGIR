@@ -5,9 +5,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   input = list(...)
   #----------------------------------------------------------
   # Extract and check parameters
-  params = extract_params(params_sleep = c(), params_metrics = c(), input) # load default parameters
+  params = extract_params(params_sleep = c(), params_metrics = c(),
+                          params_rawdata = c(), input) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
+  params_rawdata = params$params_rawdata
   if (length(input) > 0) {
     if (length(input) > 1) {
       # Check for duplicated arguments
@@ -100,7 +102,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     if (length(config) > 0) {
       LS = ls()
       LS = LS[-which(LS == c("config"))]
-      print(tail(config))
       for (ci in 1:nrow(config)) {
         if (as.character(config[ci, 1]) %in% c(LS, "") == FALSE) { # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
           conv2logical = conv2num = c()
@@ -162,19 +163,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("do.parallel") == FALSE)  do.parallel = TRUE
   # PART 1
   if (exists("selectdaysfile") == FALSE)  selectdaysfile = c()
-  if (exists("do.cal") == FALSE)  do.cal = TRUE
-  if (exists("printsummary") == FALSE)  printsummary = FALSE
   if (exists("windowsizes") == FALSE)  windowsizes = c(5,900,3600)
-  if (exists("minloadcrit") == FALSE)  minloadcrit = 72
   if (exists("desiredtz") == FALSE)  desiredtz = ""
   if (exists("configtz") == FALSE)  configtz = c()
-  if (exists("chunksize") == FALSE)  chunksize = 1
-  if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("idloc") == FALSE) idloc = 1
-  if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
-  if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
-  if (exists("interpolationType") == FALSE)  interpolationType=1
-
+  
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
@@ -258,31 +251,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("possible_nap_window") == FALSE) possible_nap_window = c(9, 18)
   if (exists("possible_nap_dur") == FALSE) possible_nap_dur = c(15, 240)
   # Related to (r)ead (m)yacc (c)sv file:
-  if (exists("rmc.dec") == FALSE) rmc.dec="."
-  if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
-  if (exists("rmc.firstrow.header") == FALSE) rmc.firstrow.header=c()
-  if (exists("rmc.header.length") == FALSE) rmc.header.length= c()
-  if (exists("rmc.col.acc") == FALSE) rmc.col.acc = 1:3
-  if (exists("rmc.col.temp") == FALSE) rmc.col.temp = c()
-  if (exists("rmc.col.time") == FALSE) rmc.col.time=c()
-  if (exists("rmc.unit.acc") == FALSE) rmc.unit.acc = "g"
-  if (exists("rmc.unit.temp") == FALSE) rmc.unit.temp = "C"
-  if (exists("rmc.unit.time") == FALSE) rmc.unit.time = "POSIX"
-  if (exists("rmc.format.time") == FALSE) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
-  if (exists("rmc.bitrate") == FALSE) rmc.bitrate = c()
-  if (exists("rmc.dynamic_range") == FALSE) rmc.dynamic_range = c()
-  if (exists("rmc.unsignedbit") == FALSE) rmc.unsignedbit = TRUE
-  if (exists("rmc.origin") == FALSE) rmc.origin = "1970-01-01"
-  if (exists("rmc.desiredtz") == FALSE) rmc.desiredtz= ""
-  if (exists("rmc.sf") == FALSE) rmc.sf  = c()
-  if (exists("rmc.headername.sf") == FALSE) rmc.headername.sf = c()
-  if (exists("rmc.headername.sn") == FALSE) rmc.headername.sn = c()
-  if (exists("rmc.headername.recordingid") == FALSE) rmc.headername.recordingid = c()
-  if (exists("rmc.header.structure") == FALSE) rmc.header.structure = c()
-  if (exists("rmc.check4timegaps") == FALSE) rmc.check4timegaps = FALSE
-  if (exists("rmc.noise") == FALSE) rmc.noise = FALSE
-  if (exists("rmc.col.wear") == FALSE) rmc.col.wear = c()
-  if (exists("rmc.doresample") == FALSE) rmc.doresample = FALSE
   if (exists("part5_agg2_60seconds") == FALSE) part5_agg2_60seconds = FALSE
   if (exists("week_weekend_aggregate.part5") == FALSE) week_weekend_aggregate.part5=FALSE
   if (exists("LUXthresholds") == FALSE) LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000)
@@ -329,46 +297,23 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   
   if (dopart1 == TRUE) {
     cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
+    cat(paste0(rep('_', options()$width), collapse = ''))
     cat("\nPart 1\n")
     g.part1(datadir = datadir, outputdir = outputdir,
             f0 = f0, f1 = f1, windowsizes = windowsizes,
-            desiredtz = desiredtz, chunksize = chunksize,
-            studyname = studyname, minloadcrit = minloadcrit,
-            printsummary=printsummary,
-            do.cal = do.cal,print.filename=print.filename,
-            overwrite=overwrite,backup.cal.coef=backup.cal.coef,
-            selectdaysfile=selectdaysfile,dayborder=dayborder,
-            dynrange=dynrange, configtz=configtz, 
-            do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB,
-            rmc.dec=rmc.dec,
-            rmc.firstrow.acc = rmc.firstrow.acc,
-            rmc.firstrow.header = rmc.firstrow.header,
-            rmc.header.length = rmc.header.length,
-            rmc.col.acc = rmc.col.acc,
-            rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-            rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-            rmc.unit.time = rmc.unit.time,
-            rmc.format.time = rmc.format.time,
-            rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-            rmc.unsignedbit = rmc.unsignedbit,
-            rmc.origin = rmc.origin,
-            rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-            rmc.headername.sf = rmc.headername.sf,
-            rmc.headername.sn = rmc.headername.sn,
-            rmc.headername.recordingid = rmc.headername.sn,
-            rmc.header.structure = rmc.header.structure,
-            rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
-            rmc.col.wear=rmc.col.wear,
-            rmc.doresample=rmc.doresample,
-            myfun=myfun, maxNcores=maxNcores,
-            interpolationType=interpolationType, params_metrics = params_metrics)
+            desiredtz = desiredtz, studyname = studyname, 
+            print.filename = print.filename, overwrite = overwrite,
+            selectdaysfile = selectdaysfile, dayborder = dayborder,
+            configtz = configtz, do.parallel = do.parallel, 
+            myfun = myfun, maxNcores = maxNcores,
+            params_metrics = params_metrics,
+            params_rawdata = params_rawdata)
   }
   if (dopart2 == TRUE) {
     cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
+    cat(paste0(rep('_', options()$width), collapse = ''))
     cat("\nPart 2\n")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
+    if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/basic")))
     g.part2(datadir =datadir,metadatadir=metadatadir,f0=f0,f1=f1,strategy = strategy,
             hrs.del.start = hrs.del.start,hrs.del.end = hrs.del.end,
             maxdur =  maxdur, includedaycrit = includedaycrit,
@@ -387,7 +332,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   }
   if (dopart3 == TRUE) {
     cat('\n')
-    cat(paste0(rep('_',options()$width),collapse=''))
+    cat(paste0(rep('_', options()$width), collapse = ''))
     cat("\nPart 3\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
     g.part3(metadatadir = metadatadir, f0 = f0, acc.metric = acc.metric,
@@ -411,12 +356,26 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 5\n")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep=""))) # this is intentionally ms3 and not ms4, do not change!
-    g.part5(datadir = datadir, metadatadir =metadatadir,f0=f0,f1=f1,strategy=strategy,maxdur=maxdur,
+    g.part5(datadir = datadir, metadatadir =metadatadir,f0=f0,f1=f1,
+            acc.metric=acc.metric,
+            storefolderstructure=storefolderstructure,
+            overwrite=overwrite,desiredtz=desiredtz, 
+            dayborder=dayborder,
+            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
+            save_ms5raw_format=save_ms5raw_format,
+            save_ms5raw_without_invalid=save_ms5raw_without_invalid,
+            part5_agg2_60seconds=part5_agg2_60seconds, 
+            data_cleaning_file=data_cleaning_file,
+            includedaycrit.part5=includedaycrit.part5,
+            
+            strategy=strategy,
+            maxdur=maxdur,
             hrs.del.start=hrs.del.start,
             hrs.del.end=hrs.del.end,
-            excludefirstlast.part5=excludefirstlast.part5, acc.metric=acc.metric,
-            windowsizes=windowsizes,boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
-            boutcriter.mvpa=boutcriter.mvpa,storefolderstructure=storefolderstructure,
+            excludefirstlast.part5=excludefirstlast.part5,
+            windowsizes=windowsizes,
+            boutcriter.in=boutcriter.in,boutcriter.lig=boutcriter.lig,
+            boutcriter.mvpa=boutcriter.mvpa,
             threshold.lig = threshold.lig,
             threshold.mod = threshold.mod,
             threshold.vig = threshold.vig,timewindow=timewindow,
@@ -424,13 +383,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             boutdur.in = boutdur.in,
             boutdur.lig = boutdur.lig,
             winhr = winhr,M5L5res = M5L5res,
-            overwrite=overwrite,desiredtz=desiredtz, bout.metric=bout.metric,dayborder=dayborder,
-            save_ms5rawlevels = save_ms5rawlevels, do.parallel = do.parallel,
-            part5_agg2_60seconds=part5_agg2_60seconds, save_ms5raw_format=save_ms5raw_format,
-            save_ms5raw_without_invalid=save_ms5raw_without_invalid,
+            bout.metric=bout.metric,
+            
             frag.metrics = frag.metrics,
-            data_cleaning_file=data_cleaning_file,
-            includedaycrit.part5=includedaycrit.part5, iglevels=iglevels,
+             iglevels=iglevels,
+            
             LUXthresholds=LUXthresholds, maxNcores=maxNcores,
             LUX_cal_constant=LUX_cal_constant, LUX_cal_exponent=LUX_cal_exponent,
             LUX_day_segments=LUX_day_segments, do.sibreport=do.sibreport,

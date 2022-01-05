@@ -1,43 +1,42 @@
-check_params = function(params_sleep = c(), params_metrics = c()) {
+check_params = function(params_sleep = c(), params_metrics = c(), params_rawdata = c()) {
   check_class = function(category, params, parname, parclass) {
-    if (parname %in% names(params) == FALSE) {
-      stop(paste0("\nParameter ", parname," is missing in object "))
-    } else {
-      x = params[[parname]]
-    }
-    if (parclass == "numeric") {
-      if (!is.numeric(x)) {
-        stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+    if (length(params[[parname]]) > 0) {
+      if (parname %in% names(params) == FALSE) {
+        stop(paste0("\nParameter ", parname," is missing in object "))
+      } else {
+        x = params[[parname]]
       }
-    }
-    if (parclass == "boolean") {
-      if (!is.logical(x)) {
-        stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+      if (parclass == "numeric") {
+        if (!is.numeric(x)) {
+          stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+        }
       }
-    }
-    if (parclass == "character") {
-      if (!is.character(x)) {
-        stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+      if (parclass == "boolean") {
+        if (!is.logical(x)) {
+          stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+        }
+      }
+      if (parclass == "character") {
+        if (!is.character(x)) {
+          stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+        }
       }
     }
   }
   #-----------------------------------------------------------------------------------------
   if (length(params_sleep) > 0) { # Check class of sleep parameters
-    if (length(params_sleep[["anglethreshold"]]) > 0) {
-      check_class("Sleep", params = params_sleep, parname = "anglethreshold", parclass = "numeric")
+    numeric_params = c("anglethreshold", "timethreshold", "longitudinal_axis")
+    boolean_params = c("ignorenonwear", "constrain2range", "HASPT.ignore.invalid")
+    character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis")
+    for (mi in numeric_params) {
+      check_class("Sleep", params = params_sleep, parname = mi, parclass = "numeric")
     }
-    if (length(params_sleep[["timethreshold"]]) > 0) {
-      check_class("Sleep", params = params_sleep, parname = "timethreshold", parclass = "numeric")
+    for (mi in boolean_params) {
+      check_class("Sleep", params = params_sleep, parname = mi, parclass = "boolean")
     }
-    check_class("Sleep", params = params_sleep, parname = "ignorenonwear", parclass = "boolean")
-    check_class("Sleep", params = params_sleep, parname = "constrain2range", parclass = "boolean")
-    check_class("Sleep", params = params_sleep, parname = "HASPT.algo", parclass = "character")
-    check_class("Sleep", params = params_sleep, parname = "HASIB.algo", parclass = "character")
-    check_class("Sleep", params = params_sleep, parname = "Sadeh_axis", parclass = "character")
-    if (length(params_sleep[["longitudinal_axis"]]) > 0) {
-      check_class("Sleep", params = params_sleep, parname = "longitudinal_axis", parclass = "numeric")
+    for (mi in character_params) {
+      check_class("Sleep", params = params_sleep, parname = mi, parclass = "character")
     }
-    check_class("Sleep", params = params_sleep, parname = "HASPT.ignore.invalid", parclass = "boolean")
   } 
   if (length(params_metrics) > 0) { # Check class of metrics parameters
     metrics2check = c("do.anglex", "do.angley", "do.anglez",
@@ -54,6 +53,28 @@ check_params = function(params_sleep = c(), params_metrics = c()) {
     check_class("Metrics", params = params_metrics, parname = "hb", parclass = "numeric")
     check_class("Metrics", params = params_metrics, parname = "lb", parclass = "numeric")
     check_class("Metrics", params = params_metrics, parname = "n", parclass = "numeric")
+  }
+  if (length(params_rawdata) > 0) { # Check class of metrics parameters
+    numeric_params = c("chunksize", "spherecrit", "minloadcrit", "minimumFileSizeMB", "dynrange",
+                       "rmc.col.acc", "interpolationType",
+                       "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
+                       "rmc.col.temp", "rmc.col.time", "rmc.bitrate", "rmc.dynamic_range",
+                       "rmc.sf", "rmc.col.wear", "rmc.noise")
+    boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample")
+    character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc", 
+                         "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
+                         "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
+                         "rmc.headername.sn", "rmc.headername.recordingid", 
+                         "rmc.header.structure")
+    for (mi in numeric_params) {
+      check_class("Raw data", params = params_rawdata, parname = mi, parclass = "numeric")
+    }
+    for (mi in boolean_params) {
+      check_class("Raw data", params = params_rawdata, parname = mi, parclass = "boolean")
+    }
+    for (mi in character_params) {
+      check_class("Raw data", params = params_rawdata, parname = mi, parclass = "character")
+    }
   }
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
@@ -102,5 +123,7 @@ check_params = function(params_sleep = c(), params_metrics = c()) {
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
-  invisible(list(params_sleep = params_sleep, params_metrics = params_metrics))
+  invisible(list(params_sleep = params_sleep, 
+                 params_metrics = params_metrics, 
+                 params_rawdata = params_rawdata))
 }

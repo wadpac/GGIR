@@ -32,7 +32,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
-  params = extract_params(params_sleep, params_metrics, input)
+  params = extract_params(params_sleep = c(), params_metrics = c(), params_rawdata = c(), input) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   

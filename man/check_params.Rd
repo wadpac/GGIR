@@ -8,7 +8,7 @@
   Not intended for direct use by GGIR users.
 }
 \usage{
-  check_params(params_sleep = c(), params_metrics = c())
+  check_params(params_sleep = c(), params_metrics = c(), params_rawdata = c())
 }
 \arguments{
   \item{params_sleep}{
@@ -16,6 +16,9 @@
   }
   \item{params_metrics}{
     List with parameters related to metrics
+  }
+  \item{params_rawdata}{
+    List with parameters related to raw data reading and processing
   }
 }
 \value{

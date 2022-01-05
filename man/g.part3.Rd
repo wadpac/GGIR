@@ -76,8 +76,8 @@ g.part3(metadatadir=c(), f0, f1, acc.metric="ENMO", overwrite=FALSE,
   }
 }
 \details{
- Explanation of sleep analysis parameters that are not documented elsewhere in the technical manual.
- \cr
+  Explanation of sleep analysis parameters that are not documented elsewhere in the technical manual.
+  \cr
   \itemize{
     \item \code{do.visual} If g.part4 is run with do.visual == TRUE then
       the function will generate a pdf with a visual representation of the

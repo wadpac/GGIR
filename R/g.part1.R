@@ -1,18 +1,17 @@
-g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3600),
-                   desiredtz = "",chunksize=c(),studyname=c(),
-                   do.cal = TRUE,
-                   # lb = 0.2, hb = 15,  n = 4,
-                   spherecrit=0.3,
-                   minloadcrit=72,printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
-                   backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,dynrange=c(),
-                   configtz = c(), do.parallel = TRUE, minimumFileSizeMB = 2,myfun=c(),
-                   maxNcores=c(), interpolationType=1, params_metrics =c(), ...) {
+g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
+                   windowsizes = c(5,900,3600),
+                   desiredtz = "", studyname = c(),
+                   print.filename = FALSE, overwrite = FALSE,
+                   selectdaysfile = c(), dayborder = 0,
+                   configtz = c(), do.parallel = TRUE, myfun = c(),
+                   maxNcores = c(),  params_metrics = c(), params_rawdata = c(), ...) {
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
-  params = extract_params(params_metrics = params_metrics, params_sleep = c(), input)
-  params_metrics = params$params_metrics
+  params = extract_params(params_sleep = c(), params_metrics = c(), params_rawdata = c(), input) # load default parameters
   params_sleep = params$params_sleep
+  params_metrics = params$params_metrics
+  params_rawdata = params$params_rawdata
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -24,32 +23,6 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       eval(parse(text=txt))
     }
   }
-  if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
-  if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
-  if (length(which(ls() == "rmc.firstrow.header")) == 0) rmc.firstrow.header=c()
-  if (length(which(ls() == "rmc.header.length")) == 0)  rmc.header.length= c()
-  if (length(which(ls() == "rmc.col.acc")) == 0) rmc.col.acc = 1:3
-  if (length(which(ls() == "rmc.col.temp")) == 0) rmc.col.temp = c()
-  if (length(which(ls() == "rmc.col.time")) == 0) rmc.col.time=c()
-  if (length(which(ls() == "rmc.unit.acc")) == 0) rmc.unit.acc = "g"
-  if (length(which(ls() == "rmc.unit.temp")) == 0) rmc.unit.temp = "C"
-  if (length(which(ls() == "rmc.unit.time")) == 0) rmc.unit.time = "POSIX"
-  if (length(which(ls() == "rmc.format.time")) == 0) rmc.format.time = "%Y-%m-%d %H:%M:%OS"
-  if (length(which(ls() == "rmc.bitrate")) == 0) rmc.bitrate = c()
-  if (length(which(ls() == "rmc.dynamic_range")) == 0) rmc.dynamic_range = c()
-  if (length(which(ls() == "rmc.unsignedbit")) == 0) rmc.unsignedbit = TRUE
-  if (length(which(ls() == "rmc.origin")) == 0) rmc.origin = "1970-01-01"
-  if (length(which(ls() == "rmc.desiredtz")) == 0) rmc.desiredtz= "Europe/London"
-  if (length(which(ls() == "rmc.sf")) == 0) rmc.sf  = c()
-  if (length(which(ls() == "rmc.headername.sf")) == 0) rmc.headername.sf = c()
-  if (length(which(ls() == "rmc.headername.sn")) == 0) rmc.headername.sn = c()
-  if (length(which(ls() == "rmc.headername.recordingid")) == 0) rmc.headername.recordingid = c()
-  if (length(which(ls() == "rmc.header.structure")) == 0) rmc.header.structure = c()
-  if (length(which(ls() == "rmc.check4timegaps")) == 0) rmc.check4timegaps = FALSE
-  if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
-  if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
-  if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -120,7 +93,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
   }
   if (useRDA == FALSE) {
     filesizes = file.info(fnamesfull)$size # in bytes
-    toosmall = which(filesizes/1e6 > minimumFileSizeMB)
+    toosmall = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
     fnamesfull = fnamesfull[toosmall]
     fnames = fnames[toosmall]
   }
@@ -213,12 +186,12 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
       }
-      if (chunksize > 0.6 & Nmetrics2calc < 3) { # default ENMO and anglez
-        chunksize = 0.6 # put limit to chunksize, because when processing in parallel memory is more limited
-      } else if (chunksize > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
-        chunksize = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
-      } else if (chunksize > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
-        chunksize = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
+      if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc < 3) { # default ENMO and anglez
+        params_rawdata[["chunksize"]] = 0.6 # put limit to chunksize, because when processing in parallel memory is more limited
+      } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
+        params_rawdata[["chunksize"]] = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
+      } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
+        params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
       }
       if (length(maxNcores) == 0) maxNcores = Ncores
       Ncores2use = min(c(Ncores-1, maxNcores))
@@ -303,88 +276,101 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
       }
       #=============================================================
       # Inspect file (and store output later on)
-      options(warn=-1) #turn off warnings
+      options(warn = -1) #turn off warnings
       if (useRDA == FALSE) {
-        I = g.inspectfile(datafile, desiredtz=desiredtz,
-                          rmc.dec=rmc.dec,configtz=configtz,
-                          rmc.firstrow.acc = rmc.firstrow.acc,
-                          rmc.firstrow.header = rmc.firstrow.header,
-                          rmc.header.length = rmc.header.length,
-                          rmc.col.acc = rmc.col.acc,
-                          rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                          rmc.unit.time = rmc.unit.time,
-                          rmc.format.time = rmc.format.time,
-                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                          rmc.unsignedbit = rmc.unsignedbit,
-                          rmc.origin = rmc.origin,
-                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                          rmc.headername.sf = rmc.headername.sf,
-                          rmc.headername.sn = rmc.headername.sn,
-                          rmc.headername.recordingid = rmc.headername.sn,
-                          rmc.header.structure = rmc.header.structure,
-                          rmc.check4timegaps = rmc.check4timegaps)
+        I = g.inspectfile(datafile, desiredtz = desiredtz,
+                          configtz = configtz,
+                          rmc.dec = params_rawdata[["rmc.dec"]],
+                          rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
+                          rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
+                          rmc.header.length = params_rawdata[["rmc.header.length"]],
+                          rmc.col.acc = params_rawdata[["rmc.col.acc"]],
+                          rmc.col.temp = params_rawdata[["rmc.col.temp"]],
+                          rmc.col.time = params_rawdata[["rmc.col.time"]],
+                          rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
+                          rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
+                          rmc.unit.time = params_rawdata[["rmc.unit.time"]],
+                          rmc.format.time = params_rawdata[["rmc.format.time"]],
+                          rmc.bitrate = params_rawdata[["rmc.bitrate"]],
+                          rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
+                          rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
+                          rmc.origin = params_rawdata[["rmc.origin"]],
+                          rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                          rmc.sf = params_rawdata[["rmc.sf"]],
+                          rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
+                          rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
+                          rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
+                          rmc.header.structure = params_rawdata[["rmc.header.structure"]],
+                          rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])
       } else {
         load(datafile) # to do: would be nice to only load the object I and not the entire datafile
         I$filename = fnames[i]
       }
-      options(warn=0) #turn on warnings
+      options(warn = 0) #turn on warnings
       if (overwrite == TRUE) skip = 0
       if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
         cat(paste0("\nP1 file ",i))
         turn.do.cal.back.on = FALSE
-        if (do.cal == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
-          do.cal = FALSE
+        if (params_rawdata[["do.cal"]] == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
+          params_rawdata[["do.cal"]] = FALSE
           turn.do.cal.back.on = TRUE
         }
-        data_quality_report_exists = file.exists(paste0(outputdir,"/",outputfolder,"/results/QC/data_quality_report.csv",sep=""))
+        data_quality_report_exists = file.exists(paste0(outputdir, "/", outputfolder, "/results/QC/data_quality_report.csv"))
         assigned.backup.cal.coef = FALSE
-        if (length(backup.cal.coef) > 0) {
-          if (backup.cal.coef == "retrieve") {
+        if (length(params_rawdata[["backup.cal.coef"]]) > 0) {
+          if (params_rawdata[["backup.cal.coef"]] == "retrieve") {
             if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
-              backup.cal.coef = paste0(outputdir,outputfolder,"/results/QC/data_quality_report.csv",sep="")
+              params_rawdata[["backup.cal.coef"]] = paste0(outputdir,outputfolder, "/results/QC/data_quality_report.csv")
               assigned.backup.cal.coef = TRUE
             }
-          } else if (backup.cal.coef == "redo") { #ignore the backup calibration coefficients, and derive them again
-            backup.cal.coef = c()
+          } else if (params_rawdata[["backup.cal.coef"]] == "redo") { #ignore the backup calibration coefficients, and derive them again
+            params_rawdata[["backup.cal.coef"]] = c()
             assigned.backup.cal.coef = TRUE
-          } else if (backup.cal.coef != "redo" & backup.cal.coef != "retrieve") {
+          } else if (params_rawdata[["backup.cal.coef"]] != "redo" & params_rawdata[["backup.cal.coef"]] != "retrieve") {
             # Do nothing, backup.cal.coef is the path to the csv-file with calibration coefficients
             assigned.backup.cal.coef = TRUE
           }
         }
         #data_quality_report.csv does not exist and there is also no ot
-        if (assigned.backup.cal.coef == FALSE) backup.cal.coef = c()
+        if (assigned.backup.cal.coef == FALSE) params_rawdata[["backup.cal.coef"]] = c()
         #--------------------------------------
-        if (do.cal ==TRUE & useRDA == FALSE & length(backup.cal.coef) == 0) {
+        if (params_rawdata[["do.cal"]] ==TRUE & useRDA == FALSE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
           # cat(paste0("\n",rep('-',options()$width),collapse=''))
           cat("\n")
           cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-          C = g.calibrate(datafile, spherecrit=spherecrit,
-                          minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
-                          windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                          desiredtz=desiredtz,
-                          rmc.dec=rmc.dec,configtz=configtz,
-                          rmc.firstrow.acc = rmc.firstrow.acc,
-                          rmc.firstrow.header = rmc.firstrow.header,
-                          rmc.header.length = rmc.header.length,
-                          rmc.col.acc = rmc.col.acc,
-                          rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                          rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                          rmc.unit.time = rmc.unit.time,
-                          rmc.format.time = rmc.format.time,
-                          rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                          rmc.unsignedbit = rmc.unsignedbit,
-                          rmc.origin = rmc.origin,
-                          rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                          rmc.headername.sf = rmc.headername.sf,
-                          rmc.headername.sn = rmc.headername.sn,
-                          rmc.headername.recordingid = rmc.headername.sn,
-                          rmc.header.structure = rmc.header.structure,
-                          rmc.check4timegaps = rmc.check4timegaps,
-                          rmc.noise=rmc.noise,
-                          rmc.col.wear=rmc.col.wear,
-                          rmc.doresample=rmc.doresample)
+          C = g.calibrate(datafile, spherecrit = params_rawdata[["spherecrit"]],
+                          minloadcrit = params_rawdata[["minloadcrit"]],
+                          printsummary = params_rawdata[["printsummary"]],
+                          chunksize = params_rawdata[["chunksize"]],
+                          windowsizes = windowsizes, selectdaysfile = selectdaysfile,
+                          dayborder = dayborder,
+                          desiredtz = desiredtz,
+                          configtz = configtz,
+                          rmc.dec = params_rawdata[["rmc.dec"]],
+                          rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
+                          rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
+                          rmc.header.length = params_rawdata[["rmc.header.length"]],
+                          rmc.col.acc = params_rawdata[["rmc.col.acc"]],
+                          rmc.col.temp = params_rawdata[["rmc.col.temp"]],
+                          rmc.col.time = params_rawdata[["rmc.col.time"]],
+                          rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
+                          rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
+                          rmc.unit.time = params_rawdata[["rmc.unit.time"]],
+                          rmc.format.time = params_rawdata[["rmc.format.time"]],
+                          rmc.bitrate = params_rawdata[["rmc.bitrate"]],
+                          rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
+                          rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
+                          rmc.origin = params_rawdata[["rmc.origin"]],
+                          rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                          rmc.sf = params_rawdata[["rmc.sf"]],
+                          rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
+                          rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
+                          rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
+                          rmc.header.structure = params_rawdata[["rmc.header.structure"]],
+                          rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                          rmc.noise = params_rawdata[["rmc.noise"]],
+                          rmc.col.wear = params_rawdata[["rmc.col.wear"]],
+                          rmc.doresample = params_rawdata[["rmc.doresample"]])
         } else {
           C = list(cal.error.end=0,cal.error.start=0)
           C$scale=c(1,1,1)
@@ -396,7 +382,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           C$use.temp = use.temp
         }
         if (turn.do.cal.back.on == TRUE) {
-          do.cal = TRUE
+          params_rawdata[["do.cal"]] = TRUE
         }
         cal.error.end = C$cal.error.end
         cal.error.start = C$cal.error.start
@@ -414,7 +400,7 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
             check.backup.cal.coef = TRUE
           }
         }
-        if (length(backup.cal.coef) > 0) check.backup.cal.coef = TRUE
+        if (length(params_rawdata[["backup.cal.coef"]]) > 0) check.backup.cal.coef = TRUE
         #if calibration fails then check whether calibration coefficients are provided in a separate csv-spreadsheet
         # this csv spreadhseet needs to be created by the end-user and should contain:
         # column with names of the accelerometer files
@@ -422,8 +408,8 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
         # three columns respectively named offset.x, offset.y, and offset.z
         # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
         # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
-        if (length(backup.cal.coef) > 0 & check.backup.cal.coef == TRUE) {
-          bcc.data = read.csv(backup.cal.coef)
+        if (length(params_rawdata[["backup.cal.coef"]]) > 0 & check.backup.cal.coef == TRUE) {
+          bcc.data = read.csv(params_rawdata[["backup.cal.coef"]])
           cat("\nRetrieving previously derived calibration coefficients")
           bcc.data$filename = as.character(bcc.data$filename)
           for (nri in 1:nrow(bcc.data)) {
@@ -452,32 +438,41 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
           } else {
             # cat("\nNo matching filename found in backup.cal.coef\n")
             # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
-            if (do.cal ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
+            if (params_rawdata[["do.cal"]] ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
               cat("\n")
               cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-              C = g.calibrate(datafile, spherecrit=spherecrit,
-                              minloadcrit=minloadcrit,printsummary=printsummary,chunksize=chunksize,
-                              windowsizes=windowsizes,selectdaysfile=selectdaysfile,dayborder=dayborder,
-                              desiredtz=desiredtz,  rmc.dec=rmc.dec,configtz=configtz,
-                              rmc.firstrow.acc = rmc.firstrow.acc,
-                              rmc.firstrow.header = rmc.firstrow.header,
-                              rmc.header.length = rmc.header.length,
-                              rmc.col.acc = rmc.col.acc,
-                              rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                              rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                              rmc.unit.time = rmc.unit.time,
-                              rmc.format.time = rmc.format.time,
-                              rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                              rmc.unsignedbit = rmc.unsignedbit,
-                              rmc.origin = rmc.origin,
-                              rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                              rmc.headername.sf = rmc.headername.sf,
-                              rmc.headername.sn = rmc.headername.sn,
-                              rmc.headername.recordingid = rmc.headername.sn,
-                              rmc.header.structure = rmc.header.structure,
-                              rmc.check4timegaps = rmc.check4timegaps,
-                              rmc.noise=rmc.noise,
-                              interpolationType=interpolationType)
+              C = g.calibrate(datafile, spherecrit = params_rawdata[["spherecrit"]],
+                              minloadcrit = params_rawdata[["minloadcrit"]],
+                              printsummary = params_rawdata[["printsummary"]],
+                              chunksize = params_rawdata[["chunksize"]],
+                              windowsizes = windowsizes, selectdaysfile = selectdaysfile, 
+                              dayborder = dayborder, desiredtz = desiredtz,  
+                              configtz = configtz,
+                              rmc.dec = params_rawdata[["rmc.dec"]],
+                              rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
+                              rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
+                              rmc.header.length = params_rawdata[["rmc.header.length"]],
+                              rmc.col.acc = params_rawdata[["rmc.col.acc"]],
+                              rmc.col.temp = params_rawdata[["rmc.col.temp"]],
+                              rmc.col.time = params_rawdata[["rmc.col.time"]],
+                              rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
+                              rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
+                              rmc.unit.time = params_rawdata[["rmc.unit.time"]],
+                              rmc.format.time = params_rawdata[["rmc.format.time"]],
+                              rmc.bitrate = params_rawdata[["rmc.bitrate"]],
+                              rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
+                              rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
+                              rmc.origin = params_rawdata[["rmc.origin"]],
+                              rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                              rmc.sf = params_rawdata[["rmc.sf"]],
+                              rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
+                              rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
+                              rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
+                              rmc.header.structure = params_rawdata[["rmc.header.structure"]],
+                              rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                              rmc.noise = params_rawdata[["rmc.noise"]],
+                              rmc.doresample = params_rawdata[["rmc.doresample"]],
+                              interpolationType = params_rawdata[["interpolationType"]])
             }
           }
         }
@@ -512,34 +507,39 @@ g.part1 = function(datadir=c(),outputdir=c(),f0=1,f1=c(),windowsizes = c(5,900,3
                       n = params_metrics[["n"]],
                       desiredtz=desiredtz, daylimit=daylimit, windowsizes=windowsizes,
                       tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
-                      meantempcal=C$meantempcal, chunksize=chunksize,
+                      meantempcal=C$meantempcal, chunksize=params_rawdata[["chunksize"]],
                       selectdaysfile=selectdaysfile,
                       outputdir=outputdir,
                       outputfolder=outputfolder,
-                      dayborder=dayborder, dynrange=dynrange,
-                      rmc.dec=rmc.dec, configtz=configtz,
-                      rmc.firstrow.acc = rmc.firstrow.acc,
-                      rmc.firstrow.header = rmc.firstrow.header,
-                      rmc.header.length = rmc.header.length,
-                      rmc.col.acc = rmc.col.acc,
-                      rmc.col.temp = rmc.col.temp, rmc.col.time=rmc.col.time,
-                      rmc.unit.acc = rmc.unit.acc, rmc.unit.temp = rmc.unit.temp,
-                      rmc.unit.time = rmc.unit.time,
-                      rmc.format.time = rmc.format.time,
-                      rmc.bitrate = rmc.bitrate, rmc.dynamic_range = rmc.dynamic_range,
-                      rmc.unsignedbit = rmc.unsignedbit,
-                      rmc.origin = rmc.origin,
-                      rmc.desiredtz = rmc.desiredtz, rmc.sf = rmc.sf,
-                      rmc.headername.sf = rmc.headername.sf,
-                      rmc.headername.sn = rmc.headername.sn,
-                      rmc.headername.recordingid = rmc.headername.sn,
-                      rmc.header.structure = rmc.header.structure,
-                      rmc.check4timegaps = rmc.check4timegaps,
-                      rmc.noise=rmc.noise,
-                      rmc.col.wear=rmc.col.wear,
-                      rmc.doresample=rmc.doresample,
-                      myfun=myfun,
-                      interpolationType=interpolationType)
+                      dayborder=dayborder, dynrange=params_rawdata[["dynrange"]],
+                      configtz=configtz,
+                      rmc.dec = params_rawdata[["rmc.dec"]],
+                      rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
+                      rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
+                      rmc.header.length = params_rawdata[["rmc.header.length"]],
+                      rmc.col.acc = params_rawdata[["rmc.col.acc"]],
+                      rmc.col.temp = params_rawdata[["rmc.col.temp"]],
+                      rmc.col.time = params_rawdata[["rmc.col.time"]],
+                      rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
+                      rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
+                      rmc.unit.time = params_rawdata[["rmc.unit.time"]],
+                      rmc.format.time = params_rawdata[["rmc.format.time"]],
+                      rmc.bitrate = params_rawdata[["rmc.bitrate"]],
+                      rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
+                      rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
+                      rmc.origin = params_rawdata[["rmc.origin"]],
+                      rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                      rmc.sf = params_rawdata[["rmc.sf"]],
+                      rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
+                      rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
+                      rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
+                      rmc.header.structure = params_rawdata[["rmc.header.structure"]],
+                      rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                      rmc.col.wear = params_rawdata[["rmc.col.wear"]],
+                      rmc.noise = params_rawdata[["rmc.noise"]],
+                      rmc.doresample = params_rawdata[["rmc.doresample"]],
+                      interpolationType = params_rawdata[["interpolationType"]],
+                      myfun=myfun)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
