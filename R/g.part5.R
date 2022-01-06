@@ -390,13 +390,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                               ts$nap1_nonwear2 = 0
                                               # napsindices = which(naps_nonwear$probability_nap == 1)
                                               # if (length(napsindices) > 0) {
-                                              for (nni in 1:nrow(naps_nonwear)) {
-                                                nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                                                if (length(nnc_window) > 0) {
-                                                  if (naps_nonwear$probability_nap[nni] == 1) {
-                                                    ts$nap1_nonwear2[nnc_window] = 1 # nap
-                                                  } else if (naps_nonwear$probability_nap[nni] == 0) {
-                                                    ts$nap1_nonwear2[nnc_window] = 2 # nonwear
+                                              if (length(naps_nonwear)) {
+                                                for (nni in 1:nrow(naps_nonwear)) {
+                                                  nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                                                  if (length(nnc_window) > 0) {
+                                                    if (naps_nonwear$probability_nap[nni] == 1) {
+                                                      ts$nap1_nonwear2[nnc_window] = 1 # nap
+                                                    } else if (naps_nonwear$probability_nap[nni] == 0) {
+                                                      ts$nap1_nonwear2[nnc_window] = 2 # nonwear
+                                                    }
                                                   }
                                                 }
                                               }
