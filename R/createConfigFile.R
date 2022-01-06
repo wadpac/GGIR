@@ -4,12 +4,13 @@ createConfigFile = function(config.parameters = c()) {
   }
   out = matrix("",length(config.parameters)+2,3)
   out[,3] = "General parameters" # default
+  possible_params_objectnames = c("params_247", "params_cleaning", "params_general",
+                                  "params_metrics", "params_output",
+                                  "params_phyact", "params_rawdata", "params_sleep")
   for (i in 1:length(config.parameters)) {
     NM = names(config.parameters)[i]
     out[i,1] = NM
-    if (NM %in% c("params_247", "params_cleaning", "params_general",
-                  "params_metrics", "params_output",
-                  "params_phyact", "params_rawdata", "params_sleep")) {
+    if (NM %in% possible_params_objectnames) {
       # Replace NULL values before converting to data.frame
       config.parameters[[i]] <- lapply(config.parameters[[i]], lapply, function(x)ifelse(is.null(x), "c()", x))
       Value = as.data.frame(t(data.frame(t(sapply(config.parameters[[i]],c)))))
@@ -17,13 +18,18 @@ createConfigFile = function(config.parameters = c()) {
       Value$col3 = NM
       Value = Value[,c("col1", "V1", "col3")]
       colnames(out) = colnames(Value)
+      
+      # Replace empty lists by c()
+      Value$V1 <- lapply(Value$V1, function(x)ifelse(test = is.list(x) & length(x) == 0,yes =  "c()",no =  x))
+      # Replace non-empty lists by same value but without the list
+      Value$V1 <- lapply(Value$V1, function(x)ifelse(test = is.list(x), yes = unlist(x),no =  x))
       out = rbind(out, Value) # append to the end
     } else {
       Value = config.parameters[[i]]
       if (length(Value) == 0) {
         Value = 'c()'
-      } else if (Value == "NULL") {
-        Value = 'c()'
+      # } else if (Value == "NULL") {
+      #   Value = 'c()'
       }
       if (length(Value) > 1) {
         Value = paste0("c(",paste(Value,collapse = ","),")")
@@ -76,9 +82,8 @@ createConfigFile = function(config.parameters = c()) {
   out = as.data.frame(out, stringsAsFactors = TRUE)
   row.names(out) <- NULL
   colnames(out) = c("argument","value","context")
-  NULLvalue = which(out$value == "NULL")
-  if (length(NULLvalue) > 0) out$value[NULLvalue] = "c()"
   out$value = as.character(out$value)
+  out = out[which(out$argument %in% c("", possible_params_objectnames) == FALSE),]
   out = out[order(out$context),]
   return(out)
 }

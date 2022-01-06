@@ -199,23 +199,23 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             params_cleaning = params_cleaning, params_247 = params_247,
             params_phyact = params_phyact)
   }
-  # #--------------------------------------------------
-  # # Store configuration parameters in config file
-  # LS = ls()
-  # LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
-  #                         "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
-  #                         "configfile", "filelist", "outputfoldername", "numi", "logi",
-  #                         "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
-  #                         "print_console_header", "configfile_csv", "myfun", "ex") == FALSE)]
-  # config.parameters = mget(LS)
-  # config.matrix = as.data.frame(createConfigFile(config.parameters))
-  # if (dir.exists(metadatadir)) {
-  #   write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
-  # } else {
-  #   if (dir.exists(datadir) == FALSE) {
-  #     warning("\nCould not write config file because studyname or datadir are not correctly specified.")
-  #   }
-  # }
+  #--------------------------------------------------
+  # Store configuration parameters in config file
+  LS = ls()
+  LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
+                          "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
+                          "configfile", "filelist", "outputfoldername", "numi", "logi",
+                          "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
+                          "print_console_header", "configfile_csv", "myfun", "ex") == FALSE)]
+  config.parameters = mget(LS)
+  config.matrix = as.data.frame(createConfigFile(config.parameters))
+  if (dir.exists(metadatadir)) {
+    write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
+  } else {
+    if (dir.exists(datadir) == FALSE) {
+      warning("\nCould not write config file because studyname or datadir are not correctly specified.")
+    }
+  }
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
