@@ -21,6 +21,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// parseGT3Xggir
+NumericMatrix parseGT3Xggir(const char* filename, const int max_samples, const double scale_factor, const int sample_rate, const uint32_t start_time, const uint32_t batch_begin, const uint32_t batch_end, const bool verbose, const bool debug, const bool impute_zeroes);
+RcppExport SEXP _GGIR_parseGT3Xggir(SEXP filenameSEXP, SEXP max_samplesSEXP, SEXP scale_factorSEXP, SEXP sample_rateSEXP, SEXP start_timeSEXP, SEXP batch_beginSEXP, SEXP batch_endSEXP, SEXP verboseSEXP, SEXP debugSEXP, SEXP impute_zeroesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_samples(max_samplesSEXP);
+    Rcpp::traits::input_parameter< const double >::type scale_factor(scale_factorSEXP);
+    Rcpp::traits::input_parameter< const int >::type sample_rate(sample_rateSEXP);
+    Rcpp::traits::input_parameter< const uint32_t >::type start_time(start_timeSEXP);
+    Rcpp::traits::input_parameter< const uint32_t >::type batch_begin(batch_beginSEXP);
+    Rcpp::traits::input_parameter< const uint32_t >::type batch_end(batch_endSEXP);
+    Rcpp::traits::input_parameter< const bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< const bool >::type debug(debugSEXP);
+    Rcpp::traits::input_parameter< const bool >::type impute_zeroes(impute_zeroesSEXP);
+    rcpp_result_gen = Rcpp::wrap(parseGT3Xggir(filename, max_samples, scale_factor, sample_rate, start_time, batch_begin, batch_end, verbose, debug, impute_zeroes));
+    return rcpp_result_gen;
+END_RCPP
+}
 // resample
 NumericMatrix resample(NumericMatrix raw, NumericVector rawTime, NumericVector time, int stop, int type);
 RcppExport SEXP _GGIR_resample(SEXP rawSEXP, SEXP rawTimeSEXP, SEXP timeSEXP, SEXP stopSEXP, SEXP typeSEXP) {

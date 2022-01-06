@@ -5,6 +5,29 @@ numUnpack <- function(pack) {
     .Call(`_GGIR_numUnpack`, pack)
 }
 
+#' Parse activity samples from a GT3X file
+#'
+#' @param filename (char*) path to a log.bin file inside the unzipped gt3x folder, which contains the activity samples
+#' @param max_samples Maximum number of rows to parse. The returned matrix will always contain this number of rows, having zeroes if
+#' not data is found.
+#' @param scale_factor Scale factor for the activity samples.
+#' @param sample_rate sampling rate for activity samples.
+#' @param start_time starting time of the sample recording.
+#' @param batch_begin first second in time relative to start of raw non-imputed recording to include in this batch
+#' @param batch_end last second in time relative to start of raw non-imputed recording to include in this batch
+#' @param verbose Print the parameters from the log.bin file and other messages?
+#' @param impute_zeroes Impute zeros in case there are missingness?
+#' @param debug Print information for every activity second
+#'
+#' @return
+#' Returns a matrix with max_samples rows and 3 columns with the acceleration samples.
+#' The matrix has attributes
+#' "time_index", "missingness", "start_time_log", "sample_rate", "impute_zeroes".
+#'
+parseGT3Xggir <- function(filename, max_samples, scale_factor, sample_rate, start_time, batch_begin = 0L, batch_end = 0L, verbose = FALSE, debug = FALSE, impute_zeroes = FALSE) {
+    .Call(`_GGIR_parseGT3Xggir`, filename, max_samples, scale_factor, sample_rate, start_time, batch_begin, batch_end, verbose, debug, impute_zeroes)
+}
+
 resample <- function(raw, rawTime, time, stop, type = 1L) {
     .Call(`_GGIR_resample`, raw, rawTime, time, stop, type)
 }

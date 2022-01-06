@@ -1,0 +1,6 @@
+The GGIR package as a whole is distributed under LGPL. The GGIR package includes other open source software components. The following is a list of these components:
+
+* read.gt3x: EUPL
+* GGIR: written by package authors
+
+Full copies of the license agreements used by these components are included in `inst/licenses`.
