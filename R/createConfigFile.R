@@ -18,10 +18,21 @@ createConfigFile = function(config.parameters = c()) {
       Value$col3 = NM
       Value = Value[,c("col1", "V1", "col3")]
       colnames(out) = colnames(Value)
-      # Replace empty lists by c()
-      Value$V1 <- lapply(Value$V1, function(x)ifelse(test = is.list(x) & length(x) == 0,yes =  "c()",no =  x))
+      # Replace empty lists by c(), replace vector lists by collapse vector
       # Replace non-empty lists by same value but without the list
-      Value$V1 <- lapply(Value$V1, function(x)ifelse(test = is.list(x), yes = unlist(x),no =  x))
+      myfun = function(x) {
+        x = ifelse(test = is.list(x) & length(unlist(x) == 1),
+               yes = ifelse(test = length(unlist(x)) > 1,
+                            yes = paste0("c(", paste0(unlist(x), collapse=","),")", collapse=""),
+                            no = unlist(x)),
+               no =  x)
+        x = ifelse(test = is.list(x) & length(unlist(x)) == 0,
+                   yes = "c()",
+                   no =  x)
+        return(x)
+      }
+      Value$V1 <- lapply(Value$V1, myfun)
+      
       out = rbind(out, Value) # append to the end
     } else {
       Value = config.parameters[[i]]
