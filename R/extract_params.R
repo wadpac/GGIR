@@ -44,102 +44,95 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
     params = load_params(group = "general")
     params_general = params$params_general
   }
-  # #==================================================================================
-  # # Overwrite them by arguments provided via configuration file
-  # if (length(configfile_csv) > 0) {
-  #   config = read.csv(file = configfile_csv, stringsAsFactors = FALSE)
-  #   argNames = names(input)
-  #   print("extract_params")
-  #   if (nrow(config) > 1) {
-  #     for (ci in 1:nrow(config)) {
-  #       varName = as.character(config[ci, 1])
-  #       
-  #       
-  #       if (varName %in% c(argNames, "") == FALSE) {
-  #         if (varName == "do.anglex") {
-  #           print(varName)
-  #           print(config[ci,])
-  #         }
-  #         # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
-  #         
-  #         # establish variable class
-  #         conv2logical = conv2num = c()
-  #         suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
-  #         suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
-  #         if (length(conv2num) > 0) {
-  #           numi = is.na(conv2num) == FALSE
-  #         } else {
-  #           numi = FALSE
-  #         }
-  #         logi = FALSE
-  #         if (numi == FALSE & is.na(conv2logical) == FALSE) logi = TRUE
-  #         newValue = "notfound"
-  #         if (logi == TRUE) {
-  #           newValue = as.logical(config[ci,2])
-  #         } else if (numi == TRUE) {
-  #           newValue = as.numeric(config[ci,2])
-  #         } else if (numi == FALSE & logi == FALSE) {
-  #           if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
-  #             if (config[ci,2] == 'c()') {
-  #               if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
-  #               if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
-  #               # Note that we do not re-assign the c(), because they are the default for most arguments that
-  #               # can hold a c() anyway. def.noc.sleep is the only exception.
-  #             } else if (as.character(config[ci,2]) == "NULL") {
-  #               newValue = "c()"
-  #             } else if (config[ci,2] != 'c()' & as.character(config[ci,2]) != "NULL") {
-  #               if (grepl("c\\(", config[ci,2])) { # vector
-  #                 tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
-  #                 tmp = unlist(strsplit(tmp, ","))
-  #                 suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp))},silent=TRUE))
-  #                 if (length(isna) == 0) isna = FALSE
-  #                 if (isna == TRUE) { 
-  #                   newValue = tmp # vector of characters
-  #                 } else {
-  #                   newValue = as.numeric(tmp) # vector of numbers
-  #                 }
-  #               } else {
-  #                 newValue = paste0("'",config[ci,2],"'")
-  #               }
-  #             }
-  #           }
-  #         }
-  #         # Find argument in the various parameter objects
-  #         if (newValue != "notfound") {
-  #           if (varName %in% names(params_general)) {
-  #             params_general[[varName]] = newValue
-  #           } else {
-  #             if (varName %in% names(params_rawdata)) {
-  #               params_rawdata[[varName]] = newValue
-  #             } else {
-  #               if (varName %in% names(params_metrics)) {
-  #                 params_metrics[[varName]] = newValue
-  #               } else {
-  #                 if (varName %in% names(params_sleep)) {
-  #                   params_sleep[[varName]] = newValue
-  #                 } else {
-  #                   if (varName %in% names(params_phyact)) {
-  #                     params_phyact[[varName]] = newValue
-  #                   } else {
-  #                     if (varName %in% names(params_output)) {
-  #                       params_output[[varName]] = newValue
-  #                     } else {
-  #                       if (varName %in% names(params_247)) {
-  #                         params_247[[varName]] = newValue
-  #                       } else {
-  #                         warning("\nNot able to use variable from configuration file")
-  #                       }
-  #                     }  
-  #                   }
-  #                 } 
-  #               }
-  #             } 
-  #           }
-  #         }
-  #       }
-  #     }
-  #   }
-  # }
+  #==================================================================================
+  # Overwrite them by arguments provided via configuration file
+  if (length(configfile_csv) > 0) {
+    config = read.csv(file = configfile_csv, stringsAsFactors = FALSE)
+    argNames = names(input)
+    if (nrow(config) > 1) {
+      for (ci in 1:nrow(config)) {
+        varName = as.character(config[ci, 1])
+        if (varName %in% c(argNames, "") == FALSE) {
+          # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
+
+          # establish variable class
+          conv2logical = conv2num = c()
+          suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
+          suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
+          if (length(conv2num) > 0) {
+            numi = is.na(conv2num) == FALSE
+          } else {
+            numi = FALSE
+          }
+          logi = FALSE
+          if (numi == FALSE & is.na(conv2logical) == FALSE) logi = TRUE
+          newValue = "notfound"
+          if (logi == TRUE) {
+            newValue = as.logical(config[ci,2])
+          } else if (numi == TRUE) {
+            newValue = as.numeric(config[ci,2])
+          } else if (numi == FALSE & logi == FALSE) {
+            if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
+              if (config[ci,2] == 'c()') {
+                if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
+                if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
+                # Note that we do not re-assign the c(), because they are the default for most arguments that
+                # can hold a c() anyway. def.noc.sleep is the only exception.
+              } else if (as.character(config[ci,2]) == "NULL") {
+                newValue = "c()"
+              } else if (config[ci,2] != 'c()' & as.character(config[ci,2]) != "NULL") {
+                if (grepl("c\\(", config[ci,2])) { # vector
+                  tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
+                  tmp = unlist(strsplit(tmp, ","))
+                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp))},silent=TRUE))
+                  if (length(isna) == 0) isna = FALSE
+                  if (isna == TRUE) {
+                    newValue = tmp # vector of characters
+                  } else {
+                    newValue = as.numeric(tmp) # vector of numbers
+                  }
+                } else {
+                  newValue = config[ci,2] #paste0("'",config[ci,2],"'")
+                }
+              }
+            }
+          }
+          # Find argument in the various parameter objects
+          if (newValue != "notfound") {
+            if (varName %in% names(params_general)) {
+              params_general[[varName]] = newValue
+            } else {
+              if (varName %in% names(params_rawdata)) {
+                params_rawdata[[varName]] = newValue
+              } else {
+                if (varName %in% names(params_metrics)) {
+                  params_metrics[[varName]] = newValue
+                } else {
+                  if (varName %in% names(params_sleep)) {
+                    params_sleep[[varName]] = newValue
+                  } else {
+                    if (varName %in% names(params_phyact)) {
+                      params_phyact[[varName]] = newValue
+                    } else {
+                      if (varName %in% names(params_output)) {
+                        params_output[[varName]] = newValue
+                      } else {
+                        if (varName %in% names(params_247)) {
+                          params_247[[varName]] = newValue
+                        } else {
+                          warning("\nNot able to use variable from configuration file")
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   #==================================================================================
   # Overwrite them by arguments provided as direct input by user
   if (length(input) > 0) {

@@ -185,7 +185,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["mvpadur"]]) != 3) {
-      params_physact[["mvpadur"]] = c(1,5,10)
+      params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
     }
   }

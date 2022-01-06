@@ -10,6 +10,16 @@ test_that("Part 3 identifies 1-night scenario", {
   dn = "output_test"
   if (file.exists(dn)) unlink(dn,recursive=TRUE)
   
+  # library(testthat)
+  # dirR = "~/GGIR/R"
+  # ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
+  # for (i in 1:length(ffnames)) {
+  #   source(paste(dirR,"/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
+  # }
+  # 
+  # g.shell.GGIR(mode=c(1:4), datadir=fn, outputdir=getwd(), studyname="test", f0=1, f1=1,
+  #              do.report=c(), visualreport=TRUE, viewingwindow=1,
+  #              overwrite=FALSE, do.parallel = FALSE, minimumFileSizeMB=0)
   # g.part# modules report errors and warnings only by printing them out to the console,
   # so these are not true errors and warnings that would get caught by the testing module.
   # Instead, grab the console output and parse out any errors we should know about.

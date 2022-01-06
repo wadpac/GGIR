@@ -18,7 +18,6 @@ createConfigFile = function(config.parameters = c()) {
       Value$col3 = NM
       Value = Value[,c("col1", "V1", "col3")]
       colnames(out) = colnames(Value)
-      
       # Replace empty lists by c()
       Value$V1 <- lapply(Value$V1, function(x)ifelse(test = is.list(x) & length(x) == 0,yes =  "c()",no =  x))
       # Replace non-empty lists by same value but without the list
@@ -28,8 +27,6 @@ createConfigFile = function(config.parameters = c()) {
       Value = config.parameters[[i]]
       if (length(Value) == 0) {
         Value = 'c()'
-      # } else if (Value == "NULL") {
-      #   Value = 'c()'
       }
       if (length(Value) > 1) {
         Value = paste0("c(",paste(Value,collapse = ","),")")
