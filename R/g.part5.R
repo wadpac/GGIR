@@ -34,7 +34,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   if (!file.exists(paste(metadatadir, ms5.out, sep = ""))) {
     dir.create(file.path(metadatadir, ms5.out))
   }
-  if (params_output[["save_ms5rawlevels"]] == TRUE | params_sleep[["do.sibreport"]] == TRUE) {
+  if (params_output[["save_ms5rawlevels"]] == TRUE | params_output[["do.sibreport"]] == TRUE) {
     ms5.outraw = "/meta/ms5.outraw"
     if (file.exists(paste(metadatadir, ms5.outraw, sep = ""))) {
     } else {
@@ -360,7 +360,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                             # Use sib.report to classify naps, non-wear and integrate these in time series
                                             # Done at this point in the code, because it
                                             # does not depend on bout detection criteria or window definitions.
-                                            if (params_sleep[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
+                                            if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
                                               if (params_sleep[["sleeplogidnum"]] == TRUE) {
                                                 IDtmp = as.numeric(ID)
                                               } else {
@@ -646,7 +646,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
                                                           #===============================================
                                                           # NAPS (estimation)
-                                                          if (params_sleep[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(params_sleep[["nap_model"]]) > 0) {
+                                                          if (params_output[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(params_sleep[["nap_model"]]) > 0) {
                                                             dsummary[di,fi] = length(which(diff(c(-1, which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0))) > 1))
                                                             ds_names[fi] = "nap_count";      fi = fi + 1
                                                             dsummary[di,fi] = round((sum(ts$nap1_nonwear2[sse[which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
@@ -908,7 +908,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                                                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",params_output[["save_ms5raw_format"]])
                                                     # save time series to csv files
-                                                    if (params_sleep[["do.sibreport"]] == TRUE) {
+                                                    if (params_output[["do.sibreport"]] == TRUE) {
                                                       napNonwear_col = "nap1_nonwear2"
                                                     } else {
                                                       napNonwear_col = c()

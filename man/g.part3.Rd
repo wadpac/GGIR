@@ -37,14 +37,12 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
     List of parameters used for sleep analysis:
     anglethreshold (character, see \link{g.sib.det}), timethreshold (character, see \link{g.sib.det}),
     ignorenonwear (character, see \link{g.sib.sum}), constrain2range (character, see \link{g.sib.det}),
-    sensor.location (character, see \link{g.sib.det}),  HASPT.algo (character, see \link{HASPT}),
+    HASPT.algo (character, see \link{HASPT}),
     HASIB.algo (character, see \link{HASIB}), Sadeh_axis (character, see \link{g.sib.det}),
     longitudinal_axis (integer, see \link{g.sib.det}), HASPT.ignore.invalid (boolean, see \link{HASPT}),
-    do.visual (boolean, see details), outliers.only (boolean, see details), excludefirstlast (boolean, see details), 
-    criterror (numeric, see details), includenightcrit (numeric, see details),
-    def.noc.sleep (vector, see details); relyonguider, relyonsleeplog, excludefirst.part4, do.sibreport,
-    excludelast.part4 (all boolean, see details); sleeplogsep (character, \link{g.loadlog}), 
+    def.noc.sleep (vector, see details); relyonguider, relyonsleeplog (all boolean, see details); sleeplogsep (character, \link{g.loadlog}), 
     sleepwindowType (character, see details); possible_nap_window (numeric, see \link{g.part5.classifyNaps}), possible_nap_dur      (numeric, see \link{g.part5.classifyNaps});  nap_model (character, see \link{g.part5.classifyNaps})
+    nnight.
   }
   \item{params_metrics}{
     List of parameters used for metrics extraction (GGIR part 1): see documentation \link{g.part1}.
@@ -64,22 +62,6 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
   Explanation of sleep analysis parameters that are not documented elsewhere in the technical manual.
   \cr
   \itemize{
-    \item \code{do.visual} If g.part4 is run with do.visual == TRUE then
-      the function will generate a pdf with a visual representation of the
-      overlap between the sleeplog entries and the accelerometer detections.
-      This can be used to visualy verify that the sleeplog entries do
-      not come with obvious mistakes.
-    \item \code{outliers.only} Relevant for do.visual == TRUE. Outliers.only == FALSE will visualise
-      all available nights in the data. Outliers.only == TRUE will visualise
-      only for nights with a difference in onset or waking time
-      larger than the variable of argument criterror.
-    \item \code{excludefirstlast} If TRUE then the first and last night of the measurement are
-      ignored for the sleep assessment.
-    \item \code{criterror} Relevant for do.visual == TRUE and outliers.only == TRUE.
-      criterror specifies the number of minimum number of hours difference
-      between sleep log and  accelerometer estimate for the night to be
-      included in the visualisation
-    \item \code{includenightcrit} Minimum number of valid hours per night (24 hour window between noon and noon)
     \item \code{relyonguider} If TRUE then sleep onset and waking time are defined based on
       timestamps derived from the guider. If participants were instructed NOT to wear the accelerometer
       during waking hours then set to TRUE, in all other scenarios
@@ -98,19 +80,10 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
       will be detected with based on built in algorithms.
       See argument HASPT.algo from \link{HASPT} for specifying which of those
       algorithms to use.
-    \item \code{excludefirst.part4} If TRUE then the first night of the measurement are
-      ignored for the sleep assessment.
-    \item \code{excludelast.part4}
-      If TRUE then the last night of the measurement are
-      ignored for the sleep assessment.
     \item \code{sleepwindowType}
       Character to indicate type of sleeplog, default "SPT".
       Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
       of sleep latency and sleep efficiency.
-    \item \code{do.sibreport} Applied in g.part5. Boolean to indicate whether to generate report
-      for the sustained inactivity bouts (sib).
-   
-  
   }
 }
 \value{

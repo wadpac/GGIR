@@ -34,11 +34,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   #-----------------------------------------------------------------------------------------
   if (length(params_sleep) > 0) { # Check class of sleep parameters
     numeric_params = c("anglethreshold", "timethreshold", "longitudinal_axis", "possible_nap_window", "possible_nap_dur",
-                       "colid", "coln1", "nnights", "criterror", "includenightcrit", "def.noc.sleep")
-    boolean_params = c("ignorenonwear", "constrain2range", "HASPT.ignore.invalid", "do.sibreport",
-                       "outliers.only", "excludefirstlast", "relyonguider", "sleeplogidnum",
-                       "excludefirst.part4", "do.visual")
-    character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model", "sensor.location",
+                       "colid", "coln1", "def.noc.sleep", "nnights")
+    boolean_params = c("ignorenonwear", "constrain2range", "HASPT.ignore.invalid",
+                       "relyonguider", "sleeplogidnum")
+    character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
     check_class("Sleep", params = params_sleep, parnames = boolean_params, parclass = "boolean")
@@ -95,18 +94,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
-                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5")
-    boolean_params = c("excludefirstlast.part5", "do.imp")
+                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit")
+    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
     character_params = c("selectdaysfile", "data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")
     check_class("cleaning", params = params_cleaning, parnames = character_params, parclass = "character")
   }
   if (length(params_output) > 0) {
-    numeric_params = c("viewingwindow")
+    numeric_params = c("viewingwindow", "criterror")
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid", 
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
-                       "do.part3.pdf")
+                       "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport")
     character_params = c("save_ms5raw_format", "timewindow")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
@@ -115,7 +114,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
-    character_params = c("acc.metric", "desiredtz", "configtz")
+    character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
@@ -129,7 +128,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
     }
-    if (params_sleep[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
+    if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."))

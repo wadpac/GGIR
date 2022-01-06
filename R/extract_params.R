@@ -123,7 +123,11 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                         if (varName %in% names(params_247)) {
                           params_247[[varName]] = newValue
                         } else {
-                          warning("\nNot able to use variable ", varName, " from configuration file")
+                          if (varName %in% names(params_cleaning)) {
+                            params_247[[varName]] = newValue
+                          } else {
+                            warning("\nNot able to use variable ", varName, " from configuration file")
+                          }
                         }
                       }
                     }

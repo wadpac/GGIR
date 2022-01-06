@@ -165,7 +165,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
       if (cnt67 == 1) {
         # only create new pdf if there is actually new plots to be generated keep pdf for QC
         # purposes
-        if (params_sleep[["do.visual"]] == TRUE) {
+        if (params_output[["do.visual"]] == TRUE) {
           pdf(file = paste0(metadatadir, "/results/visualisation_sleep.pdf"), width = 8.27, height = 11.69)
           par(mar = c(4, 5, 1, 2) + 0.1)
           plot(c(0, 0), c(1, 1), xlim = c(12, 36), ylim = c(0, nnpp), col = "white", axes = FALSE, xlab = "time",
@@ -216,20 +216,20 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # to zero
         nnights.list = nnightlist
         nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]
-        if (params_sleep[["excludefirstlast"]] == TRUE & params_sleep[["excludelast.part4"]] == FALSE & params_sleep[["excludefirst.part4"]] == FALSE) {
+        if (params_cleaning[["excludefirstlast"]] == TRUE & params_cleaning[["excludelast.part4"]] == FALSE & params_cleaning[["excludefirst.part4"]] == FALSE) {
           # exclude first and last night
           if (length(nnights.list) >= 3) {
             nnights.list = nnights.list[2:(length(nnights.list) - 1)]
           } else {
             nnights.list = c()
           }
-        } else if (params_sleep[["excludelast.part4"]] == FALSE & params_sleep[["excludefirst.part4"]] == TRUE) {
+        } else if (params_cleaning[["excludelast.part4"]] == FALSE & params_cleaning[["excludefirst.part4"]] == TRUE) {
           if (length(nnights.list) >= 2) {
             nnights.list = nnights.list[2:length(nnights.list)]
           } else {
             nnights.list = c()
           }
-        } else if (params_sleep[["excludelast.part4"]] == TRUE & params_sleep[["excludefirst.part4"]] == FALSE) {
+        } else if (params_cleaning[["excludelast.part4"]] == TRUE & params_cleaning[["excludefirst.part4"]] == FALSE) {
           if (length(nnights.list) >= 2) {
             nnights.list = nnights.list[1:(length(nnights.list) - 1)]
           } else {
@@ -265,7 +265,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
             guider = "HDCZA"
-            if (params_sleep[["sleepwindowType"]] == "TimeInBed" & params_sleep[["sensor.location"]] == "hip") {
+            if (params_sleep[["sleepwindowType"]] == "TimeInBed" & params_general[["sensor.location"]] == "hip") {
               guider = "HorAngle"
             }
             if (is.na(defaultSptOnset) == TRUE) {
@@ -384,7 +384,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           #-----------------------------------------
           # plan analysis according to knowledge about whether it is a daysleeper or not if you
           # are not excluding the last day and is a daysleeper and not the last night
-          if (params_sleep[["excludefirstlast"]] == FALSE) {
+          if (params_cleaning[["excludefirstlast"]] == FALSE) {
             if (daysleeper[j] == TRUE & j != max(nnights.list)) {
               loaddays = 2
             } else {
@@ -593,7 +593,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # create a plot for the current night in the current participant
           #------------------------------------------------------------------------
           # PLOTTING related
-          if (params_sleep[["do.visual"]] == TRUE) {
+          if (params_output[["do.visual"]] == TRUE) {
             if (cnt == (nnpp + 1)) {
               cat(" NEW ")
               pagei = pagei + 1
@@ -715,7 +715,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # Other variables
                   if (acc_available == TRUE) {
                     nightsummary[sumi, 13] = remember_fraction_invalid_day1  #sleepdet.t$fraction.night.invalid[1]
-                    if (remember_fraction_invalid_day1 > ((24 - params_sleep[["includenightcrit"]])/24)) {
+                    if (remember_fraction_invalid_day1 > ((24 - params_cleaning[["includenightcrit"]])/24)) {
                       cleaningcode = 2  # only for first day, other cleaningcode is assigned to wrong day
                     }
                   } else {
@@ -872,12 +872,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # nightsummary
                   #------------------------------------------------------------------------
                   # PLOT
-                  if (params_sleep[["do.visual"]] == TRUE) {
+                  if (params_output[["do.visual"]] == TRUE) {
                     if (defi == undef[1]) {
                       # only decide whether to plot the first time
-                      if (params_sleep[["outliers.only"]] == TRUE) {
-                        if (abs(nightsummary$error_onset[sumi]) > params_sleep[["criterror"]] | abs(nightsummary$error_wake[sumi]) >
-                            params_sleep[["criterror"]] | abs(nightsummary$error_dur[sumi]) > (params_sleep[["criterror"]] * 2)) {
+                      if (params_output[["outliers.only"]] == TRUE) {
+                        if (abs(nightsummary$error_onset[sumi]) > params_output[["criterror"]] | abs(nightsummary$error_wake[sumi]) >
+                            params_output[["criterror"]] | abs(nightsummary$error_dur[sumi]) > (params_output[["criterror"]] * 2)) {
                           doplot = TRUE
                           cat(" PLOT ")
                         } else {
@@ -958,7 +958,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   if (is.data.frame(SRI) == TRUE) {
                     calendar_date_asDate = as.Date(calendar_date[j], format = "%d/%m/%Y")
                     calendar_date_reformat = as.character(format(x = calendar_date_asDate, format = "%d/%m/%Y"))
-                    SRIindex = which(SRI$date == calendar_date_reformat & SRI$frac_valid > (params_sleep[["includenightcrit"]]/24))
+                    SRIindex = which(SRI$date == calendar_date_reformat & SRI$frac_valid > (params_cleaning[["includenightcrit"]]/24))
                     if (length(SRIindex) > 0) {
                       nightsummary[sumi, 36] = SRI$SleepRegularityIndex[SRIindex[1]]
                       nightsummary[sumi, 37] = SRI$frac_valid[SRIindex[1]]
@@ -975,7 +975,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   sumi = sumi + 1
                 }  #run through definitions
-                if (params_sleep[["do.visual"]] == TRUE) {
+                if (params_output[["do.visual"]] == TRUE) {
                   if (cleaningcode < cleaningcriterion & doplot == TRUE) {
                     # only increase count if there was bar plotted
                     lines(x = c(12, 36), y = c(cnt, cnt), lwd = 0.2, lty = 2)  #abline(h=cnt,lwd=0.2,lty=2)
@@ -1020,7 +1020,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
       }
     }
   }  #end of loop through acc files
-  if (cnt67 == 2 & params_sleep[["do.visual"]] == TRUE) {
+  if (cnt67 == 2 & params_output[["do.visual"]] == TRUE) {
     if (cnt - 1 != (nnpp + 1)) {
       zerolabel = which(idlabels == 0)
       if (length(zerolabel) > 0) idlabels[zerolabel] = " "

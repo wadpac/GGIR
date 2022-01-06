@@ -77,6 +77,8 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     TimeSegments2ZeroFile (character, see details), data_cleaning_file (character, see details)
     excludefirstlast.part5 (boolean, see details),
     includedaycrit.part5 (numeric, see \link{g.report.part5})
+    excludefirst.part4, excludelast.part4, excludefirstlast (boolean, see details), 
+    includenightcrit (numeric, see details)
   }
   \item{params_general}{
     List of general parameters used accors GGIR: overwrite (boolean, see details),
@@ -85,8 +87,7 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     windowsizes, idloc (all numeric, see \link{g.analyse})
     desiredtz (character, see \link{g.getmeta})
     acc.metric (character, see details), part5_agg2_60seconds (boolean, see details)
-    print.filename (boolean, see details)
-    
+    print.filename (boolean, see details), sensor.location (character, see \link{g.sib.det})
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
@@ -146,7 +147,14 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       part 4 should fully rely on the guider. See also package vignette.
     \item \code{excludefirstlast.part5} If TRUE then the first and last night of the measurement are ignored for the
       leep assessment.
-    
+    \item \code{excludefirstlast} If TRUE then the first and last night of the measurement are
+      ignored for the sleep assessment.
+    \item \code{excludefirst.part4} If TRUE then the first night of the measurement are
+      ignored for the sleep assessment.
+    \item \code{excludelast.part4}
+      If TRUE then the last night of the measurement are ignored for the sleep assessment.
+    \item \code{includenightcrit} Minimum number of valid hours per night (24 hour window between 
+    noon and noon), used for sleep.
   }
   
   \cr

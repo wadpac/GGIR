@@ -105,7 +105,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                           anglethreshold = params_sleep[["anglethreshold"]],
                           acc.metric = params_general[["acc.metric"]], 
                           desiredtz = params_general[["desiredtz"]], constrain2range = params_sleep[["constrain2range"]], 
-                          myfun = myfun, sensor.location = params_sleep[["sensor.location"]], 
+                          myfun = myfun, sensor.location = params_general[["sensor.location"]], 
                           HASPT.algo = params_sleep[["HASPT.algo"]], HASIB.algo = params_sleep[["HASIB.algo"]], 
                           Sadeh_axis = params_sleep[["Sadeh_axis"]], longitudinal_axis = params_sleep[["longitudinal_axis"]],
                           HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])

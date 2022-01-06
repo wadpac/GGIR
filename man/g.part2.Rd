@@ -64,9 +64,9 @@
     storefolderstructure (boolean, see details);
     save_ms5rawlevels, save_ms5raw_without_invalid, do.part3.pdf, epochvalues2csv (all boolean, see details);
     save_ms5raw_format, timewindow (all character, see details)
-    
+    outliers.only, do.sibreport, do.visual (boolean, see details), 
+    criterror (numeric, see details), 
   }
-  
   \item{params_general}{
     List, see \link{g.part1}
   }
@@ -94,9 +94,23 @@
       the time series output files. Only used if save_ms5rawlevels is set to TRUE.
     \item \code{epochvalues2csv} If TRUE then epoch values are exported to a CSV spreadsheet. Here, non-wear time
       is imputed where possible (default = FALSE).
+    \item \code{do.sibreport} Applied in g.part5. Boolean to indicate whether to generate report
+      for the sustained inactivity bouts (sib).
+       \item \code{do.visual} If g.part4 is run with do.visual == TRUE then
+      the function will generate a pdf with a visual representation of the
+      overlap between the sleeplog entries and the accelerometer detections.
+      This can be used to visualy verify that the sleeplog entries do
+      not come with obvious mistakes.
+    \item \code{outliers.only} Relevant for do.visual == TRUE. Outliers.only == FALSE will visualise
+      all available nights in the data. Outliers.only == TRUE will visualise
+      only for nights with a difference in onset or waking time
+      larger than the variable of argument criterror.
+    \item \code{criterror} Relevant for do.visual == TRUE and outliers.only == TRUE.
+      criterror specifies the number of minimum number of hours difference
+      between sleep log and  accelerometer estimate for the night to be
+      included in the visualisation.
   }
   \cr
-  
   Explanation of parameters related to physical activity that are not documented elsewhere in the technical manual.
   \cr
   \itemize{

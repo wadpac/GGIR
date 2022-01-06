@@ -13,23 +13,18 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
   if ("sleep" %in% group) {  
     params_sleep = list(anglethreshold = 5, timethreshold = 5, 
                         ignorenonwear = TRUE, constrain2range = TRUE,
-                        sensor.location = "wrist", HASPT.algo = "HDCZA",
+                        HASPT.algo = "HDCZA",
                         HASIB.algo = "vanHees2015", Sadeh_axis = "Y",
                         longitudinal_axis = c(),
                         HASPT.ignore.invalid = FALSE,
                         loglocation = c(), colid = 1, coln1 = 2,
-                        nnights = c(), outliers.only = FALSE,
-                        excludefirstlast = FALSE,
-                        criterror = 3, includenightcrit = 16,
+                        nnights = c(),
                         relyonguider = FALSE, sleeplogidnum = TRUE,
-                        def.noc.sleep = 1, excludefirst.part4 = FALSE,
-                        excludelast.part4 = FALSE,
+                        def.noc.sleep = 1, 
                         sleeplogsep = ",", sleepwindowType = "SPT",
-                        do.visual = FALSE,
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
-                        nap_model = c(),
-                        do.sibreport = FALSE)
+                        nap_model = c()) 
   }
   if ("metrics" %in% group) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -90,14 +85,20 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
                            hrs.del.start = 0, hrs.del.end = 0, 
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,
-                           data_cleaning_file = c(), minimum_MM_length.part5 = 23)
+                           data_cleaning_file = c(), minimum_MM_length.part5 = 23,
+                           excludefirstlast = FALSE, #<= to cleaning
+                           includenightcrit = 16, #<= to cleaning
+                           excludefirst.part4 = FALSE, # => to cleaning
+                           excludelast.part4 = FALSE)
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
                          save_ms5raw_format = "csv", save_ms5raw_without_invalid = TRUE,
                          storefolderstructure = FALSE, timewindow = c("MM","WW"), 
                          viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE,
-                         week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE)
+                         week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
+                         outliers.only = FALSE, criterror = 3, do.visual = FALSE,
+                         do.sibreport = FALSE)
     
   }
   if ("general" %in% group) {
@@ -105,7 +106,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
                           maxNcores = c(), print.filename = FALSE,
                           do.parallel = TRUE, windowsizes = c(5,900,3600),
                           desiredtz = "", configtz = c(), idloc = 1, dayborder = 0,
-                          part5_agg2_60seconds = FALSE)
+                          part5_agg2_60seconds = FALSE,
+                          sensor.location = "wrist")
   }
     # }
   invisible(list(params_sleep = params_sleep,
