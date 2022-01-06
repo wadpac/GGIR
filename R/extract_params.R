@@ -147,7 +147,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
     if (exists("relyonsleeplog") == TRUE)  params_sleep[["relyonguider"]] = params_sleep[["relyonsleeplog"]]
     update_params = function(x, aN, input) {
       if (is.null(input[[aN]])) {
-        x[[aN]] = "c()"
+        x[aN] = list(NULL)
       } else {
         x[[aN]] = input[[aN]]
       }

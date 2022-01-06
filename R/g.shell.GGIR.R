@@ -113,7 +113,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
   
   if (dopart3 == TRUE) {
     params_metrics[["do.anglez"]] = TRUE

@@ -37,11 +37,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   #------------------------------------------------
   # Get sleeplog data
   if (length(params_sleep[["loglocation"]]) > 0) {
-    if (params_sleep[["loglocation"]] != "c()") {
-      dolog = TRUE
-    } else {
-      dolog = FALSE
-    }
+    dolog = TRUE
   } else {
     dolog = FALSE
   }
