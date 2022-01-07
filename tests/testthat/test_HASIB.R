@@ -1,12 +1,6 @@
 library(GGIR)
 context("HASIB")
 test_that("HASIB generate correct output", {
-  dirR = "~/GGIR/R"
-  ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
-  for (i in 1:length(ffnames)) {
-    source(paste(dirR,"/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
-  }
-  library(testthat)
   time = seq(as.POSIXlt(x = "2021-3-3 15:00:00", tz="Europe/Amsterdam"),
              as.POSIXlt(x = "2021-3-3 16:05:00", tz="Europe/Amsterdam"), by = 5)
   tmp = c(rep(0, 10), 10, 20, 30, rep(30, 310), 20, 10, -5, -20, 0, -15, -30, rep(-40, 400))

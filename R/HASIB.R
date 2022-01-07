@@ -99,7 +99,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       rm(Countpermin_matrix)
       SadehFT = data.frame(matrix(unlist(SadehFT1), nrow = length(SadehFT1), byrow = TRUE))
       rm(SadehFT1)
-      print("e")
       colnames(SadehFT) = c("MeanW5", "SDlast", "NAT", "LOGact")
       # apply Sadeh algorithm
       PS = 7.601 - (0.065 * SadehFT$MeanW5) - (1.08 * SadehFT$NAT) - (0.056 * SadehFT$SDlast) - (0.703 * SadehFT$LOGact)
