@@ -15,16 +15,16 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   params_rawdata = params$params_rawdata
   params_cleaning = params$params_cleaning
   params_general = params$params_general
-  #get input variables (relevant when read.myacc.csv is used
-  if (length(input) > 0) {
-    for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i], "=", input[i], sep = "")
-      if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i], "='",unlist(input[i]), "'", sep = "")
-      }
-      eval(parse(text = txt))
-    }
-  }
+  
+  # if (length(input) > 0) {
+  #   for (i in 1:length(names(input))) {
+  #     txt = paste(names(input)[i], "=", input[i], sep = "")
+  #     if (class(unlist(input[i])) == "character") {
+  #       txt = paste(names(input)[i], "='",unlist(input[i]), "'", sep = "")
+  #     }
+  #     eval(parse(text = txt))
+  #   }
+  # }
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -34,11 +34,16 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }
   }
   if (grepl(datadir, outputdir)) {
-    stop('\nError: The file path specified by argument outputdir should NOT equal or be a subdirectory of the path specified by argument datadir')
+    stop(paste0('\nError: The file path specified by argument outputdir should",
+                " NOT equal or be a subdirectory of the path specified by argument datadir'))
   }
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
-  if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
+  if (filelist == FALSE) {
+    if (dir.exists(datadir) == FALSE) {
+      stop("\nDirectory specified by argument datadir, does not exist")
+    }
+  }
   # list all accelerometer files
   dir2fn = datadir2fnames(datadir,filelist)
   fnames = dir2fn$fnames
@@ -201,7 +206,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   if (GGIRloaded) { #pass on package
     packages2passon = 'GGIR'
     errhand = 'pass'
-  } else { # pass on functions
+  } else {
+    # pass on functions
     # packages2passon = 'Rcpp'
     functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
                          "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
@@ -214,8 +220,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     # So, it is probably best to turn off parallel when debugging cwa data.
   }
   `%myinfix%` = ifelse(params_general[["do.parallel"]], foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i = f0:f1, .packages = packages2passon,
-                                .export = functions2passon, .errorhandling=errhand) %myinfix% {
+  output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
+                                .export = functions2passon, .errorhandling = errhand) %myinfix% {
     tryCatchResult = tryCatch({
       # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
       if (params_general[["print.filename"]] == TRUE) {
@@ -379,11 +385,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         }
         check.backup.cal.coef = FALSE
         if (is.na(cal.error.start) == T | length(cal.error.end) == 0) {
-          C$scale = c(1,1,1); C$offset = c(0,0,0);       C$tempoffset=  c(0,0,0)
+          C$scale = c(1,1,1); C$offset = c(0,0,0); C$tempoffset = c(0,0,0)
           check.backup.cal.coef = TRUE
         } else {
           if (cal.error.start < cal.error.end) {
-            C$scale = c(1,1,1); C$offset = c(0,0,0);       C$tempoffset=  c(0,0,0)
+            C$scale = c(1,1,1); C$offset = c(0,0,0); C$tempoffset =  c(0,0,0)
             check.backup.cal.coef = TRUE
           }
         }
@@ -415,7 +421,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
             bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
             C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
             C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
-            C$tempoffset=  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
+            C$tempoffset =  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
             cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
             cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
             cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
@@ -493,15 +499,17 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       do.brondcounts = params_metrics[["do.brondcounts"]],
                       lb = params_metrics[["lb"]], hb = params_metrics[["hb"]],
                       n = params_metrics[["n"]],
-                      desiredtz=params_general[["desiredtz"]], daylimit=daylimit, windowsizes=params_general[["windowsizes"]],
-                      tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
-                      meantempcal=C$meantempcal,
-                      chunksize=params_rawdata[["chunksize"]],
-                      selectdaysfile=params_cleaning[["selectdaysfile"]],
-                      outputdir=outputdir,
-                      outputfolder=outputfolder,
-                      dayborder=params_general[["dayborder"]], dynrange=params_rawdata[["dynrange"]],
-                      configtz=params_general[["configtz"]],
+                      desiredtz = params_general[["desiredtz"]], 
+                      daylimit = daylimit, windowsizes = params_general[["windowsizes"]],
+                      tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
+                      meantempcal = C$meantempcal,
+                      chunksize = params_rawdata[["chunksize"]],
+                      selectdaysfile = params_cleaning[["selectdaysfile"]],
+                      outputdir = outputdir,
+                      outputfolder = outputfolder,
+                      dayborder = params_general[["dayborder"]],
+                      dynrange = params_rawdata[["dynrange"]],
+                      configtz = params_general[["configtz"]],
                       rmc.dec = params_rawdata[["rmc.dec"]],
                       rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                       rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
@@ -528,7 +536,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       rmc.noise = params_rawdata[["rmc.noise"]],
                       rmc.doresample = params_rawdata[["rmc.doresample"]],
                       interpolationType = params_rawdata[["interpolationType"]],
-                      myfun=myfun,
+                      myfun = myfun,
                       imputeTimegaps = params_rawdata[["imputeTimegaps"]])
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
@@ -539,23 +547,23 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         } else {
           filename = fnames[i]
         }
-        filename_dir=tmp5[i];filefoldername=tmp6[i]
-        if (length(unlist(strsplit(fnames[1],"[.]RD"))) == 1) { # to avoid getting .RData.RData
+        filename_dir = tmp5[i]; filefoldername = tmp6[i]
+        if (length(unlist(strsplit(fnames[1], "[.]RD"))) == 1) { # to avoid getting .RData.RData
           filename = paste0(filename,".RData")
         }
-        save(M,I,C,filename_dir,filefoldername,file = paste(path3,"/meta/basic/meta_",filename,sep=""))
+        save(M, I, C, filename_dir, filefoldername,
+             file = paste0(path3, "/meta/basic/meta_", filename))
         # as metadatdir is not known derive it:
         metadatadir = c()
         if (length(datadir) > 0) {
-
           # list of all csv and bin files
           if (is.mv == TRUE) {
             for (filei in 1:length(fnames)) {
               fnames[[filei]] = strsplit(fnames[[filei]], "/")[[1]][1]
             }
             fnames = unique(fnames)
-          } else if(is.mv == FALSE){
-            dir2fn = datadir2fnames(datadir,filelist) #GGIR::
+          } else if (is.mv == FALSE) {
+            dir2fn = datadir2fnames(datadir, filelist)
             fnames = dir2fn$fnames
           }
           # check whether these are RDA
@@ -568,12 +576,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           useRDA = FALSE
         }
         if (filelist == TRUE | useRDA == TRUE) {
-          metadatadir = paste(outputdir,"/output_",studyname,sep="")
+          metadatadir = paste0(outputdir,"/output_",studyname)
         } else {
-          outputfoldername = unlist(strsplit(datadir,"/"))[length(unlist(strsplit(datadir,"/")))]
-          metadatadir = paste(outputdir,"/output_",outputfoldername,sep="")
+          outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
+          metadatadir = paste0(outputdir, "/output_", outputfoldername)
         }
-
         rm(M); rm(I); rm(C)
         # } # for loop
       }
