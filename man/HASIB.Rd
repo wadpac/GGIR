@@ -9,7 +9,7 @@
 }
 \usage{
   HASIB(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c(), 
-                 time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c())
+                 time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c(), BrondCount = c())
 }
 \arguments{
   \item{HASIB.algo}{
@@ -33,6 +33,9 @@
   }
   \item{zeroCrossingCount}{
     Vector with zero crossing counts per epoch as required for Sadeh algortihm
+  }
+  \item{BrondCount}{
+    Vector with Brond counts per epoch to be used by the Sadeh algortihm
   }
 }
 \value{

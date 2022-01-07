@@ -6,10 +6,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
                    do.enmoa = FALSE,
                    do.roll_med_acc_x = FALSE, do.roll_med_acc_y = FALSE, do.roll_med_acc_z = FALSE,
                    do.dev_roll_med_acc_x = FALSE, do.dev_roll_med_acc_y = FALSE, do.dev_roll_med_acc_z = FALSE,
-                   do.lfen = FALSE, do.lfx = FALSE, do.lfy = FALSE, do.lfz = FALSE, 
-                   do.hfx = FALSE, do.hfy = FALSE, do.hfz = FALSE, 
-                   do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE, 
-                   do.zcx = FALSE, do.zcy = FALSE, do.zcz = FALSE,
+                   do.lfen = FALSE, do.lfx = FALSE, do.lfy = FALSE, do.lfz = FALSE,
+                   do.hfx = FALSE, do.hfy = FALSE, do.hfz = FALSE,
+                   do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE,
+                   do.zcx = FALSE, do.zcy = FALSE, do.zcz = FALSE, do.brondcounts = FALSE,
                    do.cal = TRUE,
                    lb = 0.2, hb = 15,  n = 4, spherecrit=0.3,
                    minloadcrit = 72, printsummary = TRUE, print.filename = FALSE, overwrite = FALSE,
@@ -52,7 +52,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
   if (length(which(ls() == "rmc.noise")) == 0) rmc.noise = c()
   if (length(which(ls() == "rmc.col.wear")) == 0) rmc.col.wear = c()
   if (length(which(ls() == "rmc.doresample")) == 0) rmc.doresample = FALSE
-  
+
   if (length(datadir) == 0 | length(outputdir) == 0) {
     if (length(datadir) == 0) {
       stop('\nVariable datadir is not defined')
@@ -170,7 +170,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste0(outputdir, outputfolder, "/meta/basic"))
-  
+
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
@@ -190,7 +190,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
       Nmetrics2calc = do.bfen + do.enmo + do.lfenmo + do.lfen + do.en + do.hfen + do.hfenplus + do.mad +
         do.anglex + do.angley + do.anglez + do.roll_med_acc_x + do.roll_med_acc_y +
         do.roll_med_acc_z + do.dev_roll_med_acc_x + do.dev_roll_med_acc_y +
-        do.dev_roll_med_acc_z + do.enmoa + do.lfx + do.lfy + do.lfz + do.hfx + 
+        do.dev_roll_med_acc_z + do.enmoa + do.lfx + do.lfy + do.lfz + do.hfx +
         do.hfy + do.hfz + do.bfx +  do.bfy + do.bfz + do.zcx + do.zcy + do.zcz
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
@@ -207,7 +207,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
       Ncores2use = min(c(Ncores - 1, maxNcores))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
-      
+
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       do.parallel = FALSE
@@ -480,14 +480,15 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(), windowsizes
                                                      do.roll_med_acc_x = do.roll_med_acc_x,
                                                      do.roll_med_acc_y = do.roll_med_acc_y,
                                                      do.roll_med_acc_z = do.roll_med_acc_z,
-                                                     do.dev_roll_med_acc_x = do.dev_roll_med_acc_x, 
-                                                     do.dev_roll_med_acc_y = do.dev_roll_med_acc_y, 
+                                                     do.dev_roll_med_acc_x = do.dev_roll_med_acc_x,
+                                                     do.dev_roll_med_acc_y = do.dev_roll_med_acc_y,
                                                      do.dev_roll_med_acc_z = do.dev_roll_med_acc_z,
                                                      do.enmoa = do.enmoa,
-                                                     do.lfx = do.lfx, do.lfy = do.lfy, do.lfz = do.lfz, 
+                                                     do.lfx = do.lfx, do.lfy = do.lfy, do.lfz = do.lfz,
                                                      do.hfx = do.hfx, do.hfy = do.hfy, do.hfz = do.hfz,
-                                                     do.bfx = do.bfx, do.bfy = do.bfy, do.bfz = do.bfz, 
+                                                     do.bfx = do.bfx, do.bfy = do.bfy, do.bfz = do.bfz,
                                                      do.zcx = do.zcx, do.zcy = do.zcy, do.zcz = do.zcz,
+                                                     do.brondcounts=do.brondcounts,
                                                      lb = lb, hb = hb,  n = n,
                                                      desiredtz = desiredtz, daylimit = daylimit, windowsizes = windowsizes,
                                                      tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,

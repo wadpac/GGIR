@@ -5,6 +5,7 @@
 \itemize{
   \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x.
   \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed.
+  \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it.
 }
 }
 \section{Changes in version 2.5-3 (GitHub-only-release date:23-12-2021)}{

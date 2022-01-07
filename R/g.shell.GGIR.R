@@ -195,6 +195,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("do.zcx") == FALSE)  do.zcx = FALSE
   if (exists("do.zcy") == FALSE)  do.zcy = FALSE
   if (exists("do.zcz") == FALSE)  do.zcz = FALSE
+  if (exists("do.brondcounts") == FALSE)  do.brondcounts = FALSE
   if (exists("dynrange") == FALSE)  dynrange = c()
   if (exists("hb") == FALSE)  hb = 15
   if (exists("lb") == FALSE)  lb = 0.5
@@ -398,7 +399,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   }
   if (length(which(ls() == "do.sibreport")) == 0) do.sibreport = FALSE
   # VISUAL REPORT
-
   if (exists("viewingwindow") == FALSE)  viewingwindow = 1
   if (exists("dofirstpage") == FALSE)  dofirstpage = TRUE
   if (exists("visualreport") == FALSE)  visualreport = FALSE
@@ -431,6 +431,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 1\n")
+    print(do.brondcounts)
     g.part1(datadir = datadir, outputdir = outputdir,
             f0 = f0, f1 = f1, windowsizes = windowsizes,
             desiredtz = desiredtz, chunksize = chunksize,
@@ -451,6 +452,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             do.hfx=do.hfx, do.hfy=do.hfy, do.hfz=do.hfz,
             do.bfx=do.bfx, do.bfy=do.bfy, do.bfz=do.bfz,
             do.zcx=do.zcx, do.zcy=do.zcy, do.zcz=do.zcz,
+            do.brondcounts=do.brondcounts,
             printsummary=printsummary,
             do.cal = do.cal,print.filename=print.filename,
             overwrite=overwrite,backup.cal.coef=backup.cal.coef,

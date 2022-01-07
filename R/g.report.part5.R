@@ -214,11 +214,13 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                     }
                     dummy_df = as.data.frame(matrix(NaN,1, (NLUXseg-1)))
                     colnames(dummy_df) = LUX_segment_vars_expected
-                    x = as.data.frame(merge(x, dummy_df, all.x = T))
-                    # re-order
-                    current_location = which(colnames(x) %in% LUX_segment_vars_expected == TRUE)
-                    neworder = sort(colnames(x)[current_location])
-                    x = cbind(x[,-current_location], x[,LUX_segment_vars_expected])
+                    if (length(which(LUX_segment_vars_expected %in% colnames(x))) > 0) {
+                      x = as.data.frame(merge(x, dummy_df, all.x = T))
+                      # re-order
+                      current_location = which(colnames(x) %in% LUX_segment_vars_expected == TRUE)
+                      neworder = sort(colnames(x)[current_location])
+                      x = cbind(x[,-current_location], x[,LUX_segment_vars_expected])
+                    }
                     return(x)
                   }
                   LUX_segment_vars = c()

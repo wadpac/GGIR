@@ -11,6 +11,7 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
                      do.hfx = FALSE, do.hfy = FALSE, do.hfz = FALSE,
                      do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE,
                      do.zcx = FALSE, do.zcy = FALSE, do.zcz = FALSE,
+                     do.brondcounts = FALSE,
                      lb = 0.2, hb = 15,  n = 4, meantempcal = c(), chunksize = c(), selectdaysfile = c(),
                      dayborder = 0, dynrange = c(), configtz = c(), myfun = c(),
                      interpolationType = 1, imputeTimegaps = TRUE,
@@ -61,7 +62,7 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
                           do.lfx, do.lfy, do.lfz,
                           do.hfx, do.hfy, do.hfz,
                           do.bfx, do.bfy, do.bfz,
-                          do.zcx, do.zcy, do.zcz, stringsAsFactors = TRUE)
+                          do.zcx, do.zcy, do.zcz, do.brondcounts, stringsAsFactors = TRUE)
   if (length(chunksize) == 0) chunksize = 1
   if (chunksize > 1.5) chunksize = 1.5
   if (chunksize < 0.2) chunksize = 0.2
@@ -71,14 +72,14 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
                    do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
                    do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z, do.enmoa, do.lfen,
                    do.lfx, do.lfy, do.lfz,  do.hfx, do.hfy, do.hfz,  do.bfx, do.bfy, do.bfz,
-                   do.zcx, do.zcy, do.zcz))
+                   do.zcx, do.zcy, do.zcz, do.brondcounts * 3))
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
     # bugs after waiting for the data to be load
     check_myfun(myfun, windowsizes)
   }
-  
+
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
@@ -100,7 +101,7 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
   }
   windowsizes = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
-  
+
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -173,7 +174,7 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
   options(warn = -1)
   if (useRDA == FALSE) decn = g.dotorcomma(datafile, dformat, mon = mon, desiredtz = desiredtz, rmc.dec = rmc.dec)
   options(warn = 0)
-  
+
   ID = g.getidfromheaderobject(filename = filename, header = header, dformat = dformat, mon = mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize, dynrange, mon, rmc.noise, sf, dformat,  rmc.dynamic_range)
@@ -527,6 +528,9 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
         ZCX =  accmetrics$ZCX
         ZCY =  accmetrics$ZCY
         ZCZ =  accmetrics$ZCZ
+        BrondCount_x = accmetrics$BrondCount_x
+        BrondCount_y  = accmetrics$BrondCount_y
+        BrondCount_z = accmetrics$BrondCount_z
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
@@ -640,6 +644,11 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
         }
         if (do.zcz == TRUE) {
           metashort[count:(count - 1 + length(ZCZ)), col_msi] = ZCZ; col_msi = col_msi + 1
+        }
+        if (do.brondcounts == TRUE) {
+          metashort[count:(count-1+length(BrondCount_x)),col_msi] = BrondCount_x; col_msi = col_msi + 1
+          metashort[count:(count-1+length(BrondCount_y)),col_msi] = BrondCount_y; col_msi = col_msi + 1
+          metashort[count:(count-1+length(BrondCount_z)),col_msi] = BrondCount_z; col_msi = col_msi + 1
         }
         if (length(myfun) != 0) { # if an external function is applied.
           NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
@@ -893,8 +902,8 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
     metricnames_short = c("timestamp", "BFEN", "ENMO", "LFENMO", "EN", "HFEN", "HFENplus", "MAD",
                           "anglex", "angley", "anglez", "roll_med_acc_x", "roll_med_acc_y", "roll_med_acc_z",
                           "dev_roll_med_acc_x", "dev_roll_med_acc_y", "dev_roll_med_acc_z", "ENMOa", "LFEN",
-                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ", 
-                          "ZCX", "ZCY", "ZCZ")
+                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ",
+                          "ZCX", "ZCY", "ZCZ", "BrondCounts_x", "BrondCounts_y", "BrondCounts_z")
     metricnames_short = as.character(metricnames_short[c(TRUE, do.bfen, do.enmo, do.lfenmo, do.en,
                                                          do.hfen, do.hfenplus, do.mad,
                                                          do.anglex, do.angley, do.anglez,
@@ -902,7 +911,7 @@ g.getmeta = function(datafile, desiredtz = "", windowsizes = c(5, 900, 3600),
                                                          do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z,
                                                          do.enmoa, do.lfen,
                                                          do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
-                                                         do.bfx, do.bfy, do.bfz, do.zcx, do.zcy, do.zcz)])
+                                                         do.bfx, do.bfy, do.bfz, do.zcx, do.zcy, do.zcz, rep(do.brondcounts, 3))])
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)

@@ -107,8 +107,15 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
     if (HASIB.algo == "Sadeh1994" | HASIB.algo == "Galland2012") { # extract zeroCrossingCount
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort)==paste0("ZC",Sadeh_axis))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
+      # always do zeroCrossingCount but optionally also add BrondCounts to output for comparison
+      BrondCount_colname = paste0("BrondCounts_",tolower(Sadeh_axis))
+      if (BrondCount_colname %in% colnames(IMP$metashort)) {
+        BrondCount =  IMP$metashort[, BrondCount_colname]
+        BrondCount = fix_NA_invector(BrondCount)
+      }
     } else {
       zeroCrossingCount = c()
+      BrondCount = c()
     }
     #==================================================================
     # 'sleep' detection if sleep is not provided by external function.
@@ -124,7 +131,7 @@ g.sib.det = function(M,IMP,I,twd=c(-12,12),anglethreshold = 5,
       sleep = HASIB(HASIB.algo = HASIB.algo, timethreshold=timethreshold,
                     anglethreshold=anglethreshold, 
                     time=time, anglez=anglez, ws3=ws3,
-                    zeroCrossingCount=zeroCrossingCount)
+                    zeroCrossingCount=zeroCrossingCount, BrondCount=BrondCount)
     } else { # getSleepFromExternalFunction == TRUE
       # Code now uses the sleep estimates from the external function
       # So, the assumption is that the external function provides a 
