@@ -1,7 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
+\section{Changes in version 2.5-4 (GitHub-only-release date:12-01-2022)}{
+\itemize{
+  \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x
+}
+}
 \section{Changes in version 2.5-3 (GitHub-only-release date:23-12-2021)}{
 \itemize{
   \item Part 1: Depricating function g.metric as its functionality has been taken over by g.applymetrics.

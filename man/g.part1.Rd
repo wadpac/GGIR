@@ -36,9 +36,9 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
         spherecrit=0.3,minloadcrit=72,
         printsummary=TRUE,print.filename=FALSE,overwrite=FALSE,
         backup.cal.coef="retrieve",selectdaysfile=c(),dayborder=0,
-        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 2,
+        dynrange=c(), configtz=c(), do.parallel=TRUE, minimumFileSizeMB = 1,
         myfun=c(),
-        maxNcores=c(), interpolationType=1, ...)
+        maxNcores=c(), interpolationType=1, imputeTimegaps = TRUE, ...)
 }
 \arguments{
   \item{datadir}{
@@ -229,6 +229,11 @@ g.part1(datadir=c(),outputdir=c(),f0=1,f1=c(),
   }
   \item{interpolationType}{
    Integer, see \link{g.getmeta}
+  }
+   \item{imputeTimegaps}{
+    Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
+    Currently onlly used for .gt3x data, where timegaps can be expected as a result of
+    Actigraph's sleep.mode.
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you

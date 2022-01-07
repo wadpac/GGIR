@@ -5,10 +5,12 @@
 
 extern SEXP _GGIR_numUnpack(SEXP);
 extern SEXP _GGIR_resample(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _GGIR_parseGT3Xggir(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_GGIR_numUnpack", (DL_FUNC) &_GGIR_numUnpack, 1},
     {"_GGIR_resample",  (DL_FUNC) &_GGIR_resample,  5},
+    {"_GGIR_parseGT3Xggir",  (DL_FUNC) &_GGIR_parseGT3Xggir,  10},
     {NULL, NULL, 0}
 };
 

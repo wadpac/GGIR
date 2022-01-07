@@ -40,7 +40,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (derivef0f1 == TRUE) { # What file to start with?
     f0 = 1
     if (filelist == FALSE) {  # What file to end with?
-      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa|cw)")) # modified by JH
+      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
     }
@@ -59,9 +59,11 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
-    fnames = datadir2fnames(datadir,filelist)
+    dir2fn = datadir2fnames(datadir,filelist)
+    fnames = dir2fn$fnames
+    fnamesfull = dir2fn$fnamesfull
     # check whether these are RDA
-    if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
+    if (length(unlist(strsplit(fnames[1], "[.]RD"))) > 1) {
       useRDA = TRUE
     } else {
       useRDA = FALSE
@@ -199,9 +201,10 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (exists("n") == FALSE)  n = 4
   if (exists("idloc") == FALSE) idloc = 1
   if (exists("backup.cal.coef") == FALSE)  backup.cal.coef = "retrieve"
-  if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 2
-  if (exists("interpolationType") == FALSE)  interpolationType=1
-
+  if (exists("minimumFileSizeMB") == FALSE)  minimumFileSizeMB = 1
+  if (exists("interpolationType") == FALSE)  interpolationType = 1
+  if (exists("imputeTimegaps") == FALSE)  imputeTimegaps = TRUE
+  
   if (length(myfun) != 0) { # Run check on myfun object
     check_myfun(myfun, windowsizes)
   }
@@ -471,11 +474,12 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             rmc.headername.sn = rmc.headername.sn,
             rmc.headername.recordingid = rmc.headername.sn,
             rmc.header.structure = rmc.header.structure,
-            rmc.check4timegaps = rmc.check4timegaps, rmc.noise=rmc.noise,
-            rmc.col.wear=rmc.col.wear,
-            rmc.doresample=rmc.doresample,
-            myfun=myfun, maxNcores=maxNcores,
-            interpolationType=interpolationType)
+            rmc.check4timegaps = rmc.check4timegaps, rmc.noise = rmc.noise,
+            rmc.col.wear = rmc.col.wear,
+            rmc.doresample = rmc.doresample,
+            myfun = myfun, maxNcores = maxNcores,
+            interpolationType = interpolationType,
+            imputeTimegaps = imputeTimegaps)
   }
   if (dopart2 == TRUE) {
     cat('\n')

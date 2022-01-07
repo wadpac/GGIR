@@ -30,25 +30,27 @@ g.extractheadervars = function(I) {
       deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number			
     }
   } else if (mon == "actigraph" | mon == 'verisense') {
-    deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
-    if (length(deviceSerialNumber) == 0) deviceSerialNumber = "not extracted" #serial number
-    
-    # try to extract firmware version and append it to serial number,
-    # at a later point in time this could become a separate variable in the reports
-    firmwareversion = unlist(strsplit(unlist(strsplit(as.character(I$header$value[1]),"Firmware[.]"))[2],"[.]date"))[1]
+    if (I$dformn == "gt3x") {
+      header = I$header
+      deviceSerialNumber = as.character(header["Serial.Number",])
+      firmwareversion = as.character(header["Firmware",])
+    } else { # .csv format
+      deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
+      if (length(deviceSerialNumber) == 0) deviceSerialNumber = "not extracted" #serial number
+      # try to extract firmware version and append it to serial number,
+      # at a later point in time this could become a separate variable in the reports
+      firmwareversion = unlist(strsplit(unlist(strsplit(as.character(I$header$value[1]),"Firmware[.]"))[2],"[.]date"))[1]
+    }
     if (length(firmwareversion) == 1) deviceSerialNumber = paste0(deviceSerialNumber,"_firmware_",firmwareversion)
     ID = "not extracted"	# volunteer ID as stored in binary file header
     iID = "not extracted" #investigator ID
     HN = "not extracted" #handedness
     BodyLocation = "not extracted" #body location
     SX = "not extracted" #gender
-    
   } else if (mon == "axivity" | mon == "movisens") { #todo: create automatic extraction of information from actigraph fileheader
     if (mon  == "actigraph") {
       deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
     }
-    
-    
     ID = "not extracted"	# volunteer ID as stored in binary file header
     iID = "not extracted" #investigator ID
     HN = "not extracted" #handedness
