@@ -19,8 +19,8 @@
 }
 \usage{
 g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
-        studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),  
-        params_cleaning = c(), params_general = c(), ...)
+        studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),
+        params_cleaning = c(), params_general = c(), imputeTimegaps = TRUE, ...)
 }
 
 \arguments{
@@ -45,7 +45,7 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     data directory. If datadir is a list of filenames then the studyname will be used
     as name for the analysis
   }
-  
+
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
@@ -70,14 +70,14 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     that start with "rmc.".
   }
   \item{params_cleaning}{
-    List of parameters releated to data cleaning, imputation or masking: 
+    List of parameters releated to data cleaning, imputation or masking:
     strategy, hrs.del.start, hrs.del.end, maxdur, ndayswindow (all numeric, see \link{g.impute})
     includedaycrit (numeric, see \link{g.analyse}), do.imp (boolean, see details)
     selectdaysfile (character, see \link{g.analyse})
     TimeSegments2ZeroFile (character, see details), data_cleaning_file (character, see details)
     excludefirstlast.part5 (boolean, see details),
     includedaycrit.part5 (numeric, see \link{g.report.part5})
-    excludefirst.part4, excludelast.part4, excludefirstlast (boolean, see details), 
+    excludefirst.part4, excludelast.part4, excludefirstlast (boolean, see details),
     includenightcrit (numeric, see details)
   }
   \item{params_general}{
@@ -89,9 +89,14 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     acc.metric (character, see details), part5_agg2_60seconds (boolean, see details)
     print.filename (boolean, see details), sensor.location (character, see \link{g.sib.det})
   }
+  \item{imputeTimegaps}{
+   Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
+   Currently onlly used for .gt3x data, where timegaps can be expected as a result of
+   Actigraph's sleep.mode.
+ }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
-    are working with a non-standard csv formatted files. To enable compatibility with older GGIR version, 
+    are working with a non-standard csv formatted files. To enable compatibility with older GGIR version,
     user can also provide individual params_metrics parameters as separate argument, e.g. do.anglex = TRUE.
   }
 }
@@ -99,9 +104,9 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   Explanation of rawdata parameters that are not documented elsewhere in the technical manual.
   \cr
   \itemize{
-    \item \code{backup.cal.coef} Default value is "retrieve". 
+    \item \code{backup.cal.coef} Default value is "retrieve".
       Option to use backed-up calibration coefficient instead of
-      deriving the calibration coefficients when analysing the same file twice. 
+      deriving the calibration coefficients when analysing the same file twice.
       Argument backup.cal.coef has two usecase. Use case 1: If the auto-calibration
       fails then the user has the option to provide back-up
       calibration coefficients via this argument. The value of the argument needs to
@@ -122,7 +127,7 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       QC, which holds the previously generated calibration coefficients. If you
       do not want this happen, then deleted the data_quality_report.csv from the
       QC folder or set it to value "redo".
-    \item \code{minimumFileSizeMB}  Minimum File size in MB required to enter processing, 
+    \item \code{minimumFileSizeMB}  Minimum File size in MB required to enter processing,
       default 2MB. This argument can help
       to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
       collects several MBs per hour, the default setting should only skip the very short files.
@@ -130,20 +135,20 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       recommended setting is TRUE.
   }
   \cr
-  
+
   Explanation of cleaning parameters that are not documented elsewhere in the technical manual.
   \cr
   \itemize{
     \item \code{do.imp} Whether to impute missing values (e.g. suspected of monitor non-wear) or not
       by \link{g.impute}. Default and recommended setting is TRUE
-      \item \code{TimeSegments2ZeroFil}  Csv-file holding the data.frame used for argument 
+      \item \code{TimeSegments2ZeroFil}  Csv-file holding the data.frame used for argument
       TimeSegments2Zero in function \link{g.impute}
     \item \code{data_cleaning_file} Optional path to a csv file you create that holds four
       columns: ID, day_part5, relyonguider_part4, and night_part4. ID should hold the participant ID.
       Columns day_part5 and night_part4 allow you to specify which day(s) and
       night(s) need to be excluded from part 5 and 4, respectively. So, this will be done regardless
       of whether the rest of GGIR thinks those day(s)/night(s)
-      are valid. Column relyonguider_part4 allows you to specify for which nights 
+      are valid. Column relyonguider_part4 allows you to specify for which nights
       part 4 should fully rely on the guider. See also package vignette.
     \item \code{excludefirstlast.part5} If TRUE then the first and last night of the measurement are ignored for the
       leep assessment.
@@ -153,17 +158,18 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       ignored for the sleep assessment.
     \item \code{excludelast.part4}
       If TRUE then the last night of the measurement are ignored for the sleep assessment.
-    \item \code{includenightcrit} Minimum number of valid hours per night (24 hour window between 
+    \item \code{includenightcrit} Minimum number of valid hours per night (24 hour window between
     noon and noon), used for sleep.
   }
-  
+
   \cr
   Explanation of general parameters that are not documented elsewhere in the technical manual.
   \cr
   \itemize{
-    \item \code{overwrite} Overwrite previously generated milestone data by this function for this
-    particular dataset. If FALSE then it will skip the previously processed files
-    (default = FALSE).
+    \item \code{overwrite} Do you want to overwrite analysis for which milestone data exists? 
+      If overwrite=FALSE then milestone data from a previous analysis will 
+      be used if available and visual reports will not be created again.
+        
     \item \code{selectdaysfile} Do not used, this is legacy code for one specific data study. Character pointing at
     a csv file holding the relationship between device serial numbers (first column) and measurement dates of interest
     (second and third column). The date format should be dd/mm/yyyy. And the first row

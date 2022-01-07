@@ -2,6 +2,7 @@ library(GGIR)
 context("Chainof5parts")
 test_that("chainof5parts", {
   skip_on_cran()
+  library(testthat)
   Ndays = 2
   create_test_acc_csv(Nmin=Ndays*1440)
   create_test_sleeplog_csv(advanced=FALSE)
@@ -17,20 +18,20 @@ test_that("chainof5parts", {
   # part 1
   g.part1(datadir=fn,outputdir=getwd(),f0=1,f1=1,overwrite=TRUE,desiredtz=desiredtz,
                      studyname="test",do.enmo = TRUE,do.anglez=TRUE,do.cal = TRUE,do.sgAccEN=FALSE,
-          windowsizes = c(15,3600,3600), do.parallel = do.parallel, 
+          windowsizes = c(15,3600,3600), do.parallel = do.parallel,
           minimumFileSizeMB=minimumFileSizeMB)
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_that(round(C$scale,digits=5),equals(c(0.98476, 0.98399, 0.98442)))
+  expect_that(round(C$scale,digits=5),equals(c(0.98474, 0.98393, 0.98439)))
   expect_that(nrow(M$metalong),equals(47))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
   expect_that(nrow(M$metashort),equals(11280))
-  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.02898))
+  expect_that(round(mean(M$metashort$ENMO),digits=5),equals(0.02896))
   expect_that(I$monc,equals(3))
   expect_that(I$sf,equals(3))
   expect_that(I$dformc,equals(2))
-  expect_that(C$npoints,equals(9728))
+  expect_that(C$npoints,equals(9768))
   #-------------------------
   # part 2 with strategy = 3
   g.part2(datadir=fn,metadatadir=metadatadir,f0=1,f1=1, idloc = 2,desiredtz=desiredtz,
@@ -69,14 +70,11 @@ test_that("chainof5parts", {
   expect_true(file.exists(summarycsv))
   expect_true(file.exists(daysummarycsv))
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
-  expect_that(round(as.numeric(SUM$summary$meas_dur_dys),digits=5),equals(1.95833))
+  expect_that(round(mean(IMP$metashort$ENMO),digits = 5), equals(0.02896))
+  expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5),equals(1.95833))
   expect_that(ncol(SUM$daysummary), equals(32))
-  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3),equals(88.988))
-  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3),equals(37.15))
-
-  #expect_that(round(as.numeric(SUM$summary$`M5_ENMO_mg_0-24h`), digits = 4),equals(80.6532))
-  #expect_that(round(as.numeric(SUM$summary$WD_mean_ENMO_mg_24hr), digits = 4),equals(30.1371))
+  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3),equals(88.946))
+  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3),equals(37.067))
 
   #--------------------------------------------
   # part 3
@@ -88,34 +86,35 @@ test_that("chainof5parts", {
   load(rn3[1])
 
   expect_true(dir.exists(dirname))
-  expect_that(round(sum(sib.cla.sum[,4:7]),digits=0),equals(2957))
+  expect_that(round(sum(sib.cla.sum[,4:7]), digits = 0), equals(2957))
 
   #--------------------------------------------
   # part 4
-  expect_warning(g.part4(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,
-          idloc=2,loglocation = sleeplog_fn, do.visual=TRUE,outliers.only = FALSE,
-          excludefirstlast=FALSE,criterror = 1,includenightcrit=0,nnights=7,colid=1,coln1=2,
-          relyonguider=FALSE,desiredtz=desiredtz,
-          storefolderstructure=FALSE, overwrite=TRUE))
+  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
+          storefolderstructure = FALSE, overwrite = TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-  g.report.part4(datadir=fn,metadatadir=metadatadir,loglocation = sleeplog_fn,f0=1,f1=1)
+  g.report.part4(datadir = fn, metadatadir = metadatadir, loglocation = sleeplog_fn,
+                 f0 = 1, f1 = 1)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$number_sib_wakinghours[1],digits=4),equals(6))
+  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
 
   #--------------------------------------------
   #part 5
-  g.part5(datadir=fn,metadatadir=metadatadir,f0=1,f1=1,desiredtz=desiredtz,
-          strategy=1,maxdur=Ndays,hrs.del.start=0,hrs.del.end =0,
-                     loglocation= sleeplog_fn,
-                     overwrite=TRUE, excludefirstlast=FALSE, do.parallel = do.parallel,
+  g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
+          strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
+                     loglocation = sleeplog_fn,
+                     overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           # frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
-          frag.metrics="all", save_ms5rawlevels=TRUE)
+          frag.metrics = "all", save_ms5rawlevels = TRUE)
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -161,7 +160,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02898))
+  expect_that(round(mean(IMP$metashort$ENMO),digits=5),equals(0.02896))
 
   #=======================
   # Different variations on part 4:
@@ -196,7 +195,7 @@ test_that("chainof5parts", {
                          outliers.only = FALSE, excludefirstlast = FALSE,
                          criterror = 0, includenightcrit = 0, nnights = 7,
                          colid = 1, coln1 = 2, relyonguider = TRUE,
-                         desiredtz = desiredtz, storefolderstructure = TRUE, 
+                         desiredtz = desiredtz, storefolderstructure = TRUE,
                          overwrite=TRUE))
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -224,7 +223,7 @@ test_that("chainof5parts", {
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
   save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
   expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-                         idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, 
+                         idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE,
                          outliers.only = FALSE, excludefirstlast = FALSE, criterror = 0,
                          includenightcrit = 0, nnights = 7, colid = 1, coln1 = 2,
                          relyonguider = TRUE, desiredtz = desiredtz,
@@ -254,7 +253,7 @@ test_that("chainof5parts", {
                          idloc = 2, loglocation = sleeplog_fn, do.visual=TRUE,
                          outliers.only = FALSE, excludefirstlast = FALSE,
                          criterror = 0, includenightcrit = 0, nnights = 7,
-                         colid = 1, coln1 = 2, relyonguider = FALSE, 
+                         colid = 1, coln1 = 2, relyonguider = FALSE,
                          desiredtz = desiredtz, storefolderstructure = TRUE,
                          overwrite = TRUE))
   dirname = "output_test/meta/ms4.out/"
@@ -304,8 +303,8 @@ test_that("chainof5parts", {
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 24)
-  expect_equal(round(mean(M$metashort$B, na.rm = T),digits=3), 24.712)
-  expect_equal(round(mean(M$metashort$C, na.rm = T),digits=3), -6.524)
+  expect_equal(round(mean(M$metashort$B, na.rm = T),digits=3), 24.718)
+  expect_equal(round(mean(M$metashort$C, na.rm = T),digits=3), -6.528)
   expect_equal(round(mean(M$metashort$EN, na.rm = T),digits=3), 1.029)
   expect_equal(round(mean(M$metashort$angley, na.rm = T),digits=3), 0.768)
   expect_equal(round(mean(M$metashort$roll_med_acc_x, na.rm = T),digits=3), 0.728)

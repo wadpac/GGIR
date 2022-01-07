@@ -221,9 +221,11 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: Those metrics are effectively the same as the metrics included in GGIR but sum rather than average their raw values per epoch. So, to use their cut-point we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant.
 
 **Warning about validity in new studies**
-In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020. 
+In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020.
 
-Furthermore, studies that aimed to independently evaluate cut-point methods also seem to be failing in recognising this challenge. Therefore, it seems best to interpret cut-points as a crude boundary between intensity levels that should be interpreted with caution. Future methodological studies around cut-points are advised to account for accelerometer calibration error.
+Studies done with ActiGraph devices when configured with 'idle sleep mode' turned on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This mistake by the ActiGraph company directly affect metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. Further, also other metrics may be affected as the sudden disappearance of gravitational acceleration will result in a spike at the start and end of the no movement period.
+
+Several studies that aimed to independently evaluate cut-point methods seem to be failing in recognise these challenges. Therefore, it is best to interpret cut-points with caution and just as a crude boundary between intensity levels. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic zero strings in raw ActiGraph data.
 
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
@@ -233,8 +235,8 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
-- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated we need the original sample frequency for that.
--	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
+- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated.
+-	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Roscoe 2017:**
@@ -244,7 +246,7 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.mod = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
 - `threshold.vig = (VigorousCutPointFromPaper_in_gsecs/85.7) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
--	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
+-	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Schaeffer 2014:**
@@ -254,7 +256,8 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.lig = (LightCutPointFromPaper/75) * 1000`
 - `threshold.mod = (ModerateCutPointFromPaper/75) * 1000`
 - `threshold.vig = (VigorousCutPointFromPaper/75) * 1000`
-- `mvpathreshold = (ModerateCutPointFromPaper/75) * 1000`-	In the part2 results you will need the MVPA estimates that are related to EN, not ENMO.
+- `mvpathreshold = (ModerateCutPointFromPaper/75) * 1000`
+-	In the part2 results you will need the MVPA estimates that are related to EN, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Vaha-Ypya et al 2015:**
@@ -930,7 +933,7 @@ GGIR offers a range of acceleration metrics to choose from, but only one metric 
 2.	ENMO is easy to describe mathematically and by that improves reproducibility across studies and software tools
 3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units.
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as MIMSunit, MAD, AI0.
-5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly.
+5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with. See also paragraph: [Published cut-points and how to use them]([#Published cut-points and how to use them).
 
 See also [this](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) blog post on this topic.
 

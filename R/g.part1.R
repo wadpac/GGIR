@@ -2,8 +2,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                    studyname = c(), myfun = c(),
                    params_metrics = c(), params_rawdata = c(),
                    params_cleaning = c(),
-                   params_general = c(), ...) {
-  
+                   params_general = c(), imputeTimegaps = TRUE, ...) {
+
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -19,11 +19,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   #get input variables (relevant when read.myacc.csv is used
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i], "=", input[i], sep="")
+      txt = paste(names(input)[i], "=", input[i], sep = "")
       if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+        txt = paste(names(input)[i], "='",unlist(input[i]), "'", sep = "")
       }
-      eval(parse(text=txt))
+      eval(parse(text = txt))
     }
   }
   if (length(datadir) == 0 | length(outputdir) == 0) {
@@ -40,76 +40,90 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) if (dir.exists(datadir) == FALSE) stop("\nDirectory specified by argument datadir, does not exist")
-
-  #Extra code to handle raw accelerometer data in Raw data format:
-  # list of all csv and bin files
-  fnames = datadir2fnames(datadir,filelist)
+  # list all accelerometer files
+  dir2fn = datadir2fnames(datadir,filelist)
+  fnames = dir2fn$fnames
+  fnamesfull = dir2fn$fnamesfull
+  # check whether these are movisens files
+  is.mv = ismovisens(datadir)
+  if (filelist == FALSE & is.mv == TRUE) {
+    fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
+    fnames = dir(datadir, recursive = FALSE)
+  }
   # check whether these are RDA
   if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
     useRDA = TRUE
   } else {
     useRDA = FALSE
   }
-  # check whether these are movisens files
-  is.mv = ismovisens(datadir)
+  if (useRDA == FALSE) {
+    filesizes = file.info(fnamesfull)$size # in bytes
+    bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
+    fnamesfull = fnamesfull[bigEnough]
+    fnames = fnames[bigEnough]
+  }
+  
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
       studyname = "mystudy"
       stop('\nError: studyname not specified in part1. Needed for analysing lists of files')
     } else {
-      outputfolder = paste("/output_",studyname,sep="")
+      outputfolder = paste0("/output_", studyname)
     }
   } else {
-    outputfolder = unlist(strsplit(datadir,"/"))
-    outputfolder = paste("/output_",outputfolder[length(outputfolder)],sep="")
+    outputfolder = unlist(strsplit(datadir, "/"))
+    outputfolder = paste0("/output_",outputfolder[length(outputfolder)])
   }
-  if (file.exists(paste(outputdir,outputfolder,sep=""))) {
+  if (file.exists(paste0(outputdir, outputfolder))) {
   } else {
-    dir.create(file.path(outputdir,outputfolder))
-    dir.create(file.path(outputdir,outputfolder,"meta"))
-    dir.create(file.path(outputdir,paste(outputfolder,"/meta",sep=""),"basic"))
+    dir.create(file.path(outputdir, outputfolder))
+    dir.create(file.path(outputdir, outputfolder, "meta"))
+    dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "basic"))
     if (length(params_cleaning[["selectdaysfile"]]) > 0) {
-      dir.create(file.path(outputdir,paste(outputfolder,"/meta",sep=""),"raw"))
+      dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "raw"))
     }
-    dir.create(file.path(outputdir,outputfolder,"results"))
-    dir.create(file.path(outputdir,paste(outputfolder,"/results",sep=""),"QC"))
+    dir.create(file.path(outputdir, outputfolder, "results"))
+    dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
   }
-  path3 = paste(outputdir,outputfolder,sep="") #where is output stored?
-  use.temp = TRUE;
+  path3 = paste0(outputdir, outputfolder) #where is output stored?
+  use.temp = TRUE
   daylimit = FALSE
-
-  #=================================================================
-  # Other parameters:
-  #--------------------------------
-  if (filelist == FALSE) {
-    fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv", full.names = TRUE),
-                   dir(datadir,recursive=TRUE,pattern="[.]bin", full.names = TRUE),
-                   dir(datadir,recursive=TRUE,pattern="[.]wav", full.names = TRUE),
-                   dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
-    if(is.mv == TRUE) {
-      fnamesfull = dir(datadir,recursive=TRUE,pattern="acc.bin", full.names = TRUE)
-      fnames = dir(datadir, recursive = FALSE)
-      }
-  } else {
-    fnamesfull = datadir
-  }
-  if (useRDA == FALSE) {
-    filesizes = file.info(fnamesfull)$size # in bytes
-    toosmall = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
-    fnamesfull = fnamesfull[toosmall]
-    fnames = fnames[toosmall]
-  }
-  if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
-    warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
-                   "at the moment GGIR is not able to process this file format.",
-                   "Please convert to csv format with ActiLife software."))
-  }
+# <<<<<<< HEAD
+#
+#   #=================================================================
+#   # Other parameters:
+#   #--------------------------------
+#   if (filelist == FALSE) {
+#     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv", full.names = TRUE),
+#                    dir(datadir,recursive=TRUE,pattern="[.]bin", full.names = TRUE),
+#                    dir(datadir,recursive=TRUE,pattern="[.]wav", full.names = TRUE),
+#                    dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
+#     if(is.mv == TRUE) {
+#       fnamesfull = dir(datadir,recursive=TRUE,pattern="acc.bin", full.names = TRUE)
+#       fnames = dir(datadir, recursive = FALSE)
+#       }
+#   } else {
+#     fnamesfull = datadir
+#   }
+#   if (useRDA == FALSE) {
+#     filesizes = file.info(fnamesfull)$size # in bytes
+#     toosmall = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
+#     fnamesfull = fnamesfull[toosmall]
+#     fnames = fnames[toosmall]
+#   }
+#   if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
+#     warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
+#                    "at the moment GGIR is not able to process this file format.",
+#                    "Please convert to csv format with ActiLife software."))
+#   }
+# =======
+# >>>>>>> master
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
     cat("\nChecking that user has read access permission for all files in data directory: No")
-    warning(paste0("\nThere are/is ",Nfile_without_readpermission,
+    warning(paste0("\nThere are/is ", Nfile_without_readpermission,
                    " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
   } else {
     cat("\nChecking that user has read access permission for all files in data directory: Yes")
@@ -124,16 +138,16 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     f16 = out[length(out)]
   }
   f17 = function(X) {
-    out = unlist(strsplit(X,"/"))
-    f17 = out[(length(out)-1)]
+    out = unlist(strsplit(X, "/"))
+    f17 = out[(length(out) - 1)]
   }
-  tmp5 = tmp6 = rep(0,length(fnamesfull))
+  tmp5 = tmp6 = rep(0, length(fnamesfull))
   if (length(fnamesfull) > 0) {
-    if(is.mv == FALSE) {
-      fnamesshort = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f16)
-      phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+    if (is.mv == FALSE) {
+      fnamesshort = apply(X = as.matrix(fnamesfull),MARGIN = 1, FUN = f16)
+      phase = apply(X = as.matrix(fnamesfull), MARGIN = 1, FUN = f17)
       for (i in 1:length(fnames)) {
-        ff = unlist(strsplit(fnames[i],"/"))
+        ff = unlist(strsplit(fnames[i], "/"))
         ff = ff[length(ff)]
         if (length(which(fnamesshort == ff)) > 0) {
           tmp5[i] = fnamesfull[which(fnamesshort == ff)]
@@ -142,9 +156,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       }
     } else if (is.mv == TRUE) {
       tmp5 = fnamesfull
-      phase = apply(X=as.matrix(fnamesfull),MARGIN=1,FUN=f17)
+      phase = apply(X = as.matrix(fnamesfull), MARGIN = 1, FUN = f17)
       tmp6 = phase
-      }
+    }
   } else {
     stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
                 "in the directory specified with argument datadir"))
@@ -159,7 +173,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   #========================================================================
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
-  ffdone = fdone = dir(paste(outputdir,outputfolder,"/meta/basic",sep=""))
+  ffdone = fdone = dir(paste0(outputdir, outputfolder, "/meta/basic"))
 
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
@@ -180,9 +194,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       Nmetrics2calc = sum(unlist(params_metrics[c("do.anglex", "do.angley", "do.anglez",
                                        "do.zcx", "do.zcy", "do.zcz",
                                        "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
-                                       "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z", 
-                                       "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z", 
-                                       "do.bfen", "do.hfen", "do.hfenplus", "do.lfen", 
+                                       "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
+                                       "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
+                                       "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
                                        "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
                                        "do.bfx", "do.bfy", "do.bfz")]))
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
@@ -197,7 +211,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
       }
       if (length(maxNcores) == 0) maxNcores = Ncores
-      Ncores2use = min(c(Ncores-1, maxNcores))
+      Ncores2use = min(c(Ncores - 1, maxNcores))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
 
@@ -224,7 +238,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                          "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                          "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                          "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                         "g.extractheadervars")
+                         "g.extractheadervars", "g.imputeTimegaps")
     errhand = 'stop'
     # Note: This will not work for cwa files, because those also need Rcpp functions.
     # So, it is probably best to turn off parallel when debugging cwa data.
@@ -448,8 +462,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                               minloadcrit = params_rawdata[["minloadcrit"]],
                               printsummary = params_rawdata[["printsummary"]],
                               chunksize = params_rawdata[["chunksize"]],
-                              windowsizes = params_general[["windowsizes"]], selectdaysfile = params_cleaning[["selectdaysfile"]], 
-                              dayborder = params_general[["dayborder"]], desiredtz = params_general[["desiredtz"]],  
+                              windowsizes = params_general[["windowsizes"]], selectdaysfile = params_cleaning[["selectdaysfile"]],
+                              dayborder = params_general[["dayborder"]], desiredtz = params_general[["desiredtz"]],
                               configtz = params_general[["configtz"]],
                               rmc.dec = params_rawdata[["rmc.dec"]],
                               rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
@@ -491,26 +505,26 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       do.hfenplus=params_metrics[["do.hfenplus"]],
                       do.mad=params_metrics[["do.mad"]],
                       do.anglex=params_metrics[["do.anglex"]],
-                      do.angley=params_metrics[["do.angley"]], 
+                      do.angley=params_metrics[["do.angley"]],
                       do.anglez=params_metrics[["do.anglez"]],
                       do.roll_med_acc_x=params_metrics[["do.roll_med_acc_x"]],
                       do.roll_med_acc_y=params_metrics[["do.roll_med_acc_y"]],
                       do.roll_med_acc_z=params_metrics[["do.roll_med_acc_z"]],
-                      do.dev_roll_med_acc_x=params_metrics[["do.dev_roll_med_acc_x"]], 
-                      do.dev_roll_med_acc_y=params_metrics[["do.dev_roll_med_acc_y"]], 
+                      do.dev_roll_med_acc_x=params_metrics[["do.dev_roll_med_acc_x"]],
+                      do.dev_roll_med_acc_y=params_metrics[["do.dev_roll_med_acc_y"]],
                       do.dev_roll_med_acc_z=params_metrics[["do.dev_roll_med_acc_z"]],
                       do.enmoa=params_metrics[["do.enmoa"]],
                       do.lfx=params_metrics[["do.lfx"]], do.lfy=params_metrics[["do.lfy"]],
-                      do.lfz=params_metrics[["do.lfz"]], do.hfx=params_metrics[["do.hfx"]], 
+                      do.lfz=params_metrics[["do.lfz"]], do.hfx=params_metrics[["do.hfx"]],
                       do.hfy=params_metrics[["do.hfy"]], do.hfz=params_metrics[["do.hfz"]],
-                      do.bfx=params_metrics[["do.bfx"]], do.bfy=params_metrics[["do.bfy"]], 
-                      do.bfz=params_metrics[["do.bfz"]], do.zcx=params_metrics[["do.zcx"]], 
+                      do.bfx=params_metrics[["do.bfx"]], do.bfy=params_metrics[["do.bfy"]],
+                      do.bfz=params_metrics[["do.bfz"]], do.zcx=params_metrics[["do.zcx"]],
                       do.zcy=params_metrics[["do.zcy"]], do.zcz=params_metrics[["do.zcz"]],
                       lb = params_metrics[["lb"]], hb = params_metrics[["hb"]],
                       n = params_metrics[["n"]],
                       desiredtz=params_general[["desiredtz"]], daylimit=daylimit, windowsizes=params_general[["windowsizes"]],
                       tempoffset=C$tempoffset, scale=C$scale, offset=C$offset,
-                      meantempcal=C$meantempcal, 
+                      meantempcal=C$meantempcal,
                       chunksize=params_rawdata[["chunksize"]],
                       selectdaysfile=params_cleaning[["selectdaysfile"]],
                       outputdir=outputdir,
@@ -543,7 +557,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       rmc.noise = params_rawdata[["rmc.noise"]],
                       rmc.doresample = params_rawdata[["rmc.doresample"]],
                       interpolationType = params_rawdata[["interpolationType"]],
-                      myfun=myfun)
+                      myfun=myfun,
+                      imputeTimegaps = imputeTimegaps)
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
@@ -561,6 +576,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         # as metadatdir is not known derive it:
         metadatadir = c()
         if (length(datadir) > 0) {
+          
           # list of all csv and bin files
           if (is.mv == TRUE) {
             for (filei in 1:length(fnames)) {
@@ -568,7 +584,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
             }
             fnames = unique(fnames)
           } else if(is.mv == FALSE){
-            fnames = datadir2fnames(datadir,filelist) #GGIR::
+            dir2fn = datadir2fnames(datadir,filelist) #GGIR::
+            fnames = dir2fn$fnames
           }
           # check whether these are RDA
           if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {

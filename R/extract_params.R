@@ -44,6 +44,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
     params = load_params(group = "general")
     params_general = params$params_general
   }
+  
   #==================================================================================
   # Overwrite them by arguments provided via configuration file
   if (length(configfile_csv) > 0) {
@@ -101,7 +102,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
           if (newValue[1] != "notfound" & varName %in% c("f0", "f1", "studyname", "datadir", 
                                                       "outputdir", "do.report", "R_version",
                                                       "GGIR_version", "GGIRversion", "config_file", "mode",
-                                                      "config_file_in_outputdir") == FALSE) {
+                                                      "config_file_in_outputdir", "imputeTimegaps") == FALSE) {
             if (varName %in% names(params_general)) {
               params_general[[varName]] = newValue
             } else {

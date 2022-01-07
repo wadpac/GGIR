@@ -109,6 +109,13 @@
       criterror specifies the number of minimum number of hours difference
       between sleep log and  accelerometer estimate for the night to be
       included in the visualisation.
+    \item{visualreport}{
+      If TRUE then generate visual report based on combined output from part 2
+      and 4. This is in beta-version at the moment.
+    }
+    \item{viewingwindow}{
+      Centre the day as displayed around noon (value = 1) or around midnight (value = 2)
+    }
   }
   \cr
   Explanation of parameters related to physical activity that are not documented elsewhere in the technical manual.

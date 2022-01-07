@@ -1,9 +1,8 @@
 g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = c(), f0 = 1, f1 = 0,
-                        do.report = c(2), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
-                        configfile = c(), myfun = c(), ...) {
+                        do.report = c(2), configfile = c(), myfun = c(), ...) {
   #get input variables
   input = list(...)
-  
+
   # Check for duplicated arguments
   if (length(input) > 0) {
     if (length(input) > 1) {
@@ -21,7 +20,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
       }
     }
   }
-  
+
   #===========================
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
@@ -35,7 +34,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (derivef0f1 == TRUE) { # What file to start with?
     f0 = 1
     if (filelist == FALSE) {  # What file to end with?
-      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa|cw)")) # modified by JH
+      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
     }
@@ -52,13 +51,15 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
-  
+
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
-    fnames = datadir2fnames(datadir,filelist)
+    dir2fn = datadir2fnames(datadir,filelist)
+    fnames = dir2fn$fnames
+    fnamesfull = dir2fn$fnamesfull
     # check whether these are RDA
-    if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
+    if (length(unlist(strsplit(fnames[1], "[.]RD"))) > 1) {
       useRDA = TRUE
     } else {
       useRDA = FALSE
@@ -72,7 +73,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-  
+
   # Configuration file - check whether it exists or auto-load
   configfile_csv = c()
   ex = "csv"
@@ -101,7 +102,8 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
       }
     }
   }
-  
+  if (exists("imputeTimegaps") == FALSE)  imputeTimegaps = TRUE
+
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
   params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
@@ -117,13 +119,13 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (dopart3 == TRUE) {
     params_metrics[["do.anglez"]] = TRUE
   }
-  
+
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
             " user from specifying argument myfun as this poses a security risk.")
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-  
+
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = ""
@@ -148,7 +150,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
   cat("\n     (6) How you post-processed / cleaned GGIR output")
   cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
-  
+
   #-----------------------------------------------------------
   # Now run GGIR parts 1-5
   print_console_header = function(headerTitle) {
@@ -156,15 +158,16 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat(paste0(rep('_', options()$width), collapse = ''))
     cat("\n",headerTitle,"\n")
   }
-  
+
   if (dopart1 == TRUE) {
     print_console_header("Part 1")
-    g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1, 
-            studyname = studyname, myfun = myfun, 
+    g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
+            studyname = studyname, myfun = myfun,
             params_rawdata = params_rawdata, params_metrics = params_metrics,
-            params_cleaning = params_cleaning, params_general = params_general)
+            params_cleaning = params_cleaning, params_general = params_general,
+            imputeTimegaps = imputeTimegaps)
   }
-  
+
   if (dopart2 == TRUE) {
     print_console_header("Part 2")
     if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/basic")))
@@ -174,7 +177,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             params_output = params_output,
             params_general = params_general)
   }
-  
+
   if (dopart3 == TRUE) {
     print_console_header("Part 3")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
@@ -185,7 +188,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   if (dopart4 == TRUE) {
     print_console_header("Part 4")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
-    g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1, 
+    g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_sleep = params_sleep, params_metrics = params_metrics,
             params_general = params_general, params_output = params_output,
             params_cleaning = params_cleaning)
@@ -206,7 +209,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
                           "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
-                          "print_console_header", "configfile_csv", "myfun", "ex") == FALSE)]
+                          "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull") == FALSE)]
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters))
   if (dir.exists(metadatadir)) {
@@ -219,7 +222,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   #==========================
   # Report generation:
   # check a few basic assumptions before continuing
-  if (length(which(do.report == 4 | do.report == 5)) > 0 | visualreport == TRUE) {
+  if (length(which(do.report == 4 | do.report == 5)) > 0 | params_output[["visualreport"]] == TRUE) {
     if (file.exists(paste0(metadatadir,"/meta/ms4.out"))) {
     } else {
       cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
@@ -270,7 +273,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
                    week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                    LUX_day_segments = params_247[["LUX_day_segments"]])
   }
-  if (visualreport == TRUE) {
+  if (params_output[["visualreport"]] == TRUE) {
     print_console_header("Generate visual reports")
     g.plot5(metadatadir = metadatadir, f0 = f0, f1 = f1,
             dofirstpage = params_output[["dofirstpage"]],

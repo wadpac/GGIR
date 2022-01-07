@@ -28,7 +28,7 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
           do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
           lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
           dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
-          interpolationType=1,
+          interpolationType=1, imputeTimegaps = TRUE,
                      ...)
 }
 \arguments{
@@ -87,7 +87,7 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   }
   \item{do.hfen}{
     if TRUE, calculate metric HFEN with low-pass filter configuration
-    set by \code{hb}. For computation specifics see source code of 
+    set by \code{hb}. For computation specifics see source code of
     function \link{g.applymetrics}.
   }
   \item{do.hfenplus}{
@@ -96,7 +96,7 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     see source code of function \link{g.applymetrics}.
   }
   \item{do.mad}{
-    if TRUE, calculate metric MAD (Mean Amplitude Deviarion). For 
+    if TRUE, calculate metric MAD (Mean Amplitude Deviarion). For
     computation specifics see source code of function \link{g.applymetrics}.
   }
   \item{do.anglex}{
@@ -136,7 +136,7 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     For computation specifics see source code of function \link{g.applymetrics}.
   }
   \item{do.dev_roll_med_acc_y}{
-    if TRUE, calculate deviations from rolling median for the y axis. For 
+    if TRUE, calculate deviations from rolling median for the y axis. For
     computation specifics see source code of function \link{g.applymetrics}.
   }
   \item{do.dev_roll_med_acc_z}{
@@ -249,7 +249,11 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     Integer to indicate type of interpolation to be used when resampling
     time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour
   }
-  
+  \item{imputeTimegaps}{
+    Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
+    Currently onlly used for .gt3x data, where timegaps can be expected as a result of
+    Actigraph's sleep.mode.
+  }
   \item{...}{
     Please ignore. Only used by the code internally when called from within
     g.part1 with selectdaysfile specific.

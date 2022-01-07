@@ -2,14 +2,6 @@ library(GGIR)
 context("g.part1")
 test_that("Part 1 can run with all metrics", {
   skip_on_cran()
-  
-  
-  library(testthat)
-  dirR = "~/GGIR/R"
-  ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
-  for (i in 1:length(ffnames)) {
-    source(paste0(dirR,"/", ffnames[i])) #loading scripts for reading geneactiv data
-  }
   #=======================
   # Part 1 with all metrics
   Ndays = 2
@@ -38,8 +30,8 @@ test_that("Part 1 can run with all metrics", {
   expect_that(round(mean(M$metashort$LFENMO), digits = 4), equals(0.0442))
   expect_that(round(mean(M$metashort$HFENplus), digits = 4), equals(0.0904))
   expect_that(round(mean(M$metashort$MAD), digits = 4), equals(0.0073))
-  expect_that(round(mean(M$metashort$ZCX), digits = 4), equals(17.4165))
-   
+  expect_that(round(mean(M$metashort$ZCX), digits = 2), equals(17.42))
+
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
