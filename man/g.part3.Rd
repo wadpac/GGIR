@@ -34,15 +34,19 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
     See details \link{applyExtFunction}.
   }
   \item{params_sleep}{
-    List of parameters used for sleep analysis:
-    anglethreshold (character, see \link{g.sib.det}), timethreshold (character, see \link{g.sib.det}),
-    ignorenonwear (character, see \link{g.sib.sum}), constrain2range (character, see \link{g.sib.det}),
-    HASPT.algo (character, see \link{HASPT}),
-    HASIB.algo (character, see \link{HASIB}), Sadeh_axis (character, see \link{g.sib.det}),
-    longitudinal_axis (integer, see \link{g.sib.det}), HASPT.ignore.invalid (boolean, see \link{HASPT}),
-    def.noc.sleep (vector, see details); relyonguider, relyonsleeplog (all boolean, see details); sleeplogsep (character, \link{g.loadlog}), 
-    sleepwindowType (character, see details); possible_nap_window (numeric, see \link{g.part5.classifyNaps}), possible_nap_dur      (numeric, see \link{g.part5.classifyNaps});  nap_model (character, see \link{g.part5.classifyNaps})
-    nnight.
+    List of parameters used for sleep analysis in GGIRpart3 and GGIRpart4:
+    Boolean parameters to be included are: ignorenonwear (see \link{g.sib.sum}); 
+    constrain2range (see \link{g.sib.det}); HASPT.ignore.invalid (see \link{HASPT});
+    relyonguider, relyonsleeplog (see details); 
+    Character parameters to be included are: HASPT.algo (see \link{HASPT});
+    HASIB.algo (see \link{HASIB}); Sadeh_axis (see \link{g.sib.det});
+    sleeplogsep (\link{g.loadlog}); sleepwindowType (see details); 
+    nap_model (see \link{g.part5.classifyNaps})
+    Numeric parameters to be included are:
+    longitudinal_axis, anglethreshold, timethreshold (see \link{g.sib.det}),
+    def.noc.sleep (see details), possible_nap_window, 
+    possible_nap_dur (see \link{g.part5.classifyNaps}); colid, coln1,
+    sleeplogidnum, nnights (see details).
   }
   \item{params_metrics}{
     List of parameters used for metrics extraction (GGIR part 1): see documentation \link{g.part1}.
@@ -59,7 +63,7 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
   }
 }
 \details{
-  Explanation of sleep analysis parameters that are not documented elsewhere in the technical manual.
+  params_sleep parameters not documented elsewhere:
   \cr
   \itemize{
     \item \code{relyonguider} If TRUE then sleep onset and waking time are defined based on
@@ -84,6 +88,25 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
       Character to indicate type of sleeplog, default "SPT".
       Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
       of sleep latency and sleep efficiency.
+    \item \code{nnights}  
+      Number of nights for which sleep log information should be available. 
+      It assumes that this is constant within a study. If sleep log information
+      is missing for certain nights then leave these blank.
+    \item \code{loglocation}  Location of the spreadsheet (csv) with sleep log
+      information. The spreadsheet needs to have the following structure: 
+      one column for participant ID, and then followed by alternatingly one
+      column for onset time and one column for waking time. There can be multiple
+      sleeplogs in the same spreadsheet. The first raw of the spreadsheet needs to
+      be filled with column names, it does not matter what these column names are.
+      Timestamps are to be stored without date as in hh:mm:ss. If onset corresponds
+      to lights out or intention to fall asleep, then it is the end-users
+      responsibility to account for this in the interpretation of the results.
+      \item \code{colid} Column number in the sleep log spreadsheet in which
+        the participant ID code is stored (default = 1)
+      \item \code{coln1} Column number in the sleep log spreadsheet where 
+        the onset of the first night starts
+      \item \code{sleeplogidnum} Should the participant identifier as stored in
+        the sleeplog be interpretted as a number (TRUE=default) or character (FALSE)?
   }
 }
 \value{

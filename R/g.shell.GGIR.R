@@ -1,5 +1,7 @@
-g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = c(), f0 = 1, f1 = 0,
-                        do.report = c(2), configfile = c(), myfun = c(), ...) {
+g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
+                        studyname = c(), f0 = 1, f1 = 0,
+                        do.report = c(2), configfile = c(),
+                        myfun = c(), ...) {
   #get input variables
   input = list(...)
 
@@ -102,8 +104,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
       }
     }
   }
-  if (exists("do.brondcounts") == FALSE)  do.brondcounts = FALSE
-  if (exists("imputeTimegaps") == FALSE)  imputeTimegaps = TRUE
 
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
@@ -117,7 +117,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
   params_output = params$params_output
   params_general = params$params_general
 
-  if (dopart3 == TRUE) {
+  if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE) {
     params_metrics[["do.anglez"]] = TRUE
   }
 
@@ -165,9 +165,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
             studyname = studyname, myfun = myfun,
             params_rawdata = params_rawdata, params_metrics = params_metrics,
-            params_cleaning = params_cleaning, params_general = params_general,
-            do.brondcounts=do.brondcounts,
-            imputeTimegaps = imputeTimegaps)
+            params_cleaning = params_cleaning, params_general = params_general)
   }
 
   if (dopart2 == TRUE) {

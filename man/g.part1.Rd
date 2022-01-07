@@ -18,10 +18,9 @@
   that allows for operating g.part1 and g.part2.
 }
 \usage{
-g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
-        studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),
-        params_cleaning = c(), params_general = c(), imputeTimegaps = TRUE,
-        do.brondcounts = FALSE, ...)
+  g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
+          studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),
+          params_cleaning = c(), params_general = c(), ...)
 }
 
 \arguments{
@@ -46,57 +45,55 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     data directory. If datadir is a list of filenames then the studyname will be used
     as name for the analysis
   }
-  \item{do.brondcounts}{ see \link{g.getmeta}
-  }
-
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
   }
   \item{params_metrics}{
-    List of parameters used metrics:
-    Including Boolean indicators of which metrics to extract, as discussed in see \link{g.getmeta}):
-    do.anglex, do.angley, do.anglez, do.zcx, do.zcy, do.zcz, do.bfen, do.enmo, do.lfenmo, do.en,
-    do.hfen, do.hfenplus, do.mad, do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
-    do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z, do.enmoa,
-    do.lfen, do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,do.bfx, do.bfy, do.bfz.
-    Further, the list should included: lb, hb, and n (all numeric, see \link{g.getmeta})
+    List of parameters used in GGIRpart1 to extract signal metrics:
+    Boolean parameters to be included are: 
+    do.anglex, do.angley, do.anglez, do.zcx, do.zcy, do.zcz, do.enmo, do.lfenmo, do.en, 
+    do.mad,do.enmoa, do.roll_med_acc_x, do.roll_med_acc_y, do.roll_med_acc_z,
+    do.dev_roll_med_acc_x, do.dev_roll_med_acc_y, do.dev_roll_med_acc_z, 
+    do.bfen, do.hfen, do.hfenplus, do.lfen, do.lfx, do.lfy, do.lfz, do.hfx, do.hfy, do.hfz,
+    do.bfx, do.bfy, do.bfz, do.brondcounts (see \link{g.getmeta}).
+    Numeric parameters to be included are: lb, hb, and n.
   }
   \item{params_rawdata}{
-    List of parameters used for reading and pre-processing raw data:
-    do.cal (boolean, see details), chunksize (numeric, see \link{g.calibrate} and \link{g.getmeta}),
-    spherecrit (numeric, see \link{g.calibrate}),
-    minloadcrit (numeric, see \link{g.calibrate}), printsummary (boolean, see \link{g.calibrate}),
-    do.cal (boolean, see \link{g.calibrate}), backup.cal.coef (boolean, see details),
-    dynrange (numeric, see \link{g.getmeta}), minimumFileSizeMB (numeric, see details),
-    interpolationType (numeric, see \link{g.getmeta}), and all argument from function \link{read.myacc.csv}
-    that start with "rmc.".
+    List of parameters used in GGIRpart1 related to reading and pre-processing 
+    raw data, excluding parameters related to metrics as those are in
+    the params_metrics object.
+    Boolean parameters to be included are:
+    do.cal, imputeTimegaps (see details), printsummary (see \link{g.calibrate}).
+    Character paramerers to be included are: backup.cal.coef (see details).
+    Numeric parameters to be included are: chunksize (see \link{g.calibrate},
+    and \link{g.getmeta}); minloadcrit, spherecrit (see \link{g.calibrate});
+    dynrange, interpolationType (see \link{g.getmeta});
+    minimumFileSizeMB (see details), and; all arguments that start with
+    "rmc.". from function \link{read.myacc.csv}.
   }
   \item{params_cleaning}{
-    List of parameters releated to data cleaning, imputation or masking:
-    strategy, hrs.del.start, hrs.del.end, maxdur, ndayswindow (all numeric, see \link{g.impute})
-    includedaycrit (numeric, see \link{g.analyse}), do.imp (boolean, see details)
-    selectdaysfile (character, see \link{g.analyse})
-    TimeSegments2ZeroFile (character, see details), data_cleaning_file (character, see details)
-    excludefirstlast.part5 (boolean, see details),
-    includedaycrit.part5 (numeric, see \link{g.report.part5})
-    excludefirst.part4, excludelast.part4, excludefirstlast (boolean, see details),
-    includenightcrit (numeric, see details)
+    List of parameters used across all GGIR parts releated to data cleaning the data,
+    where cleaning refers to masking or imputing data:
+    Boolean parameters to be included are: excludefirst.part4, excludelast.part4,
+    excludefirstlast, do.imp, excludefirstlast.part5 (see details).
+    Character paramerers to be included are: selectdaysfile (see \link{g.analyse});
+    TimeSegments2ZeroFile, data_cleaning_file (see \link{g.impute}).
+    Numeric parameters to be included are: strategy, hrs.del.start, hrs.del.end, 
+    maxdur, ndayswindow (see \link{g.impute}); includedaycrit.part5 (see \link{g.report.part5}),
+    minimum_MM_length.part5, includenightcrit (see details);
+    includedaycrit (see \link{g.analyse}).
   }
   \item{params_general}{
-    List of general parameters used accors GGIR: overwrite (boolean, see details),
-    selectdaysfile (character, see details), configtz (character, see \link{g.getmeta}),
-    dayborder (numeric, see details),  do.parallel (boolean, see details), maxNcores (numeric, see details).
-    windowsizes, idloc (all numeric, see \link{g.analyse})
-    desiredtz (character, see \link{g.getmeta})
-    acc.metric (character, see details), part5_agg2_60seconds (boolean, see details)
-    print.filename (boolean, see details), sensor.location (character, see \link{g.sib.det})
+    List of general parameters used accors GGIR:
+    Boolean parameters to be included are: overwrite, do.parallel, 
+    part5_agg2_60seconds, print.filename (see details)
+    Character paramerers to be included are:  desiredtz,
+    configtz (see \link{g.getmeta}); sensor.location (see \link{g.sib.det});
+    acc.metric, selectdaysfile (see details).
+    Numeric parameters to be included are: dayborder, maxNcores (see details);
+    windowsizes, idloc (see \link{g.analyse}).
   }
-  \item{imputeTimegaps}{
-   Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
-   Currently onlly used for .gt3x data, where timegaps can be expected as a result of
-   Actigraph's sleep.mode.
- }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
     are working with a non-standard csv formatted files. To enable compatibility with older GGIR version,
@@ -104,7 +101,7 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   }
 }
 \details{
-  Explanation of rawdata parameters that are not documented elsewhere in the technical manual.
+  params_rawdata parameters not documented elsewhere:
   \cr
   \itemize{
     \item \code{backup.cal.coef} Default value is "retrieve".
@@ -136,10 +133,14 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       collects several MBs per hour, the default setting should only skip the very short files.
     \item \code{do.cal}  Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
       recommended setting is TRUE.
+    \item \code{imputeTimegaps}
+      Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
+      Currently onlly used for .gt3x data, where timegaps can be expected as a result of
+      Actigraph's sleep.mode.
   }
   \cr
 
-  Explanation of cleaning parameters that are not documented elsewhere in the technical manual.
+  params_cleaning parameters not documented elsewhere:
   \cr
   \itemize{
     \item \code{do.imp} Whether to impute missing values (e.g. suspected of monitor non-wear) or not
@@ -163,32 +164,36 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       If TRUE then the last night of the measurement are ignored for the sleep assessment.
     \item \code{includenightcrit} Minimum number of valid hours per night (24 hour window between
     noon and noon), used for sleep.
+    \item \code{minimum_MM_length.part5} Minimum length in hours of a MM day to be included
+    in the cleaned part 5 results.
   }
-
   \cr
-  Explanation of general parameters that are not documented elsewhere in the technical manual.
+  params_general parameters not documented elsewhere:
   \cr
   \itemize{
     \item \code{overwrite} Do you want to overwrite analysis for which milestone data exists?
       If overwrite=FALSE then milestone data from a previous analysis will
       be used if available and visual reports will not be created again.
-
-    \item \code{selectdaysfile} Do not used, this is legacy code for one specific data study. Character pointing at
-    a csv file holding the relationship between device serial numbers (first column) and measurement dates of interest
-    (second and third column). The date format should be dd/mm/yyyy. And the first row
-    if the csv file is assumed to have a character variable names, e.g. "serialnumber"
-    "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
-    directory in a new subfolder named 'raw'.
+    \item \code{selectdaysfile} Do not used, this is legacy code for one specific data study.
+      Character pointing at a csv file holding the relationship between device serial
+      numbers (first column) and measurement dates of interest
+      (second and third column). The date format should be dd/mm/yyyy. And the first row
+      if the csv file is assumed to have a character variable names, e.g. "serialnumber"
+      "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
+      directory in a new subfolder named 'raw'.
     \item \code{dayborder} Hour at which days start and end (default = 0), value = 4 would mean 4 am
-    \item \code{do.parallel} Boolean whether to use multi-core processing (only works if at least 4 CPU cores are available).
+    \item \code{do.parallel} Boolean whether to use multi-core processing
+      (only works if at least 4 CPU cores are available).
     \item \code{maxNcores} Maximum number of cores to use when argument do.parallel is set to true.
-    GGIR by default uses the maximum number of available cores, but this argument
-    allows you to set a lower maximum.
+      GGIR by default uses the maximum number of available cores, but this argument
+      allows you to set a lower maximum.
     \item \code{acc.metric}  Which one of the metrics do you want to consider to analyze L5.
     The metric of interest need to be calculated in M.
-    \item \code{part5_agg2_60seconds} Boolean whether to use aggregate epochs to 60 seconds as part of the part 5 analysis.
-    \item \code{print.filename} Whether to print the filename before before analysing it (default is FALSE).
-    Printing the filename can be useful to investigate problems (e.g. to verify that which file is being read).
+    \item \code{part5_agg2_60seconds} Boolean whether to use aggregate epochs to 60 seconds
+      as part of the part 5 analysis.
+    \item \code{print.filename} Whether to print the filename before before analysing
+      it (default is FALSE). Printing the filename can be useful to investigate
+      problems (e.g. to verify that which file is being read).
   }
 }
 \value{
@@ -208,16 +213,16 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
 \references{
   \itemize{
     \item van Hees VT, Gorzelniak L, Dean Leon EC, Eder M, Pias M, et al. (2013) Separating
-    Movement and Gravity Components in an Acceleration Signal and Implications for the
-    Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
-    doi:10.1371/journal.pone.0061691
+      Movement and Gravity Components in an Acceleration Signal and Implications for the
+      Assessment of Human Daily Physical Activity. PLoS ONE 8(4): e61691.
+      doi:10.1371/journal.pone.0061691
     \item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI,
-    White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
-    free-living physical activity assessment using local gravity and temperature:
-    an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
+      White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
+      free-living physical activity assessment using local gravity and temperature:
+      an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
     \item Aittasalo M, Vaha-Ypya H, Vasankari T, Husu P, Jussila AM, and Sievanen H. Mean
-    amplitude deviation calculated from raw acceleration data: a novel method for
-    classifying the intensity of adolescents physical activity irrespective of accelerometer
-    brand. BMC Sports Science, Medicine and Rehabilitation (2015).
+      amplitude deviation calculated from raw acceleration data: a novel method for
+      classifying the intensity of adolescents physical activity irrespective of accelerometer
+      brand. BMC Sports Science, Medicine and Rehabilitation (2015).
   }
 }

@@ -51,7 +51,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z", 
                        "do.bfen", "do.hfen", "do.hfenplus", "do.lfen", 
                        "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
-                       "do.bfx", "do.bfy", "do.bfz")
+                       "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")
     check_class("Metrics", params = params_metrics, parnames = boolean_params, parclass = "boolean")
     check_class("Metrics", params = params_metrics, parnames = c("hb", "lb", "n"), parclass = "numeric")
   }
@@ -61,7 +61,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
                        "rmc.col.temp", "rmc.col.time", "rmc.bitrate", "rmc.dynamic_range",
                        "rmc.sf", "rmc.col.wear", "rmc.noise")
-    boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample")
+    boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
+                       "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc", 
                          "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
                          "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
@@ -76,10 +77,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
-    boolean_params = c("do.sibreport")
     character_params = c("qwindow_dateformat")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
-    check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
     check_class("247", params = params_247, parnames = character_params, parclass = "character")
   }
   if (length(params_phyact) > 0) {

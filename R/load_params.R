@@ -1,4 +1,6 @@
-load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact", "cleaning", "output", "general")) {
+load_params = function(group = c("sleep", "metrics", "rawdata", 
+                                 "247", "phyact", "cleaning",
+                                 "output", "general")) {
   if (length(group) == 0) {
     warning("\nArgument group not specified in load_params")
   }
@@ -38,6 +40,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
                           do.lfx = FALSE, do.lfy = FALSE, do.lfz = FALSE,
                           do.hfx = FALSE, do.hfy = FALSE, do.hfz = FALSE,
                           do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE,
+                          do.brondcounts = FALSE,
                           hb = 15, lb = 0.2, n = 4)
   }
   if ("rawdata" %in% group) {
@@ -57,7 +60,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
       rmc.headername.recordingid = c(), rmc.header.structure = c(),
       rmc.check4timegaps = FALSE,  rmc.noise = c(),
       rmc.col.wear = c(), rmc.doresample = FALSE,
-      interpolationType = 1)
+      interpolationType = 1,
+      imputeTimegaps = TRUE)
   }
   if ("247" %in% group) {
     params_247 = list(qwindow = c(0,24), qlevels = c(),
@@ -67,7 +71,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
                       MX.ig.min.dur = 10, M5L5res = 10, winhr = 5, iglevels = c(),
                       LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000), 
                       LUX_cal_constant = c(), LUX_cal_exponent = c(), LUX_day_segments = c(),
-                      do.sibreport = FALSE, window.summary.size = 10)
+                      window.summary.size = 10, L5M5window = c(0, 24))
   }
   if ("phyact" %in% group) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
@@ -76,8 +80,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
                          boutcriter.mvpa = 0.8, threshold.lig = 40,
                          threshold.mod = 100, threshold.vig = 400,
                          boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
-                         boutdur.lig = c(1,5,10), frag.metrics = c(), bout.metric = 6,
-                         L5M5window = c(0, 24))
+                         boutdur.lig = c(1,5,10), frag.metrics = c(), bout.metric = 6)
   }
   if ("cleaning" %in% group) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,
@@ -109,7 +112,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata", "247", "phyact",
                           part5_agg2_60seconds = FALSE,
                           sensor.location = "wrist")
   }
-    # }
+  # }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

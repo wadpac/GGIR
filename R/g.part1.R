@@ -1,8 +1,7 @@
 g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                    studyname = c(), myfun = c(),
                    params_metrics = c(), params_rawdata = c(),
-                   params_cleaning = c(),
-                   params_general = c(), imputeTimegaps = TRUE, do.brondcounts = FALSE, ...) {
+                   params_cleaning = c(), params_general = c(), ...) {
 
   #----------------------------------------------------------
   # Extract and check parameters
@@ -89,36 +88,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   path3 = paste0(outputdir, outputfolder) #where is output stored?
   use.temp = TRUE
   daylimit = FALSE
-# <<<<<<< HEAD
-#
-#   #=================================================================
-#   # Other parameters:
-#   #--------------------------------
-#   if (filelist == FALSE) {
-#     fnamesfull = c(dir(datadir,recursive=TRUE,pattern="[.]csv", full.names = TRUE),
-#                    dir(datadir,recursive=TRUE,pattern="[.]bin", full.names = TRUE),
-#                    dir(datadir,recursive=TRUE,pattern="[.]wav", full.names = TRUE),
-#                    dir(datadir,recursive=TRUE,pattern="[.]cwa", full.names = TRUE))
-#     if(is.mv == TRUE) {
-#       fnamesfull = dir(datadir,recursive=TRUE,pattern="acc.bin", full.names = TRUE)
-#       fnames = dir(datadir, recursive = FALSE)
-#       }
-#   } else {
-#     fnamesfull = datadir
-#   }
-#   if (useRDA == FALSE) {
-#     filesizes = file.info(fnamesfull)$size # in bytes
-#     toosmall = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
-#     fnamesfull = fnamesfull[toosmall]
-#     fnames = fnames[toosmall]
-#   }
-#   if (length(dir(datadir,recursive=TRUE,pattern="[.]gt3")) > 0) {
-#     warning(paste0("\nA .gt3x file was found in directory specified by datadir, ",
-#                    "at the moment GGIR is not able to process this file format.",
-#                    "Please convert to csv format with ActiLife software."))
-#   }
-# =======
-# >>>>>>> master
+
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
@@ -188,7 +158,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   # THE LOOP TO RUN THROUGH ALL BINARY FILES AND PROCES THEM
   fnames = sort(fnames)
   if (params_general[["do.parallel"]] == TRUE) {
-    cores=parallel::detectCores()
+    cores = parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
       Nmetrics2calc = sum(unlist(params_metrics[c("do.anglex", "do.angley", "do.anglez",
@@ -244,8 +214,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     # So, it is probably best to turn off parallel when debugging cwa data.
   }
   `%myinfix%` = ifelse(params_general[["do.parallel"]], foreach::`%dopar%`, foreach::`%do%`) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
-                                .export=functions2passon, .errorhandling=errhand) %myinfix% {
+  output_list =foreach::foreach(i = f0:f1, .packages = packages2passon,
+                                .export = functions2passon, .errorhandling=errhand) %myinfix% {
     tryCatchResult = tryCatch({
       # for (i in f0:f1) { #f0:f1 #j is file index (starting with f0 and ending with f1)
       if (params_general[["print.filename"]] == TRUE) {
@@ -254,12 +224,12 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       if (filelist == TRUE) {
         datafile = as.character(fnames[i])
       } else {
-        datafile = paste(datadir,"/",fnames[i],sep="")
+        datafile = paste0(datadir,"/",fnames[i])
       }
       #=========================================================
       #check whether file has already been processed
       #by comparing filename to read with list of processed files
-      fnames_without = as.character(unlist(strsplit(as.character(fnames[i]),".csv"))[1])
+      fnames_without = as.character(unlist(strsplit(as.character(fnames[i]), ".csv"))[1])
       #remove / if it was a list
       fnames_without2 = fnames_without
       teimp = unlist(strsplit(as.character(fnames_without),"/"))
@@ -276,7 +246,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       if (length(ffdone) > 0) {
         ffdone_without = 1:length(ffdone) #dummy variable
         for (index in 1:length(ffdone)) {
-          ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]),".csv"))[1])
+          ffdone_without[index] = as.character(unlist(strsplit(as.character(ffdone[index]), ".csv"))[1])
         }
         if (length(which(ffdone_without == fnames_without)) > 0) {
           skip = 1 #skip this file because it was analysed before")
@@ -351,7 +321,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         #data_quality_report.csv does not exist and there is also no ot
         if (assigned.backup.cal.coef == FALSE) params_rawdata[["backup.cal.coef"]] = c()
         #--------------------------------------
-        if (params_rawdata[["do.cal"]] ==TRUE & useRDA == FALSE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
+        if (params_rawdata[["do.cal"]] == TRUE & useRDA == FALSE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
           # cat(paste0("\n",rep('-',options()$width),collapse=''))
           cat("\n")
           cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
@@ -389,13 +359,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                           rmc.col.wear = params_rawdata[["rmc.col.wear"]],
                           rmc.doresample = params_rawdata[["rmc.doresample"]])
         } else {
-          C = list(cal.error.end=0,cal.error.start=0)
-          C$scale=c(1,1,1)
-          C$offset=c(0,0,0)
-          C$tempoffset=  c(0,0,0)
+          C = list(cal.error.end = 0, cal.error.start = 0)
+          C$scale = c(1,1,1)
+          C$offset = c(0,0,0)
+          C$tempoffset =  c(0,0,0)
           C$QCmessage = "Autocalibration not done"
           C$npoints = 0
-          C$nhoursused= 0
+          C$nhoursused = 0
           C$use.temp = use.temp
         }
         if (turn.do.cal.back.on == TRUE) {
@@ -496,31 +466,31 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         #------------------------------------------------
         cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
         M = g.getmeta(datafile,
-                      do.bfen=params_metrics[["do.bfen"]],
-                      do.enmo=params_metrics[["do.enmo"]],
-                      do.lfenmo=params_metrics[["do.lfenmo"]],
-                      do.lfen=params_metrics[["do.lfen"]],
-                      do.en=params_metrics[["do.en"]],
-                      do.hfen=params_metrics[["do.hfen"]],
-                      do.hfenplus=params_metrics[["do.hfenplus"]],
-                      do.mad=params_metrics[["do.mad"]],
-                      do.anglex=params_metrics[["do.anglex"]],
-                      do.angley=params_metrics[["do.angley"]],
-                      do.anglez=params_metrics[["do.anglez"]],
-                      do.roll_med_acc_x=params_metrics[["do.roll_med_acc_x"]],
-                      do.roll_med_acc_y=params_metrics[["do.roll_med_acc_y"]],
-                      do.roll_med_acc_z=params_metrics[["do.roll_med_acc_z"]],
-                      do.dev_roll_med_acc_x=params_metrics[["do.dev_roll_med_acc_x"]],
-                      do.dev_roll_med_acc_y=params_metrics[["do.dev_roll_med_acc_y"]],
-                      do.dev_roll_med_acc_z=params_metrics[["do.dev_roll_med_acc_z"]],
-                      do.enmoa=params_metrics[["do.enmoa"]],
-                      do.lfx=params_metrics[["do.lfx"]], do.lfy=params_metrics[["do.lfy"]],
-                      do.lfz=params_metrics[["do.lfz"]], do.hfx=params_metrics[["do.hfx"]],
-                      do.hfy=params_metrics[["do.hfy"]], do.hfz=params_metrics[["do.hfz"]],
-                      do.bfx=params_metrics[["do.bfx"]], do.bfy=params_metrics[["do.bfy"]],
-                      do.bfz=params_metrics[["do.bfz"]], do.zcx=params_metrics[["do.zcx"]],
-                      do.zcy=params_metrics[["do.zcy"]], do.zcz=params_metrics[["do.zcz"]],
-                      do.brondcounts=do.brondcounts,
+                      do.bfen = params_metrics[["do.bfen"]],
+                      do.enmo = params_metrics[["do.enmo"]],
+                      do.lfenmo = params_metrics[["do.lfenmo"]],
+                      do.lfen = params_metrics[["do.lfen"]],
+                      do.en = params_metrics[["do.en"]],
+                      do.hfen = params_metrics[["do.hfen"]],
+                      do.hfenplus = params_metrics[["do.hfenplus"]],
+                      do.mad = params_metrics[["do.mad"]],
+                      do.anglex = params_metrics[["do.anglex"]],
+                      do.angley = params_metrics[["do.angley"]],
+                      do.anglez = params_metrics[["do.anglez"]],
+                      do.roll_med_acc_x = params_metrics[["do.roll_med_acc_x"]],
+                      do.roll_med_acc_y = params_metrics[["do.roll_med_acc_y"]],
+                      do.roll_med_acc_z = params_metrics[["do.roll_med_acc_z"]],
+                      do.dev_roll_med_acc_x = params_metrics[["do.dev_roll_med_acc_x"]],
+                      do.dev_roll_med_acc_y = params_metrics[["do.dev_roll_med_acc_y"]],
+                      do.dev_roll_med_acc_z = params_metrics[["do.dev_roll_med_acc_z"]],
+                      do.enmoa = params_metrics[["do.enmoa"]],
+                      do.lfx = params_metrics[["do.lfx"]], do.lfy = params_metrics[["do.lfy"]],
+                      do.lfz = params_metrics[["do.lfz"]], do.hfx = params_metrics[["do.hfx"]],
+                      do.hfy = params_metrics[["do.hfy"]], do.hfz = params_metrics[["do.hfz"]],
+                      do.bfx = params_metrics[["do.bfx"]], do.bfy = params_metrics[["do.bfy"]],
+                      do.bfz = params_metrics[["do.bfz"]], do.zcx = params_metrics[["do.zcx"]],
+                      do.zcy = params_metrics[["do.zcy"]], do.zcz = params_metrics[["do.zcz"]],
+                      do.brondcounts = params_metrics[["do.brondcounts"]],
                       lb = params_metrics[["lb"]], hb = params_metrics[["hb"]],
                       n = params_metrics[["n"]],
                       desiredtz=params_general[["desiredtz"]], daylimit=daylimit, windowsizes=params_general[["windowsizes"]],
@@ -559,7 +529,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       rmc.doresample = params_rawdata[["rmc.doresample"]],
                       interpolationType = params_rawdata[["interpolationType"]],
                       myfun=myfun,
-                      imputeTimegaps = imputeTimegaps)
+                      imputeTimegaps = params_rawdata[["imputeTimegaps"]])
         #------------------------------------------------
         cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
         # remove directory in filename if present
