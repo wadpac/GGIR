@@ -1,13 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-\section{Changes in version 2.5-4 (GitHub-only-release date:25-01-2022)}{
+\section{Changes in version 2.5-4 (GitHub-only-release date:12-01-2022)}{
 \itemize{
+  \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x.
+  \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed.
   \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it.
 }
 }
-\section{Changes in version 2.5-3 (GitHub-only-release date:25-12-2021)}{
+\section{Changes in version 2.5-3 (GitHub-only-release date:23-12-2021)}{
 \itemize{
   \item Part 1: Depricating function g.metric as its functionality has been taken over by g.applymetrics.
   \item Part 2: Adding warning when ID cannot be extracted from file based on argument idloc.
@@ -15,7 +16,6 @@
   \item Part 4: No longer an R warning is given when ID is missing in sleeplog, because this is common and user can already see it in csv reports.
 }
 }
-
 \section{Changes in version 2.5-2 (GitHub-only-release date:09-12-2021)}{
 \itemize{
   \item Part 3: Now makes sure that HASPT is skipped when user configures def.noc.sleep as a set time window. This

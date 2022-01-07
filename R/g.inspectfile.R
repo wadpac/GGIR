@@ -19,6 +19,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   # data formats:
   # 1 - bin; 2 - csv; 3 - wav
   # 4 - cwa; 5 - ad-hoc .csv
+  # 6 - gt3x
 
   if (length(which(ls() == "rmc.dec")) == 0) rmc.dec="."
   if (length(which(ls() == "rmc.firstrow.acc")) == 0) rmc.firstrow.acc = c()
@@ -51,6 +52,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
     tmp5 = unlist(strsplit(filename,"[.]cw"))
+    tmp6 = unlist(strsplit(filename,"[.]gt"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
       testcsv = read.csv(datafile,nrow=10,skip=10)
@@ -70,6 +72,9 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
     } else if (tmp5[length(tmp5)] == "a") { #this is a cwa file
       dformat = 4 #4 = cwa
       mon = 4 # Axivity
+    } else if (tmp6[length(tmp6)] == "3x") { #this is a cwa file
+      dformat = 6 #4 = cwa
+      mon = 3 # Axivity
     }
     is.mv = ismovisens(datafile)
     if (is.mv == TRUE){
@@ -188,15 +193,18 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
       H = PP$header
       sf = H$frequency
+    } else if (dformat == 6) { # gt3
+      info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
+      sf = info[["Sample Rate"]]
     }
-    invisible(list(dformat=dformat,mon=mon,sf=sf))
+    invisible(list(dformat = dformat, mon = mon, sf = sf))
   }
   #======================================================================
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea","geneactive","actigraph","axivity","movisens","verisense") #monitor names
-  fornames = c("bin","csv","wav","cwa","csv") #format names
+  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
+  fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
 
   if (length(filename) == 0) {
     print("no files to analyse")
@@ -301,6 +309,11 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
       H = data.frame(name=row.names(header),value=header, stringsAsFactors = TRUE)
     }
     sf = rmc.sf
+  } else if (dformat == 6) { # gt3x
+    info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
+    H = as.data.frame(info)
+    H = data.frame(name=names(H),value=as.character(H), stringsAsFactors = FALSE)
+    sf = as.numeric(H$value[which(H$name == "Sample.Rate")])
   }
   H = as.matrix(H)
   if (ncol(H) == 3 & dformat == 2 & mon == 3) {
@@ -345,7 +358,7 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   if (H[1,1] == "file does not have header") { #no header
                 header = "no header"
   }
-  if (mon == 3) {
+  if (mon == 3 & dformat != 6) {
     verisense_check = substr(colnames(read.csv(datafile,nrow=1)[1]),36,44)
     if (identical('Verisense',toString(verisense_check))) {
       mon = 6

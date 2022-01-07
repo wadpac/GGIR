@@ -20,7 +20,8 @@ export(g.analyse,g.calibrate,g.getmeta
        ismovisens, g.readtemp_movisens, g.conv.actlog,
        g.fragmentation, g.intensitygradient,
        g.part5.handle_lux_extremes, g.part5.lux_persegment, g.sibreport,
-       HASPT, HASIB, g.part4_extractid, CalcSleepRegularityIndex)
+       HASPT, HASIB, g.part4_extractid, CalcSleepRegularityIndex,
+       g.imputeTimegaps, read.gt3x_ggir, parseGT3Xggir)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
       "rect","axis.POSIXct", "barplot", "box", "legend",
@@ -34,3 +35,5 @@ importFrom("utils", "memory.limit", "memory.size", "tail")
 import(data.table)
 useDynLib(GGIR, .registration=TRUE)
 importFrom(Rcpp, sourceCpp)
+importFrom("utils", "unzip")
+useDynLib(GGIR)
