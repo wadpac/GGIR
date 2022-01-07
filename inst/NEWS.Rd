@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.5-4 (GitHub-only-release date:23-01-2022)}{
 \itemize{
-  \item Internal structure: Collections of arguments now passed on via parameter objects to simplify code.
+  \item Internal structure: Arguments now passed on via parameter objects to make code.
   }
 }
 \section{Changes in version 2.5-3 (GitHub-only-release date:23-12-2021)}{
