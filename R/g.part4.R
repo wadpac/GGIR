@@ -915,13 +915,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                           colb = rainbow(length(undef), start = 0.2, end = 0.4)
                         }
                         if (spocum.t[pli, 2] > spocum.t[pli, 3]) {
-                          rect(xleft = spocum.t[pli, 2], ybottom = (cnt + qbot), xright = 36, ytop = (cnt +
-                                                                                                        qtop), col = colb[defii], border = NA)  #lwd=0.2,
-                          rect(xleft = 12, ybottom = (cnt + qbot), xright = spocum.t[pli, 3], ytop = (cnt +
-                                                                                                        qtop), col = colb[defii], border = NA)  #lwd=0.2,
+                          rect(xleft = spocum.t[pli, 2], ybottom = (cnt + qbot), xright = 36, 
+                               ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
+                          rect(xleft = 12, ybottom = (cnt + qbot), xright = spocum.t[pli, 3], ytop = (cnt + qtop),
+                               col = colb[defii], border = NA)  #lwd=0.2,
                         } else {
-                          rect(xleft = spocum.t[pli, 2], ybottom = (cnt + qbot), xright = spocum.t[pli,
-                                                                                                   3], ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
+                          rect(xleft = spocum.t[pli, 2], ybottom = (cnt + qbot), xright = spocum.t[pli, 3],
+                               ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
                         }
                       }
                       SptWaken = SptWake
@@ -931,14 +931,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                       if (defi == undef[length(undef)]) {
                         # only plot log for last definition night sleeper
                         if (SptOnsetn > SptWaken) {
-                          rect(xleft = SptOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt +
-                                                                                                0.3), col = "black", border = TRUE, density = den)  #lwd=0.2,
-                          rect(xleft = 12, ybottom = (cnt - 0.3), xright = SptWaken, ytop = (cnt +
-                                                                                               0.3), col = "black", border = TRUE, density = den)  #lwd=0.2,
+                          rect(xleft = SptOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt + 0.3),
+                               col = "black", border = TRUE, density = den)  #lwd=0.2,
+                          rect(xleft = 12, ybottom = (cnt - 0.3), xright = SptWaken, ytop = (cnt + 0.3),
+                               col = "black", border = TRUE, density = den)  #lwd=0.2,
                         } else {
                           # day sleeper
-                          rect(xleft = SptOnsetn, ybottom = (cnt - 0.3), xright = SptWaken, ytop = (cnt +
-                                                                                                      0.3), col = "black", border = TRUE, density = den)  #lwd=0.2,
+                          rect(xleft = SptOnsetn, ybottom = (cnt - 0.3), xright = SptWaken, ytop = (cnt + 0.3),
+                               col = "black", border = TRUE, density = den)  #lwd=0.2,
                         }
                       }
                     }
@@ -977,12 +977,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 }  #run through definitions
                 if (params_output[["do.visual"]] == TRUE) {
                   if (cleaningcode < cleaningcriterion & doplot == TRUE) {
-                    # only increase count if there was bar plotted
                     lines(x = c(12, 36), y = c(cnt, cnt), lwd = 0.2, lty = 2)  #abline(h=cnt,lwd=0.2,lty=2)
                     if (daysleeper[j] == TRUE) {
                       lines(x = c(18, 18), y = c((cnt - 0.3), (cnt + 0.3)), lwd = 2, lty = 2, col = "black")
                     }
-                    cnt = cnt + 1
+                    # only increase count if there was bar plotted and it is the last definition
+                    if (defi == undef[length(undef)]) {
+                      cnt = cnt + 1
+                    }
                   }
                 }
               }
@@ -991,8 +993,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 colb_day = rainbow(length(undef), start = 0.2, end = 0.4)
                 colb = c(colb_spt, colb_day)
                 legnames = c(paste0("sib", undef, "_spt"), paste0("sib", undef, "_day"), "guider, e.g. diary")
-                legend("top", legend = legnames, density = c(rep(NA, 2 * length(undef)), 40), fill = c(colb,
-                                                                                                       "black"), border = c(colb, "black"), ncol = min(c(5, length(legnames))), cex = 0.7)
+                legend("top", legend = legnames, density = c(rep(NA, 2 * length(undef)), 40), fill = c(colb, "black"),
+                       border = c(colb, "black"), ncol = min(c(3, length(legnames))), cex = 0.7)
                 addlegend = FALSE
               }
             }

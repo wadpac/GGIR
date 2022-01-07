@@ -102,6 +102,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
       }
     }
   }
+  if (exists("do.brondcounts") == FALSE)  do.brondcounts = FALSE
   if (exists("imputeTimegaps") == FALSE)  imputeTimegaps = TRUE
 
   #----------------------------------------------------------
@@ -165,6 +166,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
             studyname = studyname, myfun = myfun,
             params_rawdata = params_rawdata, params_metrics = params_metrics,
             params_cleaning = params_cleaning, params_general = params_general,
+            do.brondcounts=do.brondcounts,
             imputeTimegaps = imputeTimegaps)
   }
 

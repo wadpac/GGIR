@@ -2,7 +2,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                    studyname = c(), myfun = c(),
                    params_metrics = c(), params_rawdata = c(),
                    params_cleaning = c(),
-                   params_general = c(), imputeTimegaps = TRUE, ...) {
+                   params_general = c(), imputeTimegaps = TRUE, do.brondcounts = FALSE, ...) {
 
   #----------------------------------------------------------
   # Extract and check parameters
@@ -62,7 +62,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     fnamesfull = fnamesfull[bigEnough]
     fnames = fnames[bigEnough]
   }
-  
+
   # create output directory if it does not exist
   if (filelist == TRUE | useRDA == TRUE) {
     if (length(studyname) == 0) {
@@ -198,7 +198,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                                        "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
                                        "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
                                        "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
-                                       "do.bfx", "do.bfy", "do.bfz")]))
+                                       "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")]))
       if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
         warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                        " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -520,6 +520,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                       do.bfx=params_metrics[["do.bfx"]], do.bfy=params_metrics[["do.bfy"]],
                       do.bfz=params_metrics[["do.bfz"]], do.zcx=params_metrics[["do.zcx"]],
                       do.zcy=params_metrics[["do.zcy"]], do.zcz=params_metrics[["do.zcz"]],
+                      do.brondcounts=do.brondcounts,
                       lb = params_metrics[["lb"]], hb = params_metrics[["hb"]],
                       n = params_metrics[["n"]],
                       desiredtz=params_general[["desiredtz"]], daylimit=daylimit, windowsizes=params_general[["windowsizes"]],
@@ -576,7 +577,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         # as metadatdir is not known derive it:
         metadatadir = c()
         if (length(datadir) > 0) {
-          
+
           # list of all csv and bin files
           if (is.mv == TRUE) {
             for (filei in 1:length(fnames)) {

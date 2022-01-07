@@ -1,5 +1,5 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
-                 time = c(), anglez = c(), ws3 = c(), zeroCrossingCount = c()) {
+                 time = c(), anglez = c(), ws3 = c(), zeroCrossingCount = c(), BrondCount = c()) {
   epochsize = ws3 #epochsize in seconds
   sumPerMinute = function(x, epochsize) {
     x2 = cumsum(c(0, x))
@@ -37,11 +37,11 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     return(sib_classification)
   }
   #===============================
-  
+  Nvalues = max(length(anglez),length(zeroCrossingCount), length(BrondCount))
   if (HASIB.algo == "vanHees2015") { # default
     cnt = 1
     Ndefs = length(timethreshold) * length(anglethreshold)
-    sib_classification = matrix(0,length(anglez), Ndefs)
+    sib_classification = matrix(0,Nvalues, Ndefs)
     for (i in timethreshold) {
       for (j in anglethreshold) {
         sdl1 = rep(0,length(time))
@@ -75,46 +75,71 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       }
     }
   } else if (HASIB.algo == "Sadeh1994") {
-    ZCpermin = sumPerMinute(zeroCrossingCount, epochsize = epochsize)
-    
-    ZCpermin_matrix = create_rollfun_mat(ZCpermin, Ncol = 11)
-    CalcSadehFT = function(x) {
-      MeanW5 = mean(x, na.rm = TRUE)
-      SDlast = sd(x[6:11]) #last five in this matrix means columns 6:11
-      NAT = length(which(x > 50 & x < 100))
-      LOGact = log(x[6] + 1)
-      return(data.frame(MeanW5 = MeanW5, SDlast = SDlast,
-                        NAT = NAT, LOGact = LOGact))
+    count_types = c()
+    if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
+    if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
+    sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
+    cti = 1
+    for (count_type in count_types) {
+      if (count_type == "zeroCrossingCount") {
+        Countpermin = sumPerMinute(zeroCrossingCount, epochsize = epochsize)
+      } else {
+        Countpermin = sumPerMinute(BrondCount, epochsize = epochsize)
+      }
+      Countpermin_matrix = create_rollfun_mat(Countpermin, Ncol = 11)
+      CalcSadehFT = function(x) {
+        MeanW5 = mean(x, na.rm = TRUE)
+        SDlast = sd(x[6:11]) #last five in this matrix means columns 6:11
+        NAT = length(which(x > 50 & x < 100))
+        LOGact = log(x[6] + 1)
+        return(data.frame(MeanW5 = MeanW5, SDlast = SDlast,
+                          NAT = NAT, LOGact = LOGact))
+      }
+      SadehFT1 = apply(X = Countpermin_matrix, MARGIN = 1, FUN = CalcSadehFT)
+      rm(Countpermin_matrix)
+      SadehFT = data.frame(matrix(unlist(SadehFT1), nrow = length(SadehFT1), byrow = TRUE))
+      rm(SadehFT1)
+      colnames(SadehFT) = c("MeanW5", "SDlast", "NAT", "LOGact")
+      # apply Sadeh algorithm
+      PS = 7.601 - (0.065 * SadehFT$MeanW5) - (1.08 * SadehFT$NAT) - (0.056 * SadehFT$SDlast) - (0.703 * SadehFT$LOGact)
+      PSscores = rep(0, length(PS))
+      PSsibs = which(PS >= 0)
+      if (length(PSsibs) > 0) {
+        PSscores[PSsibs] = 1
+      }
+      # resample to original resolution and ensure length matches length of time
+      sib_classification[,cti] = reformat_output(x = PSscores, time, epochsize)
+      colnames(sib_classification)[cti] = ifelse(test = count_type == "BrondCount",
+                                                 yes = paste0(HASIB.algo, "_Brond"),no=paste0(HASIB.algo, "_ZC"))
+      cti = cti + 1
     }
-    SadehFT1 = apply(X = ZCpermin_matrix, MARGIN = 1, FUN = CalcSadehFT)
-    rm(ZCpermin_matrix)
-    SadehFT = data.frame(matrix(unlist(SadehFT1), nrow = length(SadehFT1), byrow = TRUE))
-    rm(SadehFT1)
-    colnames(SadehFT) = c("MeanW5", "SDlast", "NAT", "LOGact")
-    # apply Sadeh algorithm
-    PS = 7.601 - (0.065 * SadehFT$MeanW5) - (1.08 * SadehFT$NAT) - (0.056 * SadehFT$SDlast) - (0.703 * SadehFT$LOGact)
-    PSscores = rep(0, length(PS))
-    PSsibs = which(PS >= 0)
-    if (length(PSsibs) > 0) {
-      PSscores[PSsibs] = 1
-    }
-    # resample to original resolution and ensure length matches length of time
-    sib_classification = reformat_output(x = PSscores, time, epochsize)
-    colnames(sib_classification)[1] = HASIB.algo
   } else if (HASIB.algo == "Galland2012") {  
-    # Aggregate per minute
-    ZCpermin = sumPerMinute(zeroCrossingCount, epochsize = epochsize)
-    mean_nonzero = mean(ZCpermin[which(ZCpermin != 0)])
-    CountScaled = ZCpermin / mean_nonzero
-    CountScaled_matrix = create_rollfun_mat(CountScaled, Ncol = 7)
-    # In next line I use intentionally a reversed order relative to Galland publication
-    # because our matrix is reversed relative to paper
-    WeightCounts = abs(rowSums(CountScaled_matrix * c(1,3,5:1))) * 2.7 
-    WeightCounts = WeightCounts[-c(1:2)] # remove first two time stamps, to align with 5th element (7-5=2)
-    GallandScore = rep(0, length(WeightCounts))
-    GallandScore[which(WeightCounts < 1)] = 1
-    sib_classification = reformat_output(x = GallandScore, time, epochsize)
-    colnames(sib_classification)[1] = HASIB.algo
+    count_types = c()
+    if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
+    if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
+    sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
+    cti = 1
+    for (count_type in count_types) {
+      # Aggregate per minute
+      if (count_type == "zeroCrossingCount") {
+        Countpermin = sumPerMinute(zeroCrossingCount, epochsize = epochsize)
+      } else {
+        Countpermin = sumPerMinute(BrondCount, epochsize = epochsize)
+      }
+      mean_nonzero = mean(Countpermin[which(Countpermin != 0)])
+      CountScaled = Countpermin / mean_nonzero
+      CountScaled_matrix = create_rollfun_mat(CountScaled, Ncol = 7)
+      # In next line I use intentionally a reversed order relative to Galland publication
+      # because our matrix is reversed relative to paper
+      WeightCounts = abs(rowSums(CountScaled_matrix * c(1,3,5:1))) * 2.7 
+      WeightCounts = WeightCounts[-c(1:2)] # remove first two time stamps, to align with 5th element (7-5=2)
+      GallandScore = rep(0, length(WeightCounts))
+      GallandScore[which(WeightCounts < 1)] = 1
+      sib_classification[,cti] = reformat_output(x = GallandScore, time, epochsize)
+      colnames(sib_classification)[cti] = ifelse(test = count_type == "BrondCount",
+                                                 yes = paste0(HASIB.algo, "_Brond"),no=paste0(HASIB.algo, "_ZC"))
+      cti = cti + 1
+    }
   }
   return(sib_classification)
 }

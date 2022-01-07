@@ -20,7 +20,8 @@
 \usage{
 g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),
-        params_cleaning = c(), params_general = c(), imputeTimegaps = TRUE, ...)
+        params_cleaning = c(), params_general = c(), imputeTimegaps = TRUE,
+        do.brondcounts = FALSE, ...)
 }
 
 \arguments{
@@ -44,6 +45,8 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     If the datadir is a folder then the study will be given the name of the
     data directory. If datadir is a list of filenames then the studyname will be used
     as name for the analysis
+  }
+  \item{do.brondcounts}{ see \link{g.getmeta}
   }
 
   \item{myfun}{
@@ -166,10 +169,10 @@ g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   Explanation of general parameters that are not documented elsewhere in the technical manual.
   \cr
   \itemize{
-    \item \code{overwrite} Do you want to overwrite analysis for which milestone data exists? 
-      If overwrite=FALSE then milestone data from a previous analysis will 
+    \item \code{overwrite} Do you want to overwrite analysis for which milestone data exists?
+      If overwrite=FALSE then milestone data from a previous analysis will
       be used if available and visual reports will not be created again.
-        
+
     \item \code{selectdaysfile} Do not used, this is legacy code for one specific data study. Character pointing at
     a csv file holding the relationship between device serial numbers (first column) and measurement dates of interest
     (second and third column). The date format should be dd/mm/yyyy. And the first row
