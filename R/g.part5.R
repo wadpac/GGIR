@@ -110,7 +110,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_247 = c(), params_phyact = c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
-                        fnames.ms3, fnames.ms4, sleeplog, logs_diaries, 
+                        fnames.ms3, sleeplog, logs_diaries, 
                         extractfilenames, referencefnames, folderstructure, fullfilenames, foldernam) {
     
     fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
@@ -995,7 +995,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_247, params_phyact,
                                                   params_cleaning, params_output,
                                                   params_general, ms5.out, ms5.outraw,
-                                                  fnames.ms3, fnames.ms4, sleeplog, logs_diaries, 
+                                                  fnames.ms3, sleeplog, logs_diaries, 
                                                   extractfilenames, referencefnames, folderstructure, fullfilenames, foldername)
                                      })
                                      return(tryCatchResult)
@@ -1015,7 +1015,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                  params_247, params_phyact,
                  params_cleaning, params_output,
                  params_general, ms5.out, ms5.outraw,
-                 fnames.ms3, fnames.ms4, sleeplog, logs_diaries, 
+                 fnames.ms3, sleeplog, logs_diaries, 
                  extractfilenames, referencefnames, folderstructure,
                  fullfilenames, foldername)
     }

@@ -266,39 +266,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         # cat(paste0("\n",rep('-',options()$width),collapse=''))
         cat("\n")
         cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-        C = g.calibrate(datafile, spherecrit = params_rawdata[["spherecrit"]],
-                        minloadcrit = params_rawdata[["minloadcrit"]],
-                        printsummary = params_rawdata[["printsummary"]],
-                        chunksize = params_rawdata[["chunksize"]],
-                        windowsizes = params_general[["windowsizes"]], selectdaysfile = params_cleaning[["selectdaysfile"]],
-                        dayborder = params_general[["dayborder"]],
-                        desiredtz = params_general[["desiredtz"]],
-                        configtz = params_general[["configtz"]],
-                        rmc.dec = params_rawdata[["rmc.dec"]],
-                        rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                        rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                        rmc.header.length = params_rawdata[["rmc.header.length"]],
-                        rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                        rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                        rmc.col.time = params_rawdata[["rmc.col.time"]],
-                        rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                        rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                        rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                        rmc.format.time = params_rawdata[["rmc.format.time"]],
-                        rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                        rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                        rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                        rmc.origin = params_rawdata[["rmc.origin"]],
-                        rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                        rmc.sf = params_rawdata[["rmc.sf"]],
-                        rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                        rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                        rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
-                        rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                        rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
-                        rmc.noise = params_rawdata[["rmc.noise"]],
-                        rmc.col.wear = params_rawdata[["rmc.col.wear"]],
-                        rmc.doresample = params_rawdata[["rmc.doresample"]])
+        C = g.calibrate(datafile,
+                        params_rawdata = params_rawdata,
+                        params_general = params_general,
+                        params_cleaning = params_cleaning)
       } else {
         C = list(cal.error.end = 0, cal.error.start = 0)
         C$scale = c(1,1,1)
@@ -366,41 +337,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         } else {
           # cat("\nNo matching filename found in backup.cal.coef\n")
           # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
-          if (params_rawdata[["do.cal"]] ==TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
+          if (params_rawdata[["do.cal"]] == TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
             cat("\n")
             cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
-            C = g.calibrate(datafile, spherecrit = params_rawdata[["spherecrit"]],
-                            minloadcrit = params_rawdata[["minloadcrit"]],
-                            printsummary = params_rawdata[["printsummary"]],
-                            chunksize = params_rawdata[["chunksize"]],
-                            windowsizes = params_general[["windowsizes"]], selectdaysfile = params_cleaning[["selectdaysfile"]],
-                            dayborder = params_general[["dayborder"]], desiredtz = params_general[["desiredtz"]],
-                            configtz = params_general[["configtz"]],
-                            rmc.dec = params_rawdata[["rmc.dec"]],
-                            rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                            rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                            rmc.header.length = params_rawdata[["rmc.header.length"]],
-                            rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                            rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                            rmc.col.time = params_rawdata[["rmc.col.time"]],
-                            rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                            rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                            rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                            rmc.format.time = params_rawdata[["rmc.format.time"]],
-                            rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                            rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                            rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                            rmc.origin = params_rawdata[["rmc.origin"]],
-                            rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                            rmc.sf = params_rawdata[["rmc.sf"]],
-                            rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                            rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                            rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
-                            rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                            rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
-                            rmc.noise = params_rawdata[["rmc.noise"]],
-                            rmc.doresample = params_rawdata[["rmc.doresample"]],
-                            interpolationType = params_rawdata[["interpolationType"]])
+            C = g.calibrate(datafile,
+                            params_rawdata = params_rawdata,
+                            params_general = params_general,
+                            params_cleaning = params_cleaning)
           }
         }
       }

@@ -1,58 +1,34 @@
 \name{g.calibrate}
 \alias{g.calibrate}
 \title{
-function to estimate calibration error and make recommendation for addressing it
+  function to estimate calibration error and make recommendation for addressing it
 }
 \description{
-Function starts by identifying ten second windows of non-movement. Next, the
-average acceleration per axis per window is used to estimate calibration error 
-(offset and scaling) per axis. The function provides recommended correction factors
-to address the calibration error and a summary of the callibration procedure.
+  Function starts by identifying ten second windows of non-movement. Next, the
+  average acceleration per axis per window is used to estimate calibration error 
+  (offset and scaling) per axis. The function provides recommended correction factors
+  to address the calibration error and a summary of the callibration procedure.
 }
 \usage{
-g.calibrate(datafile, spherecrit = 0.3,
-minloadcrit = 72, 
-printsummary = TRUE,chunksize=c(),windowsizes=c(5,900,3600),
-selectdaysfile=c(),
-dayborder=0, desiredtz = "", ...)
+  g.calibrate(datafile, params_rawdata = c(), params_general = c(),
+              params_cleaning = c(), ...)
 }
 \arguments{
   \item{datafile}{
-  name of accelerometer file
+    Name of accelerometer file
   }
-  \item{spherecrit}{
-  the minimum required acceleration value (in g) on both sides of 0 g
-for each axis. Used to judge whether the sphere is sufficiently populated
+  \item{params_rawdata}{
+    See \link{g.part1}
   }
-  \item{minloadcrit}{
-  the minimum number of hours the code needs to read for the
-autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs, 
-other values will be ceiled). After loading these hours only extra data is loaded 
-if calibration error has not been reduced to under 0.01 g.
+  \item{params_general}{
+    See \link{g.part1}
   }
-  \item{printsummary}{
-  if TRUE will print a summary when done
-  }
-  \item{chunksize}{number between 0.2 and 1 to specificy the size of chunks to be 
-loaded as a fraction of a 12 hour period, e.g. 0.5 equals 6 hour chunks.
-The default is 1 (12 hrs). For machines with less than 4Gb of RAM memory a value
-below 1 is recommended.
-}
- \item{windowsizes}{
-  see \link{g.getmeta}
-}
-  \item{selectdaysfile}{
-  see \link{g.part1}
-  }
-  \item{dayborder}{
-  see \link{g.part1}
-  }
-   \item{desiredtz}{
-  see \link{g.getmeta}
+  \item{params_cleaning}{
+    See \link{g.part1}
   }
   \item{...}{
-   Please ignore. Only used by the code internally when called from within
-   g.part1 with selectdaysfile specific.
+     Any argument used in the previous version of g.calibrate, which will now
+     be used to overrule the arguments specified with the parameter objects.
   }  
 }
 \value{
@@ -69,30 +45,30 @@ below 1 is recommended.
   \item{\code{npoints}}{number of 10 second no-movement windows used to populate
   the sphere}
   \item{\code{nhoursused}}{number of hours of measurement data scanned to find
-  the ten second time windows with no movement}
+    the ten second time windows with no movement}
   \item{\code{meantempcal}}{mean temperature corresponding to the data as used for 
-autocalibration. Only applies to data collected with GENEActiv monitor. 
+    autocalibration. Only applies to data collected with GENEActiv monitor. 
   }
 }
 \examples{
-\dontrun{
-datafile = "C:/myfolder/testfile.bin"
-
-#Apply autocalibration:
-C = g.calibrate(datafile)
-print(C$scale)
-print(C$offset)
-}
+  \dontrun{
+    datafile = "C:/myfolder/testfile.bin"
+    
+    #Apply autocalibration:
+    C = g.calibrate(datafile)
+    print(C$scale)
+    print(C$offset)
+  }
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
   Zhou Fang
 }
 \references{
-\itemize{
-\item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, 
-White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
-free-living physical activity assessment using local gravity and temperature: 
-an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
-}
+  \itemize{
+    \item van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, 
+    White T, Wareham NJ, Brage S. Auto-calibration of accelerometer data for
+    free-living physical activity assessment using local gravity and temperature: 
+    an evaluation on four continents. J Appl Physiol (1985). 2014 Aug 7
+  }
 }

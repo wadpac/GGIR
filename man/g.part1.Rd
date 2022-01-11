@@ -64,10 +64,10 @@
     raw data, excluding parameters related to metrics as those are in
     the params_metrics object.
     Boolean parameters to be included are:
-    do.cal, imputeTimegaps (see details), printsummary (see \link{g.calibrate}).
+    do.cal, imputeTimegaps (see details), printsummary (see details).
     Character paramerers to be included are: backup.cal.coef (see details).
-    Numeric parameters to be included are: chunksize (see \link{g.calibrate},
-    and \link{g.getmeta}); minloadcrit, spherecrit (see \link{g.calibrate});
+    Numeric parameters to be included are: chunksize (see details),
+    and \link{g.getmeta}); minloadcrit, spherecrit (see details);
     dynrange, interpolationType (see \link{g.getmeta});
     minimumFileSizeMB (see details), and; all arguments that start with
     "rmc.". from function \link{read.myacc.csv}.
@@ -131,12 +131,25 @@
       default 2MB. This argument can help
       to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
       collects several MBs per hour, the default setting should only skip the very short files.
-    \item \code{do.cal}  Whether to apply auto-calibration or not, see \link{g.calibrate}. Default and
+    \item \code{do.cal}  Whether to apply auto-calibration or not, done by \link{g.calibrate}. Default and
       recommended setting is TRUE.
     \item \code{imputeTimegaps}
       Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
       Currently onlly used for .gt3x data, where timegaps can be expected as a result of
       Actigraph's sleep.mode.
+    \item \code{spherecrit} The minimum required acceleration value (in g) on both sides of 0 g
+      for each axis. Used to judge whether the sphere is sufficiently populated
+    \item \code{minloadcrit} The minimum number of hours the code needs to read for the
+      autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs, 
+      other values will be ceiled). After loading these hours only extra data is loaded 
+      if calibration error has not been reduced to under 0.01 g.
+    \item \code{printsummary} If TRUE will print a summary when done
+    \item \code{chunksize} Number between 0.2 and 1 to specificy the size of chunks to be 
+      loaded as a fraction of a 12 hour period, e.g. 0.5 equals 6 hour chunks.
+      The default is 1 (12 hrs). For machines with less than 4Gb of RAM memory a value
+      below 1 is recommended.
+
+  
   }
   \cr
 
@@ -174,7 +187,7 @@
     \item \code{overwrite} Do you want to overwrite analysis for which milestone data exists?
       If overwrite=FALSE then milestone data from a previous analysis will
       be used if available and visual reports will not be created again.
-    \item \code{selectdaysfile} Do not used, this is legacy code for one specific data study.
+    \item \code{selectdaysfile} Do not use, this is legacy code for one specific data study.
       Character pointing at a csv file holding the relationship between device serial
       numbers (first column) and measurement dates of interest
       (second and third column). The date format should be dd/mm/yyyy. And the first row
@@ -194,6 +207,9 @@
     \item \code{print.filename} Whether to print the filename before before analysing
       it (default is FALSE). Printing the filename can be useful to investigate
       problems (e.g. to verify that which file is being read).
+      
+        
+      
   }
 }
 \value{
