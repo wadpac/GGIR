@@ -16,8 +16,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_output = params$params_output
   params_general = params$params_general
   #-----------------------------
-
-  snloc= 1
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) { 
@@ -36,13 +34,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     dir.create(file.path(metadatadir,ms2.out))
   }
   csvfolder = "/meta/csv"
-  if (params_output[["epochvalues2csv"]]==TRUE) {
-    if (file.exists(paste(metadatadir,csvfolder,sep="")) == FALSE) {
+  if (params_output[["epochvalues2csv"]] == TRUE) {
+    if (file.exists(paste0(metadatadir, csvfolder)) == FALSE) {
       dir.create(file.path(metadatadir,csvfolder))
     }
   }
-  fnames.ms2 = dir(paste(metadatadir,ms2.out,sep=""))
-  ffdone = fnames.ms2
+  ffdone = dir(paste0(metadatadir,ms2.out))
   #---------------------------------
   # house keeping variables
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
@@ -71,48 +68,19 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   
   #---------------------------------------
   cnt78 = 1
-  if (params_general[["do.parallel"]] == TRUE) {
-    cores=parallel::detectCores()
-    Ncores = cores[1]
-    if (Ncores > 3) {
-      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-      Ncores2use = min(c(Ncores-1, params_general[["maxNcores"]]))
-      cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
-      doParallel::registerDoParallel(cl)
-    } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
-      params_general[["do.parallel"]] = FALSE
-    }
-  }
-  t1 = Sys.time() # copied here
-  if (params_general[["do.parallel"]] == TRUE) {
-    cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
-  }
   
-  # check whether we are indevelopment mode:
-  GGIRinstalled = is.element('GGIR', installed.packages()[,1])
-  packages2passon = functions2passon = NULL
-  GGIRloaded = "GGIR" %in% .packages()
-  if (GGIRloaded) { #pass on package
-    packages2passon = 'GGIR'
-    errhand = 'pass'
-  } else { # pass on functions
-    functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight",
-                         "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
-                         "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
-                         "iso8601chartime2POSIX")
-    errhand = 'stop'
-  }
-  fe_dopar = foreach::`%dopar%`
-  fe_do = foreach::`%do%`
-  i = 0 # declare i because foreach uses it, without declaring it
-  `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
-  output_list =foreach::foreach(i=f0:f1, .packages = packages2passon,
-                                .export=functions2passon, .errorhandling=errhand, .verbose = F) %myinfix% { # the process can take easily 1 minute per file, so probably there is a time gain by doing it parallel
-    tryCatchResult = tryCatch({
-  # for (i in f0:f1) {
+  
+  #=========================================================
+  # Declare core functionality, which at the end of this g.part2 is either
+  # applied to the file in parallel with foreach or serially with a loop
+  main_part2 = function(i, ffdone, fnames, 
+                        metadatadir = c(), 
+                        myfun=c(), params_cleaning = c(), params_247 = c(),
+                        params_phyact = c(), params_output = c(), params_general = c(),
+                        path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
+                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78) {
     if (length(ffdone) > 0) {
-      if (length(which(ffdone == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))) > 0) {
+      if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
         skip = 1 #skip this file because it was analysed before")
       } else {
         skip = 0 #do not skip this file
@@ -121,8 +89,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    if (skip ==0) {
-      cat(paste0(" ",i))
+    if (skip == 0) {
+      cat(paste0(" ", i))
       M = c()
       filename_dir = c()
       filefoldername = c()
@@ -137,15 +105,16 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (length(params_cleaning[["TimeSegments2ZeroFile"]]) > 0) {
           TimeSegments2ZeroAll = read.csv(params_cleaning[["TimeSegments2ZeroFile"]])
           # Check whether this individual is part of the file
-          filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i],"eta_"))[2]))
+          filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))
           if (length(filei) > 0) {
             # If yes, load the timestamps that indicate the windows to be ignored
             TimeSegments2Zero = TimeSegments2ZeroAll[filei,]
             # Check that they fall withint the measurement
-            TimeSegments2Zero$windowstart = as.POSIXlt(TimeSegments2Zero$windowstart,tz=params_general[["desiredtz"]])
-            TimeSegments2Zero$windowend = as.POSIXlt(TimeSegments2Zero$windowend,tz=params_general[["desiredtz"]])
-            timespan0 = iso8601chartime2POSIX(M$metashort$timestamp[1], tz= params_general[["desiredtz"]])
-            timespan1 = iso8601chartime2POSIX(M$metashort$timestamp[nrow(M$metashort)], tz= params_general[["desiredtz"]])
+            TimeSegments2Zero$windowstart = as.POSIXlt(TimeSegments2Zero$windowstart,tz = params_general[["desiredtz"]])
+            TimeSegments2Zero$windowend = as.POSIXlt(TimeSegments2Zero$windowend,tz = params_general[["desiredtz"]])
+            timespan0 = iso8601chartime2POSIX(M$metashort$timestamp[1], tz = params_general[["desiredtz"]])
+            timespan1 = iso8601chartime2POSIX(M$metashort$timestamp[nrow(M$metashort)],
+                                              tz = params_general[["desiredtz"]])
             validtimes = which(TimeSegments2Zero$windowstart > timespan0 &
                                  TimeSegments2Zero$windowend < timespan1)
             if (length(validtimes) > 0) {
@@ -165,9 +134,11 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
           }
         }
-        IMP = g.impute(M,I,strategy=params_cleaning[["strategy"]],hrs.del.start=params_cleaning[["hrs.del.start"]],
-                       hrs.del.end=params_cleaning[["hrs.del.end"]],maxdur=params_cleaning[["maxdur"]],ndayswindow = params_cleaning[["ndayswindow"]],desiredtz=params_general[["desiredtz"]], TimeSegments2Zero = TimeSegments2Zero)
-        if (params_cleaning[["do.imp"]]==FALSE) { #for those interested in sensisitivity analysis
+        IMP = g.impute(M,I,strategy = params_cleaning[["strategy"]], hrs.del.start = params_cleaning[["hrs.del.start"]],
+                       hrs.del.end = params_cleaning[["hrs.del.end"]], maxdur = params_cleaning[["maxdur"]],
+                       ndayswindow = params_cleaning[["ndayswindow"]], desiredtz = params_general[["desiredtz"]],
+                       TimeSegments2Zero = TimeSegments2Zero)
+        if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
         }
@@ -190,12 +161,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
                         IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]],
                         iglevels = params_247[["iglevels"]],
-                        IVIS.activity.metric= params_247[["IVIS.activity.metric"]],
-                        qM5L5  = params_247[["qM5L5"]], myfun=myfun, MX.ig.min.dur=params_247[["MX.ig.min.dur"]])
-        name=as.character(unlist(strsplit(fnames[i],"eta_"))[2])
-        if (params_output[["epochvalues2csv"]]==TRUE) {
+                        IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
+                        qM5L5  = params_247[["qM5L5"]], myfun = myfun, MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+        name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
+        if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
-            write.csv(IMP$metashort,paste0(metadatadir,"/",csvfolder,"/",name,".csv"),row.names=FALSE)
+            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", name, ".csv"), row.names = FALSE)
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
@@ -231,22 +202,77 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        save(SUM,IMP,file=paste0(metadatadir,ms2.out,"/",name)) #IMP is needed for g.plot in g.report.part2
+        save(SUM,IMP,file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
     }
-  # } # end for loopp
-    }) # END tryCatch
-    return(tryCatchResult)
-  }
+  } # end of main_part2
+  
+  #--------------------------------------------------------------------------------
+  # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
+  
   if (params_general[["do.parallel"]] == TRUE) {
+    cores = parallel::detectCores()
+    Ncores = cores[1]
+    if (Ncores > 3) {
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
+      cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
+      doParallel::registerDoParallel(cl)
+    } else {
+      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      params_general[["do.parallel"]] = FALSE
+    }
+    cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
+    
+    # check whether we are indevelopment mode:
+    GGIRinstalled = is.element('GGIR', installed.packages()[,1])
+    packages2passon = functions2passon = NULL
+    GGIRloaded = "GGIR" %in% .packages()
+    if (GGIRloaded) { #pass on package
+      packages2passon = 'GGIR'
+      errhand = 'pass'
+    } else {
+      # pass on functions
+      functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight",
+                           "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
+                           "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
+                           "iso8601chartime2POSIX")
+      errhand = 'stop'
+    }
+    fe_dopar = foreach::`%dopar%`
+    fe_do = foreach::`%do%`
+    i = 0 # declare i because foreach uses it, without declaring it
+    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+    output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
+                                  .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
+                                    tryCatchResult = tryCatch({
+                                      main_part2(i, ffdone, fnames, metadatadir, 
+                                                 myfun, params_cleaning, params_247,
+                                                 params_phyact, params_output, params_general,
+                                                 path, ms2.out, foldername, fullfilenames, 
+                                                 folderstructure, referencefnames,
+                                                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
+                                      
+                                    })
+                                    return(tryCatchResult)
+                                  }
     on.exit(parallel::stopCluster(cl))
-  }
-  for (oli in 1:length(output_list)) { # logged error and warning messages
-    if (is.null(unlist(output_list[oli])) == FALSE) {
-      cat(paste0("\nErrors and warnings for ",fnames[oli]))
-      print(unlist(output_list[oli])) # print any error and warnings observed
+    for (oli in 1:length(output_list)) { # logged error and warning messages
+      if (is.null(unlist(output_list[oli])) == FALSE) {
+        cat(paste0("\nErrors and warnings for ",fnames[oli]))
+        print(unlist(output_list[oli])) # print any error and warnings observed
+      }
+    }
+  } else { 
+    for (i in f0:f1) {
+      main_part2(i, ffdone, fnames, metadatadir, 
+                 myfun, params_cleaning, params_247,
+                 params_phyact, params_output, params_general,
+                 path, ms2.out, foldername, fullfilenames, 
+                 folderstructure, referencefnames,
+                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
     }
   }
 }
