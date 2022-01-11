@@ -431,7 +431,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(), studyname = 
     cat('\n')
     cat(paste0(rep('_',options()$width),collapse=''))
     cat("\nPart 1\n")
-    print(do.brondcounts)
     g.part1(datadir = datadir, outputdir = outputdir,
             f0 = f0, f1 = f1, windowsizes = windowsizes,
             desiredtz = desiredtz, chunksize = chunksize,
