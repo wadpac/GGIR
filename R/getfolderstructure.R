@@ -1,7 +1,7 @@
 getfolderstructure = function(datadir=c(),referencefnames=c()) {
   filelist = isfilelist(datadir)
   if (filelist == FALSE) {
-    fnamesfull = dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wav|cw)")
+    fnamesfull = dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wav|cw|gt3)")
   } else {
     fnamesfull = datadir
   }
