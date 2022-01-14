@@ -11,7 +11,10 @@ output matrix, \link{g.analyse}.
 g.analyse.perday(selectdaysfile, ndays, firstmidnighti, 
   time, nfeatures, window.summary.size, qwindow, midnightsi,
   metashort, averageday, ENMOi, LFENMOi, BFENi, ENi,
-  HFENi, HFENplusi, MADi, ENMOai, doiglevels, nfulldays, lastmidnight, 
+  HFENi, HFENplusi, MADi, ENMOai, 
+  ZCXi, ZCYi, ZCZi,
+  BrondCounts_xi, BrondCounts_yi, BrondCounts_zi,
+  doiglevels, nfulldays, lastmidnight, 
   ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
   tooshort, includedaycrit, winhr,L5M5window, M5L5res, 
   doquan, qlevels, quantiletype, doilevels, 
@@ -33,14 +36,20 @@ the output matrix}
 \item{midnightsi}{see \link{g.detecmidnight}}
 \item{metashort}{see \link{g.impute}}
 \item{averageday}{As produced by \link{g.impute}}
-\item{ENMOi}{column index of metahosrt where metric is stored}
-\item{LFENMOi}{column index of metahosrt where metric is stored}
-\item{BFENi}{column index of metahosrt where metric is stored}
-\item{ENi}{column index of metahosrt where metric is stored}
-\item{HFENi}{column index of metahosrt where metric is stored}
-\item{HFENplusi}{column index of metahosrt where metric is stored}
-\item{MADi}{column index of metahosrt where metric is stored}
-\item{ENMOai}{column index of metahosrt where metric is stored}
+\item{ENMOi}{column index of metashort where metric is stored}
+\item{LFENMOi}{column index of metashort where metric is stored}
+\item{BFENi}{column index of metashort where metric is stored}
+\item{ENi}{column index of metashort where metric is stored}
+\item{HFENi}{column index of metashort where metric is stored}
+\item{HFENplusi}{column index of metashort where metric is stored}
+\item{MADi}{column index of metashort where metric is stored}
+\item{ENMOai}{column index of metashort where metric is stored}
+\item{ZCXi}{column index of metashort where metric is stored}
+\item{ZCYi}{column index of metashort where metric is stored}
+\item{ZCZi}{column index of metashort where metric is stored}
+\item{BrondCounts_xi}{column index of metashort where metric is stored}
+\item{BrondCounts_yi}{column index of metashort where metric is stored}
+\item{BrondCounts_zi}{column index of metashort where metric is stored}
 \item{doiglevels}{Boolean to indicate whether iglevels should be calculated}
 \item{nfulldays}{Number of days between the first and last midnight in the recording}
 \item{lastmidnight}{see \link{g.detecmidnight}}
@@ -75,7 +84,7 @@ mvpa variables}
 \item{ID}{Person Identification number, this can be numeric or character}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
 \item{qM5L5}{see \link{g.getM5L5}}
-\item{ExtFunColsi}{column index of metahosrt where metric is stored}
+\item{ExtFunColsi}{column index of metashort where metric is stored}
 \item{myfun}{External function object to be applied to raw data, see \link{g.getmeta}.}
 \item{desiredtz}{see \link{g.getmeta}}
 \item{MX.ig.min.dur}{see \link{g.getM5L5}}

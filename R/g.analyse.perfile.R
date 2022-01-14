@@ -10,6 +10,9 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   vi = 1
   # Person identification number
   filesummary[vi] = ID
+  # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
+  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)]
+
   # Serial number
   if (snloc == 1) {
     filesummary[(vi+1)] = deviceSerialNumber
@@ -48,7 +51,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   filesummary[vi] = C$cal.error.end
   filesummary[vi+1] = C$QCmessage
   for (la in 1:length(lookat)) {
-    AveAccAve24hr[la] = 	AveAccAve24hr[la] * 1000
+    AveAccAve24hr[la] = 	AveAccAve24hr[la] * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
   }
   q0 = length(AveAccAve24hr) + 1
   filesummary[(vi+2):(vi+q0)] = AveAccAve24hr
@@ -59,7 +62,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
     q1 = length(QUAN)
-    filesummary[vi:((vi-1)+q1)] = QUAN*1000
+    filesummary[vi:((vi-1)+q1)] = QUAN * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
     s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_fullRecording")
     vi = vi + q1
     q1 = length(ML5AD)

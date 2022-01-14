@@ -46,41 +46,43 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
   
   # Calculations of Sleep Regularity Index per day pair
   NR = Ndays - 1
-  SleepRegularityIndex = data.frame(day = 1:NR, SleepRegularityIndex = numeric(NR),
-                          weekday = character(NR), frac_valid = numeric(NR), 
-                          date = character(NR), stringsAsFactors = FALSE)
-  Sys.setlocale("LC_TIME", "C")  # set language to English because that is what we use elsewhere in GGIR
-  for (i in 1:(Ndays - 1)) { # Loop over all days
-    thisday = which(data$date == uniqueDates[i] & data$SecInDay < (24*3600))
-    nextday = which(data$date == uniqueDates[i + 1] & data$SecInDay < (24*3600))
-    EqualState = c(data$sleepstate[thisday] == data$sleepstate[nextday])
-    # print(paste0(length(thisday), " ", length(nextday)))
-    ne25 = ((3600*25)/epochsize)
-    ne24 = ((3600*24)/epochsize)
-    ne23 = ((3600*23)/epochsize)
-    if (length(thisday) == ne25) {
-      thisday = thisday[1:ne24]
+  if (NR > 1) {
+    SleepRegularityIndex = data.frame(day = 1:NR, SleepRegularityIndex = numeric(NR),
+                                      weekday = character(NR), frac_valid = numeric(NR), 
+                                      date = character(NR), stringsAsFactors = FALSE)
+    Sys.setlocale("LC_TIME", "C")  # set language to English because that is what we use elsewhere in GGIR
+    for (i in 1:NR) { # Loop over all days
+      thisday = which(data$date == uniqueDates[i] & data$SecInDay < (24*3600))
+      nextday = which(data$date == uniqueDates[i + 1] & data$SecInDay < (24*3600))
+      ne25 = ((3600*25)/epochsize)
+      ne24 = ((3600*24)/epochsize)
+      ne23 = ((3600*23)/epochsize)
+      if (length(thisday) == ne25) {
+        thisday = thisday[1:ne24]
+      }
+      if (length(nextday) == ne25) {
+        nextday = nextday[1:ne24]
+      }
+      if (length(thisday) == ne23) {
+        nextday = nextday[1:ne23]
+      }
+      if (length(nextday) == ne23) {
+        thisday = thisday[1:ne23]
+      }
+      EqualState = c(data$sleepstate[thisday] == data$sleepstate[nextday])
+      testNA = c(is.na(data$sleepstate[thisday]) | is.na(data$sleepstate[nextday]))
+      SummedValue = sum(ifelse(test = EqualState[which(testNA == FALSE)] == TRUE, yes = 1, no = 0))
+      NValuesSkipped = length(which(testNA == TRUE))
+      SleepRegularityIndex$frac_valid[i] = round((M - NValuesSkipped) / M, digits = 4)
+      if (M != NValuesSkipped) {
+        SleepRegularityIndex$SleepRegularityIndex[i] = round(-100 + (200/(M - NValuesSkipped)) * SummedValue, digits = 3)
+      }
+      SleepRegularityIndex$weekday[i] = weekdays(abbreviate = FALSE, x =  uniqueDates[i])
+      SleepRegularityIndex$date[i] = as.character(as.Date(uniqueDates[i], 
+                                                          origin = "1970-01-01"), format = "%d/%m/%Y")
     }
-    if (length(nextday) == ne25) {
-      nextday = nextday[1:ne24]
-    }
-    if (length(thisday) == ne23) {
-      nextday = nextday[1:ne23]
-    }
-    if (length(nextday) == ne23) {
-      thisday = thisday[1:ne23]
-    }
-    # print(paste0(length(is.na(data$sleepstate[thisday])), " ", length(is.na(data$sleepstate[nextday]))))
-    testNA = c(is.na(data$sleepstate[thisday]) | is.na(data$sleepstate[nextday]))
-    SummedValue = sum(ifelse(test = EqualState[which(testNA == FALSE)] == TRUE, yes = 1, no = 0))
-    NValuesSkipped = length(which(testNA == TRUE))
-    SleepRegularityIndex$frac_valid[i] = round((M - NValuesSkipped) / M, digits = 4)
-    if (M != NValuesSkipped) {
-      SleepRegularityIndex$SleepRegularityIndex[i] = round(-100 + (200/(M - NValuesSkipped)) * SummedValue, digits = 3)
-    }
-    SleepRegularityIndex$weekday[i] = weekdays(abbreviate = FALSE, x =  uniqueDates[i])
-    SleepRegularityIndex$date[i] = as.character(as.Date(uniqueDates[i], 
-                                                        origin = "1970-01-01"), format = "%d/%m/%Y")
+  } else {
+    SleepRegularityIndex = NA
   }
   # SleepRegularityIndex is now a data.frame with SleepRegularityIndex per calendar date
   return(SleepRegularityIndex)

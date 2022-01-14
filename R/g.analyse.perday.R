@@ -1,6 +1,8 @@
 g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatures, 
                             window.summary.size, qwindow, midnightsi, metashort, averageday,
                             ENMOi, LFENMOi, BFENi, ENi, HFENi, HFENplusi, MADi, ENMOai,
+                            ZCXi, ZCYi, ZCZi,
+                            BrondCounts_xi, BrondCounts_yi, BrondCounts_zi,
                             doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
                             fname, idloc, BodyLocation, wdayname, tooshort, includedaycrit,
                             winhr, L5M5window, M5L5res,
@@ -359,10 +361,15 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   varnum = c()
                 }
               }
+              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)) > 0
+              UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no=1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (mi == ENMOi | mi == LFENMOi | mi == BFENi |
-                  mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi | mi == ENMOai) {
+                  mi == ENi | mi == HFENi | mi == HFENplusi | mi == MADi | mi == ENMOai |
+                  mi == ZCXi | mi == ZCYi | mi == ZCZi |
+                  mi == BrondCounts_xi | mi == BrondCounts_yi | mi == BrondCounts_zi) {
                 collectfi =c()
+                
                 for (winhr_value in winhr) { # Variable (column) names
                   # We are first defining location of variable names, before calculating
                   # variables
@@ -425,7 +432,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 }
                 if (anwindices[1] == 1 & length(anwindices) > 6*60*(60/ws3)) { # only derive if 1-6am falls within window
                   fi = correct_fi(di, ds_names, fi, varname = paste0("mean_",colnames(metashort)[mi],"_mg_1-6am"))
-                  daysummary[di,fi] = mean(varnum[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * 1000#from 1am to 6am
+                  daysummary[di,fi] = mean(varnum[((1*60*(60/ws3))+1):(6*60*(60/ws3))]) * UnitReScale #from 1am to 6am
                   ds_names[fi] = paste0("mean_",colnames(metashort)[mi],"_mg_1-6am"); fi=fi+1
                 }
                 if (anwi_nameindices[anwi_index] == "") { # for consistency with previous GGIR version
@@ -434,7 +441,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 cn_metashort = colnames(metashort)
                 fi = correct_fi(di, ds_names, fi, varname = paste0("mean_",cn_metashort[mi],"_mg",anwi_nameindices[anwi_index]))
                 if (length(varnum) > 0) {
-                  daysummary[di,fi] = mean(varnum) * 1000;
+                  daysummary[di,fi] = mean(varnum) * UnitReScale
                 } else {
                   daysummary[di,fi] = ""
                 }
@@ -444,7 +451,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 }
                 if (doquan == TRUE) {
                   q46 = c()
-                  q46 = quantile(varnum,probs=qlevels,na.rm=T,type=quantiletype) * 1000 #times 1000 to convert to mg
+                  q46 = quantile(varnum,probs=qlevels,na.rm=T,type=quantiletype) * UnitReScale
                   keepindex_46[mi-1,] = c(fi,(fi+(length(qlevels)-1)))
                   namesq46 = rep(0,length(rownames(as.matrix(q46))))
                   for (rq46i in 1:length(rownames(as.matrix(q46)))) {
@@ -461,9 +468,11 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                   ds_names[fi:(fi+(length(qlevels)-1))] = namesq46
                   fi = fi+length(qlevels)
                 }
+                
                 if (doilevels == TRUE) {
                   q48 = c()
-                  q47 = cut((varnum*1000),breaks = ilevels,right=FALSE)
+                  #times 1000 to convert to mg only if it g-unit metric
+                  q47 = cut((varnum * UnitReScale), breaks = ilevels, right=FALSE)
                   q47 = table(q47)
                   q48  = (as.numeric(q47) * ws3)/60 #converting to minutes
                   keepindex_48[mi-1,] = c(fi,(fi+(length(q48)-1)))
@@ -483,7 +492,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                 }
                 if (doiglevels == TRUE) { # intensity gradient (as described by Alex Rowlands 2018)
                   q49 = c()
-                  q50 = cut((varnum*1000),breaks = iglevels,right=FALSE)
+                  q50 = cut((varnum * UnitReScale), breaks = iglevels, right = FALSE)
                   q50 = table(q50)
                   q49  = (as.numeric(q50) * ws3)/60 #converting to minutes
                   x_ig = zoo::rollmean(iglevels,k=2)
@@ -507,20 +516,20 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                       mvpa[1:6] = 0
                     } else {
                       # METHOD 1: time spent above threhold based on 5 sec epoch
-                      mvpa[1] = length(which(varnum*1000 >= mvpathreshold[mvpai])) / (60/ws3) #time spent MVPA in minutes
+                      mvpa[1] = length(which(varnum * UnitReScale >= mvpathreshold[mvpai])) / (60/ws3) #time spent MVPA in minutes
                       # METHOD 2: time spent above threshold based on 1minute epoch
                       varnum2 = cumsum(c(0,varnum))
                       select = seq(1,length(varnum2),by=60/ws3)
                       varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
-                      mvpa[2] = length(which(varnum3*1000 >= mvpathreshold[mvpai])) #time spent MVPA in minutes
+                      mvpa[2] = length(which(varnum3 * UnitReScale >= mvpathreshold[mvpai])) #time spent MVPA in minutes
                       # METHOD 3: time spent above threshold based on 5minute epoch
                       select = seq(1,length(varnum2),by=300/ws3)
                       varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
-                      mvpa[3] = length(which(varnum3*1000 >= mvpathreshold[mvpai])) * 5 #time spent MVPA in minutes
+                      mvpa[3] = length(which(varnum3 * UnitReScale >= mvpathreshold[mvpai])) * 5 #time spent MVPA in minutes
                       # METHOD 4: time spent above threshold
                       boutduration = mvpadur[1] * (60/ws3) # per minute
                       rr1 = matrix(0,length(varnum),1)
-                      p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                      p = which(varnum * UnitReScale >= mvpathreshold[mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
                                              bout.metric=bout.metric,ws3=ws3)
                       mvpa[4] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
@@ -528,14 +537,14 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                       # METHOD 5: time spent above threshold 5 minutes
                       boutduration = mvpadur[2] * (60/ws3) #per five minutes
                       rr1 = matrix(0,length(varnum),1)
-                      p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                      p = which(varnum * UnitReScale >= mvpathreshold[mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
                                              bout.metric=bout.metric,ws3=ws3)
                       mvpa[5] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
                       # METHOD 6: time spent above threshold 10 minutes
                       boutduration = mvpadur[3] * (60/ws3) # per ten minutes
                       rr1 = matrix(0,length(varnum),1)
-                      p = which(varnum*1000 >= mvpathreshold[mvpai]); rr1[p] = 1
+                      p = which(varnum * UnitReScale >= mvpathreshold[mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x=rr1,boutduration=boutduration,boutcriter=boutcriter,closedbout=closedbout,
                                              bout.metric=bout.metric,ws3=ws3)
                       mvpa[6] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
