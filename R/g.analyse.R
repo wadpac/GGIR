@@ -172,6 +172,13 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   ENi = which(colnames(metashort) == "EN")
   ENMOai = which(colnames(metashort) == "ENMOa")
   ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
+  ZCXi = which(colnames(metashort) == "ZCX")
+  ZCYi = which(colnames(metashort) == "ZCY")
+  ZCZi = which(colnames(metashort) == "ZCZ")
+  BrondCounts_xi = which(colnames(metashort) == "BrondCounts_x")
+  BrondCounts_yi = which(colnames(metashort) == "BrondCounts_y")
+  BrondCounts_zi = which(colnames(metashort) == "BrondCounts_z")
+  
   if (length(myfun) > 0) {
     ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
   } else {
@@ -186,6 +193,12 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   if (length(MADi) == 0) MADi = -1
   if (length(ENi) == 0) ENi = -1
   if (length(ENMOai) == 0) ENMOai = -1
+  if (length(BrondCounts_xi) == 0) BrondCounts_xi = -1
+  if (length(BrondCounts_yi) == 0) BrondCounts_yi = -1
+  if (length(BrondCounts_zi) == 0) BrondCounts_zi = -1
+  if (length(ZCXi) == 0) ZCXi = -1
+  if (length(ZCYi) == 0) ZCYi = -1
+  if (length(ZCZi) == 0) ZCZi = -1
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -246,7 +259,10 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
                                      window.summary.size, qwindow, midnightsi, metashort, averageday,
                                      ENMOi, LFENMOi, BFENi, ENi,
-                                     HFENi, HFENplusi, MADi,  ENMOai, doiglevels, nfulldays, lastmidnight,
+                                     HFENi, HFENplusi, MADi,  ENMOai,
+                                     ZCXi, ZCYi, ZCZi,
+                                     BrondCounts_xi, BrondCounts_yi, BrondCounts_zi,
+                                     doiglevels, nfulldays, lastmidnight,
                                      ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
                                      tooshort, includedaycrit, winhr,L5M5window, M5L5res,
                                      doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,

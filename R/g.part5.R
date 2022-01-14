@@ -371,9 +371,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
                                                  dir.create(file.path(metadatadir, ms5.sibreport))
                                                }
-                                               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],".csv")
+                                               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
                                                write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
                                                # nap detection
+                                               if (acc.metric != "ENMO" | HASIB.algo != "vanHees2015") {
+                                                 warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
+                                               }
                                                naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
                                                                                    desiredtz = desiredtz,
                                                                                    possible_nap_window = possible_nap_window,
@@ -895,8 +898,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(), strategy = 
                                                        legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames)-1), stringsAsFactors = FALSE)
                                                        write.csv(legendtable, file = legendfile, row.names = FALSE)
                                                      }
-                                                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
-                                                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i],".",save_ms5raw_format)
+                                                     rawlevels_fname =  paste0(metadatadir,ms5.outraw,"/",TRLi,"_",TRMi,"_",TRVi,"/",fnames.ms3[i], "_", j,".",save_ms5raw_format)
                                                      # save time series to csv files
                                                      if (do.sibreport == TRUE & length(nap_model) > 0) {
                                                        napNonwear_col = "nap1_nonwear2"
