@@ -4,11 +4,11 @@
 \section{Changes in version 2.5-5 (GitHub-only-release date:20-01-2022)}{
 \itemize{
   \item Fixed bug #484 affecting part 5 report not being able to generated because non-matching columns in milestone data
+  \item Internal structure: Arguments now passed on via parameter objects to make code.
 }
 }
 \section{Changes in version 2.5-4 (GitHub-only-release date:11-01-2022)}{
 \itemize{
-  \item Internal structure: Arguments now passed on via parameter objects to make code.
   \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x.
   \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed.
   \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it.
