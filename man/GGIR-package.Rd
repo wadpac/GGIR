@@ -22,8 +22,8 @@ citing the supporting publications (e.g. Migueles et al. 2019) in your publicati
 \tabular{ll}{
 Package: \tab GGIR\cr
 Type: \tab Package\cr
-Version: \tab 2.5-3\cr
-Date: \tab 2021-12-23\cr
+Version: \tab 2.5-4\cr
+Date: \tab 2022-01-11\cr
 License: \tab LGPL (>= 2.0, < 3)\cr
 Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
 }
