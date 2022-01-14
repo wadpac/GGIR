@@ -52,7 +52,7 @@
     See \link{g.part1}
   }
   \item{...}{
-    To enable compatibility with R script written for older GGIR versions,
+    To enable compatibility with R scripts written for older GGIR versions,
     the user can also provide parameters listed in the params_ objects as direct argument.
   }
 }
@@ -68,7 +68,8 @@
   parameter values. Further, as user you can set parameter values as input argument to both g.part2
   and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
   
-  GGIR part 2 (g.part2) takes the following parameter objects as input:
+  The parameter objects used by GGIR part 2 (g.part2) that are no already discussed in
+  \link{g.part1} are:
   
   \subsection{params_output}{
     A list of parameters used to specify whether and how GGIR stores its output at various stages of the

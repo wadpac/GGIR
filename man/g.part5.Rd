@@ -55,8 +55,8 @@ g.part5(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     List, see \link{g.part1}
   }
   \item{...}{
-    To enable compatibility with older GGIR version, user can also provide individual 
-    params_sleep parameters as separate argument, e.g. ignorenonwear = FALSE.
+    To enable compatibility with R scripts written for older GGIR versions,
+    the user can also provide parameters listed in the params_ objects as direct argument.
   }
 }
 \value{

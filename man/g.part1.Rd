@@ -63,8 +63,9 @@
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
-    are working with a non-standard csv formatted files. To enable compatibility with older GGIR version,
-    user can also provide individual params_metrics parameters as separate argument, e.g. do.anglex = TRUE.
+    are working with a non-standard csv formatted files. To enable compatibility with R 
+    scripts written for older GGIR versions, the user can also provide parameters 
+    listed in the params_ objects as direct argument.
   }
 }
 \details{
