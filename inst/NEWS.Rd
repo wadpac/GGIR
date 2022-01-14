@@ -5,6 +5,9 @@
 \itemize{
   \item Fixed bug #484 affecting part 5 report not being able to generated because non-matching columns in milestone data
   \item Internal structure: Arguments now passed on via parameter objects to make code.
+  \item Part 2: BrondCounts and ZeroCrosssing Counts no long auto-scaled by 1000 like all the other metrics.
+  \item Part 3: Fixed warning when SRI is calculated on DST day with 23 hours
+  \item Part 5: sibreport and timeseries now stored per sib definition.
 }
 }
 \section{Changes in version 2.5-4 (GitHub-only-release date:11-01-2022)}{
