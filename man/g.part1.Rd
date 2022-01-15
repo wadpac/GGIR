@@ -81,40 +81,79 @@
   \subsection{params_metrics}{
   A list of parameters used to specify the signal metrics that need to be extract in GGIR part 1.
   \describe{
-      \item{do.anglex}{Boolean see \link{g.getmeta}}
-      \item{do.angley}{Boolean see \link{g.getmeta}}
-      \item{do.anglez}{Boolean see \link{g.getmeta}}
-      \item{do.zcx}{Boolean see \link{g.getmeta}}
-      \item{do.zcy}{Boolean see \link{g.getmeta}}
-      \item{do.zcz}{Boolean see \link{g.getmeta}}
-      \item{do.enmo}{Boolean see \link{g.getmeta}}
-      \item{do.lfenmo}{Boolean see \link{g.getmeta}}
-      \item{do.en}{Boolean see \link{g.getmeta}}
-      \item{do.mad}{Boolean see \link{g.getmeta}}
-      \item{do.enmoa}{Boolean see \link{g.getmeta}}
-      \item{do.roll_med_acc_x}{Boolean see \link{g.getmeta}}
-      \item{do.roll_med_acc_y}{Boolean see \link{g.getmeta}}
-      \item{do.roll_med_acc_z}{Boolean see \link{g.getmeta}}
-      \item{do.dev_roll_med_acc_x}{Boolean see \link{g.getmeta}}
-      \item{do.dev_roll_med_acc_y}{Boolean see \link{g.getmeta}}
-      \item{do.dev_roll_med_acc_z}{Boolean see \link{g.getmeta}}
-      \item{do.bfen}{Boolean see \link{g.getmeta}}
-      \item{do.hfen}{Boolean see \link{g.getmeta}}
-      \item{do.hfenplus}{Boolean see \link{g.getmeta}}
-      \item{do.lfen}{Boolean see \link{g.getmeta}}
-      \item{do.lfx}{Boolean see \link{g.getmeta}}
-      \item{do.lfy}{Boolean see \link{g.getmeta}}
-      \item{do.lfz}{Boolean see \link{g.getmeta}}
-      \item{do.hfx}{Boolean see \link{g.getmeta}}
-      \item{do.hfy}{Boolean see \link{g.getmeta}}
-      \item{do.hfz}{Boolean see \link{g.getmeta}}
-      \item{do.bfx}{Boolean see \link{g.getmeta}}
-      \item{do.bfy}{Boolean see \link{g.getmeta}}
-      \item{do.bfz}{Boolean see \link{g.getmeta}}
-      \item{do.brondcounts}{Boolean see \link{g.getmeta}}
-      \item{lb}{Boolean see \link{g.getmeta}}
-      \item{hb}{Boolean see \link{g.getmeta}}
-      \item{n}{Boolean see \link{g.getmeta}}
+      \item{do.anglex}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.angley}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.anglez}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.zcx}{Boolean, if TRUE calculate metric zero-crossing count for x-axis.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.zcy}{Boolean, if TRUE calculate metric zero-crossing count for y-axis.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.zcz}{Boolean, if TRUE calculate metric zero-crossing count for z-axis.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.enmo}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfenmo}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.en}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.mad}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.enmoa}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.roll_med_acc_x}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.roll_med_acc_y}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.roll_med_acc_z}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.dev_roll_med_acc_x}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.dev_roll_med_acc_y}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.dev_roll_med_acc_z}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfen}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfen}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfenplus}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfen}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfx}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfy}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfz}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfx}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfy}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfz}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfx}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfy}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfz}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.brondcounts}{Boolean, if TRUE calculate metric via R
+        package activityCounts. We call them BrondCounts because
+        there are large number of acitivty counts in the physical activity and
+        sleep research field. By calling them Brond Counts we clarify that 
+        these are the counts proposed by Jan Brond and implemented in R by
+        Ruben Brondeel. The Brond Counts are intended to be an imitation of
+        one the counts produced by one of the closed source ActiLife software
+        by ActiGraph.}
+      \item{lb}{Numeric, lower boundary of the frequency filter (in Hertz) as
+        used in the filter-based metrics.}
+      \item{hb}{Numeric, higher boundary of the frequency filter (in Hertz) as
+        used in the filter-based metrics.}
+      \item{n}{Numeric, order of the frequency filter as used in a variety of metrics.}
    }
   }
   
@@ -152,9 +191,9 @@
         collects several MBs per hour, the default setting should only skip the very tiny files.}
       \item{do.cal}{Boolean. Whether to apply auto-calibration or not by \link{g.calibrate}. Default and
         recommended setting is TRUE.}
-      \item{imputeTimegaps}{Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
-        Currently onlly used for .gt3x data, where timegaps can be expected as a result of
-        Actigraph's idle sleep.mode configuration.}
+      \item{imputeTimegaps}{Boolean to indicate whether timegaps larger than 1 sample should be imputed.
+        Currently onlly used for .gt3x data and ActiGraph .csv format, where timegaps can be expected as a result of
+        Actigraph's idle sleep.mode configuration that is turned on in some studies.}
       \item{spherecrit}{The minimum required acceleration value (in g) on both sides of 0 g
         for each axis. Used to judge whether the sphere is sufficiently populated}
       \item{minloadcrit}{The minimum number of hours the code needs to read for the
@@ -166,8 +205,11 @@
         loaded as a fraction of a 12 hour period, e.g. 0.5 equals 6 hour chunks.
         The default is 1 (12 hrs). For machines with less than 4Gb of RAM memory a value
         below 1 is recommended.}
-      \item{dynrange}{see \link{g.getmeta}}
-      \item{interpolationType}{see \link{g.getmeta}}
+      \item{dynrange}{Numeric, provide dynamic range for accelerometer data to
+        overwrite hardcoded 6 g for GENEA and 8 g for other brands}
+      \item{interpolationType}{Integer to indicate type of interpolation to be used
+        when resampling time series (mainly relevant for Axivity sensors),
+        1=linear, 2=nearest neighbour}
       \item{all arguments that start with "rmc.".}{see function \link{read.myacc.csv}}
     }
   }   
@@ -236,11 +278,22 @@
       \item{print.filename}{Boolean. Whether to print the filename before before analysing
         it (default is FALSE). Printing the filename can be useful to investigate
         problems (e.g. to verify that which file is being read).}
-      \item{desiredtz}{Character, see \link{g.getmeta}}
-      \item{configtz}{Character, see \link{g.getmeta}}
+      \item{desiredtz}{Character, desired timezone: see also http://en.wikipedia.org/wiki/Zone.tab}
+      \item{configtz}{Character, Only functional for AX3 cwa data at the moment. 
+        Timezone in which the accelerometer was configured. Only use this argument
+        if the timezone of configuration and timezone in which recording took
+        place are different.}
       \item{sensor.location}{Character, see \link{g.sib.det}}
       \item{acc.metric}{Character, see \link{g.sib.det}}
-      \item{windowsizes}{Numeric, see \link{g.analyse}}
+      \item{windowsizes}{Numeric vector, three values to indicate the lengths of the 
+        windows as in c(window1,window2,window3): window1 is the short epoch length
+        in seconds and by default 5 this is the time window over which acceleration and
+        angle metrics are calculated, window2 is the long epoch length in seconds 
+        for which non-wear and signal clipping are defined, default 900. However, 
+        window3 is the window length of data used for non-wear detection and by default
+        3600 seconds. So, when window3 is larger than window2 we use overlapping windows,
+        while if window2 equals window3 non-wear periods are assessed by non-overlapping
+        windows. Window2 is expected to be a multitude of 60 seconds.}
       \item{idloc}{Numeric, see \link{g.analyse}}
     }
   }
