@@ -8,7 +8,8 @@
   for direct use by user
 }
 \usage{
-  g.applymetrics(data,n,sf,ws3,metrics2do,lb=0.2, hb=15)
+  g.applymetrics(data, sf, ws3, metrics2do,
+                          n = 4, lb = 0.2, hb = 15)
 }
 \arguments{
   \item{data}{

@@ -13,7 +13,6 @@ g.inspectfile = function(datafile, desiredtz = "", ...) {
   # Although also documented in the package manuel files, here 
   # for convenience the monitor codes (mon):
   # 0 - ad-hoc file (currently only .csv format)
-  # 1 - GENEA (non-commercial); 2 - GENEActiv
   # 3 - Actigraph; 4 - Axivity (AX3, AX6)
   # 5 - Movisense; 6 - Verisense
   # data formats:

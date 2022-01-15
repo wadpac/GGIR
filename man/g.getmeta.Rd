@@ -13,28 +13,21 @@
   data procuded by GENEActiv and Actigraph
 }
 \usage{
-g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
-          daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
-          do.bfen=FALSE, do.enmo=TRUE, do.lfenmo=FALSE,
-          do.en=FALSE, do.hfen=FALSE,
-          do.hfenplus=FALSE, do.mad=FALSE,
-          do.anglex=FALSE, do.angley=FALSE, do.anglez=FALSE,
-          do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE,
-          do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE,
-          do.dev_roll_med_acc_z=FALSE, do.enmoa=FALSE,
-          do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
-          do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
-          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
-          do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
-          do.brondcounts = FALSE,
-          lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
-          dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
-          interpolationType=1, imputeTimegaps = TRUE,
-                     ...)
+  g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
+           desiredtz = "", windowsizes = c(5, 900, 3600), daylimit = FALSE,
+           offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
+           meantempcal = c(), selectdaysfile = c(),
+           dayborder = 0, configtz = c(), myfun = c(), ...)
 }
 \arguments{
   \item{datafile}{
     name of accelerometer file
+  }
+  \item{params_metrics}{
+    See \link{g.part1}
+  }
+  \item{params_rawdata}{
+    See \link{g.part1}
   }
   \item{desiredtz}{
     See \link{g.part1}
@@ -59,123 +52,15 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     value = scale(value,center = -offset, scale = 1/scale)
     + scale(temperature, center = rep(averagetemperate,3), scale = 1/tempoffset)
   }
-  \item{do.bfen}{
-    See \link{g.part1}
-  }
-  \item{do.enmo}{
-    See \link{g.part1}
-  }
-  \item{do.lfenmo}{
-    See \link{g.part1}
-  }
-  \item{do.en}{
-    See \link{g.part1}
-  }
-  \item{do.hfen}{
-    See \link{g.part1}
-  }
-  \item{do.hfenplus}{
-    See \link{g.part1}
-  }
-  \item{do.mad}{
-    See \link{g.part1}
-  }
-  \item{do.anglex}{
-    See \link{g.part1}
-  }
-  \item{do.angley}{
-    See \link{g.part1}
-  }
-  \item{do.anglez}{
-    See \link{g.part1}
-  }
-  \item{do.enmoa}{
-    See \link{g.part1}
-  }
-  \item{do.roll_med_acc_x}{
-    See \link{g.part1}
-  }
-  \item{do.roll_med_acc_y}{
-    See \link{g.part1}
-  }
-  \item{do.roll_med_acc_z}{
-    See \link{g.part1}
-  }
-  \item{do.dev_roll_med_acc_x}{
-    See \link{g.part1}
-  }
-  \item{do.dev_roll_med_acc_y}{
-    See \link{g.part1}
-  }
-  \item{do.dev_roll_med_acc_z}{
-    See \link{g.part1}
-  }
-  \item{do.lfen}{
-    See \link{g.part1}
-  }
-  \item{do.lfx}{
-    See \link{g.part1}
-  }
-  \item{do.lfy}{
-    See \link{g.part1}
-  }
-  \item{do.lfz}{
-    See \link{g.part1}
-  }
-  \item{do.hfx}{
-    See \link{g.part1}
-  }
-  \item{do.hfy}{
-    See \link{g.part1}
-  }
-  \item{do.hfz}{
-    See \link{g.part1}
-  }
-  \item{do.bfx}{
-    See \link{g.part1}
-  }
-  \item{do.bfy}{
-    See \link{g.part1}
-  }
-  \item{do.bfz}{
-    See \link{g.part1}
-  }
-  \item{do.zcx}{
-    See \link{g.part1}
-  }
-  \item{do.zcy}{
-    See \link{g.part1}
-  }
-  \item{do.zcz}{
-    See \link{g.part1}
-  }
-  \item{do.brondcounts}{
-    See \link{g.part1}
-  }
-  \item{lb}{
-    See \link{g.part1}
-  }
-  \item{hb}{
-    See \link{g.part1}
-  }
-  \item{n}{
-    See \link{g.part1}
-  }
   \item{meantempcal}{
     mean temperature corresponding to the data as used for
     autocalibration. If autocalibration is not done or if temperature was not
     available then leave blank (default)
   }
-  \item{chunksize}{
-    See \link{g.part1}
-  }
   \item{selectdaysfile}{
     see \link{g.part1}
   }
   \item{dayborder}{
-   see \link{g.part1}
-  }
-  \item{dynrange}{
    see \link{g.part1}
   }
   \item{configtz}{
@@ -185,15 +70,9 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
   }
-  \item{interpolationType}{
-    see \link{g.part1}
-  }
-  \item{imputeTimegaps}{
-    see \link{g.part1}
-  }
   \item{...}{
-    Please ignore. Only used by the code internally when called from within
-    g.part1 with selectdaysfile specific.
+    Any argument used in the previous version of g.getmeta, which will now
+    be used to overrule the arguments specified with the parameter objects.
   }
 }
 \value{
