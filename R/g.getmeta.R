@@ -102,7 +102,7 @@ g.getmeta = function(datafile, params_metrics = c(),
   }
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  #   #parameters
+  # parameters
   ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * ceiling(ws2/60))
@@ -136,29 +136,8 @@ g.getmeta = function(datafile, params_metrics = c(),
   options(warn = -1)
   if (useRDA == FALSE) {
     INFI = g.inspectfile(datafile, desiredtz = desiredtz,
-                         rmc.dec = params_rawdata[["rmc.dec"]],
-                         configtz = configtz,
-                         rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                         rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                         rmc.header.length = params_rawdata[["rmc.header.length"]],
-                         rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                         rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                         rmc.col.time = params_rawdata[["rmc.col.time"]],
-                         rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                         rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                         rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                         rmc.format.time = params_rawdata[["rmc.format.time"]],
-                         rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                         rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                         rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                         rmc.origin = params_rawdata[["rmc.origin"]],
-                         rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                         rmc.sf = params_rawdata[["rmc.sf"]],
-                         rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                         rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                         rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
-                         rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                         rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])  # Check which file type and monitor brand it is
+                         params_rawdata = params_rawdata,
+                         configtz = configtz)
   } else {
     load(datafile)
     INFI = I
@@ -520,7 +499,6 @@ g.getmeta = function(datafile, params_metrics = c(),
             }
           }
         } else {
-          #           load(datafile) # turned off because datafile will already be loaded (earlier on in script)
           data = cbind(rep(0, nrow(data)), data)
           LD = nrow(data)
         }
@@ -535,39 +513,6 @@ g.getmeta = function(datafile, params_metrics = c(),
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics, round, n_decimal_places)
         accmetrics = data.frame(sapply(accmetrics,c)) # collapse to data.frame
-        BFEN = accmetrics$BFEN
-        ENMO = accmetrics$ENMO
-        ENMOa = accmetrics$ENMOa
-        LFENMO = accmetrics$LFENMO
-        EN_shortepoch = accmetrics$EN
-        HFEN = accmetrics$HFEN
-        HFENplus = accmetrics$HFENplus
-        MAD = accmetrics$MAD
-        angle_x = accmetrics$angle_x
-        angle_y = accmetrics$angle_y
-        angle_z = accmetrics$angle_z
-        roll_med_acc_x = accmetrics$roll_med_acc_x
-        roll_med_acc_y = accmetrics$roll_med_acc_y
-        roll_med_acc_z = accmetrics$roll_med_acc_z
-        dev_roll_med_acc_x = accmetrics$dev_roll_med_acc_x
-        dev_roll_med_acc_y = accmetrics$dev_roll_med_acc_y
-        dev_roll_med_acc_z = accmetrics$dev_roll_med_acc_z
-        LFEN = accmetrics$LFEN
-        HFX =  accmetrics$HFX
-        HFY =  accmetrics$HFY
-        HFZ =  accmetrics$HFZ
-        LFX =  accmetrics$LFX
-        LFY =  accmetrics$LFY
-        LFZ =  accmetrics$LFZ
-        BFX =  accmetrics$BFX
-        BFY =  accmetrics$BFY
-        BFZ =  accmetrics$BFZ
-        ZCX =  accmetrics$ZCX
-        ZCY =  accmetrics$ZCY
-        ZCZ =  accmetrics$ZCZ
-        BrondCount_x = accmetrics$BrondCount_x
-        BrondCount_y  = accmetrics$BrondCount_y
-        BrondCount_z = accmetrics$BrondCount_z
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
@@ -592,107 +537,31 @@ g.getmeta = function(datafile, params_metrics = c(),
           cat("\nvariable metashort extended\n")
         }
         col_msi = 2
-        if (params_metrics[["do.bfen"]] == TRUE) {
-          metashort[count:(count - 1 + length(BFEN)), col_msi] = BFEN; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.enmo"]] == TRUE) {
-          metashort[count:(count - 1 + length(ENMO)), col_msi] = ENMO; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.lfenmo"]] == TRUE) {
-          metashort[count:(count - 1 + length(LFENMO)), col_msi] = LFENMO; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.en"]] == TRUE) {
-          metashort[count:(count - 1 + length(EN_shortepoch)), col_msi] = EN_shortepoch; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.hfen"]] == TRUE) {
-          metashort[count:(count - 1 + length(HFEN)), col_msi] = HFEN; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.hfenplus"]] == TRUE) {
-          metashort[count:(count - 1 + length(HFENplus)), col_msi] = HFENplus; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.mad"]] == TRUE) {
-          metashort[count:(count - 1 + length(MAD)), col_msi] = MAD; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.anglex"]] == TRUE) {
-          metashort[count:(count - 1 + length(angle_x)), col_msi] = angle_x; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.angley"]] == TRUE) {
-          metashort[count:(count - 1 + length(angle_y)), col_msi] = angle_y; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.anglez"]] == TRUE) {
-          metashort[count:(count - 1 + length(angle_z)), col_msi] = angle_z; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.roll_med_acc_x"]] == TRUE) {
-          metashort[count:(count - 1 + length(roll_med_acc_x)), col_msi] = roll_med_acc_x; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.roll_med_acc_y"]] == TRUE) {
-          metashort[count:(count - 1 + length(roll_med_acc_y)), col_msi] = roll_med_acc_y; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.roll_med_acc_z"]] == TRUE) {
-          metashort[count:(count - 1 + length(roll_med_acc_z)), col_msi] = roll_med_acc_z; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.dev_roll_med_acc_x"]] == TRUE) {
-          metashort[count:(count - 1 + length(dev_roll_med_acc_x)), col_msi] = dev_roll_med_acc_x; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.dev_roll_med_acc_y"]] == TRUE) {
-          metashort[count:(count - 1 + length(dev_roll_med_acc_y)), col_msi] = dev_roll_med_acc_y; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.dev_roll_med_acc_z"]] == TRUE) {
-          metashort[count:(count - 1 + length(dev_roll_med_acc_z)), col_msi] = dev_roll_med_acc_z; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.enmoa"]] == TRUE) {
-          metashort[count:(count - 1 + length(ENMOa)), col_msi] = ENMOa; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.lfen"]] == TRUE) {
-          metashort[count:(count - 1 + length(LFEN)), col_msi] = LFEN; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.lfx"]] == TRUE) {
-          metashort[count:(count - 1 + length(LFX)), col_msi] = LFX; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.lfy"]] == TRUE) {
-          metashort[count:(count - 1 + length(LFY)), col_msi] = LFY; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.lfz"]] == TRUE) {
-          metashort[count:(count - 1 + length(LFZ)), col_msi] = LFZ; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.hfx"]] == TRUE) {
-          metashort[count:(count - 1 + length(HFX)), col_msi] = HFX; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.hfy"]] == TRUE) {
-          metashort[count:(count - 1 + length(HFY)), col_msi] = HFY; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.hfz"]] == TRUE) {
-          metashort[count:(count - 1 + length(HFZ)), col_msi] = HFZ; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.bfx"]] == TRUE) {
-          metashort[count:(count - 1 + length(BFX)), col_msi] = BFX; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.bfy"]] == TRUE) {
-          metashort[count:(count - 1 + length(BFY)), col_msi] = BFY; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.bfz"]] == TRUE) {
-          metashort[count:(count - 1 + length(BFZ)), col_msi] = BFZ; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.zcx"]] == TRUE) {
-          metashort[count:(count - 1 + length(ZCX)), col_msi] = ZCX; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.zcy"]] == TRUE) {
-          metashort[count:(count - 1 + length(ZCY)), col_msi] = ZCY; col_msi = col_msi + 1
-        }
-        if (params_metrics[["do.zcz"]] == TRUE) {
-          metashort[count:(count - 1 + length(ZCZ)), col_msi] = ZCZ; col_msi = col_msi + 1
+        # Add metric time series to metashort object
+        metnames = grep(pattern = "BrondCount", x = names(accmetrics), invert = TRUE, value = TRUE)
+        for (metnam in metnames) {
+          dovalue = paste0("do.",tolower(metnam))
+          dovalue = gsub(pattern = "angle_", replacement = "angle", x = dovalue)
+          if (params_metrics[[dovalue]] == TRUE) {
+            metashort[count:(count - 1 + length(accmetrics[[metnam]])), col_msi] = accmetrics[[metnam]]
+            col_msi = col_msi + 1
+          }
         }
         if (params_metrics[["do.brondcounts"]] == TRUE) {
-          metashort[count:(count-1+length(BrondCount_x)),col_msi] = BrondCount_x; col_msi = col_msi + 1
-          metashort[count:(count-1+length(BrondCount_y)),col_msi] = BrondCount_y; col_msi = col_msi + 1
-          metashort[count:(count-1+length(BrondCount_z)),col_msi] = BrondCount_z; col_msi = col_msi + 1
+          metashort[count:(count - 1 + length(accmetrics$BrondCount_x)), col_msi] = accmetrics$BrondCount_x
+          metashort[count:(count - 1 + length(accmetrics$BrondCount_y)), col_msi + 1] = accmetrics$BrondCount_y
+          metashort[count:(count - 1 + length(accmetrics$BrondCount_z)), col_msi + 2] = accmetrics$BrondCount_z
+          col_msi = col_msi + 3
+          metnames = c(metnames, "BrondCount_x", "BrondCount_y", "BrondCount_z")
         }
+        metnames = gsub(pattern = "angle_", replacement = "angle", x = metnames)
         if (length(myfun) != 0) { # if an external function is applied.
           NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
           metashort[count:(count - 1 + nrow(OutputExternalFunction)), col_msi:(col_msi + NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
         # count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
+        
         rm(accmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
@@ -830,28 +699,7 @@ g.getmeta = function(datafile, params_metrics = c(),
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
           I = g.inspectfile(datafile, desiredtz = desiredtz,
-                            rmc.dec = params_rawdata[["rmc.dec"]], configtz = configtz,
-                            rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                            rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                            rmc.header.length = params_rawdata[["rmc.header.length"]],
-                            rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                            rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                            rmc.col.time = params_rawdata[["rmc.col.time"]],
-                            rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                            rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                            rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                            rmc.format.time = params_rawdata[["rmc.format.time"]],
-                            rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                            rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                            rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                            rmc.origin = params_rawdata[["rmc.origin"]],
-                            rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                            rmc.sf = params_rawdata[["rmc.sf"]],
-                            rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                            rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                            rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
-                            rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                            rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])
+                            params_rawdata = params_rawdata, configtz = configtz)
         }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
@@ -897,34 +745,9 @@ g.getmeta = function(datafile, params_metrics = c(),
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
           I = g.inspectfile(datafile, desiredtz = desiredtz,
-                            rmc.dec = params_rawdata[["rmc.dec"]], configtz = configtz,
-                            rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                            rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                            rmc.header.length = params_rawdata[["rmc.header.length"]],
-                            rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                            rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                            rmc.col.time = params_rawdata[["rmc.col.time"]],
-                            rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                            rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                            rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                            rmc.format.time = params_rawdata[["rmc.format.time"]],
-                            rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                            rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                            rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                            rmc.origin = params_rawdata[["rmc.origin"]],
-                            rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                            rmc.sf = params_rawdata[["rmc.sf"]],
-                            rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                            rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                            rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
-                            rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                            rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
-                            imputeTimegaps = TRUE)
+                            params_rawdata = params_rawdata,
+                            configtz = configtz)
         }
-        # Next three lines commented out, because this was also calculated 50 lines earlier
-        # hvars = g.extractheadervars(I)
-        # deviceSerialNumber = hvars$deviceSerialNumber
-        # SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
         if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
           dateday1 = as.character(SDF[SDFi, 2])
           dateday2 = as.character(SDF[SDFi, 3])
@@ -944,29 +767,8 @@ g.getmeta = function(datafile, params_metrics = c(),
       time2 = strftime(time2, format = "%Y-%m-%dT%H:%M:%S%z")
       metalong[, 1] = as.character(time2)
     }
-    metricnames_short = c("timestamp", "BFEN", "ENMO", "LFENMO", "EN", "HFEN", "HFENplus", "MAD",
-                          "anglex", "angley", "anglez", "roll_med_acc_x", "roll_med_acc_y", "roll_med_acc_z",
-                          "dev_roll_med_acc_x", "dev_roll_med_acc_y", "dev_roll_med_acc_z", "ENMOa", "LFEN",
-                          "LFX", "LFY", "LFZ", "HFX", "HFY", "HFZ", "BFX", "BFY", "BFZ",
-                          "ZCX", "ZCY", "ZCZ", "BrondCounts_x", "BrondCounts_y", "BrondCounts_z")
-    metricnames_short = as.character(metricnames_short[c(TRUE, params_metrics[["do.bfen"]],
-                                                         params_metrics[["do.enmo"]], params_metrics[["do.lfenmo"]], 
-                                                         params_metrics[["do.en"]], params_metrics[["do.hfen"]],
-                                                         params_metrics[["do.hfenplus"]], params_metrics[["do.mad"]],
-                                                         params_metrics[["do.anglex"]], params_metrics[["do.angley"]],
-                                                         params_metrics[["do.anglez"]],
-                                                         params_metrics[["do.roll_med_acc_x"]], params_metrics[["do.roll_med_acc_y"]], 
-                                                         params_metrics[["do.roll_med_acc_z"]],
-                                                         params_metrics[["do.dev_roll_med_acc_x"]], params_metrics[["do.dev_roll_med_acc_y"]],
-                                                         params_metrics[["do.dev_roll_med_acc_z"]],
-                                                         params_metrics[["do.enmoa"]], params_metrics[["do.lfen"]],
-                                                         params_metrics[["do.lfx"]], params_metrics[["do.lfy"]],
-                                                         params_metrics[["do.lfz"]], params_metrics[["do.hfx"]],
-                                                         params_metrics[["do.hfy"]], params_metrics[["do.hfz"]],
-                                                         params_metrics[["do.bfx"]], params_metrics[["do.bfy"]],
-                                                         params_metrics[["do.bfz"]], params_metrics[["do.zcx"]], 
-                                                         params_metrics[["do.zcy"]], params_metrics[["do.zcz"]],
-                                                         rep(params_metrics[["do.brondcounts"]], 3))])
+    metricnames_short = c("timestamp", metnames)
+
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)
@@ -994,7 +796,6 @@ g.getmeta = function(datafile, params_metrics = c(),
   } else {
     metalong = metashort = wday = wdayname = windowsizes = c()
   }
-  # detach(accmetrics,warn.conflicts = FALSE)
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
   invisible(list(filecorrupt = filecorrupt, filetooshort = filetooshort, NFilePagesSkipped = NFilePagesSkipped,
                  metalong = metalong, metashort = metashort, wday = wday, wdayname = wdayname,

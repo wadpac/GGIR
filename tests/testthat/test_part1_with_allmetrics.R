@@ -31,9 +31,9 @@ test_that("Part 1 can run with all metrics", {
   expect_that(round(mean(M$metashort$HFENplus), digits = 4), equals(0.0914))
   expect_that(round(mean(M$metashort$MAD), digits = 4), equals(0.0073))
   expect_that(round(mean(M$metashort$ZCX), digits = 2), equals(14.94))
-  expect_equal(sum(M$metashort$BrondCounts_x), 17690)
-  expect_equal(sum(M$metashort$BrondCounts_y), 60971)
-  expect_equal(sum(M$metashort$BrondCounts_z), 957584)
+  expect_equal(sum(M$metashort$BrondCount_x), 17690)
+  expect_equal(sum(M$metashort$BrondCount_y), 60971)
+  expect_equal(sum(M$metashort$BrondCount_z), 957584)
 
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)

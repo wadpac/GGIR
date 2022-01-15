@@ -207,29 +207,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     options(warn = -1) #turn off warnings
     if (useRDA == FALSE) {
       I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                        configtz = params_general[["configtz"]],
-                        rmc.dec = params_rawdata[["rmc.dec"]],
-                        rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                        rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                        rmc.header.length = params_rawdata[["rmc.header.length"]],
-                        rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                        rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                        rmc.col.time = params_rawdata[["rmc.col.time"]],
-                        rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                        rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                        rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                        rmc.format.time = params_rawdata[["rmc.format.time"]],
-                        rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                        rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                        rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                        rmc.origin = params_rawdata[["rmc.origin"]],
-                        rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                        rmc.sf = params_rawdata[["rmc.sf"]],
-                        rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                        rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                        rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
-                        rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                        rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])
+                        params_rawdata = params_rawdata,
+                        configtz = params_general[["configtz"]])
     } else {
       load(datafile) # to do: would be nice to only load the object I and not the entire datafile
       I$filename = fnames[i]

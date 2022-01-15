@@ -7,7 +7,8 @@ function to inspect accelerometer file for brand, sample frequency and header
 Inspects accelerometer file for key information, including: monitor brand, sample frequency and file header
 }
 \usage{
-g.inspectfile(datafile, desiredtz = "", ...)
+g.inspectfile(datafile, desiredtz = "", params_rawdata = c(),
+                         configtz = c(), ...)
 }
 \arguments{
   \item{datafile}{
@@ -16,9 +17,15 @@ g.inspectfile(datafile, desiredtz = "", ...)
   \item{desiredtz}{
   	Desired timezone, see documentation \link{g.getmeta}
   }
+  \item{params_rawdata}{
+    See \link{g.part1}
+  }
+  \item{configtz}{
+    ...
+  }
   \item{...}{
-   Any input arguments needed for function \link{read.myacc.csv} if you
-   are working with a non-standard csv formatted files.
+   Any argument used in the previous version of g.getmeta, which will now
+    be used to overrule the arguments specified with the parameter objects.
   }
 }
   
