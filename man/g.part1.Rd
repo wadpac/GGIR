@@ -243,11 +243,20 @@
       \item{selectdaysfile}{Character, Functionality designed for the London Centre
         of Longidutinal studies. Csv file holding the relation between device 
         serial numbers and measurement days of interest.}
-      \item{strategy}{Numeric, see \link{g.impute} used in part 2}
-      \item{hrs.del.start}{Numeric, see \link{g.impute} used in part 2}
-      \item{hrs.del.end}{Numeric, see \link{g.impute} used in part 2}
-      \item{maxdur}{Numeric, see \link{g.impute} used in part 2}
-      \item{ndayswindow}{Numeric, see \link{g.impute} used in part 2}
+      \item{strategy}{Numeric, how to deal with knowledge about study protocol.
+        value = 1 means select data based on \code{hrs.del.start}, \code{hrs.del.end}, 
+        and \code{maxdur}. Value = 2 makes that only the data between the first
+        midnight and the last midnight is used for imputation. Value = 3 only selects
+        the most active X days in the file where X is specified by argument \code{ndayswindow}. 
+        Value = 4 to only use the data after the first midnight. Used in GGIR part 2}
+      \item{hrs.del.start}{Numeric, how many HOURS after start of experiment did wearing
+        of monitor start? Used in GGIR part 2}
+      \item{hrs.del.end}{Numeric, how many HOURS before the end of the experiment did 
+        wearing of monitor definitely end? Used in GGIR part 2}
+      \item{maxdur}{Numeric, How many DAYS after start of experiment did experiment
+        definitely stop? (set to zero if unknown = default). Used in GGIR part2}
+      \item{ndayswindow}{Numeric,  If \code{strategy} is set to 3 then this is the 
+        size of the window as a number of days. Used in GGIR part2}
       \item{includedaycrit.part5}{Numeric. see \link{g.report.part5}}
       \item{includedaycrit}{Numeric, minimum required number of valid hours
         in day specific analysis (NOTE: there is no minimum required number of
