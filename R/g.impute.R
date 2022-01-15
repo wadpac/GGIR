@@ -6,8 +6,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   if (any(names(input) %in% c("M", "I", "params_cleaning", "desiredtz",
                               "dayborder", "TimeSegments2Zero")) == FALSE) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
-    # So, inside GGIR this will not be used, but it is used when g.calibrate is used on its own
-    # as if it was still the old g.calibrate function
+    # So, inside GGIR this will not be used, but it is used when g.impute is used on its own
+    # as if it was still the old g.impute function
     params = extract_params(params_cleaning = params_cleaning,
                             input = input) # load default parameters
     params_cleaning = params$params_cleaning

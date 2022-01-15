@@ -36,8 +36,8 @@
     to contain two columns named windowstart and windowend, with the start- and end
     time of the time segment in POSIXlt class.
   }
-   \item{...}{
-     Any argument used in the previous version of g.calibrate, which will now
+  \item{...}{
+     Any argument used in the previous version of g.impute, which will now
      be used to overrule the arguments specified with the parameter objects.
   }
 }

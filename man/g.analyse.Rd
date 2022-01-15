@@ -15,17 +15,10 @@
   combination with the epoch length as defined in g.getmeta.
 }
 \usage{
-  g.analyse(I, C, M, IMP, qlevels = c(), qwindow = c(0, 24),
-    quantiletype = 7, L5M5window = c(0, 24), M5L5res = 10,
-    includedaycrit = 16, ilevels = c(),
-    winhr = 5, idloc = 1, snloc=1, mvpathreshold = c(),
-    boutcriter=c(), mvpadur=c(1,5,10),
-    selectdaysfile=c(), window.summary.size=10,
-    dayborder=0, bout.metric = 1,
-    closedbout=FALSE, desiredtz = "",
-    IVIS_windowsize_minutes = 60,
-    IVIS_epochsize_seconds = c(), iglevels = c(), IVIS.activity.metric=2,
-    qM5L5=c(), myfun=c(), MX.ig.min.dur=10)
+  g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
+            quantiletype = 7, includedaycrit = 16, 
+            idloc = 1, snloc = 1, selectdaysfile=c(), 
+            dayborder=0,  desiredtz = "", myfun=c(), ...)
 }
 \arguments{
   \item{I}{
@@ -40,30 +33,18 @@
   \item{IMP}{
     the output from function \link{g.impute}
   }
-  \item{qlevels}{
+  \item{params_247}{
     See \link{g.part2}
   }
-  \item{qwindow}{
+  \item{params_phyact}{
     See \link{g.part2}
   }
   \item{quantiletype}{
     type of quantile function to use (default recommended). For details, see 
     quantile function in STATS package
   }
-  \item{L5M5window}{
-    See \link{g.part2}
-  }
-  \item{M5L5res}{
-    See \link{g.part2}
-  }
   \item{includedaycrit}{
    See \link{g.part1}
-  }
-  \item{ilevels}{
-   See \link{g.part2} 
-  }
-  \item{winhr}{
-   See \link{g.part2} 
   }
   \item{idloc}{
    See \link{g.part1}
@@ -73,53 +54,21 @@
     the obvious header field. If value = 2 the code uses the character string between
     the first and second character '_' in the filename as the serial number
   }
-  \item{mvpathreshold}{
-    See \link{g.part2}
-  }
-  \item{boutcriter}{
-    See \link{g.part2}
-  }
-  \item{mvpadur}{
-    See \link{g.part2}
-  }
   \item{selectdaysfile}{
     See \link{g.part1}
   }
   \item{dayborder}{
     See \link{g.part1}
   }
-  \item{window.summary.size}{
-    See \link{g.part2}
-  }
-  \item{bout.metric}{
-    See \link{g.part2}
-  }
-  \item{closedbout}{
-    See \link{g.part2}
-  }
   \item{desiredtz}{
     See \link{g.part1}
-  }
-  \item{IVIS_windowsize_minutes}{
-    See \link{g.part2}
-  }
-  \item{IVIS_epochsize_seconds}{
-    See \link{g.part2}
-  }
-  \item{iglevels}{
-    See \link{g.part2}
-  }
-  \item{IVIS.activity.metric}{
-    See \link{g.part2}
-  }
-  \item{qM5L5}{
-    See \link{g.part2}
   }
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
-  \item{MX.ig.min.dur}{
-    See \link{g.part2}
+  \item{...}{
+     Any argument used in the previous version of g.impute, which will now
+     be used to overrule the arguments specified with the parameter objects.
   }
 }
 \value{
