@@ -138,10 +138,17 @@
         have only specified do.ENMO == TRUE then it will be applied to ENMO.}
       \item{closedbout}{Boolean, see \link{g.getbout}}
       \item{frag.metrics}{Character, see \link{g.fragmentation}}
-      \item{mvpathreshold}{Numeric, see \link{g.analyse}}
-      \item{boutcriter}{Numeric, see \link{g.analyse}}
-      \item{mvpadur}{Numeric, see \link{g.analyse}}
-      \item{bout.metric}{Numeric, see \link{g.getbout}} 
+      \item{mvpathreshold}{Numeric, Acceleration threshold for MVPA estimation in GGIR part2.
+        This can be a single number or an array of numbers, e.g. c(100,120). In the later case 
+        the code will estimate MVPA seperately for each threshold. If this variable 
+        is left blank c() then MVPA is not estimated}
+      \item{boutcriter}{Numeric, The variable boutcriter is a number between
+        0 and 1 and defines what fraction of a bout needs to be above the 
+        mvpathreshold, only used in GGIR part 2}
+      \item{mvpadur}{Numeric, default = c(1,5,10). Three bout duration for which 
+        MVPA will be calculated. Only used in GGIR part 2}
+      \item{bout.metric}{Numeric, Specify a metric for bout detection. A description of these
+        bout metrics can be found in the new function \link{g.getbout}} 
       \item{boutdur.mvpa}{Numeric, see \link{identify_levels}}
       \item{boutdur.in}{Numeric, see \link{identify_levels}}
       \item{boutdur.lig}{Numeric, see \link{identify_levels}}
@@ -155,16 +162,37 @@
     under conventional physical activity or sleep outcomes, these parameters are used
     in GGIRpart2 and GGIRpart5: 
     \describe{
-      \item{qwindow}{Numeric or character, see \link{g.analyse}}
+      \item{qwindow}{Numeric or character, To specify windows over which all
+        variables are calculated, e.g. acceleration distirbution, number of valid
+        hours, LXMX analysis, MVPA. If value = c(0,24), which is the default, 
+        all variables will only be calculated over the full 24 hours in a day, If
+        value =c(8,24) variables will be calculated over the window 0-8, 8-24 and 0-24.
+        All days in the recording will be segmented based on these values. If you want
+        to use a day specific segmentation then you can set qwindow to be
+        the full path to activity diary file. See documentation \link{g.conv.actlog}
+        for details.}
       \item{qwindow_dateformat}{Numeric, see \link{g.conv.actlog}}
-      \item{M5L5res}{Numeric, see \link{g.analyse}}
-      \item{winhr}{Numeric, see \link{g.analyse}}
-      \item{qlevels}{Numeric, see \link{g.analyse}}
-      \item{ilevels}{Numeric, see \link{g.analyse}}
-      \item{window.summary.size}{Numeric, see \link{g.analyse}}
-      \item{iglevels}{Numeric, see \link{g.analyse}}
+      \item{M5L5res}{Numeric, resoltion of L5 and M5 analysis in minutes 
+        (default: 10 minutes)}
+      \item{winhr}{Numeric, Vector of window size(s) (unit: hours) of L5 and
+        M5 analysis (dedault = 5 hours)}
+      \item{qlevels}{Numeric, array of percentiles for which value needs to be extracted.
+        These need to be expressed as a fraction of 1, e.g. c(0.1, 0.5, 0.75). 
+        There is no limit to the number of percentiles. If left empty then percentiles will not be 
+        extracted. Distribution will be derived from short epoch metric data.}
+      \item{ilevels}{Numeric, Levels for acceleration value frequency
+        distribution in mg, e.g. c(0,100,200). There is no limit to the number of levels.}
+      \item{window.summary.size}{Numeric, Functionality designed for the London Centre
+        of Longidutinal studies. Size in minutes of the summary window}
+      \item{iglevels}{Numeric, Levels for acceleration value frequency distribution
+        in mg used for intensity gradient calculation (according to the method by 
+        Rowlands 2018). By default this is argument is empty and the intensity gradient
+        calculation is not done. The user can either provide a single value (any) to 
+        make the intensity gradient use the bins c(seq(0,4000,by=25),8000) or the 
+        user could specify their own distribution. There is no constriction to the 
+        number of levels.}
       \item{IVIS_windowsize_minutes}{Numeric, see \link{g.IVIS}}
-      \item{IVIS_epochsize_seconds}{Numeric, see \link{g.IVIS}}
+      \item{IVIS_epochsize_seconds}{depricated. Numeric, see \link{g.IVIS}}
       \item{IVIS.activity.metric}{Numeric, see \link{g.IVIS}}
       \item{qM5L5}{Numeric, see \link{g.getM5L5}}
       \item{MX.ig.min.dur}{Numeric, see \link{g.getM5L5}}

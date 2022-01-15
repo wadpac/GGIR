@@ -41,57 +41,32 @@
     the output from function \link{g.impute}
   }
   \item{qlevels}{
-    array of percentiles for which value needs to be extracted. These need to
-    be expressed as a fraction of 1, e.g. c(0.1, 0.5, 0.75). There is no limit
-    to the number of percentiles. If left empty then percentiles will not be 
-    extracted. Distribution will be derived from short epoch metric data, see
-    \link{g.getmeta}.
+    See \link{g.part2}
   }
   \item{qwindow}{
-    To specify windows over which all variables are calculated, e.g. acceleration
-    distirbution, number of valid hours, LXMX analysis, MVPA. If value = c(0,24), 
-    which is the default, all variables will only be calculated over the full 
-    24 hours in a day, If
-    value =c(8,24) variables will be calculated over the window 0-8, 8-24 and 0-24.
-    All days in the recording will be segmented based on these values. If you want
-    to use a day specific segmentation then you can set qwindow to be
-    the full path to activity diary file. See documentation \link{g.conv.actlog}
-    for details.
+    See \link{g.part2}
   }
   \item{quantiletype}{
     type of quantile function to use (default recommended). For details, see 
     quantile function in STATS package
   }
   \item{L5M5window}{
-    Argument depricated after version 1.5-24. This argument used to define the
-    start and end time, in 24 hour clock hours, over which L5M5 needs to be
-    calculated. Now this is done with argument qwindow.
+    See \link{g.part2}
   }
   \item{M5L5res}{
-    resoltion of L5 and M5 analysis in minutes (default: 10 minutes)
+    See \link{g.part2}
   }
   \item{includedaycrit}{
-    minimum required number of valid hours in day specific analysis
-    (NOTE: there is no minimum required number of hours per day in the summary
-    of an entire measurement, every available hour is used to make the best possible
-    inference on average metric value per average day)
+   See \link{g.part1}
   }
   \item{ilevels}{
-    Levels for acceleration value frequency distribution in mg, e.g. c(0,100,200)
-    There is no constriction to the number of levels.
+   See \link{g.part2} 
   }
   \item{winhr}{
-    Vector of window size(s) (unit: hours) of L5 and M5 analysis (dedault = 5 hours)
+   See \link{g.part2} 
   }
   \item{idloc}{
-    If idloc = 1 (default) the code assumes that ID number is stored in the
-    obvious header field. Note that for ActiGraph data the ID never stored in the file
-    header. 
-    For value set to 2, 5, 6, and 7, GGIR looks at the filename and extracts the
-    character string preceding the first occurance of a '_', ' ' (space), '.' (dot),
-    and '-', respecitvely.
-    You may have noticed that idloc 3 and 4 are skipped, they were used for one study
-    in 2012, and not actively maintained anymore, but because it is legacy code not omitted.
+   See \link{g.part1}
   }
   \item{snloc}{
     If value = 1 (default) the code assumes that device serial number is stored in
@@ -99,66 +74,53 @@
     the first and second character '_' in the filename as the serial number
   }
   \item{mvpathreshold}{
-    Threshold for MVPA estimation. This can be a single number or an array of numbers,
-    e.g. c(100,120). In the later case the code will estimate MVPA seperately for
-    each threshold. If this variable is left blank c() then MVPA is not estimated
+    See \link{g.part2}
   }
   \item{boutcriter}{
-    The variable boutcriter is a number between 0 and 1 and defines what fraction
-    of a bout needs to be above the mvpathreshold
+    See \link{g.part2}
   }
   \item{mvpadur}{
-    default = c(1,5,10). Three bout duration for which MVPA will be calculated
+    See \link{g.part2}
   }
   \item{selectdaysfile}{
-    Functionality designed for the London Centre of Longidutinal studies.
-    Csv file holding the relation between device serial numbers and measurement days of interest.
+    See \link{g.part1}
   }
   \item{dayborder}{
-    Hour at which days start and end (default = 0), value = 4 would mean 4am
+    See \link{g.part1}
   }
   \item{window.summary.size}{
-    Functionality designed for the London Centre of Longidutinal studies.
-    Size in minutes of the summary window
+    See \link{g.part2}
   }
   \item{bout.metric}{
-    This argument used to be called mvpa.2014 and had TRUE or FALSE as its value.
-    However, it has now become clear that this aspect of the analyses is still very
-    much open for debate. Therefore, I have changed it into an argument where you
-    can specify a metric for bout detection based on a number. A description of these
-    bout metrics can be found in the new function \link{g.getbout}
+    See \link{g.part2}
   }
   \item{closedbout}{
-    If TRUE then count breaks in a bout towards the bout duration. If FALSE then only 
-    count time spent above the threshold towards the bout duration.
+    See \link{g.part2}
   }
   \item{desiredtz}{
-    see \link{g.getmeta}
+    See \link{g.part1}
   }
   \item{IVIS_windowsize_minutes}{
-    see \link{g.IVIS}
+    See \link{g.part2}
   }
   \item{IVIS_epochsize_seconds}{
-    depricate, see \link{g.IVIS}
+    See \link{g.part2}
   }
   \item{iglevels}{
-    Levels for acceleration value frequency distribution in mg used for intensity
-    gradient calculation (according to the method by Rowlands 2018). By default this
-    is argument is empty and the intensity gradient calculation is not done. 
-    The user can either provide a single value (any) to make the intensity gradient use
-    the bins c(seq(0,4000,by=25),8000) or the user could specify their own
-    distribution. There is no constriction to the number of levels.
+    See \link{g.part2}
   }
   \item{IVIS.activity.metric}{
-    see function \link{g.IVIS}
+    See \link{g.part2}
   }
   \item{qM5L5}{
-    see function \link{g.getM5L5}
+    See \link{g.part2}
   }
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
-  \item{MX.ig.min.dur}{see \link{g.getM5L5}}
+  \item{MX.ig.min.dur}{
+    See \link{g.part2}
+  }
 }
 \value{
   g.analyse generated two data,franeL

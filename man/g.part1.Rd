@@ -240,14 +240,20 @@
         noon and noon), used for sleep assessment (part 4).}
       \item{minimum_MM_length.part5}{Numeric. Minimum length in hours of a MM day to be included
       in the cleaned part 5 results.}
-      \item{selectdaysfile}{Character, see \link{g.analyse}}
+      \item{selectdaysfile}{Character, Functionality designed for the London Centre
+        of Longidutinal studies. Csv file holding the relation between device 
+        serial numbers and measurement days of interest.}
       \item{strategy}{Numeric, see \link{g.impute} used in part 2}
       \item{hrs.del.start}{Numeric, see \link{g.impute} used in part 2}
       \item{hrs.del.end}{Numeric, see \link{g.impute} used in part 2}
       \item{maxdur}{Numeric, see \link{g.impute} used in part 2}
       \item{ndayswindow}{Numeric, see \link{g.impute} used in part 2}
       \item{includedaycrit.part5}{Numeric. see \link{g.report.part5}}
-      \item{includedaycrit}{Numeric, see \link{g.analyse} used in part 2}
+      \item{includedaycrit}{Numeric, minimum required number of valid hours
+        in day specific analysis (NOTE: there is no minimum required number of
+        hours per day in the summary of an entire measurement, every available 
+        hour is used to make the best possible inference on average metric value
+        per average day)}
     }
   }
    \subsection{params_general}{
@@ -294,7 +300,13 @@
         3600 seconds. So, when window3 is larger than window2 we use overlapping windows,
         while if window2 equals window3 non-wear periods are assessed by non-overlapping
         windows. Window2 is expected to be a multitude of 60 seconds.}
-      \item{idloc}{Numeric, see \link{g.analyse}}
+      \item{idloc}{Numeric. If idloc = 1 (default) the code assumes that ID
+        number is stored in the obvious header field. Note that for ActiGraph data
+        the ID never stored in the file header.  For value set to 2, 5, 6, and 7, GGIR
+        looks at the filename and extracts the character string preceding the first 
+        occurance of a '_', ' ' (space), '.' (dot), and '-', respecitvely. You may have 
+        noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
+        and not actively maintained anymore, but because it is legacy code not omitted.}
     }
   }
 }
