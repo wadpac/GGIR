@@ -1,5 +1,18 @@
-g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxdur = 0,
-                    ndayswindow = 7, desiredtz = "", dayborder = 0, TimeSegments2Zero = c()) {
+g.impute = function(M, I, params_cleaning = c(), desiredtz = "", 
+                    dayborder = 0, TimeSegments2Zero = c(), ...) {
+  
+  #get input variables
+  input = list(...)
+  if (any(names(input) %in% c("M", "I", "params_cleaning", "desiredtz",
+                              "dayborder", "TimeSegments2Zero")) == FALSE) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments
+    # So, inside GGIR this will not be used, but it is used when g.calibrate is used on its own
+    # as if it was still the old g.calibrate function
+    params = extract_params(params_cleaning = params_cleaning,
+                            input = input) # load default parameters
+    params_cleaning = params$params_cleaning
+  }
+  
   windowsizes = M$windowsizes #default: c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
@@ -73,26 +86,26 @@ g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxd
   midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
   #===================================================================
   # Select data based on strategy
-  if (strategy == 1) { 	#protocol based data selection
-    if (hrs.del.start > 0) {
-      r4[1:(hrs.del.start*(3600/ws2))] = 1
+  if (params_cleaning[["strategy"]] == 1) { 	#protocol based data selection
+    if (params_cleaning[["hrs.del.start"]] > 0) {
+      r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
     }
-    if (hrs.del.end > 0) {
-      if (length(r4) > hrs.del.end*(3600/ws2)) {
-        r4[((length(r4) + 1) - (hrs.del.end*(3600/ws2))):length(r4)] = 1
+    if (params_cleaning[["hrs.del.end"]] > 0) {
+      if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
+        r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
       } else {
         r4[1:length(r4)] = 1
       }
     }
-    if (maxdur > 0 & (length(r4) > ((maxdur*n_ws2_perday) + 1))) {
-      r4[((maxdur*n_ws2_perday) + 1):length(r4)] = 1
+    if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
+      r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
     }
     if (LD < 1440) {
       r4 = r4[1:floor(LD/(ws2/60))]
     }
     starttimei = 1
     endtimei = length(r4)
-  } else if (strategy == 2) { #midnight to midnight strategy
+  } else if (params_cleaning[["strategy"]] == 2) { #midnight to midnight strategy
     starttime = firstmidnight
     endtime = lastmidnight
     starttimei = firstmidnighti
@@ -101,7 +114,7 @@ g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxd
       r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
     }
     r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
-  } else if (strategy == 3) { #select X most active days
+  } else if (params_cleaning[["strategy"]] == 3) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
     atest = as.numeric(as.matrix(M$metashort[,2]))
@@ -110,12 +123,12 @@ g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxd
     r2tempe = rep(r2,each = (ws2/ws3))
     atest[which(r2tempe == 1)] = 0
     NDAYS = length(atest) / (12*60*24)
-    pend = round((NDAYS - ndayswindow) * 4)
+    pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * 4)
     if (pend < 1) pend = 1
     atestlist = rep(0,pend)
     for (ati in 1:pend) { #40 x quarter a day
       p0 = (((ati - 1)*12*60*6) + 1)
-      p1 = (ati + (ndayswindow*4))*12*60*6  #ndayswindow x quarter of a day = 1 week
+      p1 = (ati + (params_cleaning[["ndayswindow"]]*4))*12*60*6  #ndayswindow x quarter of a day = 1 week
       if (p0 > length(atest)) p0 = length(atest)
       if (p1 > length(atest)) p1 = length(atest)
       if ((p1 - p0) > 1000) {
@@ -126,22 +139,22 @@ g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxd
       }
     }
     atik = which(atestlist == max(atestlist))
-    hrs.del.start = atik * 6
-    maxdur = (atik/4) + ndayswindow
-    if (maxdur > NDAYS) maxdur = NDAYS
+    params_cleaning[["hrs.del.start"]] = atik * 6
+    params_cleaning[["maxdur"]] = (atik/4) + params_cleaning[["ndayswindow"]]
+    if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
     # now calculate r4    
-    if (hrs.del.start > 0) {
-      r4[1:(hrs.del.start*(3600/ws2))] = 1
+    if (params_cleaning[["hrs.del.start"]] > 0) {
+      r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
     }
-    if (hrs.del.end > 0) {
-      if (length(r4) > hrs.del.end*(3600/ws2)) {
-        r4[((length(r4) + 1) - (hrs.del.end*(3600/ws2))):length(r4)] = 1
+    if (params_cleaning[["hrs.del.end"]] > 0) {
+      if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
+        r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
       } else {
         r4[1:length(r4)] = 1
       }
     }
-    if (maxdur > 0 & (length(r4) > ((maxdur*n_ws2_perday) + 1))) {
-      r4[((maxdur*n_ws2_perday) + 1):length(r4)] = 1
+    if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
+      r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
     }
     if (LD < 1440) {
       r4 = r4[1:floor(LD/(ws2/60))]
@@ -149,7 +162,7 @@ g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxd
     starttimei = 1
     endtimei = length(r4)
     
-  } else if (strategy == 4) { #from first midnight to end of recording
+  } else if (params_cleaning[["strategy"]] == 4) { #from first midnight to end of recording
     starttime = firstmidnight
     starttimei = firstmidnighti
     if (firstmidnighti != 1) { #ignore everything before the first midnight
@@ -220,7 +233,7 @@ g.impute = function(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, maxd
   metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
   invisible(list(metashort = metashort, rout = rout, dcomplscore = dcomplscore, 
-                 averageday = averageday, windowsizes = windowsizes, strategy = strategy,
-                 LC = LC, LC2 = LC2, hrs.del.start = hrs.del.start, hrs.del.end = hrs.del.end,
-                 maxdur = maxdur))
+                 averageday = averageday, windowsizes = windowsizes, strategy = params_cleaning[["strategy"]],
+                 LC = LC, LC2 = LC2, hrs.del.start = params_cleaning[["hrs.del.start"]], hrs.del.end = params_cleaning[["hrs.del.end"]],
+                 maxdur = params_cleaning[["maxdur"]]))
 }

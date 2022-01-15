@@ -134,35 +134,40 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
           }
         }
-        IMP = g.impute(M,I,strategy = params_cleaning[["strategy"]], hrs.del.start = params_cleaning[["hrs.del.start"]],
-                       hrs.del.end = params_cleaning[["hrs.del.end"]], maxdur = params_cleaning[["maxdur"]],
-                       ndayswindow = params_cleaning[["ndayswindow"]], desiredtz = params_general[["desiredtz"]],
+        IMP = g.impute(M, I, 
+                       params_cleaning = params_cleaning,
+                       dayborder = params_general[["dayborder"]],
+                       desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero)
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
         }
-        SUM = g.analyse(I, C, M, IMP, qlevels = params_247[["qlevels"]],
-                        qwindow = params_247[["qwindow"]], L5M5window = params_247[["L5M5window"]],
+        SUM = g.analyse(I, C, M, IMP,
+                        qlevels = params_247[["qlevels"]],
+                        qwindow = params_247[["qwindow"]],
+                        L5M5window = params_247[["L5M5window"]],
                         M5L5res = params_247[["M5L5res"]],
-                        includedaycrit = params_cleaning[["includedaycrit"]],
+                        window.summary.size = params_247[["window.summary.size"]],
                         ilevels = params_247[["ilevels"]],
                         winhr = params_247[["winhr"]],
+                        IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
+                        IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]],
+                        iglevels = params_247[["iglevels"]],
+                        IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
+                        qM5L5  = params_247[["qM5L5"]],
+                        MX.ig.min.dur = params_247[["MX.ig.min.dur"]],
+                        includedaycrit = params_cleaning[["includedaycrit"]],
                         idloc = params_general[["idloc"]],
                         mvpathreshold = params_phyact[["mvpathreshold"]],
                         boutcriter = params_phyact[["boutcriter"]],
                         mvpadur = params_phyact[["mvpadur"]],
                         selectdaysfile = params_cleaning[["selectdaysfile"]],
-                        window.summary.size = params_247[["window.summary.size"]],
                         dayborder = params_general[["dayborder"]],
                         bout.metric = params_phyact[["bout.metric"]],
                         closedbout = params_phyact[["closedbout"]],
                         desiredtz = params_general[["desiredtz"]],
-                        IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                        IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]],
-                        iglevels = params_247[["iglevels"]],
-                        IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
-                        qM5L5  = params_247[["qM5L5"]], myfun = myfun, MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+                        myfun = myfun)
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {

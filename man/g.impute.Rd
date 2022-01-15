@@ -10,8 +10,8 @@
   protocol to label impute invalid time segments in the data.
 }
 \usage{
-  g.impute(M, I, strategy = 1, hrs.del.start = 0, hrs.del.end = 0, 
-  maxdur = 0, ndayswindow = 7,desiredtz="", dayborder= 0, TimeSegments2Zero =c())
+  g.impute(M, I, params_cleaning = c(),
+  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,20 +21,8 @@
   \item{I}{
     output from \link{g.inspectfile}
   }
-  \item{strategy}{
+  \item{params_cleaning}{
     See \link{g.part1}
-  }
-  \item{hrs.del.start}{
-    See \link{g.part1}
-  }
-  \item{hrs.del.end}{
-    See \link{g.part1}
-  }
-  \item{maxdur}{
-    See \link{g.part2}
-  }
-  \item{ndayswindow}{
-   See \link{g.part2}
   }
   \item{desiredtz}{
     See \link{g.part1}
@@ -48,8 +36,11 @@
     to contain two columns named windowstart and windowend, with the start- and end
     time of the time segment in POSIXlt class.
   }
+   \item{...}{
+     Any argument used in the previous version of g.calibrate, which will now
+     be used to overrule the arguments specified with the parameter objects.
+  }
 }
-
 \value{
   \item{metashort}{imputed short epoch variables}
   \item{rout}{matrix to clarify when data was imputed for each long epoch time window
@@ -63,16 +54,13 @@
   \dontrun{
     #inspect file:
     I = g.inspectfile(datafile)
-    
     #autocalibration:
     C = g.calibrate(datafile) 
-    
     #get meta-data:
     M = g.getmeta(datafile)
   }
   data(data.getmeta)
   data(data.inspectfile)
-  
   #impute meta-data:
   IMP = g.impute(M=data.getmeta, I=data.inspectfile)
 }
