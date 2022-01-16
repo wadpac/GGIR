@@ -1,29 +1,26 @@
-g.getmeta = function(datafile, params_metrics = c(),
-                     params_rawdata = c(),
-                     desiredtz = "", windowsizes = c(5, 900, 3600),
-                     daylimit = FALSE, offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-                     meantempcal = c(), selectdaysfile = c(),
-                     dayborder = 0, configtz = c(), myfun = c(), ...) {
-  
+g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
+                     params_general = c(), daylimit = FALSE, 
+                     offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
+                     meantempcal = c(), selectdaysfile = c(), myfun = c(), ...) {
   
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("datafile", "params_metrics", "params_rawdata",
-                               "desiredtz", "windowsizes", "daylimit", "offset", 
+  if (any(names(input) %in% c("datafile", "params_metrics", 
+                              "params_rawdata", "params_general",
+                              "daylimit", "offset", 
                               "scale", "tempoffset", "meantempcal", 
-                              "selectdaysfile", "dayborder", 
-                              "configtz", "myfun")) == FALSE) {
+                              "selectdaysfile", "myfun")) == FALSE) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.getmeta is used on its own
     # as if it was still the old g.getmeta function
     params = extract_params(params_metrics = params_metrics,
                             params_rawdata = params_rawdata,
+                            params_general = params_general,
                             input = input) # load default parameters
     params_metrics = params$params_metrics
     params_rawdata = params$params_rawdata
+    params_general = params$params_general
   }
-  
-  
   #get input variables
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
@@ -94,16 +91,16 @@ g.getmeta = function(datafile, params_metrics = c(),
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
     # bugs after waiting for the data to be load
-    check_myfun(myfun, windowsizes)
+    check_myfun(myfun, params_general[["windowsizes"]])
   }
-
+  
   if (length(nmetrics) == 0) {
     cat("\nWARNING: No metrics selected\n")
   }
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # parameters
-  ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]  #window sizes
+  ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]  #window sizes
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * ceiling(ws2/60))
     cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
@@ -116,9 +113,9 @@ g.getmeta = function(datafile, params_metrics = c(),
     cat("\nWARNING: The long windowsize needs to be a multitude of short windowsize. The \n")
     cat(paste0("\nshort windowsize has now been automatically adjusted to: ", ws3, " seconds in order to meet this criteria.\n"))
   }
-  windowsizes = c(ws3,ws2,ws)
+  params_general[["windowsizes"]] = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
-
+  
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -135,9 +132,9 @@ g.getmeta = function(datafile, params_metrics = c(),
   }
   options(warn = -1)
   if (useRDA == FALSE) {
-    INFI = g.inspectfile(datafile, desiredtz = desiredtz,
+    INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
                          params_rawdata = params_rawdata,
-                         configtz = configtz)
+                         configtz = params_general[["configtz"]])
   } else {
     load(datafile)
     INFI = I
@@ -174,9 +171,9 @@ g.getmeta = function(datafile, params_metrics = c(),
   header = INFI$header
   options(warn = -1)
   if (useRDA == FALSE) decn = g.dotorcomma(datafile, dformat, mon = mon,
-                                           desiredtz = desiredtz, rmc.dec = params_rawdata[["rmc.dec"]])
+                                           desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]])
   options(warn = 0)
-
+  
   ID = g.getidfromheaderobject(filename = filename, header = header, dformat = dformat, mon = mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
@@ -230,11 +227,14 @@ g.getmeta = function(datafile, params_metrics = c(),
       accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                               selectdaysfile = selectdaysfile,
                               filequality = filequality, decn = decn,
-                              dayborder = dayborder, ws = ws, desiredtz = desiredtz,
+                              ws = ws,
                               PreviousEndPage = PreviousEndPage,
                               inspectfileobject = INFI,
-                              configtz = configtz,
+                              dayborder = params_general[["dayborder"]],
+                              desiredtz = params_general[["desiredtz"]],
+                              configtz = params_general[["configtz"]],
                               rmc.dec = params_rawdata[["rmc.dec"]],
+                              
                               rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                               rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
                               rmc.header.length = params_rawdata[["rmc.header.length"]],
@@ -273,7 +273,7 @@ g.getmeta = function(datafile, params_metrics = c(),
       options(warn = 0) # to ignore warnings relating to failed mmap.load attempt
       if (mon == 5) { # if movisens, then read temperature
         PreviousStartPage = startpage
-        temperature = g.readtemp_movisens(datafile, desiredtz, PreviousStartPage,
+        temperature = g.readtemp_movisens(datafile, desiredtz = params_general[["desiredtz"]], PreviousStartPage,
                                           PreviousEndPage, interpolationType = params_rawdata[["interpolationType"]])
         P = cbind(P, temperature[1:nrow(P)])
         colnames(P)[4] = "temp"
@@ -341,14 +341,14 @@ g.getmeta = function(datafile, params_metrics = c(),
         }
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
-                                                        P, header, desiredtz,
+                                                        P, header, desiredtz = params_general[["desiredtz"]],
                                                         sf, i, datafile,  ws2,
                                                         starttime, wday, weekdays, wdayname)
         starttime = SWMT$starttime
         meantemp = SWMT$meantemp
         use.temp = SWMT$use.temp
         wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
-        desiredtz = SWMT$desiredtz; data = SWMT$data
+        params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
         rm(SWMT)
         if (exists("P")) rm(P); gc()
         if (i != 0 & length(selectdaysfile) == 0 & exists("P")) rm(P); gc()
@@ -698,8 +698,8 @@ g.getmeta = function(datafile, params_metrics = c(),
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
-          I = g.inspectfile(datafile, desiredtz = desiredtz,
-                            params_rawdata = params_rawdata, configtz = configtz)
+          I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
+                            params_rawdata = params_rawdata, configtz = params_general[["configtz"]])
         }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
@@ -724,11 +724,11 @@ g.getmeta = function(datafile, params_metrics = c(),
         }
         time5[daych] = time5[daych] + (delta_day * 24 * 3600) #+ 5
       }
-      if (length(desiredtz) == 0) {
+      if (length(params_general[["desiredtz"]]) == 0) {
         print("desiredtz not specified, Europe/London used as default")
-        desiredtz = "Europe/London"
+        params_general[["desiredtz"]] = "Europe/London"
       }
-      time6 = as.POSIXlt(time5,origin = "1970-01-01", tz = desiredtz)
+      time6 = as.POSIXlt(time5,origin = "1970-01-01", tz = params_general[["desiredtz"]])
       time6 = strftime(time6, format = "%Y-%m-%dT%H:%M:%S%z")
       metashort[,1] = as.character(time6)
     }
@@ -744,9 +744,9 @@ g.getmeta = function(datafile, params_metrics = c(),
         # All of the below needed for Millenium cohort
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
-          I = g.inspectfile(datafile, desiredtz = desiredtz,
+          I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
                             params_rawdata = params_rawdata,
-                            configtz = configtz)
+                            configtz = params_general[["configtz"]])
         }
         if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
           dateday1 = as.character(SDF[SDFi, 2])
@@ -759,16 +759,16 @@ g.getmeta = function(datafile, params_metrics = c(),
           time1[daych] = time1[daych] + (delta_day * 24 * 3600) #+ 5
         }
       }
-      if (length(desiredtz) == 0) {
+      if (length(params_general[["desiredtz"]]) == 0) {
         print("desiredtz not specified, Europe/London used as default")
-        desiredtz = "Europe/London"
+        params_general[["desiredtz"]] = "Europe/London"
       }
-      time2 = as.POSIXlt(time1, origin = "1970-01-01", tz = desiredtz)
+      time2 = as.POSIXlt(time1, origin = "1970-01-01", tz = params_general[["desiredtz"]])
       time2 = strftime(time2, format = "%Y-%m-%dT%H:%M:%S%z")
       metalong[, 1] = as.character(time2)
     }
     metricnames_short = c("timestamp", metnames)
-
+    
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)
@@ -794,10 +794,10 @@ g.getmeta = function(datafile, params_metrics = c(),
       metalong[,ncolml] = as.numeric(metalong[,ncolml])
     }
   } else {
-    metalong = metashort = wday = wdayname = windowsizes = c()
+    metalong = metashort = wday = wdayname = params_general[["windowsizes"]] = c()
   }
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
   invisible(list(filecorrupt = filecorrupt, filetooshort = filetooshort, NFilePagesSkipped = NFilePagesSkipped,
                  metalong = metalong, metashort = metashort, wday = wday, wdayname = wdayname,
-                 windowsizes = windowsizes, bsc_qc = bsc_qc))
+                 windowsizes = params_general[["windowsizes"]], bsc_qc = bsc_qc))
 }

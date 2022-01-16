@@ -14,10 +14,9 @@
 }
 \usage{
   g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
-           desiredtz = "", windowsizes = c(5, 900, 3600), daylimit = FALSE,
-           offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-           meantempcal = c(), selectdaysfile = c(),
-           dayborder = 0, configtz = c(), myfun = c(), ...)
+                     params_general = c(), daylimit = FALSE, 
+                     offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
+                     meantempcal = c(), selectdaysfile = c(), myfun = c(), ...)
 }
 \arguments{
   \item{datafile}{
@@ -29,10 +28,7 @@
   \item{params_rawdata}{
     See \link{g.part1}
   }
-  \item{desiredtz}{
-    See \link{g.part1}
-  }
-  \item{windowsizes}{
+  \item{params_general}{
     See \link{g.part1}
   }
   \item{daylimit}{
@@ -58,12 +54,6 @@
     available then leave blank (default)
   }
   \item{selectdaysfile}{
-    see \link{g.part1}
-  }
-  \item{dayborder}{
-   see \link{g.part1}
-  }
-  \item{configtz}{
     see \link{g.part1}
   }
   \item{myfun}{
