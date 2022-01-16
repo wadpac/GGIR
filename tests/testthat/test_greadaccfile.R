@@ -4,12 +4,12 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   skip_on_cran()
   # 
   # library(GGIR)
-  # library(testthat)
-  # dirR = "~/GGIR/R"
-  # ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
-  # for (i in 1:length(ffnames)) {
-  #   source(paste(dirR,"/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
-  # }
+  library(testthat)
+  dirR = "~/GGIR/R"
+  ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
+  for (i in 1:length(ffnames)) {
+    source(paste(dirR,"/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
+  }
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
   binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIR")[1]
   wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]
@@ -96,15 +96,15 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
                            decn = ".", dayborder,ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = Icwa)
   genea_read = g.readaccfile(binfile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           decn = ".", dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
+                           decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
                            inspectfileobject = Igenea)
   wav_read = expect_warning(g.readaccfile(wavfile, blocksize = 2, blocknumber = 1, 
                                           filequality = filequality, selectdaysfile = c(),
-                                          decn = ".", dayborder, ws = 3, desiredtz = desiredtz, 
+                                          decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
                                           PreviousEndPage = 1, inspectfileobject = Iwav))
   
   GA_read = expect_warning(g.readaccfile(GAfile, blocksize = 2, blocknumber = 1, filequality = filequality,
-                                         selectdaysfile = c(), decn = ".", dayborder, ws = 3,
+                                         selectdaysfile = c(), decn = ".", dayborder = dayborder, ws = 3,
                                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA))
   expect_equal(cwa_read$P$header$blocks, 145)
   expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 4.1133)

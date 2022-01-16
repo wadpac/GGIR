@@ -8,10 +8,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (length(params[[parname]]) > 0) { 
         if (params[[parname]][1] %in% c("c()","NULL") == FALSE) { # because some variables are initialised empty
           x = params[[parname]]
-          # print("check_params")
-          # print(parname)
-          # print(x)
-          # 
           if (parclass == "numeric") {
             if (!is.numeric(x)) {
               stop(paste0("\n", category, " argument ", parname, " is not ", parclass))

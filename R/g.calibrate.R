@@ -117,38 +117,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
     }
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
-    accread = g.readaccfile(filename = datafile,blocksize = blocksize,blocknumber = i,
-                            selectdaysfile = params_cleaning[["selectdaysfile"]],
-                            filequality = filequality,
-                            decn = decn,
-                            dayborder = params_general[["dayborder"]],
-                            ws = ws,
-                            desiredtz = params_general[["desiredtz"]],
+    accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
+                            filequality = filequality, decn = decn, ws = ws,
                             PreviousEndPage = PreviousEndPage, inspectfileobject = INFI,
-                            rmc.dec = params_rawdata[["rmc.dec"]],
-                            rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                            rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                            rmc.header.length = params_rawdata[["rmc.header.length"]],
-                            rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                            rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                            rmc.col.time = params_rawdata[["rmc.col.time"]],
-                            rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                            rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                            rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                            rmc.format.time = params_rawdata[["rmc.format.time"]],
-                            rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                            rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                            rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                            rmc.origin = params_rawdata[["rmc.origin"]],
-                            rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                            rmc.sf = params_rawdata[["rmc.sf"]],
-                            rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                            rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                            rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
-                            rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                            rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
-                            rmc.doresample = params_rawdata[["rmc.doresample"]],
-                            interpolationType = params_rawdata[["interpolationType"]])
+                            params_rawdata = params_rawdata, params_general = params_general)
     P = accread$P
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
