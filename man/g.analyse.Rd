@@ -67,7 +67,7 @@
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
   \item{...}{
-     Any argument used in the previous version of g.impute, which will now
+     Any argument used in the previous version of g.analyse, which will now
      be used to overrule the arguments specified with the parameter objects.
   }
 }

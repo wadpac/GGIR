@@ -72,19 +72,11 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         SLE = g.sib.det(M, IMP, I, twd = c(-12,12),
-                        timethreshold = params_sleep[["timethreshold"]],
-                        anglethreshold = params_sleep[["anglethreshold"]],
-                        acc.metric = params_general[["acc.metric"]], 
+                        myfun = myfun,
+                        sensor.location = params_general[["sensor.location"]],
                         desiredtz = params_general[["desiredtz"]],
-                        constrain2range = params_sleep[["constrain2range"]], 
-                        myfun = myfun, 
-                        sensor.location = params_general[["sensor.location"]], 
-                        HASPT.algo = params_sleep[["HASPT.algo"]], 
-                        HASIB.algo = params_sleep[["HASIB.algo"]], 
-                        Sadeh_axis = params_sleep[["Sadeh_axis"]], 
-                        longitudinal_axis = params_sleep[["longitudinal_axis"]],
-                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])
-        
+                        acc.metric = params_general[["acc.metric"]])
+
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
           if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data

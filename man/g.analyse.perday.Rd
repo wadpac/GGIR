@@ -34,7 +34,7 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
   \item{ws3}{Epoch size in seconds}
   \item{ws2}{see \link{g.weardec}}
   \item{qcheck}{vector with zeros and ones for each epoch, respenting the
-  quality check derived with g.impute}
+    quality check derived with g.impute}
   \item{fname}{RData filename produced by g.part1}
   \item{idloc}{see \link{g.analyse}}
   \item{BodyLocation}{as produced by \link{g.extractheadervars}} 
@@ -53,14 +53,14 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
   \item{ExtFunColsi}{column index of metashort where metric is stored}
   \item{myfun}{External function object to be applied to raw data, see \link{g.getmeta}.}
   \item{desiredtz}{see \link{g.part1}}
-   \item{params_247}{
+  \item{params_247}{
     See \link{g.part2}
   }
   \item{params_phyact}{
     See \link{g.part2}
   }
   \item{...}{
-   Any argument used in the previous version of g.impute, which will now
+   Any argument used in the previous version of g.analyse.perday, which will now
    be used to overrule the arguments specified with the parameter objects.
   }
 }

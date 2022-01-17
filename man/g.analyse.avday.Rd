@@ -28,7 +28,7 @@
     See \link{g.part2}
   }
   \item{...}{
-   Any argument used in the previous version of g.impute, which will now
+   Any argument used in the previous version of g.analyse.avday, which will now
    be used to overrule the arguments specified with the parameter objects.
   }
 }

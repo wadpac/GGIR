@@ -391,12 +391,16 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
                   # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
-                  levels = identify_levels(ts,
-                                           TRLi,TRMi,TRVi,
-                                           params_phyact[["boutdur.mvpa"]],params_phyact[["boutcriter.mvpa"]],
-                                           params_phyact[["boutdur.lig"]],params_phyact[["boutcriter.lig"]],
-                                           params_phyact[["boutdur.in"]],params_phyact[["boutcriter.in"]],
-                                           ws3new,params_phyact[["bout.metric"]])
+                  levels = identify_levels(ts = ts,
+                                           TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
+                                           boutdur.mvpa = params_phyact[["boutdur.mvpa"]],
+                                           boutcriter.mvpa = params_phyact[["boutcriter.mvpa"]],
+                                           boutdur.lig = params_phyact[["boutdur.lig"]],
+                                           boutcriter.lig = params_phyact[["boutcriter.lig"]],
+                                           boutdur.in = params_phyact[["boutdur.in"]],
+                                           boutcriter.in = params_phyact[["boutcriter.in"]],
+                                           ws3new = ws3new,
+                                           bout.metric = params_phyact[["bout.metric"]])
                   LEVELS = levels$LEVELS
                   OLEVELS = levels$OLEVELS
                   Lnames = levels$Lnames

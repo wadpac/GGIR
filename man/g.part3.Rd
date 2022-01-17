@@ -98,16 +98,27 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
       \item{sleeplogidnum}{Boolean. Should the participant identifier as stored in
           the sleeplog be interpretted as a number (TRUE=default) or character (FALSE)?}
       \item{ignorenonwear}{Boolean, see \link{g.sib.sum}}
-      \item{constrain2range}{Boolean, see \link{g.sib.det}}
+      \item{constrain2range}{Boolean,  Whether or not to constrain the range of
+        threshold used in the diary free sleep period time window detection}
       \item{HASPT.ignore.invalid}{Boolean, see \link{HASPT}}
-      \item{HASPT.algo}{Character, see \link{HASPT}}
-      \item{HASIB.algo}{Character, see \link{HASIB}}
-      \item{Sadeh_axis}{Character, see \link{g.sib.det}}
+      \item{HASPT.algo}{Character, character to indicate what heuristic algorithm
+        to use for detecting the SPT window, see \link{HASPT}}
+      \item{HASIB.algo}{Character, character to indicate what heuristic algorithm to use 
+        for detecting the sustained inactivity bouts (SIB), see \link{HASIB}}
+      \item{Sadeh_axis}{Character, character to indicate which axis to use for
+        the Sadeh1994 algorithm, and  other algortihms that related on count-based
+        Actigraphy such as Galland2012.}
       \item{sleeplogsep}{Character, \link{g.loadlog}}
       \item{nap_model}{Character, see \link{g.part5.classifyNaps}}
-      \item{longitudinal_axis}{Numeric, see \link{g.sib.det}} 
-      \item{anglethreshold}{Numeric, see \link{g.sib.det}}
-      \item{timethreshold}{Numeric, see \link{g.sib.det}}
+      \item{longitudinal_axis}{Integer to indicate which axis is the longitudinal axis. 
+        If not provided function will estimate longitudinal axis. Only used when
+        sensor.location="hip" or HASPT.algo="HorAngle".} 
+      \item{anglethreshold}{Numeric, Angle threshold (degrees) for sustained 
+        inactivity periods detection, default = 5}
+      \item{timethreshold}{Numeric, time threshold (minutes) for sustained
+        inactivity periods detection, default = 5. This can be specified
+        as multiple thresholds, each of which will be implemented. 
+        For example, timethreshold = c(5,10)}
       \item{possible_nap_window}{Numeric, see \link{g.part5.classifyNaps}}
       \item{possible_nap_dur}{Numeric, see \link{g.part5.classifyNaps}}
     }
