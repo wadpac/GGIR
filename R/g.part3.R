@@ -7,7 +7,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   input = list(...)
   params = extract_params(params_sleep = params_sleep,
                           params_metrics = params_metrics,
-                          params_general=params_general, params_output = params_output, input = input) # load default parameters
+                          params_general = params_general, params_output = params_output, input = input) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   params_general = params$params_general
@@ -54,8 +54,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       cat("Filename not recognised")
     }
     fname = unlist(strsplit(fnames[i], ".RData"))[1]
-    
-    # fname = unlist(strsplit(fname,"eta_"))[2]
     #=========================================================
     #check whether file has already been processed
     #by comparing filename to read with list of processed files
@@ -73,13 +71,18 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       load(paste(metadatadir, "/meta/basic/meta_", fnames[i], sep = ""))
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-        SLE = g.sib.det(M, IMP, I, twd = c(-12,12), timethreshold = params_sleep[["timethreshold"]],
+        SLE = g.sib.det(M, IMP, I, twd = c(-12,12),
+                        timethreshold = params_sleep[["timethreshold"]],
                         anglethreshold = params_sleep[["anglethreshold"]],
                         acc.metric = params_general[["acc.metric"]], 
-                        desiredtz = params_general[["desiredtz"]], constrain2range = params_sleep[["constrain2range"]], 
-                        myfun = myfun, sensor.location = params_general[["sensor.location"]], 
-                        HASPT.algo = params_sleep[["HASPT.algo"]], HASIB.algo = params_sleep[["HASIB.algo"]], 
-                        Sadeh_axis = params_sleep[["Sadeh_axis"]], longitudinal_axis = params_sleep[["longitudinal_axis"]],
+                        desiredtz = params_general[["desiredtz"]],
+                        constrain2range = params_sleep[["constrain2range"]], 
+                        myfun = myfun, 
+                        sensor.location = params_general[["sensor.location"]], 
+                        HASPT.algo = params_sleep[["HASPT.algo"]], 
+                        HASIB.algo = params_sleep[["HASIB.algo"]], 
+                        Sadeh_axis = params_sleep[["Sadeh_axis"]], 
+                        longitudinal_axis = params_sleep[["longitudinal_axis"]],
                         HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])
         
         # SleepRegulartiyIndex calculation
@@ -110,7 +113,9 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
             dev.off()
           }
           sib.cla.sum = c()
-          sib.cla.sum = g.sib.sum(SLE, M, ignorenonwear = params_sleep[["ignorenonwear"]], desiredtz = params_general[["desiredtz"]])
+          sib.cla.sum = g.sib.sum(SLE, M,
+                                  ignorenonwear = params_sleep[["ignorenonwear"]],
+                                  desiredtz = params_general[["desiredtz"]])
           rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to align sleeplog with recording
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                longitudinal_axis, SleepRegularityIndex,

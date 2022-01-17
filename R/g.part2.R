@@ -22,6 +22,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["MX.ig.min.dur"]])
     # This will be an object with numeric qwindow values for all individuals and days
   }  
+  
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes

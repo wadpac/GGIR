@@ -5,7 +5,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("I", "C", "M", "IMP", "params_247", 
+  if (any(names(input) %in% c("I", "C", "M", "IMP", "params_247", "params_phyact", 
                               "quantiletype", "includedaycrit", 
                               "idloc", "snloc", "selectdaysfile", "dayborder", 
                                "desiredtz", "myfun")) == FALSE) {
@@ -13,10 +13,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
+                            params_phyact = params_phyact,
                             input = input) # load default parameters
     params_247 = params$params_247
+    params_phyact = params$params_phyact
   }
-  
   params_247[["L5M5window"]] = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
@@ -179,43 +180,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   r5long = replace(r5long,1:length(r5long),r5)
   r5long = t(r5long)
   dim(r5long) = c((length(r5)*(ws2/ws3)),1)
-  # get indices
-  ENMOi = which(colnames(metashort) == "ENMO")
-  LFENMOi = which(colnames(metashort) == "LFENMO")
-  BFENi = which(colnames(metashort) == "BFEN")
-  HFENi = which(colnames(metashort) == "HFEN")
-  HFENplusi = which(colnames(metashort) == "HFENplus")
-  MADi = which(colnames(metashort) == "MAD")
-  ENi = which(colnames(metashort) == "EN")
-  ENMOai = which(colnames(metashort) == "ENMOa")
-  ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
-  ZCXi = which(colnames(metashort) == "ZCX")
-  ZCYi = which(colnames(metashort) == "ZCY")
-  ZCZi = which(colnames(metashort) == "ZCZ")
-  BrondCounts_xi = which(colnames(metashort) == "BrondCounts_x")
-  BrondCounts_yi = which(colnames(metashort) == "BrondCounts_y")
-  BrondCounts_zi = which(colnames(metashort) == "BrondCounts_z")
-  
   if (length(myfun) > 0) {
     ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
   } else {
     ExtFunColsi = c()
   }
-  if (length(ANYANGLEi) == 0) ANYANGLEi = -1
-  if (length(ENMOi) == 0) ENMOi = -1
-  if (length(LFENMOi) == 0) LFENMOi = -1
-  if (length(BFENi) == 0) BFENi = -1
-  if (length(HFENi) == 0) HFENi = -1
-  if (length(HFENplusi) == 0) HFENplusi = -1
-  if (length(MADi) == 0) MADi = -1
-  if (length(ENi) == 0) ENi = -1
-  if (length(ENMOai) == 0) ENMOai = -1
-  if (length(BrondCounts_xi) == 0) BrondCounts_xi = -1
-  if (length(BrondCounts_yi) == 0) BrondCounts_yi = -1
-  if (length(BrondCounts_zi) == 0) BrondCounts_zi = -1
-  if (length(ZCXi) == 0) ZCXi = -1
-  if (length(ZCYi) == 0) ZCYi = -1
-  if (length(ZCZi) == 0) ZCZi = -1
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -259,19 +228,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   # Note that this is done here before all the other analyses because it only relies on the average day
   # The values and variablenames are, however, stored in the filesummary matrix towards the end (not here
   # in function g.analyse.avday).
-  output_avday = g.analyse.avday(qlevels = params_247[["qlevels"]],
-                                 doquan, averageday, M, IMP, t_TWDI, quantiletype,
-                                 winhr = params_247[["winhr"]],
-                                 L5M5window = params_247[["L5M5window"]],
-                                 M5L5res = params_247[["M5L5res"]],
-                                 ws3, IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]],
-                                 IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                                 IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
-                                 doiglevels, firstmidnighti, ws2,
-                                 midnightsi,
-                                 iglevels = params_247[["iglevels"]],
-                                 qM5L5 = params_247[["qM5L5"]],
-                                 MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+  output_avday = g.analyse.avday(doquan = doquan, averageday = averageday,
+                                 M = M, IMP = IMP, t_TWDI = t_TWDI,
+                                 quantiletype = quantiletype, ws3 = ws3,
+                                 doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
+                                 midnightsi = midnightsi, params_247 = params_247)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
@@ -283,33 +244,22 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
-    output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
-                                     window.summary.size = params_247[["window.summary.size"]],
-                                     qwindow = params_247[["qwindow"]],
-                                     midnightsi, metashort, averageday,
-                                     ENMOi, LFENMOi, BFENi, ENi,
-                                     HFENi, HFENplusi, MADi,  ENMOai,
-                                     ZCXi, ZCYi, ZCZi,
-                                     BrondCounts_xi, BrondCounts_yi, BrondCounts_zi,
-                                     doiglevels, nfulldays, lastmidnight,
-                                     ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
-                                     tooshort, includedaycrit, winhr = params_247[["winhr"]],
-                                     L5M5window = params_247[["L5M5window"]],
-                                     M5L5res = params_247[["M5L5res"]],
-                                     doquan, qlevels = params_247[["qlevels"]],
-                                     quantiletype, doilevels, 
-                                     ilevels = params_247[["ilevels"]],
-                                     iglevels = params_247[["iglevels"]],
-                                     domvpa,
-                                     mvpathreshold = params_phyact[["mvpathreshold"]],
-                                     boutcriter = params_phyact[["boutcriter"]],
-                                     closedbout = params_phyact[["closedbout"]],
-                                     bout.metric = params_phyact[["bout.metric"]],
-                                     mvpadur = params_phyact[["mvpadur"]],
-                                     mvpanames, wdaycode, ID, 
-                                     deviceSerialNumber, qM5L5 = params_247[["qM5L5"]],
-                                     ExtFunColsi, myfun, desiredtz,
-                                     MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+    output_perday = g.analyse.perday(selectdaysfile = selectdaysfile, ndays = ndays,
+                                     firstmidnighti = firstmidnighti, time = time,
+                                     nfeatures = nfeatures, midnightsi = midnightsi,
+                                     metashort = metashort, averageday = averageday,
+                                     doiglevels = doiglevels, nfulldays = nfulldays,
+                                     lastmidnight = lastmidnight,
+                                     ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
+                                     idloc = idloc, BodyLocation = BodyLocation, wdayname = wdayname,
+                                     tooshort = tooshort, includedaycrit = includedaycrit,
+                                     quantiletype = quantiletype, doilevels = doilevels, 
+                                     domvpa = domvpa,
+                                     mvpanames = mvpanames, wdaycode = wdaycode, ID = ID, 
+                                     deviceSerialNumber = deviceSerialNumber,
+                                     doquan = doquan,  ExtFunColsi = ExtFunColsi,
+                                     myfun = myfun, desiredtz = desiredtz,
+                                     params_247 = params_247, params_phyact = params_phyact)
     daysummary = output_perday$daysummary
     ds_names = output_perday$ds_names
     windowsummary = output_perday$windowsummary
