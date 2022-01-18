@@ -22,7 +22,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["MX.ig.min.dur"]])
     # This will be an object with numeric qwindow values for all individuals and days
   }  
-  
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
@@ -98,7 +97,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       file2read = paste0(path,fnames[i])
       load(file2read) #reading RData-file
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
-        
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
         TimeSegments2Zero = c() # set defaul
@@ -201,7 +199,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
-  
   if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]

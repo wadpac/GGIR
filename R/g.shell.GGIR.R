@@ -70,7 +70,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     useRDA = FALSE
   }
   if (filelist == TRUE | useRDA == TRUE) {
-    metadatadir = paste0(outputdir,"/output_",studyname)
+    metadatadir = paste0(outputdir, "/output_", studyname)
   } else {
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
@@ -80,7 +80,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   configfile_csv = c()
   ex = "csv"
   if (length(configfile) > 0) { # Get extension of file
-    ex = unlist(strsplit(basename(configfile), split="\\."))
+    ex = unlist(strsplit(basename(configfile), split ="\\."))
     ex = ex[length(ex)]
   }
   if (ex == "csv") { # at a later point there may also be other file extensions
