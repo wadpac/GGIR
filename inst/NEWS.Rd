@@ -4,8 +4,8 @@
 \section{Changes in version 2.5-6 (GitHub-only-release date:18-01-2022)}{
 \itemize{
   \item Internal re-structuring: Arguments are now internally passed via parameter objects to 
-    make code and code documentation easier to navigate. This new structure preverses backward 
-    compatibility with the user's R scripts.
+    make code and code documentation easier to navigate. This new structure preserve backward 
+    compatibility with the user's older R scripts.
   }
 }
 \section{Changes in version 2.5-5 (GitHub-only-release date:18-01-2022)}{
