@@ -26,7 +26,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     params_247 = params$params_247
     params_phyact = params$params_phyact
   }
-  print(params_247[["iglevels"]])
   
   if (length(selectdaysfile) > 0 & ndays == 2) {
     ndays = 1
