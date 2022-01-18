@@ -3,7 +3,9 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.5-6 (GitHub-only-release date:18-01-2022)}{
 \itemize{
-  \item Internal structure: Arguments now passed on via parameter objects to make code.
+  \item Internal re-structuring: Arguments are now internally passed via parameter objects to 
+    make code and code documentation easier to navigate. This new structure preverses backward 
+    compatibility with the user's R scripts.
   }
 }
 \section{Changes in version 2.5-5 (GitHub-only-release date:18-01-2022)}{
