@@ -18,7 +18,9 @@
     Object produced by \link{g.getmeta}
   }
   \item{ignorenonwear}{
-    See \link{g.part3}
+    If TRUE then ignore detected monitor non-wear periods to avoid
+  confusion between monitor non-wear time and sustained inactivity
+  (default = TRUE)
   }
   \item{desiredtz}{
     See \link{g.part3}

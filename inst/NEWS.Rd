@@ -1,13 +1,20 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.5-5 (GitHub-only-release date:18-01-2022)}{
-  \itemize{
-    \item Fixed bug #484 affecting part 5 report not being able to generated because non-matching columns in milestone data
-    \item Part 2: Fix bug, BrondCounts and ZeroCrosssing Counts now no long auto-scaled by 1000 like all the other metrics.
-    \item Part 3: Fixed warning when SRI is calculated on DST day with 23 hours.
-    \item Part 5: sibreport and timeseries now stored per sib definition, previously only for last definition.
+\section{Changes in version 2.5-6 (GitHub-only-release date:18-01-2022)}{
+\itemize{
+  \item Internal re-structuring: Arguments are now internally passed via parameter objects to 
+    make code and code documentation easier to navigate. This new structure preverses backward 
+    compatibility with the user's R scripts.
   }
+}
+\section{Changes in version 2.5-5 (GitHub-only-release date:18-01-2022)}{
+\itemize{
+  \item Fixed bug #484 affecting part 5 report not being able to generated because non-matching columns in milestone data
+  \item Part 2: BrondCounts and ZeroCrosssing Counts no long auto-scaled by 1000 like all the other metrics.
+  \item Part 3: Fixed warning when SRI is calculated on DST day with 23 hours
+  \item Part 5: sibreport and timeseries now stored per sib definition.
+}
 }
 \section{Changes in version 2.5-4 (GitHub-only-release date:11-01-2022)}{
   \itemize{

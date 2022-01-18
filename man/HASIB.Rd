@@ -17,10 +17,10 @@
     Default value: "vanHees2015". Other options: "Sadeh1994", "Galland2012"
   }
   \item{anglethreshold}{
-    See \link{g.part3}
+    See \link{g.sib.det}
   }
   \item{timethreshold}{
-    See \link{g.part3}
+    See \link{g.sib.det}
   }
   \item{time}{
     Vector with time per short epoch

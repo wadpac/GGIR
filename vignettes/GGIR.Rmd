@@ -28,11 +28,11 @@ knitr::opts_chunk$set(echo = TRUE)
 [GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term _**raw**_ refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per recording, per day of measurement, and (optionally) per segment of a day of measurement, including estimates of physical activity, inactivity and sleep.
 We published an overview paper of GGIR in 2019 [link](https://doi.org/10.1123/jmpb.2018-0063).
 
-This vignette provides a general introduction on how to use GGIR and interpret the output, additionally you can find a [introduction video](https://youtu.be/RuFBCAqFJ2M) and a [mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to use your own algorithms for raw data then GGIR facilitates this with it's external function embedding feature, documented in a separate vignette: [Embedding external functions in GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly being used by research groups across the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package GGIR would not have been possible without the support of the contributors listed in the author list at [GGIR](https://CRAN.R-project.org/package=GGIR), with specific code contributions over time since April 2016 (when GGIR development moved to git) shown [here](https://github.com/wadpac/GGIR/graphs/contributors).
+This vignette provides a general introduction on how to use GGIR and interpret the output, additionally you can find a [introduction video](https://youtu.be/RuFBCAqFJ2M) and a [mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to use your own algorithms for raw data then GGIR facilitates this with it's external function embedding feature, documented in a separate vignette: [Embedding external functions in GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly being used by research groups across the world. A non-exhaustive overview of academic publications related to GGIR can be found [here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package GGIR would not have been possible without the support of the contributors listed in the author list at [GGIR](https://CRAN.R-project.org/package=GGIR), with specific code contributions over time since April 2016 (when GGIR development moved to GitHub) shown [here](https://github.com/wadpac/GGIR/graphs/contributors).
 
 **Cite GGIR:**
 
-When you use GGIR in publications do not forget to cite it properly to make your analysis reproducible for others and to give credit to it's developers. See paragraph on [Citing GGIR](#CitingGGIR) for details.
+When you use GGIR in publications do not forget to cite it properly as that makes your research more reproducible and it gives credit to it's developers. See paragraph on [Citing GGIR](#CitingGGIR) for details.
 
 
 ## Contributing, Support, and Keeping up to date
@@ -46,11 +46,11 @@ The development version of GGIR can be found on [github](https://github.com/wadp
 
 GGIR is open source software and does not come with service or support guarantees. However, as user-community you can help each other via the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please use these public platform rather than private e-mails such that other users can learn from the conversations.
 
-If you need dedicated support with the use of GGIR or need someone to adapt GGIR then Vincent van Hees is available as [independent consultant](https://www.accelting.com/).
+If you need dedicated support with the use of GGIR or need someone to adapt GGIR to your needs then Vincent van Hees is available as [independent consultant](https://www.accelting.com/).
 
 **Change log**
 
-Our log of main changes is [here](https://cran.r-project.org/package=GGIR/news.html).
+Our log of main changes to GGIR over time can be found [here](https://cran.r-project.org/package=GGIR/news.html).
 
 # Setting up your work environment
 
@@ -60,46 +60,87 @@ Our log of main changes is [here](https://cran.r-project.org/package=GGIR/news.h
 
 [Download and install RStudio](https://www.rstudio.com/products/rstudio/) (optional, but recommended)
 
-Download GGIR with its dependencies, you can do this with one command from the console command line:
+Install GGIR with its dependencies from CRAN. You can do this with one command from the console command line:
 
 ```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
 ```
 
+Alternatively, to install the latest development version with the latest bug fixes use instead:
+
+```{R,eval=FALSE}
+install.packages("remotes")
+remotes::install_github("wadpac/GGIR")
+```
+
+
 ## Prepare folder structure
 
 1. GGIR works with the following accelerometer brands and formats:
     - [GENEActiv](https://www.activinsights.com/) .bin and .csv
-    - [ActiGraph](https://actigraphcorp.com/) .csv. Note for Actigraph users:
-In ActiLife you have the option to export data with timestamps. Please do not do this as this causes memory issues. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
+    - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Movisens](https://www.movisens.com/en/) with data stored in folders.
-    - Genea (an accelerometer that is not available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
+    - Genea (an accelerometer that is not commercially available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
     - Any other accelerometer brand that generates csv output, such as [Shimmer](https://shimmersensing.com/), see function documentation for function read.myacc.csv.
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
 ## GGIR shell function
 
-GGIR comes with a large number of functions and optional settings (arguments) per functions. To ease interacting with GGIR there is one central function, named `g.shell.GGIR`, to talk to all the other functions. Being confronted with the amount of optional arguments might feel like stepping inside the cockpit of an airplane:
+GGIR comes with a large number of functions and optional settings (arguments) per functions.
 
-```{R,eval=FALSE}
-`mode=c(1,2), f0=c(), f1=c(), selectdaysfile = c(), configfile=c(), overwrite = FALSE, strategy = 1, maxdur = 7, do.cal = TRUE,  hrs.del.start = 0, hrs.del.end = 0, loglocation = c(), , acc.metric = "ENMO", storefolderstructure = FALSE, windowsizes = c(5,900,3600), minloadcrit = 72, desiredtz = "Europe/London", chunksize = 1, do.enmo = TRUE, do.lfenmo = FALSE, do.en = FALSE,  do.bfen = FALSE, do.hfen = FALSE, do.hfenplus = FALSE, do.mad = FALSE, do.anglex = FALSE, do.angley = FALSE, do.anglez = FALSE, do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE, do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE, do.dev_roll_med_acc_z=FALSE, do.enmoa = FALSE, dynrange = c(), printsummary = FALSE, includedaycrit = 16, M5L5res = 10, winhr = 5, qwindow = c(0,24), qlevels = c(), ilevels = c(), mvpathreshold = 100, boutcriter = 0.8, ndayswindow = 7, idloc = 1, do.imp = TRUE, anglethreshold = 5, timethreshold = 5, ignorenonwear = TRUE, colid=1, coln1=2, nnights=7, outliers.only=FALSE, excludefirstlast=FALSE, excludefirstlast.part5=FALSE, criterror=3, includenightcrit=16, relyonguider=FALSE, sleeplogidnum=TRUE, def.noc.sleep=c(), do.visual=FALSE, viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE, print.filename = FALSE, backup.cal.coef = c(), bout.metric = 1, closedbout = FALSE, IVIS_windowsize_minutes=60, IVIS_epochsize_seconds=30, constrain2range = TRUE, do.part3.pdf = TRUE, boutcriter.in = 0.9, boutcriter.lig = 0.8, boutcriter.mvpa = 0.8, threshold.lig = 40, threshold.mod = 100,   threshold.vig = 400, timewindow = c("MM","WW"), boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30), boutdur.lig = c(1,5,10), save_ms5rawlevels = FALSE,  mvpadur = c(1,5,10), epochvalues2csv = FALSE, bout.metric = 1, window.summary.size = 10, dayborder = 0, iglevels = c()`
-```
+To ease interacting with GGIR there is one central function, named `g.shell.GGIR`, to talk to all the other functions.
 
-In this paragraph we will guide you through the main arguments relevant for 99% of research. First of all, it is important to understand that GGIR is structured in five parts and that `g.shell.GGIR` controls each of these parts:
+In this paragraph we will guide you through the main arguments relevant for 99% of research. First of all, it is important to understand that GGIR is structured in two ways. It has a computational structure of five parts which are applied sequentially to the data, and that `g.shell.GGIR` controls each of these parts:
 
 - Part 1: Loads the data and stores derived features (aggregations) needed for the other parts. This is the time-consuming part. Once this is done, parts 2-5 can be run (or re-run with different parameters in parts 2-5) relatively quickly.
 - Part 2: Data quality analyses and low-level description of signal features per day and per file. At this point a day is defined from midnight to midnight
 - Part 3: Estimation of sustained inactivity and sleep periods, needed for input to Part 4 for sleep detection
-- Part 4: o	Labels the sustained inactive periods detected in Part 3 as sleep, or daytime sustained inactivity, per night and per file
+- Part 4: Labels the sustained inactive periods detected in Part 3 as sleep, or daytime sustained inactivity, per night and per file
 - Part 5: Derives sleep and physical activity characteristics by re-using information derived in part 2, 3 and 4. Total time in intensity categories, the number of bouts, time spent in bouts and average acceleration (overall activity) is calculated.
 
-The reason why it split up in parts is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts.
+The reason why it split up in parts is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts. The specific order and content of the parts has grown for historical and computational reasons.
 
-By looking up the documentation of the corresponding functions g.part1, g.part2, g.part3, g.part4, and g.part5 you can see what arguments are possible ([link to pdf manual](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these arguments are also accepted by `g.shell.GGIR`, because `g.shell.GGIR` is a shell around those functions.
+Secondly, the function arguments which we will refer to as input parameters are structured thematically independently of the five parts they are used in:
 
-You will probably never need to think about most of the arguments listed above, because the default values are fine and a lot of arguments are only included to facilitate methodological studies where researchers want to have control over everything.
+- params_rawdata: parameters related to handling the raw data such as resampling or calibrating
+- params_metrics: parameters related to aggregating the raw data to epoch level summary metrics
+- params_sleep: parameters related to sleep detection
+- params_physact: parameters related to physical activity
+- params_247: parameters related to 24/7 behaviours that do not fall into the typical sleep or physical activity research category.
+- params_output: parameters relating to how and whether output is stored.
+- params_general: general parameters not covered by any of the above categories
+
+This structure was introduced in GGIR version 2.5-6 to make the GGIR code and documentation easier to navigate.
+
+To see the parameters in each parameter category and their default values do:
+```{R,eval=FALSE}
+library(GGIR)
+print(load_params())
+```
+
+If you are only interested in one specific category like sleep:
+```{R,eval=FALSE}
+library(GGIR)
+print(load_params()$params_sleep)
+```
+
+
+If you are only interested in parameter "HASIB.algo" from the sleep_params object:
+```{R,eval=TRUE}
+library(GGIR)
+print(load_params()$params_sleep[["HASPT.algo"]])
+```
+
+
+
+Documentation for this parameter objects can be found in the ([GGIR pdf manual](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these are accepted as argument to function `g.shell.GGIR`, because `g.shell.GGIR` is a shell around all GGIR functionality. However, the `params_` objects themselves can not be provided as input to `g.shell.GGIR`.
+
+
+### Key general arguments
+
+You will probably never need to think about most of the arguments listed above, because a lot of arguments are only included to facilitate methodological studies where researchers want to have control over every little detail.
 
 The bare minimum input needed for `g.shell.GGIR` is:
 
@@ -112,8 +153,6 @@ g.shell.GGIR(datadir="C:/mystudy/mydata",
 Argument `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy paste the above code to a new R script (file ending with .R) and Source it in R(Studio) then the dataset will be processed and the output will be stored in the specified output directory.
 
 Below we have highlighted the key arguments you may want to be aware of. We are not giving a detailed explanation, please see the package manual for that.
-
-### Key general arguments
 
 - `mode` - which part of GGIR to run, GGIR is constructed in five parts.
 - `overwrite` - whether to overwrite previously produced milestone output. Between each GGIR part, GGIR stores milestone output to ease re-running parts of the pipeline.
@@ -133,6 +172,157 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 - `iglevels` - argument related to intensity gradient method proposed by A. Rowlands.
 - `do.report` - specify reports that need to be generated.
 - `viewingwindow` and `visualreport` - to create a visual report, this only works when all five parts of GGIR have successfully run.
+
+### Arguments from the individual parts and in which parameter object they are stored
+
+The table below shows arguments in GGIR, the GGIR part they are used in, and the parameter object they belong too.
+Note that a few parameters are not part of an parameter object.
+
+Argument (parameter) | Used in GGIR part | Parameter object
+-------------------- | ------------ | ----------------------
+datadir | 1, 2, 4, 5 | not in parameter objects
+f0 | 1, 2, 3, ,4 ,5 | not in parameter objects
+f1 | 1, 2, 3, 4, 5 | not in parameter objects
+windowsizes | 1, 5 | params_general
+desiredtz | 1, 2, 3, 4, 5 | params_general
+overwrite | 1, 2, 3, 4, 5 | params_general
+do.parallel | 1, 2, 3, 5 | params_general
+myfun | 1, 2, 3 | not in parameter objects
+maxNcores | 1, 2, 3, 5 | params_general
+outputdir | 1 | not in parameter objects
+chunksize | 1 | params_rawdata
+studyname | 1 | not in parameter objects
+do.enmo | 1 | params_metrics
+do.lfenmo | 1 | params_metrics
+do.en | 1 | params_metrics
+do.bfen | 1 | params_metrics
+do.hfen | 1 | params_metrics
+do.hfenplus | 1 | params_metrics
+do.mad | 1 | params_metrics
+do.anglex | 1 | params_metrics
+do.angley | 1 | params_metrics
+do.angle | 1 | params_metrics
+do.enmoa | 1 | params_metrics
+do.roll_med_acc_x | 1 | params_metrics
+do.roll_med_acc_y | 1 | params_metrics
+do.roll_med_acc_z | 1 | params_metrics
+do.dev_roll_med_acc_x | 1 | params_metrics
+do.dev_roll_med_acc_y | 1 | params_metrics
+do.dev_roll_med_acc_z | 1 | params_metrics
+do.lfen | 1 | params_metrics
+do.lfx | 1 | params_metrics
+do.lfy | 1 | params_metrics
+do.lfz | 1 | params_metrics
+do.hfx | 1 | params_metrics
+do.hfy | 1 | params_metrics
+do.hfz | 1 | params_metrics
+do.bfx | 1 | params_metrics
+do.bfy | 1 | params_metrics
+do.bfz | 1 | params_metrics
+do.zcx | 1 | params_metrics
+do.zcy | 1 | params_metrics
+do.zcz | 1 | params_metrics
+lb | 1 | params_metrics
+hb | 1 | params_metrics
+n | 1 | params_metrics
+do.cal | 1 | params_rawdata
+spherecrit | 1 | params_rawdata
+minloadcrit | 1 | params_rawdata
+printsummary | 1 | params_rawdata
+print.filename | 1 | params_general
+backup.cal.coef | 1 | params_rawdata
+*.rmc | 1 | params_raw
+imputeTimegaps | 1 | params_rawdata
+selectdaysfile | 1, 2 | params_cleaning
+dayborder | 1, 2, 5 | params_general
+dynrange | 1 | params_rawdata
+configtz | 1 | params_general
+minimumFileSizeMB | 1 | params_rawdata
+interpolationType | 1 | params_rawdata
+metadatadir | 2, 3, 4, 5 | not in parameter objects
+minimum_MM_length.part5 | 5 | params_cleaning
+strategy | 2, 5 | params_cleaning
+hrs.del.start | 2, 5 | params_cleaning
+hrs.del.end | 2, 5| params_cleaning
+maxdur | 2, 5 | params_cleaning
+includedaycrit | 2 | params_cleaning
+L5M5window | 2 | params_247
+M5L5res | 2, 5 | params_247
+winhr | 2, 5| params_247
+qwindow | 2 | params_247
+qlevels | 2 | params_247
+ilevels | 2 | params_247
+mvpathreshold | 2 | params_phyact
+boutcriter | 2 | params_phyact
+ndayswindow | 2 | params_cleaning
+idloc | 2, 4 | params_general
+do.imp | 2 | params_cleaning
+storefolderstructure | 2, 4, 5 | params_output
+epochvalues2csv | 2 | params_output
+mvpadur | 2 | params_phyact
+window.summary.size | 2 | params_247
+bout.metric | 2, 5| params_phyact
+closedbout | 2 | params_phyact
+IVIS_windowsize_minutes | 2 | params_247
+IVIS_epochsize_seconds | 2 | params_247
+IVIS.activity.metric | 2 | params_247
+iglevels | 2, 5 | params_247
+TimeSegments2ZeroFile | 2 | params_cleaning
+qM5L5 | 2 | params_247
+MX.ig.min.dur | 2 | params_247
+qwindow_dateformat | 2 | params_247
+anglethreshold | 3 | params_sleep
+timethreshold | 3 | params_sleep
+acc.metric | 3, 5 | params_general
+ignorenonwear | 3 | params_sleep
+constrain2range | 3 | params_sleep
+do.part3.pdf | 3 | params_output
+sensor.location | 3, 4 | params_general
+HASPT.algo | 3 | params_sleep
+HASIB.algo | 3 | params_sleep
+Sadeh_axis | 3 | params_sleep
+longitudinal_axis | 3 | params_sleep
+HASPT.ignore.invalid | 3 | params_sleep
+loglocation | 4, 5 | params_sleep
+colid | 4 | params_sleep
+coln1 | 4 | params_sleep
+nnights | 4 | params_sleep
+sleeplogidnum | 4, 5 | params_sleep
+do.visual | 4 | params_output
+outliers.only | 4 | params_output
+excludefirstlast | 4 | params_cleaning
+criterror | 4 | params_output
+includenightcrit | 4 | params_cleaning
+relyonguider | 4 | params_sleep
+relyonsleeplog | 4 | not in parameter objects
+def.noc.sleep | 4 | params_sleep
+data_cleaning_file | 4, 5 | params_cleaning
+excludefirst.part4 | 4 | params_cleaning
+excludelast.part4 | 4 | params_cleaning
+sleeplogsep | 4 | params_cleaning
+sleepwindowType | 4 | params_cleaning
+excludefirstlast.part5 | 5 | params_cleaning
+boutcriter.mvpa | 5 | params_phyact
+boutcriter.in | 5 | params_phyact
+boutcriter.lig | 5 | params_phyact
+threshold.lig | 5 | params_phyact
+threshold.mod | 5 | params_phyact
+threshold.vig | 5 | params_phyact
+timewindow | 5 | params_output
+boutdur.mvpa | 5 | params_phyact
+boutdur.in | 5 | params_phyact
+boutdur.lig | 5 | params_phyact
+save_ms5rawlevels | 5 | params_output
+part5_agg2_60seconds | 5 | params_general
+save_ms5raw_format | 5 | params_output
+save_ms5raw_without_invalid | 5 | params_output
+includedaycrit.part5 | 5 | params_cleaning
+frag.metrics | 5 | params_phyact
+LUXthresholds | 5 | params_247
+LUX_cal_constant | 5 | params_247
+LUX_cal_exponent | 5 | params_247
+LUX_day_segments | 5 | params_247
+do.sibreport | 5 | params_output
 
 ### Key arguments related to sleep analysis
 
@@ -221,9 +411,11 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: Those metrics are effectively the same as the metrics included in GGIR but sum rather than average their raw values per epoch. So, to use their cut-point we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant.
 
 **Warning about validity in new studies**
-In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020. 
+In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020.
 
-Furthermore, studies that aimed to independently evaluate cut-point methods also seem to be failing in recognising this challenge. Therefore, it seems best to interpret cut-points as a crude boundary between intensity levels that should be interpreted with caution. Future methodological studies around cut-points are advised to account for accelerometer calibration error.
+Studies done with ActiGraph devices when configured with 'idle sleep mode' turned on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This mistake by the ActiGraph company directly affect metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. Further, also other metrics may be affected as the sudden disappearance of gravitational acceleration will result in a spike at the start and end of the no movement period.
+
+Several studies that aimed to independently evaluate cut-point methods seem to be failing in recognise these challenges. Therefore, it is best to interpret cut-points with caution and just as a crude boundary between intensity levels. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic zero strings in raw ActiGraph data.
 
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
@@ -233,8 +425,8 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
 - The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
-- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated we need the original sample frequency for that.
--	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
+- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated.
+-	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Roscoe 2017:**
@@ -244,7 +436,7 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.mod = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
 - `threshold.vig = (VigorousCutPointFromPaper_in_gsecs/85.7) * 1000`
 - `mvpathreshold = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
--	In the part2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
+-	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Schaeffer 2014:**
@@ -254,7 +446,8 @@ Furthermore, studies that aimed to independently evaluate cut-point methods also
 - `threshold.lig = (LightCutPointFromPaper/75) * 1000`
 - `threshold.mod = (ModerateCutPointFromPaper/75) * 1000`
 - `threshold.vig = (VigorousCutPointFromPaper/75) * 1000`
-- `mvpathreshold = (ModerateCutPointFromPaper/75) * 1000`-	In the part2 results you will need the MVPA estimates that are related to EN, not ENMO.
+- `mvpathreshold = (ModerateCutPointFromPaper/75) * 1000`
+-	In the part2 results you will need the MVPA estimates that are related to EN, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
 
 **Vaha-Ypya et al 2015:**
@@ -930,7 +1123,7 @@ GGIR offers a range of acceleration metrics to choose from, but only one metric 
 2.	ENMO is easy to describe mathematically and by that improves reproducibility across studies and software tools
 3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units.
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as MIMSunit, MAD, AI0.
-5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly.
+5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with. See also paragraph: [Published cut-points and how to use them]([#Published cut-points and how to use them).
 
 See also [this](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) blog post on this topic.
 

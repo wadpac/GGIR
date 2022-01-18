@@ -1,5 +1,6 @@
-g.applymetrics = function(data,n=4,sf,ws3,metrics2do, lb=0.2, hb=15){
-epochsize = ws3 #epochsize in seconds
+g.applymetrics = function(data, sf, ws3, metrics2do,
+                          n = 4, lb = 0.2, hb = 15){
+  epochsize = ws3 #epochsize in seconds
   # data is a 3 column matrix with the x, y, and z acceleration
   do.bfen = metrics2do$do.bfen
   do.enmo = metrics2do$do.enmo
@@ -141,7 +142,7 @@ epochsize = ws3 #epochsize in seconds
     # Sadeh algorithm.
     # We use a second order filter because if it was an analog filter it was 
     # most likely not very steep filter.
-    data_processed = process_axes(data, filtertype = "pass", cut_point=c(0.25, 3), n = 2, sf)
+    data_processed = process_axes(data, filtertype = "pass", cut_point = c(0.25, 3), n = 2, sf)
     zil = c()
     
     # 2) Sadeh reported to have used the y-axis but did not specify the orientation of
@@ -196,7 +197,7 @@ epochsize = ws3 #epochsize in seconds
       allmetrics$LFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize)
     }
     if (do.lfen == TRUE) {
-      allmetrics$LFEN = averagePerEpoch(x = EuclideanNorm(data_processed),sf,epochsize)
+      allmetrics$LFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize)
     }
     if (do.lfenmo == TRUE) {
       LFENMO = EuclideanNorm(data_processed) - gravity
@@ -217,7 +218,7 @@ epochsize = ws3 #epochsize in seconds
     if (do.hfz == TRUE) {
       allmetrics$HFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize)
     }
-    allmetrics$HFEN = averagePerEpoch(x = EuclideanNorm(data_processed),sf,epochsize)
+    allmetrics$HFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize)
   }
   #================================================
   # Combined low-pass and high-pass filtering metric:
@@ -244,9 +245,9 @@ epochsize = ws3 #epochsize in seconds
       allmetrics$roll_med_acc_z = averagePerEpoch(x = data_processed[,3], sf, epochsize)
     }
     if (do.dev_roll_med_acc_x == TRUE | do.dev_roll_med_acc_y == TRUE | do.dev_roll_med_acc_z == TRUE) { #rolling median of acceleration
-      allmetrics$dev_roll_med_acc_x = averagePerEpoch(x = abs(data[,1] - data_processed[,1]),sf,epochsize)
-      allmetrics$dev_roll_med_acc_y = averagePerEpoch(x = abs(data[,2] - data_processed[,2]),sf,epochsize)
-      allmetrics$dev_roll_med_acc_z = averagePerEpoch(x = abs(data[,3] - data_processed[,3]),sf,epochsize)
+      allmetrics$dev_roll_med_acc_x = averagePerEpoch(x = abs(data[,1] - data_processed[,1]), sf, epochsize)
+      allmetrics$dev_roll_med_acc_y = averagePerEpoch(x = abs(data[,2] - data_processed[, 2]), sf, epochsize)
+      allmetrics$dev_roll_med_acc_z = averagePerEpoch(x = abs(data[,3] - data_processed[, 3]), sf, epochsize)
     }
   }
   if (do.anglex == TRUE | do.angley == TRUE | do.anglez == TRUE) {
@@ -254,13 +255,13 @@ epochsize = ws3 #epochsize in seconds
       data_processed = process_axes(data, filtertype = "rollmedian", cut_point = c(), n, sf)
     }
     if (do.anglex == TRUE) {
-      allmetrics$angle_x = averagePerEpoch(x = anglex(data_processed),sf,epochsize)
+      allmetrics$angle_x = averagePerEpoch(x = anglex(data_processed), sf, epochsize)
     }
     if (do.angley == TRUE) {
-      allmetrics$angle_y = averagePerEpoch(x = angley(data_processed),sf,epochsize)
+      allmetrics$angle_y = averagePerEpoch(x = angley(data_processed), sf, epochsize)
     }
     if (do.anglez == TRUE) {
-      allmetrics$angle_z = averagePerEpoch(x = anglez(data_processed),sf,epochsize)
+      allmetrics$angle_z = averagePerEpoch(x = anglez(data_processed), sf, epochsize)
     }
   }
   #================================================
@@ -269,35 +270,35 @@ epochsize = ws3 #epochsize in seconds
   if (do.enmo == TRUE) {
     ENMO = EN - 1
     ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
-    allmetrics$ENMO = averagePerEpoch(x = ENMO,sf,epochsize)
+    allmetrics$ENMO = averagePerEpoch(x = ENMO, sf, epochsize)
   }
   if (do.mad == TRUE) { # metric MAD (Mean Amplitude Deviation)
-    MEANS = rep(averagePerEpoch(x = EN,sf,epochsize), each = sf*epochsize)
+    MEANS = rep(averagePerEpoch(x = EN, sf, epochsize), each = sf * epochsize)
     MAD = abs(EN - MEANS)
-    allmetrics$MAD = averagePerEpoch(x = MAD,sf,epochsize)
+    allmetrics$MAD = averagePerEpoch(x = MAD, sf, epochsize)
   }
   if (do.en == TRUE) {
     allmetrics$EN = averagePerEpoch(x = EN,sf,epochsize)
   }
   if (do.enmoa == TRUE) {
     ENMOa = abs(EN - gravity)
-    allmetrics$ENMOa = averagePerEpoch(x = ENMOa,sf,epochsize)
+    allmetrics$ENMOa = averagePerEpoch(x = ENMOa, sf, epochsize)
   }
   #================================================
   # Brond Counts
   if (do.brondcounts == TRUE) {
-    if (ncol(data) > 3) data= data[,2:4]
-    mycounts = activityCounts::counts(data=data, hertz=sf, 
-                      x_axis=1, y_axis=2, z_axis=3,
-                      start_time = Sys.time()) # ignoring timestamps, because GGIR has its own timestamps
+    if (ncol(data) > 3) data = data[,2:4]
+    mycounts = activityCounts::counts(data = data, hertz = sf, 
+                                      x_axis = 1, y_axis = 2, z_axis = 3,
+                                      start_time = Sys.time()) # ignoring timestamps, because GGIR has its own timestamps
     if (sf < 30) {
       warning("\nNote: activityCounts not designed for handling sample frequencies below 30 Hertz")
     }
     # activityCount output is per second
     # aggregate to our epoch size:
-    allmetrics$BrondCount_x = sumPerEpoch(mycounts[,2], sf=1, epochsize)
-    allmetrics$BrondCount_y = sumPerEpoch(mycounts[,3], sf=1, epochsize)
-    allmetrics$BrondCount_z = sumPerEpoch(mycounts[,4], sf=1, epochsize)
+    allmetrics$BrondCount_x = sumPerEpoch(mycounts[, 2], sf = 1, epochsize)
+    allmetrics$BrondCount_y = sumPerEpoch(mycounts[, 3], sf = 1, epochsize)
+    allmetrics$BrondCount_z = sumPerEpoch(mycounts[, 4], sf = 1, epochsize)
   }
   return(allmetrics)
 } 

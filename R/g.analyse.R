@@ -1,14 +1,27 @@
-g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M5window = c(0,24),M5L5res=10,
-                      includedaycrit = 16,ilevels=c(),winhr=5,idloc=1,snloc=1,
-                      mvpathreshold = c(),boutcriter=c(),mvpadur=c(1,5,10),selectdaysfile=c(),
-                      window.summary.size=10,
-                      dayborder=0,bout.metric = 1,closedbout=FALSE,desiredtz="",
-                      IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = NA, iglevels = c(),
-                      IVIS.activity.metric=2, qM5L5 = c(), myfun=c(), MX.ig.min.dur = 10) {
-  L5M5window = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
+g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
+                      quantiletype = 7, includedaycrit = 16, 
+                      idloc = 1, snloc = 1, selectdaysfile=c(), 
+                      dayborder=0,  desiredtz = "", myfun=c(), ...) {
+  
+  #get input variables
+  input = list(...)
+  if (any(names(input) %in% c("I", "C", "M", "IMP", "params_247", "params_phyact", 
+                              "quantiletype", "includedaycrit", 
+                              "idloc", "snloc", "selectdaysfile", "dayborder", 
+                               "desiredtz", "myfun")) == FALSE) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments
+    # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
+    # as if it was still the old g.analyse function
+    params = extract_params(params_247 = params_247,
+                            params_phyact = params_phyact,
+                            input = input) # load default parameters
+    params_247 = params$params_247
+    params_phyact = params$params_phyact
+  }
+  params_247[["L5M5window"]] = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
-  fname=I$filename
+  fname = I$filename
   averageday = IMP$averageday
   strategy = IMP$strategy
   hrs.del.start = IMP$hrs.del.start
@@ -20,7 +33,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   rout = IMP$rout
   wdaycode = M$wday
   wdayname = M$wdayname
-  if (length(mvpadur) > 0) mvpadur = sort(mvpadur)
+  if (length(params_phyact[["mvpadur"]]) > 0) params_phyact[["mvpadur"]] = sort(params_phyact[["mvpadur"]])
   LC2 = IMP$LC2
   LC = IMP$LC
   dcomplscore = IMP$dcomplscore
@@ -33,9 +46,9 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   keepindex_46 = keepindex_48 = c()
   # Extracting basic information about the file
   hvars = g.extractheadervars(I)
-  ID = hvars$ID;              iID =hvars$iID; IDd =hvars$IDd
+  ID = hvars$ID;              iID = hvars$iID; IDd = hvars$IDd
   HN = hvars$HN;              BodyLocation = hvars$BodyLocation
-  SX=hvars$SX;                deviceSerialNumber = hvars$deviceSerialNumber
+  SX = hvars$SX;                deviceSerialNumber = hvars$deviceSerialNumber
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
   if (((nrow(metalong)/((1440*60)/ws2)*10) - (nrow(metashort)/((60/ws3)*1440)) * 10) > 1) {
@@ -66,8 +79,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   }
   ID_NAs = which(ID == "NA")
   ID2_NAs = which(ID == "NA")
-  if (length(ID_NAs) > 0) ID[ID_NAs] =iID[ID_NAs]
-  if (length(ID2_NAs) > 0) ID2[ID2_NAs] =iID2[ID2_NAs]
+  if (length(ID_NAs) > 0) ID[ID_NAs] = iID[ID_NAs]
+  if (length(ID2_NAs) > 0) ID2[ID2_NAs] = iID2[ID2_NAs]
   if (idloc == 2) { # default is idloc=1, where ID just stays ID
     ID = unlist(strsplit(fname,"_"))[1]
   } else if (idloc == 3) {
@@ -89,49 +102,54 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   #--------------------------------------------------------------
   
   # Extract qwindow if an activity log is provided:
-  qwindow_actlog =FALSE
-  if (is.data.frame(qwindow) == TRUE) {
+  qwindow_actlog = FALSE
+  if (is.data.frame(params_247[["qwindow"]]) == TRUE) {
     qwindow_actlog = TRUE
-    qwindow = qwindow[which(qwindow$ID == ID),]
+    params_247[["qwindow"]] = params_247[["qwindow"]][which(params_247[["qwindow"]]$ID == ID),]
   }
   # # Time window for L5 & M5 analysis (commented out because this is now defined further down)
   # t0_LFMF = L5M5window[1] #start in 24 hour clock hours
   # t1_LFMF = L5M5window[2]+(winhr-(M5L5res/60)) #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
   # Time window for distribution analysis
-  t_TWDI = qwindow #start and of 24 hour clock hours
-  if (length(qwindow) == 0) {
+  t_TWDI = params_247[["qwindow"]] #start and of 24 hour clock hours
+  if (length(params_247[["qwindow"]]) == 0) {
     t_TWDI = c(0,24)
-    if ((length(qlevels) > 0 | length(ilevels) > 0)) qwindow = c(0,24)
+    if ((length(params_247[["qlevels"]]) > 0 | length(params_247[["ilevels"]]) > 0)) params_247[["qwindow"]] = c(0,24)
     qwindow_actlog = FALSE # ignore qwdinow_actlog if it does not produce actual qwindow values
   }
-  if (length(qwindow) > 0 & qwindow_actlog == FALSE) {
-    if (qwindow[1] != 0) qwindow = c(0,qwindow)
-    if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow,24)
+  if (length(params_247[["qwindow"]]) > 0 & qwindow_actlog == FALSE) {
+    if (params_247[["qwindow"]][1] != 0) params_247[["qwindow"]] = c(0,params_247[["qwindow"]])
+    if (params_247[["qwindow"]][length(params_247[["qwindow"]])] != 24) params_247[["qwindow"]] = c(params_247[["qwindow"]],24)
   }
   #==========================================================================================
   # Setting paramters (NO USER INPUT NEEDED FROM HERE ONWARDS)
   domvpa = doilevels = doiglevels = doquan = FALSE
-  if (length(qlevels) > 0) doquan = TRUE
-  if (length(ilevels) > 0) doilevels = TRUE
-  if (length(iglevels) > 0) {
-    if (length(iglevels) == 1) iglevels = c(seq(0,4000,by=25),8000) # to introduce option to just say TRUE
+  if (length(params_247[["qlevels"]]) > 0) doquan = TRUE
+  if (length(params_247[["ilevels"]]) > 0) doilevels = TRUE
+  if (length(params_247[["iglevels"]]) > 0) {
+    if (length(params_247[["iglevels"]]) == 1) {
+      params_247[["iglevels"]] = c(seq(0, 4000, by = 25), 8000) # to introduce option to just say TRUE
+    }
     doiglevels = TRUE
   }
-  if (length(mvpathreshold) > 0) domvpa = TRUE
+  if (length(params_phyact[["mvpathreshold"]]) > 0) domvpa = TRUE
   doperday = TRUE
   #------------------------------------------------------
-  NVARS = (length(colnames(metashort))-1)
+  NVARS = (length(colnames(metashort)) - 1)
   if (NVARS < 1) NVARS = 1
-  if (length(qwindow) > 0 | qwindow_actlog == TRUE) NVARS = NVARS + 2 # for qwindow non-wear time
-  nfeatures = 50+NVARS*(21+length(qlevels)+length(ilevels))    #levels changed into qlevels
-  if (length(qwindow) > 0 | qwindow_actlog == TRUE) {
-    nfeatures = 50+NVARS*(length(qwindow)*(21+(length(qlevels)+length(ilevels))))
+  if (length(params_247[["qwindow"]]) > 0 | qwindow_actlog == TRUE) {
+    NVARS = NVARS + 2 # for qwindow non-wear time
+  }
+  nfeatures = 50 + NVARS * (21 + length(params_247[["qlevels"]]) + length(params_247[["ilevels"]]))    #levels changed into qlevels
+  if (length(params_247[["qwindow"]]) > 0 | qwindow_actlog == TRUE) {
+    nfeatures = 50 + NVARS*(length(params_247[["qwindow"]]) * 
+                              (21 + (length(params_247[["qlevels"]]) + length(params_247[["ilevels"]]))))
   }
   i = 1
   #---------------
   if (domvpa) { #create dummy data
-    mvpanames = matrix(0,6,length(mvpathreshold))
-    mvpanames[,1:length(mvpathreshold)] = c("MVPA1","MVPA2","MVPA3","MVPA4","MVPA5","MVPA6")
+    mvpanames = matrix(0, 6, length(params_phyact[["mvpathreshold"]]))
+    mvpanames[, 1:length(params_phyact[["mvpathreshold"]])] = c("MVPA1","MVPA2","MVPA3","MVPA4","MVPA5","MVPA6")
   }
   # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
   wearthreshold = 2 #needs to be 0, 1 or 2 (hard coded to avoid inconsistency in literature)
@@ -139,18 +157,18 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   # detect first and last midnight and all midnights
   tsi = which(colnames(metalong) == "timestamp")
   time = as.character(metalong[,tsi])
-  startt = as.character(metalong[1,tsi])
+  startt = as.character(metalong[1, tsi])
   # basic file characteristics
   LD = nrow(metalong) * (ws2/60) #length data in minutes
   ND = nrow(metalong)/n_ws2_perday #number of days
   #  time variable
-  timeline = seq(0,ceiling(nrow(metalong)/n_ws2_perday),by=1/n_ws2_perday)
+  timeline = seq(0, ceiling(nrow(metalong)/n_ws2_perday), by = 1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
   dmidn = g.detecmidnight(time,desiredtz,dayborder) #ND,
-  firstmidnight=dmidn$firstmidnight;  firstmidnighti=dmidn$firstmidnighti
-  lastmidnight=dmidn$lastmidnight;    lastmidnighti=dmidn$lastmidnighti
-  midnights=dmidn$midnights;          midnightsi=dmidn$midnightsi
+  firstmidnight = dmidn$firstmidnight;  firstmidnighti = dmidn$firstmidnighti
+  lastmidnight = dmidn$lastmidnight;    lastmidnighti = dmidn$lastmidnighti
+  midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
   starttimei = 1
   endtimei = nrow(M$metalong)
   if (strategy == 2) {
@@ -162,43 +180,11 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   r5long = replace(r5long,1:length(r5long),r5)
   r5long = t(r5long)
   dim(r5long) = c((length(r5)*(ws2/ws3)),1)
-  # get indices
-  ENMOi = which(colnames(metashort) == "ENMO")
-  LFENMOi = which(colnames(metashort) == "LFENMO")
-  BFENi = which(colnames(metashort) == "BFEN")
-  HFENi = which(colnames(metashort) == "HFEN")
-  HFENplusi = which(colnames(metashort) == "HFENplus")
-  MADi = which(colnames(metashort) == "MAD")
-  ENi = which(colnames(metashort) == "EN")
-  ENMOai = which(colnames(metashort) == "ENMOa")
-  ANYANGLEi = which(colnames(M$metashort) %in% c("anglex","angley","anglez") ==  TRUE)
-  ZCXi = which(colnames(metashort) == "ZCX")
-  ZCYi = which(colnames(metashort) == "ZCY")
-  ZCZi = which(colnames(metashort) == "ZCZ")
-  BrondCounts_xi = which(colnames(metashort) == "BrondCounts_x")
-  BrondCounts_yi = which(colnames(metashort) == "BrondCounts_y")
-  BrondCounts_zi = which(colnames(metashort) == "BrondCounts_z")
-  
   if (length(myfun) > 0) {
     ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
   } else {
     ExtFunColsi = c()
   }
-  if (length(ANYANGLEi) == 0) ANYANGLEi = -1
-  if (length(ENMOi) == 0) ENMOi = -1
-  if (length(LFENMOi) == 0) LFENMOi = -1
-  if (length(BFENi) == 0) BFENi = -1
-  if (length(HFENi) == 0) HFENi = -1
-  if (length(HFENplusi) == 0) HFENplusi = -1
-  if (length(MADi) == 0) MADi = -1
-  if (length(ENi) == 0) ENi = -1
-  if (length(ENMOai) == 0) ENMOai = -1
-  if (length(BrondCounts_xi) == 0) BrondCounts_xi = -1
-  if (length(BrondCounts_yi) == 0) BrondCounts_yi = -1
-  if (length(BrondCounts_zi) == 0) BrondCounts_zi = -1
-  if (length(ZCXi) == 0) ZCXi = -1
-  if (length(ZCYi) == 0) ZCYi = -1
-  if (length(ZCZi) == 0) ZCZi = -1
   #===============================================
   # Extract features from the imputed data
   qcheck = r5long
@@ -213,7 +199,7 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   # assess which angle per axis is most strongly 24 hour correlated:
   # for hip worn devices this will be the vertical axis
   longitudinal_axis_id = ""
-  epochday = 24*60*(60/ws3)
+  epochday = 24 * 60 * (60/ws3)
   Ndays = floor(nrow(IMP$metashort)/epochday)
   if (length(which(c("anglex","angley","anglez") %in% colnames(IMP$metashort) == FALSE)) == 0 &
       Ndays >= 2) {
@@ -223,7 +209,8 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
     for (anglename in  c("anglex","angley","anglez") ) {
       if (sd(IMP$metashort[,anglename]) > 0) {
         CorrA[cnt] = stats::cor(IMP$metashort[1:(Nhalfdays*epochday), anglename],
-                                IMP$metashort[(((Ndays-Nhalfdays)*epochday)+1):(Ndays*epochday), anglename])
+                                IMP$metashort[(((Ndays - Nhalfdays) *
+                                                  epochday) + 1):(Ndays * epochday), anglename])
       } else {
         CorrA[cnt] = NA
       }
@@ -241,38 +228,42 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
   # Note that this is done here before all the other analyses because it only relies on the average day
   # The values and variablenames are, however, stored in the filesummary matrix towards the end (not here
   # in function g.analyse.avday).
-  output_avday = g.analyse.avday(qlevels,doquan, averageday, M, IMP, t_TWDI, quantiletype, winhr, L5M5window, M5L5res,
-                                 ws3, IVIS_epochsize_seconds,
-                                 IVIS_windowsize_minutes, IVIS.activity.metric, doiglevels, firstmidnighti, ws2,
-                                 midnightsi, iglevels, qM5L5, MX.ig.min.dur=MX.ig.min.dur)
+  output_avday = g.analyse.avday(doquan = doquan, averageday = averageday,
+                                 M = M, IMP = IMP, t_TWDI = t_TWDI,
+                                 quantiletype = quantiletype, ws3 = ws3,
+                                 doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
+                                 midnightsi = midnightsi, params_247 = params_247)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
   igfullr = output_avday$igfullr
   QUAN = output_avday$QUAN
   qlevels_names = output_avday$qlevels_names
-  ML5AD=output_avday$ML5AD
+  ML5AD = output_avday$ML5AD
   ML5AD_names = output_avday$ML5AD_names
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
-    output_perday = g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
-                                     window.summary.size, qwindow, midnightsi, metashort, averageday,
-                                     ENMOi, LFENMOi, BFENi, ENi,
-                                     HFENi, HFENplusi, MADi,  ENMOai,
-                                     ZCXi, ZCYi, ZCZi,
-                                     BrondCounts_xi, BrondCounts_yi, BrondCounts_zi,
-                                     doiglevels, nfulldays, lastmidnight,
-                                     ws3, ws2, qcheck, fname, idloc, BodyLocation, wdayname,
-                                     tooshort, includedaycrit, winhr,L5M5window, M5L5res,
-                                     doquan, qlevels, quantiletype, doilevels, ilevels, iglevels, domvpa,
-                                     mvpathreshold, boutcriter, closedbout,
-                                     bout.metric, mvpadur, mvpanames, wdaycode, ID, 
-                                     deviceSerialNumber, qM5L5, ExtFunColsi, myfun, desiredtz, MX.ig.min.dur)
-    daysummary= output_perday$daysummary
-    ds_names=output_perday$ds_names
-    windowsummary=output_perday$windowsummary
-    ws_names=output_perday$ws_names
+    output_perday = g.analyse.perday(selectdaysfile = selectdaysfile, ndays = ndays,
+                                     firstmidnighti = firstmidnighti, time = time,
+                                     nfeatures = nfeatures, midnightsi = midnightsi,
+                                     metashort = metashort, averageday = averageday,
+                                     doiglevels = doiglevels, nfulldays = nfulldays,
+                                     lastmidnight = lastmidnight,
+                                     ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
+                                     idloc = idloc, BodyLocation = BodyLocation, wdayname = wdayname,
+                                     tooshort = tooshort, includedaycrit = includedaycrit,
+                                     quantiletype = quantiletype, doilevels = doilevels, 
+                                     domvpa = domvpa,
+                                     mvpanames = mvpanames, wdaycode = wdaycode, ID = ID, 
+                                     deviceSerialNumber = deviceSerialNumber,
+                                     doquan = doquan,  ExtFunColsi = ExtFunColsi,
+                                     myfun = myfun, desiredtz = desiredtz,
+                                     params_247 = params_247, params_phyact = params_phyact)
+    daysummary = output_perday$daysummary
+    ds_names = output_perday$ds_names
+    windowsummary = output_perday$windowsummary
+    ws_names = output_perday$ws_names
   }
   #metashort is shortened from midgnight to midnight if requested (strategy 2)
   if (strategy == 2) {
@@ -300,21 +291,21 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
       average24hc = matrix(0,n_ws3_perday,1)
       if (floor(ND) != 0) {
         for (j in 1:floor(ND)) {
-          dataOneDay = as.numeric(as.matrix(metashort[(((j-1)*n_ws3_perday)+1):(j*n_ws3_perday),lookat[h]]))
+          dataOneDay = as.numeric(as.matrix(metashort[(((j - 1) * n_ws3_perday) + 1):(j * n_ws3_perday),lookat[h]]))
           val = which(is.na(dataOneDay) == F)
           average24h[val,1] = average24h[val,1] + dataOneDay[val] #mean acceleration
-          average24hc[val,1] = average24hc[val,1] +1
+          average24hc[val,1] = average24hc[val,1] + 1
         }
       }
       if (floor(ND) < ND) {
         if (floor(ND) == 0) {
           dataOneDay = as.numeric(as.matrix(metashort[,lookat[h]]))
         } else {
-          dataOneDay = as.numeric(as.matrix(metashort[((floor(ND)*n_ws3_perday)+1):nrow(metashort),lookat[h]]))
+          dataOneDay = as.numeric(as.matrix(metashort[((floor(ND) * n_ws3_perday) + 1):nrow(metashort), lookat[h]]))
         }
         val = which(is.na(dataOneDay) == F)
         average24h[val,1] = average24h[val,1] + dataOneDay[val]  #mean acceleration
-        average24hc[val,1] = average24hc[val,1] +1
+        average24hc[val,1] = average24hc[val,1] + 1
       }
       average24h = average24h / average24hc
       AveAccAve24hr[h] = mean(average24h) #average acceleration in an average 24 hour cycle
@@ -330,14 +321,15 @@ g.analyse =  function(I,C,M,IMP,qlevels=c(),qwindow=c(0,24),quantiletype = 7,L5M
                                      daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
                                      hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                                      qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                                     IVIS_windowsize_minutes, IVIS_epochsize_seconds,qwindow, longitudinal_axis_id)
+                                     IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
+                                     qwindow = params_247[["qwindow"]], longitudinal_axis_id)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
     names(windowsummary) = ws_names
-    invisible(list(summary=filesummary,daysummary=daysummary,windowsummary=windowsummary))
+    invisible(list(summary = filesummary, daysummary = daysummary, windowsummary = windowsummary))
   } else {
-    invisible(list(summary=filesummary,daysummary=daysummary))
+    invisible(list(summary = filesummary, daysummary = daysummary))
   }
 }

@@ -1,8 +1,6 @@
-g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds=NA, IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1) {
+g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds=c(), IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1) {
   if (length(IVIS_epochsize_seconds) > 0) {
-    if (!is.na(IVIS_epochsize_seconds)) {
-      warning("Argument IVIS_epochsize_seconds has been depricated")
-    }
+    warning("Argument IVIS_epochsize_seconds has been depricated")
   }
   IVIS_epochsize_seconds = IVIS_windowsize_minutes*60
   if (IVIS.activity.metric == 2) { # use binary scoring

@@ -17,7 +17,7 @@ g.analyse.perfile(ID, fname, deviceSerialNumber,
   hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
   qlevels_names, doiglevels, tooshort, InterdailyStability, 
   IntradailyVariability,
-  IVIS_windowsize_minutes, IVIS_epochsize_seconds, qwindow, longitudinal_axis_id)
+  IVIS_windowsize_minutes, qwindow, longitudinal_axis_id)
 }
 
 \arguments{
@@ -61,7 +61,6 @@ the average day produced by \link{g.analyse.avday}}
 \item{InterdailyStability}{see \link{g.IVIS}}
 \item{IntradailyVariability}{see \link{g.IVIS}}
 \item{IVIS_windowsize_minutes}{see \link{g.IVIS}}
-\item{IVIS_epochsize_seconds}{see \link{g.IVIS}}
 \item{qwindow}{see \link{g.analyse}}
 \item{longitudinal_axis_id}{Index of axis for which the angle correlates most 
   strongly across 24 hoursas calculated inside g.analyse. For hip worn 

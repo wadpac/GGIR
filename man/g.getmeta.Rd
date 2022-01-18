@@ -1,54 +1,35 @@
 \name{g.getmeta}
 \alias{g.getmeta}
 \title{
-function to extract meta-data (features) from data in accelerometer file
+  Function to extract meta-data (features) from data in accelerometer file
 }
 \description{
-Reads a accelerometer file in blocks, extracts various features and stores average  feature
-value per short or long epoch. Acceleration and angle metrics are stored at short
-epoch length. The non-wear indication score, the clipping score, temperature
-(if available), light (if available), and Euclidean norm are stored at long epoch
-length. The function has been designed and thoroughly tested with accelerometer files
-from GENEA and GENEActiv. Further, the function should be able to cope with csv-format
-data procuded by GENEActiv and Actigraph
+  Reads a accelerometer file in blocks, extracts various features and stores average  feature
+  value per short or long epoch. Acceleration and angle metrics are stored at short
+  epoch length. The non-wear indication score, the clipping score, temperature
+  (if available), light (if available), and Euclidean norm are stored at long epoch
+  length. The function has been designed and thoroughly tested with accelerometer files
+  from GENEA and GENEActiv. Further, the function should be able to cope with csv-format
+  data procuded by GENEActiv and Actigraph
 }
 \usage{
-g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
-          daylimit=FALSE,offset=c(0,0,0),scale=c(1,1,1),tempoffset = c(0,0,0),
-          do.bfen=FALSE, do.enmo=TRUE, do.lfenmo=FALSE,
-          do.en=FALSE, do.hfen=FALSE,
-          do.hfenplus=FALSE, do.mad=FALSE,
-          do.anglex=FALSE, do.angley=FALSE, do.anglez=FALSE,
-          do.roll_med_acc_x=FALSE, do.roll_med_acc_y=FALSE, do.roll_med_acc_z=FALSE,
-          do.dev_roll_med_acc_x=FALSE, do.dev_roll_med_acc_y=FALSE,
-          do.dev_roll_med_acc_z=FALSE, do.enmoa=FALSE,
-          do.lfen=FALSE, do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
-          do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
-          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
-          do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
-          do.brondcounts = FALSE,
-          lb = 0.2, hb = 15,  n = 4,meantempcal=c(), chunksize=c(), selectdaysfile=c(),
-          dayborder=0,dynrange=c(),configtz=c(),myfun=c(),
-          interpolationType=1, imputeTimegaps = TRUE,
-                     ...)
+  g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
+                     params_general = c(), daylimit = FALSE, 
+                     offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
+                     meantempcal = c(), selectdaysfile = c(), myfun = c(), ...)
 }
 \arguments{
   \item{datafile}{
     name of accelerometer file
   }
-  \item{desiredtz}{
-    desired timezone: see also http://en.wikipedia.org/wiki/Zone.tab
+  \item{params_metrics}{
+    See \link{g.part1}
   }
-  \item{windowsizes}{
-    Three values to indicate the lengths of the windows as in
-    c(window1,window2,window3): window1 is the short epoch length in seconds and by
-    default 5 this is the time window over which acceleration and angle metrics
-    are calculated, window2 is the long epoch length in seconds for which non-wear and
-    signal clipping are defined, default 900. However, window3 is the window length
-    of data used for non-wear detection and by default 3600 seconds. So, when window3
-    is larger than window2 we use overlapping windows, while if window2 equals window3
-    non-wear periods are assessed by non-overlapping windows. Window2 is expected to be
-    a multitude of 60 seconds.
+  \item{params_rawdata}{
+    See \link{g.part1}
+  }
+  \item{params_general}{
+    See \link{g.part1}
   }
   \item{daylimit}{
     number of days to limit (roughly), if set to FALSE no daylimit
@@ -67,200 +48,21 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
     value = scale(value,center = -offset, scale = 1/scale)
     + scale(temperature, center = rep(averagetemperate,3), scale = 1/tempoffset)
   }
-  \item{do.bfen}{
-    if TRUE, calculate metric BFEN with band-pass filter
-    configuration set by \code{lb} and \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.enmo}{
-    if TRUE (default), calculate metric ENMO with negative values
-    rounded to zero. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.lfenmo}{
-    if TRUE, calculate metric LFENMO with low-pass filter
-    configuration set by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.en}{
-    if TRUE, calculate metric EN. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.hfen}{
-    if TRUE, calculate metric HFEN with low-pass filter configuration
-    set by \code{hb}. For computation specifics see source code of 
-    function \link{g.applymetrics}.
-  }
-  \item{do.hfenplus}{
-    if TRUE, calculate metric HFENplus with band-pass filter
-    configuration set by \code{lb} and \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.mad}{
-    if TRUE, calculate metric MAD (Mean Amplitude Deviarion). For 
-    computation specifics see source code of function \link{g.applymetrics}.
-  }
-  \item{do.anglex}{
-    if TRUE, calculate the angle of the x-axis relative to the horizontal plane
-    (degrees) utilizing all three axes. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.angley}{
-    if TRUE, calculate the angle of the y-axis relative to the horizontal plane
-    (degrees) utilizing all three axes. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.anglez}{
-    if TRUE, calculate the angle of the z-axis relative to the horizontal plane
-    (degrees) utilizing all three axes. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.enmoa}{
-    if TRUE (default), calculate metric ENMOa which is equal to
-    metric ENMO but with the absolute taken from the Euclidean norm minus one.
-    For computation specifics see source code of function \link{g.applymetrics}.
-  }
-  \item{do.roll_med_acc_x}{
-    if TRUE, calculate rolling median for the x axis. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.roll_med_acc_y}{
-    if TRUE, calculate rolling median for the y axis. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.roll_med_acc_z}{
-    if TRUE, calculate rolling median for the z axis. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.dev_roll_med_acc_x}{
-    if TRUE, calculate deviations from rolling median for the x axis.
-    For computation specifics see source code of function \link{g.applymetrics}.
-  }
-  \item{do.dev_roll_med_acc_y}{
-    if TRUE, calculate deviations from rolling median for the y axis. For 
-    computation specifics see source code of function \link{g.applymetrics}.
-  }
-  \item{do.dev_roll_med_acc_z}{
-    if TRUE, calculate deviations from rolling
-    median for the z axis. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.lfen}{
-    if TRUE, calculate metric EN with low-pass filtered
-    inputed signals using configuration set by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.lfx}{
-    if TRUE, calculate average absolute low-pass filtered x-axis
-    with filter configuration set by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.lfy}{
-    if TRUE, calculate average absolute low-pass filtered y-axis
-    with filter configuration set by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.lfz}{
-    if TRUE, calculate average absolute low-pass filtered z-axis
-    with filter configuration set by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.hfx}{
-    if TRUE, calculate average absolute low-pass filtered x-axis
-    with filter configuration set by \code{lb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.hfy}{
-    if TRUE, calculate average absolute low-pass filtered y-axis
-    with filter configuration set by \code{lb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.hfz}{
-    if TRUE, calculate average absolute low-pass filtered z-axis
-    with filter configuration set by \code{lb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.bfx}{
-    if TRUE, calculate average absolute band-pass filtered x-axis
-    with filter configuration set by \code{lb} and by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.bfy}{
-    if TRUE, calculate average absolute band-pass filtered y-axis
-    with filter configuration set by \code{lb} and by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.bfz}{
-    if TRUE, calculate average absolute band-pass filtered z-axis
-    with filter configuration set by \code{lb} and by \code{hb}. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.zcx}{
-    if TRUE, calculate zero-crossing count for the x-axis For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.zcy}{
-    if TRUE, calculate zero-crossing count for the y-axis. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.zcz}{
-    if TRUE, calculate zero-crossing count for the z-axis. For computation specifics
-    see source code of function \link{g.applymetrics}.
-  }
-  \item{do.brondcounts}{
-    If TRUE, estimate the BrondCounts with R package activityCounts. We call them BrondCounts because
-    there are large number of acitivty counts in the physical activity and sleep research field. By calling them         Brond Counts we clarify that these are the counts proposed by Jan Brond and implemented in R by Ruben Brondeel.      The Brond Counts are intended to be an imitation of one the counts produced by one of the closed source ActiLife     software by ActiGraph.
-  }
-  \item{lb}{
-    lower boundary of the frequency filter (in Hertz) as used in a variety of metrics.
-  }
-  \item{hb}{
-    upper boundary of the frequency filter (in Hertz) as used in a variety of metrics.
-  }
-  \item{n}{
-    order of the frequency filter as used in a variety of metrics.
-  }
   \item{meantempcal}{
     mean temperature corresponding to the data as used for
     autocalibration. If autocalibration is not done or if temperature was not
     available then leave blank (default)
   }
-  \item{chunksize}{
-    number between 0.2 and 1 to specificy the size of chunks to be
-    loaded as a fraction of a 24 hour period, e.g. 0.5 equals 12 hour chunks.
-    The default is 1 (24 hrs). For machines with less than 4 Gb of RAM memory a value
-    below 1 is recommended.
-  }
   \item{selectdaysfile}{
     see \link{g.part1}
-  }
-  \item{dayborder}{
-   see \link{g.part1}
-  }
-  \item{dynrange}{
-   see \link{g.part1}
-  }
-  \item{configtz}{
-    Only functional for AX3 cwa data at the moment. Timezone in which the accelerometer
-    was configured. Only use this argument if the timezone of configuration and
-    timezone in which recording took place are different.
   }
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
   }
-  \item{interpolationType}{
-    Integer to indicate type of interpolation to be used when resampling
-    time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour
-  }
-  \item{imputeTimegaps}{
-    Boolean to indicate whether timegaps larger than 0.25 seconds should be imputed.
-    Currently onlly used for .gt3x data, where timegaps can be expected as a result of
-    Actigraph's sleep.mode.
-  }
   \item{...}{
-    Please ignore. Only used by the code internally when called from within
-    g.part1 with selectdaysfile specific.
+    Any argument used in the previous version of g.getmeta, which will now
+    be used to overrule the arguments specified with the parameter objects.
   }
 }
 \value{
@@ -271,21 +73,21 @@ g.getmeta(datafile,desiredtz = "",windowsizes = c(5,900,3600),
   \item{corrupt}{indicator of whether file was considered corrupt (TRUE or FALSE)}
 }
 \examples{
-\dontrun{
-datafile = "C:/myfolder/testfile.bin"
-
-#Extract meta-data:
-M = g.getmeta(datafile)
-
-#Inspect first couple of rows of long epoch length meta data:
-print(M$metalong[1:5,])
-
-#Inspect first couple of rows of short epoch length meta data:
-print(M$metalong[1:5,])
-}
+  \dontrun{
+    datafile = "C:/myfolder/testfile.bin"
+    
+    #Extract meta-data:
+    M = g.getmeta(datafile)
+    
+    #Inspect first couple of rows of long epoch length meta data:
+    print(M$metalong[1:5,])
+    
+    #Inspect first couple of rows of short epoch length meta data:
+    print(M$metalong[1:5,])
+  }
 }
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }
 \references{
   \itemize{

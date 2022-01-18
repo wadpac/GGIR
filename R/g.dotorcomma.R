@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
+g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
@@ -37,6 +37,7 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
         if (numtemp != 0) break()
       }
     }
+    if (!exists("deci")) stop("Problem with reading .csv file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 1) {
     if (mon == 1) {
@@ -48,19 +49,23 @@ g.dotorcomma = function(inputfile,dformat,mon, desiredtz = "", ...) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
       try(expr = {deci = GENEAread::read.bin(binfile = inputfile, start = 1,end = 3,mmap.load = FALSE, calibrate = TRUE)}, silent = TRUE)
+      if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == 3) {
     try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)
+    if (!exists("deci")) stop("Problem with reading .wav file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {
     try(expr = {deci = g.cwaread(fileName = inputfile,start = 1, end = 10, desiredtz = desiredtz,
                                interpolationType = 1)$data},silent = TRUE)
+    if (!exists("deci")) stop("Problem with reading .cwa file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 6) { # .gt3x
     try(expr = {deci = as.data.frame(read.gt3x_ggir(path = inputfile,
                                                        batch_begin = 1, batch_end = 10, 
                                                        asDataFrame = TRUE))}, silent = TRUE)
+    if (!exists("deci")) stop("Problem with reading .gt3x file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   }
   dotorcomma = decn

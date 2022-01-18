@@ -20,7 +20,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(IDH, gt3xfile)
   EHV = g.extractheadervars(Igt3x)
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
-  Mgt3x = g.getmeta(gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300))
+  Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300))
   expect_true(Mgt3x$filetooshort)
   expect_false(Mgt3x$filecorrupt)
   
@@ -89,15 +89,15 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
                            decn = ".", dayborder,ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = Icwa)
   genea_read = g.readaccfile(binfile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           decn = ".", dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
+                           decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
                            inspectfileobject = Igenea)
   wav_read = expect_warning(g.readaccfile(wavfile, blocksize = 2, blocknumber = 1, 
                                           filequality = filequality, selectdaysfile = c(),
-                                          decn = ".", dayborder, ws = 3, desiredtz = desiredtz, 
+                                          decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
                                           PreviousEndPage = 1, inspectfileobject = Iwav))
   
   GA_read = expect_warning(g.readaccfile(GAfile, blocksize = 2, blocknumber = 1, filequality = filequality,
-                                         selectdaysfile = c(), decn = ".", dayborder, ws = 3,
+                                         selectdaysfile = c(), decn = ".", dayborder = dayborder, ws = 3,
                                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA))
   expect_equal(cwa_read$P$header$blocks, 145)
   expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 4.1133)
