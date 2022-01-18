@@ -134,7 +134,6 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       if ((p1 - p0) > 1000) {
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
       } else {
-        # print("zero")
         atestlist[ati] = 0
       }
     }
