@@ -60,11 +60,19 @@ Our log of main changes to GGIR over time can be found [here](https://cran.r-pro
 
 [Download and install RStudio](https://www.rstudio.com/products/rstudio/) (optional, but recommended)
 
-Download GGIR with its dependencies, you can do this with one command from the console command line:
+Install GGIR with its dependencies from CRAN. You can do this with one command from the console command line:
 
 ```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
 ```
+
+Alternatively, to install the latest development version with the latest bug fixes use instead:
+
+```{R,eval=FALSE}
+install.packages("remotes")
+remotes::install_github("wadpac/GGIR")
+```
+
 
 ## Prepare folder structure
 
@@ -89,7 +97,7 @@ In this paragraph we will guide you through the main arguments relevant for 99% 
 - Part 1: Loads the data and stores derived features (aggregations) needed for the other parts. This is the time-consuming part. Once this is done, parts 2-5 can be run (or re-run with different parameters in parts 2-5) relatively quickly.
 - Part 2: Data quality analyses and low-level description of signal features per day and per file. At this point a day is defined from midnight to midnight
 - Part 3: Estimation of sustained inactivity and sleep periods, needed for input to Part 4 for sleep detection
-- Part 4: o	Labels the sustained inactive periods detected in Part 3 as sleep, or daytime sustained inactivity, per night and per file
+- Part 4: Labels the sustained inactive periods detected in Part 3 as sleep, or daytime sustained inactivity, per night and per file
 - Part 5: Derives sleep and physical activity characteristics by re-using information derived in part 2, 3 and 4. Total time in intensity categories, the number of bouts, time spent in bouts and average acceleration (overall activity) is calculated.
 
 The reason why it split up in parts is that it avoids having the re-do all analysis if you only want to make a small change in the more downstream parts. The specific order and content of the parts has grown for historical and computational reasons.
