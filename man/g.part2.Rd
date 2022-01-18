@@ -149,12 +149,28 @@
         MVPA will be calculated. Only used in GGIR part 2}
       \item{bout.metric}{Numeric, Specify a metric for bout detection. A description of these
         bout metrics can be found in the new function \link{g.getbout}} 
-      \item{boutdur.mvpa}{Numeric, see \link{identify_levels}}
-      \item{boutdur.in}{Numeric, see \link{identify_levels}}
-      \item{boutdur.lig}{Numeric, see \link{identify_levels}}
-      \item{boutcriter.in}{Numeric, see \link{identify_levels}}
-      \item{boutcriter.lig}{Numeric, see \link{identify_levels}}
-      \item{boutcriter.mvpa}{Numeric, see \link{identify_levels}}
+      \item{boutdur.mvpa}{Numeric, see Durations of mvpa bouts in minutes to be extracted.
+        The default values is c(1,5,10) and will start with the identification of
+        10 minute bouts, followed by 5 minute bouts in the rest of the data, and followed
+        by 1 minute bouts in the rest of the data.}
+      \item{boutdur.in}{Numeric, see  Durations of inactivty bouts in minutes to be
+        extracted. Inactivity bouts are detected in the segments of the data which
+        were not labelled as sleep or MVPA bouts. The default duration values
+        is c(10,20,30), this will start with the identification of 30 minute bouts,
+        followed by 20 minute bouts in the rest of the data, and followed by 10 minute
+        bouts in the rest of the data.}
+      \item{boutdur.lig}{Numeric, see  Durations of light activty bouts in minutes
+        to be extracted. Light activity bouts are detected in the segments of the data
+        which were not labelled as sleep, MVPA, or inactivity bouts. The default
+        duration values is c(1,5,10), this will start with the identification of 
+        10 minute bouts, followed by 5 minute bouts in the rest of the data, and followed
+        by 1 minute bouts in the rest of the data.}
+      \item{boutcriter.in}{Numeric, see  A number between 0 and 1 and defines what fraction
+        of a bout needs to be below the light threshold}
+      \item{boutcriter.lig}{Numeric, see A number between 0 and 1 and defines what
+        fraction of a bout needs to be between the light and moderage threshold}
+      \item{boutcriter.mvpa}{Numeric, see A number between 0 and 1 and defines
+        what fraction of a bout needs to be above the mvpathreshold}
     }
   }
   \subsection{params_247}{
@@ -172,7 +188,7 @@
         the full path to activity diary file. See documentation \link{g.conv.actlog}
         for details.}
       \item{qwindow_dateformat}{Numeric, see \link{g.conv.actlog}}
-      \item{M5L5res}{Numeric, resoltion of L5 and M5 analysis in minutes 
+      \item{M5L5res}{Numeric, resolution of L5 and M5 analysis in minutes 
         (default: 10 minutes)}
       \item{winhr}{Numeric, Vector of window size(s) (unit: hours) of L5 and
         M5 analysis (dedault = 5 hours)}

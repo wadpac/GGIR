@@ -391,16 +391,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
                   # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
-                  levels = identify_levels(ts = ts,
-                                           TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
-                                           boutdur.mvpa = params_phyact[["boutdur.mvpa"]],
-                                           boutcriter.mvpa = params_phyact[["boutcriter.mvpa"]],
-                                           boutdur.lig = params_phyact[["boutdur.lig"]],
-                                           boutcriter.lig = params_phyact[["boutcriter.lig"]],
-                                           boutdur.in = params_phyact[["boutdur.in"]],
-                                           boutcriter.in = params_phyact[["boutcriter.in"]],
-                                           ws3new = ws3new,
-                                           bout.metric = params_phyact[["bout.metric"]])
+                  levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
+                                           ws3 = ws3new, params_phyact = params_phyact)
                   LEVELS = levels$LEVELS
                   OLEVELS = levels$OLEVELS
                   Lnames = levels$Lnames
@@ -994,7 +986,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     fe_dopar = foreach::`%dopar%`
     fe_do = foreach::`%do%`
     i = 0 # declare i because foreach uses it, without declaring it
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do)
     output_list = foreach::foreach(i = f0:f1,  .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
@@ -1004,7 +996,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_cleaning, params_output,
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
-                                                  extractfilenames, referencefnames, folderstructure, fullfilenames, foldername)
+                                                  extractfilenames, referencefnames, folderstructure,
+                                                  fullfilenames, foldername)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -1012,7 +1005,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ",fnames.ms3[oli]))
+        cat(paste0("\nErrors and warnings for ", fnames.ms3[oli]))
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
