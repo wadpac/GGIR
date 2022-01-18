@@ -20,29 +20,29 @@
 }
 \details{
   \tabular{ll}{
-    Package: \tab GGIR\cr
-    Type: \tab Package\cr
-    Version: \tab 2.5-5\cr
-    Date: \tab 2022-01-20\cr
-    License: \tab LGPL (>= 2.0, < 3)\cr
-    Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
+  Package: \tab GGIR\cr
+  Type: \tab Package\cr
+  Version: \tab 2.5-6\cr
+  Date: \tab 2022-01-18\cr
+  License: \tab LGPL (>= 2.0, < 3)\cr
+  Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
   }
 }
 \examples{
   \dontrun{
     #inspect file:
     I = g.inspectfile(datafile)
-  
+
     #autocalibration:
     C = g.calibrate(datafile)
-  
+
     #get meta-data:
     M = g.getmeta(datafile)
   }
   data(data.getmeta)
   data(data.inspectfile)
   data(data.calibrate)
-  
+
   #impute meta-data:
   IMP = g.impute(M = data.getmeta, I = data.inspectfile)
   #analyse and produce summary:

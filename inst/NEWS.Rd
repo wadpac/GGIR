@@ -15,36 +15,36 @@
 }
 }
 \section{Changes in version 2.5-4 (GitHub-only-release date:11-01-2022)}{
-\itemize{
-  \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x.
-  \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed.
-  \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it.
-}
+  \itemize{
+    \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x.
+    \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed.
+    \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it.
+  }
 }
 \section{Changes in version 2.5-3 (GitHub-only-release date:23-12-2021)}{
-\itemize{
-  \item Part 1: Depricating function g.metric as its functionality has been taken over by g.applymetrics.
-  \item Part 2: Adding warning when ID cannot be extracted from file based on argument idloc.
-  \item Part 4: Empty or incomplete sleeplog rows now better ignored
-  \item Part 4: No longer an R warning is given when ID is missing in sleeplog, because this is common and user can already see it in csv reports.
-}
+  \itemize{
+    \item Part 1: Depricating function g.metric as its functionality has been taken over by g.applymetrics.
+    \item Part 2: Adding warning when ID cannot be extracted from file based on argument idloc.
+    \item Part 4: Empty or incomplete sleeplog rows now better ignored
+    \item Part 4: No longer an R warning is given when ID is missing in sleeplog, because this is common and user can already see it in csv reports.
+  }
 }
 \section{Changes in version 2.5-2 (GitHub-only-release date:09-12-2021)}{
-\itemize{
-  \item Part 3: Now makes sure that HASPT is skipped when user configures def.noc.sleep as a set time window. This
-  feature that probaly few people use nowadays broke with the 2.5-0 release.
-  \item g.shell.GGIR: Now gives warning when user supplies double arguments.
-  \item Part 4: Now warns when none of the IDs in the sleeplog could be matched with accelerometer data.
-  \item Part 1: read.myacc.csv fix bug with argument rmc.check4timegaps
-  \item Part 3: Fix #472 SRI calculation not possible when complete absence of sleep in recording
-  \item Part 5: Experimental nap detection added to report and time series, currently only model for 3.5 year olds available.
-}
+  \itemize{
+    \item Part 3: Now makes sure that HASPT is skipped when user configures def.noc.sleep as a set time window. This
+    feature that probaly few people use nowadays broke with the 2.5-0 release.
+    \item g.shell.GGIR: Now gives warning when user supplies double arguments.
+    \item Part 4: Now warns when none of the IDs in the sleeplog could be matched with accelerometer data.
+    \item Part 1: read.myacc.csv fix bug with argument rmc.check4timegaps
+    \item Part 3: Fix #472 SRI calculation not possible when complete absence of sleep in recording
+    \item Part 5: Experimental nap detection added to report and time series, currently only model for 3.5 year olds available.
+  }
 }
 \section{Changes in version 2.5-1 (GitHub-only-release date:03-11-2021)}{
-\itemize{
-  \item g.shell.GGIR: Removing forced assignment of sleepwindowType argument to "SPT"
-  \item g.shell.GGIR: Reviving setwindow option def.noc.sleep, which broke
-}
+  \itemize{
+    \item g.shell.GGIR: Removing forced assignment of sleepwindowType argument to "SPT"
+    \item g.shell.GGIR: Reviving setwindow option def.noc.sleep, which broke
+  }
 }
 \section{Changes in version 2.5-0 (release date:25-10-2021)}{
 \itemize{
@@ -53,233 +53,232 @@
 }
 }
 \section{Changes in version 2.4-3 (GitHub-only-release date:20-10-2021)}{
-\itemize{
-  \item Vignette expanded with documentation on non-default variables in part 4 csv report
-  \item Vignette added with a tutorial on how to perform segmented day analysis
-  \item Part 1: The sensor fusion functionality introduced in version 2.2-2, as a bit
-  of an experimental development, has now been removed from GGIR as added value turned out
-  to be limited.
-  \item Part 2: Code for ID extraction tidied up, and new idloc argument options added.
-  \item Part 2: Activity log can now also have empty days.
-  \item Part 2: Now also exported in long format if qwindow has length longer than 2.
-  \item Part 3 and 4 expanded with Sleep Regularity Index.
-  \item Part 4 number of awakenings is now also in the output.
-  \item Part 5 LUX per segment calculation bug fixes.
-  \item visualreport code modified such that it visualises any day with at least 30 minutes of data
-  unless sleep could not be estimated from the corresponding night.
-}
+  \itemize{
+    \item Vignette expanded with documentation on non-default variables in part 4 csv report
+    \item Vignette added with a tutorial on how to perform segmented day analysis
+    \item Part 1: The sensor fusion functionality introduced in version 2.2-2, as a bit
+    of an experimental development, has now been removed from GGIR as added value turned out
+    to be limited.
+    \item Part 2: Code for ID extraction tidied up, and new idloc argument options added.
+    \item Part 2: Activity log can now also have empty days.
+    \item Part 2: Now also exported in long format if qwindow has length longer than 2.
+    \item Part 3 and 4 expanded with Sleep Regularity Index.
+    \item Part 4 number of awakenings is now also in the output.
+    \item Part 5 LUX per segment calculation bug fixes.
+    \item visualreport code modified such that it visualises any day with at least 30 minutes of data
+    unless sleep could not be estimated from the corresponding night.
+  }
 }
 \section{Changes in version 2.4-2 (GitHub-only-release date:14-09-2021)}{
-\itemize{
-  \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
-  \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
-  \item Part 3 now option to tailor SPT detection for hip data by using horizontal
-    longitudinal angle as indicator of lying
-  \item Part 3 code restructured to estimate SPT and SIB in separated function (HASIB and HASPT)
-  such that g.sib.det is more readable.
-  \item Part 3 now option to select SIB algorithm, including: vanHees2015, Sadeh1994,
-  and Galland2012
-  \item Part 4 now able to handle more advance sleeplog format that also contain nap
-  and nonwear entries per date
-  \item Part 4 report now includes guider estimates also in 'cleaned' report
-  \item Part 4 WASO and NOA (Number of awakenings) added to output
-  \item Part 4 Able to handle time in bed diaries/algorithms, and generates sleep
-  latency and sleep efficiency estimate if available
-  \item Part 5 now able to export sustained inactivity bouts and self-reported
-  naps and nonwear to csv report to aid nap analysis
-  \item Part 5 numeric timing of MX-metrics changed to be hour of the day
-  \item Part 5 Lux per segment variables now turn LUX during SPT to zero
-  \item Part 4 legend added to visualisation
-  \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
-}
+  \itemize{
+    \item Part 1 now able to derive zero-crossing counts needed for Sadeh algorithm
+    \item Part 2 function g.conv.actlog to use activity log to guide qwindow now able to tailor dateformat
+    \item Part 3 now option to tailor SPT detection for hip data by using horizontal
+      longitudinal angle as indicator of lying
+    \item Part 3 code restructured to estimate SPT and SIB in separated function (HASIB and HASPT)
+    such that g.sib.det is more readable.
+    \item Part 3 now option to select SIB algorithm, including: vanHees2015, Sadeh1994,
+    and Galland2012
+    \item Part 4 now able to handle more advance sleeplog format that also contain nap
+    and nonwear entries per date
+    \item Part 4 report now includes guider estimates also in 'cleaned' report
+    \item Part 4 WASO and NOA (Number of awakenings) added to output
+    \item Part 4 Able to handle time in bed diaries/algorithms, and generates sleep
+    latency and sleep efficiency estimate if available
+    \item Part 5 now able to export sustained inactivity bouts and self-reported
+    naps and nonwear to csv report to aid nap analysis
+    \item Part 5 numeric timing of MX-metrics changed to be hour of the day
+    \item Part 5 Lux per segment variables now turn LUX during SPT to zero
+    \item Part 4 legend added to visualisation
+    \item Part 5 bug fixed that caused part5 single row output to be stored as a single column
+  }
 }
 \section{Changes in version 2.4-1 (GitHub-only-release date:12-07-2021)}{
-\itemize{
-  \item Part 1 fixed bug related to g.getmeta reading movisens files
-  \item Part 1 resampling function expanded with option to choose interpolation technique
-  \item Part 3 fixed bug introduced in 2.4-0 making it impossible to process long
-  recordings with many sustained inactivity bouts
-}
+  \itemize{
+    \item Part 1 fixed bug related to g.getmeta reading movisens files
+    \item Part 1 resampling function expanded with option to choose interpolation technique
+    \item Part 3 fixed bug introduced in 2.4-0 making it impossible to process long
+    recordings with many sustained inactivity bouts
+  }
 }
 \section{Changes in version 2.4-0 (release date:03-06-2021)}{
-\itemize{
-  \item Part 5 LUX variables per segment of the day improved
-  \item Removing calls to closeAllConnections as requested by CRAN
-}
+  \itemize{
+    \item Part 5 LUX variables per segment of the day improved
+    \item Removing calls to closeAllConnections as requested by CRAN
+  }
 }
 \section{Changes in version 2.3-3 (GitHub-only-release date:20-05-2021)}{
-\itemize{
-  \item Part 5 fragmentation analysis added
-  \item Part 5 report, added argument week_weekend_aggregate.part5
-  \item Part 5 intensity gradient now also extracted here for waking hours
-  \item Part 5 LUX variables added (beta-implementation)
-  \item Part 2 and 5, Bout detection algorithm improved, see bout.metric 6
-  \item Parts 1, 2, 3 and 5: Added argument maxNcores to control maximum number
-  of cores to be used in parallel processing mode
-  \item Part 1 fixed bug related with ENMOa calculation which made the metashort data frame to be empty
-  \item Part 2 fixed bug to report generation in part 2
-  \item Fixed bug related to visualization report when a file has not been processed in part 4
-}
+  \itemize{
+    \item Part 5 fragmentation analysis added
+    \item Part 5 report, added argument week_weekend_aggregate.part5
+    \item Part 5 intensity gradient now also extracted here for waking hours
+    \item Part 5 LUX variables added (beta-implementation)
+    \item Part 2 and 5, Bout detection algorithm improved, see bout.metric 6
+    \item Parts 1, 2, 3 and 5: Added argument maxNcores to control maximum number
+    of cores to be used in parallel processing mode
+    \item Part 1 fixed bug related with ENMOa calculation which made the metashort data frame to be empty
+    \item Part 2 fixed bug to report generation in part 2
+    \item Fixed bug related to visualization report when a file has not been processed in part 4
+  }
 }
 \section{Changes in version 2.3-2 (GitHub-only-release date:21-04-2021)}{
-\itemize{
-  \item Part 1 when using ad-hoc data format: now able to handle timestamp column.
-  \item Part 2 report when using ad-hoc data format with header: now able to extract
-  and store serial number in part2 report.
-  \item Test file generation for unit tests improved. Thanks Lena Kushleyeva.
-  \item Part 2 estimation of longitudinal axis and related error handling improved
-}
+  \itemize{
+    \item Part 1 when using ad-hoc data format: now able to handle timestamp column.
+    \item Part 2 report when using ad-hoc data format with header: now able to extract
+    and store serial number in part2 report.
+    \item Test file generation for unit tests improved. Thanks Lena Kushleyeva.
+    \item Part 2 estimation of longitudinal axis and related error handling improved
+  }
 }
 \section{Changes in version 2.3-1 (GitHub-only-release date:26-03-2021)}{
-\itemize{
-  \item Part 3 bug fixed in usage of argument dayborder when not 0.
-  Thanks Ruben Brondeel for spotting this.
-  \item Part 3 bug fixed in recognition fraction night invalid for first night.
-  Thanks Ruben Brondeel for spotting.
-  \item Part 1 fixed warning related to closing connection to bin files. Thanks John Muschelli.
-  \item Part 2 fixed warning that deprecated IVIS argument does not exist
-}
+  \itemize{
+    \item Part 3 bug fixed in usage of argument dayborder when not 0.
+    Thanks Ruben Brondeel for spotting this.
+    \item Part 3 bug fixed in recognition fraction night invalid for first night.
+    Thanks Ruben Brondeel for spotting.
+    \item Part 1 fixed warning related to closing connection to bin files. Thanks John Muschelli.
+    \item Part 2 fixed warning that deprecated IVIS argument does not exist
+  }
 }
 \section{Changes in version 2.3-0 (release date:17-02-2021)}{
-\itemize{
-  \item Part 5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
-  \item Part 1 Documentation for sensor fusion functionality improved
-  \item Part 2 csv report generation speeded up
-}
+  \itemize{
+    \item Part 5 bug fixed for g.part5.fixmissingnight when night is also missing in sleeplog
+    \item Part 1 Documentation for sensor fusion functionality improved
+    \item Part 2 csv report generation speeded up
+  }
 }
 \section{Changes in version 2.2-2 (GitHub-only-release date:13-02-2021)}{
-\itemize{
-  \item Part 5 bug fix in waking up time for first night, in WW mode and HDCZA guider
-  \item Various minor function expansions to documentation and vignette
-  \item Part 2 Earlier draft implementation of IV and IS metrics now better tested and bugs fixed.
-  \item Part 2 Default value for argument IVIS.activity.metric changed to 2.
-  \item Migrate codecoverage testing to Github Actions
-  \item Part 1 Implemented initial sensor fusion functionality for AX6 cwa data
-}
+  \itemize{
+    \item Part 5 bug fix in waking up time for first night, in WW mode and HDCZA guider
+    \item Various minor function expansions to documentation and vignette
+    \item Part 2 Earlier draft implementation of IV and IS metrics now better tested and bugs fixed.
+    \item Part 2 Default value for argument IVIS.activity.metric changed to 2.
+    \item Migrate codecoverage testing to Github Actions
+    \item Part 1 Implemented initial sensor fusion functionality for AX6 cwa data
+  }
 }
 \section{Changes in version 2.2-1 (GitHub-only-release date:12-01-2021)}{
-\itemize{
-  \item Part 3 Fix bug introduced in 2.2-0 for recordings without sustained inactivity bouts
-  \item Transitioned from Travis+Appveyor CI to GitHub Actions
-  \item Part 5 fixed issue with expected max number of files to process
-  \item Enabled console display of GGIR version number when running g.shell.shell under Windows
-  \item Embedded new GGIR logo and update layout of vignette
-}
+  \itemize{
+    \item Part 3 Fix bug introduced in 2.2-0 for recordings without sustained inactivity bouts
+    \item Transitioned from Travis+Appveyor CI to GitHub Actions
+    \item Part 5 fixed issue with expected max number of files to process
+    \item Enabled console display of GGIR version number when running g.shell.shell under Windows
+    \item Embedded new GGIR logo and update layout of vignette
+  }
 }
 \section{Changes in version 2.2-0 (release date:22-11-2020)}{
-\itemize{
-  \item Part 5 improved midnights identification when the recording starts at 0am
-  \item Part 5 fixed days misclassification for MM output when recordings starts with some non-wear days
-  \item Documentation added to vignette for L5TIME_num and M5TIME_num
-}
+  \itemize{
+    \item Part 5 improved midnights identification when the recording starts at 0am
+    \item Part 5 fixed days misclassification for MM output when recordings starts with some non-wear days
+    \item Documentation added to vignette for L5TIME_num and M5TIME_num
+  }
 }
 \section{Changes in version 2.1-3 (GitHub-only-release date:20-10-2020)}{
-\itemize{
-  \item Depricating sessionInfo storage as it caused problems for large scale parallel processing
-  \item Part 1 fix to 1 minute time shift when recording starts at full minute.
-  \item Improved compatibility with older .cwa file formats.
-}
+  \itemize{
+    \item Depricating sessionInfo storage as it caused problems for large scale parallel processing
+    \item Part 1 fix to 1 minute time shift when recording starts at full minute.
+    \item Improved compatibility with older .cwa file formats.
+  }
 }
 \section{Changes in version 2.1-2 (GitHub-only-release date:25-09-2020)}{
-\itemize{
-  \item Part 5 bug fixed with day name and date allocation for daysleepers for MM report
-  \item Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.
-  \item Fix bug part 3 introduced in version 2.1-0 re. SPT detection for daysleepers.
-  \item Fix redefinition of the time windows (with "MM") in part 5 to include all recording days when the measurement starts with multiple non-wear days.
-  \item GGIR version now displayed in console when running GGIR
-  \item Bout metric 5 added to enable not allowing for gaps in bouts.
-}
+  \itemize{
+    \item Part 5 bug fixed with day name and date allocation for daysleepers for MM report
+    \item Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.
+    \item Fix bug part 3 introduced in version 2.1-0 re. SPT detection for daysleepers.
+    \item Fix redefinition of the time windows (with "MM") in part 5 to include all recording days when the measurement starts with multiple non-wear days.
+    \item GGIR version now displayed in console when running GGIR
+    \item Bout metric 5 added to enable not allowing for gaps in bouts.
+  }
 }
 
 \section{Changes in version 2.1-1 (GitHub-only-release date:07-09-2020)}{
-\itemize{
-  \item Part2 argument qwindow now able to handle person specific activity diary
-  \item Intensity gradient now also extracted from long MX windows, see MX.ig.min.dur
-}
+  \itemize{
+    \item Part2 argument qwindow now able to handle person specific activity diary
+    \item Intensity gradient now also extracted from long MX windows, see MX.ig.min.dur
+  }
 }
 \section{Changes in version 2.1-0 (release date:27-08-2020)}{
-\itemize{
-  \item Part 2 now able to be guided by activity log (see qwindow)
-  \item Part 2 now stores output also in long format if day is segmented
-  \item Actigraph serial number now extracted from the csv fileheader
-  \item Actigraph serial number now used to assign correct dynamic range per
-  Actigraph generation (6 and 8 g respectively). Previously 8 assumed.
-  \item Part 2 indicator added of which axis is most correlated with itself
-  over 24 hours, for hip data this may be indicator of vertical axis orientation.
-  \item Part 1 bug fixed in timestamp generation that caused measurements
-  that start exactly at the hour and 0 minutes to have a 1 minute offset in time.
-  \item Part 1 to reduce data storage size epoch level metric values are now
-  rounded to 4 decimal places.
-  \item Part 4 report, issue fixed with double night entries.
-  \item Bug fixed with Actigraph starttime recognition when machine language
-  is not English and months are expressed in b or hh format.
-  \item Bug fixed in accounting for daysleeper in first night ofr recording.
-}
+  \itemize{
+    \item Part 2 now able to be guided by activity log (see qwindow)
+    \item Part 2 now stores output also in long format if day is segmented
+    \item Actigraph serial number now extracted from the csv fileheader
+    \item Actigraph serial number now used to assign correct dynamic range per
+    Actigraph generation (6 and 8 g respectively). Previously 8 assumed.
+    \item Part 2 indicator added of which axis is most correlated with itself
+    over 24 hours, for hip data this may be indicator of vertical axis orientation.
+    \item Part 1 bug fixed in timestamp generation that caused measurements
+    that start exactly at the hour and 0 minutes to have a 1 minute offset in time.
+    \item Part 1 to reduce data storage size epoch level metric values are now
+    rounded to 4 decimal places.
+    \item Part 4 report, issue fixed with double night entries.
+    \item Bug fixed with Actigraph starttime recognition when machine language
+    is not English and months are expressed in b or hh format.
+    \item Bug fixed in accounting for daysleeper in first night ofr recording.
+  }
 }
 \section{Changes in version 2.0-2 (GitHub-only-release date:18-06-2020)}{
-\itemize{
-  \item Visual report, fixed argument viewingwindow for g.plot5 (visualreport)
-  \item Part 1 rmc.myacc.csv now raises warning when timestamps are not recognised
-  \item Part 1 fixed rmc.dynamic_range not correctly passed on in 2.0-1
-  \item Part 5 sub-function round_seconds_to_ws3new now handles missing values
-}
+  \itemize{
+    \item Visual report, fixed argument viewingwindow for g.plot5 (visualreport)
+    \item Part 1 rmc.myacc.csv now raises warning when timestamps are not recognised
+    \item Part 1 fixed rmc.dynamic_range not correctly passed on in 2.0-1
+    \item Part 5 sub-function round_seconds_to_ws3new now handles missing values
+  }
 }
 \section{Changes in version 2.0-1 (GitHub-only-release date:04-06-2020)}{
-\itemize{
-  \item Now able to read gzipped csv files
-  \item Part 2 Fixed midnight selection being off by one sample
-  \item Part 1 tidied up metric calculation and added a few metrics
-  \item Part 2 Added strategy 4 (ignore data before first midnight)
-  \item Data from movisens accelerometers can be now processe
-  \item Part 5 timestamps in timeseries output in RData format (new since 2.0)
-  now correctly accounts for timezone
-  \item Part 4 now has option to only exclude the first or only the last night
-}
+  \itemize{
+    \item Now able to read gzipped csv files
+    \item Part 2 Fixed midnight selection being off by one sample
+    \item Part 1 tidied up metric calculation and added a few metrics
+    \item Part 2 Added strategy 4 (ignore data before first midnight)
+    \item Data from movisens accelerometers can be now processe
+    \item Part 5 timestamps in timeseries output in RData format (new since 2.0)
+    now correctly accounts for timezone
+    \item Part 4 now has option to only exclude the first or only the last night
+  }
 }
 \section{Changes in version 2.0-0 (release date:30-04-2020)}{
-\itemize{
-  \item Now R version 4.0 compatible
-  \item Part 1 Clipping detection expanded: If any value in block more than 150 percent
-  dynamic range then ignore entire block.
-  \item Part 2 report now able to handle changing variable count due to missing data
-  \item Part 2 L5M5 better able to handle small qwindow intervals
-  \item Part 3 HDCZA algorithm expanded to be able to detect daysleepers
-  \item Part 3 various improvements to qc plots.
-  \item Part 5 now also stores full and cleaned output
-  \item Part 5 now better handles missing days in part 4 output.
-  \item Part 5 behavioral class SIB removed from daytime
-  \item Part 5 time series export more user-friendly.
-  \item Part 5 function code split up in 7 new functions.
-  \item Part 4 + 5 argument data_cleaning_file added.
-  \item Part 4 + 5 output variable names improved and documented in vignette
-  \item Numunpack function moved back to c++
-  \item Various updates to visualreport (plot5 function)
-  \item External function embedding feature added
-  \item We now consistently refer to ID (not id) and calendar_date, spelling was
-  inconsistent.
-  \item Vignette now has documentation on sleep and time-use analysis.
+  \itemize{
+    \item Now R version 4.0 compatible
+    \item Part 1 Clipping detection expanded: If any value in block more than 150 percent
+    dynamic range then ignore entire block.
+    \item Part 2 report now able to handle changing variable count due to missing data
+    \item Part 2 L5M5 better able to handle small qwindow intervals
+    \item Part 3 HDCZA algorithm expanded to be able to detect daysleepers
+    \item Part 3 various improvements to qc plots.
+    \item Part 5 now also stores full and cleaned output
+    \item Part 5 now better handles missing days in part 4 output.
+    \item Part 5 behavioral class SIB removed from daytime
+    \item Part 5 time series export more user-friendly.
+    \item Part 5 function code split up in 7 new functions.
+    \item Part 4 + 5 argument data_cleaning_file added.
+    \item Part 4 + 5 output variable names improved and documented in vignette
+    \item Numunpack function moved back to c++
+    \item Various updates to visualreport (plot5 function)
+    \item External function embedding feature added
+    \item We now consistently refer to ID (not id) and calendar_date, spelling was
+    inconsistent.
+    \item Vignette now has documentation on sleep and time-use analysis.
+  }
 }
-}
-
 \section{Changes in version 1.11-1 (GitHub-only-release date:28-02-2020)}{
-\itemize{
-  \item Metric ENMOa now facilitated for MVPA calculation
-  \item Bug fixed with part4 daysleeper handling
-  \item Part5 WW window calculation improved, first day now uses sleeplog or
-  HDCZA algorithm estimate, and last day is ignored if no sleep estimates are
-  available. This also affects csv exports by argument save_ms5rawlevels.
-  \item Added explanation to vignette on how to use published cut-points.
-  \item Axivity AX6 (acc + gyro) in cwa format now supported for file reading,
-  actually using the gyro data for feature calculation is future work.
-  In the mean time, gyro signal will be ignored by the rest of GGIR.
-  \item Axivity AX3 acc data in cwa format can now also be read if dynamic
-  range is not 8g. Previously this was not possible.
-  \item Fixed bug related to visual report generation when qwindow is set to
-  non-default value.
-  \item Added way to handle Actigraph files which start with several days of
-  zeros which complicates the auto-calibration.
-  \item Default for desiredtz to timezone of machine.
-}
+  \itemize{
+    \item Metric ENMOa now facilitated for MVPA calculation
+    \item Bug fixed with part4 daysleeper handling
+    \item Part5 WW window calculation improved, first day now uses sleeplog or
+    HDCZA algorithm estimate, and last day is ignored if no sleep estimates are
+    available. This also affects csv exports by argument save_ms5rawlevels.
+    \item Added explanation to vignette on how to use published cut-points.
+    \item Axivity AX6 (acc + gyro) in cwa format now supported for file reading,
+    actually using the gyro data for feature calculation is future work.
+    In the mean time, gyro signal will be ignored by the rest of GGIR.
+    \item Axivity AX3 acc data in cwa format can now also be read if dynamic
+    range is not 8g. Previously this was not possible.
+    \item Fixed bug related to visual report generation when qwindow is set to
+    non-default value.
+    \item Added way to handle Actigraph files which start with several days of
+    zeros which complicates the auto-calibration.
+    \item Default for desiredtz to timezone of machine.
+  }
 }
 \section{Changes in version 1.11-0 (release date:03-12-2019)}{
 \itemize{
