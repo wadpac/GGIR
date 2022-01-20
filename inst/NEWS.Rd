@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6-0 (release date:29-01-2022)}{
+\itemize{
+  \item Fixing issue introduced in 2.5-6 release: maxNcores was not defined in part 1, and params_output not passed on to part 3
+  }
+}
 \section{Changes in version 2.5-6 (GitHub-only-release date:18-01-2022)}{
 \itemize{
   \item Internal re-structuring: Arguments are now internally passed via parameter objects to 
