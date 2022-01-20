@@ -182,7 +182,8 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     print_console_header("Part 3")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
     g.part3(metadatadir = metadatadir, f0 = f0, f1 = f1, myfun = myfun,
-            params_sleep = params_sleep, params_metrics = params_metrics,
+            params_sleep = params_sleep, params_output = params_output,
+            params_metrics = params_metrics,
             params_general = params_general)
   }
   if (dopart4 == TRUE) {
