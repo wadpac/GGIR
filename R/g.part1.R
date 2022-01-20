@@ -434,8 +434,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
         params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
       }
-      if (length(maxNcores) == 0) maxNcores = Ncores
-      Ncores2use = min(c(Ncores - 1, maxNcores))
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
       
