@@ -156,14 +156,14 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   # Declare core functionality, which at the end of this g.part1 is either
   # applied to the file in parallel with foreach or serially with a loop
   main_part1 = function(i, params_metrics, params_rawdata,
-                        params_cleaning, params_general, datadir, fnames,
+                        params_cleaning, params_general, datadir, fnames, fnamesfull,
                         outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
                         use.temp, daylimit, path3, outputfolder, is.mv) {
     if (params_general[["print.filename"]] == TRUE) {
       cat(paste0("\nFile name: ",fnames[i]))
     }
     if (filelist == TRUE) {
-      datafile = as.character(fnames[i])
+      datafile = as.character(fnamesfull[i])
     } else {
       datafile = paste0(datadir,"/",fnames[i])
     }
@@ -449,7 +449,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
                                        main_part1(i, params_metrics, params_rawdata,
-                                                  params_cleaning, params_general, datadir, fnames,
+                                                  params_cleaning, params_general, datadir, fnames, fnamesfull,
                                                   outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
                                                   use.temp, daylimit, path3, outputfolder, is.mv)
                                      }) 
@@ -465,7 +465,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   } else { # simple loop to process files serially file by file
     for (i in f0:f1) {
       main_part1(i, params_metrics, params_rawdata,
-                 params_cleaning, params_general, datadir, fnames,
+                 params_cleaning, params_general, datadir, fnames, fnamesfull,
                  outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
                  use.temp, daylimit, path3, outputfolder, is.mv)
       
