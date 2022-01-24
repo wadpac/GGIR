@@ -303,8 +303,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         } else if (dformat == 6) { #gt3x
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
             P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25)
-            data = as.matrix(P[,2:4])
           }
+          data = as.matrix(P[,2:4])
         }
         #add left over data from last time
         if (nrow(S) > 0) {
