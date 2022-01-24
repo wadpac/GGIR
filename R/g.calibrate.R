@@ -5,7 +5,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
   
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("datadir", "params_rawdata", "params_general", "params_cleaning") == FALSE)) {
+  expectedArgs = c("datadir", "params_rawdata", "params_general", "params_cleaning")
+  if (any(names(input) %in% expectedArgs == FALSE) |
+      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.calibrate is used on its own
     # as if it was still the old g.calibrate function

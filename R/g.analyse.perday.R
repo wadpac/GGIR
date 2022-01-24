@@ -9,14 +9,17 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                             ...) {
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("params_247", "params_phyact", 
-                              "selectdaysfile", "ndays", "firstmidnighti", "time", "nfeatures", 
-                              "midnightsi", "metashort", "averageday",
-                              "doiglevels", "nfulldays","lastmidnight", "ws3", "ws2", "qcheck",
-                              "fname", "idloc", "BodyLocation", "wdayname", "tooshort", "includedaycrit",
-                              "doquan", "quantiletype", "doilevels", "domvpa",
-                              "mvpanames", "wdaycode", "ID",
-                              "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz") == FALSE)) {
+  
+  expectedArgs = c("params_247", "params_phyact", 
+                   "selectdaysfile", "ndays", "firstmidnighti", "time", "nfeatures", 
+                   "midnightsi", "metashort", "averageday",
+                   "doiglevels", "nfulldays","lastmidnight", "ws3", "ws2", "qcheck",
+                   "fname", "idloc", "BodyLocation", "wdayname", "tooshort", "includedaycrit",
+                   "doquan", "quantiletype", "doilevels", "domvpa",
+                   "mvpanames", "wdaycode", "ID",
+                   "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz") 
+  if (any(names(input) %in% expectedArgs == FALSE) |
+      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
