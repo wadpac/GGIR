@@ -4,7 +4,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   #get input variables
   input = list(...)
   if (any(names(input) %in% c("M", "I", "params_cleaning", "desiredtz",
-                              "dayborder", "TimeSegments2Zero") == FALSE)) {
+                              "dayborder", "TimeSegments2Zero") == FALSE) |
+      !exists("desiredtz") | !exists("dayborder") |
+      !exists("params_cleaning ") | !exists("TimeSegments2Zero")) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.impute is used on its own
     # as if it was still the old g.impute function
