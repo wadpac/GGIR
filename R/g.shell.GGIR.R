@@ -4,7 +4,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                         myfun = c(), ...) {
   #get input variables
   input = list(...)
-
   # Check for duplicated arguments
   if (length(input) > 0) {
     if (length(input) > 1) {
@@ -177,7 +176,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_output = params_output,
             params_general = params_general)
   }
-
   if (dopart3 == TRUE) {
     print_console_header("Part 3")
     if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))

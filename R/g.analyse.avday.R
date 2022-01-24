@@ -2,9 +2,11 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                            ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), ...) {
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("doquan", "averageday", "M", "IMP",
-                              "t_TWDI, quantiletype", "ws3", "ws2", 
-                              "doiglevels", "firstmidnighti", "midnightsi", "params_247")) == FALSE) {
+  expectedArgs = c("doquan", "averageday", "M", "IMP",
+                   "t_TWDI, quantiletype", "ws3", "ws2", 
+                   "doiglevels", "firstmidnighti", "midnightsi", "params_247") 
+  if (any(names(input) %in% expectedArgs == FALSE) |
+      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function

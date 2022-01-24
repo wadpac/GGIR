@@ -525,6 +525,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     relyonguider_thisnight = TRUE
                   }
                 }
+                if (length(spo) == 0) {
+                  # add empty spo object, in case it was removed above
+                  # we do this because code below assumes that spo is a matrix
+                  spo = matrix(0, nsp, 5)
+                  spo[1, 1] = 1
+                  spo[1, 2:4] = 0
+                  spo[1, 5] = k
+                } 
                 # If no SIBs overlap with the SPT window
                 if (length(which(spo[, 2] < SptWake & 
                                  spo[, 3] > SptOnset)) == 0 | 
