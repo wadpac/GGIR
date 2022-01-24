@@ -16,7 +16,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                               "fname", "idloc", "BodyLocation", "wdayname", "tooshort", "includedaycrit",
                               "doquan", "quantiletype", "doilevels", "domvpa",
                               "mvpanames", "wdaycode", "ID",
-                              "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz")) == FALSE) {
+                              "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz") == FALSE)) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function

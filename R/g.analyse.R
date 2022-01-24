@@ -8,7 +8,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   if (any(names(input) %in% c("I", "C", "M", "IMP", "params_247", "params_phyact", 
                               "quantiletype", "includedaycrit", 
                               "idloc", "snloc", "selectdaysfile", "dayborder", 
-                               "desiredtz", "myfun")) == FALSE) {
+                               "desiredtz", "myfun") == FALSE)) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function

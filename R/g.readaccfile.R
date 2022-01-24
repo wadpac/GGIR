@@ -282,9 +282,14 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
         stringsAsFactors = TRUE))
     }, silent = TRUE)
     if (length(P) > 1) {
-      P = data.matrix(P) # as.matrix turned num to char if there are missing values.
+      # data.matrix turnes num to char if there are missing values.
+      if (ncol(P) == 3) {
+        P = data.matrix(P) 
+      } else {
+        P = data.matrix(P[, 2:ncol(P)]) # avoid timestamp column
+      }
       if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
+        P = c() ; switchoffLD = 1
         filequality$filetooshort = TRUE
       }
     } else {
