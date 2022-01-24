@@ -4,7 +4,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("params_sleep")) == FALSE) {
+  if (any(names(input) %in% c("params_sleep", "M", "IMP",
+                              "I", "twd", "acc.metric", "desiredtz",
+                              "myfun", "sensor.location") == FALSE)) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.sleep is used on its own
     # as if it was still the old g.sleep function
@@ -12,7 +14,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                             input = input) # load default parameters
     params_sleep = params$params_sleep
   }
-  
   #==============================================================
   perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
   # Abbreviaton SPTE = Sleep Period Time Estimate, although in case of HorAngle it is the Time in Bed estimate
@@ -115,7 +116,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
       # always do zeroCrossingCount but optionally also add BrondCounts to output for comparison
-      BrondCount_colname = paste0("BrondCounts_", tolower(params_sleep[["Sadeh_axis"]]))
+      BrondCount_colname = paste0("BrondCount_", tolower(params_sleep[["Sadeh_axis"]]))
       if (BrondCount_colname %in% colnames(IMP$metashort)) {
         BrondCount =  IMP$metashort[, BrondCount_colname]
         BrondCount = fix_NA_invector(BrondCount)

@@ -335,8 +335,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
                   params_sleep[["HASIB.algo"]] != "vanHees2015") {
-                                                warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
-                                              }
+                warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
+              }
               naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
                                                   desiredtz = params_general[["desiredtz"]],
                                                   possible_nap_window = params_sleep[["possible_nap_window"]],

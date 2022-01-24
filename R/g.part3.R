@@ -38,7 +38,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   } else {
     ffdone = c()
   }
-  
   #=========================================================
   # Declare core functionality, which at the end of this g.part3 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -72,10 +71,11 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         SLE = g.sib.det(M, IMP, I, twd = c(-12,12),
+                        acc.metric = params_general[["acc.metric"]],
+                        desiredtz = params_general[["desiredtz"]],
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
-                        desiredtz = params_general[["desiredtz"]],
-                        acc.metric = params_general[["acc.metric"]])
+                        params_sleep = params_sleep)
 
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {

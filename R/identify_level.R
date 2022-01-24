@@ -1,7 +1,7 @@
 identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) {
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("ts", "TRLi", "TRMi", "TRVi", "ws3", "params_phyact")) == FALSE) {
+  if (any(names(input) %in% c("ts", "TRLi", "TRMi", "TRVi", "ws3", "params_phyact") == FALSE)) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when identify_level is used on its own
     # as if it was still the old identify_level function

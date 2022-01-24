@@ -9,7 +9,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                               "params_rawdata", "params_general",
                               "daylimit", "offset", 
                               "scale", "tempoffset", "meantempcal", 
-                              "selectdaysfile", "myfun")) == FALSE) {
+                              "selectdaysfile", "myfun", "outputdir", "outputfolder") == FALSE)) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.getmeta is used on its own
     # as if it was still the old g.getmeta function
