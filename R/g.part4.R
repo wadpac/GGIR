@@ -330,7 +330,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # keep track of whether enough accelerometer data is available for each night
           acc_available = TRUE  #default assumption
           # initialize dataframe to hold sleep period overview:
-          spocum = as.data.frame(matrix(0, 0, 5))
+          spocum = data.frame(nb = numeric(0), start = numeric(0),  end = numeric(0),
+                                dur = numeric(0), def = character(0))
+          
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
           sleeplog.t2 = sleeplog.t[which(sleeplog.t$night == j), ]
@@ -407,8 +409,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             }
           }
           # now generate empty overview for this night / person
-          dummyspo = matrix(0, 1, 5)
-          dummyspo[1, 1] = 1
+          dummyspo = data.frame(nb = numeric(1), start = numeric(1),  end = numeric(1),
+                           dur = numeric(1), def = character(1))
+          dummyspo$nb[1] = 1
           spo_day = c()
           spo_day_exists = FALSE
           # ============================================================================================
@@ -438,12 +441,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               if (loaddaysi == 1) remember_fraction_invalid_day1 = sleepdet.t$fraction.night.invalid[1]
               # now get sleep periods
               nsp = length(unique(sleepdet.t$sib.period))  #number of sleep periods
-              spo = matrix(0, nsp, 5)  # overview of sleep periods
+              spo = data.frame(nb = numeric(nsp), start = numeric(nsp),  end = numeric(nsp),
+                               dur = numeric(nsp), def = character(nsp))
               if (nsp <= 1 & unique(sleepdet.t$sib.period)[1] == 0) {
                 # no sleep periods
-                spo[1, 1] = 1
-                spo[1, 2:4] = 0
-                spo[1, 5] = k
+                spo$nb[1] = 1
+                spo[1, c("start", "end", "dur")] = 0
+                spo$def[1] = k
                 if (daysleeper[j] == TRUE) {
                   tmpCmd = paste0("spo_day", k, "= c()")
                   eval(parse(text = tmpCmd))  ##
@@ -452,7 +456,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               } else {
                 DD = g.create.sp.mat(nsp, spo, sleepdet.t, daysleep = daysleeper[j])
                 if (loaddaysi == 1) {
-                  # newly added 25/11/2015
                   wdayname[j] = DD$wdayname
                   calendar_date[j] = DD$calendar_date
                 }
@@ -460,14 +463,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 reversetime2 = reversetime3 = c()
                 if (daysleeper[j] == TRUE) {
                   if (loaddaysi == 1) {
-                    w1 = which(spo[, 3] >= 18)  #only use periods ending after 6pm
+                    w1 = which(spo$end >= 18)  #only use periods ending after 6pm
                     if (length(w1) > 0) {
-                      spo = as.matrix(spo[w1, ])
-                      if (ncol(spo) == 1) spo = t(spo)
+                      spo = spo[w1, ]
                       if (nrow(spo) == 1) {
-                        if (spo[1, 2] <= 18) spo[1, 2] = 18  #turn start time on 1st day before 6pm to 6pm
+                        if (spo$start[1] <= 18) spo$start[1] = 18  #turn start time on 1st day before 6pm to 6pm
                       } else {
-                        spo[which(spo[, 2] <= 18), 2] = 18  #turn start times on 1st day before 6pm to 6pm
+                        spo$start[which(spo$start <= 18)] = 18  #turn start times on 1st day before 6pm to 6pm
                       }
                       tmpCmd = paste0("spo_day", k, "= spo")  #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
@@ -479,16 +481,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     }
                   } else if (loaddaysi == 2 & spo_day_exists == TRUE) {
                     # length check added because day may have been skipped
-                    w2 = which(spo[, 2] < 18)  #only use periods starting before 6pm
+                    w2 = which(spo$start < 18)  #only use periods starting before 6pm
                     if (length(w2) > 0) {
-                      spo = as.matrix(spo[w2, ])
+                      spo = spo[w2, ]
                       if (ncol(spo) == 1) spo = t(spo)
                       if (nrow(spo) == 1) {
-                        if (spo[1, 3] > 18) spo[1, 3] = 18  #turn end time on 2nd day after 6pm to 6pm
+                        if (spo$end[1] > 18) spo$end[1] = 18  #turn end time on 2nd day after 6pm to 6pm
                       } else {
-                        spo[which(spo[, 3] > 18), 3] = 18  #turn end times on 2nd day after 6pm to 6pm
+                        spo$end[which(spo$end > 18)] = 18  #turn end times on 2nd day after 6pm to 6pm
                       }
-                      spo[, 2:3] = spo[, 2:3] + 24  # + 24 to create continues timelines for day 2 relative to day 1
+                      spo[, c("start", "end")] = spo[, c("start", "end")] + 24  # + 24 to create continues timelines for day 2 relative to day 1
                       tmpCmd = paste0("spo_day2", k, "= spo")  #spo needs to be rememered specific to definition
                       eval(parse(text = tmpCmd))
                     } else {
@@ -528,14 +530,15 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 if (length(spo) == 0) {
                   # add empty spo object, in case it was removed above
                   # we do this because code below assumes that spo is a matrix
-                  spo = matrix(0, nsp, 5)
-                  spo[1, 1] = 1
+                  spo = data.frame(nb = numeric(1), start = numeric(1),  end = numeric(1),
+                                   dur = numeric(1), def = character(1))
+                  spo$nb[1] = 1
                   spo[1, 2:4] = 0
-                  spo[1, 5] = k
-                } 
+                  spo$def[1] = k
+                }
                 # If no SIBs overlap with the SPT window
-                if (length(which(spo[, 2] < SptWake & 
-                                 spo[, 3] > SptOnset)) == 0 | 
+                if (length(which(spo$start < SptWake & 
+                                 spo$end > SptOnset)) == 0 | 
                     relyonguider_thisnight == TRUE) {
                   # If night is explicitely listed
                   cleaningcode = 5
@@ -543,34 +546,34 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   newlines[1, 1:4] = c(nrow(spo) + 1, SptOnset, SptOnset + 1/60, 1)
                   newlines[2, 1:4] = c(nrow(spo) + 1, SptWake - 1/60, SptWake, 1)
                   spo = rbind(spo, newlines)
-                  spo = spo[order(spo[, 2]), ]
-                  spo[, 1] = 1:nrow(spo)
+                  spo = spo[order(spo$start), ]
+                  spo$nb = 1:nrow(spo)
                   relyonguider_thisnight = TRUE
                 }
-                # spo is now a matrix of onset and wake for each sleep period (episode) Now
+                # spo is now a df of onset and wake for each sleep period (episode) Now
                 # classify as being part of the SPT window or not = acconset < logwake & accwake >
                 # logonset
                 for (evi in 1:nrow(spo)) {
-                  if (spo[evi, 2] < SptWake & spo[evi, 3] > SptOnset) {
+                  if (spo$start[evi] < SptWake & spo$end[evi] > SptOnset) {
                     if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                      if (spo[evi, 3] < SptWake & spo[evi, 2] > SptOnset) {
+                      if (spo$end[evi] < SptWake & spo$start[evi] > SptOnset) {
                         # if using a time in bed reference, then sleep can never start before time
                         # in bed
-                        spo[evi, 4] = 1  #nocturnal = all acc periods that start after diary onset and end before diary wake
+                        spo$dur[evi] = 1  #nocturnal = all acc periods that start after diary onset and end before diary wake
                       }
                     } else {
-                      spo[evi, 4] = 1  #nocturnal = all acc periods that end after diary onset and start before diary wake
+                      spo$dur[evi] = 1  #nocturnal = all acc periods that end after diary onset and start before diary wake
                     }
                     # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS if TRUE then sleeplog
                     # value is assigned to accelerometer-based value for onset and wake up
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
-                      if ((spo[evi, 2] < SptWake & spo[evi, 3] > SptWake) | (spo[evi, 2] < SptWake &
-                                                                             spo[evi, 3] < spo[evi, 2])) {
-                        spo[evi, 3] = SptWake
+                      if ((spo$start[evi] < SptWake & spo$end[evi] > SptWake) | (spo$start[evi] < SptWake &
+                                                                             spo$end[evi] < spo$start[evi])) {
+                        spo$end[evi] = SptWake
                       }
-                      if ((spo[evi, 2] < SptOnset & spo[evi, 3] > SptOnset) | (spo[evi, 3] > SptOnset &
-                                                                               spo[evi, 3] < spo[evi, 2])) {
-                        spo[evi, 2] = SptOnset
+                      if ((spo$start[evi] < SptOnset & spo$end[evi] > SptOnset) | (spo$end[evi] > SptOnset &
+                                                                               spo$end[evi] < spo$start[evi])) {
+                        spo$start[evi] = SptOnset
                       }
                     }
                   }
@@ -578,15 +581,15 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 if (daysleeper[j] == TRUE) {
                   # for the labelling above it was needed to have times > 36, but for the plotting
                   # time in the second day needs to be returned to a normal 24 hour scale.
-                  reversetime2 = which(spo[, 2] >= 36)
-                  reversetime3 = which(spo[, 3] >= 36)
-                  if (length(reversetime2) > 0) spo[reversetime2, 2] = spo[reversetime2, 2] - 24
-                  if (length(reversetime3) > 0) spo[reversetime3, 3] = spo[reversetime3, 3] - 24
+                  reversetime2 = which(spo$start >= 36)
+                  reversetime3 = which(spo$end >= 36)
+                  if (length(reversetime2) > 0) spo$start[reversetime2] = spo$start[reversetime2] - 24
+                  if (length(reversetime3) > 0) spo$end[reversetime3] = spo$end[reversetime3] - 24
                 }
                 #------------------------------------------------------------------------
                 # Variable 'spo' contains all the sleep periods FOR ONE SLEEP DEFINITION Variable
                 # 'spocum' contains all the sleep periods FOR MULTIPLE SLEEP DEFINITIONS
-                spo[, 5] = k
+                spo$def = k
                 if (spocumi == 1) {
                   spocum = spo
                 } else {
@@ -623,18 +626,20 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             }
           }
           if (length(spocum) > 0) {
-            if (length(which(spocum[, 5] == "0")) > 0) {
-              spocum = spocum[-which(spocum[, 5] == "0"), ]
+            # if (length(which(spocum[, 5] == "0")) > 0) {
+              NAvalues = which(is.na(spocum$def) == TRUE)
+              if (length(NAvalues) > 0) {
+              spocum = spocum[-NAvalues, ]
             }
           }
           # Fill matrix 'nightsummary' with key sleep parameters
-          if (length(spocum) > 0 & class(spocum)[1] == "matrix" & length(calendar_date) >= j) {
+          if (length(spocum) > 0 & class(spocum)[1] == "data.frame" & length(calendar_date) >= j) {
             if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendar_date[j] != "") {
-              undef = unique(spocum[, 5])
+              undef = unique(spocum$def)
               for (defi in undef) {
                 #------------------------------------------------------------------------
                 # nightsummary
-                rowswithdefi = which(spocum[, 5] == defi)
+                rowswithdefi = which(spocum$def == defi)
                 if (length(rowswithdefi) > 1) {
                   # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi, ]
@@ -649,25 +654,21 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     }
                     return(x)
                   }
-                  # sbefore = spocum.t[,4]
-                  delta_t1 = diff(as.numeric(spocum.t[, 3]))
-                  spocum.t[, 4] = correct01010pattern(spocum.t[, 4])
+                  delta_t1 = diff(as.numeric(spocum.t$end))
+                  spocum.t$dur = correct01010pattern(spocum.t$dur)
+
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night
-                  if (is.matrix(spocum.t) == FALSE) {
-                    spocum.t = t(as.matrix(spocum.t))
-                  }
                   # remove double rows
                   spocum.t = spocum.t[!duplicated(spocum.t), ]
+
                   #------------------------------------
                   # ACCELEROMETER
-                  if (is.matrix(spocum.t) == FALSE) spocum.t = as.matrix(spocum.t)  # seems needed in rare occasions
-                  if (ncol(spocum.t) < 4 & nrow(spocum.t) > 3) spocum.t = t(spocum.t)  # seems needed in rare occasions
-                  if (length(which(as.numeric(spocum.t[, 4]) == 1)) > 0) {
-                    rtl = which(spocum.t[, 4] == 1)
-                    nightsummary[sumi, 3] = spocum.t[rtl[1], 2]
-                    nightsummary[sumi, 4] = spocum.t[rtl[length(rtl)], 3]
+                  if (length(which(as.numeric(spocum.t$dur) == 1)) > 0) {
+                    rtl = which(spocum.t$dur == 1)
+                    nightsummary[sumi, 3] = spocum.t$start[rtl[1]]
+                    nightsummary[sumi, 4] = spocum.t$end[rtl[length(rtl)]]
                   } else {
                     cleaningcode = 5  # only for first day, other cleaningcode is assigned to wrong day
                     nightsummary[sumi, 3] = SptOnset  #use default assumption about onset
@@ -730,16 +731,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     nightsummary[sumi, 13] = 1
                   }
                   # Accumulated nocturnal sleep and daytime sustained inactivity bouts
-                  nocs = as.numeric(spocum.t[which(spocum.t[, 4] == 1), 3]) - as.numeric(spocum.t[which(spocum.t[,
-                                                                                                                 4] == 1), 2])
-                  sibds = as.numeric(spocum.t[which(spocum.t[, 4] == 0), 3]) - as.numeric(spocum.t[which(spocum.t[,
-                                                                                                                  4] == 0), 2])
+                  nocs = as.numeric(spocum.t$end[which(spocum.t$dur == 1)]) - 
+                    as.numeric(spocum.t$start[which(spocum.t$dur == 1)])
+                  sibds = as.numeric(spocum.t$end[which(spocum.t$dur == 0)]) -
+                    as.numeric(spocum.t$start[which(spocum.t$dur == 0)])
                   # it is possible that nocs is negative if when sleep episode starts before dst
                   # in the autumn and ends inside the dst hour
                   negval = which(nocs < 0)
                   if (length(negval) > 0) {
-                    kk0 = as.numeric(spocum.t[which(spocum.t[, 4] == 1), 2])  # episode onsets
-                    kk1 = as.numeric(spocum.t[which(spocum.t[, 4] == 1), 3])  # episode endings
+                    kk0 = as.numeric(spocum.t$start[which(spocum.t$dur == 1)])  # episode onsets
+                    kk1 = as.numeric(spocum.t$end[which(spocum.t$dur == 1)])  # episode endings
                     kk1[negval] = kk1[negval] + 1
                     nocs = kk1 - kk0
                   }
@@ -758,8 +759,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # if yes, then check whether any of the sleep episodes overlaps dst in spring,
                   # one hour skipped
                   if (dst_night_or_not == 1) {
-                    checkoverlap = spocum.t[which(spocum.t[, 4] == 1), 2:3]
-                    if (length(checkoverlap) > 0 & is.matrix(checkoverlap) == TRUE) {
+                    checkoverlap = spocum.t[which(spocum.t$dur == 1), c("start", "end")]
+                    if (nrow(checkoverlap) > 0) {
                       overlaps = which(checkoverlap[, 1] <= (dsthour + 24) & checkoverlap[, 2] >=
                                          (dsthour + 25))
                     } else {
@@ -845,9 +846,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[sumi, 14] = spocum.t.dur.noc  #total nocturnalsleep /accumulated sleep duration
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
                   nightsummary[sumi, 16] = spocum.t.dur_sibd  #total sib (sustained inactivty bout) duration during wakinghours
-                  nightsummary[sumi, 17] = length(which(spocum.t[, 4] == 1))  #number of nocturnalsleep periods
+                  nightsummary[sumi, 17] = length(which(spocum.t$dur == 1))  #number of nocturnalsleep periods
                   nightsummary[sumi, 18] = nightsummary[sumi, 17] - 1  #number of awakenings
-                  nightsummary[sumi, 19] = length(which(spocum.t[, 4] == 0))  #number of sib (sustained inactivty bout) during wakinghours
+                  nightsummary[sumi, 19] = length(which(spocum.t$dur == 0))  #number of sib (sustained inactivty bout) during wakinghours
                   nightsummary[sumi, 20] = as.numeric(spocum.t.dur_sibd_atleast15min)  #total sib (sustained inactivty bout) duration during wakinghours of at least 5 minutes
                   #-------------------------------------------------------
                   # Also report timestamps in non-numeric format:
@@ -911,24 +912,24 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                       qbot = (((defii - 1)/length(undef)) * 0.6) - 0.3
                       # add bar for each sleep defintion of accelerometer
                       for (pli in 1:nrow(spocum.t)) {
-                        if (spocum.t[pli, 2] > spocum.t[pli, 3]) {
+                        if (spocum.t$start[pli] > spocum.t$end[pli]) {
                           if (pli > 1 & pli < nrow(spocum.t) &
-                              abs(as.numeric(spocum.t[pli, 2]) - as.numeric(spocum.t[pli, 3])) < 2) {
-                            spocum.t[pli, 2:3] = spocum.t[pli, 3:2]  #add 15/12/2014 to deal with effect of daysaving time.
+                              abs(as.numeric(spocum.t$start[pli]) - as.numeric(spocum.t$end[pli])) < 2) {
+                            spocum.t[pli, c("start", "end")] = spocum.t[pli, c("end", "start")]
                           }
                         }
-                        if (spocum.t[pli, 4] == 1) {
+                        if (spocum.t$dur[pli] == 1) {
                           colb = rainbow(length(undef), start = 0.7, end = 1)
                         } else {
                           colb = rainbow(length(undef), start = 0.2, end = 0.4)
                         }
-                        if (spocum.t[pli, 2] > spocum.t[pli, 3]) {
-                          rect(xleft = spocum.t[pli, 2], ybottom = (cnt + qbot), xright = 36, 
+                        if (spocum.t$start[pli] > spocum.t$end[pli]) {
+                          rect(xleft = spocum.t$start[pli], ybottom = (cnt + qbot), xright = 36, 
                                ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
-                          rect(xleft = 12, ybottom = (cnt + qbot), xright = spocum.t[pli, 3], ytop = (cnt + qtop),
+                          rect(xleft = 12, ybottom = (cnt + qbot), xright = spocum.t$end[pli], ytop = (cnt + qtop),
                                col = colb[defii], border = NA)  #lwd=0.2,
                         } else {
-                          rect(xleft = spocum.t[pli, 2], ybottom = (cnt + qbot), xright = spocum.t[pli, 3],
+                          rect(xleft = spocum.t$start[pli], ybottom = (cnt + qbot), xright = spocum.t$end[pli],
                                ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
                         }
                       }
