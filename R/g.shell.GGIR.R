@@ -56,7 +56,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
-    dir2fn = datadir2fnames(datadir,filelist)
+    dir2fn = datadir2fnames(datadir, filelist)
     fnames = dir2fn$fnames
     fnamesfull = dir2fn$fnamesfull
     # check whether these are RDA
@@ -158,7 +158,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     cat(paste0(rep('_', options()$width), collapse = ''))
     cat("\n",headerTitle,"\n")
   }
-
   if (dopart1 == TRUE) {
     print_console_header("Part 1")
     g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
@@ -166,7 +165,6 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_rawdata = params_rawdata, params_metrics = params_metrics,
             params_cleaning = params_cleaning, params_general = params_general)
   }
-
   if (dopart2 == TRUE) {
     print_console_header("Part 2")
     if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/basic")))

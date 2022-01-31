@@ -58,7 +58,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
       rmc.desiredtz = "",  rmc.sf = c(),
       rmc.headername.sf = c(), rmc.headername.sn = c(),
       rmc.headername.recordingid = c(), rmc.header.structure = c(),
-      rmc.check4timegaps = FALSE,  rmc.noise = c(),
+      rmc.check4timegaps = FALSE,  rmc.noise = 13,
       rmc.col.wear = c(), rmc.doresample = FALSE,
       interpolationType = 1,
       imputeTimegaps = TRUE)
@@ -92,7 +92,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            excludefirstlast = FALSE, #<= to cleaning
                            includenightcrit = 16, #<= to cleaning
                            excludefirst.part4 = FALSE, # => to cleaning
-                           excludelast.part4 = FALSE)
+                           excludelast.part4 = FALSE, max_calendar_days = 0)
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,

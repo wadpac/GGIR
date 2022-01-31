@@ -98,11 +98,17 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
               }
             }
           }
+          
+          # Ignore arguments that are irrelevant or related to deprecated code
+          ArgNames2Ignore = c("f0", "f1", "studyname", "datadir", 
+            "outputdir", "do.report", "R_version",
+            "GGIR_version", "GGIRversion", "config_file", "mode",
+            "config_file_in_outputdir", "imputeTimegaps",
+            "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
+            "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
+            "isna", "tmp", "vecchar")
           # Find argument in the various parameter objects
-          if (newValue[1] != "notfound" & varName %in% c("f0", "f1", "studyname", "datadir", 
-                                                      "outputdir", "do.report", "R_version",
-                                                      "GGIR_version", "GGIRversion", "config_file", "mode",
-                                                      "config_file_in_outputdir", "imputeTimegaps") == FALSE) {
+          if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {
               params_general[[varName]] = newValue
             } else {

@@ -46,7 +46,7 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
     List, see \link{g.part1}
   }
   \item{...}{
-    To enable compatibility with R scripts written for older GGIR versions,
+    To ensure compatibility with R scripts written for older GGIR versions,
     the user can also provide parameters listed in the params_ objects as direct argument.
   }
 }
