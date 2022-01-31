@@ -82,7 +82,7 @@ remotes::install_github("wadpac/GGIR")
     - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Movisens](https://www.movisens.com/en/) with data stored in folders.
     - Genea (an accelerometer that is not commercially available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
-    - Any other accelerometer brand that generates csv output, such as [Shimmer](https://shimmersensing.com/), see function documentation for function read.myacc.csv.
+    - Any other accelerometer brand that generates csv output, see function documentation for function read.myacc.csv and the documentation for argument rmc.noise.
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
@@ -231,7 +231,30 @@ minloadcrit | 1 | params_rawdata
 printsummary | 1 | params_rawdata
 print.filename | 1 | params_general
 backup.cal.coef | 1 | params_rawdata
-*.rmc | 1 | params_raw
+rmc.noise | 1 | params_rawdata
+rmc.dec | 1 | params_rawdata
+rmc.firstrow.acc | 1 | params_rawdata
+rmc.firstrow.header | 1 | params_rawdata
+rmc.col.acc | 1 | params_rawdata
+rmc.col.temp | 1 | params_rawdata
+rmc.col.time | 1 | params_rawdata
+rmc.unit.acc | 1 | params_rawdata
+rmc.unit.temp | 1 | params_rawdata
+rmc.origin | 1 | params_rawdata
+rmc.header.length | 1 | params_rawdata
+mc.format.time | 1 | params_rawdata
+rmc.bitrate | 1 | params_rawdata
+rmc.dynamic_range | 1 | params_rawdata
+rmc.unsignedbit | 1 | params_rawdata
+rmc.desiredtz | 1 | params_rawdata
+rmc.sf | 1 | params_rawdata
+rmc.headername.sf | 1 | params_rawdata
+rmc.headername.sn | 1 | params_rawdata
+rmc.headername.recordingid | 1 | params_rawdata
+rmc.header.structure | 1 | params_rawdata
+rmc.check4timegaps | 1 | params_rawdata
+rmc.col.wear | 1 | params_rawdata
+rmc.doresample | 1 | params_rawdata
 imputeTimegaps | 1 | params_rawdata
 selectdaysfile | 1, 2 | params_cleaning
 dayborder | 1, 2, 5 | params_general
@@ -245,6 +268,7 @@ strategy | 2, 5 | params_cleaning
 hrs.del.start | 2, 5 | params_cleaning
 hrs.del.end | 2, 5| params_cleaning
 maxdur | 2, 5 | params_cleaning
+max_calendar_days | 2 | params_cleaning
 includedaycrit | 2 | params_cleaning
 L5M5window | 2 | params_247
 M5L5res | 2, 5 | params_247
@@ -323,6 +347,8 @@ LUX_cal_constant | 5 | params_247
 LUX_cal_exponent | 5 | params_247
 LUX_day_segments | 5 | params_247
 do.sibreport | 5 | params_output
+
+
 
 ### Key arguments related to sleep analysis
 
@@ -413,9 +439,9 @@ Some of the above publications make use of acceleration metrics that sum their v
 **Warning about validity in new studies**
 In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020.
 
-Studies done with ActiGraph devices when configured with 'idle sleep mode' turned on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This mistake by the ActiGraph company directly affect metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. Further, also other metrics may be affected as the sudden disappearance of gravitational acceleration will result in a spike at the start and end of the no movement period.
+Studies done with ActiGraph devices when configured with 'idle sleep mode' turned on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This problematic decision by the ActiGraph company directly impacts metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. Further, also other metrics may be affected as the sudden disappearance of gravitational acceleration will result in a spike at the start and end of the no movement period. More generally speaking, we advise ActiGraph users to disable the 'idle sleep mode' as it harms the transparancy and reproducibility of the research as the software used for this is not open source, it reduces comparability with other accelerometer brands which is bad for research harmonization, and it challenges the accurate assessment of sleep and sedentary behaviour. Further, data collected with 'idle sleep mode' should not be refered to as raw data accelerometry, as the data collection process involves proprietary pre-processing steps, which is against the philosophy of raw data collection.
 
-Several studies that aimed to independently evaluate cut-point methods seem to be failing in recognise these challenges. Therefore, it is best to interpret cut-points with caution and just as a crude boundary between intensity levels. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic zero strings in raw ActiGraph data.
+Several studies that aimed to independently evaluate cut-point methods seem to be failing at recognising these challenges. Therefore, it is best to interpret cut-points with caution that are potentially not more than crude boundary between intensity levels. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic time gaps in for example the ActiGraph when configured with 'idle sleep mode'.
 
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 

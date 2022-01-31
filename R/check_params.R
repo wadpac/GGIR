@@ -64,6 +64,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                          "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
                          "rmc.headername.sn", "rmc.headername.recordingid", 
                          "rmc.header.structure")
+    if (is.logical(params_rawdata[["rmc.noise"]])) {
+      # Older config files used this, so overwrite with NULL value
+      params_rawdata[["rmc.noise"]] = c() 
+    }
     check_class("Raw data", params = params_rawdata, parnames = numeric_params, parclass = "numeric")
     check_class("Raw data", params = params_rawdata, parnames = boolean_params, parclass = "boolean")
     check_class("Raw data", params = params_rawdata, parnames = character_params, parclass = "character")
@@ -89,7 +93,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
-                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit")
+                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit", "max_calendar_days")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
     character_params = c("selectdaysfile", "data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")

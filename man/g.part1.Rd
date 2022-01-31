@@ -62,10 +62,11 @@
    See details.
   }
   \item{...}{
-    Any input arguments needed for function \link{read.myacc.csv} if you
-    are working with a non-standard csv formatted files. To enable compatibility with R 
-    scripts written for older GGIR versions, the user can also provide parameters 
-    listed in the params_ objects as direct argument.
+    If you are working with a non-standard csv formatted files, g.part1 also takes any input
+    arguments needed for function \link{read.myacc.csv} and argument rmc.noise from
+    \link{get_nw_clip_block_params}. First test these argument with function \link{read.myacc.csv} directly.
+    To ensure compatibility with R scripts written for older GGIR versions, the user can also
+    provide parameters listed in the params_ objects as direct argument.
   }
 }
 \details{
@@ -210,7 +211,8 @@
       \item{interpolationType}{Integer to indicate type of interpolation to be used
         when resampling time series (mainly relevant for Axivity sensors),
         1=linear, 2=nearest neighbour}
-      \item{all arguments that start with "rmc.".}{see function \link{read.myacc.csv}}
+      \item{all arguments that start with "rmc.".}{see function \link{read.myacc.csv} and
+      \link{get_nw_clip_block_params}}
     }
   }   
   \subsection{params_cleaning}{
@@ -254,7 +256,8 @@
       \item{hrs.del.end}{Numeric, how many HOURS before the end of the experiment did 
         wearing of monitor definitely end? Used in GGIR part 2}
       \item{maxdur}{Numeric, How many DAYS after start of experiment did experiment
-        definitely stop? (set to zero if unknown = default). Used in GGIR part2}
+        definitely stop? (set to zero if unknown = default). Only used if \code{strategy} is
+        set to 1 or 4. Used in GGIR part2}
       \item{ndayswindow}{Numeric,  If \code{strategy} is set to 3 then this is the 
         size of the window as a number of days. Used in GGIR part2}
       \item{includedaycrit.part5}{Numeric. see \link{g.report.part5}}
@@ -263,6 +266,8 @@
         hours per day in the summary of an entire measurement, every available 
         hour is used to make the best possible inference on average metric value
         per average day)}
+        \item{max_calendar_days}{Numeric, the maximum number of calendar days to include.
+        Only used if \code{strategy} is set to 1 or 4. Used in GGIR part2}
     }
   }
    \subsection{params_general}{

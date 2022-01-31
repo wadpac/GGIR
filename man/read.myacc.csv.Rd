@@ -147,6 +147,12 @@
   }
 
 }
+\details{
+  To use this function in the context of GGIR use all arguments from this function,
+  except rmc.file, rmc.nrow, and  rmc.skip as input for function \link{g.shell.GGIR} or \link{g.part1}
+  and also specify arugment rmc.noise, which is not part of this function but needed to tell
+  GGIR what noise level to expect in the data.
+}
 \value{
   List with objects data holding the time series of acceleration, and
   header if it was available in the orignal file.

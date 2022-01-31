@@ -54,11 +54,11 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   # Check whether TimeSegments2Zero exist, because this means that the
   # user wants to ignore specific time windows. This feature is used
   # for example if the accelerometer was not worn during the night and the user wants
-  # to include the nighttime acceleration in the analeses without imputation,
+  # to include the nighttime acceleration in the analyses without imputation,
   # but wants to use imputation for the rest of the day.
   # So, those time windows should not be imputed.
   # and acceleration metrics should have value zero during these windows.
-  if (length(TimeSegments2Zero) > 0) {
+    if (length(TimeSegments2Zero) > 0) {
     r1long = matrix(0,length(r1),(ws2/ws3)) #r5long is the same as r5, but with more values per period of time
     r1long = replace(r1long,1:length(r1long),r1)
     r1long = t(r1long)
@@ -168,6 +168,16 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     starttimei = firstmidnighti
     if (firstmidnighti != 1) { #ignore everything before the first midnight
       r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
+    }
+    if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
+      r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
+    }
+    if (params_cleaning[["max_calendar_days"]] > 0) {
+      dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp,tz = desiredtz))
+      if (params_cleaning[["max_calendar_days"]] < length(unique(dates))) {
+        lastDateToInclude = sort(unique(dates))[params_cleaning[["max_calendar_days"]]]
+        r4[which(dates > lastDateToInclude)] = 1
+      }
     }
   }
   #========================================================================================
