@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.5-7 (release date:01-02-2022)}{
+\section{Changes in version 2.6-0 (release date:01-02-2022)}{
 \itemize{
     \item Fixing issue introduced in 2.5-6 release: maxNcores was not defined in part 1, params_output 
       not passed on to part 3, and params objects were unneccesarily repeatedly checked.
