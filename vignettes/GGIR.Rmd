@@ -82,7 +82,7 @@ remotes::install_github("wadpac/GGIR")
     - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Movisens](https://www.movisens.com/en/) with data stored in folders.
     - Genea (an accelerometer that is not commercially available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
-    - Any other accelerometer brand that generates csv output, see function documentation for function read.myacc.csv and the documentation for argument rmc.noise.
+    - Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and argument `rmc.noise` in the [GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
 2. All accelerometer data that needs to be analysed should be stored in one folder, or subfolders of that folder.
 3. Give the folder an appropriate name, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used later on as an identifier of the dataset.
 
@@ -128,19 +128,19 @@ print(load_params()$params_sleep)
 
 
 If you are only interested in parameter "HASIB.algo" from the sleep_params object:
-```{R,eval=TRUE}
+```{R,eval=FALSE}
 library(GGIR)
 print(load_params()$params_sleep[["HASPT.algo"]])
 ```
 
 
 
-Documentation for this parameter objects can be found in the ([GGIR pdf manual](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these are accepted as argument to function `g.shell.GGIR`, because `g.shell.GGIR` is a shell around all GGIR functionality. However, the `params_` objects themselves can not be provided as input to `g.shell.GGIR`.
+Documentation for this parameter objects can be found in the ([GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these are accepted as argument to function `g.shell.GGIR`, because `g.shell.GGIR` is a shell around all GGIR functionality. However, the `params_` objects themselves can not be provided as input to `g.shell.GGIR`.
 
 
 ### Key general arguments
 
-You will probably never need to think about most of the arguments listed above, because a lot of arguments are only included to facilitate methodological studies where researchers want to have control over every little detail.
+You will probably never need to think about most of the arguments listed above, because a lot of arguments are only included to facilitate methodological studies where researchers want to have control over every little detail. See previous paragraph for links to the documentation and how to find the default value of each parameter.
 
 The bare minimum input needed for `g.shell.GGIR` is:
 
@@ -173,10 +173,9 @@ Below we have highlighted the key arguments you may want to be aware of. We are 
 - `do.report` - specify reports that need to be generated.
 - `viewingwindow` and `visualreport` - to create a visual report, this only works when all five parts of GGIR have successfully run.
 
-### Arguments from the individual parts and in which parameter object they are stored
+### Input arguments overview
 
-The table below shows arguments in GGIR, the GGIR part they are used in, and the parameter object they belong too.
-Note that a few parameters are not part of an parameter object.
+The table below shows all GGIR input arguments, the GGIR part (1, 2, 3, 4 and/or 5) they are used in, and the parameter object they belong too. As you will see a few parameters are not part of any parameter object. Their default values can be found in the [GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
 
 Argument (parameter) | Used in GGIR part | Parameter object
 -------------------- | ------------ | ----------------------
@@ -187,11 +186,11 @@ windowsizes | 1, 5 | params_general
 desiredtz | 1, 2, 3, 4, 5 | params_general
 overwrite | 1, 2, 3, 4, 5 | params_general
 do.parallel | 1, 2, 3, 5 | params_general
-myfun | 1, 2, 3 | not in parameter objects
 maxNcores | 1, 2, 3, 5 | params_general
+myfun | 1, 2, 3 | not in parameter objects
 outputdir | 1 | not in parameter objects
-chunksize | 1 | params_rawdata
 studyname | 1 | not in parameter objects
+chunksize | 1 | params_rawdata
 do.enmo | 1 | params_metrics
 do.lfenmo | 1 | params_metrics
 do.en | 1 | params_metrics
@@ -434,14 +433,7 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 - If you are aware of any additional publications then let us know.
 
 **Acceleration metric not available in GGIR?**
-Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. However, no need to worry: Those metrics are effectively the same as the metrics included in GGIR but sum rather than average their raw values per epoch. So, to use their cut-point we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant.
-
-**Warning about validity in new studies**
-In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020.
-
-Studies done with ActiGraph devices when configured with 'idle sleep mode' turned on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This problematic decision by the ActiGraph company directly impacts metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. Further, also other metrics may be affected as the sudden disappearance of gravitational acceleration will result in a spike at the start and end of the no movement period. More generally speaking, we advise ActiGraph users to disable the 'idle sleep mode' as it harms the transparancy and reproducibility of the research as the software used for this is not open source, it reduces comparability with other accelerometer brands which is bad for research harmonization, and it challenges the accurate assessment of sleep and sedentary behaviour. Further, data collected with 'idle sleep mode' should not be refered to as raw data accelerometry, as the data collection process involves proprietary pre-processing steps, which is against the philosophy of raw data collection.
-
-Several studies that aimed to independently evaluate cut-point methods seem to be failing at recognising these challenges. Therefore, it is best to interpret cut-points with caution that are potentially not more than crude boundary between intensity levels. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic time gaps in for example the ActiGraph when configured with 'idle sleep mode'.
+Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point value we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant.
 
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
@@ -485,6 +477,20 @@ Several studies that aimed to independently evaluate cut-point methods seem to b
 
 -	Use default setting do.enmo= TRUE, acc.metric=”ENMO”
 -	Use the cut-points as provided by Hildebrand directly. No need for scaling.
+
+#### Notes on cut-point validity and 'validation' studies
+
+**Sensor calibration**
+
+In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020.
+
+**Idle sleep mode and ActiGraph**
+
+Studies done with ActiGraph devices when configured with 'idle sleep mode' on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This directly impacts metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. However, also other metrics may be affected as the sudden disappearance of gravitational acceleration will cause a spike at the start and end of the non-movement time segment. More generally speaking, we advise ActiGraph users to disable the 'idle sleep mode' as it harms the transparency and reproducibility since no mechanism exists to replicate it in other accelerometer brands, and it is likely to challenge accurate assessment of sleep and sedentary behaviour. We also advise that data collected with 'idle sleep mode' turned on is not be referred to as raw data accelerometry, because the data collection process has involved proprietary pre-processing steps which is violates the core principle of raw data collection.
+
+**Validity of validation studies**
+
+Several studies that aimed to independently evaluate cut-point methods failed at recognising these challenges. Further, validation studies are typically limited to laboratory conditions and a small population. Therefore, it is best to interpret cut-points with caution. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic time gaps in for example the ActiGraph when configured with 'idle sleep mode'.
 
 
 ### Example call
@@ -878,8 +884,8 @@ IN2MVPA | Inactivity fragments followed by MVPA
 alpha | Power law exponent
 `x0.5` | Derived from power law exponent alpha, see [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
 `W0.5` | Derived from power law exponent alpha, see [Chastin et al. 2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
-nap_count | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps`.
-nap_totalduration | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps`.
+nap_count | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
+nap_totalduration | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
 
 **Special note if you are working on compositional data analysis:**
 
@@ -1149,7 +1155,7 @@ GGIR offers a range of acceleration metrics to choose from, but only one metric 
 2.	ENMO is easy to describe mathematically and by that improves reproducibility across studies and software tools
 3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units.
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as MIMSunit, MAD, AI0.
-5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with. See also paragraph: [Published cut-points and how to use them]([#Published cut-points and how to use them).
+5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with. See for a more detailed discussion on this the paragraph: [Published cut-points and how to use them]([#Published cut-points and how to use them).
 
 See also [this](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) blog post on this topic.
 
@@ -1188,6 +1194,9 @@ If you used the **sleep detection without relying on sleep diary** then also cit
 
 6. van Hees VT, Sabia S, et al. Estimating sleep parameters using an accelerometer without sleep diary. Scientific Reports 2018. doi: 10.1038/s41598-018-31266-z. [link](https://www.nature.com/articles/s41598-018-31266-z)
 
+If you used the **sleep regularity index** then also cite:
+
+7. Andrew J. K. Phillips, William M. Clerx, et al. Irregular sleep/wake patterns are associated with poorer academic performance and delayed circadian and sleep/wake timing. Scientific Reports. 2017 June 12 [link](https://www.nature.com/articles/s41598-017-03171-4).
 
 ## Copyright for GGIR logo
 The copyright of the GGIR logo lies with Accelting (Almere, The Netherlands), please contact v.vanhees@acceleting.com to ask for permission to use this logo.
