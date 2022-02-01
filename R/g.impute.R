@@ -99,9 +99,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         r4[1:length(r4)] = 1
       }
     }
-    if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
-      r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
-    }
+    
     if (LD < 1440) {
       r4 = r4[1:floor(LD/(ws2/60))]
     }
@@ -169,15 +167,19 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     if (firstmidnighti != 1) { #ignore everything before the first midnight
       r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
     }
-    if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
-      r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
-    }
-    if (params_cleaning[["max_calendar_days"]] > 0) {
-      dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp,tz = desiredtz))
-      if (params_cleaning[["max_calendar_days"]] < length(unique(dates))) {
-        lastDateToInclude = sort(unique(dates))[params_cleaning[["max_calendar_days"]]]
-        r4[which(dates > lastDateToInclude)] = 1
-      }
+    
+    
+  }
+  # Mask data based on maxdur
+  if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
+    r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
+  }
+  # Mask data based on max_calendar_days
+  if (params_cleaning[["max_calendar_days"]] > 0) {
+    dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp,tz = desiredtz))
+    if (params_cleaning[["max_calendar_days"]] < length(unique(dates))) {
+      lastDateToInclude = sort(unique(dates))[params_cleaning[["max_calendar_days"]]]
+      r4[which(dates > lastDateToInclude)] = 1
     }
   }
   #========================================================================================

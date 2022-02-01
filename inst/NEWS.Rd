@@ -3,8 +3,11 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.5-7 (release date:03-02-2022)}{
 \itemize{
-  \item Fixing issue introduced in 2.5-6 release: maxNcores was not defined in part 1, params_output not passed on to part 3, and params objects were unneccesarily repeatedly checked.
-  \item Part 2: Added argument max_calendar_days to allow user to control the maximum number of calendar days.
+  \item Fixing issue introduced in 2.5-6 release: maxNcores was not defined in part 1, params_output 
+    not passed on to part 3, and params objects were unneccesarily repeatedly checked.
+  \item Part 2: Added argument max_calendar_days to allow user to control the maximum number of calendar days, 
+    irrespective of value of argument strategy.
+  \item Part 2: Argument maxdur is not longer specific to strategy 1, but applied for all strategies.
   \item Part 1: Fixed warning when working with a vector of filenames as argument to datadir.
   }
 }
