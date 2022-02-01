@@ -77,6 +77,8 @@
   parameter values. Further, as user you can set parameter values as input argument to both g.part1
   and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
   
+  See the GGIR package vignette for a more elaborate overview of parameter objects and their usage across GGIR.
+  
   GGIR part 1 (g.part1) takes the following parameter objects as input:
   
   \subsection{params_metrics}{
@@ -155,7 +157,7 @@
       \item{hb}{Numeric, higher boundary of the frequency filter (in Hertz) as
         used in the filter-based metrics.}
       \item{n}{Numeric, order of the frequency filter as used in a variety of metrics.}
-   }
+    }
   }
   
   \subsection{params_rawdata}{

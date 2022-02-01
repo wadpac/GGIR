@@ -68,6 +68,8 @@
   parameter values. Further, as user you can set parameter values as input argument to both g.part2
   and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
   
+  See the GGIR package vignette for a more elaborate overview of parameter objects and their usage across GGIR.
+  
   The parameter objects used by GGIR part 2 (g.part2) that are no already discussed in
   \link{g.part1} are:
   

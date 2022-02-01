@@ -306,12 +306,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           sleeplog_used = FALSE
           if (dolog == TRUE) {
             if (is.na(sleeplog[wi[j], 3]) == FALSE) {
-              # length(wi) > 0 &
               #-----------------------------------------------------------
               # If sleep log is available for a specific night then use it
               sleeplog_used = TRUE
-              cleaningcode = 0
-              guider = "sleeplog"
             }
           }
           if (sleeplog_used == FALSE) {
@@ -377,11 +374,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             } else {
               logdur[i] = SptWake - SptOnset
             }
+            cleaningcode = 0
+            guider = "sleeplog"
           } else {
             SptOnset = defaultSptOnset  #use default assumption about onset
             SptWake = defaultSptWake + 24  #use default assumption about wake
             logdur[i] = SptWake - SptOnset
-            cleaningcode = 1  # no diary available for this night
+            cleaningcode = 1  # no diary available for this night, so fall back on detaults
           }
           #-----------------------------------------
           # plan analysis according to knowledge about whether it is a daysleeper or not if you

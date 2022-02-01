@@ -58,6 +58,8 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
   parameter values. Further, as user you can set parameter values as input argument to both g.part3
   and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
   
+  See the GGIR package vignette for a more elaborate overview of parameter objects and their usage across GGIR.
+  
   The parameter objects used by GGIR part 3 (g.part3) that are no already discussed in
   \link{g.part1} or \link{g.part2} are:
   

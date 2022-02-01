@@ -1,10 +1,10 @@
-g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
+g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                      sleeplogidnum=TRUE,  sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
   dateformat_correct = "%Y-%m-%d" # set default value
   #===============================
   # Load sleep log data...
-  S = read.csv(loglocation, sep=sleeplogsep, stringsAsFactors = FALSE)
+  S = read.csv(loglocation, sep = sleeplogsep, stringsAsFactors = FALSE)
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S))) > 0
   if (advanced_sleeplog ==  TRUE) {
@@ -12,13 +12,13 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
       getIDstartdate = function(x) {
         rec_starttime = ID = c()
         load(x)
-        invisible(list(ID=ID,rec_starttime=rec_starttime))
+        invisible(list(ID = ID, rec_starttime = rec_starttime))
       }
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
-      startdates = data.table::rbindlist(startdates, fill=TRUE)
+      startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
-      if (sleeplogidnum==TRUE) {
+      if (sleeplogidnum == TRUE) {
         startdates$ID = as.numeric(startdates$ID)
       }
     } else {
@@ -29,7 +29,7 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
     cat("\nCould not read sleeplog file, check that file path is correct.")
     cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
   } else {
-    if (nrow(S) ==0 | ncol(S) <= 2) {
+    if (nrow(S) == 0 | ncol(S) <= 2) {
       cat("\nCould not read sleeplog file. Does it have at least 3 columns and comma seperated values?")
       cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
     }
@@ -179,8 +179,8 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
   sleeplog_times = matrix(" ",(nrow(S)*nnights),2)
   cnt = 1
   for (i in 1:nnights) { #loop through nights
-    SL = as.character(S[,coln1+((i-1)*2)])
-    WK = as.character(S[,coln1+((i-1)*2)+1])
+    SL = as.character(S[,coln1 + ((i - 1) * 2)])
+    WK = as.character(S[,coln1 + ((i - 1) * 2) + 1])
     # Check whether any correction need to be made to the sleep log:
     for (j in 1:length(SL)) { #loop through participant
       idtmp = S[j,colid]
@@ -189,8 +189,8 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
         WKN = as.numeric(unlist(strsplit(WK[j],":")))
         if (length(SLN) == 2) SLN = c(SLN,0) #add seconds when they are not stored
         if (length(WKN) == 2) WKN = c(WKN,0) #add seconds when they are not stored
-        SL[j] = paste(SLN[1],":",SLN[2],":",SLN[3],sep="")
-        WK[j] = paste(WKN[1],":",WKN[2],":",WKN[3],sep="")
+        SL[j] = paste0(SLN[1], ":", SLN[2], ":", SLN[3])
+        WK[j] = paste0(WKN[1], ":", WKN[2], ":", WKN[3])
         SLN2 = SLN[1] * 3600 + SLN[2] * 60 + SLN[3]
         WKN2 = WKN[1] * 3600 + WKN[2] * 60  + WKN[3]
         if (WKN2 > SLN2) { #e.g. 01:00 - 07:00
@@ -218,16 +218,16 @@ g.loadlog = function(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
   }
   # delete id-numbers that are unrecognisable
   if (length(which(sleeplog[,1] == 0))) {
-    print(paste("N deleted because unrecognisable ID number: ",length(which(sleeplog[,1] == 0))),sep="")
+    print(paste0("N deleted because unrecognisable ID number: ",length(which(sleeplog[,1] == 0))))
     sleeplog = sleeplog[-c(which(sleeplog[,1] == 0)),]
     sleeplog_times = sleeplog_times[-c(which(sleeplog[,1] == 0)),]
   }
-  sleeplog= as.data.frame(sleeplog, stringsAsFactors = FALSE)
+  sleeplog = as.data.frame(sleeplog, stringsAsFactors = FALSE)
   names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]
   # keep only the non-empty rows as they can only lead to confusion later on
   sleeplog = sleeplog[which(is.na(sleeplog$duration) == FALSE),]
-  invisible(list(sleeplog=sleeplog, nonwearlog=nonwearlog, naplog=naplog, 
+  invisible(list(sleeplog = sleeplog, nonwearlog = nonwearlog, naplog = naplog, 
                  dateformat = dateformat_correct))
 }

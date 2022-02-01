@@ -865,7 +865,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
-                                              fnames.ms3[i],"_", j, ".", params_output[["save_ms5raw_format"]])
+                                              gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin", 
+                                                   replacement = "", x = tolower(fnames.ms3[i])),
+                                              "_", j, ".", params_output[["save_ms5raw_format"]])
+                    
+                    
+                    
+                    
                     # save time series to csv files
                     if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
                       napNonwear_col = "nap1_nonwear2"
