@@ -134,7 +134,6 @@ print(load_params()$params_sleep[["HASPT.algo"]])
 ```
 
 
-
 Documentation for this parameter objects can be found in the ([GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these are accepted as argument to function `g.shell.GGIR`, because `g.shell.GGIR` is a shell around all GGIR functionality. However, the `params_` objects themselves can not be provided as input to `g.shell.GGIR`.
 
 
@@ -1155,7 +1154,7 @@ GGIR offers a range of acceleration metrics to choose from, but only one metric 
 2.	ENMO is easy to describe mathematically and by that improves reproducibility across studies and software tools
 3.	ENMO attempts to quantify the actual biomechanical acceleration in universal units.
 4.  The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as MIMSunit, MAD, AI0.
-5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with. See for a more detailed discussion on this the paragraph: [Published cut-points and how to use them]([#Published cut-points and how to use them).
+5.  Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with. See for a more detailed discussion on this the paragraph: [Published cut-points and how to use them](#Published cut-points and how to use them).
 
 See also [this](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) blog post on this topic.
 
