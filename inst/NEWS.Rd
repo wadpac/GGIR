@@ -1,29 +1,26 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-0 (release date:01-02-2022)}{
+\section{Changes in version 2.6-0 (release date:02-02-2022)}{
 \itemize{
-    \item Fixing issue introduced in 2.5-6 release: maxNcores was not defined in part 1, params_output 
-      not passed on to part 3, and params objects were unneccesarily repeatedly checked.
     \item Part 1: Fixed warning when working with a vector of filenames as argument to datadir.
     \item Part 2: Added argument max_calendar_days to allow user to control the maximum number of calendar days
       to include in analysis, irrespective of argument strategy value.
-    \item Part 2: Argument maxdur is not longer specific to strategy 1, but applied for all strategies.
-    \item Part 4: Fixed sleeplog indicated as guider even when sleeplog entry cannot resolve to timestamps.
-    \item Part 5: Time series output filenames now auto-stripped from [.]|rdata|csv|cwa|gt3x|bin
+    \item Part 2: Argument maxdur is no longer specific to strategy 1, but applied irrespective of value of argument strategy.
+    \item Part 4: Fixed issue that sleeplog is indicated as the guider even when when corresponding timestamp cannot resolve to timestamp.
+    \item Part 5: Time series output filenames now auto-stripped from [.]|rdata|csv|cwa|gt3x|bin character string.
+    \item Fixed issues introduced in 2.5-6 release: maxNcores was not defined in part 1, params_output and not passed on to part 3, and params objects were unneccesarily repeatedly checked.
   }
 }
 \section{Changes in version 2.5-6 (GitHub-only-release date:18-01-2022)}{
 \itemize{
-  \item Internal re-structuring: Arguments are now internally passed via parameter objects to 
-    make code and code documentation easier to navigate. This new structure preserve backward 
-    compatibility with the user's older R scripts.
+  \item Internal re-structuring: Arguments are now internally passed via parameter objects to make code and code documentation easier to navigate. This should not break backward compatibility and users should be able to continue working with their older R scripts.
   }
 }
 \section{Changes in version 2.5-5 (GitHub-only-release date:18-01-2022)}{
 \itemize{
-  \item Fixed bug #484 affecting part 5 report not being able to generated because non-matching columns in milestone data
-  \item Part 2: BrondCounts and ZeroCrosssing Counts no long auto-scaled by 1000 like all the other metrics.
+  \item Fixed bug #484 affecting part 5 report not being able to generate because non-matching columns in milestone data
+  \item Part 2: Recently introduced BrondCounts and ZeroCrosssing Counts no long auto-scaled by 1000 like all the other metrics as these are not in gravity-units.
   \item Part 3: Fixed warning when SRI is calculated on DST day with 23 hours
   \item Part 5: sibreport and timeseries now stored per sib definition.
 }
@@ -31,13 +28,13 @@
 \section{Changes in version 2.5-4 (GitHub-only-release date:11-01-2022)}{
   \itemize{
     \item Part 1: Now able to process modern .gt3x data with thanks to R package read.gt3x.
-    \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed.
-    \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it.
+    \item Part 1: Timegaps and zeros across all three axes in ActiGraph data (.csv and .gt3x) now automatically imputed by last recorded value normalise to vector of 1.
+    \item Adding BrondCounts as optional acceleration metric and dependency on activityCounts, and enabling Sadeh and Galland algorithms to use it for sleep estimation.
   }
 }
 \section{Changes in version 2.5-3 (GitHub-only-release date:23-12-2021)}{
   \itemize{
-    \item Part 1: Depricating function g.metric as its functionality has been taken over by g.applymetrics.
+    \item Part 1: Deprecating function g.metric as its functionality has been taken over by g.applymetrics (this has been announced to its users with a warning for over a year now).
     \item Part 2: Adding warning when ID cannot be extracted from file based on argument idloc.
     \item Part 4: Empty or incomplete sleeplog rows now better ignored
     \item Part 4: No longer an R warning is given when ID is missing in sleeplog, because this is common and user can already see it in csv reports.
