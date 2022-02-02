@@ -4,8 +4,7 @@
 \section{Changes in version 2.6-0 (release date:02-02-2022)}{
 \itemize{
     \item Part 1: Fixed warning when working with a vector of filenames as argument to datadir.
-    \item Part 2: Added argument max_calendar_days to allow user to control the maximum number of calendar days
-      to include in analysis, irrespective of argument strategy value.
+    \item Part 2: Added argument max_calendar_days to allow user to control the maximum number of calendar days to include in analysis, irrespective of argument strategy value.
     \item Part 2: Argument maxdur is no longer specific to strategy 1, but applied irrespective of value of argument strategy.
     \item Part 4: Fixed issue that sleeplog is indicated as the guider even when when corresponding timestamp cannot resolve to timestamp.
     \item Part 5: Time series output filenames now auto-stripped from [.]|rdata|csv|cwa|gt3x|bin character string.
