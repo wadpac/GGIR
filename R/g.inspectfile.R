@@ -15,11 +15,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   input = list(...)
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
-      txt = paste(names(input)[i],"=",input[i],sep="")
+      txt = paste0(names(input)[i], "=", input[i])
       if (class(unlist(input[i])) == "character") {
-        txt = paste(names(input)[i],"='",unlist(input[i]),"'",sep="")
+        txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
       }
-      eval(parse(text=txt))
+      eval(parse(text = txt))
     }
   }
   # Although also documented in the package manuel files, here 
@@ -35,8 +35,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
-  getbrand = function(filename=c(),datafile=c()) {
-    sf = c(); isitageneactive = c();  isitagenea = c();  mon = c();dformat = c() #generating empty variables
+  getbrand = function(filename = c(), datafile = c()) {
+    sf = c(); isitageneactive = c();  isitagenea = c();  mon = c(); dformat = c() #generating empty variables
     tmp1 = unlist(strsplit(filename,"[.]cs"))
     tmp2 = unlist(strsplit(filename,"[.]b"))
     tmp3 = unlist(strsplit(filename,"[.]w"))
@@ -45,8 +45,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     tmp6 = unlist(strsplit(filename,"[.]gt"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
-      testcsv = read.csv(datafile,nrow=10,skip=10)
-      testcsvtopline = read.csv(datafile,nrow=2,skip=1)
+      testcsv = read.csv(datafile, nrow = 10, skip = 10)
+      testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
       if (ncol(testcsv) == 2 & ncol(testcsvtopline) < 4) { #it is a geneactivefile
         mon = 2
       } else if (ncol(testcsv) >= 3 & ncol(testcsvtopline) < 4) {	#it is an actigraph file
@@ -78,7 +78,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
-      suppressWarnings(try(expr={isitageneactive = GENEAread::header.info(binfile=datafile, more = F)},silent=TRUE))
+      suppressWarnings(try(expr = {isitageneactive = GENEAread::header.info(binfile = datafile, more = F)}, silent = TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
@@ -89,7 +89,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
         if (length(tmp2) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp2[1])
-          sf = sf + (as.numeric(tmp2[2]))/10
+          sf = sf + (as.numeric(tmp2[2])) / 10
         } else { #decimals seperated by dot
           sf = as.numeric(tmp[1])
         }
@@ -113,8 +113,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           #also try to read sf from first page header
           sf_r = sf
           csvr = c()
-          suppressWarnings(expr={
-            try(expr={csvr = as.matrix(read.csv(datafile,nrow=10,skip=200,sep=""))},silent=TRUE)
+          suppressWarnings(expr = {
+            try(expr = {csvr = as.matrix(read.csv(datafile, nrow = 10,
+                                                  skip = 200, sep = ""))
+            }, silent = TRUE)
           })
           if (length(csvr) > 1) {
             for (ii in 1:nrow(csvr)) {
@@ -145,7 +147,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
       if (mon == 2) {
-        tmp = read.csv(datafile,nrow=50,skip=0)
+        tmp = read.csv(datafile, nrow = 50, skip = 0)
         sf = as.character(tmp[which(as.character(tmp[,1]) == "Measurement Frequency"),2])
         tmp = as.numeric(unlist(strsplit(sf," "))[1])
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
@@ -165,7 +167,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         tmp5 = unlist(strsplit(tmp3,","))
         if (length(tmp5) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp5[1])
-          sf = sf + (as.numeric(tmp5[2]))/10
+          sf = sf + (as.numeric(tmp5[2])) / 10
         } else { #decimals seperated by dot
           sf = as.numeric(tmp3[1])
         }
@@ -202,9 +204,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   if (length(params_rawdata[["rmc.firstrow.acc"]]) == 1) {
     dformat = 5
     mon = 0
-    Pusercsvformat = read.myacc.csv(rmc.file=datafile,
-                                    rmc.nrow=5,
-                                    rmc.dec=params_rawdata[["rmc.dec"]],
+    Pusercsvformat = read.myacc.csv(rmc.file = datafile,
+                                    rmc.nrow = 5,
+                                    rmc.dec = params_rawdata[["rmc.dec"]],
                                     rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
                                     rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
                                     rmc.header.length = params_rawdata[["rmc.header.length"]],
