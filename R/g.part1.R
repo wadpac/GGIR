@@ -151,6 +151,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     ffdone = c()
   }
   fnames = sort(fnames)
+  fnamesfull = sort(fnamesfull)
   
   #=========================================================
   # Declare core functionality, which at the end of this g.part1 is either
@@ -162,11 +163,12 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     if (params_general[["print.filename"]] == TRUE) {
       cat(paste0("\nFile name: ",fnames[i]))
     }
-    if (filelist == TRUE) {
-      datafile = as.character(fnamesfull[i])
-    } else {
-      datafile = paste0(datadir,"/",fnames[i])
-    }
+    # if (filelist == TRUE) {
+    datafile = as.character(fnamesfull[i])
+    # } else {
+    #   # datafile = paste0(datadir,"/",fnames[i])
+    #   datafile = fnamesfull[i] #paste0(datadir,"/",fnames[i])
+    # }
     #=========================================================
     #check whether file has already been processed
     #by comparing filename to read with list of processed files

@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6-1 (release date:??-??-2022)}{
+\itemize{
+    \item Part 1: Fixed bug that prohibitted processing files in subfolders.
+  }
+}
 \section{Changes in version 2.6-0 (release date:02-02-2022)}{
 \itemize{
     \item Part 1: Fixed warning when working with a vector of filenames as argument to datadir.
