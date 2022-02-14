@@ -254,6 +254,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
   } else { 
     for (i in f0:f1) {
+      cat(paste0(i, " "))
       main_part2(i, ffdone, fnames, metadatadir, 
                  myfun, params_cleaning, params_247,
                  params_phyact, params_output, params_general,

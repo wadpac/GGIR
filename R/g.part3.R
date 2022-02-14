@@ -167,6 +167,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
     }
   } else {
     for (i in f0:f1) {
+      cat(paste0(i, " "))
       main_part3(i, metadatadir, f0, f1, myfun, 
                  params_sleep, params_metrics, 
                  params_output,
