@@ -123,7 +123,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   # Check value combinations and apply corrections if not logical
   if (length(params_metrics) > 0 & length(params_metrics) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      params_sleep[["HASPT.algo"]] = "HDCZA"
       if (params_sleep[["HASPT.algo"]] != "HorAngle") {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
