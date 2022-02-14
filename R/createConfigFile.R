@@ -3,17 +3,15 @@ createConfigFile = function(config.parameters = c()) {
     stop("Configuration parameters not be found.")
   }
   out = matrix("",length(config.parameters)+2,3)
-  out[,3] = "General parameters" # default
   possible_params_objectnames = c("params_247", "params_cleaning", "params_general",
                                   "params_metrics", "params_output",
                                   "params_phyact", "params_rawdata", "params_sleep")
   for (i in 1:length(config.parameters)) {
     NM = names(config.parameters)[i]
-    out[i,1] = NM
     if (NM %in% possible_params_objectnames) {
       # Replace NULL values before converting to data.frame
       config.parameters[[i]] <- lapply(config.parameters[[i]], lapply, function(x)ifelse(is.null(x), "c()", x))
-      Value = as.data.frame(t(data.frame(t(sapply(config.parameters[[i]],c)))))
+      Value = as.data.frame(t(data.frame(t(sapply(config.parameters[[i]],c)), stringsAsFactors = FALSE)))
       Value$col1 = row.names(Value)
       Value$col3 = NM
       Value = Value[,c("col1", "V1", "col3")]
@@ -31,10 +29,10 @@ createConfigFile = function(config.parameters = c()) {
                    no =  x)
         return(x)
       }
-      Value$V1 <- lapply(Value$V1, myfun)
-      
-      out = rbind(out, Value) # append to the end
+      Value$V1 <- as.character(lapply(Value$V1, myfun))
+      out = rbind(out, as.matrix(Value)) # append to the end
     } else {
+      out[i,1] = NM
       Value = config.parameters[[i]]
       if (length(Value) == 0) {
         Value = 'c()'
@@ -43,7 +41,7 @@ createConfigFile = function(config.parameters = c()) {
         Value = paste0("c(",paste(Value,collapse = ","),")")
       }
       if (is.function(Value) == FALSE | is.list(Value) == FALSE) {
-        out[i,2] = Value
+        out[i,2] = as.character(Value)
       } else {
         out[i,2] = 'c()' # function or list objects are not stored in the config file, the user will have to provide these explicitely
       }
@@ -87,6 +85,7 @@ createConfigFile = function(config.parameters = c()) {
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
   out[nrow(out) - 1,] = c("GGIR_version", GGIRversion, " not applicable")
   out[nrow(out),] = c("R_version", SI$R.version$version.string, " not applicable")
+  out = out[which(!is.na(out[,1])),]
   out = as.data.frame(out, stringsAsFactors = TRUE)
   row.names(out) <- NULL
   colnames(out) = c("argument","value","context")

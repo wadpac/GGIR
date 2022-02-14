@@ -4,6 +4,8 @@
 \section{Changes in version 2.6-1 (release date:??-??-2022)}{
 \itemize{
     \item Part 1: Fixed bug that prohibitted processing files in subfolders.
+    \item Part 5: Improved handling of missing first night
+    \item General: Fix bug introduced in 2.6-0 relating to storage of configuration file on comma-separated machines
   }
 }
 \section{Changes in version 2.6-0 (release date:02-02-2022)}{

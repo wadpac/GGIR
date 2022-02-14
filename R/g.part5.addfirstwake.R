@@ -66,6 +66,7 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
       # the final option if neither of the above routes works
       wake_night1_index = (firstwake - (24* ((60/ws3new)*60))) + 1
     }
+    if (is.na(wake_night1_index)) wake_night1_index = 0
     if (wake_night1_index < firstwake & wake_night1_index > 1 & (wake_night1_index-1) > nightsi[1]) {
       ts$diur[nightsi[1]:(wake_night1_index-1)] = 1
     } else {
