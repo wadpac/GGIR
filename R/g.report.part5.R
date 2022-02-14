@@ -96,7 +96,7 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
     usleepparam = as.character(unique(outputfinal$sleepparam))
     # replace NaN by empty cell value
     for (kra in 1:ncol(outputfinal)) {
-      krad = which(as.character(outputfinal[,kra]) == "NaN")
+      krad = which(is.nan(outputfinal[,kra]) == TRUE)
       if (length(krad) > 0) {
         outputfinal[krad,kra] = ""
       }
