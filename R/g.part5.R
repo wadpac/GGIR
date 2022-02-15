@@ -1017,6 +1017,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     }
   } else {
     for (i in f0:f1) {
+      cat(paste0(i, " "))
       main_part5(i, metadatadir, f0, f1,
                  params_sleep, params_metrics,
                  params_247, params_phyact,

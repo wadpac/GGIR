@@ -466,6 +466,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }
   } else { # simple loop to process files serially file by file
     for (i in f0:f1) {
+      cat(paste0(i, " "))
       main_part1(i, params_metrics, params_rawdata,
                  params_cleaning, params_general, datadir, fnames, fnamesfull,
                  outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,

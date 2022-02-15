@@ -374,8 +374,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             } else {
               logdur[i] = SptWake - SptOnset
             }
-            cleaningcode = 0
-            guider = "sleeplog"
+            if (sleeplog_used == TRUE) {
+              cleaningcode = 0
+              guider = "sleeplog"
+            }
           } else {
             SptOnset = defaultSptOnset  #use default assumption about onset
             SptWake = defaultSptWake + 24  #use default assumption about wake
