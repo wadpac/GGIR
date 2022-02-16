@@ -97,14 +97,34 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     }
   }
   # IS and IV variables
-  fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight
-  lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
-  # By using the metahosrt from the IMP we do not need to ignore segments, because data imputed
+  fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight because we need full calendar days to compare
+  lmn = (midnightsi[length(midnightsi)] * (ws2/ws3)) - 1
+  # By using the metashort from the IMP we do not need to ignore segments, because data imputed
   Xi = IMP$metashort[fmn:lmn, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
-  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
-                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]], IVIS.activity.metric = params_247[["IVIS.activity.metric"]])
+  # IV IS
+  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, 
+                   IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
+                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
+                   IVIS.activity.metric = params_247[["IVIS.activity.metric"]])
   InterdailyStability = IVISout$InterdailyStability
   IntradailyVariability = IVISout$IntradailyVariability
+  rm(Xi)
+  
+  #----------------------------------
+  # (Extended) Cosinor analysis
+  # Re-derive Xi but this time include entire time series
+  Xi = IMP$metashort[, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+  # # set non-wear to missing values, because for Cosinor fit
+  # # it seems more logical to only fit with real data
+  # if (length(which(qcheck == 1)) > 0) {
+  #   is.na(Xi[which(qcheck == 1)]) = TRUE
+  # }
+  timeOffsetHours = ((firstmidnighti * (ws2 / ws3)) - 1) / (3600 / ws3)
+  cosinor_output = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
+  # TO DO: Integrate result in GGIR part 2 output
+  
+  
+  
   invisible(list(InterdailyStability = InterdailyStability,
                  IntradailyVariability = IntradailyVariability, 
                  igfullr_names = igfullr_names,
