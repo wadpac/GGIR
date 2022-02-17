@@ -14,7 +14,7 @@
 \arguments{
   \item{HASIB.algo}{
     Character to indicator which sib algorithm should be used.
-    Default value: "vanHees2015". Other options: "Sadeh1994", "Galland2012"
+    Default value: "vanHees2015". Other options: "Sadeh1994", "Galland2012", "ColeKripke1992"
   }
   \item{anglethreshold}{
     See \link{g.sib.det}

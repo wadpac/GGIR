@@ -6,6 +6,11 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     select = seq(1, length(x2), by = 60/epochsize)
     x3 = diff(x2[select])
   }
+  sumPer30Sec = function(x, epochsize) {
+    x2 = cumsum(c(0, x))
+    select = seq(1, length(x2), by = 30/epochsize)
+    x3 = diff(x2[select])
+  }
   create_rollfun_mat = function(x, Ncol) {
     Nz = length(x)
     # Generate matrix to ease applying rolling function
@@ -22,9 +27,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     return(x_matrix)
   }
   
-  reformat_output = function(x, time, epochsize) {
+  reformat_output = function(x, time, new_epochsize = 5, current_epochsize = 60) {
     # resample to original resolution
-    x = rep(x, each = (60/epochsize))
+    x = rep(x, each = (current_epochsize / new_epochsize))
     # resize to match length of time
     if (length(x) < length(time)) {
       x = c(x,rep(0, length(time) - length(x)))
@@ -87,6 +92,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         Countpermin = sumPerMinute(BrondCount, epochsize = epochsize)
       }
       Countpermin_matrix = create_rollfun_mat(Countpermin, Ncol = 11)
+      Countpermin_matrix = Countpermin_matrix[11:(nrow(Countpermin_matrix) - 10),]
       CalcSadehFT = function(x) {
         MeanW5 = mean(x, na.rm = TRUE)
         SDlast = sd(x[6:11]) #last five in this matrix means columns 6:11
@@ -102,15 +108,59 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       colnames(SadehFT) = c("MeanW5", "SDlast", "NAT", "LOGact")
       # apply Sadeh algorithm
       PS = 7.601 - (0.065 * SadehFT$MeanW5) - (1.08 * SadehFT$NAT) - (0.056 * SadehFT$SDlast) - (0.703 * SadehFT$LOGact)
+      PS = c(rep(-2, 5), PS) # add five zeros because first 5 epochs are not classified by the algorithm
+      
       PSscores = rep(0, length(PS))
-      PSsibs = which(PS >= 0)
+      PSsibs = which(PS >= 0) # sleep
       if (length(PSsibs) > 0) {
-        PSscores[PSsibs] = 1
+        PSscores[PSsibs] = 1 # sleep
       }
       # resample to original resolution and ensure length matches length of time
-      sib_classification[,cti] = reformat_output(x = PSscores, time, epochsize)
+      sib_classification[,cti] = reformat_output(x = PSscores, time, new_epochsize = epochsize,
+                                                 current_epochsize = 60)
       colnames(sib_classification)[cti] = ifelse(test = count_type == "BrondCount",
-                                                 yes = paste0(HASIB.algo, "_Brond"),no=paste0(HASIB.algo, "_ZC"))
+                                                 yes = paste0(HASIB.algo, "_Brond"),
+                                                 no = paste0(HASIB.algo, "_ZC"))
+      cti = cti + 1
+    }
+  } else if (HASIB.algo == "ColeKripke1992") {
+    count_types = c()
+    if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
+    if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
+    sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
+    cti = 1
+    for (count_type in count_types) {
+      # We use the algorithm for 30 second non-overlapping epoch of activity per minute from the paper
+      # Aggregate epoch counts to 30 second epoch counts
+      # see Cole, R. J., Kripke, D. F., http://doi.org/10.1093/sleep/15.5.461
+      if (count_type == "zeroCrossingCount") {
+        Countper30Sec = sumPer30Sec(zeroCrossingCount, epochsize = epochsize)
+      } else {
+        Countper30Sec = sumPer30Sec(BrondCount, epochsize = epochsize)
+      }
+      # Convert unit to counts per minute
+      Countper30Sec = Countper30Sec * 2
+      # Prepare matrix to ease applying weighted 
+      Countper30Sec_matrix = create_rollfun_mat(Countper30Sec, Ncol = 7)
+      Countper30Sec_matrix = Countper30Sec_matrix[7:(nrow(Countper30Sec_matrix) - 6),]
+      # Apply weights
+      CKweights = c(50, 8, 121, 28, 14, 30, 50) # reversed to match order of matrix
+      PS = 0.0001 * rowSums(CKweights * Countper30Sec_matrix)
+      # Add 4 wake score because first 4 epochs are not classified by the algorithm
+      PS = c(rep(2, 4), PS) 
+      # Not applying rescoring, because accuracy improvements by Cole Kripke was marginal and
+      # by that addition of more complexity does not seem justified
+      PSscores = rep(0, length(PS))
+      PSsibs = which(PS <= 1) # sleep
+      if (length(PSsibs) > 0) {
+        PSscores[PSsibs] = 1 #sleep
+      }
+      # resample to original resolution and ensure length matches length of time
+      sib_classification[,cti] = reformat_output(x = PSscores, time, new_epochsize = epochsize,
+                                                 current_epochsize = 30)
+      colnames(sib_classification)[cti] = ifelse(test = count_type == "BrondCount",
+                                                 yes = paste0(HASIB.algo, "_Brond"),
+                                                 no = paste0(HASIB.algo, "_ZC"))
       cti = cti + 1
     }
   } else if (HASIB.algo == "Galland2012") {  
@@ -135,9 +185,11 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       WeightCounts = WeightCounts[-c(1:2)] # remove first two time stamps, to align with 5th element (7-5=2)
       GallandScore = rep(0, length(WeightCounts))
       GallandScore[which(WeightCounts < 1)] = 1
-      sib_classification[,cti] = reformat_output(x = GallandScore, time, epochsize)
+      sib_classification[,cti] = reformat_output(x = GallandScore, time, new_epochsize = epochsize,
+                                                 current_epochsize = 60)
       colnames(sib_classification)[cti] = ifelse(test = count_type == "BrondCount",
-                                                 yes = paste0(HASIB.algo, "_Brond"),no=paste0(HASIB.algo, "_ZC"))
+                                                 yes = paste0(HASIB.algo, "_Brond"),
+                                                 no = paste0(HASIB.algo, "_ZC"))
       cti = cti + 1
     }
   }

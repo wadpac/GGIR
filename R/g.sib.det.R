@@ -114,7 +114,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(anglez))
-    if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | params_sleep[["HASIB.algo"]] == "Galland2012") { # extract zeroCrossingCount
+    if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
+        params_sleep[["HASIB.algo"]] == "Galland2012" |
+        params_sleep[["HASIB.algo"]] == "ColeKripke1992") { # extract zeroCrossingCount
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
       # always do zeroCrossingCount but optionally also add BrondCounts to output for comparison
@@ -141,7 +143,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       sleep = HASIB(HASIB.algo = params_sleep[["HASIB.algo"]], 
                     timethreshold = params_sleep[["timethreshold"]],
                     anglethreshold = params_sleep[["anglethreshold"]], 
-                    time = time, anglez = anglez, ws3=ws3,
+                    time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
                     BrondCount = BrondCount)
     } else { # getSleepFromExternalFunction == TRUE

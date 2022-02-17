@@ -1,9 +1,10 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-1 (release date:??-??-2022)}{
+\section{Changes in version 2.6-1 (GitHub-only-release date:??-??-2022)}{
 \itemize{
     \item Part 1: Fixed bug that prohibitted processing files in subfolders.
+    \item Part 3: Adding ColeKripke sleep detection algorithm.
     \item Part 4: Fixed bug introduced in 2.6-0 relating to sleeplog guider being assined even when no sleeplog used.
     \item Part 5: Improved handling of missing sleep estimate for first night.
     \item General: Fix bug introduced in 2.6-0 relating to storage of configuration file on comma-separated machines
