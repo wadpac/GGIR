@@ -1,6 +1,5 @@
 g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredtz = "",
                      configtz = c(), interpolationType=1) {
-
   if (length(configtz) == 0) configtz = desiredtz
   # Credits: The code in this function was contributed by Dr. Evgeny Mirkes (Leicester University, UK)
   #========================================================================
@@ -110,12 +109,12 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       upperDeviceId = readBin(fid, integer(), size = 2, signed = FALSE) #offset 11 12
       if (upperDeviceId >= 65535) upperDeviceId = 0
       uniqueSerialCode = upperDeviceId * 65536 + lowerDeviceId
-      suppressWarnings(readChar(fid, 23, useBytes = TRUE)) #offset 13..34
-      # sensorConfig = readBin(fid, raw(), size = 1) #offset 35
+      suppressWarnings(readChar(fid, 23, useBytes = TRUE)) #offset 13..35
       # sample rate and dynamic range accelerometer
       samplerate_dynrange = readBin(fid, integer(), size = 1) #offset 36
       frequency_header = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
-      accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
+      if (samplerate_dynrange < 0) samplerate_dynrange = samplerate_dynrange + 256
+      accrange = bitwShiftR(16, (bitwShiftR(abs(samplerate_dynrange), 6)))
       suppressWarnings(readChar(fid, 4, useBytes = TRUE)) #offset 37..40
       version = readBin(fid, integer(), size = 1) #offset 41
       # Skip 982 bytes and go to the first data block
@@ -138,7 +137,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
       uniqueSerialCode = uniqueSerialCode, frequency = frequency_header,
       start = start,
       device = "Axivity", firmwareVersion = version, blocks = numDBlocks,
-      accrange = accrange, hardwareType=hardwareType
+      accrange = accrange, hardwareType = hardwareType
     )
     return(invisible(
       returnobject
@@ -227,7 +226,7 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         # modified for backwards-compatibility ... therefore undo this...
         if (bitwAnd(tsOffset, 0x8000L) != 0) {
           frequency_data = round( 3200 / bitwShiftL(1, 15 - bitwAnd(samplerate_dynrange, 15)))
-          accrange = bitwShiftR(16,(bitwShiftR(samplerate_dynrange,6)))
+          accrange = bitwShiftR(16,(bitwShiftR(abs(samplerate_dynrange),6)))
           # Need to undo backwards-compatible shim:
           # Take into account how many whole samples the fractional part
           # of timestamp accounts for:
@@ -270,7 +269,6 @@ g.cwaread = function(fileName, start = 0, end = 0, progressBar = FALSE, desiredt
         # Set names and Normalize accelerations
         if (is.na(header$accrange == TRUE)) {
           header$accrange = 8
-          # header$accrange = 8 # needed for (old) AX3 when used at non-8g setting
         }
         if (Naxes == 3) {
           colnames(data)=c("x","y","z")
