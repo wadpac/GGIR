@@ -143,8 +143,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                 OF3 = as.data.frame(OF3, stringsAsFactors = TRUE)
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
-                OF3 = round_decimals_df(OF3)
-                write.csv(OF3,paste(metadatadir,"/results/QC/part5_daysummary_full_",
+                OF3_round = round_decimals_df(OF3)
+                write.csv(OF3_round,paste(metadatadir,"/results/QC/part5_daysummary_full_",
                                     uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],
                                     "_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 # store all summaries in csv files with cleaning criteria
@@ -357,8 +357,8 @@ g.report.part5 = function(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                   OF4 = OF4[,unique(c(1:4, Nvaliddays_variables, 5:ncol(OF4)))]
                   #-------------------------------------------------------------
                   # store all summaries in csv files
-                  OF4 = round_decimals_df(OF4)
-                  write.csv(OF4,paste(metadatadir,"/results/part5_personsummary_",
+                  OF4_round = round_decimals_df(OF4)
+                  write.csv(OF4_round,paste(metadatadir,"/results/part5_personsummary_",
                                       uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],"_",usleepparam[h4],".csv",sep=""),row.names=FALSE)
                 }
               }
