@@ -207,9 +207,9 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   }
   rm(LD); rm(ID)
   # tidy up daysummary object
-  mw = which(is.na(daysummary)==T)
+  mw = which(is.na(daysummary) == T | is.nan(daysummary) == T)
   if (length(mw) > 0) {
-    daysummary[which(is.na(daysummary)==T)] = " "
+    daysummary[which(is.na(daysummary) == T | is.nan(daysummary) == T)] = " "
   }
   cut = which(ds_names == " " | ds_names == "" | is.na(ds_names)==T)
   if (length(cut > 0)) {
@@ -229,9 +229,9 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     daysummary = daysummary[,-columnswith16am[2:length(columnswith16am)]]
   }
   # tidy up filesummary object
-  mw = which(is.na(filesummary)==T)
+  mw = which(is.na(filesummary) == T | is.nan(filesummary) == T)
   if (length(mw) > 0) {
-    filesummary[which(is.na(filesummary)==T)] = " "
+    filesummary[which(is.na(filesummary) == T | is.nan(filesummary) == T)] = " "
   }
   cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | duplicated(s_names) |
                 s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_",
