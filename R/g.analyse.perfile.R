@@ -104,12 +104,11 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
                                IVIS_windowsize_minutes)
     iNA = which(is.na(filesummary[vi:(vi+3)]) == TRUE)
     if (length(iNA) > 0) filesummary[(vi:(vi+3))[iNA]] = " "
-    s_names[vi:(vi+2)] = c("IS_interdailystability","IV_intradailyvariability",
-                           "IVIS_windowsize_minutes")
+    s_names[vi:(vi+2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
     vi = vi + 4
     # Variables per metric - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:length(ds_names))
-    md = unique(which(ds_names[daytoweekvar] %in% c("measurementday", "weekday") == TRUE), grep(x = ds_names, pattern="qwindow_timestamps|qwindow_names"))
+    md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday", "qwindow_timestamps", "qwindow_names"))
     if (length(md) > 0) daytoweekvar = daytoweekvar[-md]
 
     dtwtel = 0
