@@ -1,4 +1,4 @@
-g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, selectdaysfile = c(), store.long = FALSE) {
+g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfile=c(), store.long=FALSE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -43,8 +43,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
       }
       # First load part 1 data
       M = c()
-      fname2read = paste0(path,fnames[i])
-      try(expr = {load(file = fname2read)}, silent = TRUE) #reading RData-file
+      fname2read =paste0(path,fnames[i])
+      try(expr={load(fname2read)},silent=TRUE) #reading RData-file
       if (length(M) == 0) {
         cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
       }
@@ -61,7 +61,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
-        Q = g.plot(IMP, M, I, durplot)
+        Q = g.plot(IMP,M,I,durplot)
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
@@ -79,7 +79,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
             bind_with_prev_data = function(df1, df2) {
               df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
               df1 = as.data.frame(df1)
-             return(df1)
+              return(df1)
             }
             SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
             daySUMMARY = bind_with_prev_data(daySUMMARY, SUM$daysummary)
@@ -201,35 +201,17 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
     #===============================================================================
     #now delete rows with incorrect participants
     #----------------------------------------------------
-    # Reduce number of decimals before saving reports
-    SUMMARY_num = unlist(lapply(SUMMARY, is.numeric))
-    daySUMMARY_num = unlist(lapply(daySUMMARY, is.numeric))
-    SUMMARY[SUMMARY_num] = round(x = SUMMARY[SUMMARY_num], digits = 3)
-    daySUMMARY[daySUMMARY_num] = round(x = daySUMMARY[daySUMMARY_num], digits = 3)
-    
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
-    write.csv(x = SUMMARY, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-    write.csv(x = daySUMMARY, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+    write.csv(x = round_decimals_df(SUMMARY), file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+    write.csv(x = round_decimals_df(daySUMMARY), paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
     if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
       df = g.convert.part2.long(daySUMMARY)
-      # reduce decimal numbers
-      df_num = unlist(lapply(df, is.numeric))
-      df[df_num] = round(x = df[df_num], digits = 3)
-      # store
-      write.csv(x = df, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
+      write.csv(x = round_decimals_df(df),file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {
-      # reduce decimal numbers
-      winSUMMARY_num = unlist(lapply(winSUMMARY, is.numeric))
-      winSUMMARY[winSUMMARY_num] = round(x = winSUMMARY[winSUMMARY_num], digits = 3)
-      # store
-      write.csv(winSUMMARY, paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
+      write.csv(x = round_decimals_df(winSUMMARY), file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
-    # reduce decimal numbers
-    QCout_num = unlist(lapply(QCout, is.numeric))
-    QCout[QCout_num] = round(x = QCout[QCout_num], digits = 3)
-    # store    
-    write.csv(QCout, paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
+    write.csv(x = round_decimals_df(QCout), file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
   }
 }
