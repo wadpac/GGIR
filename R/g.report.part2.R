@@ -1,4 +1,4 @@
-g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfile=c(), store.long=FALSE) {
+g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, selectdaysfile = c(), store.long = FALSE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -43,8 +43,8 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
       }
       # First load part 1 data
       M = c()
-      fname2read =paste0(path,fnames[i])
-      try(expr={load(fname2read)},silent=TRUE) #reading RData-file
+      fname2read = paste0(path,fnames[i])
+      try(expr = {load(file = fname2read)}, silent = TRUE) #reading RData-file
       if (length(M) == 0) {
         cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
       }
@@ -61,7 +61,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
-        Q = g.plot(IMP,M,I,durplot)
+        Q = g.plot(IMP, M, I, durplot)
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
@@ -203,15 +203,20 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     #----------------------------------------------------
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
+    SUMMARY = format(SUMMARY, digits = 3, nsmall = 3)
+    daySUMMARY = format(daySUMMARY, digits = 3, nsmall = 3)
     write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
     write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
     if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
       df = g.convert.part2.long(daySUMMARY)
+      df = format(df, digits = 3, nsmall = 3)
       write.csv(df,paste0(metadatadir,"/results/part2_daysummary_longformat.csv"), row.names=F)
     }
     if (length(selectdaysfile) > 0) {
-      write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
+      winSUMMARY = format(winSUMMARY, digits = 3, nsmall = 3)
+      write.csv(winSUMMARY, paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
-    write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
+    QCout = format(QCout, digits = 3, nsmall = 3)
+    write.csv(QCout, paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
   }
 }
