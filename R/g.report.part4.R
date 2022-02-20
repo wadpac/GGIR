@@ -509,9 +509,9 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
           print("report not stored, because no results available")
         } else {
           nightsummary_round = round_decimals_df(nightsummary)
-          nightsummary_round = remove_na_nan(nightsummary)
+          nightsummary_round = remove_na_nan(nightsummary_round)
           personSummary_round = round_decimals_df(personSummary)
-          personSummary_round = remove_na_nan(personSummary)
+          personSummary_round = remove_na_nan(personSummary_round)
           if (dotwice == 1) {
             write.csv(nightsummary_round, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
                                                  sep = ""), row.names = FALSE)
