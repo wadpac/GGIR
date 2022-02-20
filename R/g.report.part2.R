@@ -72,6 +72,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
             if (length(selectdaysfile) > 0) {
               winSUMMARY = SUM$windowsummary[,which(
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
+              winSUMMARY = round_decimals_df(winSUMMARY)
             }
           } else {
             SUM$summary$pdffilenumb = pdffilenumb
@@ -87,6 +88,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
               # winsummary
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
               winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
+              winSUMMARY = round_decimals_df(winSUMMARY)
             }
           }
         }
@@ -104,7 +106,9 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
         df1[is.nan(df1)]  = ""
         return(df1)
       }
+      SUMMARY = round_decimals_df(SUMMARY)
       SUMMARY = remove_na_nan(SUMMARY)
+      daySUMMARY = round_decimals_df(daySUMMARY)
       daySUMMARY = remove_na_nan(daySUMMARY)
       #-----------------
       # create data quality report
@@ -186,12 +190,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
       #---------------------------------------------------------------
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
         #store matrix temporarily to keep track of process
-        write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
-        write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
+        write.csv(x = SUMMARY, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+        write.csv(x = daySUMMARY, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
         if (length(selectdaysfile) > 0) {
-          write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
+          write.csv(x = winSUMMARY, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
         }
-        write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
+        write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
       }
       pdfpagecount = pdfpagecount + 1
     }
@@ -203,15 +207,17 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     #----------------------------------------------------
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
-    write.csv(x = round_decimals_df(SUMMARY), file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-    write.csv(x = round_decimals_df(daySUMMARY), paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+    write.csv(x = SUMMARY, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+    write.csv(x = daySUMMARY, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
     if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
       df = g.convert.part2.long(daySUMMARY)
-      write.csv(x = round_decimals_df(df),file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
+      df = round_decimals_df(df)
+      write.csv(x = df,file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {
-      write.csv(x = round_decimals_df(winSUMMARY), file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
+      write.csv(x = winSUMMARY, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
-    write.csv(x = round_decimals_df(QCout), file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
+    write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
+    # QC is not rounded, it may be dangerous if scaling factors are used again in other recordings
   }
 }
