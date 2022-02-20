@@ -72,7 +72,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
             if (length(selectdaysfile) > 0) {
               winSUMMARY = SUM$windowsummary[,which(
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
-              winSUMMARY = round_decimals_df(winSUMMARY)
+              winSUMMARY_round = round_decimals_df(winSUMMARY)
             }
           } else {
             SUM$summary$pdffilenumb = pdffilenumb
@@ -88,7 +88,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
               # winsummary
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
               winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
-              winSUMMARY = round_decimals_df(winSUMMARY)
+              winSUMMARY_round = round_decimals_df(winSUMMARY)
             }
           }
         }
@@ -106,10 +106,10 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
         df1[is.nan(df1)]  = ""
         return(df1)
       }
-      SUMMARY = round_decimals_df(SUMMARY)
-      SUMMARY = remove_na_nan(SUMMARY)
-      daySUMMARY = round_decimals_df(daySUMMARY)
-      daySUMMARY = remove_na_nan(daySUMMARY)
+      SUMMARY_round = round_decimals_df(SUMMARY)
+      SUMMARY_round = remove_na_nan(SUMMARY_round)
+      daySUMMARY_round = round_decimals_df(daySUMMARY)
+      daySUMMARY_round = remove_na_nan(daySUMMARY_round)
       #-----------------
       # create data quality report
       if (length(C$cal.error.end) == 0) C$cal.error.end = " "
@@ -190,10 +190,10 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
       #---------------------------------------------------------------
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
         #store matrix temporarily to keep track of process
-        write.csv(x = SUMMARY, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-        write.csv(x = daySUMMARY, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+        write.csv(x = SUMMARY_round, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+        write.csv(x = daySUMMARY_round, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
         if (length(selectdaysfile) > 0) {
-          write.csv(x = winSUMMARY, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
+          write.csv(x = winSUMMARY_round, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
         }
         write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
       }
@@ -207,8 +207,8 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     #----------------------------------------------------
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
-    write.csv(x = SUMMARY, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-    write.csv(x = daySUMMARY, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+    write.csv(x = SUMMARY_round, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+    write.csv(x = daySUMMARY_round, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
     if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
       df = g.convert.part2.long(daySUMMARY)
       df = round_decimals_df(df)
@@ -216,7 +216,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
       write.csv(x = df,file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {
-      write.csv(x = winSUMMARY, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
+      write.csv(x = winSUMMARY_round, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
     write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
     # QC is not rounded, it may be dangerous if scaling factors are used again in other recordings
