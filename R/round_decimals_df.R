@@ -3,7 +3,7 @@ round_decimals_df = function(df = c(), digits = 3) {
   as.numeric.ifpossible = function(x) {
     out = tryCatch(
       {
-        as.numeric(x)
+        as.numeric(as.character(x))
       },
       error = function(cond) {
         return(x)
