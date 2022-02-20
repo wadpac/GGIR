@@ -212,6 +212,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
       df = g.convert.part2.long(daySUMMARY)
       df = round_decimals_df(df)
+      df = remove_na_nan(df)
       write.csv(x = df,file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {

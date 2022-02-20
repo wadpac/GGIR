@@ -505,10 +505,10 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
             df1[is.nan(df1)] = ""
             return(df1)
           }
-          nightsummary = remove_na_nan(nightsummary)
           nightsummary = round_decimals_df(nightsummary)
-          personSummary = remove_na_nan(personSummary)
+          nightsummary = remove_na_nan(nightsummary)
           personSummary = round_decimals_df(personSummary)
+          personSummary = remove_na_nan(personSummary)
           if (dotwice == 1) {
             write.csv(nightsummary, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
                                                  sep = ""), row.names = FALSE)
