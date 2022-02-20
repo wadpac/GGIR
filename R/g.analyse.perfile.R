@@ -241,18 +241,22 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
   }
-  filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
+  filesummary = data.frame(value = t(filesummary), stringsAsFactors = FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
   
   columns2order = c()
   if (ncol(filesummary) > 37) {
-    columns2order = 30:(ncol(filesummary)-6)
+    columns2order = grep(pattern = "AD_|WE_|WD_|WWD_|WWE_", x = names(filesummary))
   }
   options(encoding = "UTF-8")
   if (length(columns2order) > 0) {
-    selectcolumns = c(names(filesummary)[1:29],
-                      sort(names(filesummary[,columns2order])),
-                      names(filesummary)[(ncol(filesummary)-5):ncol(filesummary)])
+    selectcolumns = c(names(filesummary)[1:(columns2order[1] - 1)],
+                      grep(pattern = "^AD_", x = names(filesummary)),
+                      grep(pattern = "^WD_", x = names(filesummary)),
+                      grep(pattern = "^WE_", x = names(filesummary)),
+                      grep(pattern = "^WWD_", x = names(filesummary)),
+                      grep(pattern = "^WWE_", x = names(filesummary)),
+                      names(filesummary)[(columns2order[length(columns2order)] + 1):ncol(filesummary)])
   } else {
     selectcolumns = names(filesummary)
   }
