@@ -233,7 +233,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   if (length(mw) > 0) {
     filesummary[which(is.na(filesummary)==T)] = " "
   }
-  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T |
+  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | duplicated(s_names) |
                 s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_",
                                "AD_N hours", "WE_N hours", "WD_N hours", "WWD_N hours", "WWE_N hours",
                                "AD_N valid hours", "WE_N valid hours", "WD_N valid hours", "WWD_N valid hours", "WWE_N valid hours"))
