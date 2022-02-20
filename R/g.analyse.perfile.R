@@ -207,7 +207,8 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   }
   rm(LD); rm(ID)
   # tidy up daysummary object
-  mw = which(is.na(daysummary) == T | is.nan(daysummary) == T | grep(pattern = "NaN", x = daysummary))
+  mw = which(is.na(daysummary) == T)
+  mw = c(mw, grep(pattern = "NaN", x = daysummary))
   if (length(mw) > 0) {
     daysummary[mw] = " "
   }
@@ -229,7 +230,8 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     daysummary = daysummary[,-columnswith16am[2:length(columnswith16am)]]
   }
   # tidy up filesummary object
-  mw = which(is.na(filesummary) == T | is.nan(filesummary) == T | grep(pattern = "NaN", x = filesummary))
+  mw = which(is.na(filesummary) == T)
+  mw = c(mw, grep(pattern = "NaN", x = filesummary))
   if (length(mw) > 0) {
     filesummary[mw] = " "
   }
