@@ -251,11 +251,11 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   options(encoding = "UTF-8")
   if (length(columns2order) > 0) {
     selectcolumns = c(names(filesummary)[1:(columns2order[1] - 1)],
-                      grep(pattern = "^AD_", x = names(filesummary)),
-                      grep(pattern = "^WD_", x = names(filesummary)),
-                      grep(pattern = "^WE_", x = names(filesummary)),
-                      grep(pattern = "^WWD_", x = names(filesummary)),
-                      grep(pattern = "^WWE_", x = names(filesummary)),
+                      grep(pattern = "^AD_", x = names(filesummary), value = T),
+                      grep(pattern = "^WD_", x = names(filesummary), value = T),
+                      grep(pattern = "^WE_", x = names(filesummary), value = T),
+                      grep(pattern = "^WWD_", x = names(filesummary), value = T),
+                      grep(pattern = "^WWE_", x = names(filesummary), value = T),
                       names(filesummary)[(columns2order[length(columns2order)] + 1):ncol(filesummary)])
   } else {
     selectcolumns = names(filesummary)
