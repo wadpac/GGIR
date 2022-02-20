@@ -201,22 +201,35 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
     #===============================================================================
     #now delete rows with incorrect participants
     #----------------------------------------------------
+    # Reduce number of decimals before saving reports
+    SUMMARY_num = unlist(lapply(SUMMARY, is.numeric))
+    daySUMMARY_num = unlist(lapply(daySUMMARY, is.numeric))
+    SUMMARY[SUMMARY_num] = round(x = SUMMARY[SUMMARY_num], digits = 3)
+    daySUMMARY[daySUMMARY_num] = round(x = daySUMMARY[daySUMMARY_num], digits = 3)
+    
     # get original folder structure and assess to what phase each file belonged
     # store final matrices again
-    SUMMARY = format(SUMMARY, digits = 3, nsmall = 3)
-    daySUMMARY = format(daySUMMARY, digits = 3, nsmall = 3)
-    write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
-    write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
+    write.csv(x = SUMMARY, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+    write.csv(x = daySUMMARY, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
     if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
       df = g.convert.part2.long(daySUMMARY)
-      df = format(df, digits = 3, nsmall = 3)
-      write.csv(df,paste0(metadatadir,"/results/part2_daysummary_longformat.csv"), row.names=F)
+      # reduce decimal numbers
+      df_num = unlist(lapply(df, is.numeric))
+      df[df_num] = round(x = df[df_num], digits = 3)
+      # store
+      write.csv(x = df, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {
-      winSUMMARY = format(winSUMMARY, digits = 3, nsmall = 3)
+      # reduce decimal numbers
+      winSUMMARY_num = unlist(lapply(winSUMMARY, is.numeric))
+      winSUMMARY[winSUMMARY_num] = round(x = winSUMMARY[winSUMMARY_num], digits = 3)
+      # store
       write.csv(winSUMMARY, paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
-    QCout = format(QCout, digits = 3, nsmall = 3)
+    # reduce decimal numbers
+    QCout_num = unlist(lapply(QCout, is.numeric))
+    QCout[QCout_num] = round(x = QCout[QCout_num], digits = 3)
+    # store    
     write.csv(QCout, paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
   }
 }

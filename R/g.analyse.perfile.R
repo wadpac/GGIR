@@ -264,5 +264,5 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   selectcolumns = selectcolumns[which(selectcolumns %in% colnames(filesummary) == TRUE)]
   filesummary = filesummary[,selectcolumns]
   filesummary = filesummary[,!duplicated(filesummary)]
-  invisible(list(filesummary=filesummary, daysummary=daysummary))
+  invisible(list(filesummary = filesummary, daysummary = daysummary))
 }
