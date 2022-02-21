@@ -8,6 +8,7 @@
     \item Part 4: Fixed bug introduced in 2.6-0 relating to sleeplog guider being assined even when no sleeplog used.
     \item Part 5: Improved handling of missing sleep estimate for first night.
     \item General: Fix bug introduced in 2.6-0 relating to storage of configuration file on comma-separated machines
+    \item General: GGIR reports are now saved with a maximum of 3 decimal places for numeric variables.
   }
 }
 \section{Changes in version 2.6-0 (release date:02-02-2022)}{
