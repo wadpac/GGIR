@@ -91,7 +91,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
     if (skip == 0) {
-      cat(paste0(" ", i))
       M = c()
       filename_dir = c()
       filefoldername = c()
