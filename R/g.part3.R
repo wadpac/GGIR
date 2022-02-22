@@ -65,7 +65,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
     if (params_general[["overwrite"]] == TRUE) skip = 0
     if (skip == 0) {  
       # Load previously stored meta-data from part1.R
-      cat(paste(" ", i, sep = ""))
       SUM = IMP = M = c()
       load(paste(metadatadir, "/meta/basic/meta_", fnames[i], sep = ""))
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
