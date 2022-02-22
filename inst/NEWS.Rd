@@ -1,13 +1,15 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-1 (release date:??-??-2022)}{
+\section{Changes in version 2.6-1 (release date:22-02-2022)}{
 \itemize{
     \item Part 1: Fixed bug that prohibitted processing files in subfolders.
-    \item Part 1: Dynamic range extraction from Axivity .cwa files when not 8g enabled.
+    \item Part 1: Dynamic range can now be extracted from Axivity .cwa files when not equal to 8g.
+    \item Part 2: Qwindows logically ordered in reports.
     \item Part 4: Fixed bug introduced in 2.6-0 relating to sleeplog guider being assined even when no sleeplog used.
     \item Part 5: Improved handling of missing sleep estimate for first night.
     \item General: Fix bug introduced in 2.6-0 relating to storage of configuration file on comma-separated machines
+    \item General: GGIR reports are now saved with a maximum of 3 decimal places for numeric variables.
   }
 }
 \section{Changes in version 2.6-0 (release date:02-02-2022)}{
