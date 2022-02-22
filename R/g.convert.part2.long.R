@@ -77,24 +77,24 @@ g.convert.part2.long = function(daySUMMARY) {
   daySUMMARY2$timesegment2 = sapply(daySUMMARY2$variable, FUN = gettimeseg)
   daySUMMARY2 = as.data.frame(daySUMMARY2)
   # tidy up
-  rem = which(colnames(daySUMMARY2) =="variable")
-  daySUMMARY2 = daySUMMARY2[,-rem] # It is a data.table object so column removal works different
-  id.vars = c(id.vars,"timesegment2")
+  rem = which(colnames(daySUMMARY2) == "variable")
+  daySUMMARY2 = daySUMMARY2[, -rem] # It is a data.table object so column removal works different
+  id.vars = c(id.vars, "timesegment2")
   cnt = 1
   # long format that is undersirable is now moved back to wide format
   for (i in unique(daySUMMARY2$variable2)) {
     if (cnt == 1) {
       df = daySUMMARY2[which(daySUMMARY2$variable2 == i),]
       colnames(df)[which(colnames(df) == "value")] = i
-      rem = which(colnames(df) =="variable2")
+      rem = which(colnames(df) == "variable2")
       df = df[,-rem]
     } else {
-      df = base::merge(df, daySUMMARY2[which(daySUMMARY2$variable2 == i),], by=id.vars, all.x=T) #
+      df = base::merge(df, daySUMMARY2[which(daySUMMARY2$variable2 == i),], by = id.vars, all.x = T, sort = F)
       colnames(df)[which(colnames(df) == "value")] = i
-      rem = which(colnames(df) =="variable2")
-      df = df[,-rem]
+      rem = which(colnames(df) == "variable2")
+      df = df[, -rem]
     }
-    cnt = cnt+1
+    cnt = cnt + 1
   }
   # tidy up variable names
   Nvh.1 = which(colnames(df) == "N_valid_hours.1")
