@@ -15,11 +15,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_phyact = params$params_phyact
   params_output = params$params_output
   params_general = params$params_general
+  
   #-----------------------------
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) { 
-    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["MX.ig.min.dur"]])
+    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["qwindow_dateformat"]])
     # This will be an object with numeric qwindow values for all individuals and days
   }  
   #---------------------------------
