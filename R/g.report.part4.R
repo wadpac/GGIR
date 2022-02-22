@@ -141,7 +141,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
       if (nrow(nightsummary) == 0) {
         print("report not stored, because no results available")
       } else {
-        write.csv(nightsummary, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
+        nightsummary_clean = tidyup_df(nightsummary)
+        write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
                                              sep = ""), row.names = FALSE)
         nightsummary_bu = nightsummary
       }
@@ -491,30 +492,17 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         if (nrow(nightsummary) == 0) {
           print("report not stored, because no results available")
         } else {
-          remove_na_nan = function(df1) {
-            # replace factors by character value
-            i <- sapply(df1, is.factor)
-            df1[, i] <- lapply(df1[, i], as.character)
-            # replace all NA values by blank
-            df1[is.na(df1)] <- ""
-            # replace all NaN values by blank
-            is.nan.data.frame <- function(x) {
-              do.call(cbind, lapply(x, is.nan))
-            }
-            df1[is.nan(df1)] = ""
-            return(df1)
-          }
-          nightsummary = remove_na_nan(nightsummary)
-          personSummary = remove_na_nan(personSummary)
+          nightsummary_clean = tidyup_df(nightsummary)
+          personSummary_clean = tidyup_df(personSummary)
           if (dotwice == 1) {
-            write.csv(nightsummary, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
+            write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
                                                  sep = ""), row.names = FALSE)
-            write.csv(personSummary, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
+            write.csv(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
                                                   sep = ""), row.names = FALSE)
           } else {
-            write.csv(nightsummary, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
+            write.csv(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
                                                  sep = ""), row.names = FALSE)
-            write.csv(personSummary, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
+            write.csv(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
                                                   sep = ""), row.names = FALSE)
           }
         }
