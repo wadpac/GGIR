@@ -308,6 +308,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     sf = params_rawdata[["rmc.sf"]]
   } else if (dformat == 6) { # gt3x
     info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
+    info = info[lengths(info) != 0] # remove odd NULL in the list
     H = as.data.frame(info)
     H = data.frame(name=names(H),value=as.character(H), stringsAsFactors = FALSE)
     sf = as.numeric(H$value[which(H$name == "Sample.Rate")])
