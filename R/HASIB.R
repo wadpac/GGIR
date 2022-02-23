@@ -1,14 +1,9 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), zeroCrossingCount = c(), BrondCount = c()) {
   epochsize = ws3 #epochsize in seconds
-  sumPerMinute = function(x, epochsize) {
+  sumPerWindow = function(x, epochsize, summingwindow = 60) {
     x2 = cumsum(c(0, x))
-    select = seq(1, length(x2), by = 60/epochsize)
-    x3 = diff(x2[select])
-  }
-  sumPer30Sec = function(x, epochsize) {
-    x2 = cumsum(c(0, x))
-    select = seq(1, length(x2), by = 30/epochsize)
+    select = seq(1, length(x2), by = summingwindow/epochsize)
     x3 = diff(x2[select])
   }
   create_rollfun_mat = function(x, Ncol) {
@@ -87,9 +82,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     cti = 1
     for (count_type in count_types) {
       if (count_type == "zeroCrossingCount") {
-        Countpermin = sumPerMinute(zeroCrossingCount, epochsize = epochsize)
+        Countpermin = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = 60)
       } else {
-        Countpermin = sumPerMinute(BrondCount, epochsize = epochsize)
+        Countpermin = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = 60)
       }
       Countpermin_matrix = create_rollfun_mat(Countpermin, Ncol = 11)
       Countpermin_matrix = Countpermin_matrix[11:(nrow(Countpermin_matrix) - 10),]
@@ -128,36 +123,45 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
     sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
+    
+    if (epochsize <= 60) {
+      aggwindow = 60
+    } else if (epochsize > 60) {
+      stop("Cole Kripke algorithm is not designed for epochs larger than 1 minute")
+    }
     cti = 1
     for (count_type in count_types) {
-      # We use the algorithm for 30 second non-overlapping epoch of activity per minute from the paper
-      # Aggregate epoch counts to 30 second epoch counts
-      # see Cole, R. J., Kripke, D. F., http://doi.org/10.1093/sleep/15.5.461
+      # We use the algorithms on page 6 of Cole, R. J., Kripke, D. F., http://doi.org/10.1093/sleep/15.5.461
+      # which corresponds to non-overlapping 1 minute epochs of activity per minute.
+      # The other algorithms proposed are less clearly described:
+      # - How does aggration per epoch takes place, sum or average? Without knowing this it is hard
+      # to oversee whether it matters whether we use 2 or 5 seconds as input.
+      # - Are maximum 10 seconds converted back to the unit of counts per minute?
       if (count_type == "zeroCrossingCount") {
-        Countper30Sec = sumPer30Sec(zeroCrossingCount, epochsize = epochsize)
+        CountperWindow = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = aggwindow)
       } else {
-        Countper30Sec = sumPer30Sec(BrondCount, epochsize = epochsize)
+        CountperWindow = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = aggwindow)
       }
-      # Convert unit to counts per minute
-      Countper30Sec = Countper30Sec * 2
+      # Convert unit to counts per minute if aggwindow is not 60
+      if (aggwindow != 60) CountperWindow = CountperWindow * (60/aggwindow)
       # Prepare matrix to ease applying weighted 
-      Countper30Sec_matrix = create_rollfun_mat(Countper30Sec, Ncol = 7)
-      Countper30Sec_matrix = Countper30Sec_matrix[7:(nrow(Countper30Sec_matrix) - 6),]
+      CountperWindow_matrix = create_rollfun_mat(CountperWindow, Ncol = 7)
+      CountperWindow_matrix = CountperWindow_matrix[7:(nrow(CountperWindow_matrix) - 6),]
       # Apply weights
-      CKweights = c(50, 8, 121, 28, 14, 30, 50) # reversed to match order of matrix
-      PS = 0.0001 * rowSums(CKweights * Countper30Sec_matrix)
+      CKweights = c(67, 74, 230, 76, 58, 54, 106) # reversed to match order of matrix
+      PS = 0.001 * rowSums(CKweights * CountperWindow_matrix)
       # Add 4 wake score because first 4 epochs are not classified by the algorithm
       PS = c(rep(2, 4), PS) 
-      # Not applying rescoring, because accuracy improvements by Cole Kripke was marginal and
-      # by that addition of more complexity does not seem justified
+      # Not applying rescoring as described by Cole 1992, because accuracy improvements
+      # were reported to be marginal which makes the added complexity not justified
       PSscores = rep(0, length(PS))
       PSsibs = which(PS <= 1) # sleep
       if (length(PSsibs) > 0) {
         PSscores[PSsibs] = 1 #sleep
       }
-      # resample to original resolution and ensure length matches length of time
+      # re sample to original resolution and ensure length matches length of time
       sib_classification[,cti] = reformat_output(x = PSscores, time, new_epochsize = epochsize,
-                                                 current_epochsize = 30)
+                                                 current_epochsize = 60)
       colnames(sib_classification)[cti] = ifelse(test = count_type == "BrondCount",
                                                  yes = paste0(HASIB.algo, "_Brond"),
                                                  no = paste0(HASIB.algo, "_ZC"))
@@ -172,9 +176,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     for (count_type in count_types) {
       # Aggregate per minute
       if (count_type == "zeroCrossingCount") {
-        Countpermin = sumPerMinute(zeroCrossingCount, epochsize = epochsize)
+        Countpermin = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = 60)
       } else {
-        Countpermin = sumPerMinute(BrondCount, epochsize = epochsize)
+        Countpermin = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = 60)
       }
       mean_nonzero = mean(Countpermin[which(Countpermin != 0)])
       CountScaled = Countpermin / mean_nonzero
