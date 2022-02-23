@@ -171,7 +171,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectda
   } else if (dformat == 5 & mon == 0) {
     starttime = P$data$timestamp[1]
   } else if (mon == 5) {
-    starttime = unisensR::readUnisensStartTime(datafile)
+    starttime = unisensR::readUnisensStartTime(dirname(datafile))
   } else if (dformat == 6 & mon == 3) {
     starttime = as.POSIXlt(as.character(P[1, 1]), tz = desiredtz)
   }
