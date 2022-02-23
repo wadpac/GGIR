@@ -187,6 +187,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = H$frequency
     } else if (dformat == 6) { # gt3
       info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
+      info = info[lengths(info) != 0] # remove odd NULL in the list
       sf = info[["Sample Rate"]]
     }
     invisible(list(dformat = dformat, mon = mon, sf = sf))
@@ -308,6 +309,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     sf = params_rawdata[["rmc.sf"]]
   } else if (dformat == 6) { # gt3x
     info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
+    info = info[lengths(info) != 0] # remove odd NULL in the list
     H = as.data.frame(info)
     H = data.frame(name=names(H),value=as.character(H), stringsAsFactors = FALSE)
     sf = as.numeric(H$value[which(H$name == "Sample.Rate")])

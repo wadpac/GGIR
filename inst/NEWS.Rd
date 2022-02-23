@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6-2 (release date:??-??-2022)}{
+\itemize{
+    \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
+    \item Report generation per window: Fix undefined function call introduced in 2.6-1
+  }
+}
 \section{Changes in version 2.6-1 (release date:22-02-2022)}{
 \itemize{
     \item Part 1: Fixed bug that prohibitted processing files in subfolders.

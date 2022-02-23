@@ -88,7 +88,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
               # winsummary
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
               winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
-              winSUMMARY_clean = round_decimals_df(winSUMMARY)
+              winSUMMARY_clean = tidyup_df(winSUMMARY)
             }
           }
         }
