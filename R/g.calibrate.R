@@ -166,7 +166,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       }
       # remove 0s if ActiGraph csv (idle sleep mode)
       if (isTRUE(check_sleepMode)) {
-        data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute == FALSE)
+        data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
         data = as.matrix(data)
       }
       LD = nrow(data)
