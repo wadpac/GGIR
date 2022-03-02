@@ -9,7 +9,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   input = list(...)
   params = extract_params(params_sleep = params_sleep, params_metrics = params_metrics,
                           params_general = params_general, params_output = params_output,
-                          params_cleaning = params_cleaning, input = input) # load default parameters
+                          params_cleaning = params_cleaning, input = input,
+                          params2check = c("sleep", "metrics",
+                                           "general", "output", "cleaning")) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   params_cleaning = params$params_cleaning

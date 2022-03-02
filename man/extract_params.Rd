@@ -12,7 +12,9 @@
                  params_rawdata = c(), params_247 = c(),
                  params_phyact = c(), params_cleaning = c(),
                  params_output = c(), params_general = c(), input = c(),
-                 configfile_csv = c())
+                 configfile_csv = c(), params2check = c("sleep", "metrics",
+                 "rawdata", "247", "phyact",
+                                           "cleaning", "output", "general"))
 }
 \arguments{
   \item{params_sleep}{
@@ -45,6 +47,10 @@
   }
   \item{configfile_csv}{
     Csv configuration file
+  }
+  \item{params2check}{
+    Character vector to indicate which parameters need to be checked, otherwise the
+    function also checks the default values.
   }
 }
 \value{
