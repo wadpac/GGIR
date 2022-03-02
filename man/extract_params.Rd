@@ -49,8 +49,9 @@
     Csv configuration file
   }
   \item{params2check}{
-    Character vector to indicate which parameters need to be checked, otherwise the
-    function also checks the default values.
+    Character vector to indicate which params objects need to be checked.
+    This allows us to prevent the function from checking params objects that are not used
+    in the context where function extract_params is used.
   }
 }
 \value{
