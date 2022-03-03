@@ -234,7 +234,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                  M = M, IMP = IMP, t_TWDI = t_TWDI,
                                  quantiletype = quantiletype, ws3 = ws3,
                                  doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
-                                 midnightsi = midnightsi, params_247 = params_247)
+                                 midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
@@ -243,6 +243,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   qlevels_names = output_avday$qlevels_names
   ML5AD = output_avday$ML5AD
   ML5AD_names = output_avday$ML5AD_names
+  
+  cosinor_coef = output_avday$cosinor_coef
+  
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
@@ -324,7 +327,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                                      qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
                                      IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                                     qwindow = params_247[["qwindow"]], longitudinal_axis_id)
+                                     qwindow = params_247[["qwindow"]], longitudinal_axis_id, cosinor_coef)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
   if (length(selectdaysfile) > 0) {

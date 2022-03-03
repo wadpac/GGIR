@@ -225,6 +225,8 @@
       \item{L5M5window}{Argument depricated after version 1.5-24. 
         This argument used to define the start and end time, in 24 hour clock hours,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow}
+      \item{cosinor}{Boolean, to indicate whether cosinor anlayses should be performed. For
+        this GGIR uses R package ActCR}
     }
   }
 }

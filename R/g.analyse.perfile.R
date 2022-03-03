@@ -4,9 +4,9 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
                              daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
                              hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                              qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                             IVIS_windowsize_minutes, qwindow, longitudinal_axis_id) {
+                             IVIS_windowsize_minutes, qwindow, longitudinal_axis_id, cosinor_coef) {
   filesummary = matrix(" ",1,100) #matrix to be stored with summary per participant
-  s_names = rep(" ",ncol(filesummary))
+  s_names = rep(" ", ncol(filesummary))
   vi = 1
   # Person identification number
   filesummary[vi] = ID
@@ -15,67 +15,66 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
 
   # Serial number
   if (snloc == 1) {
-    filesummary[(vi+1)] = deviceSerialNumber
+    filesummary[(vi + 1)] = deviceSerialNumber
   } else if (snloc == 2) {
-    filesummary[(vi+1)] = unlist(strsplit(fname,"_"))[2]
+    filesummary[(vi + 1)] = unlist(strsplit(fname, "_"))[2]
   }
-  s_names[vi:(vi+1)] = c("ID","device_sn")
-  vi = vi+2
+  s_names[vi:(vi + 1)] = c("ID","device_sn")
+  vi = vi + 2
   # starttime of measurement, body location, filename
   filesummary[vi] = BodyLocation
-  filesummary[(vi+1)] = fname
-  filesummary[(vi+2)] = startt # starttime of measurement
-  s_names[vi:(vi+2)] = c("bodylocation","filename","start_time")
-  vi = vi+3
+  filesummary[(vi + 1)] = fname
+  filesummary[(vi + 2)] = startt # starttime of measurement
+  s_names[vi:(vi + 2)] = c("bodylocation", "filename", "start_time")
+  vi = vi + 3
   # weekday on which measurement started, sample frequency and device
   filesummary[vi] = wdayname 
-  filesummary[(vi+1)] = I$sf
-  filesummary[(vi+2)] = I$monn
-  s_names[vi:(vi+2)] = c("startday","samplefreq","device")
-  vi = vi+3
+  filesummary[(vi + 1)] = I$sf
+  filesummary[(vi + 2)] = I$monn
+  s_names[vi:(vi + 2)] = c("startday", "samplefreq", "device")
+  vi = vi + 3
   # clipsing score and measurement duration in days
   filesummary[vi] = LC2  / ((LD/1440)*96)
-  filesummary[(vi+1)] = LD/1440 #measurement duration in days
-  s_names[vi:(vi+1)] = c("clipping_score",
-                         "meas_dur_dys")
-  vi = vi+2
+  filesummary[(vi + 1)] = LD/1440 #measurement duration in days
+  s_names[vi:(vi + 1)] = c("clipping_score", "meas_dur_dys")
+  vi = vi + 2
   # completeness core and measurement duration with different definitions
   filesummary[vi] = dcomplscore #completeness of the day
-  filesummary[(vi+1)] = LMp/1440 #measurement duration according to protocol
-  filesummary[(vi+2)] = LWp/1440 #wear duration in days (out of measurement protocol)
-  s_names[vi:(vi+2)] = c("complete_24hcycle", # day (fraction of 24 hours for which data is available at all)
-                         "meas_dur_def_proto_day","wear_dur_def_proto_day")
-  vi = vi+3
+  filesummary[(vi + 1)] = LMp / 1440 #measurement duration according to protocol
+  filesummary[(vi + 2)] = LWp / 1440 #wear duration in days (out of measurement protocol)
+  s_names[vi:(vi + 2)] = c("complete_24hcycle", # day (fraction of 24 hours for which data is available at all)
+                         "meas_dur_def_proto_day", "wear_dur_def_proto_day")
+  vi = vi + 3
   # calibration error after auto-calibration
   if (length(C$cal.error.end) == 0)   C$cal.error.end = c(" ")
   filesummary[vi] = C$cal.error.end
-  filesummary[vi+1] = C$QCmessage
+  filesummary[vi + 1] = C$QCmessage
   for (la in 1:length(lookat)) {
     AveAccAve24hr[la] = 	AveAccAve24hr[la] * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
   }
   q0 = length(AveAccAve24hr) + 1
-  filesummary[(vi+2):(vi+q0)] = AveAccAve24hr
-  colnames_to_lookat = paste0(colnames_to_lookat,"_fullRecordingMean")
-  s_names[vi:(vi+q0)] = c("calib_err",
-                          "calib_status",colnames_to_lookat)
-  vi = vi+q0+2
+  filesummary[(vi + 2):(vi + q0)] = AveAccAve24hr
+  colnames_to_lookat = paste0(colnames_to_lookat, "_fullRecordingMean")
+  s_names[vi:(vi + q0)] = c("calib_err",
+                          "calib_status", colnames_to_lookat)
+  vi = vi + q0 + 2
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
     q1 = length(QUAN)
-    filesummary[vi:((vi-1)+q1)] = QUAN * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
-    s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_fullRecording")
+    filesummary[vi:((vi - 1) + q1)] = QUAN * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
+    s_names[vi:((vi - 1) + q1)] = paste0(qlevels_names, "_fullRecording")
     vi = vi + q1
     q1 = length(ML5AD)
-    filesummary[vi:((vi-1)+q1)] = as.numeric(ML5AD)
-    s_names[vi:((vi-1)+q1)] = paste0(ML5AD_names,"_fullRecording")
+    filesummary[vi:((vi - 1) + q1)] = as.numeric(ML5AD)
+    s_names[vi:((vi - 1) + q1)] = paste0(ML5AD_names, "_fullRecording")
     vi = vi + q1
   }
   if (doiglevels == TRUE) { 
     # intensity gradient (as described by Alex Rowlands 2018)
     # applied to the averageday per metric (except from angle metrics)
     q1 = length(igfullr)
-    filesummary[vi:((vi-1)+q1)] = igfullr
-    s_names[vi:((vi-1)+q1)] = paste0(igfullr_names,"_fullRecording")
+    filesummary[vi:((vi - 1) + q1)] = igfullr
+    s_names[vi:((vi - 1) + q1)] = paste0(igfullr_names, "_fullRecording")
     vi = vi + q1
   }
   if (tooshort == 0) {
@@ -83,29 +82,56 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     # Summarise per recording (not per day) - additional variables if the recording is long enough
     #====================================================================
     # Recognise weekenddays with enough data
-    wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
+    wkend  = which(daysummary[, which(ds_names == "weekday")] == "Saturday" |
+                     daysummary[, which(ds_names == "weekday")] == "Sunday")
     columnWithAlwaysData = which(ds_names == "N hours" | ds_names == "N_hours")
     NVHcolumn = which(ds_names == "N valid hours" | ds_names == "N_valid_hours" ) #only count in the days for which the inclusion criteria is met
-    v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F &
-                 as.numeric(daysummary[wkend,NVHcolumn]) >= includedaycrit)
+    v1 = which(is.na(as.numeric(daysummary[wkend, columnWithAlwaysData])) == F &
+                 as.numeric(daysummary[wkend, NVHcolumn]) >= includedaycrit)
     wkend = wkend[v1]
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
-    v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F  &
-                 as.numeric(daysummary[wkday,NVHcolumn]) >= includedaycrit)
+    v2 = which(is.na(as.numeric(daysummary[wkday, columnWithAlwaysData])) == F  &
+                 as.numeric(daysummary[wkday, NVHcolumn]) >= includedaycrit)
     wkday = wkday[v2]
     # Add number of weekend and weekdays to filesummary
-    filesummary[vi:(vi+1)] = c(length(wkend),  length(wkday)) # number of weekend days & weekdays
-    iNA = which(is.na(filesummary[vi:(vi+1)]) == TRUE)
-    if (length(iNA) > 0) filesummary[(vi:(vi+1))[iNA]] = 0
-    s_names[vi:(vi+1)] = c("N valid WEdays","N valid WKdays")
+    filesummary[vi:(vi + 1)] = c(length(wkend),  length(wkday)) # number of weekend days & weekdays
+    iNA = which(is.na(filesummary[vi:(vi + 1)]) == TRUE)
+    if (length(iNA) > 0) filesummary[(vi:(vi + 1))[iNA]] = 0
+    s_names[vi:(vi + 1)] = c("N valid WEdays","N valid WKdays")
     vi = vi + 2
     # Add ISIV to filesummary
-    filesummary[vi:(vi+2)] = c(InterdailyStability, IntradailyVariability,
+    filesummary[vi:(vi + 2)] = c(InterdailyStability, IntradailyVariability,
                                IVIS_windowsize_minutes)
-    iNA = which(is.na(filesummary[vi:(vi+3)]) == TRUE)
-    if (length(iNA) > 0) filesummary[(vi:(vi+3))[iNA]] = " "
-    s_names[vi:(vi+2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
+    iNA = which(is.na(filesummary[vi:(vi + 3)]) == TRUE)
+    if (length(iNA) > 0) filesummary[(vi:(vi + 3))[iNA]] = " "
+    s_names[vi:(vi + 2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
     vi = vi + 4
+    # Cosinor analysis
+    if (length(cosinor_coef) > 0) {
+      filesummary[vi:(vi + 5)]  = c(cosinor_coef$coef$mes,
+                                  cosinor_coef$coef$amp,
+                                  cosinor_coef$coef$acr,
+                                  cosinor_coef$coef$acrotime,
+                                  cosinor_coef$coef$ndays,
+                                  cosinor_coef$coef$acro)
+      s_names[vi:(vi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acr",
+                             "cosinor_acrotime", "cosinor_ndays", "cosinor_acro")
+      vi = vi + 6
+      filesummary[vi:(vi + 8)]  = c(cosinor_coef$coefext$minimum,
+                                    cosinor_coef$coefext$amp,
+                                    cosinor_coef$coefext$alpha,
+                                    cosinor_coef$coefext$beta,
+                                    cosinor_coef$coefext$acrotime,
+                                    cosinor_coef$coefext$UpMesor,
+                                    cosinor_coef$coefext$DownMesor,
+                                    cosinor_coef$coefext$MESOR,
+                                    cosinor_coef$coefext$ndays)
+      s_names[vi:(vi + 8)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                               "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                               "cosinorExt_DownMesor", "cosinorExt_MESOR", "cosinorExt_ndays")
+      vi = vi + 9
+    }
+    
     # Variables per metric - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:length(ds_names))
     md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday", "qwindow_timestamps", "qwindow_names"))

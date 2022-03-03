@@ -77,8 +77,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
+    boolean_params = "cosinor"
     character_params = c("qwindow_dateformat")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
+    check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
     check_class("247", params = params_247, parnames = character_params, parclass = "character")
   }
   if (length(params_phyact) > 0) {

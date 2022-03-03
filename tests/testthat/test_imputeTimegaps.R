@@ -1,7 +1,6 @@
 library(GGIR)
 context("g.imputeTimegaps")
 test_that("timegaps are correctly imputed", {
-library(testthat)
   N = 10000
   sf = 20
   x = data.frame(time = as.POSIXct(x = (1:N)/sf, tz = "", origin = "1970/1/1"),

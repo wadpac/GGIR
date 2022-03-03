@@ -1,10 +1,11 @@
 g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
-                           ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), ...) {
+                           ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), 
+                           qcheck = c(), ...) {
   #get input variables
   input = list(...)
   expectedArgs = c("doquan", "averageday", "M", "IMP",
                    "t_TWDI, quantiletype", "ws3", "ws2", 
-                   "doiglevels", "firstmidnighti", "midnightsi", "params_247") 
+                   "doiglevels", "firstmidnighti", "midnightsi", "params_247", "qcheck") 
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
@@ -112,24 +113,25 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   
   #----------------------------------
   # (Extended) Cosinor analysis
-  # Re-derive Xi but this time include entire time series
-  Xi = IMP$metashort[, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
-  # # set non-wear to missing values, because for Cosinor fit
-  # # it seems more logical to only fit with real data
-  # if (length(which(qcheck == 1)) > 0) {
-  #   is.na(Xi[which(qcheck == 1)]) = TRUE
-  # }
-  timeOffsetHours = ((firstmidnighti * (ws2 / ws3)) - 1) / (3600 / ws3)
-  cosinor_output = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
-  # TO DO: Integrate result in GGIR part 2 output
-  
-  
-  
+  if (params_247[["cosinor"]] == TRUE) {
+    # Re-derive Xi but this time include entire time series
+    Xi = IMP$metashort[, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+    # set non-wear to missing values, because for Cosinor fit
+    # it seems more logical to only fit with real data
+    # this comes at the price of not being able to extract F_pseudo
+    if (length(which(qcheck == 1)) > 0) {
+      is.na(Xi[which(qcheck == 1)]) = TRUE
+    }
+    timeOffsetHours = ((firstmidnighti * (ws2 / ws3)) - 1) / (3600 / ws3)
+    cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
+  } else {
+    cosinor_coef = c()
+  }
   invisible(list(InterdailyStability = InterdailyStability,
                  IntradailyVariability = IntradailyVariability, 
                  igfullr_names = igfullr_names,
                  igfullr = igfullr, QUAN = QUAN,
                  qlevels_names = qlevels_names,
                  ML5AD = ML5AD,
-                 ML5AD_names = ML5AD_names))
+                 ML5AD_names = ML5AD_names, cosinor_coef = cosinor_coef))
 }

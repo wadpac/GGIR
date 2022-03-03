@@ -17,7 +17,7 @@ g.analyse.perfile(ID, fname, deviceSerialNumber,
   hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
   qlevels_names, doiglevels, tooshort, InterdailyStability, 
   IntradailyVariability,
-  IVIS_windowsize_minutes, qwindow, longitudinal_axis_id)
+  IVIS_windowsize_minutes, qwindow, longitudinal_axis_id, cosinor_coef)
 }
 
 \arguments{
@@ -66,7 +66,8 @@ the average day produced by \link{g.analyse.avday}}
   strongly across 24 hoursas calculated inside g.analyse. For hip worn 
   accelerometer this helps to check which axis was the veritcal axis. 
   The estimate may not be informative for other attachment locations.}
-
+\item{cosinor_coef}{output from cosinorAnlayses passed on to be included in
+  file summary}
 }
 \value{
 \item{\code{filesummary}}{summary for the file that was analysed}
