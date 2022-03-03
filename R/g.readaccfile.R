@@ -422,12 +422,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                                blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
       startpage = UPI$startpage;    endpage = UPI$endpage
-      file_length = unisensR::getUnisensSignalSampleCount(filename, "acc.bin")
+      file_length = unisensR::getUnisensSignalSampleCount(dirname(filename), "acc.bin")
       if (endpage > file_length) {
           endpage = file_length
           switchoffLD = 1
           }
-      P = unisensR::readUnisensSignalEntry(filename, "acc.bin",
+      P = unisensR::readUnisensSignalEntry(dirname(filename), "acc.bin",
                                            startIndex = startpage,
                                            endIndex = endpage)
       P = as.matrix(P)

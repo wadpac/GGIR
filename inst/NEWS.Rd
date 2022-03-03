@@ -4,6 +4,7 @@
 \section{Changes in version 2.6-2 (release date:??-??-2022)}{
 \itemize{
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
+    \item Part 1: Fixed issue #520 with handling Movisens data
     \item Report generation per window: Fix undefined function call introduced in 2.6-1
   }
 }
