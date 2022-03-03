@@ -71,8 +71,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
   mon = INFI$monc
   if (mon == 6) mon = 3
   dformat = INFI$dformc
-  # If ActiGraph and csv format, then check sleep mode
-  check_sleepMode = ifelse(test = (mon == 3 & dformat == 2), yes = TRUE, no = FALSE)
   sf = INFI$sf
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(params_rawdata[["rmc.sf"]]) == 0) {
@@ -165,7 +163,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
         data = rbind(S,data)
       }
       # remove 0s if ActiGraph csv (idle sleep mode)
-      if (isTRUE(check_sleepMode)) {
+      if (mon == 3 & dformat == 2) {
         data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
         data = as.matrix(data)
       }
