@@ -6,6 +6,7 @@
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
     \item Part 1: Fixed issue #520 with handling Movisens data
     \item Part 1: Fixed issue #523 with calibration of ActiGraph csv files
+    \item General: Prevent warnings resulting from some unnecessary checks of params objects
     \item Report generation per window: Fix undefined function call introduced in 2.6-1
   }
 }
