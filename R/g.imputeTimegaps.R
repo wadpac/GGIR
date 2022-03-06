@@ -1,4 +1,4 @@
-g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25) {
+g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE) {
   remove_time_at_end = FALSE
   if (length(timeCol) == 0) { # add temporary timecolumn to enable timegap imputation where there are zeros
     dummytime = Sys.time()
@@ -19,25 +19,27 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25) {
     }
     x = x[-zeros,]
   }
-  if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
-    k = 2/sf
-  }
-  deltatime = diff(x[, timeCol])
-  units(deltatime) = "secs"
-  deltatime = as.numeric(deltatime)
-  gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
-  NumberOfGaps = length(gapsi)
-  if (NumberOfGaps > 0) { 
-    # if gaps exist impute them by repeating the last known value
-    x$gap = 1
-    x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) 
-    x <- as.data.frame(lapply(x, rep, x$gap))
-    #  normalise last known value to 1
-    i_normalise = which(x$gap != 1)
-    if (length(i_normalise) > 0) {
-      x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / sqrt(rowSums(x[i_normalise, xyzCol]^2))
+  if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
+    if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
+      k = 2/sf
     }
-    x = x[, which(colnames(x) != "gap")]
+    deltatime = diff(x[, timeCol])
+    units(deltatime) = "secs"
+    deltatime = as.numeric(deltatime)
+    gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
+    NumberOfGaps = length(gapsi)
+    if (NumberOfGaps > 0) { 
+      # if gaps exist impute them by repeating the last known value
+      x$gap = 1
+      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) 
+      x <- as.data.frame(lapply(x, rep, x$gap))
+      #  normalise last known value to 1
+      i_normalise = which(x$gap != 1)
+      if (length(i_normalise) > 0) {
+        x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / sqrt(rowSums(x[i_normalise, xyzCol]^2))
+      }
+      x = x[, which(colnames(x) != "gap")]
+    }
   }
   # Note: Timestamps are not imputed because from here onward GGIR does not need them
   # Any problems with sample rate should have been fixed during data loading
