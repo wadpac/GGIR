@@ -19,7 +19,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           params_cleaning = params_cleaning,
                           params_output = params_output,
                           params_general = params_general,
-                          input = input)
+                          input = input, params2check = c("sleep", "metrics", "247",
+                                                          "phyact", "cleaning",
+                                                          "general", "output"))
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   params_247 = params$params_247
