@@ -67,7 +67,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
                        rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
                        rmc.header.structure = params_rawdata[["rmc.header.structure"]],
                        rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])  # Check which file type and monitor brand it is
-  options(warn = 0) #turn off warnings
+  options(warn = 0) #turn on warnings
   mon = INFI$monc
   if (mon == 6) mon = 3
   dformat = INFI$dformc
@@ -88,7 +88,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon, 
                                                desiredtz = params_general[["desiredtz"]],
                                                rmc.dec = params_rawdata[["rmc.dec"]])}) #detect dot or comma dataformat
-  options(warn = 0) #turn off warnings
+  options(warn = 0) #turn on warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
@@ -162,7 +162,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
-      
+      # remove 0s if ActiGraph csv (idle sleep mode)
+      if (mon == 3 & dformat == 2) {
+        data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
+        data = as.matrix(data)
+      }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
       use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
