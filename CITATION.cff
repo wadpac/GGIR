@@ -57,7 +57,7 @@ authors:
     family-names: Manasa
     given-names: "Yerramalla"
 cff-version: "1.0.3"
-date-released: 2022-02-02
+date-released: 2022-03-06
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"
@@ -69,5 +69,5 @@ license: "LGPL-2.0-only"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/wadpac/GGIR"
 title: GGIR
-version: "2.6-0"
+version: "2.6-2"
 ...
