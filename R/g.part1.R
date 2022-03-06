@@ -10,7 +10,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                           params_rawdata = params_rawdata,
                           params_cleaning = params_cleaning,
                           params_general = params_general,
-                          input = input) # load default parameters
+                          input = input, 
+                          params2check = c("metrics", "rawdata",
+                                           "cleaning", "general")) # load default parameters
   params_metrics = params$params_metrics
   params_rawdata = params$params_rawdata
   params_cleaning = params$params_cleaning

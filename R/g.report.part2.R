@@ -93,6 +93,9 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
           }
         }
       }
+      if (length(SUMMARY) == 0 |length(daySUMMARY) == 0) {
+        warning("No summary data available to be stored in csv-reports")
+      }
       SUMMARY_clean = tidyup_df(SUMMARY)
       daySUMMARY_clean = tidyup_df(daySUMMARY)
       #-----------------

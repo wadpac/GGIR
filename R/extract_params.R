@@ -1,7 +1,9 @@
 extract_params = function(params_sleep = c(), params_metrics = c(),
                           params_rawdata = c(), params_247 = c(),
                           params_phyact = c(), params_cleaning = c(),
-                          params_output = c(), params_general = c(), input = c(), configfile_csv = c()) {
+                          params_output = c(), params_general = c(), input = c(), configfile_csv = c(),
+                          params2check = c("sleep", "metrics", "rawdata", "247", "phyact",
+                                           "cleaning", "output", "general")) {
   # Order of priority using parameters:
   # 1. Arguments provided as direct input by user
   # 2. Arguments provided via configuration file
@@ -44,7 +46,6 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
     params = load_params(group = "general")
     params_general = params$params_general
   }
-  
   #==================================================================================
   # Overwrite them by arguments provided via configuration file
   if (length(configfile_csv) > 0) {
@@ -191,6 +192,17 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Check that all parameter values have expect data class
   # and perform some checks on reasonable parameter combinations
+  
+  # prevent checking of parameters that are not used in GGIR part
+  if (!"sleep" %in% params2check) params_sleep = c()
+  if (!"metrics" %in% params2check) params_metrics = c()
+  if (!"rawdata" %in% params2check) params_rawdata = c()
+  if (!"247" %in% params2check) params_247 = c()
+  if (!"phyact" %in% params2check) params_phyact = c()
+  if (!"cleaning" %in% params2check) params_cleaning = c()
+  if (!"output" %in% params2check) params_output = c()
+  if (!"general" %in% params2check) params_general = c()
+
   params = check_params(params_sleep = params_sleep, params_metrics = params_metrics, 
                         params_rawdata = params_rawdata, params_247 = params_247,
                         params_phyact = params_phyact, params_cleaning = params_cleaning,
