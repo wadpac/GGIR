@@ -119,10 +119,19 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     # set non-wear to missing values, because for Cosinor fit
     # it seems more logical to only fit with real data
     # this comes at the price of not being able to extract F_pseudo
+    firstvalid = 1
     if (length(which(qcheck == 1)) > 0) {
       is.na(Xi[which(qcheck == 1)]) = TRUE
+      # ignore invalid start of recording (if applicable)
+      # such that 24 hour blocks start from first valid value
+      firstvalid = which(qcheck == 0)[1]
+      if (length(firstvalid) > 0) {
+        if (firstvalid != 1) {
+          Xi = Xi[firstvalid:length(Xi)]
+        }
+      }
     }
-    timeOffsetHours = ((firstmidnighti * (ws2 / ws3)) - 1) / (3600 / ws3)
+    timeOffsetHours = (((firstmidnighti - 1) * (ws2 / ws3)) - (firstvalid - 1)) / (3600 / ws3)
     cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
   } else {
     cosinor_coef = c()
