@@ -16,7 +16,6 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   # Apply Extended Cosinor function from ActRC
   N = 1440 * (60 / epochsizesecondsXi) # Number of epochs per day
   Xi = Xi[1:(N * floor(length(Xi) / N))] # ActCR expects integer number of days
-  
   coef = ActCR::ActCosinor(x = Xi, window = 1440 / N)
   coefext = ActCR::ActExtendCosinor(x = Xi, window = 1440 / N) # need to set lower and upper argument?
   
