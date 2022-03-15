@@ -18,7 +18,7 @@ test_that("cosinorAnalyses provides expected output", {
   # standard cosinor analyses
   expect_equal(coef5$coef$mes, 1, tolerance = 0.01)
   expect_equal(coef5$coef$amp, 1, tolerance = 0.01)
-  expect_equal(coef5$coef$acr, -pi / 2, tolerance = 0.01)
+  expect_equal(coef5$coef$acr, pi * 3/2, tolerance = 0.01)
   expect_equal(coef5$coef$acrotime, 6, tolerance = 0.01)
   expect_equal(coef5$coef$ndays, 7)
   expect_equal(coef5$coef$acro, 6, tolerance  = 0.01)
