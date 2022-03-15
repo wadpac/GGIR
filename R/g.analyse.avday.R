@@ -125,14 +125,18 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
       # ignore invalid start of recording (if applicable)
       # such that 24 hour blocks start from first valid value
       firstvalid = which(qcheck == 0)[1]
-      if (length(firstvalid) > 0) {
+      if (is.na(firstvalid) == FALSE) {
         if (firstvalid != 1) {
           Xi = Xi[firstvalid:length(Xi)]
         }
       }
     }
-    timeOffsetHours = (((firstmidnighti - 1) * (ws2 / ws3)) - (firstvalid - 1)) / (3600 / ws3)
-    cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
+    if (length(which(is.na(Xi) == FALSE)) > (1440 * (60/ws3))) { # Only attempt cosinor analyses if there is more than 24 hours of data
+      timeOffsetHours = (((firstmidnighti - 1) * (ws2 / ws3)) - (firstvalid - 1)) / (3600 / ws3)
+      cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
+    } else {
+      cosinor_coef = c()
+    }
   } else {
     cosinor_coef = c()
   }
