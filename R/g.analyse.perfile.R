@@ -108,15 +108,14 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     vi = vi + 4
     # Cosinor analysis
     if (length(cosinor_coef) > 0) {
-      filesummary[vi:(vi + 5)]  = c(cosinor_coef$coef$mes,
+      filesummary[vi:(vi + 4)]  = c(cosinor_coef$coef$mes,
                                   cosinor_coef$coef$amp,
                                   cosinor_coef$coef$acr,
                                   cosinor_coef$coef$acrotime,
-                                  cosinor_coef$coef$ndays,
-                                  cosinor_coef$coef$acro)
-      s_names[vi:(vi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acr",
-                             "cosinor_acrotime", "cosinor_ndays", "cosinor_acro")
-      vi = vi + 6
+                                  cosinor_coef$coef$ndays)
+      s_names[vi:(vi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                             "cosinor_acrotime", "cosinor_ndays")
+      vi = vi + 5
       filesummary[vi:(vi + 8)]  = c(cosinor_coef$coefext$minimum,
                                     cosinor_coef$coefext$amp,
                                     cosinor_coef$coefext$alpha,
