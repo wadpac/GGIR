@@ -18,7 +18,6 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   Xi = Xi[1:(N * floor(length(Xi) / N))] # ActCR expects integer number of days
   coef = ActCR::ActCosinor(x = Xi, window = 1440 / N)
   coefext = ActCR::ActExtendCosinor(x = Xi, window = 1440 / N) # need to set lower and upper argument?
-
   # Correct time estimates by offset in start of recording
   coef$acrotime = coef$acrotime - timeOffsetHours
   add24ifneg = function(x) {

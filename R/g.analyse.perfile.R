@@ -5,7 +5,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
                              hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                              qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
                              IVIS_windowsize_minutes, qwindow, longitudinal_axis_id, cosinor_coef) {
-  filesummary = matrix(" ",1,100) #matrix to be stored with summary per participant
+  filesummary = matrix(" ", 1, 150) #matrix to be stored with summary per participant
   s_names = rep(" ", ncol(filesummary))
   vi = 1
   # Person identification number
@@ -108,6 +108,9 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     vi = vi + 4
     # Cosinor analysis
     if (length(cosinor_coef) > 0) {
+      filesummary[vi]  = c(cosinor_coef$timeOffsetHours)
+      s_names[vi] = c("cosinor_timeOffsetHours")
+      vi = vi + 1
       filesummary[vi:(vi + 4)]  = c(cosinor_coef$coef$mes,
                                   cosinor_coef$coef$amp,
                                   cosinor_coef$coef$acr,
@@ -150,76 +153,76 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
         # - first value is not empty
         if (storevalue == TRUE) {
           # Plain average of available days
-          v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) 
-          filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
-          s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")
+          v4 = mean(suppressWarnings(as.numeric(daysummary[, dtwi])), na.rm = TRUE) 
+          filesummary[(vi + 1 + (dtwtel*sp))] = v4 # #average all availabel days
+          s_names[(vi + 1 + (dtwtel * sp))] = paste0("AD_", ds_names[dtwi])
           # Average of available days per weekenddays / weekdays:
           dtw_wkend = suppressWarnings(as.numeric(daysummary[wkend,dtwi]))
           dtw_wkday = suppressWarnings(as.numeric(daysummary[wkday,dtwi]))
-          filesummary[(vi+2+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkend,na.rm=TRUE))
-          filesummary[(vi+3+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkday,na.rm=TRUE))
-          s_names[(vi+2+(dtwtel*sp))] = paste0("WE_",ds_names[dtwi]) # Weekend no weighting
-          s_names[(vi+3+(dtwtel*sp))] = paste0("WD_",ds_names[dtwi]) # Weekdays no weighting
+          filesummary[(vi + 2 + (dtwtel * sp))] = suppressWarnings(mean(dtw_wkend, na.rm = TRUE))
+          filesummary[(vi + 3 + (dtwtel * sp))] = suppressWarnings(mean(dtw_wkday, na.rm = TRUE))
+          s_names[(vi + 2 + (dtwtel * sp))] = paste0("WE_", ds_names[dtwi]) # Weekend no weighting
+          s_names[(vi + 3 + (dtwtel * sp))] = paste0("WD_", ds_names[dtwi]) # Weekdays no weighting
           # Weighted average of available days per weekenddays / weekdays:
           if (length(dtw_wkend) > 2) {
-            dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+            dtw_wkend = c((dtw_wkend[1] + dtw_wkend[3]) / 2, dtw_wkend[2])
           }
           if (length(dtw_wkday) > 5) {
-            dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+            dtw_wkday = c((dtw_wkday[1] + dtw_wkday[6]) / 2, dtw_wkday[2:5])
           }
-          filesummary[(vi+4+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkend,na.rm=TRUE))
-          filesummary[(vi+5+(dtwtel*sp))] = suppressWarnings(mean(dtw_wkday,na.rm=TRUE))
-          s_names[(vi+4+(dtwtel*sp))] = paste("WWE_",ds_names[dtwi],sep="") # Weekend with weighting
-          s_names[(vi+5+(dtwtel*sp))] = paste("WWD_",ds_names[dtwi],sep="") # Weekdays with weighting
+          filesummary[(vi + 4 + (dtwtel * sp))] = suppressWarnings(mean(dtw_wkend, na.rm = TRUE))
+          filesummary[(vi + 5 + (dtwtel * sp))] = suppressWarnings(mean(dtw_wkday, na.rm = TRUE))
+          s_names[(vi + 4 + (dtwtel * sp))] = paste0("WWE_", ds_names[dtwi]) # Weekend with weighting
+          s_names[(vi + 5 + (dtwtel * sp))] = paste0("WWD_", ds_names[dtwi]) # Weekdays with weighting
           dtwtel = dtwtel + 1
         }
         # Plain average of available days
-        v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) 
-        filesummary[(vi+1+(dtwtel*sp))] = v4
-        s_names[(vi+1+(dtwtel*sp))] = paste("AD_",ds_names[dtwi],sep="")
+        v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])), na.rm = TRUE) 
+        filesummary[(vi + 1 + (dtwtel * sp))] = v4
+        s_names[(vi + 1 + (dtwtel * sp))] = paste0("AD_", ds_names[dtwi])
         # Average of available days per weekenddays / weekdays:
         dtw_wkend = suppressWarnings(as.numeric(daysummary[wkend,dtwi]))
         dtw_wkday = suppressWarnings(as.numeric(daysummary[wkday,dtwi]))
         if (storevalue == TRUE) {
-          filesummary[(vi+2+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE)
-          filesummary[(vi+3+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE)
+          filesummary[(vi + 2 + (dtwtel * sp))] = mean(dtw_wkend, na.rm = TRUE)
+          filesummary[(vi + 3 + (dtwtel * sp))] = mean(dtw_wkday, na.rm = TRUE)
         }
-        s_names[(vi+2+(dtwtel*sp))] = paste("WE_",ds_names[dtwi],sep="") # Weekend no weighting
-        s_names[(vi+3+(dtwtel*sp))] = paste("WD_",ds_names[dtwi],sep="") # Weekdays no weighting
+        s_names[(vi + 2 + (dtwtel * sp))] = paste0("WE_", ds_names[dtwi]) # Weekend no weighting
+        s_names[(vi + 3 + (dtwtel * sp))] = paste0("WD_", ds_names[dtwi]) # Weekdays no weighting
         # Weighted average of available days per weekenddays / weekdays:
         if (length(dtw_wkend) > 2) {
-          dtw_wkend = c((dtw_wkend[1]+dtw_wkend[3])/2,dtw_wkend[2])
+          dtw_wkend = c((dtw_wkend[1] + dtw_wkend[3]) / 2, dtw_wkend[2])
         }
         if (length(dtw_wkday) > 5) {
-          dtw_wkday = c((dtw_wkday[1]+dtw_wkday[6])/2,dtw_wkday[2:5])
+          dtw_wkday = c((dtw_wkday[1] + dtw_wkday[6]) / 2, dtw_wkday[2:5])
         }
         if (storevalue == TRUE) {
-          filesummary[(vi+4+(dtwtel*sp))] = mean(dtw_wkend,na.rm=TRUE) # Weekend with weighting
-          filesummary[(vi+5+(dtwtel*sp))] = mean(dtw_wkday,na.rm=TRUE) # Weekdays with weighting
+          filesummary[(vi + 4 + (dtwtel * sp))] = mean(dtw_wkend, na.rm = TRUE) # Weekend with weighting
+          filesummary[(vi + 5 + (dtwtel * sp))] = mean(dtw_wkday, na.rm = TRUE) # Weekdays with weighting
         }
-        s_names[(vi+4+(dtwtel*sp))] = paste("WWE_",ds_names[dtwi],sep="")
-        s_names[(vi+5+(dtwtel*sp))] = paste("WWD_",ds_names[dtwi],sep="")
+        s_names[(vi + 4 + (dtwtel * sp))] = paste0("WWE_", ds_names[dtwi])
+        s_names[(vi + 5 + (dtwtel * sp))] = paste0("WWD_", ds_names[dtwi])
         dtwtel = dtwtel + 1
       }
-      vi = vi+6+((dtwtel*sp)-1)
+      vi = vi + 6 + ((dtwtel * sp) - 1)
     }
     filesummary[vi] = strategy
-    filesummary[(vi+1)] = hrs.del.start
-    filesummary[(vi+2)] = hrs.del.end
-    filesummary[(vi+3)] = maxdur
-    filesummary[(vi+4)] = windowsizes[1]
-    filesummary[(vi+5)] = longitudinal_axis_id
+    filesummary[(vi + 1)] = hrs.del.start
+    filesummary[(vi + 2)] = hrs.del.end
+    filesummary[(vi + 3)] = maxdur
+    filesummary[(vi + 4)] = windowsizes[1]
+    filesummary[(vi + 5)] = longitudinal_axis_id
     #get GGIR version
     SI = sessionInfo()
     GGIRversion = c()
-    try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
+    try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
     if (length(GGIRversion) == 0) {
-      try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version},silent=TRUE)
+      try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
     }
     # GGIRversion = SI$otherPkgs$GGIR$Version
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
-    filesummary[(vi+6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
-    s_names[vi:(vi+6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
+    filesummary[(vi + 6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
+    s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
                                                " value=2, ignore all data before the first midnight and",
                                                " after the last midnight)"),
                                         "n hours ignored at start of meas (if strategy=1)",
@@ -236,20 +239,20 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   if (length(mw) > 0) {
     daysummary[mw] = " "
   }
-  cut = which(ds_names == " " | ds_names == "" | is.na(ds_names)==T)
+  cut = which(ds_names == " " | ds_names == "" | is.na(ds_names) == T)
   if (length(cut > 0)) {
     ds_names = ds_names[-cut]
     daysummary = daysummary[,-cut]
   }
-  if(min(dim(as.matrix(daysummary))) == 1) {
+  if (min(dim(as.matrix(daysummary))) == 1) {
     if (nrow(as.matrix(daysummary)) != 1) {
       daysummary = t(daysummary) #if there is only one day of data
     }
   }
-  daysummary = data.frame(value=daysummary,stringsAsFactors=FALSE)
+  daysummary = data.frame(value = daysummary, stringsAsFactors = FALSE)
   names(daysummary) = ds_names
   # remove double columns with 1-6am variables
-  columnswith16am = grep("1-6am",x=colnames(daysummary))
+  columnswith16am = grep("1-6am", x = colnames(daysummary))
   if (length(columnswith16am) > 1) {
     daysummary = daysummary[,-columnswith16am[2:length(columnswith16am)]]
   }
@@ -259,7 +262,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   if (length(mw) > 0) {
     filesummary[mw] = " "
   }
-  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | duplicated(s_names) |
+  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names) == T | duplicated(s_names) |
                 s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_",
                                "AD_N hours", "WE_N hours", "WD_N hours", "WWD_N hours", "WWE_N hours",
                                "AD_N valid hours", "WE_N valid hours", "WD_N valid hours", "WWD_N valid hours", "WWE_N valid hours"))

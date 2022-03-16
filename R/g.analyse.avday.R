@@ -1,6 +1,6 @@
 g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                            ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), 
-                           qcheck = c(), ...) {
+                           qcheck = c(), acc.metric = c(), ...) {
   #get input variables
   input = list(...)
   expectedArgs = c("doquan", "averageday", "M", "IMP",
@@ -15,6 +15,11 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                             input = input) # load default parameters
     params_247 = params$params_247
   }
+  if (length(acc.metric) == 0) {
+    acc.metric = colnames(IMP$metashort)[which(colnames(IMP$metashort) %in% 
+                                                 c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+  }
+  
   if (doquan == TRUE) {
     QLN = rep(" ",length(params_247[["qlevels"]]))
     for (QLNi in 1:length(params_247[["qlevels"]])) {
@@ -101,7 +106,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight because we need full calendar days to compare
   lmn = (midnightsi[length(midnightsi)] * (ws2/ws3)) - 1
   # By using the metashort from the IMP we do not need to ignore segments, because data imputed
-  Xi = IMP$metashort[fmn:lmn, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+  Xi = IMP$metashort[fmn:lmn, acc.metric]
   # IV IS
   IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, 
                    IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
@@ -115,7 +120,8 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   # (Extended) Cosinor analysis
   if (params_247[["cosinor"]] == TRUE) {
     # Re-derive Xi but this time include entire time series
-    Xi = IMP$metashort[, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+    Xi = IMP$metashort[, acc.metric]
+    # Xi = log((Xi * 1000) + 1)  # log transformed to be more robust against peaks in the data
     # set non-wear to missing values, because for Cosinor fit
     # it seems more logical to only fit with real data
     # this comes at the price of not being able to extract F_pseudo
@@ -132,8 +138,10 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
       }
     }
     if (length(which(is.na(Xi) == FALSE)) > (1440 * (60/ws3))) { # Only attempt cosinor analyses if there is more than 24 hours of data
-      timeOffsetHours = (((firstmidnighti - 1) * (ws2 / ws3)) - (firstvalid - 1)) / (3600 / ws3)
+      midnightsi_ws3 = (midnightsi - 1) * (ws2 / ws3)
+      timeOffsetHours = (midnightsi_ws3[which(midnightsi_ws3 >= firstvalid - 1)[1]] - (firstvalid - 1)) / (3600 / ws3)
       cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
+      cosinor_coef$timeOffsetHours = timeOffsetHours
     } else {
       cosinor_coef = c()
     }

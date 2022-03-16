@@ -151,7 +151,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         idloc = params_general[["idloc"]],
                         includedaycrit = params_cleaning[["includedaycrit"]],
                         selectdaysfile = params_cleaning[["selectdaysfile"]],
-                        myfun = myfun)
+                        myfun = myfun,
+                        acc.metric = params_general[["acc.metric"]])
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {

@@ -1,7 +1,7 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                       quantiletype = 7, includedaycrit = 16, 
-                      idloc = 1, snloc = 1, selectdaysfile=c(), 
-                      dayborder=0,  desiredtz = "", myfun=c(), ...) {
+                      idloc = 1, snloc = 1, selectdaysfile = c(), 
+                      dayborder = 0,  desiredtz = "", myfun = c(), acc.metric = c(), ...) {
   
   #get input variables
   input = list(...)
@@ -234,7 +234,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                  M = M, IMP = IMP, t_TWDI = t_TWDI,
                                  quantiletype = quantiletype, ws3 = ws3,
                                  doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
-                                 midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck)
+                                 midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck,
+                                 acc.metric = acc.metric)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
