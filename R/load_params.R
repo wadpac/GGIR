@@ -101,7 +101,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                          viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE,
                          week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
                          outliers.only = FALSE, criterror = 3, do.visual = FALSE,
-                         do.sibreport = FALSE)
+                         do.sibreport = FALSE, do.part2.pdf = TRUE)
     
   }
   if ("general" %in% group) {

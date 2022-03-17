@@ -1,4 +1,5 @@
-g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfile=c(), store.long=FALSE) {
+g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, selectdaysfile = c(), store.long = FALSE,
+                          do.part2.pdf = TRUE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -17,7 +18,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     }
     #---------------------------------
     # Specifying directories with meta-data and extracting filenames
-    path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
+    path = paste0(metadatadir, "/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
     fnames = dir(path) # part 1
     # ms2.out = "/meta/ms2.out"
     fnames.ms2 = dir(paste0(metadatadir,ms2.out))  #part 2
@@ -32,36 +33,38 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
-      cat(paste0(" ",i))
+      cat(paste0(" ", i))
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
-        dev.off()
+        if (do.part2.pdf == TRUE) dev.off()
       }
-      if (pdfpagecount == 1) {
-        pdf(paste0(metadatadir,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf"),width=7,height=7)
+      if (pdfpagecount == 1 & do.part2.pdf == TRUE) {
+        pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"), width = 7, height = 7)
       }
       # First load part 1 data
       M = c()
-      fname2read =paste0(path,fnames[i])
-      try(expr={load(fname2read)},silent=TRUE) #reading RData-file
+      fname2read = paste0(path,fnames[i])
+      try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
       if (length(M) == 0) {
         cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
       }
       fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
       selp = which(fnames.ms2 == fname)
-      if(length(selp) == 0 ) {
+      if (length(selp) == 0 ) {
         cat(paste0("File ",fname," not available in part 2"))
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
         # Load part 2 data
-        IMP=c()
-        fname2read = paste0(metadatadir,ms2.out,"/",fnames.ms2[selp])
-        try(expr={load(file=fname2read)},silent=TRUE)
+        IMP = c()
+        fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
+        try(expr = {load(file = fname2read)}, silent = TRUE)
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
-        Q = g.plot(IMP,M,I,durplot)
+        if (do.part2.pdf == TRUE) {
+          Q = g.plot(IMP,M,I,durplot)
+        }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
@@ -78,7 +81,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
             bind_with_prev_data = function(df1, df2) {
-              df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
+              df1 = data.table::rbindlist(list(df1, df2), fill = TRUE)
               df1 = as.data.frame(df1)
               return(df1)
             }
@@ -93,7 +96,7 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
           }
         }
       }
-      if (length(SUMMARY) == 0 |length(daySUMMARY) == 0) {
+      if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports")
       }
       SUMMARY_clean = tidyup_df(SUMMARY)
@@ -107,12 +110,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
       }
       tm = which(colnames(M$metalong) == "temperaturemean")
       if (length(tm) > 0) {
-        tmean = as.character(mean(as.numeric(as.matrix(M$metalong[1:(nrow(M$metalong)-1),tm]))))
+        tmean = as.character(mean(as.numeric(as.matrix(M$metalong[1:(nrow(M$metalong) - 1), tm]))))
       } else {
-        tmean= ""
+        tmean = ""
       }
       #=========
-      header= I$header
+      header = I$header
       mon = I$monn
       hnames = rownames(header)
       hvalues = as.character(as.matrix(header))
@@ -152,19 +155,19 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
         C$tempoffset = c(0, 0, 0)
       }
       if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
-      QC = data.frame(filename=fnames[i],
-                      file.corrupt=M$filecorrupt,
-                      file.too.short=M$filetooshort,
-                      use.temperature=C$use.temp,
-                      scale.x=C$scale[1], scale.y=C$scale[2], scale.z=C$scale[3],
-                      offset.x=C$offset[1], offset.y=C$offset[2], offset.z=C$offset[3],
-                      temperature.offset.x=C$tempoffset[1],  temperature.offset.y=C$tempoffset[2],
-                      temperature.offset.z=C$tempoffset[3],
-                      cal.error.start=C$cal.error.start,
-                      cal.error.end=C$cal.error.end,
-                      n.10sec.windows=C$npoints,
-                      n.hours.considered = C$nhoursused, QCmessage=C$QCmessage,mean.temp=tmean,
-                      device.serial.number=deviceSerialNumber,stringsAsFactors=FALSE,NFilePagesSkipped=M$NFilePagesSkipped)
+      QC = data.frame(filename = fnames[i],
+                      file.corrupt = M$filecorrupt,
+                      file.too.short = M$filetooshort,
+                      use.temperature = C$use.temp,
+                      scale.x = C$scale[1], scale.y = C$scale[2], scale.z = C$scale[3],
+                      offset.x = C$offset[1], offset.y = C$offset[2], offset.z = C$offset[3],
+                      temperature.offset.x = C$tempoffset[1],  temperature.offset.y = C$tempoffset[2],
+                      temperature.offset.z = C$tempoffset[3],
+                      cal.error.start = C$cal.error.start,
+                      cal.error.end = C$cal.error.end,
+                      n.10sec.windows = C$npoints,
+                      n.hours.considered = C$nhoursused, QCmessage = C$QCmessage, mean.temp = tmean,
+                      device.serial.number = deviceSerialNumber, stringsAsFactors = FALSE, NFilePagesSkipped = M$NFilePagesSkipped)
       if (i == 1 | i == f0) {
         QCout = QC
       } else {
@@ -189,11 +192,10 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 0,selectdaysfil
     }
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
-    dev.off()
+    if (do.part2.pdf == TRUE) {
+      dev.off()
+    }
     #===============================================================================
-    #now delete rows with incorrect participants
-    #----------------------------------------------------
-    # get original folder structure and assess to what phase each file belonged
     # store final matrices again
     write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
     write.csv(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)

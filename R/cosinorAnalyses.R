@@ -25,7 +25,7 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
     return(x)
   }
   coef$acrotime = add24ifneg(coef$acrotime)
-  coef$acr = coef$acr - ((timeOffsetHours / 24) * 2 * pi)
+  coef$acr = coef$acr + ((timeOffsetHours / 24) * 2 * pi)
   if (coef$acr < 0) coef$acr = coef$acr + (2 * pi)
   coefext$UpMesor = add24ifneg(coefext$UpMesor - timeOffsetHours)
   coefext$DownMesor = add24ifneg(coefext$DownMesor - timeOffsetHours)

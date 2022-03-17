@@ -114,6 +114,7 @@
       \item{timewindow}{Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
         or both c("MM","WW").}
+      \item{do.part2.pdf}{Boolean to indicate whether QC pdf should be stored}
     }
   }
   \subsection{params_phyact}{

@@ -281,6 +281,7 @@ idloc | 2, 4 | params_general
 do.imp | 2 | params_cleaning
 storefolderstructure | 2, 4, 5 | params_output
 epochvalues2csv | 2 | params_output
+do.part2.pdf | 2 | params_output
 mvpadur | 2 | params_phyact
 window.summary.size | 2 | params_247
 bout.metric | 2, 5| params_phyact
@@ -671,7 +672,7 @@ IVIS_epochsize_seconds | Argument has been deprecated
 `WE_` | Weekend days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over weekend days only
 `WD_` | Week days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over week days only
 `WWE_` | Weekend days (weighted average)	The variable was calculated per day and then averaged over weekend days. Double weekend days are averaged. This is only relevant for experiments that last for more than seven days.
-`WWD_` | Week days (weighted average)	The variable was calculated per day and then averaged over week days. Double weekend days were averaged. This is only relevant for experiments that last for more than seven days)
+`WWD_` | Week days (weighted average)	The variable was calculated per day and then averaged over week days. Double week days were averaged. This is only relevant for experiments that last for more than seven days)
 WWD_MVPA_E5S_T100_ENMO | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100
 `WWE_MVPA_E5S_B1M80%_T100_ENMO` | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 based on a bout criteria of 100
 `WE_[100,150)_mg_0-24h_ENMO` | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight) |	A log of decision made in part2.R
