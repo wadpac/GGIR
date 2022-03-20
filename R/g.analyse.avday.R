@@ -155,9 +155,9 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
         # Q9 = quantile(x = XT$Xi, probs = 0.75, na.rm = TRUE)
         # XT$Xi[which(XT$Xi >= Q9)] = Q9
         
-        # log transform
+        # log transform of data in millig
         notna = !is.na(XT$Xi)
-        XT$Xi[notna] = log(XT$Xi[notna] + 1) 
+        XT$Xi[notna] = log((XT$Xi[notna]*1000) + 1) 
         Xi = XT$Xi
         
         
