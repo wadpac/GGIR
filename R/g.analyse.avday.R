@@ -140,7 +140,32 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     if (length(which(is.na(Xi) == FALSE)) > (1440 * (60/ws3))) { # Only attempt cosinor analyses if there is more than 24 hours of data
       midnightsi_ws3 = (midnightsi - 1) * (ws2 / ws3)
       timeOffsetHours = (midnightsi_ws3[which(midnightsi_ws3 >= firstvalid - 1)[1]] - (firstvalid - 1)) / (3600 / ws3)
-      cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = ws3, timeOffsetHours = timeOffsetHours) 
+      
+      
+      if (ws3 < 60) {
+        # If epochsize < 1 minute then aggregate to 1 minute by taking maximum value
+        # but keep NA values
+        XTtime = rep(1:length(Xi), each = 60 / ws3)
+        XT = data.frame(Xi = Xi, time = XTtime[1:length(Xi)])
+        XT = aggregate(x = XT, by = list(XT$time), FUN = max, na.rm = TRUE)
+        if (length(which(is.nan(XT$Xi) == TRUE)) > 0) {
+          is.na(XT$Xi[which(is.nan(XT$Xi) == TRUE)]) = TRUE
+        }
+        # experimental: clip all peaks above Xth percentile?
+        # Q9 = quantile(x = XT$Xi, probs = 0.75, na.rm = TRUE)
+        # XT$Xi[which(XT$Xi >= Q9)] = Q9
+        
+        # log transform
+        notna = !is.na(XT$Xi)
+        XT$Xi[notna] = log(XT$Xi[notna] + 1) 
+        Xi = XT$Xi
+        
+        
+        epochsize = 60
+      } else {
+        epochsize = ws3
+      }
+      cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, timeOffsetHours = timeOffsetHours) 
       cosinor_coef$timeOffsetHours = timeOffsetHours
     } else {
       cosinor_coef = c()
