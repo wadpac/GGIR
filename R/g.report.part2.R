@@ -178,10 +178,13 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
       }
       #---------------------------------------------------------------
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
+        SUMMARY_clean = tidyup_df(SUMMARY)
+        daySUMMARY_clean = tidyup_df(daySUMMARY)
         #store matrix temporarily to keep track of process
         write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
         write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
         if (length(selectdaysfile) > 0) {
+          winSUMMARY_clean = tidyup_df(winSUMMARY)
           write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
         }
         write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
