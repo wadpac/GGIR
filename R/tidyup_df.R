@@ -1,4 +1,7 @@
 tidyup_df = function(df = c(), digits = 3) {
+  # remove empty rows
+  df = df[rowSums(!is.na(df)) > 0, ]
+
   for (i in 1:ncol(df)) {
     # convert to numeric if possible
     df[,i] = tryCatch(as.numeric(as.character(df[, i])), 

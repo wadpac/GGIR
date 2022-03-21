@@ -32,6 +32,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
     if (f1 > length(fnames)) f1 = length(fnames)
     #-----------------------------
     # Loop through all the files
+    cnt_SUM = 0
+    cnt_daySUM = 0
+    cnt_winSUM = 0
     for (i in f0:f1) {
       cat(paste0(" ", i))
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
@@ -75,32 +78,34 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
             if (length(selectdaysfile) > 0) {
               winSUMMARY = SUM$windowsummary[,which(
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
-              winSUMMARY_clean = tidyup_df(winSUMMARY)
+              cnt_winSUM = nrow(winSUMMARY)
             }
+            cnt_daySUM = nrow(daySUMMARY)
+            cnt_SUM = nrow(SUMMARY)
           } else {
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
-            bind_with_prev_data = function(df1, df2) {
-              df1 = data.table::rbindlist(list(df1, df2), fill = TRUE)
-              df1 = as.data.frame(df1)
-              return(df1)
-            }
-            SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
-            daySUMMARY = bind_with_prev_data(daySUMMARY, SUM$daysummary)
+            SUMMARY[(cnt_SUM + 1):(cnt_SUM + nrow(SUM$summary)),] = SUM$summary
+            daySUMMARY[(cnt_daySUM + 1):(cnt_daySUM + nrow(SUM$daysummary)),] = SUM$daysummary
+            cnt_SUM = cnt_SUM + nrow(SUM$summary)
+            cnt_daySUM = cnt_daySUM + nrow(SUM$daysummary)
             if (length(selectdaysfile) > 0) {
-              # winsummary
-              winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
-              winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
-              winSUMMARY_clean = tidyup_df(winSUMMARY)
+              winSUMMARY[(cnt_winSUM + 1):(cnt_winSUM + nrow(SUM$windowsummary)),] = SUM$windowsummary
+              cnt_winSUM = cnt_winSUM + nrow(SUM$windowsummary)
             }
+          }
+          # expand data.frame when approaching the end of it
+          if (cnt_SUM > nrow(SUMMARY) - 50) {
+            SUMMARY[(cnt_SUM + 1):(cnt_SUM + 1000),] = NA
+          }
+          if (cnt_daySUM > nrow(daySUMMARY) - 100) {
+            daySUMMARY[(cnt_daySUM + 1):(cnt_daySUM + 10000),] = NA
           }
         }
       }
       if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports")
       }
-      SUMMARY_clean = tidyup_df(SUMMARY)
-      daySUMMARY_clean = tidyup_df(daySUMMARY)
       #-----------------
       # create data quality report
       if (length(C$cal.error.end) == 0) C$cal.error.end = " "
@@ -180,6 +185,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
       }
       #---------------------------------------------------------------
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
+        SUMMARY_clean = tidyup_df(SUMMARY)
+        daySUMMARY_clean = tidyup_df(daySUMMARY)
+        if (length(selectdaysfile) > 0) {
+          winSUMMARY_clean = tidyup_df(winSUMMARY)
+        }
         #store matrix temporarily to keep track of process
         write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
         write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
@@ -194,6 +204,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
     rm(M); rm(I)
     if (do.part2.pdf == TRUE) {
       dev.off()
+    }
+    SUMMARY_clean = tidyup_df(SUMMARY)
+    daySUMMARY_clean = tidyup_df(daySUMMARY)
+    if (length(selectdaysfile) > 0) {
+      winSUMMARY_clean = tidyup_df(winSUMMARY)
     }
     #===============================================================================
     # store final matrices again
