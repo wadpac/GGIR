@@ -140,14 +140,21 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     if (length(which(is.na(Xi) == FALSE)) > (1440 * (60/ws3))) { # Only attempt cosinor analyses if there is more than 24 hours of data
       midnightsi_ws3 = (midnightsi - 1) * (ws2 / ws3)
       timeOffsetHours = (midnightsi_ws3[which(midnightsi_ws3 >= firstvalid - 1)[1]] - (firstvalid - 1)) / (3600 / ws3)
-      
-      
       if (ws3 < 60) {
         # If epochsize < 1 minute then aggregate to 1 minute by taking maximum value
         # but keep NA values
         XTtime = rep(1:length(Xi), each = 60 / ws3)
         XT = data.frame(Xi = Xi, time = XTtime[1:length(Xi)])
-        XT = aggregate(x = XT, by = list(XT$time), FUN = max, na.rm = TRUE)
+        custommax = function(x) {
+          y = NA
+          if (length(x) > 0) {
+            if (length(which(is.na(x) == FALSE) ) > 0) {
+              y = max(x, na.rm = TRUE)
+            }
+          }
+          return(y)
+        }
+        XT = aggregate(x = XT, by = list(XT$time), FUN = custommax)
         if (length(which(is.nan(XT$Xi) == TRUE)) > 0) {
           is.na(XT$Xi[which(is.nan(XT$Xi) == TRUE)]) = TRUE
         }
@@ -159,8 +166,6 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
         notna = !is.na(XT$Xi)
         XT$Xi[notna] = log((XT$Xi[notna]*1000) + 1) 
         Xi = XT$Xi
-        
-        
         epochsize = 60
       } else {
         epochsize = ws3
