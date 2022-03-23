@@ -142,7 +142,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
     } else {
       # pass on functions
       functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX", 
-                           "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex")
+                           "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex",
+                           "extract_params", "load_params", "check_params")
       errhand = 'stop'
     }
     fe_dopar = foreach::`%dopar%`

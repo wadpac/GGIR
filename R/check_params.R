@@ -140,7 +140,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
     }
-    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012") == TRUE) {
+    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
         warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
       }

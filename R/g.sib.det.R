@@ -124,6 +124,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       if (BrondCount_colname %in% colnames(IMP$metashort)) {
         BrondCount =  IMP$metashort[, BrondCount_colname]
         BrondCount = fix_NA_invector(BrondCount)
+      } else {
+        BrondCount = c()
       }
     } else {
       zeroCrossingCount = c()
