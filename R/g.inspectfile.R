@@ -22,7 +22,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       eval(parse(text = txt))
     }
   }
-  # Although also documented in the package manuel files, here 
+  # Although also documented in the package manual files, here 
   # for convenience the monitor codes (mon):
   # 0 - ad-hoc file (currently only .csv format)
   # 3 - Actigraph; 4 - Axivity (AX3, AX6)
@@ -62,12 +62,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     } else if (tmp5[length(tmp5)] == "a") { #this is a cwa file
       dformat = 4 #4 = cwa
       mon = 4 # Axivity
-    } else if (tmp6[length(tmp6)] == "3x") { #this is a cwa file
-      dformat = 6 #4 = cwa
-      mon = 3 # Axivity
+    } else if (tmp6[length(tmp6)] == "3x") { #this is a gt3x file
+      dformat = 6 #6 = gt3x
+      mon = 3 # actigraph
     }
     is.mv = ismovisens(datafile)
-    if (is.mv == TRUE){
+    if (is.mv == TRUE) {
       dformat = 1
       sf = 64
       mon = 5
@@ -75,12 +75,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
     if (dformat == 1 & is.mv == FALSE) { # .bin and not movisens
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-      if("GENEAread" %in% rownames(installed.packages()) == FALSE) {
+      if ("GENEAread" %in% rownames(installed.packages()) == FALSE) {
         cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
       }
       suppressWarnings(try(expr = {isitageneactive = GENEAread::header.info(binfile = datafile, more = F)}, silent = TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
-      try(expr={isitagenea = g.binread(datafile,0,1)},silent=TRUE)
+      try(expr = {isitagenea = g.binread(datafile, 0, 1)} , silent = TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
       if (length(isitagenea) > 1) {
         mon = 1 #mon = 1 is code for saying that it is a genea
@@ -103,7 +103,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           mon = 2 #mon = 1 is code for saying that it is a geneactive
           H = isitageneactive
           tmp = unlist(strsplit(unlist(H[2,1])," "))
-          tmp2 = unlist(strsplit(as.character(tmp[1]),","))
+          tmp2 = unlist(strsplit(as.character(tmp[1]), ","))
           if (length(tmp2) > 1) { #decimals seperated by comma
             sf = as.numeric(tmp2[1])
             sf = sf + (as.numeric(tmp2[2]))/10
@@ -127,16 +127,16 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
             }
             #check whether it is comma separated
             tmp4 = unlist(strsplit(as.character(sf_r),","))
-            if (length(tmp4) >1) { #comma
+            if (length(tmp4) > 1) { #comma
               sf_r = as.numeric(tmp4[1]) + as.numeric(tmp4[2]) / 10
             } else { #dot
               sf_r = as.numeric(sf_r)
             }
             if (length(sf_r) > 0) {
               if (is.na(sf_r) == FALSE) {
-                if (sf_r != sf & abs(sf_r-sf) > 5) { #use pageheader sample frequency if it is not the same as header sample frequency
+                if (sf_r != sf & abs(sf_r - sf) > 5) { #use pageheader sample frequency if it is not the same as header sample frequency
                   sf = sf_r
-                  print(paste("sample frequency used from page header: ",sf," Hz",sep=""))
+                  print(paste("sample frequency used from page header: ", sf, " Hz", sep = ""))
                 }
               }
             }
@@ -158,7 +158,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           sf = as.numeric(tmp[1])
         }
       } else if (mon == 3) {
-        tmp0 = read.csv(datafile,nrow=9,skip=0)
+        tmp0 = read.csv(datafile, nrow = 9, skip = 0)
         tmp = colnames(tmp0)
         tmp2 = as.character(unlist(strsplit(tmp,".Hz"))[1])
         # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2])
@@ -173,10 +173,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (mon == 4) {
         # sample frequency is not stored
-        tmp0 = read.csv(datafile,nrow=100000,skip=0)
-        tmp1 = as.numeric(as.POSIXlt(tmp0[,1]))
+        tmp0 = read.csv(datafile, nrow = 100000, skip = 0)
+        tmp1 = as.numeric(as.POSIXlt(tmp0[, 1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
-        sf = floor((sf) /5 ) *5 # round to nearest interget of 5
+        sf = floor((sf) / 5 ) * 5 # round to nearest interget of 5
       }
     } else if (dformat == 3) { # wav
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
@@ -202,6 +202,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   if (length(filename) == 0) {
     print("no files to analyse")
   }
+  
   if (length(params_rawdata[["rmc.firstrow.acc"]]) == 1) {
     dformat = 5
     mon = 0
@@ -213,7 +214,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.header.length = params_rawdata[["rmc.header.length"]],
                                     rmc.col.acc = params_rawdata[["rmc.col.acc"]],
                                     rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                                    rmc.col.time=params_rawdata[["rmc.col.time"]],
+                                    rmc.col.time = params_rawdata[["rmc.col.time"]],
                                     rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
                                     rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
                                     rmc.unit.time = params_rawdata[["rmc.unit.time"]],
@@ -240,36 +241,37 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     sf = INFI$sf
   }
   if (dformat == 1) { #binary data
-    if (mon == 1) { #genea
+    if (mon == 1) { # genea
       genea = g.binread(datafile,0,1)
       H = genea$header
     } else if (mon == 2) { #geneactive
-      H = GENEAread::header.info(binfile=datafile, more = F)
+      H = GENEAread::header.info(binfile = datafile, more = F)
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
     }
   } else if (dformat == 2) { #csv data
-    if (mon == 2) { #genea
-      H = read.csv(datafile,nrow=20,skip=0) #note that not the entire header is copied
+    if (mon == 2) { # geneactiv
+      H = read.csv(datafile,nrow = 20, skip = 0) #note that not the entire header is copied
+      # cat("\nGENEACTIV csv files support is deprecated in GGIR v2.6-2 onwards. Please, either use the GENEACTIV bin files or the read.myacc.csv function on the csv files")
     } else if (mon == 3) { #actigraph
-      H = read.csv(datafile,nrow=9,skip=0)
+      H = read.csv(datafile, nrow = 9, skip = 0)
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
     }
   } else if (dformat == 3) { #wav data
     header = c()
-    try(expr={header = rownames(read.csv(datafile,nrow=15,header=TRUE))},silent=TRUE)
+    try(expr = {header = rownames(read.csv(datafile, nrow = 15, header = TRUE))}, silent = TRUE)
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="WINDOWS-1252"))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "WINDOWS-1252"))
     }
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="UTF-8"))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "UTF-8"))
     }
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE,fileEncoding="latin1"))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "latin1"))
     }
-    if (length(which(header %in% paste0(1:15,sep="") == TRUE)) == 15) { #
-      header = read.csv(datafile,skipNul=TRUE,nrow=15,skip=1,header=FALSE)
+    if (length(which(header %in% paste0(1:15, sep = "") == TRUE)) == 15) { #
+      header = read.csv(datafile, skipNul = TRUE, nrow = 15, skip = 1, header = FALSE)
       if (ncol(header) == 2) {
         ii = which(is.na(header[,2]) == FALSE)
         if (length(ii) > 0) header = header[-ii,]
@@ -277,10 +279,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
     if (length(header) <= 5) {
-      header = rownames(read.csv(datafile,skipNul=TRUE,nrow=15,header=TRUE))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE))
     }
     H = sapply(header,function(x) {
-      tmp = as.character(unlist(strsplit(as.character(x),": ")))
+      tmp = as.character(unlist(strsplit(as.character(x), ": ")))
       if (length(tmp) == 1) {
         tmp = c(tmp, NA)
       }
@@ -304,14 +306,14 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     
     H = header = Pusercsvformat$header
     if (Pusercsvformat$header != "no header") {
-      H = data.frame(name=row.names(header),value=header, stringsAsFactors = TRUE)
+      H = data.frame(name = row.names(header), value = header, stringsAsFactors = TRUE)
     }
     sf = params_rawdata[["rmc.sf"]]
   } else if (dformat == 6) { # gt3x
     info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
     info = info[lengths(info) != 0] # remove odd NULL in the list
     H = as.data.frame(info)
-    H = data.frame(name=names(H),value=as.character(H), stringsAsFactors = FALSE)
+    H = data.frame(name = names(H), value = as.character(H), stringsAsFactors = FALSE)
     sf = as.numeric(H$value[which(H$name == "Sample.Rate")])
   }
   H = as.matrix(H)
@@ -329,8 +331,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         for (runb in 1:length(vnames)) {
           tmp = unlist(strsplit(H[run],vnames[runb]))
           if (length(tmp) > 1) {
-            Hnames[run] = paste(tmp[1],vnames[runb],sep="")
-            Hvalues[run] = paste(tmp[2],sep="")
+            Hnames[run] = paste(tmp[1], vnames[runb], sep = "")
+            Hvalues[run] = paste(tmp[2], sep = "")
           }
         }
       }
@@ -341,7 +343,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
   }
   if (dformat == 4) {
-    header = data.frame(value=H,row.names=rownames(H), stringsAsFactors = TRUE)
+    header = data.frame(value = H, row.names = rownames(H), stringsAsFactors = TRUE)
   } else {
     if (mon == 2 & dformat == 1) {
       varname = rownames(as.matrix(H))
@@ -352,14 +354,14 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   }
   if (dformat != 4 & length(H) > 1 & (class(H)[1] == "matrix" | class(H)[1] == "data.frame")) {
     RowsWithData = which(is.na(H[,1]) == FALSE)
-    header = data.frame(value=H[RowsWithData,2],row.names=H[RowsWithData,1], stringsAsFactors = TRUE)
+    header = data.frame(value = H[RowsWithData, 2], row.names = H[RowsWithData, 1], stringsAsFactors = TRUE)
   }
   if (H[1,1] == "file does not have header") { #no header
     header = "no header"
   }
   if (mon == 3 & dformat != 6) {
-    verisense_check = substr(colnames(read.csv(datafile,nrow=1)[1]),36,44)
-    if (identical('Verisense',toString(verisense_check))) {
+    verisense_check = substr(colnames(read.csv(datafile,nrow = 1)[1]), start = 36, stop = 44)
+    if (identical('Verisense', toString(verisense_check))) {
       mon = 6
     }
   }
@@ -367,6 +369,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
-  invisible(list(header=header,monc=monc,monn=monn,
-                 dformc=dformc,dformn=dformn,sf=sf,filename=filename))
+  invisible(list(header = header, monc = monc, monn = monn,
+                 dformc = dformc, dformn = dformn, sf = sf, filename = filename))
 }
