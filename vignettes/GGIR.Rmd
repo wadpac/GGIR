@@ -511,7 +511,7 @@ g.shell.GGIR(
              maxdur = 9,                 includedaycrit = 16,
              qwindow=c(0,24),
              mvpathreshold =c(100),
-             bout.metric = 4,
+             bout.metric = 6,
              excludefirstlast = FALSE,
              includenightcrit = 16,
              #=====================
@@ -1012,7 +1012,9 @@ The implementation of the zero-crossing count in GGIR is not an exact copy of th
 
 Missing information about the calculation includes: (1) Sadeh specified that calculations were done on data from the Y-axis but the direction of the Y-axis was not clarified. Therefore, it is unclear whether the Y-axis at the time corresponds to the Y-axis of modern sensors, (2) Properties of the frequency filter are missing like the filter order and more generally it is unclear how to simulate original acceleration sensor behaviour with modern sensor data, and (3) Sensitivity of the sensor, we are now guessing that the Motionlogger had a sensitivity of 0.01 _g_ but without direct proof.
 
-The method proposed by Galland and colleagues in 2012 was designed for counts captured with the Actical device (Mini Mitter Co, Inc Bend OR). Based on the correspondence with AMI we can conclude that Actical counts are not identical to AMI's actigraph counts. Further, a publicly accessible complete description of the Actical calculation does not exist. Therefore, we can also conclude that methodological consistency cannot be guaranteed for  Actical counts.
+The method proposed by Galland and colleagues in 2012 was designed for counts captured with the Actical device (Mini Mitter Co, Inc Bend OR). Based on the correspondence with AMI we can conclude that Actical counts are not identical to AMI's actigraph counts. Further, a publicly accessible complete description of the Actical calculation does not exist. Therefore, we can also conclude that methodological consistency cannot be guaranteed for Actical counts.
+
+To aid research in exploring count type algorithms, we also implemented the BrondCounts as proposed by Br&#248;nd and Brondeel and available via R package activityCounts. To extract this metric in addition to the zero crossing count, specify `do.brondcounts = TRUE` which is used in GGIR part 1 and uses R package activityCounts in the background. As a result, sleep estimates for Sadeh or Galland will be derived based on both the zero crossing algorithm and the brond counts algorithms. 
 
 
 ### Guiders

@@ -148,7 +148,7 @@
         package activityCounts. We call them BrondCounts because
         there are large number of acitivty counts in the physical activity and
         sleep research field. By calling them Brond Counts we clarify that 
-        these are the counts proposed by Jan Brond and implemented in R by
+        these are the counts proposed by Jan Br&#248;nd and implemented in R by
         Ruben Brondeel. The Brond Counts are intended to be an imitation of
         one the counts produced by one of the closed source ActiLife software
         by ActiGraph.}
