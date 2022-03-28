@@ -307,9 +307,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           defaultdur = defaultSptWake - defaultSptOnset  #default sleep duration based on sleeplog, L5+/-6hr, or HDCZA algorithm
           sleeplog_used = FALSE
           if (dolog == TRUE) {
-            if (is.na(sleeplog[wi[j], 3]) == FALSE) {
-              #-----------------------------------------------------------
-              # If sleep log is available for a specific night then use it
+            #-----------------------------------------------------------
+            # If sleep log is available for at least one night use it
+            if (all(is.na(sleeplog[wi[j], params_sleep[["coln1"]]:ncol(sleeplog)])) == FALSE) {
               sleeplog_used = TRUE
             }
           }
