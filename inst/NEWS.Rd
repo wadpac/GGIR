@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6-3 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Part 4: Now able to work with idloc values other than 2 and 5
+    \item Minor documentation updates to cover BrondCounts and to reflect that 
+      bout.metric is no longer 4 by default
+    }
+}
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
 \itemize{
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
