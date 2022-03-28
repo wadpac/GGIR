@@ -1,17 +1,37 @@
 g.part4_extractid = function(idloc, fname, dolog, sleeplogidnum, sleeplog) {
   #------------------------------------------------------
   # extract the identifier from accelerometer data
-  if (idloc == 2 | idloc == 5) { #idloc is an argument to specify where the participant identifier can be found
+  if (idloc %in% c(1, 2, 3, 5, 6, 7) == TRUE) { #idloc is an argument to specify where the participant identifier can be found
     if (idloc == 2) {
-      getCharBeforeUnderscore = function(x) {
+      getIDfromChar = function(x) {
         return(as.character(unlist(strsplit(x,"_")))[1])
       }
-    } else {
-      getCharBeforeUnderscore = function(x) {
+    } else if (idloc == 3) {
+      getIDfromChar = function(x) {
+        for (j in 1:length(x)) {
+          temp = unlist(strsplit(x,"-"))
+          if (length(temp) == 2) {
+            x2[j] = as.character(temp[1])
+          } else {
+            x2[j] = as.character(x[j])
+          }
+        }
+        return(x2)
+      }
+    } else if (idloc == 5 | idloc == 1) {
+      getIDfromChar = function(x) {
         return(as.character(unlist(strsplit(x," ")))[1])
       }
+    } else if (idloc == 6) {
+      getIDfromChar = function(x) {
+        return(as.character(unlist(strsplit(x,"[.]")))[1])
+      }
+    } else if (idloc == 7) {
+      getIDfromChar = function(x) {
+        return(as.character(unlist(strsplit(x,"-")))[1])
+      }
     }
-    accid = apply(as.matrix(as.character(fname)),MARGIN=c(1),FUN=getCharBeforeUnderscore)
+    accid = apply(as.matrix(as.character(fname)),MARGIN=c(1),FUN=getIDfromChar)
     accid_bu = accid
     getLastCharacterValue = function(x) {
       tmp = as.character(unlist(strsplit(x,"")))
