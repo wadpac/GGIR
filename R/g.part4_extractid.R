@@ -21,7 +21,6 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplogidnum, sleeplog, accid
         }
       }
       accid = apply(as.matrix(as.character(fname)), MARGIN = c(1), FUN = getIDfromChar)
-    
     } else { # get id from filename
       newaccid = fname
       if (length(unlist(strsplit(newaccid, "_"))) > 1) newaccid = unlist(strsplit(newaccid, "_"))[1]
