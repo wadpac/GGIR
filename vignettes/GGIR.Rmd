@@ -1014,7 +1014,7 @@ Missing information about the calculation includes: (1) Sadeh specified that cal
 
 The method proposed by Galland and colleagues in 2012 was designed for counts captured with the Actical device (Mini Mitter Co, Inc Bend OR). Based on the correspondence with AMI we can conclude that Actical counts are not identical to AMI's actigraph counts. Further, a publicly accessible complete description of the Actical calculation does not exist. Therefore, we can also conclude that methodological consistency cannot be guaranteed for Actical counts.
 
-To aid research in exploring count type algorithms, we also implemented the BrondCounts as proposed by Br&#248;nd and Brondeel and available via R package activityCounts. To extract this metric in addition to the zero crossing count, specify `do.brondcounts = TRUE` which is used in GGIR part 1 and uses R package activityCounts in the background. As a result, sleep estimates for Sadeh or Galland will be derived based on both the zero crossing algorithm and the brond counts algorithms. 
+To aid research in exploring count type algorithms, we also implemented the `brondcounts` as proposed by Br&#248;nd and Brondeel and available via R package activityCounts. To extract this metric in addition to the zero crossing count, specify `do.brondcounts = TRUE` which is used in GGIR part 1 and uses R package activityCounts in the background. As a result, sleep estimates for Sadeh or Galland will be derived based on both the zero crossing algorithm and the `brondcounts` algorithms. 
 
 
 ### Guiders

@@ -3,8 +3,9 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.6-3 (GitHub-only-release date:??-??-2022)}{
 \itemize{
-    \item Part 4: Now able to work with idloc values other than 2 and 5
-    \item Minor documentation updates to cover BrondCounts and to reflect that 
+    \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename
+    if that fails. Previously it extracted the ID twice.
+    \item Minor documentation updates to cover brondcounts and to reflect that 
       bout.metric is no longer 4 by default
     \item Part 4: Fix bug #531 re. sleeplog being ignored if first night is missing
     }
