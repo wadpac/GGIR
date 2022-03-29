@@ -147,9 +147,9 @@
       \item{do.brondcounts}{Boolean, if TRUE calculate metric via R
         package activityCounts. We call them BrondCounts because
         there are large number of acitivty counts in the physical activity and
-        sleep research field. By calling them Brond Counts we clarify that 
+        sleep research field. By calling them _brondcounts_ we clarify that 
         these are the counts proposed by Jan Br&#248;nd and implemented in R by
-        Ruben Brondeel. The Brond Counts are intended to be an imitation of
+        Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
         one the counts produced by one of the closed source ActiLife software
         by ActiGraph.}
       \item{lb}{Numeric, lower boundary of the frequency filter (in Hertz) as
