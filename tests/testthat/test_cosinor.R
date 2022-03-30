@@ -2,10 +2,6 @@ library(GGIR)
 context("cosinorAnalyses")
 
 test_that("cosinorAnalyses provides expected output", {
-  source("~/GGIR/R/cosinorAnalyses.R")
-  source("~/GGIR/R/g.IVIS.R")
-  source("~/GGIR/R/g.imputeTimegaps.R")
-  library(testthat)
   ActCosDummy = function(epochSizeSeconds, missingdata = FALSE, timeOffsetHours = 0) {
     N = 1440 * (60 / epochSizeSeconds) # Number of epochs per day
     if (timeOffsetHours == 0) {
