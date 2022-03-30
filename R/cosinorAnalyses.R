@@ -5,17 +5,20 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   coef = ActCR::ActCosinor(x = Xi, window = 1440 / N)
   coefext = ActCR::ActExtendCosinor(x = Xi, window = 1440 / N) # need to set lower and upper argument?
   # Correct time estimates by offset in start of recording
-  coef$acrotime = coef$acrotime - timeOffsetHours
   add24ifneg = function(x) {
     if (x < 0) x = x + 24
     return(x)
   }
-  coef$acrotime = add24ifneg(coef$acrotime)
-  coef$acr = coef$acr + ((timeOffsetHours / 24) * 2 * pi)
-  if (coef$acr < 0) coef$acr = coef$acr + (2 * pi)
+  coef$acrotime = add24ifneg(coef$acrotime - timeOffsetHours)
   coefext$UpMesor = add24ifneg(coefext$UpMesor - timeOffsetHours)
   coefext$DownMesor = add24ifneg(coefext$DownMesor - timeOffsetHours)
   coefext$acrotime = add24ifneg(coefext$acrotime - timeOffsetHours)
+  # do same for acrophase in radians (24 hours: 2 * pi)
+  # take absolute value of acrophase, because it seems ActCR provides negative value in radians,
+  # which is inversaly correlated with acrotime
+  coef$acr = abs(coef$acr) - ((timeOffsetHours / 24) * 2 * pi)
+  k = ceiling(abs(coef$acr) / (pi * 2))
+  if (coef$acr < 0) coef$acr = coef$acr + (k * 2 * pi)
   
   # Perform IVIS on the same input signal to allow for direct comparison
   IVIS = g.IVIS(Xi = Xi, epochsizesecondsXi = epochsize, IVIS_windowsize_minutes = 60, IVIS.activity.metric = 2)
