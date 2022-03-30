@@ -132,6 +132,10 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
                                "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
                                "cosinorExt_DownMesor", "cosinorExt_MESOR", "cosinorExt_ndays")
       vi = vi + 9
+      filesummary[vi:(vi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
+                                    cosinor_coef$IVIS$IntradailyVariability)
+      s_names[vi:(vi + 1)] = c("cosinorIS", "cosinorIV")
+      vi = vi + 2
     }
     
     # Variables per metric - summarise with stratification to weekdays and weekend days

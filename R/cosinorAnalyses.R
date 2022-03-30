@@ -16,5 +16,9 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   coefext$UpMesor = add24ifneg(coefext$UpMesor - timeOffsetHours)
   coefext$DownMesor = add24ifneg(coefext$DownMesor - timeOffsetHours)
   coefext$acrotime = add24ifneg(coefext$acrotime - timeOffsetHours)
-  invisible(list(coef = coef, coefext = coefext))
+  
+  # Perform IVIS on the same input signal to allow for direct comparison
+  IVIS = g.IVIS(Xi = Xi, epochsizesecondsXi = epochsize, IVIS_windowsize_minutes = 60, IVIS.activity.metric = 2)
+  
+  invisible(list(coef = coef, coefext = coefext, IVIS = IVIS))
 }

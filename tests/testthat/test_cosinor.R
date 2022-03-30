@@ -2,6 +2,10 @@ library(GGIR)
 context("cosinorAnalyses")
 
 test_that("cosinorAnalyses provides expected output", {
+  source("~/GGIR/R/cosinorAnalyses.R")
+  source("~/GGIR/R/g.IVIS.R")
+  source("~/GGIR/R/g.imputeTimegaps.R")
+  library(testthat)
   ActCosDummy = function(epochSizeSeconds, missingdata = FALSE, timeOffsetHours = 0) {
     N = 1440 * (60 / epochSizeSeconds) # Number of epochs per day
     if (timeOffsetHours == 0) {
@@ -25,6 +29,7 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef60_Offset17$coef, coef60$coef, tolerance = 0.001)
   expect_equal(coef60_Offset9$coefext, coef60$coefext, tolerance = 0.001)
   expect_equal(coef60_Offset17$coefext, coef60$coefext, tolerance = 0.001)
+  expect_equal(coef60_Offset9$IVIS, coef60$IVIS, tolerance = 0.001)
   
   # standard cosinor analyses
   expect_equal(coef5$coef$mes, 1, tolerance = 0.01)
@@ -34,6 +39,7 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef5$coef$ndays, 7)
   expect_equal(coef5$coef, coef60$coef, tolerance = 0.01)
   expect_equal(coef5$coef, coef300$coef, tolerance = 0.01)
+  expect_equal(coef5$IVIS, coef300$IVIS, tolerance = 0.01)
   
   # extended cosinor analyses
   expect_equal(coef5$coefext$minimum, 0)
@@ -43,6 +49,11 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef5$coefext$UpMesor, 0.2549, tolerance = 0.01)
   expect_equal(coef5$coefext$DownMesor, 11.7603, tolerance  = 0.01)
   expect_equal(coef5$coefext$MESOR, 1.063105, tolerance  = 0.01)
+  
+  # IV IS
+  expect_equal(coef5$IVIS$InterdailyStability, 0.99, tolerance  = 0.01)
+  expect_equal(coef5$IVIS$IntradailyVariability, 1.12, tolerance  = 0.01)
+  
   fields_to_compare = c("minimum", "amp", "alpha", "beta", "acrotime", "DownMesor", "MESOR")
   expect_equal(coef5$coefext[fields_to_compare], coef60$coefext[fields_to_compare], tolerance = 0.1)
   expect_equal(coef60$coefext[fields_to_compare], coef300$coefext[fields_to_compare], tolerance = 0.1)

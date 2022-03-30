@@ -145,16 +145,16 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
         # but keep NA values
         XTtime = rep(1:length(Xi), each = 60 / ws3)
         XT = data.frame(Xi = Xi, time = XTtime[1:length(Xi)])
-        custommax = function(x) {
+        custommean = function(x) {
           y = NA
           if (length(x) > 0) {
             if (length(which(is.na(x) == FALSE) ) > 0) {
-              y = max(x, na.rm = TRUE)
+              y = mean(x, na.rm = TRUE)
             }
           }
           return(y)
         }
-        XT = aggregate(x = XT, by = list(XT$time), FUN = custommax)
+        XT = aggregate(x = XT, by = list(XT$time), FUN = custommean)
         if (length(which(is.nan(XT$Xi) == TRUE)) > 0) {
           is.na(XT$Xi[which(is.nan(XT$Xi) == TRUE)]) = TRUE
         }
