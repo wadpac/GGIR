@@ -8,6 +8,7 @@
       \item Minor documentation updates to cover brondcounts and to reflect that 
       bout.metric is no longer 4 by default
       \item Part 2: IVIS now able to handle missing data points
+      \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
       \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses
     }
 }

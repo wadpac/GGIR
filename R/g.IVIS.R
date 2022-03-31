@@ -1,10 +1,10 @@
-g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds=c(), IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1) {
+g.IVIS = function(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds=c(), IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1, IVIS_acc_threshold = 20) {
   if (length(IVIS_epochsize_seconds) > 0) {
     warning("Argument IVIS_epochsize_seconds has been depricated and has been ignored.")
   }
   IVIS_epochsize_seconds = IVIS_windowsize_minutes*60
   if (IVIS.activity.metric == 2) { # use binary scoring
-    Xi = ifelse((Xi * 1000) < 20, 0, 1) # explored on 5 June 2018 as an attempt to better mimic original ISIV construct
+    Xi = ifelse((Xi * 1000) < IVIS_acc_threshold, 0, 1) # explored on 5 June 2018 as an attempt to better mimic original ISIV construct
     Xi = zoo::rollsum(x = Xi, k = (600/epochsizesecondsXi)) # explored on 5 June 2018 as an first attempt to better mimic original ISIV construct
   }
   if (length(Xi) > (IVIS_epochsize_seconds/epochsizesecondsXi) & length(Xi) >  (IVIS_windowsize_minutes * 60)/epochsizesecondsXi) {

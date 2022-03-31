@@ -9,7 +9,8 @@
 }
 \usage{
   g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = c(),
-  IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1)
+  IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1,
+  IVIS_acc_threshold = 20)
 }
 \arguments{
   \item{Xi}{
@@ -30,6 +31,9 @@
   Value = 1, uses continuous scaled acceleration.
   Value = 2, tries to collapse acce;eration into a binary score of rest
   versus active to try to similate the original approach.
+  }
+  \item{IVIS_acc_threshold}{
+   Acceleration threshold to distinguish inactive from active
   }
 }
 \value{

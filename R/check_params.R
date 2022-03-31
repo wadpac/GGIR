@@ -75,6 +75,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
+                       "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
     boolean_params = "cosinor"

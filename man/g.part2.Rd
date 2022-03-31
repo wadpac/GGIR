@@ -213,6 +213,7 @@
       \item{IVIS_windowsize_minutes}{Numeric, see \link{g.IVIS}}
       \item{IVIS_epochsize_seconds}{depricated. Numeric, see \link{g.IVIS}}
       \item{IVIS.activity.metric}{Numeric, see \link{g.IVIS}}
+      \item{IVIS_acc_threshold}{Numeric, see \link{g.IVIS}}
       \item{qM5L5}{Numeric, see \link{g.getM5L5}}
       \item{MX.ig.min.dur}{Numeric, see \link{g.getM5L5}}
       \item{LUXthresholds}{Numeric. Vector with numeric sequece corresponding to
