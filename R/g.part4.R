@@ -202,7 +202,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = params_general[["desiredtz"]])
         # extract the identifier from accelerometer data and matching indices of sleeplog:
-        idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i], dolog, params_sleep[["sleeplogidnum"]], sleeplog, accid = accid)
+        idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i],
+                                 dolog, params_sleep[["sleeplogidnum"]], sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
         #-----------------------------------------------------------
@@ -314,7 +315,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           if (dolog == TRUE) {
             #-----------------------------------------------------------
             # If sleep log is available for at least one night use it
-            if (all(is.na(sleeplog[wi[j], params_sleep[["coln1"]]:ncol(sleeplog)])) == FALSE) {
+            if (all(!is.na(sleeplog[wi[j], 4:5]))) {
               sleeplog_used = TRUE
             }
           }
@@ -390,6 +391,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             SptWake = defaultSptWake + 24  #use default assumption about wake
             logdur[i] = SptWake - SptOnset
             cleaningcode = 1  # no diary available for this night, so fall back on detaults
+            sleeplog_used = FALSE
           }
           #-----------------------------------------
           # plan analysis according to knowledge about whether it is a daysleeper or not if you
