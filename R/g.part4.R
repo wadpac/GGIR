@@ -317,12 +317,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           sleeplog_used = FALSE
           if (dolog == TRUE) {
             #-----------------------------------------------------------
-            # If sleep log is available for at least one night use it
-            index_in_log = which(sleeplog$night == j)
-            if (length(index_in_log) > 0) {
-              if (all(!is.na(sleeplog[index_in_log, 4:5]))) {
-                sleeplog_used = TRUE
-              }
+            # If sleep log is available and values are not missing
+            if (all(!is.na(guider.df[j, 4:5]))) {
+              sleeplog_used = TRUE
             }
           }
           if (sleeplog_used == FALSE) {
@@ -330,7 +327,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
             guider.df[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
-                                   convertHRsinceprevMN2Clocktime(defaultSptWake))
+                                  convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
           }
           nightj = nightj + 1
