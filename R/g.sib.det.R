@@ -112,6 +112,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         angley = fix_NA_invector(angley)
       }
     }
+    if (acc.metric %in% colnames(IMP$metashort) == FALSE) {
+      warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+    }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(anglez))
     if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | params_sleep[["HASIB.algo"]] == "Galland2012") { # extract zeroCrossingCount
