@@ -315,8 +315,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           if (dolog == TRUE) {
             #-----------------------------------------------------------
             # If sleep log is available for at least one night use it
-            if (all(!is.na(sleeplog[wi[j], 4:5]))) {
-              sleeplog_used = TRUE
+            index_in_log = which(sleeplog$night == j)
+            if (length(index_in_log) > 0) {
+              if (all(!is.na(sleeplog[index_in_log, 4:5]))) {
+                sleeplog_used = TRUE
+              }
             }
           }
           if (sleeplog_used == FALSE) {
