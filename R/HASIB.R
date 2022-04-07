@@ -145,14 +145,13 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         CountperWindow = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = aggwindow)
       } else {
         CountperWindow = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = aggwindow)
-        CountperWindow = CountperWindow / 100 # because this is what ActiLife does for their counts
+        # CountperWindow = CountperWindow / 100 # this is what ActiLife claims to do, but generates unlikely output
       }
       # Convert unit to counts per minute if aggwindow is not 60
       if (aggwindow != 60) CountperWindow = CountperWindow * (60/aggwindow)
-      if (count_type != "zeroCrossingCount") {
-        # because this is what ActiLife does for their counts
-        CountperWindow = ifelse(test = CountperWindow > 300, yes = CountperWindow, no = 300)
-      }
+      # if (count_type != "zeroCrossingCount") {
+      #   CountperWindow = ifelse(test = CountperWindow > 300, yes = CountperWindow, no = 300)  # CountperWindow = CountperWindow / 100 # this is what ActiLife claims to do, but generates unlikely output
+      # }
       # Prepare matrix to ease applying weighted 
       CountperWindow_matrix = create_rollfun_mat(CountperWindow, Ncol = 7)
       CountperWindow_matrix = CountperWindow_matrix[7:(nrow(CountperWindow_matrix) - 6),]
