@@ -47,7 +47,9 @@
   \item{\code{nhoursused}}{number of hours of measurement data scanned to find
     the ten second time windows with no movement}
   \item{\code{meantempcal}}{mean temperature corresponding to the data as used for 
-    autocalibration. Only applies to data collected with GENEActiv monitor. 
+    autocalibration. Only applies to data where temperate data is collected
+    and available to GGIR, such as GENEActiv, Axivity, and in some instances
+    ad-hoc .csv data.
   }
 }
 \examples{

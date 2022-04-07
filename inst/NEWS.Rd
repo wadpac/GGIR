@@ -3,10 +3,11 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.6-3 (GitHub-only-release date:??-??-2022)}{
 \itemize{
-    \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename
-    if that fails. Previously it extracted the ID twice.
-    \item Minor documentation updates to cover brondcounts and to reflect that 
+    \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from     filename if that fails. Previously it extracted the ID twice.
+    \item Minor documentation updates to cover: brondcounts, to reflect that 
       bout.metric is no longer 4 by default
+    \item General: Speeded-up implementation of rounding decimal places as introduced in release 2.6-1 
+    \item Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location        to be consistent with the term used in part 3.
     }
 }
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{

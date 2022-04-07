@@ -116,7 +116,8 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
         If not provided function will estimate longitudinal axis. Only used when
         sensor.location="hip" or HASPT.algo="HorAngle".} 
       \item{anglethreshold}{Numeric, Angle threshold (degrees) for sustained 
-        inactivity periods detection, default = 5}
+        inactivity periods detection, default = 5. This can be specified
+        as multiple thresholds, each of which will be implemented. }
       \item{timethreshold}{Numeric, time threshold (minutes) for sustained
         inactivity periods detection, default = 5. This can be specified
         as multiple thresholds, each of which will be implemented. 
