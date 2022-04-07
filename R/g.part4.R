@@ -251,8 +251,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         daysleeper = rep(FALSE, length(nnights.list))
         ###########################################################
         nightj = 1
+        sleeplog.t = data.frame(matrix(NA, length(nnights.list), 5), stringsAsFactors = FALSE)
+        names(sleeplog.t) = c("ID", "night", "duration", "sleeponset", "sleepwake")
+        sleeplog.t$night = nnights.list
         if (dolog == TRUE) {
-          sleeplog.t = sleeplog[wi, ]
+          sleeplog.t[which(sleeplog.t$night %in% sleeplog$night),] = sleeplog[wi, ]
         }
         for (j in nnights.list) {
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
@@ -326,10 +329,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             #-----------------------------------------------------------
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
-            if (j == nnights.list[1] & dolog == FALSE) {
-              sleeplog.t = data.frame(matrix(0, length(nnightlist), 5), stringsAsFactors = FALSE)
-              names(sleeplog.t) = c("ID", "night", "duration", "sleeponset", "sleepwake")
-            }
             sleeplog.t[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
                                    convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
@@ -343,6 +342,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
+          
           sleeplog.t2 = sleeplog.t[which(sleeplog.t$night == j), ]
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
