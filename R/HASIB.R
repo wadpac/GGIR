@@ -86,6 +86,10 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       } else {
         Countpermin = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = 60)
       }
+      if (count_type != "zeroCrossingCount") {
+        # because this is what ActiLife does for their counts
+        Countpermin = ifelse(test = Countpermin > 300, yes = Countpermin, no = 300)
+      }
       Countpermin_matrix = create_rollfun_mat(Countpermin, Ncol = 11)
       Countpermin_matrix = Countpermin_matrix[11:(nrow(Countpermin_matrix) - 10),]
       CalcSadehFT = function(x) {
@@ -141,9 +145,14 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         CountperWindow = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = aggwindow)
       } else {
         CountperWindow = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = aggwindow)
+        CountperWindow = CountperWindow / 100 # because this is what ActiLife does for their counts
       }
       # Convert unit to counts per minute if aggwindow is not 60
       if (aggwindow != 60) CountperWindow = CountperWindow * (60/aggwindow)
+      if (count_type != "zeroCrossingCount") {
+        # because this is what ActiLife does for their counts
+        CountperWindow = ifelse(test = CountperWindow > 300, yes = CountperWindow, no = 300)
+      }
       # Prepare matrix to ease applying weighted 
       CountperWindow_matrix = create_rollfun_mat(CountperWindow, Ncol = 7)
       CountperWindow_matrix = CountperWindow_matrix[7:(nrow(CountperWindow_matrix) - 6),]
@@ -155,7 +164,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       # Not applying rescoring as described by Cole 1992, because accuracy improvements
       # were reported to be marginal which makes the added complexity not justified
       PSscores = rep(0, length(PS))
-      PSsibs = which(PS <= 1) # sleep
+      PSsibs = which(PS < 1) # sleep
       if (length(PSsibs) > 0) {
         PSscores[PSsibs] = 1 #sleep
       }
