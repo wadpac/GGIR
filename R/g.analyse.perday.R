@@ -1,7 +1,7 @@
 g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatures, 
                             midnightsi, metashort, averageday,
                             doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
-                            fname, idloc, BodyLocation, wdayname, tooshort, includedaycrit,
+                            fname, idloc, sensor.location, wdayname, tooshort, includedaycrit,
                             doquan, quantiletype, doilevels, domvpa,
                             mvpanames, wdaycode, ID,
                             deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
@@ -14,7 +14,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                    "selectdaysfile", "ndays", "firstmidnighti", "time", "nfeatures", 
                    "midnightsi", "metashort", "averageday",
                    "doiglevels", "nfulldays","lastmidnight", "ws3", "ws2", "qcheck",
-                   "fname", "idloc", "BodyLocation", "wdayname", "tooshort", "includedaycrit",
+                   "fname", "idloc", "sensor.location", "wdayname", "tooshort", "includedaycrit",
                    "doquan", "quantiletype", "doilevels", "domvpa",
                    "mvpanames", "wdaycode", "ID",
                    "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz") 
@@ -212,7 +212,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     ds_names[fi] = "filename";  fi = fi + 1
     calendardate = unlist(strsplit(as.character(vari[1,1])," "))[1]
     daysummary[di,fi] = calendardate
-    daysummary[di,(fi + 1)] = BodyLocation
+    daysummary[di,(fi + 1)] = sensor.location
     daysummary[di,(fi + 2)] = nvalidhours
     daysummary[di,(fi + 3)] = nhours
     ds_names[fi:(fi + 3)] = c("calendar_date","bodylocation","N valid hours","N hours")

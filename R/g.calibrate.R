@@ -208,7 +208,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
             use.temp = TRUE
           } else if (mon == 0 & dformat == 5 & length(params_rawdata[["rmc.col.temp"]]) > 0) { # ad-hoc format csv with temperature
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
-            temperature = as.numeric(data[,5])
+            temperature = as.numeric(data[, params_rawdata[["rmc.col.temp"]]])
             use.temp = TRUE
           } else if (mon == 0 & dformat == 5 & length(params_rawdata[["rmc.col.temp"]]) == 0) { # ad-hoc format csv without temperature
             Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
