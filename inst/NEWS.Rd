@@ -5,9 +5,11 @@
 \itemize{
     \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename
     if that fails. Previously it extracted the ID twice.
-    \item Minor documentation updates to cover brondcounts and to reflect that 
+    \item Minor documentation updates to cover brondcounts and to reflect that
       bout.metric is no longer 4 by default
-    \item Part 4: Fix bug #531 re. sleeplog being ignored if first night is missing
+    \item Minor change to parallel processing so that GGIR does not create a cluster larger than the number of
+      files to process. Fixes #535
+      \item Part 4: Fix bug #531 re. sleeplog being ignored if first night is missing
     }
 }
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
