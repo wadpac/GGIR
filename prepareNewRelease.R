@@ -95,5 +95,5 @@ prepareNewRelease = function(version = c()) {
     }
     i = i + 1
   }
-  if (errorfound == FALSE) cat(paste0("\nNo problem found. Package consistently uses version ",version," and date ", dateReversed))
+  if (errorfound == FALSE) cat(paste0("\nNo problem found. Package consistently uses version ",version," and release date ", dateReversed))
 }
