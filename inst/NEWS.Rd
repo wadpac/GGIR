@@ -7,6 +7,8 @@
     if that fails. Previously it extracted the ID twice.
     \item Minor documentation updates to cover brondcounts and to reflect that 
       bout.metric is no longer 4 by default
+    \item Minor change to parallel processing so that GGIR does not create a cluster larger than the number of 
+      files to process. Fixes #535
     }
 }
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
