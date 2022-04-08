@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-3 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-3 (GitHub-only-release date:08-04-2022)}{
 \itemize{
     \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename
     if that fails. Previously it extracted the ID twice.
