@@ -36,13 +36,13 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
     sdcriter = 0.003
     racriter = 0.05
   } else if (monc == 2) {
-    sdcriter = 0.013 #0.0109 in rest test
+    sdcriter = 0.013
   } else if (monc == 3) {
-    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR ACTIGRAPH???????????
+    sdcriter = 0.013
   } else if (monc == 4) {
-    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR Axivity???????????
+    sdcriter = 0.013
   } else if (monc == 5) {
-    sdcriter = 0.013 #ADJUSTMENT NEEDED FOR MOVISENS???????????
+    sdcriter = 0.013
   } else if (monc == 6) {
     sdcriter = 0.013
     racriter = 0.20
