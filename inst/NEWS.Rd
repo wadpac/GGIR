@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-3 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-3 (GitHub-only-release date:08-04-2022)}{
 \itemize{
     \item Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location        to be consistent with the term used in part 3.
     \item Minor documentation updates to cover brondcounts and to reflect that
