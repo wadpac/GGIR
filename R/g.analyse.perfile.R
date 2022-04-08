@@ -1,4 +1,4 @@
-g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
                              LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                              ML5AD_names, igfullr, igfullr_names,
                              daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
@@ -22,7 +22,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   s_names[vi:(vi+1)] = c("ID","device_sn")
   vi = vi+2
   # starttime of measurement, body location, filename
-  filesummary[vi] = BodyLocation
+  filesummary[vi] = sensor.location
   filesummary[(vi+1)] = fname
   filesummary[(vi+2)] = startt # starttime of measurement
   s_names[vi:(vi+2)] = c("bodylocation","filename","start_time")
