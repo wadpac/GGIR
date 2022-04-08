@@ -202,7 +202,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = params_general[["desiredtz"]])
         # extract the identifier from accelerometer data and matching indices of sleeplog:
-        idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i], dolog, params_sleep[["sleeplogidnum"]], sleeplog, accid = accid)
+        idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i],
+                                 dolog, params_sleep[["sleeplogidnum"]], sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
         #-----------------------------------------------------------
@@ -250,8 +251,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         daysleeper = rep(FALSE, length(nnights.list))
         ###########################################################
         nightj = 1
+        guider.df = data.frame(matrix(NA, length(nnights.list), 5), stringsAsFactors = FALSE)
+        names(guider.df) = c("ID", "night", "duration", "sleeponset", "sleepwake")
+        guider.df$night = nnights.list
         if (dolog == TRUE) {
-          sleeplog.t = sleeplog[wi, ]
+          guider.df[which(guider.df$night %in% sleeplog$night),] = sleeplog[wi, ]
         }
         for (j in nnights.list) {
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
@@ -312,9 +316,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           defaultdur = defaultSptWake - defaultSptOnset  #default sleep duration based on sleeplog, L5+/-6hr, or HDCZA algorithm
           sleeplog_used = FALSE
           if (dolog == TRUE) {
-            if (is.na(sleeplog[wi[j], 3]) == FALSE) {
-              #-----------------------------------------------------------
-              # If sleep log is available for a specific night then use it
+            #-----------------------------------------------------------
+            # If sleep log is available and values are not missing
+            if (all(!is.na(guider.df[j, 4:5]))) {
               sleeplog_used = TRUE
             }
           }
@@ -322,12 +326,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             #-----------------------------------------------------------
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
-            if (j == nnights.list[1] & dolog == FALSE) {
-              sleeplog.t = data.frame(matrix(0, length(nnightlist), 5), stringsAsFactors = FALSE)
-              names(sleeplog.t) = c("ID", "night", "duration", "sleeponset", "sleepwake")
-            }
-            sleeplog.t[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
-                                   convertHRsinceprevMN2Clocktime(defaultSptWake))
+            guider.df[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
+                                  convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
           }
           nightj = nightj + 1
@@ -339,15 +339,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
-          sleeplog.t2 = sleeplog.t[which(sleeplog.t$night == j), ]
+          
+          guider.df2 = guider.df[which(guider.df$night == j), ]
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
           # is a nightworker onset
-          tmp1 = as.character(sleeplog.t2$sleeponset[1])
+          tmp1 = as.character(guider.df2$sleeponset[1])
           tmp2 = unlist(strsplit(tmp1, ":"))
           SptOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
           # wake
-          tmp4 = as.character(sleeplog.t2$sleepwake[1])
+          tmp4 = as.character(guider.df2$sleepwake[1])
           tmp5 = unlist(strsplit(tmp4, ":"))
           SptWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
           # Assess whether it is a daysleeper or a nightsleeper
@@ -390,6 +391,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             SptWake = defaultSptWake + 24  #use default assumption about wake
             logdur[i] = SptWake - SptOnset
             cleaningcode = 1  # no diary available for this night, so fall back on detaults
+            sleeplog_used = FALSE
           }
           #-----------------------------------------
           # plan analysis according to knowledge about whether it is a daysleeper or not if you
@@ -440,7 +442,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             } else {
               acc_available = TRUE
             }
-            # we now have sleeplog (or HDCZA or L5+/-6hr) data for one night (sleeplog.t2) and we
+            # we now have sleeplog (or HDCZA or L5+/-6hr) data for one night (guider.df2) and we
             # have acc data for one night (sleepdet)
             defs = unique(sleepdet$definition)  # definition of sleep episode metric (see van Hees 2015 PLoSONE paper)
             for (k in defs) {

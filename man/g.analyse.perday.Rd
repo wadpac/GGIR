@@ -11,7 +11,7 @@
 g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures, 
                 midnightsi, metashort, averageday,
                 doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
-                fname, idloc, BodyLocation, wdayname, tooshort, includedaycrit,
+                fname, idloc, sensor.location, wdayname, tooshort, includedaycrit,
                 doquan, quantiletype, doilevels, domvpa,
                 mvpanames, wdaycode, ID,
                 deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
@@ -37,7 +37,7 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
     quality check derived with g.impute}
   \item{fname}{RData filename produced by g.part1}
   \item{idloc}{see \link{g.analyse}}
-  \item{BodyLocation}{as produced by \link{g.extractheadervars}} 
+  \item{sensor.location}{as produced by \link{g.extractheadervars}} 
   \item{wdayname}{character with weekdayname}
   \item{tooshort}{0 (file not too short) or 1 (file too short)} 
   \item{includedaycrit}{see \link{g.analyse}} 

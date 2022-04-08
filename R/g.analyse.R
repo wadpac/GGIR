@@ -49,7 +49,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   # Extracting basic information about the file
   hvars = g.extractheadervars(I)
   ID = hvars$ID;              iID = hvars$iID; IDd = hvars$IDd
-  HN = hvars$HN;              BodyLocation = hvars$BodyLocation
+  HN = hvars$HN;              sensor.location = hvars$sensor.location
   SX = hvars$SX;                deviceSerialNumber = hvars$deviceSerialNumber
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
@@ -253,7 +253,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      doiglevels = doiglevels, nfulldays = nfulldays,
                                      lastmidnight = lastmidnight,
                                      ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
-                                     idloc = idloc, BodyLocation = BodyLocation, wdayname = wdayname,
+                                     idloc = idloc, sensor.location = sensor.location, wdayname = wdayname,
                                      tooshort = tooshort, includedaycrit = includedaycrit,
                                      quantiletype = quantiletype, doilevels = doilevels, 
                                      domvpa = domvpa,
@@ -317,7 +317,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   }
   rm(metalong); rm(metashort)
   
-  output_perfile = g.analyse.perfile(ID, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+  output_perfile = g.analyse.perfile(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
                                      LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                                      ML5AD_names, igfullr, igfullr_names,
                                      daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
