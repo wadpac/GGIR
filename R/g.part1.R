@@ -439,7 +439,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
       }
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
       
