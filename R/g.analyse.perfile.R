@@ -1,4 +1,4 @@
-g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
+g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
                              LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                              ML5AD_names, igfullr, igfullr_names,
                              daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
@@ -22,13 +22,13 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   s_names[vi:(vi + 1)] = c("ID","device_sn")
   vi = vi + 2
   # starttime of measurement, body location, filename
-  filesummary[vi] = BodyLocation
-  filesummary[(vi + 1)] = fname
-  filesummary[(vi + 2)] = startt # starttime of measurement
-  s_names[vi:(vi + 2)] = c("bodylocation", "filename", "start_time")
-  vi = vi + 3
+  filesummary[vi] = sensor.location
+  filesummary[(vi+1)] = fname
+  filesummary[(vi+2)] = startt # starttime of measurement
+  s_names[vi:(vi+2)] = c("bodylocation","filename","start_time")
+  vi = vi+3
   # weekday on which measurement started, sample frequency and device
-  filesummary[vi] = wdayname 
+  filesummary[vi] = wdayname
   filesummary[(vi + 1)] = I$sf
   filesummary[(vi + 2)] = I$monn
   s_names[vi:(vi + 2)] = c("startday", "samplefreq", "device")
@@ -69,7 +69,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
     s_names[vi:((vi - 1) + q1)] = paste0(ML5AD_names, "_fullRecording")
     vi = vi + q1
   }
-  if (doiglevels == TRUE) { 
+  if (doiglevels == TRUE) {
     # intensity gradient (as described by Alex Rowlands 2018)
     # applied to the averageday per metric (except from angle metrics)
     q1 = length(igfullr)
@@ -137,7 +137,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
       s_names[vi:(vi + 1)] = c("cosinorIS", "cosinorIV")
       vi = vi + 2
     }
-    
+
     # Variables per metric - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:length(ds_names))
     md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday", "qwindow_timestamps", "qwindow_names"))
@@ -157,7 +157,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
         # - first value is not empty
         if (storevalue == TRUE) {
           # Plain average of available days
-          v4 = mean(suppressWarnings(as.numeric(daysummary[, dtwi])), na.rm = TRUE) 
+          v4 = mean(suppressWarnings(as.numeric(daysummary[, dtwi])), na.rm = TRUE)
           filesummary[(vi + 1 + (dtwtel*sp))] = v4 # #average all availabel days
           s_names[(vi + 1 + (dtwtel * sp))] = paste0("AD_", ds_names[dtwi])
           # Average of available days per weekenddays / weekdays:
@@ -181,7 +181,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
           dtwtel = dtwtel + 1
         }
         # Plain average of available days
-        v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])), na.rm = TRUE) 
+        v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])), na.rm = TRUE)
         filesummary[(vi + 1 + (dtwtel * sp))] = v4
         s_names[(vi + 1 + (dtwtel * sp))] = paste0("AD_", ds_names[dtwi])
         # Average of available days per weekenddays / weekdays:
@@ -276,7 +276,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, BodyLocation, startt
   }
   filesummary = data.frame(value = t(filesummary), stringsAsFactors = FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
-  
+
   columns2order = c()
   if (ncol(filesummary) > 37) {
     columns2order = grep(pattern = "AD_|WE_|WD_|WWD_|WWE_", x = names(filesummary))

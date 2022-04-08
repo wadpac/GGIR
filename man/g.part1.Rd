@@ -289,8 +289,8 @@
       \item{do.parallel}{Boolean. whether to use multi-core processing
         (only works if at least 4 CPU cores are available).}
       \item{maxNcores}{Numeric. Maximum number of cores to use when argument do.parallel is set to true.
-        GGIR by default uses the maximum number of available cores, but this argument
-        allows you to set a lower maximum.}
+        GGIR by default uses either the maximum number of available cores or the number of files to 
+        process (whichever is lower), but this argument allows you to set a lower maximum.}
       \item{acc.metric}{Boolean. Which one of the metrics do you want to consider to analyze L5.
         The metric of interest need to be calculated in M.}
       \item{part5_agg2_60seconds}{Boolean. Wether to use aggregate epochs to 60 seconds

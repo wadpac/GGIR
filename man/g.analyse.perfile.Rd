@@ -9,7 +9,7 @@
 }
 \usage{
 g.analyse.perfile(ID, fname, deviceSerialNumber,
-  BodyLocation, startt, I, LC2, LD, dcomplscore,
+  sensor.location, startt, I, LC2, LD, dcomplscore,
   LMp, LWp, C, lookat, AveAccAve24hr, 
   colnames_to_lookat, QUAN,  ML5AD,
   ML5AD_names, igfullr, igfullr_names,
@@ -24,7 +24,7 @@ g.analyse.perfile(ID, fname, deviceSerialNumber,
 \item{ID}{Person Identification number, this can be numeric or character}
 \item{fname}{see \link{g.analyse.perday}}
 \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
-\item{BodyLocation}{as produced by \link{g.extractheadervars}}
+\item{sensor.location}{as produced by \link{g.extractheadervars}}
 \item{startt}{First timestamp in metalong}
 \item{I}{output \link{g.inspectfile}}
 \item{LC2}{see \link{g.impute}}
