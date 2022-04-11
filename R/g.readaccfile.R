@@ -55,8 +55,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     # The next time (blocknumber > 1) the startpage will be derived from the previous
     # endpage and the blocksize.
     if (blocknumber != 1 & length(PreviousEndPage) != 0) {
-      if ((mon == 2 & dformat == 1) | dformat == 2) {
-        # only in GENEActiv binary data and for csv format data
+      if ((mon == 2 & dformat == 1)) {
+        # only in GENEActiv binary data (GENEActiv csv data deprecated)
         # page selection is defined from start to end (including end)
         startpage = PreviousEndPage + 1
       } else {
@@ -226,22 +226,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       }
     }
     #===============
-  } else if (mon == 2 & dformat == 2) { # GENEActiv csv format
-    startpage = (100 + (blocksize * 300 * (blocknumber - 1)))
-    deltapage = (blocksize*300)
-    UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = read.csv(filename,nrow = deltapage, skip = startpage, header = FALSE, dec = decn)},silent = TRUE)
-    if (length(P) > 1) {
-      P = as.matrix(P)
-      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
-        filequality$filetooshort = TRUE
-      }
-    } else {
-      P = c()
-    }
   } else if (mon == 3 & dformat == 2) { # Actigraph csv format
     headerlength = 10
     #--------------

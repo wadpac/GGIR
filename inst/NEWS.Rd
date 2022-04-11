@@ -6,6 +6,7 @@
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
     \item Part 1: Fixed issue #520 with handling Movisens data
     \item Report generation per window: Fix undefined function call introduced in 2.6-1
+    \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
   }
 }
 \section{Changes in version 2.6-1 (release date:22-02-2022)}{
