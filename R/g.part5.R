@@ -19,7 +19,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           params_cleaning = params_cleaning,
                           params_output = params_output,
                           params_general = params_general,
-                          input = input)
+                          input = input, params2check = c("sleep", "metrics", "247",
+                                                          "phyact", "cleaning",
+                                                          "general", "output"))
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   params_247 = params$params_247
@@ -964,7 +966,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     Ncores = cores[1]
     if (Ncores > 3) {
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {

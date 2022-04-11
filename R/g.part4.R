@@ -2,20 +2,19 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                    params_sleep = c(), params_metrics = c(),
                    params_cleaning = c(), params_output = c(),
                    params_general = c(), ...) {
-
-
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
   params = extract_params(params_sleep = params_sleep, params_metrics = params_metrics,
                           params_general = params_general, params_output = params_output,
-                          params_cleaning = params_cleaning, input = input) # load default parameters
+                          params_cleaning = params_cleaning, input = input,
+                          params2check = c("sleep", "metrics",
+                                           "general", "output", "cleaning")) # load default parameters
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider=params_sleep[["relyonsleeplog"]]
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
@@ -186,16 +185,25 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                       x = colnames(nightsummary))
       }
       sumi = 1  # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
+      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
+      accid = c()
+      if (length(ID) > 0) {
+        if (!is.na(ID)) {
+          # continue with same ID as extracted in GGIR parts 1-3:
+          accid = ID
+        }
+        # if ID not available, function part4_extractid will attempt to extract it from the file name
+      }
       if (exists("RSI") == FALSE) RSI = NA
       if (nrow(sib.cla.sum) != 0) {
         # there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = params_general[["desiredtz"]])
         # extract the identifier from accelerometer data and matching indices of sleeplog:
-        idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i], dolog, params_sleep[["sleeplogidnum"]], sleeplog)
+        idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i],
+                                 dolog, params_sleep[["sleeplogidnum"]], sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
         #-----------------------------------------------------------
@@ -243,8 +251,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         daysleeper = rep(FALSE, length(nnights.list))
         ###########################################################
         nightj = 1
+        guider.df = data.frame(matrix(NA, length(nnights.list), 5), stringsAsFactors = FALSE)
+        names(guider.df) = c("ID", "night", "duration", "sleeponset", "sleepwake")
+        guider.df$night = nnights.list
         if (dolog == TRUE) {
-          sleeplog.t = sleeplog[wi, ]
+          guider.df[which(guider.df$night %in% sleeplog$night),] = sleeplog[wi, ]
         }
         for (j in nnights.list) {
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
@@ -305,9 +316,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           defaultdur = defaultSptWake - defaultSptOnset  #default sleep duration based on sleeplog, L5+/-6hr, or HDCZA algorithm
           sleeplog_used = FALSE
           if (dolog == TRUE) {
-            if (is.na(sleeplog[wi[j], 3]) == FALSE) {
-              #-----------------------------------------------------------
-              # If sleep log is available for a specific night then use it
+            #-----------------------------------------------------------
+            # If sleep log is available and values are not missing
+            if (all(!is.na(guider.df[j, 4:5]))) {
               sleeplog_used = TRUE
             }
           }
@@ -315,12 +326,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             #-----------------------------------------------------------
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
-            if (j == nnights.list[1] & dolog == FALSE) {
-              sleeplog.t = data.frame(matrix(0, length(nnightlist), 5), stringsAsFactors = FALSE)
-              names(sleeplog.t) = c("ID", "night", "duration", "sleeponset", "sleepwake")
-            }
-            sleeplog.t[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
-                                   convertHRsinceprevMN2Clocktime(defaultSptWake))
+            guider.df[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
+                                  convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
           }
           nightj = nightj + 1
@@ -328,19 +335,20 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           acc_available = TRUE  #default assumption
           # initialize dataframe to hold sleep period overview:
           spocum = data.frame(nb = numeric(0), start = numeric(0),  end = numeric(0),
-                                dur = numeric(0), def = character(0))
+                              dur = numeric(0), def = character(0))
           
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
-          sleeplog.t2 = sleeplog.t[which(sleeplog.t$night == j), ]
+          
+          guider.df2 = guider.df[which(guider.df$night == j), ]
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
           # is a nightworker onset
-          tmp1 = as.character(sleeplog.t2$sleeponset[1])
+          tmp1 = as.character(guider.df2$sleeponset[1])
           tmp2 = unlist(strsplit(tmp1, ":"))
           SptOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
           # wake
-          tmp4 = as.character(sleeplog.t2$sleepwake[1])
+          tmp4 = as.character(guider.df2$sleepwake[1])
           tmp5 = unlist(strsplit(tmp4, ":"))
           SptWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
           # Assess whether it is a daysleeper or a nightsleeper
@@ -383,6 +391,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             SptWake = defaultSptWake + 24  #use default assumption about wake
             logdur[i] = SptWake - SptOnset
             cleaningcode = 1  # no diary available for this night, so fall back on detaults
+            sleeplog_used = FALSE
           }
           #-----------------------------------------
           # plan analysis according to knowledge about whether it is a daysleeper or not if you
@@ -411,7 +420,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           # now generate empty overview for this night / person
           dummyspo = data.frame(nb = numeric(1), start = numeric(1),  end = numeric(1),
-                           dur = numeric(1), def = character(1))
+                                dur = numeric(1), def = character(1))
           dummyspo$nb[1] = 1
           spo_day = c()
           spo_day_exists = FALSE
@@ -433,7 +442,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             } else {
               acc_available = TRUE
             }
-            # we now have sleeplog (or HDCZA or L5+/-6hr) data for one night (sleeplog.t2) and we
+            # we now have sleeplog (or HDCZA or L5+/-6hr) data for one night (guider.df2) and we
             # have acc data for one night (sleepdet)
             defs = unique(sleepdet$definition)  # definition of sleep episode metric (see van Hees 2015 PLoSONE paper)
             for (k in defs) {
@@ -569,11 +578,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     # value is assigned to accelerometer-based value for onset and wake up
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
                       if ((spo$start[evi] < SptWake & spo$end[evi] > SptWake) | (spo$start[evi] < SptWake &
-                                                                             spo$end[evi] < spo$start[evi])) {
+                                                                                 spo$end[evi] < spo$start[evi])) {
                         spo$end[evi] = SptWake
                       }
                       if ((spo$start[evi] < SptOnset & spo$end[evi] > SptOnset) | (spo$end[evi] > SptOnset &
-                                                                               spo$end[evi] < spo$start[evi])) {
+                                                                                   spo$end[evi] < spo$start[evi])) {
                         spo$start[evi] = SptOnset
                       }
                     }
@@ -628,8 +637,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           if (length(spocum) > 0) {
             # if (length(which(spocum[, 5] == "0")) > 0) {
-              NAvalues = which(is.na(spocum$def) == TRUE)
-              if (length(NAvalues) > 0) {
+            NAvalues = which(is.na(spocum$def) == TRUE)
+            if (length(NAvalues) > 0) {
               spocum = spocum[-NAvalues, ]
             }
           }
@@ -657,13 +666,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
                   spocum.t$dur = correct01010pattern(spocum.t$dur)
-
+                  
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night
                   # remove double rows
                   spocum.t = spocum.t[!duplicated(spocum.t), ]
-
+                  
                   #------------------------------------
                   # ACCELEROMETER
                   if (length(which(as.numeric(spocum.t$dur) == 1)) > 0) {

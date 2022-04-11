@@ -1,15 +1,29 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-2 (release date:??-??-2022)}{
+\section{Changes in version 2.6-3 (GitHub-only-release date:08-04-2022)}{
+\itemize{
+    \item Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location        to be consistent with the term used in part 3.
+    \item Minor documentation updates to cover brondcounts and to reflect that
+      bout.metric is no longer 4 by default
+    \item Minor change to parallel processing so that GGIR does not create a cluster larger than the number of
+      files to process. Fixes #535
+    \item Part 4: Fix bug #531 re. sleeplog being ignored if first night is missing
+    \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename if that fails. Previously it extracted the ID twice.
+    \item General: Speeded-up implementation of rounding decimal places as introduced in release 2.6-1
+    }
+}
+\section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
 \itemize{
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
     \item Part 1: Fixed issue #520 with handling Movisens data
+    \item Part 1: Fixed issue #523 with calibration of ActiGraph csv files
+    \item General: Prevent redundant warnings resulting from some unnecessary checks of params objects
     \item Report generation per window: Fix undefined function call introduced in 2.6-1
     \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
   }
 }
-\section{Changes in version 2.6-1 (release date:22-02-2022)}{
+\section{Changes in version 2.6-1 (GitHub-only-release date:22-02-2022)}{
 \itemize{
     \item Part 1: Fixed bug that prohibitted processing files in subfolders.
     \item Part 1: Dynamic range can now be extracted from Axivity .cwa files when not equal to 8g.

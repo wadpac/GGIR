@@ -9,13 +9,14 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                           params_247 = params_247,
                           params_phyact = params_phyact,
                           params_output = params_output,
-                          params_general = params_general, input = input) # load default parameters
+                          params_general = params_general, input = input,
+                          params2check = c("cleaning", "247", "phyact", "output", "general")) # load default parameters
   params_cleaning = params$params_cleaning
   params_247 = params$params_247
   params_phyact = params$params_phyact
   params_output = params$params_output
   params_general = params$params_general
-  
+
   #-----------------------------
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
@@ -190,6 +191,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
+        
         save(SUM,IMP,file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
@@ -204,7 +206,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     Ncores = cores[1]
     if (Ncores > 3) {
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]]))
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
       doParallel::registerDoParallel(cl)
     } else {
