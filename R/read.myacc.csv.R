@@ -49,7 +49,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
       } else { # multiple header items
         if (ncol(header_tmp) > 1) {
           # collapse columns to one
-          for (i in 1:length(header_tmp)) { "remove quotes in character"
+          for (i in 1:length(header_tmp)) { # "remove quotes in character"
             header_tmp[i] = gsub(pattern = "\"",replacement = "",x = header_tmp[i])
           }
           header_tmp = do.call(paste0, header_tmp)
