@@ -55,8 +55,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     # The next time (blocknumber > 1) the startpage will be derived from the previous
     # endpage and the blocksize.
     if (blocknumber != 1 & length(PreviousEndPage) != 0) {
-      if ((mon == 2 & dformat == 1)) {
-        # only in GENEActiv binary data (GENEActiv csv data deprecated)
+      if ((mon == 2 & dformat == 1) | dformat == 2) {
+        # only in GENEActiv binary data and for csv format data
         # page selection is defined from start to end (including end)
         startpage = PreviousEndPage + 1
       } else {
