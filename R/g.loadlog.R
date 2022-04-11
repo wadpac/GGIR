@@ -163,11 +163,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         nonwearlog = remove_empty_rows_cols(nonwearlog, name = "nonwear")
       }
       if (length(newsleeplog) > 0) {
-        emptyrows = which(rowSums(newsleeplog == "") != 0) 
+        emptyrows = which(rowSums(newsleeplog == "") == ncol(newsleeplog)) 
         if (length(emptyrows)) {
           newsleeplog = newsleeplog[-emptyrows,]
         }
-        emptycols = which(colSums(newsleeplog == "") != 0) 
+        emptycols = which(colSums(newsleeplog == "") == nrow(newsleeplog)) 
         colp = ncol(newsleeplog)
         twocols = c(colp - 1, colp)
         while (min(twocols) > 0) {
