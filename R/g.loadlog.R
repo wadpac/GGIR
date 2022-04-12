@@ -78,9 +78,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat) 
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat)
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
-              deltadate = abs(as.numeric(startdate_sleeplog_tmp - startdate_acc))
+              deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
               if (is.na(deltadate) == FALSE) {
-                if (deltadate < 30) {
+                if (abs(deltadate) < 30) {
                   startdate_sleeplog = startdate_sleeplog_tmp
                   Sdates_correct = Sdates
                   dateformat_correct = dateformat
@@ -189,7 +189,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     }
   }
   nnights = nnights + deltadate
-  # From here we continue with original code focused on sleeplog only
+  # # From here we continue with original code focused on sleeplog only
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
   cnt = 1
@@ -225,7 +225,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       } else {
         sleeplog[cnt,1] = as.character(S[j,colid])
       }
-      sleeplog[cnt,2] = i
+      sleeplog[cnt,2] = i #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
       sleeplog[cnt,3] = dur
       sleeplog_times[cnt,1] = SL[j]
       sleeplog_times[cnt,2] = WK[j]
