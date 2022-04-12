@@ -18,12 +18,19 @@ create_test_sleeplog_csv = function(Nnights=7,storagelocation=c(), advanced=FALS
     names = "ID"
     log = c()
     for (di in 1:length(dates)) {
-      log = c(log, as.character(dates[di]), times)
+      if (di < 10) { # include day number in the time, to ease testing sleeplog processing
+        times2 = gsub(pattern = ":00:00", replacement = paste0(":00:0",di), x = times)
+      } else {
+        times2 = gsub(pattern = ":00:00", replacement = paste0(":00:", ifelse(di < 59, yes = di, no = "00")),
+                                                               x = times)
+      }
+      log = c(log, as.character(dates[di]), times2)
       names = c(names, c(paste0("D",di,"_date"),paste0("D",di, Cnames)))
     }
     sleeplog = as.data.frame(t(c("123A",log)), stringsAsFactors = TRUE)
     colnames(sleeplog) = names
-    write.table(sleeplog,file=paste0(storagelocation,"/testsleeplogfile.csv"),
+    
+    write.table(sleeplog, file = paste0(storagelocation,"/testsleeplogfile.csv"),
                 row.names = FALSE,col.names = TRUE,sep=",",fileEncoding="UTF-8")
   }
 }
