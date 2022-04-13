@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-4 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-4 (GitHub-only-release date:13-04-2022)}{
 \itemize{
     \item Part4: Bug fixed in handling of advanced sleeplog data when start of acc recording does not match start of sleeplog
    \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
