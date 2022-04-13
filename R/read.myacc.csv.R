@@ -32,23 +32,24 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
   } else {
     # extract header information:
     if (length(rmc.header.length) == 0) {
-      rmc.header.length = rmc.firstrow.acc-1
+      rmc.header.length = rmc.firstrow.acc - 1
     }
     
-    options(warn=-1) # fread complains about quote in first row for some file types
+    options(warn = -1) # fread complains about quote in first row for some file types
     header_tmp = as.data.frame(data.table::fread(file = rmc.file,
                                                  nrow = rmc.header.length, 
-                                                 skip=rmc.firstrow.header-1,
-                                                 dec=rmc.dec, showProgress = FALSE, header = FALSE,
-                                                 stringsAsFactors = TRUE))
-    options(warn=0)
+                                                 skip = rmc.firstrow.header - 1,
+                                                 dec = rmc.dec, showProgress = FALSE, header = FALSE,
+                                                 stringsAsFactors = TRUE,
+                                                 blank.lines.skip = TRUE)) 
+    options(warn = 0)
     if (length(rmc.header.structure) != 0) { # header is stored in 1 column, with strings that need to be split
       if (length(header_tmp) == 1) { # one header item
         header_tmp = as.matrix(unlist(strsplit(as.character(header_tmp[,1]), rmc.header.structure)))
       } else { # multiple header items
         if (ncol(header_tmp) > 1) {
           # collapse columns to one
-          for (i in 1:length(header_tmp)) { "remove quotes in character"
+          for (i in 1:length(header_tmp)) { # "remove quotes in character"
             header_tmp[i] = gsub(pattern = "\"",replacement = "",x = header_tmp[i])
           }
           header_tmp = do.call(paste0, header_tmp)

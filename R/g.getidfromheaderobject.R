@@ -11,7 +11,7 @@ g.getidfromheaderobject = function(filename, header, dformat, mon) {
   } else if (dformat == 2) {
     if (mon == 2) {
       ID = as.character(header[which(as.character(header[,1]) == "Subject Code"),2])
-    } else if (mon == 3 | mon == 6) {
+    } else if (mon == 3 | mon == 6 | mon == 4) {
       ID = filename #ID not stored in fileheader, but filename instead
     }
   } else if (dformat == 3 | dformat == 4 | dformat == 6) {
