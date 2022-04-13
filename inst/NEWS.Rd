@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6-4 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Part4: Bug fixed in handling of advanced sleeplog data when start of acc recording does not match start of sleeplog
+   \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
+    }
+}
 \section{Changes in version 2.6-3 (GitHub-only-release date:08-04-2022)}{
 \itemize{
     \item Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location        to be consistent with the term used in part 3.
@@ -20,7 +26,6 @@
     \item Part 1: Fixed issue #523 with calibration of ActiGraph csv files
     \item General: Prevent redundant warnings resulting from some unnecessary checks of params objects
     \item Report generation per window: Fix undefined function call introduced in 2.6-1
-    \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
   }
 }
 \section{Changes in version 2.6-1 (GitHub-only-release date:22-02-2022)}{

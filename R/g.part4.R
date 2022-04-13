@@ -255,7 +255,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         names(guider.df) = c("ID", "night", "duration", "sleeponset", "sleepwake")
         guider.df$night = nnights.list
         if (dolog == TRUE) {
-          guider.df[which(guider.df$night %in% sleeplog$night),] = sleeplog[wi, ]
+          if (length(wi) > 0) {
+            guider.df[which(guider.df$night %in% sleeplog$night),] = sleeplog[wi, ]
+          }
         }
         for (j in nnights.list) {
           # go through the nights get default onset and wake (based on sleeplog or on heuristic

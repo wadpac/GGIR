@@ -150,7 +150,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   deviceSerialNumber = hvars$deviceSerialNumber
   # if GENEActiv csv, deprecated function
   if (mon == 2 & dformat == 2 & length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-3 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
+    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
   }
   if (mon == 3) {
     # If Actigraph then try to specify dynamic range based on Actigraph model
