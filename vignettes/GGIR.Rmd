@@ -77,7 +77,7 @@ remotes::install_github("wadpac/GGIR")
 ## Prepare folder structure
 
 1. GGIR works with the following accelerometer brands and formats:
-    - [GENEActiv](https://www.activinsights.com/) .bin and .csv
+    - [GENEActiv](https://www.activinsights.com/) .bin
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
     - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Movisens](https://www.movisens.com/en/) with data stored in folders.
