@@ -32,11 +32,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (f1 > length(fnames)) f1 = length(fnames)
     #-----------------------------
     # Loop through all the files
+    cnt_SUM = 0
+    cnt_daySUM = 0
+    cnt_winSUM = 0
     for (i in f0:f1) {
       cat(paste0(" ",i))
-      cnt_SUM = 0
-      cnt_daySUM = 0
-      cnt_winSUM = 0
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
@@ -204,6 +204,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
     dev.off()
+    # tidy up data.frames
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
     if (length(selectdaysfile) > 0) {
