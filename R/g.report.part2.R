@@ -1,5 +1,5 @@
-g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, selectdaysfile = c(), store.long = FALSE,
-                          do.part2.pdf = TRUE) {
+g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
+                          selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -43,11 +43,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
         if (do.part2.pdf == TRUE) dev.off()
       }
       if (pdfpagecount == 1 & do.part2.pdf == TRUE) {
-        pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"), width = 7, height = 7)
+        pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"),
+            width = 7, height = 7)
       }
       # First load part 1 data
       M = c()
-      fname2read = paste0(path,fnames[i])
+      fname2read = paste0(path, fnames[i])
       try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
       if (length(M) == 0) {
         cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
@@ -66,7 +67,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
         if (do.part2.pdf == TRUE) {
-          Q = g.plot(IMP,M,I,durplot)
+          Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
+          g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
@@ -172,7 +174,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0, sel
                       cal.error.end = C$cal.error.end,
                       n.10sec.windows = C$npoints,
                       n.hours.considered = C$nhoursused, QCmessage = C$QCmessage, mean.temp = tmean,
-                      device.serial.number = deviceSerialNumber, stringsAsFactors = FALSE, NFilePagesSkipped = M$NFilePagesSkipped)
+                      device.serial.number = deviceSerialNumber,
+                      stringsAsFactors = FALSE, NFilePagesSkipped = M$NFilePagesSkipped)
       if (i == 1 | i == f0) {
         QCout = QC
       } else {

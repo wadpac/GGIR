@@ -2,6 +2,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                      sleeplogidnum=TRUE,  sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
   dateformat_correct = "%Y-%m-%d" # set default value
+  deltadate = 0
   #===============================
   # Load sleep log data...
   S = read.csv(loglocation, sep = sleeplogsep, stringsAsFactors = FALSE)
@@ -15,6 +16,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         invisible(list(ID = ID, rec_starttime = rec_starttime))
       }
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
+  
       startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
@@ -55,7 +57,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       # - original ID column
       # - empty columns if relevant to make sleeplog match accelerometer recording, make sure coln1 argument is used
       # - onset and wakup times of sleeplog, for this extract dates from sleeplog to check for missing days
-      newsleeplog = matrix("", nrow(S), (nnights*2)+1)
+      newsleeplog = matrix("", nrow(S), max(c(nnights*2, 100)) + 1)
       naplog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       nonwearlog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       napcnt = 1
@@ -76,9 +78,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat) 
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat)
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
-              deltadate = abs(as.numeric(startdate_sleeplog_tmp - startdate_acc))
+              deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
               if (is.na(deltadate) == FALSE) {
-                if (deltadate < 30) {
+                if (abs(deltadate) < 30) {
                   startdate_sleeplog = startdate_sleeplog_tmp
                   Sdates_correct = Sdates
                   dateformat_correct = dateformat
@@ -89,25 +91,25 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
           }
           if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
-                           " not within 30 days of first date in accerometer recording"))
+                           " not within 30 days of first date in accerometer recording"), call. = FALSE)
           } else {
             # only attempt to use sleeplog if start date could be recognisedd
             newsleeplog[count ,1] = ID
             newsleeplog_times = c()
-            expected_dates = seq(startdate_sleeplog, startdate_sleeplog+nnights, by =1)
+            expected_dates = seq(startdate_sleeplog - deltadate, startdate_sleeplog + nnights, by = 1)
             # loop over expect dates giving start date of sleeplog
-            for (ni in 1:(length(expected_dates)-1)) { 
+            for (ni in 1:(length(expected_dates) - 1)) { 
               # checking whether date exists in sleeplog
               ind = which(Sdates_correct == as.Date(expected_dates[ni]))
               if (length(ind) > 0) {
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
                 onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
-                if (ni < (length(expected_dates)-1)) {
-                  wakeupi = wakecols[which(wakecols > curdatecol & wakecols <  nextdatecol)[1]]
-                } else if (ni == length(expected_dates)-1) {
-                  wakeupi = wakecols[which(wakecols > curdatecol)[1]]
-                }
+                # if (ni < (length(expected_dates) - 1)) {
+                wakeupi = wakecols[which(wakecols > nextdatecol)[1]]
+                # } else if (ni == length(expected_dates)-1) {
+                #   wakeupi = wakecols[which(wakecols > curdatecol)[1]]
+                # }
                 if (length(onseti) == 1 & length(wakeupi) == 1) {
                   newsleeplog_times = c(newsleeplog_times, S[i,onseti], S[i,wakeupi])
                 } else {
@@ -119,20 +121,20 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                 if (length(naps) > 0) {
                   naplog[napcnt, 1] = ID
                   naplog[napcnt, 2] = S[i, curdatecol]
-                  naplog[napcnt, 3:(2+length(naps))] = as.character(S[i, naps])
+                  naplog[napcnt, 3:(2 + length(naps))] = as.character(S[i, naps])
                   napcnt = napcnt + 1
                 }
                 if (length(nonwears) > 0) {
                   nonwearlog[nwcnt, 1] = ID
                   nonwearlog[nwcnt, 2] = S[i, curdatecol]
-                  nonwearlog[nwcnt, 3:(2+length(nonwears))] = as.character(S[i, nonwears ])
+                  nonwearlog[nwcnt, 3:(2 + length(nonwears))] = as.character(S[i, nonwears ])
                   nwcnt = nwcnt + 1
                 }
               } else {
                 newsleeplog_times = c(newsleeplog_times, "", "")
               }
             }
-            newsleeplog[count ,2:(length(newsleeplog_times)+1)] = newsleeplog_times
+            newsleeplog[count, 2:(length(newsleeplog_times) + 1)] = newsleeplog_times
             count  = count + 1  
           }
         }
@@ -141,7 +143,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         warning(paste0("\nNone of the IDs in the accelerometer data could be matched with",
                        " the ID numbers in the sleeplog. You may want to check that the ID",
                        " format in your sleeplog is consistent with the ID column in the GGIR part2 csv-report,", 
-                       " and that arguments coldid and sleeplogidnum are correctly set."))
+                       " and that arguments coldid and sleeplogidnum are correctly set."), call. = FALSE)
       }
       # remove empty rows and columns:
       remove_empty_rows_cols = function(logmatrix, name) {
@@ -149,7 +151,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                                             which((colSums(logmatrix != "") != 0) == TRUE)])
         logmatrix = as.data.frame(logmatrix)
         if (length(name) > 0 & nrow(logmatrix) > 0) {
-          newnames = c("ID", "date", rep(paste0(name, 1:ncol(logmatrix)), each=2))
+          newnames = c("ID", "date", rep(paste0(name, 1:ncol(logmatrix)), each = 2))
           colnames(logmatrix) = newnames[1:ncol(logmatrix)]
         }
         return(logmatrix)
@@ -161,9 +163,21 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         nonwearlog = remove_empty_rows_cols(nonwearlog, name = "nonwear")
       }
       if (length(newsleeplog) > 0) {
-        emptyrows = which(rowSums(newsleeplog == "") != 0) 
+        emptyrows = which(rowSums(newsleeplog == "") == ncol(newsleeplog)) 
         if (length(emptyrows)) {
           newsleeplog = newsleeplog[-emptyrows,]
+        }
+        emptycols = which(colSums(newsleeplog == "") == nrow(newsleeplog)) 
+        colp = ncol(newsleeplog)
+        twocols = c(colp - 1, colp)
+        while (min(twocols) > 0) {
+          if (all(twocols %in% emptycols)) {
+            newsleeplog = as.matrix(newsleeplog[, -twocols])
+            if (ncol(newsleeplog) == 1) newsleeplog = t(newsleeplog)
+            twocols = twocols - 2
+          } else {
+            break
+          }
         }
         S = as.data.frame(newsleeplog)
         coln1 = 2
@@ -174,16 +188,18 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       }
     }
   }
-  # From here we continue with original code focused on sleeplog only
+  nnights = nnights + deltadate
+  # # From here we continue with original code focused on sleeplog only
   sleeplog = matrix(0,(nrow(S)*nnights),3)
-  sleeplog_times = matrix(" ",(nrow(S)*nnights),2)
+  sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
   cnt = 1
+  nnights = min(floor((ncol(S) - 1) / 2), nnights)
   for (i in 1:nnights) { #loop through nights
     SL = as.character(S[,coln1 + ((i - 1) * 2)])
     WK = as.character(S[,coln1 + ((i - 1) * 2) + 1])
     # Check whether any correction need to be made to the sleep log:
     for (j in 1:length(SL)) { #loop through participant
-      idtmp = S[j,colid]
+      # idtmp = S[j,colid]
       if (is.na(WK[j]) == FALSE & is.na(SL[j]) == FALSE & WK[j] != "" & SL[j] != "") {
         SLN = as.numeric(unlist(strsplit(SL[j],":")))
         WKN = as.numeric(unlist(strsplit(WK[j],":")))
@@ -209,7 +225,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       } else {
         sleeplog[cnt,1] = as.character(S[j,colid])
       }
-      sleeplog[cnt,2] = i
+      sleeplog[cnt,2] = i #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
       sleeplog[cnt,3] = dur
       sleeplog_times[cnt,1] = SL[j]
       sleeplog_times[cnt,2] = WK[j]
@@ -217,10 +233,13 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     }
   }
   # delete id-numbers that are unrecognisable
-  if (length(which(sleeplog[,1] == 0))) {
-    print(paste0("N deleted because unrecognisable ID number: ",length(which(sleeplog[,1] == 0))))
-    sleeplog = sleeplog[-c(which(sleeplog[,1] == 0)),]
-    sleeplog_times = sleeplog_times[-c(which(sleeplog[,1] == 0)),]
+  unrecognisable_ids = which(as.character(sleeplog[,1]) == "0")
+  if (length(unrecognisable_ids) > 0) {
+    warning(paste0(length(which(sleeplog[,1] == 0)), 
+                   " rows in sleeplog were ignored (",paste0(which(sleeplog[,1] == 0), collapse = " "),
+                   ") because unrecognisable ID number."), call. = FALSE)
+    sleeplog = sleeplog[-unrecognisable_ids,]
+    sleeplog_times = sleeplog_times[-unrecognisable_ids,]
   }
   sleeplog = as.data.frame(sleeplog, stringsAsFactors = FALSE)
   names(sleeplog) = c("ID","night","duration")

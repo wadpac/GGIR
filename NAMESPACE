@@ -53,5 +53,5 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed")
 import(data.table)
-useDynLib(GGIR, .registration=TRUE)
+useDynLib(GGIR, .registration = TRUE)
 importFrom(Rcpp, sourceCpp)

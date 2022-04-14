@@ -226,22 +226,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       }
     }
     #===============
-  } else if (mon == 2 & dformat == 2) { # GENEActiv csv format
-    startpage = (100 + (blocksize * 300 * (blocknumber - 1)))
-    deltapage = (blocksize*300)
-    UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = read.csv(filename,nrow = deltapage, skip = startpage, header = FALSE, dec = decn)},silent = TRUE)
-    if (length(P) > 1) {
-      P = as.matrix(P)
-      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
-        filequality$filetooshort = TRUE
-      }
-    } else {
-      P = c()
-    }
   } else if (mon == 3 & dformat == 2) { # Actigraph csv format
     headerlength = 10
     #--------------

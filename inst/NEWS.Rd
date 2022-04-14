@@ -1,6 +1,19 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+
+\section{Changes in version 2.6-5 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Part4: Advanced sleeplog handling further improved as it now also handles dates in sleeplog far beyond recording dates)
+    \item Part2 report: Number of days to plot now auto scales to length of measurement.
+    }
+}
+\section{Changes in version 2.6-4 (GitHub-only-release date:13-04-2022)}{
+\itemize{
+    \item Part4: Bug fixed in handling of advanced sleeplog data when start of acc recording does not match start of sleeplog
+   \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
+    }
+}
 \section{Changes in version 2.6-3 (GitHub-only-release date:08-04-2022)}{
 \itemize{
     \item Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location        to be consistent with the term used in part 3.
