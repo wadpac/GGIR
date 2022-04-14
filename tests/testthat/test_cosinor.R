@@ -18,7 +18,6 @@ test_that("cosinorAnalyses provides expected output", {
     return(cosinorAnalyses(Xi = log((counts * 1000) + 1), epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours))
   }
   # no missing data
-  coef5 = ActCosDummy(epochSizeSeconds = 5)
   coef60 = ActCosDummy(epochSizeSeconds = 60)
   coef300 = ActCosDummy(epochSizeSeconds = 300)
   coef60_Offset9 = ActCosDummy(epochSizeSeconds = 60, timeOffsetHours = 9)
@@ -27,37 +26,35 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef60_Offset17$coef, coef60$coef, tolerance = 0.001)
   expect_equal(coef60_Offset9$coefext, coef60$coefext, tolerance = 0.001)
   expect_equal(coef60_Offset17$coefext, coef60$coefext, tolerance = 0.001)
-  expect_equal(coef60_Offset9$IVIS, coef60$IVIS, tolerance = 0.001)
   
   # standard cosinor analyses
-  expect_equal(coef5$coef$mes, 6.259326, tolerance = 0.01)
-  expect_equal(coef5$coef$amp, 1.912535, tolerance = 0.01)
-  expect_equal(coef5$coef$acr, pi * 1/2, tolerance = 0.01)
-  expect_equal(coef5$coef$acrotime, 6, tolerance = 0.01)
-  expect_equal(coef5$coef$ndays, 7)
-  expect_equal(coef5$coef, coef60$coef, tolerance = 0.01)
-  expect_equal(coef5$coef, coef300$coef, tolerance = 0.01)
-  expect_equal(coef5$IVIS, coef300$IVIS, tolerance = 0.01)
+  expect_equal(coef60$coef$mes, 6.259326, tolerance = 0.01)
+  expect_equal(coef60$coef$amp, 1.912535, tolerance = 0.01)
+  expect_equal(coef60$coef$acr, pi * 1/2, tolerance = 0.01)
+  expect_equal(coef60$coef$acrotime, 6, tolerance = 0.01)
+  expect_equal(coef60$coef$ndays, 7)
+  expect_equal(coef60$coef, coef60$coef, tolerance = 0.01)
+  expect_equal(coef60$coef, coef300$coef, tolerance = 0.01)
+  expect_equal(coef60$IVIS, coef300$IVIS, tolerance = 0.01)
   
   # extended cosinor analyses
-  expect_equal(coef5$coefext$minimum, 0)
-  expect_equal(coef5$coefext$amp, 7.245069, tolerance = 0.01)
-  expect_equal(coef5$coefext$alpha, -0.921499, tolerance = 0.01)
-  expect_equal(coef5$coefext$beta, 5.939461, tolerance = 0.01)
-  expect_equal(coef5$coefext$UpMesor, 19.52358, tolerance = 0.01)
-  expect_equal(coef5$coefext$DownMesor, 16.47642, tolerance  = 0.01)
-  expect_equal(coef5$coefext$MESOR, 3.622534, tolerance  = 0.01)
+  expect_equal(coef60$coefext$minimum, 0)
+  expect_equal(coef60$coefext$amp, 7.245069, tolerance = 0.01)
+  expect_equal(coef60$coefext$alpha, -0.921499, tolerance = 0.01)
+  expect_equal(coef60$coefext$beta, 5.939461, tolerance = 0.01)
+  expect_equal(coef60$coefext$UpMesor, 19.52358, tolerance = 0.01)
+  expect_equal(coef60$coefext$DownMesor, 16.47642, tolerance  = 0.01)
+  expect_equal(coef60$coefext$MESOR, 3.622534, tolerance  = 0.01)
   
   # IV IS
-  # expect_equal(coef5$IVIS$InterdailyStability, 0.9945789, tolerance  = 0.01)
-  # expect_equal(coef5$IVIS$IntradailyVariability, 1.122651, tolerance  = 0.01)
+  expect_equal(coef60$IVIS$InterdailyStability, 0.9945789, tolerance  = 0.01)
+  expect_equal(coef60$IVIS$IntradailyVariability, 1.14, tolerance  = 0.01)
   
   fields_to_compare = c("minimum", "amp", "alpha", "beta", "acrotime", "DownMesor", "MESOR")
-  expect_equal(coef5$coefext[fields_to_compare], coef60$coefext[fields_to_compare], tolerance = 0.1)
   expect_equal(coef60$coefext[fields_to_compare], coef300$coefext[fields_to_compare], tolerance = 0.1)
   
-  # # handling of missing data
-  # coef60_missingdata = ActCosDummy(epochSizeSeconds = 60, missingdata = TRUE)
-  # expect_equal(coef60$coef, coef60_missingdata$coef, tolerance = 0.1)
+  # handling of missing data
+  coef60_missingdata = ActCosDummy(epochSizeSeconds = 60, missingdata = TRUE)
+  expect_equal(coef60$coef, coef60_missingdata$coef, tolerance = 0.1)
   # expect_equal(coef60$coefext[fields_to_compare], coef60_missingdata$coefext[fields_to_compare], tolerance = 0.5)
 })
