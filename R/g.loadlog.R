@@ -91,7 +91,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
           }
           if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
-                           " not within 30 days of first date in accerometer recording"))
+                           " not within 30 days of first date in accerometer recording"), call. = FALSE)
           } else {
             # only attempt to use sleeplog if start date could be recognisedd
             newsleeplog[count ,1] = ID
@@ -143,7 +143,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         warning(paste0("\nNone of the IDs in the accelerometer data could be matched with",
                        " the ID numbers in the sleeplog. You may want to check that the ID",
                        " format in your sleeplog is consistent with the ID column in the GGIR part2 csv-report,", 
-                       " and that arguments coldid and sleeplogidnum are correctly set."))
+                       " and that arguments coldid and sleeplogidnum are correctly set."), call. = FALSE)
       }
       # remove empty rows and columns:
       remove_empty_rows_cols = function(logmatrix, name) {
@@ -199,7 +199,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     WK = as.character(S[,coln1 + ((i - 1) * 2) + 1])
     # Check whether any correction need to be made to the sleep log:
     for (j in 1:length(SL)) { #loop through participant
-      idtmp = S[j,colid]
+      # idtmp = S[j,colid]
       if (is.na(WK[j]) == FALSE & is.na(SL[j]) == FALSE & WK[j] != "" & SL[j] != "") {
         SLN = as.numeric(unlist(strsplit(SL[j],":")))
         WKN = as.numeric(unlist(strsplit(WK[j],":")))
@@ -235,7 +235,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
   # delete id-numbers that are unrecognisable
   unrecognisable_ids = which(as.character(sleeplog[,1]) == "0")
   if (length(unrecognisable_ids) > 0) {
-    print(paste0("N deleted because unrecognisable ID number: ",length(which(sleeplog[,1] == 0))))
+    warning(paste0(length(which(sleeplog[,1] == 0)), 
+                   " rows in sleeplog were ignored (",paste0(which(sleeplog[,1] == 0), collapse = " "),
+                   ") because unrecognisable ID number."), call. = FALSE)
     sleeplog = sleeplog[-unrecognisable_ids,]
     sleeplog_times = sleeplog_times[-unrecognisable_ids,]
   }

@@ -132,17 +132,17 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
-                       "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."))
+                       "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = params_metrics[["do.anglez"]] = TRUE
       }
       if (params_sleep[["HASPT.algo"]] != "HorAngle") {
-        warning("\nChanging HASPT.algo to HorAngle, because sensor.location is set as hip")
+        warning("\nChanging HASPT.algo value to HorAngle, because sensor.location is set as hip", call. = FALSE)
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
     }
     if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012") == TRUE) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
-        warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)")
+        warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
       }
       if (params_sleep[["Sadeh_axis"]] == "X" & params_metrics[["do.zcx"]] == FALSE) params_metrics[["do.zcx"]] =  TRUE
       if (params_sleep[["Sadeh_axis"]] == "Y" & params_metrics[["do.zcy"]] == FALSE) params_metrics[["do.zcy"]] =  TRUE
@@ -156,15 +156,15 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (length(params_sleep[["loglocation"]]) == 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
       warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
                      " We assume you want to use the sleeplog and misunderstood",
-                     " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"))
+                     " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"), call. = FALSE)
       params_sleep[["def.noc.sleep"]] = 1
     }
     if (params_sleep[["HASPT.algo"]] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
-      warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed")
+      warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
-      warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.")
+      warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
@@ -172,21 +172,21 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.start"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ", 
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"))
+                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.end"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"))
+                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
     if (params_cleaning[["strategy"]] != 3 & params_cleaning[["ndayswindow"]] != 7) {
       warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"))
+                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"), call. = FALSE)
     }
   }
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["mvpadur"]]) != 3) {
       params_phyact[["mvpadur"]] = c(1,5,10)
-      warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)")
+      warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
     }
   }
   if (length(params_247) > 0) {

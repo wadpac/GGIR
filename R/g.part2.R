@@ -51,6 +51,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (length(f1) ==  0) f1 = length(fnames)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
+  foldername = fullfilenames = folderstructure = referencefnames = c() 
   if (params_output[["storefolderstructure"]] == TRUE) {
     extractfilenames = function(x) {
       x2 = as.character(unlist(strsplit(x,".RDa"))[1])
@@ -70,7 +71,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   
   #---------------------------------------
   cnt78 = 1
-  
   
   #=========================================================
   # Declare core functionality, which at the end of this g.part2 is either
@@ -227,7 +227,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight",
                            "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
                            "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
-                           "iso8601chartime2POSIX")
+                           "iso8601chartime2POSIX", "extract_params", "load_params", "check_params")
       errhand = 'stop'
     }
     fe_dopar = foreach::`%dopar%`
@@ -237,10 +237,10 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                   .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
                                     tryCatchResult = tryCatch({
-                                      main_part2(i, ffdone, fnames, metadatadir, 
+                                      main_part2(i, ffdone, fnames, metadatadir,
                                                  myfun, params_cleaning, params_247,
                                                  params_phyact, params_output, params_general,
-                                                 path, ms2.out, foldername, fullfilenames, 
+                                                 path, ms2.out, foldername, fullfilenames,
                                                  folderstructure, referencefnames,
                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
                                       
