@@ -32,11 +32,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (f1 > length(fnames)) f1 = length(fnames)
     #-----------------------------
     # Loop through all the files
+    cnt_SUM = 0
+    cnt_daySUM = 0
+    cnt_winSUM = 0
     for (i in f0:f1) {
       cat(paste0(" ",i))
-      cnt_SUM = 0
-      cnt_daySUM = 0
-      cnt_winSUM = 0
+    
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
@@ -204,21 +205,17 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       }
       pdfpagecount = pdfpagecount + 1
     }
+    # tidy up memory
+    if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
+    rm(M); rm(I)
+    if (do.part2.pdf == TRUE) dev.off()
+    
     # tidy up data.frames
     if (length(selectdaysfile) > 0) {
       winSUMMARY_clean = tidyup_df(winSUMMARY)
     }
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
-    # tidy up memory
-    if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
-    rm(M); rm(I)
-    dev.off()
-    SUMMARY_clean = tidyup_df(SUMMARY)
-    daySUMMARY_clean = tidyup_df(daySUMMARY)
-    if (length(selectdaysfile) > 0) {
-      winSUMMARY_clean = tidyup_df(winSUMMARY)
-    }
     #===============================================================================
     # store final matrices again
     write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
