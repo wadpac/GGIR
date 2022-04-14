@@ -3,7 +3,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
   if (length(timeCol) == 0) { # add temporary timecolumn to enable timegap imputation where there are zeros
     dummytime = Sys.time()
     adhoc_time = seq(dummytime, dummytime + (nrow(x) - 1) * (1/sf), by = 1/sf)
-    if (length(adhoc_time) < nrow(x)){ 
+    if (length(adhoc_time) < nrow(x)) { 
       NotEnough = nrow(x) - length(adhoc_time)
       adhoc_time = seq(dummytime, dummytime + (nrow(x) + NotEnough) * (1/sf), by = 1/sf)
     }
@@ -24,8 +24,10 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
       k = 2/sf
     }
     deltatime = diff(x[, timeCol])
+    if (!is.numeric(deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
     units(deltatime) = "secs"
     deltatime = as.numeric(deltatime)
+    }
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) { 

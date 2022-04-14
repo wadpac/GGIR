@@ -72,6 +72,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
   if (mon == 6) mon = 3
   dformat = INFI$dformc
   sf = INFI$sf
+  # if GENEActiv csv, deprecated function
+  if (mon == 2 & dformat == 2 & length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
+    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
+  }
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(params_rawdata[["rmc.sf"]]) == 0) {
       stop("Could not identify sample frequency")

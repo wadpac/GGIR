@@ -196,7 +196,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         }
         # if ID not available, function part4_extractid will attempt to extract it from the file name
       }
-      if (exists("RSI") == FALSE) RSI = NA
+      if (exists("SRI") == FALSE) SRI = NA
       if (nrow(sib.cla.sum) != 0) {
         # there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
@@ -251,11 +251,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         daysleeper = rep(FALSE, length(nnights.list))
         ###########################################################
         nightj = 1
+        # max(c(max(nnights.list), 
         guider.df = data.frame(matrix(NA, length(nnights.list), 5), stringsAsFactors = FALSE)
         names(guider.df) = c("ID", "night", "duration", "sleeponset", "sleepwake")
         guider.df$night = nnights.list
         if (dolog == TRUE) {
-          guider.df[which(guider.df$night %in% sleeplog$night),] = sleeplog[wi, ]
+          if (length(wi) > 0) {
+            wi2 = wi[which(sleeplog$night[wi] %in% guider.df$night)]
+            guider.df[which(guider.df$night %in% sleeplog$night[wi2]),] = sleeplog[wi2,]
+            
+          }
         }
         for (j in nnights.list) {
           # go through the nights get default onset and wake (based on sleeplog or on heuristic

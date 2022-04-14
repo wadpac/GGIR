@@ -9,8 +9,9 @@
   epoch length. The non-wear indication score, the clipping score, temperature
   (if available), light (if available), and Euclidean norm are stored at long epoch
   length. The function has been designed and thoroughly tested with accelerometer files
-  from GENEA and GENEActiv. Further, the function should be able to cope with csv-format
-  data procuded by GENEActiv and Actigraph
+  from GENEA and GENEActiv bin files. Further, the function should be able to cope with ActiGraph gt3x and 
+  csv files, Axivity cwa and csv files, Movisens bin files, and ad-hoc csv files read through the 
+  \link{read.myacc.csv} function.
 }
 \usage{
   g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
