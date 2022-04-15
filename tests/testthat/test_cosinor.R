@@ -15,13 +15,16 @@ test_that("cosinorAnalyses provides expected output", {
     }
     # x11()
     # plot(log((counts * 1000) + 1), type = "l")
-    return(cosinorAnalyses(Xi = log((counts * 1000) + 1), epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours))
+    mod = cosinorAnalyses(Xi = log((counts * 1000) + 1), epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
+    mod$coefext = mod$coefext[which(names(mod$coefext) != "cosinor_ts")]
+    return(mod)
   }
   # no missing data
   coef60 = ActCosDummy(epochSizeSeconds = 60)
   coef300 = ActCosDummy(epochSizeSeconds = 300)
   coef60_Offset9 = ActCosDummy(epochSizeSeconds = 60, timeOffsetHours = 9)
   coef60_Offset17 = ActCosDummy(epochSizeSeconds = 60, timeOffsetHours = 17)
+  
   expect_equal(coef60_Offset9$coef, coef60$coef, tolerance = 0.001)
   expect_equal(coef60_Offset17$coef, coef60$coef, tolerance = 0.001)
   expect_equal(coef60_Offset9$coefext, coef60$coefext, tolerance = 0.001)

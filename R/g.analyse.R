@@ -331,11 +331,17 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      qwindow = params_247[["qwindow"]], longitudinal_axis_id, cosinor_coef)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
+  
+  if (length(cosinor_coef) > 0) {
+    cosinor_ts = cosinor_coef$coefext$cosinor_ts
+  } else {
+    cosinor_ts = c()
+  }
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
     names(windowsummary) = ws_names
-    invisible(list(summary = filesummary, daysummary = daysummary, windowsummary = windowsummary))
+    invisible(list(summary = filesummary, daysummary = daysummary, windowsummary = windowsummary, cosinor_ts = cosinor_ts))
   } else {
-    invisible(list(summary = filesummary, daysummary = daysummary))
+    invisible(list(summary = filesummary, daysummary = daysummary, cosinor_ts = cosinor_ts))
   }
 }

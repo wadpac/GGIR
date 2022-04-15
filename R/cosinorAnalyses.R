@@ -1,6 +1,6 @@
 cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   
-  # TEMPORARILY INCORPORATING ACTCR CODE TO INVESTIGATE HOW WE CAN IMPROVE IT
+  # TEMPORARILY INCORPORATING ActCR CODE TO INVESTIGATE HOW WE CAN IMPROVE IT
   # AND USE THAT TO INFORM A POSSIBLE PULL REQUEST
   
   ActExtendCosinor = function(
@@ -36,14 +36,30 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
     e_amp0 = 2 * amp
     e_phi0 = acrotime
     e_par0 = c(e_min0, e_amp0, 0, 2, e_phi0) ## min, amp, alpha, beta, phi
-    
+    valid = !is.na(tmp.dat$Y)
+    tmp.dat = tmp.dat[valid,]
     fit_nls = minpack.lm::nls.lm(e_par0, fn = fn_obj,
                      lower = lower,
                      upper = upper,
-                     tmp.dat = tmp.dat[!is.na(tmp.dat$Y),],
+                     tmp.dat = tmp.dat,
                      control = minpack.lm::nls.lm.control(maxiter = 1000))
     ## Estimated exteded cosinor parameters,in the order of
     ## minimum, amplitude, alpha, beta, acrophase
+    fittedYext = tmp.dat$Y - residuals(fit_nls)
+    fittedY = fitted(fit$fit)
+    original = tmp.dat$Y
+    time = tmp.dat$time
+    cosinor_ts = as.data.frame(cbind(time, original, fittedY, fittedYext))
+    # x11()
+    # par(mfrow = c(2,1))
+    # plot(cosinor_ts$original, type = "l", ylab = "log transformed", xlab = "time (minute)")
+    # lines(cosinor_ts$fittedY, type = "l", col = "red", lwd = 2)
+    # lines(cosinor_ts$fittedYext, type = "l", col = "blue", lwd = 2)
+    # 
+    # plot(exp(cosinor_ts$original) - 1, type = "l", ylim = c(0, 200), ylab = "transformation reverted", xlab = "time (minute)")
+    # lines(exp(cosinor_ts$fittedY) - 1, type = "l", col = "red", lwd = 2)
+    # lines(exp(cosinor_ts$fittedYext) - 1, type = "l", col = "blue", lwd = 2)
+    
     coef.nls = coef(fit_nls)
     
     e_min = coef.nls[1]
@@ -71,7 +87,8 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
                "UpMesor" = UpMesor,
                "DownMesor" = DownMesor,
                "MESOR" = MESOR,
-               "ndays" = n.days)
+               "ndays" = n.days,
+               "cosinor_ts" = cosinor_ts)
     return(ret)
   }
   
