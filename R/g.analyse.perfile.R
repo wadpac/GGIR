@@ -23,10 +23,10 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   vi = vi + 2
   # starttime of measurement, body location, filename
   filesummary[vi] = sensor.location
-  filesummary[(vi+1)] = fname
-  filesummary[(vi+2)] = startt # starttime of measurement
-  s_names[vi:(vi+2)] = c("bodylocation","filename","start_time")
-  vi = vi+3
+  filesummary[(vi + 1)] = fname
+  filesummary[(vi + 2)] = startt # starttime of measurement
+  s_names[vi:(vi + 2)] = c("bodylocation","filename","start_time")
+  vi = vi + 3
   # weekday on which measurement started, sample frequency and device
   filesummary[vi] = wdayname
   filesummary[(vi + 1)] = I$sf
@@ -111,15 +111,15 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
       filesummary[vi]  = c(cosinor_coef$timeOffsetHours)
       s_names[vi] = c("cosinor_timeOffsetHours")
       vi = vi + 1
-      filesummary[vi:(vi + 4)]  = c(cosinor_coef$coef$mes,
+      try(expr = {filesummary[vi:(vi + 4)]  = as.numeric(c(cosinor_coef$coef$mes,
                                   cosinor_coef$coef$amp,
                                   cosinor_coef$coef$acr,
                                   cosinor_coef$coef$acrotime,
-                                  cosinor_coef$coef$ndays)
+                                  cosinor_coef$coef$ndays))}, silent = TRUE)
       s_names[vi:(vi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                              "cosinor_acrotime", "cosinor_ndays")
       vi = vi + 5
-      filesummary[vi:(vi + 8)]  = c(cosinor_coef$coefext$minimum,
+      try(expr = {filesummary[vi:(vi + 9)]  = c(cosinor_coef$coefext$minimum,
                                     cosinor_coef$coefext$amp,
                                     cosinor_coef$coefext$alpha,
                                     cosinor_coef$coefext$beta,
@@ -127,11 +127,13 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
                                     cosinor_coef$coefext$UpMesor,
                                     cosinor_coef$coefext$DownMesor,
                                     cosinor_coef$coefext$MESOR,
-                                    cosinor_coef$coefext$ndays)
-      s_names[vi:(vi + 8)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                    cosinor_coef$coefext$ndays,
+                                    cosinor_coef$coefext$F_pseudo)}, silent = TRUE)
+      s_names[vi:(vi + 9)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
                                "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
-                               "cosinorExt_DownMesor", "cosinorExt_MESOR", "cosinorExt_ndays")
-      vi = vi + 9
+                               "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                               "cosinorExt_ndays", "cosinorExt_F_pseudo")
+      vi = vi + 10
       filesummary[vi:(vi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
                                     cosinor_coef$IVIS$IntradailyVariability)
       s_names[vi:(vi + 1)] = c("cosinorIS", "cosinorIV")

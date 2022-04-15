@@ -7,7 +7,10 @@
     \item Part4: Advanced sleeplog handling further improved as it now also handles dates in sleeplog far beyond recording dates
     \item Part2 report: Number of days to plot now auto scales to length of measurement.
     \item Part2 report: Fixed bug introduced in 2.6-3 making it impossible to generate a report for more than 1 file.
-    }
+    \item Part 2: IVIS now able to handle missing data points
+    \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
+    \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses
+  }
 }
 \section{Changes in version 2.6-4 (GitHub-only-release date:13-04-2022)}{
 \itemize{
@@ -25,10 +28,7 @@
     \item Part 4: Fix bug #531 re. sleeplog being ignored if first night is missing
     \item Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename if that fails. Previously it extracted the ID twice.
     \item General: Speeded-up implementation of rounding decimal places as introduced in release 2.6-1
-    \item Part 2: IVIS now able to handle missing data points
-    \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
-    \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses
-    }
+  }
 }
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
 \itemize{

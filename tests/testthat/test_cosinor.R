@@ -56,5 +56,5 @@ test_that("cosinorAnalyses provides expected output", {
   # handling of missing data
   coef60_missingdata = ActCosDummy(epochSizeSeconds = 60, missingdata = TRUE)
   expect_equal(coef60$coef, coef60_missingdata$coef, tolerance = 0.1)
-  # expect_equal(coef60$coefext[fields_to_compare], coef60_missingdata$coefext[fields_to_compare], tolerance = 0.5)
+  expect_equal(coef60$coefext[fields_to_compare], coef60_missingdata$coefext[fields_to_compare], tolerance = 0.5)
 })
