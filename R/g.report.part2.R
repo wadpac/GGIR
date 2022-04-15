@@ -37,7 +37,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     cnt_winSUM = 0
     for (i in f0:f1) {
       cat(paste0(" ",i))
-    
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
