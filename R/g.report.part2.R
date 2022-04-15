@@ -196,7 +196,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
     if (do.part2.pdf == TRUE) dev.off()
-    
+
     # tidy up data.frames
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
