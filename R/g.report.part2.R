@@ -32,9 +32,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (f1 > length(fnames)) f1 = length(fnames)
     #-----------------------------
     # Loop through all the files
-    cnt_SUM = 0
-    cnt_daySUM = 0
-    cnt_winSUM = 0
     for (i in f0:f1) {
       cat(paste0(" ",i))
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
@@ -78,28 +75,22 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
             if (length(selectdaysfile) > 0) {
               winSUMMARY = SUM$windowsummary[,which(
                 is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
-              cnt_winSUM = nrow(winSUMMARY)
             }
-            cnt_daySUM = nrow(daySUMMARY)
-            cnt_SUM = nrow(SUMMARY)
           } else {
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
-            SUMMARY[(cnt_SUM + 1):(cnt_SUM + nrow(SUM$summary)),] = SUM$summary
-            daySUMMARY[(cnt_daySUM + 1):(cnt_daySUM + nrow(SUM$daysummary)),] = SUM$daysummary
-            cnt_SUM = cnt_SUM + nrow(SUM$summary)
-            cnt_daySUM = cnt_daySUM + nrow(SUM$daysummary)
-            if (length(selectdaysfile) > 0) {
-              winSUMMARY[(cnt_winSUM + 1):(cnt_winSUM + nrow(SUM$windowsummary)),] = SUM$windowsummary
-              cnt_winSUM = cnt_winSUM + nrow(SUM$windowsummary)
+            bind_with_prev_data = function(df1, df2) {
+              df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
+              df1 = as.data.frame(df1)
+              return(df1)
             }
-          }
-          # expand data.frame when approaching the end of it
-          if (cnt_SUM > nrow(SUMMARY) - 50) {
-            SUMMARY[(cnt_SUM + 1):(cnt_SUM + 1000),] = NA
-          }
-          if (cnt_daySUM > nrow(daySUMMARY) - 100) {
-            daySUMMARY[(cnt_daySUM + 1):(cnt_daySUM + 10000),] = NA
+            SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
+            daySUMMARY = bind_with_prev_data(daySUMMARY, SUM$daysummary)
+            if (length(selectdaysfile) > 0) {
+              # winsummary
+              winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
+              winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
+            }
           }
         }
       }
@@ -204,16 +195,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
     dev.off()
+    
     # tidy up data.frames
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
-    if (length(selectdaysfile) > 0) {
-      winSUMMARY_clean = tidyup_df(winSUMMARY)
-    }
     #===============================================================================
-    #now delete rows with incorrect participants
-    #----------------------------------------------------
-    # get original folder structure and assess to what phase each file belonged
     # store final matrices again
     write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
     write.csv(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
@@ -223,6 +209,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       write.csv(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {
+      winSUMMARY_clean = tidyup_df(winSUMMARY)
       write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
     write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
