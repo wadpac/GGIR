@@ -92,7 +92,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
               # winsummary
               winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
               winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
-              winSUMMARY_clean = round_decimals_df(winSUMMARY)
             }
           }
         }
@@ -199,9 +198,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (do.part2.pdf == TRUE) dev.off()
     
     # tidy up data.frames
-    if (length(selectdaysfile) > 0) {
-      winSUMMARY_clean = tidyup_df(winSUMMARY)
-    }
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
     #===============================================================================
@@ -214,6 +210,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       write.csv(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
     if (length(selectdaysfile) > 0) {
+      winSUMMARY_clean = tidyup_df(winSUMMARY)
       write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
     }
     write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
