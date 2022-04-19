@@ -34,10 +34,10 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
   see \link{g.part4}
   }
   \item{includenightcrit}{
-    Despricated as of version 2.0, not used anymore in part 5 report
+    Depricated as of version 2.0, not used anymore in part 5 report
   }
   \item{includedaycrit}{
-    Despricated as of version 2.0, not used anymore in part 5 report
+    Depricated as of version 2.0, not used anymore in part 5 report
   }
   \item{data_cleaning_file}{
   see \link{g.part4}
