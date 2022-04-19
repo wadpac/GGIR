@@ -29,7 +29,8 @@
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
-                          rmc.doresample=FALSE)	
+                          rmc.doresample=FALSE,
+                          interpolationType=1)	
 }
 \arguments{
   \item{rmc.file}{
@@ -141,7 +142,16 @@
     Boolean to indicate whether to resample the data based on the available timestamps and extracted 
    sample rate from the file header
   }
+  \item{interpolationType}{
+    See \link{g.getmeta}
+  }
 
+}
+\details{
+  To use this function in the context of GGIR use all arguments from this function,
+  except rmc.file, rmc.nrow, and  rmc.skip as input for function \link{g.shell.GGIR} or \link{g.part1}
+  and also specify arugment rmc.noise, which is not part of this function but needed to tell
+  GGIR what noise level to expect in the data.
 }
 \value{
   List with objects data holding the time series of acceleration, and
@@ -162,5 +172,5 @@
   if (file.exists(testfile)) file.remove(testfile)
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

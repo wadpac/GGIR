@@ -1,4 +1,5 @@
-g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfile=c()) {
+g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
+                          selectdaysfile = c(), store.long = FALSE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -39,29 +40,31 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         dev.off()
       }
       if (pdfpagecount == 1) {
-        pdf(paste0(metadatadir,"/results/QC/plots_to_check_data_quality_",pdffilenumb,".pdf"),width=7,height=7)
+        pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"),
+            width = 7, height = 7)
       }
       # First load part 1 data
       M = c()
-      fname2read =paste0(path,fnames[i])
-      try(expr={load(fname2read)},silent=TRUE) #reading RData-file
+      fname2read = paste0(path, fnames[i])
+      try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
       if (length(M) == 0) {
         cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
       }
       fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
       selp = which(fnames.ms2 == fname)
-      if(length(selp) == 0 ) {
+      if (length(selp) == 0 ) {
         cat(paste0("File ",fname," not available in part 2"))
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
         # Load part 2 data
-        IMP=c()
+        IMP = c()
         fname2read = paste0(metadatadir,ms2.out,"/",fnames.ms2[selp])
-        try(expr={load(file=fname2read)},silent=TRUE)
+        try(expr = {load(file = fname2read)}, silent = TRUE)
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
-        Q = g.plot(IMP,M,I,durplot)
+        Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
+        g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
@@ -79,14 +82,6 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
             bind_with_prev_data = function(df1, df2) {
               df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
               df1 = as.data.frame(df1)
-              # replace factors by character value
-              i <- sapply(df1, is.factor)
-              df1[,i] <- lapply(df1[,i], as.character)
-              # replace all NA values by blank
-              df1[is.na(df1)] <- ""
-              if (length(which(df1 == "NaN")) > 0) {
-                df1[df1=="NaN"] = ""
-              }
               return(df1)
             }
             SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
@@ -99,6 +94,9 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
           }
         }
       }
+      if (length(SUMMARY) == 0 |length(daySUMMARY) == 0) {
+        warning("No summary data available to be stored in csv-reports")
+      }
       #-----------------
       # create data quality report
       if (length(C$cal.error.end) == 0) C$cal.error.end = " "
@@ -108,12 +106,12 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       }
       tm = which(colnames(M$metalong) == "temperaturemean")
       if (length(tm) > 0) {
-        tmean = as.character(mean(as.numeric(as.matrix(M$metalong[1:(nrow(M$metalong)-1),tm]))))
+        tmean = as.character(mean(as.numeric(as.matrix(M$metalong[1:(nrow(M$metalong) - 1),tm]))))
       } else {
-        tmean= ""
+        tmean = ""
       }
       #=========
-      header= I$header
+      header = I$header
       mon = I$monn
       hnames = rownames(header)
       hvalues = as.character(as.matrix(header))
@@ -126,10 +124,19 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
         if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
           deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number
         }
-      } else if (mon == "actigraph" | mon == "axivity") { #todo: create automatic extraction of information from actigraph fileheader
+      } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") {
         deviceSerialNumber = "not extracted"
-      } else if (I$monc == 5) { #todo: create automatic extraction of information from monc fileheader
+      } else if (I$monc == 5) { #movisense
         deviceSerialNumber = "not extracted"
+      } else if (I$monc == 0) {
+        if (header != "no header") {
+          deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]
+          if (length(deviceSerialNumber) == 0) {
+            deviceSerialNumber = "not extracted"
+          }
+        } else {
+          deviceSerialNumber = "not extracted"
+        }
       }
       if (length(C$offset) == 0) {
         C$offset = C$translate
@@ -140,24 +147,28 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       if (length(C$npoints) == 0) {
         C$npoints = " "
       }
+      if (length(C$tempoffset) == 0) {
+        C$tempoffset = c(0, 0, 0)
+      }
       if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
-      QC = data.frame(filename=fnames[i],
-                      file.corrupt=M$filecorrupt,
-                      file.too.short=M$filetooshort,
-                      use.temperature=C$use.temp,
-                      scale.x=C$scale[1], scale.y=C$scale[2], scale.z=C$scale[3],
-                      offset.x=C$offset[1], offset.y=C$offset[2], offset.z=C$offset[3],
-                      temperature.offset.x=C$tempoffset[1],  temperature.offset.y=C$tempoffset[2],
-                      temperature.offset.z=C$tempoffset[3],
-                      cal.error.start=C$cal.error.start,
-                      cal.error.end=C$cal.error.end,
-                      n.10sec.windows=C$npoints,
-                      n.hours.considered = C$nhoursused, QCmessage=C$QCmessage,mean.temp=tmean,
-                      device.serial.number=deviceSerialNumber,stringsAsFactors=FALSE,NFilePagesSkipped=M$NFilePagesSkipped)
+      QC = data.frame(filename = fnames[i],
+                      file.corrupt = M$filecorrupt,
+                      file.too.short = M$filetooshort,
+                      use.temperature = C$use.temp,
+                      scale.x = C$scale[1], scale.y = C$scale[2], scale.z = C$scale[3],
+                      offset.x = C$offset[1], offset.y = C$offset[2], offset.z = C$offset[3],
+                      temperature.offset.x = C$tempoffset[1],  temperature.offset.y = C$tempoffset[2],
+                      temperature.offset.z = C$tempoffset[3],
+                      cal.error.start = C$cal.error.start,
+                      cal.error.end = C$cal.error.end,
+                      n.10sec.windows = C$npoints,
+                      n.hours.considered = C$nhoursused, QCmessage = C$QCmessage, mean.temp = tmean,
+                      device.serial.number = deviceSerialNumber,
+                      stringsAsFactors = FALSE, NFilePagesSkipped = M$NFilePagesSkipped)
       if (i == 1 | i == f0) {
         QCout = QC
       } else {
-        if (ncol(QCout) == ncol(QC)) {
+        if (ncol(QCout) == ncol(QC)) {  
         } else {
           QC = cbind(QC,matrix(" ",1,(ncol(QCout) - ncol(QC))))
           colnames(QC) = colnames(QCout)
@@ -166,29 +177,41 @@ g.report.part2 = function(metadatadir=c(),f0=c(),f1=c(),maxdur = 7,selectdaysfil
       }
       #---------------------------------------------------------------
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
-        #store matrix temporarily to keep track of process
-        write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
-        write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
+        SUMMARY_clean = tidyup_df(SUMMARY)
+        daySUMMARY_clean = tidyup_df(daySUMMARY)
         if (length(selectdaysfile) > 0) {
-          write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
+          winSUMMARY_clean = tidyup_df(winSUMMARY)
+        }  
+        #store matrix temporarily to keep track of process
+        write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+        write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+        if (length(selectdaysfile) > 0) {
+          write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
         }
-        write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
+        write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
       }
       pdfpagecount = pdfpagecount + 1
     }
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
     dev.off()
+    
+    # tidy up data.frames
+    SUMMARY_clean = tidyup_df(SUMMARY)
+    daySUMMARY_clean = tidyup_df(daySUMMARY)
     #===============================================================================
-    #now delete rows with incorrect participants
-    #----------------------------------------------------
-    # get original folder structure and assess to what phase each file belonged
     # store final matrices again
-    write.csv(SUMMARY,paste0(metadatadir,"/results/part2_summary.csv"),row.names=F)
-    write.csv(daySUMMARY,paste0(metadatadir,"/results/part2_daysummary.csv"),row.names=F)
-    if (length(selectdaysfile) > 0) {
-      write.csv(winSUMMARY,paste0(metadatadir,"/results/part2_windowsummary.csv"),row.names=F)
+    write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+    write.csv(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+    if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
+      df = g.convert.part2.long(daySUMMARY)
+      df_clean = tidyup_df(df)
+      write.csv(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
     }
-    write.csv(QCout,paste0(metadatadir,"/results/QC/data_quality_report.csv"),row.names=F)
+    if (length(selectdaysfile) > 0) {
+      winSUMMARY_clean = tidyup_df(winSUMMARY)
+      write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
+    }
+    write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
   }
 }

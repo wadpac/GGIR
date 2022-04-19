@@ -4,7 +4,7 @@ note <- sprintf("R package version %s", meta$Version)
 bibentry(bibtype = "Manual",
          title = "{GGIR}: Raw Accelerometer Data Analysis",
          author = c(person("Vincent T","van Hees",role=c("aut","cre"),
-                  email="vincentvanhees@gmail.com"),
+                  email="v.vanhees@accelting.com"),
                   person("Zhou","Fang",role="ctb"),
                   person("Jing Hua","Zhao",role="ctb"),
                   person("Joe","Heywood",role="ctb"),
@@ -34,13 +34,13 @@ bibentry(bibtype = "Article",
         number    =  7,
         pages     = "738--744",
         year      =  2014,
-        url       = "https://www.physiology.org/doi/10.1152/japplphysiol.00421.2014")
+        url       = "https://journals.physiology.org/doi/10.1152/japplphysiol.00421.2014")
         
         
 bibentry(bibtype = "Article",
         title = "A Novel, Open Access Method to Assess Sleep Duration Using a Wrist-Worn Accelerometer",
         author = c(person("Vincent T","van Hees",role=c("aut","cre"),
-                  email="vincentvanhees@gmail.com"),
+                  email="v.vanhees@accelting.com"),
                   person("Severine","Sabia"),
                   person("Kirstie N","Anderson"),
                   person("Sarah J","Denton"),
@@ -55,5 +55,5 @@ bibentry(bibtype = "Article",
         volume    =  10,
         number    =  11,
         year      =  2015,
-        url       = "http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533")
+        url       = "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533")
          

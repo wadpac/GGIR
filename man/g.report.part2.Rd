@@ -8,8 +8,8 @@ Creates report from milestone data produced by \link{g.part2}. Not intended
   for direct use by package user
 }
 \usage{
-g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 7, 
-selectdaysfile=c())
+g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0, 
+selectdaysfile=c(), store.long=FALSE)
 }
 \arguments{
   \item{metadatadir}{
@@ -27,11 +27,16 @@ selectdaysfile=c())
   \item{selectdaysfile}{
   see \link{g.part2}
   }
+  \item{store.long}{
+  Booelean to indicate whether output should stored in long
+  format in addition to default wide format. Automatically turned
+  to TRUE if using day segmentation with qwindow.
+  }
 }
 \value{
 Function does not produce data, but only writes reports
 in csv format and visual reports in pdf format
 }
 \author{
-  Vincent T van Hees <vincentvanhees@gmail.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

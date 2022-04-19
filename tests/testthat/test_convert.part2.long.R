@@ -1,0 +1,98 @@
+library(GGIR)
+context("convert.part2.long")
+test_that("converts_part2_output_to_long_format", {
+  skip_on_cran()
+  varnames = c("ID", "filename", "calendar_date", "bodylocation", "N valid hours",
+               "N hours", "weekday", "measurementday", "qwindow_timestamps", 
+               "qwindow_names", "L2hr_ENMO_mg_0-24hr", "L2_ENMO_mg_0-24hr",
+               "M2hr_ENMO_mg_0-24hr", "M2_ENMO_mg_0-24hr", "mean_ENMO_mg_1-6am", 
+               "mean_ENMO_mg_0-24hr", 
+               "p79.16667_ENMO_mg_0-24hr", "p75_ENMO_mg_0-24hr", "p70.83333_ENMO_mg_0-24hr",
+               "p66.66667_ENMO_mg_0-24hr", "p91.66667_ENMO_mg_0-24hr", 
+               "p95.83333_ENMO_mg_0-24hr", "p96.875_ENMO_mg_0-24hr", 
+               "p97.91667_ENMO_mg_0-24hr", "p98.61111_ENMO_mg_0-24hr", 
+               "p98.95833_ENMO_mg_0-24hr", 
+               "p99.30556_ENMO_mg_0-24hr", "p99.65278_ENMO_mg_0-24hr", 
+               "p99.86111_ENMO_mg_0-24hr", "p99.93056_ENMO_mg_0-24hr",
+               "[0,50)_ENMO_mg_0-24hr", "[50,100)_ENMO_mg_0-24hr", 
+               "[100,150)_ENMO_mg_0-24hr", "[150,200)_ENMO_mg_0-24hr",
+               "ig_gradient_ENMO_0-24hr", "ig_intercept_ENMO_0-24hr", 
+               "ig_rsquared_ENMO_0-24hr", "MVPA_E5S_T100_ENMO_0-24hr",
+               "MVPA_E1M_T100_ENMO_0-24hr", "MVPA_E5M_T100_ENMO_0-24hr", 
+               "MVPA_E5S_B1M80%_T100_ENMO_0-24hr", "MVPA_E5S_B5M80%_T100_ENMO_0-24hr",
+               "MVPA_E5S_B10M80%_T100_ENMO_0-24hr", "MVPA_E5S_T400_ENMO_0-24hr",
+               "MVPA_E1M_T400_ENMO_0-24hr", "MVPA_E5M_T400_ENMO_0-24hr", 
+               "MVPA_E5S_B1M80%_T400_ENMO_0-24hr", "MVPA_E5S_B5M80%_T400_ENMO_0-24hr", 
+               "MVPA_E5S_B10M80%_T400_ENMO_0-24hr", "L2hr_ENMO_mg_daystart-Starthr",
+               "L2_ENMO_mg_daystart-Starthr", "M2hr_ENMO_mg_daystart-Starthr", 
+               "M2_ENMO_mg_daystart-Starthr", "mean_ENMO_mg_daystart-Starthr", 
+               "p79.16667_ENMO_mg_daystart-Starthr", "p75_ENMO_mg_daystart-Starthr",
+               "p70.83333_ENMO_mg_daystart-Starthr", "p66.66667_ENMO_mg_daystart-Starthr", 
+               "p91.66667_ENMO_mg_daystart-Starthr", "p95.83333_ENMO_mg_daystart-Starthr",
+               "p96.875_ENMO_mg_daystart-Starthr", "p97.91667_ENMO_mg_daystart-Starthr",
+               "p98.61111_ENMO_mg_daystart-Starthr", "p98.95833_ENMO_mg_daystart-Starthr",
+               "p99.30556_ENMO_mg_daystart-Starthr", "p99.65278_ENMO_mg_daystart-Starthr", 
+               "p99.86111_ENMO_mg_daystart-Starthr", "p99.93056_ENMO_mg_daystart-Starthr",
+               "[0,50)_ENMO_mg_daystart-Starthr", "[50,100)_ENMO_mg_daystart-Starthr", 
+               "[100,150)_ENMO_mg_daystart-Starthr", "[150,200)_ENMO_mg_daystart-Starthr", 
+               "ig_gradient_ENMO_daystart-Starthr", "ig_intercept_ENMO_daystart-Starthr", 
+               "ig_rsquared_ENMO_daystart-Starthr", "MVPA_E5S_T100_ENMO_daystart-Starthr", 
+               "MVPA_E1M_T100_ENMO_daystart-Starthr", "MVPA_E5M_T100_ENMO_daystart-Starthr",
+               "MVPA_E5S_B1M80%_T100_ENMO_daystart-Starthr", "MVPA_E5S_B5M80%_T100_ENMO_daystart-Starthr",
+               "MVPA_E5S_B10M80%_T100_ENMO_daystart-Starthr", "MVPA_E5S_T400_ENMO_daystart-Starthr",
+               "MVPA_E1M_T400_ENMO_daystart-Starthr", "MVPA_E5M_T400_ENMO_daystart-Starthr",
+               "MVPA_E5S_B1M80%_T400_ENMO_daystart-Starthr", "MVPA_E5S_B5M80%_T400_ENMO_daystart-Starthr",
+               "MVPA_E5S_B10M80%_T400_ENMO_daystart-Starthr", "L2hr_ENMO_mg_Start-Endhr",
+               "L2_ENMO_mg_Start-Endhr", "M2hr_ENMO_mg_Start-Endhr", "M2_ENMO_mg_Start-Endhr",
+               "mean_ENMO_mg_Start-Endhr", "p79.16667_ENMO_mg_Start-Endhr",
+               "p75_ENMO_mg_Start-Endhr", "p70.83333_ENMO_mg_Start-Endhr", 
+               "p66.66667_ENMO_mg_Start-Endhr", "p91.66667_ENMO_mg_Start-Endhr",
+               "p95.83333_ENMO_mg_Start-Endhr", "p96.875_ENMO_mg_Start-Endhr", 
+               "p97.91667_ENMO_mg_Start-Endhr", "p98.61111_ENMO_mg_Start-Endhr", 
+               "p98.95833_ENMO_mg_Start-Endhr", "p99.30556_ENMO_mg_Start-Endhr",
+               "p99.65278_ENMO_mg_Start-Endhr", "p99.86111_ENMO_mg_Start-Endhr", 
+               "p99.93056_ENMO_mg_Start-Endhr", "[0,50)_ENMO_mg_Start-Endhr", 
+               "[50,100)_ENMO_mg_Start-Endhr", "[100,150)_ENMO_mg_Start-Endhr",
+               "[150,200)_ENMO_mg_Start-Endhr", "ig_gradient_ENMO_Start-Endhr",
+               "ig_intercept_ENMO_Start-Endhr", "ig_rsquared_ENMO_Start-Endhr", 
+               "MVPA_E5S_T100_ENMO_Start-Endhr", "MVPA_E1M_T100_ENMO_Start-Endhr", 
+               "MVPA_E5M_T100_ENMO_Start-Endhr", "MVPA_E5S_B1M80%_T100_ENMO_Start-Endhr",
+               "MVPA_E5S_B5M80%_T100_ENMO_Start-Endhr", "MVPA_E5S_B10M80%_T100_ENMO_Start-Endhr", 
+               "MVPA_E5S_T400_ENMO_Start-Endhr", "MVPA_E1M_T400_ENMO_Start-Endhr", 
+               "MVPA_E5M_T400_ENMO_Start-Endhr", "MVPA_E5S_B1M80%_T400_ENMO_Start-Endhr",
+               "MVPA_E5S_B5M80%_T400_ENMO_Start-Endhr", "MVPA_E5S_B10M80%_T400_ENMO_Start-Endhr",
+               "L2hr_ENMO_mg_End-dayendhr", "L2_ENMO_mg_End-dayendhr", 
+               "M2hr_ENMO_mg_End-dayendhr", "M2_ENMO_mg_End-dayendhr", 
+               "mean_ENMO_mg_End-dayendhr", "p79.16667_ENMO_mg_End-dayendhr", 
+               "p75_ENMO_mg_End-dayendhr", "p70.83333_ENMO_mg_End-dayendhr",
+               "p66.66667_ENMO_mg_End-dayendhr", "p91.66667_ENMO_mg_End-dayendhr", 
+               "p95.83333_ENMO_mg_End-dayendhr", "p96.875_ENMO_mg_End-dayendhr", 
+               "p97.91667_ENMO_mg_End-dayendhr", "p98.61111_ENMO_mg_End-dayendhr",
+               "p98.95833_ENMO_mg_End-dayendhr", "p99.30556_ENMO_mg_End-dayendhr", 
+               "p99.65278_ENMO_mg_End-dayendhr", "p99.86111_ENMO_mg_End-dayendhr", 
+               "p99.93056_ENMO_mg_End-dayendhr", "[0,50)_ENMO_mg_End-dayendhr",
+               "[50,100)_ENMO_mg_End-dayendhr", "[100,150)_ENMO_mg_End-dayendhr",
+               "[150,200)_ENMO_mg_End-dayendhr","ig_gradient_ENMO_End-dayendhr",
+               "ig_intercept_ENMO_End-dayendhr", "ig_rsquared_ENMO_End-dayendhr", 
+               "MVPA_E5S_T100_ENMO_End-dayendhr", "MVPA_E1M_T100_ENMO_End-dayendhr", 
+               "MVPA_E5M_T100_ENMO_End-dayendhr", "MVPA_E5S_B1M80%_T100_ENMO_End-dayendhr",
+               "MVPA_E5S_B5M80%_T100_ENMO_End-dayendhr", "MVPA_E5S_B10M80%_T100_ENMO_End-dayendhr",
+               "MVPA_E5S_T400_ENMO_End-dayendhr", "MVPA_E1M_T400_ENMO_End-dayendhr",
+               "MVPA_E5M_T400_ENMO_End-dayendhr", "MVPA_E5S_B1M80%_T400_ENMO_End-dayendhr", 
+               "MVPA_E5S_B5M80%_T400_ENMO_End-dayendhr", "MVPA_E5S_B10M80%_T400_ENMO_End-dayendhr",
+               "N_valid_hours_daystart-Starthr", "N_hours_daystart-Starthr",
+               "N_valid_hours_Start-Endhr", "N_hours_Start-Endhr", "N_valid_hours_End-dayendhr",
+               "N_hours_End-dayendhr")
+
+  daySUMMARY = as.data.frame(matrix(1,15, length(varnames)))
+  colnames(daySUMMARY) = varnames
+  daySUMMARY$ID = rep(c(1:3), each=5)
+  daySUMMARY$calendar_date = rep(c(1:5),times=3)
+  daySUMMARY$qwindow_timestamps = rep(c("00:00_08:00_14:00_24:00"), times=15)
+  daySUMMARY$qwindow_names = rep(c("daystart_Start_End_dayend"), times=15)
+  df = g.convert.part2.long(daySUMMARY)
+  # 3 individuals x 5 days x 4 segments (daystart-Start, Start-End, End-dayend, daystart-dayend)
+  expect_that(nrow(df),equals(60)) 
+  expect_that(ncol(df),equals(50)) # 50 unique variable are in daySUMMARY (above)
+  expect_that(length(unique(df$ID)),equals(3))
+})

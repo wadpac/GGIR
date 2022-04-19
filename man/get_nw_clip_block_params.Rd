@@ -23,7 +23,10 @@
     See \link{g.inspectfile}
   }
   \item{rmc.noise}{
-    Optional, please see \link{read.myacc.csv}
+    Noise level of acceleration signal in _g_-units, used when working ad-hoc .csv data formats
+    using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
+    but when interacting with \link{g.shell.GGIR} or \link{g.part1} rmc.noise is used.
+    There, rmc.noise is taken from the params_rawdata object if not explicitly specified by user.
   }
    \item{sf}{
     Numeric, sample frequency in Hertz
@@ -37,5 +40,5 @@
   
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

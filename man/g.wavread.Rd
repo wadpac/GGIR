@@ -35,5 +35,5 @@ If only \code{start} is defined then \code{g.binread} will read all data beyond
   \item{\code{timestamps}}{local timestamps for \code{rawxyz}}
  }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

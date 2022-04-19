@@ -18,7 +18,9 @@
     Object produced by \link{g.getmeta}
   }
   \item{ignorenonwear}{
-    See \link{g.part3}
+    If TRUE then ignore detected monitor non-wear periods to avoid
+  confusion between monitor non-wear time and sustained inactivity
+  (default = TRUE)
   }
   \item{desiredtz}{
     See \link{g.part3}
@@ -29,5 +31,5 @@ Dataframe with per night and per definition of sustained inactivity bouts
 the start and end time of each sustained inactivity bout
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

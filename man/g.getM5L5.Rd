@@ -9,7 +9,8 @@ not intended for direct use by package user. Please see \link{g.analyse}
 for further clarification on functionalities
 }
 \usage{
-g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr,qM5L5=c())	
+g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr,qM5L5=c(), 
+iglevels=c(), MX.ig.min.dur=10)	
 }
 \arguments{
   \item{varnum}{
@@ -35,6 +36,13 @@ windowsize of M5L5 analyses, e.g. 5 hours
 \item{qM5L5}{
 Percentiles (quantiles) to be calculated over L5 and M5 window.
 }
+\item{iglevels}{
+ See  \link{g.analyse}. If provided then the intensity gradient will be calculated
+ for all MX windows larger or equal than argument MX.ig.min.dur
+}
+\item{MX.ig.min.dur}{
+  Minimum MX duration needed in order for intensity gradient to be calculated
+}
 
 }
 \value{
@@ -52,5 +60,5 @@ g.getM5L5 = function(varnum=data.getmeta,ws3=5,t0_LFMF=0,
 t1_LFMF=24,M5L5res=10,winhr=5)
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

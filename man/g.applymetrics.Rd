@@ -8,7 +8,8 @@
   for direct use by user
 }
 \usage{
-  g.applymetrics(data,n,sf,ws3,metrics2do,lb=0.2, hb=15)
+  g.applymetrics(data, sf, ws3, metrics2do,
+                          n = 4, lb = 0.2, hb = 15)
 }
 \arguments{
   \item{data}{
@@ -31,10 +32,10 @@
     should be extracted
   }
   \item{lb}{
-    see \link{g.metric}
+    Lower boundery of cut-off frequencies
   }
   \item{hb}{
-    see \link{g.metric}
+    Higher boundery of cut-off frequencies
   }
   
 }
@@ -54,11 +55,13 @@ Dataframe with metric values in columns average per epoch (ws3)
   do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,
   do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
   do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
-                          do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
-                          do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE)
+  do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
+  do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
+  do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE, do.brondcounts=FALSE)
+  
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 }
 
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

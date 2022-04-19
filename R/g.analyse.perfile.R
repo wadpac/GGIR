@@ -1,23 +1,18 @@
-g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocation, startt, I, LC2, LD, dcomplscore,
-                  LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
-                  ML5AD_names, igfullr, igfullr_names,
-                  daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
-                  hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
-                  qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                  IVIS_windowsize_minutes, IVIS_epochsize_seconds, qwindow) {
+g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
+                             LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
+                             ML5AD_names, igfullr, igfullr_names,
+                             daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
+                             hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
+                             qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
+                             IVIS_windowsize_minutes, qwindow, longitudinal_axis_id) {
   filesummary = matrix(" ",1,100) #matrix to be stored with summary per participant
   s_names = rep(" ",ncol(filesummary))
   vi = 1
   # Person identification number
-  if (idloc == 2) {
-    filesummary[vi] = unlist(strsplit(fname,"_"))[1] #id
-  } else if (idloc == 4) {
-    filesummary[vi] = IDd
-  } else if (idloc == 1) {
-    filesummary[vi] = ID
-  } else if (idloc == 3) {
-    filesummary[vi] = ID2
-  }
+  filesummary[vi] = ID
+  # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
+  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)]
+
   # Serial number
   if (snloc == 1) {
     filesummary[(vi+1)] = deviceSerialNumber
@@ -27,7 +22,7 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
   s_names[vi:(vi+1)] = c("ID","device_sn")
   vi = vi+2
   # starttime of measurement, body location, filename
-  filesummary[vi] = BodyLocation
+  filesummary[vi] = sensor.location
   filesummary[(vi+1)] = fname
   filesummary[(vi+2)] = startt # starttime of measurement
   s_names[vi:(vi+2)] = c("bodylocation","filename","start_time")
@@ -56,7 +51,7 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
   filesummary[vi] = C$cal.error.end
   filesummary[vi+1] = C$QCmessage
   for (la in 1:length(lookat)) {
-    AveAccAve24hr[la] = 	AveAccAve24hr[la] * 1000
+    AveAccAve24hr[la] = 	AveAccAve24hr[la] * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
   }
   q0 = length(AveAccAve24hr) + 1
   filesummary[(vi+2):(vi+q0)] = AveAccAve24hr
@@ -67,7 +62,7 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
     q1 = length(QUAN)
-    filesummary[vi:((vi-1)+q1)] = QUAN*1000
+    filesummary[vi:((vi-1)+q1)] = QUAN * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
     s_names[vi:((vi-1)+q1)] = paste0(qlevels_names,"_fullRecording")
     vi = vi + q1
     q1 = length(ML5AD)
@@ -89,12 +84,11 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     #====================================================================
     # Recognise weekenddays with enough data
     wkend  = which(daysummary[,which(ds_names == "weekday")] == "Saturday" | daysummary[,which(ds_names == "weekday")] == "Sunday")
-    columnWithAlwaysData = which(ds_names == "N hours")
-    NVHcolumn = which(ds_names == "N valid hours") #only count in the days for which the inclusion criteria is met
+    columnWithAlwaysData = which(ds_names == "N hours" | ds_names == "N_hours")
+    NVHcolumn = which(ds_names == "N valid hours" | ds_names == "N_valid_hours" ) #only count in the days for which the inclusion criteria is met
     v1 = which(is.na(as.numeric(daysummary[wkend,columnWithAlwaysData])) == F &
                  as.numeric(daysummary[wkend,NVHcolumn]) >= includedaycrit)
     wkend = wkend[v1]
-    # Recognise weekdays with enough data
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday,columnWithAlwaysData])) == F  &
                  as.numeric(daysummary[wkday,NVHcolumn]) >= includedaycrit)
@@ -106,17 +100,17 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     s_names[vi:(vi+1)] = c("N valid WEdays","N valid WKdays")
     vi = vi + 2
     # Add ISIV to filesummary
-    filesummary[vi:(vi+3)] = c(InterdailyStability, IntradailyVariability,
-                               IVIS_windowsize_minutes, IVIS_epochsize_seconds)
+    filesummary[vi:(vi+2)] = c(InterdailyStability, IntradailyVariability,
+                               IVIS_windowsize_minutes)
     iNA = which(is.na(filesummary[vi:(vi+3)]) == TRUE)
     if (length(iNA) > 0) filesummary[(vi:(vi+3))[iNA]] = " "
-    s_names[vi:(vi+3)] = c("IS_interdailystability","IV_intradailyvariability",
-                           "IVIS_windowsize_minutes","IVIS_epochsize_seconds")
+    s_names[vi:(vi+2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
     vi = vi + 4
     # Variables per metric - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:length(ds_names))
-    md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday") == TRUE)
+    md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday", "qwindow_timestamps", "qwindow_names"))
     if (length(md) > 0) daytoweekvar = daytoweekvar[-md]
+
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
@@ -125,11 +119,11 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
         uncona = unique(daysummary[,dtwi])
         storevalue = !(length(uncona) == 1 & length(qwindow) > 2 & uncona[1] == "")
         if (is.na(storevalue) == TRUE) storevalue = FALSE
-        # Only do next 15-isch linges of code if:
+        # Only do next 15-isch lines of code if:
         # - there is more than 1 day of data
         # - there are multiple daysegments (qwindow)
         # - first value is not empty
-        if (storevalue == TRUE) { 
+        if (storevalue == TRUE) {
           # Plain average of available days
           v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])),na.rm=TRUE) 
           filesummary[(vi+1+(dtwtel*sp))] = v4 # #average all availabel days
@@ -189,27 +183,33 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     filesummary[(vi+2)] = hrs.del.end
     filesummary[(vi+3)] = maxdur
     filesummary[(vi+4)] = windowsizes[1]
+    filesummary[(vi+5)] = longitudinal_axis_id
     #get GGIR version
     SI = sessionInfo()
     GGIRversion = c()
-    GGIRversion = SI$otherPkgs$GGIR$Version
+    try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
+    if (length(GGIRversion) == 0) {
+      try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version},silent=TRUE)
+    }
+    # GGIRversion = SI$otherPkgs$GGIR$Version
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
-    filesummary[(vi+5)] = GGIRversion #"2014-03-14 12:14:00 GMT"
-    s_names[vi:(vi+5)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
-                                              " value=2, ignore all data before the first midnight and",
-                                              " after the last midnight)"),
+    filesummary[(vi+6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
+    s_names[vi:(vi+6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
+                                               " value=2, ignore all data before the first midnight and",
+                                               " after the last midnight)"),
                                         "n hours ignored at start of meas (if strategy=1)",
                                         "n hours ignored at end of meas (if strategy=1)",
                                         "n days of measurement after which all data is ignored (if strategy=1)",
                                         "epoch size to which acceleration was averaged (seconds)",
-                                        "GGIR version"))
-    vi = vi + 5
+                                        "if_hip_long_axis_id", "GGIR version"))
+    vi = vi + 6
   }
   rm(LD); rm(ID)
   # tidy up daysummary object
-  mw = which(is.na(daysummary)==T)
+  mw = which(is.na(daysummary) == T)
+  mw = c(mw, grep(pattern = "NaN", x = daysummary))
   if (length(mw) > 0) {
-    daysummary[which(is.na(daysummary)==T)] = " "
+    daysummary[mw] = " "
   }
   cut = which(ds_names == " " | ds_names == "" | is.na(ds_names)==T)
   if (length(cut > 0)) {
@@ -229,11 +229,12 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     daysummary = daysummary[,-columnswith16am[2:length(columnswith16am)]]
   }
   # tidy up filesummary object
-  mw = which(is.na(filesummary)==T)
+  mw = which(is.na(filesummary) == T)
+  mw = c(mw, grep(pattern = "NaN", x = filesummary))
   if (length(mw) > 0) {
-    filesummary[which(is.na(filesummary)==T)] = " "
+    filesummary[mw] = " "
   }
-  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T |
+  cut = which(as.character(s_names) == " " | as.character(s_names) == "" | is.na(s_names)==T | duplicated(s_names) |
                 s_names %in% c("AD_", "WE_", "WD_", "WWD_", "WWE_",
                                "AD_N hours", "WE_N hours", "WD_N hours", "WWD_N hours", "WWE_N hours",
                                "AD_N valid hours", "WE_N valid hours", "WD_N valid hours", "WWD_N valid hours", "WWE_N valid hours"))
@@ -241,23 +242,27 @@ g.analyse.perfile = function(ID, ID2, IDd, fname, deviceSerialNumber, BodyLocati
     s_names = s_names[-cut]
     filesummary = filesummary[-cut]
   }
-  filesummary = data.frame(value=t(filesummary),stringsAsFactors=FALSE) #needs to be t() because it will be a column otherwise
+  filesummary = data.frame(value = t(filesummary), stringsAsFactors = FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
   
   columns2order = c()
   if (ncol(filesummary) > 37) {
-    columns2order = 30:(ncol(filesummary)-6)
+    columns2order = grep(pattern = "AD_|WE_|WD_|WWD_|WWE_", x = names(filesummary))
   }
   options(encoding = "UTF-8")
   if (length(columns2order) > 0) {
-    selectcolumns = c(names(filesummary)[1:29],
-                      sort(names(filesummary[,columns2order])),
-                      names(filesummary)[(ncol(filesummary)-5):ncol(filesummary)])
+    selectcolumns = c(names(filesummary)[1:(columns2order[1] - 1)],
+                      grep(pattern = "^AD_", x = names(filesummary), value = T),
+                      grep(pattern = "^WD_", x = names(filesummary), value = T),
+                      grep(pattern = "^WE_", x = names(filesummary), value = T),
+                      grep(pattern = "^WWD_", x = names(filesummary), value = T),
+                      grep(pattern = "^WWE_", x = names(filesummary), value = T),
+                      names(filesummary)[(columns2order[length(columns2order)] + 1):ncol(filesummary)])
   } else {
     selectcolumns = names(filesummary)
   }
   selectcolumns = selectcolumns[which(selectcolumns %in% colnames(filesummary) == TRUE)]
   filesummary = filesummary[,selectcolumns]
   filesummary = filesummary[,!duplicated(filesummary)]
-  invisible(list(filesummary=filesummary, daysummary=daysummary))
+  invisible(list(filesummary = filesummary, daysummary = daysummary))
 }

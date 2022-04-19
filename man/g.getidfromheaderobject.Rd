@@ -35,5 +35,5 @@ Participant identifier as character
 }
 }
 \author{
-Vincent T van Hees <vincentvanhees@gmail.com>
+Vincent T van Hees <v.vanhees@accelting.com>
 }

@@ -3,100 +3,98 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   invalid = A$invalid
   if (ignorenonwear == TRUE) {
     if (length(which(A$invalid==1)) > 0) {
-      A[which(A$invalid==1),2:ncol(A)] = 0
+      A[which(A$invalid==1), which(colnames(A) %in% c("time", "night") == FALSE)] = 0
     }
   }
   space = ifelse(length(unlist(strsplit(as.character(A$time[1])," "))) > 1,TRUE,FALSE)
-  temptime = as.character(unlist(A$time))
+  time = as.character(unlist(A$time))
   #time stored as iso8601 what makes it sensitive to daylight saving days.
-  if (space == FALSE) {
-    time = temptime
-  } else {
-    time = as.POSIXlt(temptime, tz = desiredtz)
-    time = POSIXtime2iso8601(time, tz = desiredtz)
+  if (space == TRUE) {
+    time = POSIXtime2iso8601(as.POSIXlt(time, tz = desiredtz), tz = desiredtz)
   }
-  # time = as.POSIXlt(A$time,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
   night = A$night
   sleep = as.data.frame(as.matrix(A[,(which(colnames(A)=="night")+1):ncol(A)]), stringsAsFactors = TRUE)
   colnames(sleep) = colnames(A)[(which(colnames(A)=="night")+1):ncol(A)]
   ws3 = M$windowsizes[1]
   ws2 = M$windowsizes[2]
-  sib.cla.sum = as.data.frame(matrix(0,0,9))
-  cnt = 1
+  sib.cla.sum = as.data.frame(matrix(0, 1000,9))
   un = unique(night) #unique nights
-  if (length(which(un == 0 | is.na(un) == TRUE)) > 0) {
-    un = un[-c(which(un == 0 | is.na(un) == TRUE))]
+  missingnights = which(un == 0 | is.na(un) == TRUE)
+  if (length(missingnights) > 0) {
+    un = un[-missingnights]
   }
-  for (i in 1:length(un)) { #nights
-    qqq1 = which(night == i)[1]
-    qqq2 = which(night == i)[length(which(night == i))]
-    if (length(qqq1) == 1 & length(qqq2) == 1) {
-      time.t = time[qqq1:qqq2]
-      sleep.t = as.data.frame(sleep[qqq1:qqq2,], stringsAsFactors = TRUE)
-      colnames(sleep.t) = colnames(sleep)
-      invalid.t = invalid[qqq1:qqq2]
-      for (j in 1:ncol(sleep.t)) { #sleep definitions
-        nsleepperiods = length(which(diff(sleep.t[,j]) == 1))     
-        if (nsleepperiods > 0) {
-          start_sp = which(diff(sleep.t[,j]) == 1)
-          end_sp = which(diff(sleep.t[,j]) == -1)
-          if(length(end_sp) == 0) end_sp = nrow(sleep.t) #if sleep period ends the next 'nightday'
-          if (start_sp[1] > end_sp[1]) { #if period starts with sleep
-            start_sp = c(1,start_sp)
-          }
-          if (start_sp[length(start_sp)] > end_sp[length(end_sp)]) { #if period ends with sleep
-            end_sp = c(end_sp,nrow(sleep.t))
-          }
-          nsleepperiods = length(start_sp)
-        }
-        
-        if (nsleepperiods == 0) {
-          sleep_dur = 0
-          nint = 0
-          lex = 1
-          colnames(sib.cla.sum)[lex:(lex+3)] = c("night","definition","start.time.day","nsib.periods")
-          sib.cla.sum[cnt,lex] = i #night
-          sib.cla.sum[cnt,(lex+1)] = colnames(sleep.t)[j] #definition
-          sib.cla.sum[cnt,(lex+2)] = as.character(time.t[1])
-          sib.cla.sum[cnt,(lex+3)] = 0 #number of sleep periods
-          lex = lex + 4
-          colnames(sib.cla.sum)[lex:(lex+1)] = c("tot.sib.dur.hrs","fraction.night.invalid")
-          sib.cla.sum[cnt,lex] = 0 #total sleep duration
-          sib.cla.sum[cnt,(lex+1)] = length(which(invalid.t != 0)) / length(invalid.t) #fraction of data non-wear
-          lex = lex + 2
-          # sleep period specific characteristics  
-          colnames(sib.cla.sum)[lex:(lex+2)] = c("sib.period","sib.onset.time","sib.end.time")
-          sib.cla.sum[cnt,lex] = 0
-          sib.cla.sum[cnt,(lex+1)] = ""
-          sib.cla.sum[cnt,(lex+2)] = ""
-          cnt = cnt + 1
-        } else {
-          for (spi in 1:nsleepperiods) {
-            sleep_sp = sleep.t[start_sp[spi]:end_sp[spi],j]
-            time_sp = time.t[start_sp[spi]:end_sp[spi]]
-            sleep_dur = (round((length(which(sleep_sp==1))/(60/ws3)) * 100)) / 100
-            # general characteristics of the time window
-            lex = 1
-            colnames(sib.cla.sum)[lex:(lex+3)] = c("night","definition","start.time.day","nsib.periods")
-            sib.cla.sum[cnt,lex] = i #night
-            sib.cla.sum[cnt,(lex+1)] = colnames(sleep.t)[j] #definition
-            sib.cla.sum[cnt,(lex+2)] = as.character(time.t[1])
-            sib.cla.sum[cnt,(lex+3)] = nsleepperiods #number of sleep periods
-            lex = lex + 4
-            colnames(sib.cla.sum)[lex:(lex+1)] = c("tot.sib.dur.hrs","fraction.night.invalid")
-            sib.cla.sum[cnt,lex] = sleep_dur/60 #total sleep duration
-            sib.cla.sum[cnt,(lex+1)] = length(which(invalid.t != 0)) / length(invalid.t) #fraction of data non-wear
-            lex = lex + 2
-            # sleep period specific characteristics  
-            colnames(sib.cla.sum)[lex:(lex+2)] = c("sib.period","sib.onset.time","sib.end.time")
-            sib.cla.sum[cnt,lex] = spi
-            sib.cla.sum[cnt,(lex+1)] = as.character(time_sp[which(sleep_sp == 1)[1]])
-            sib.cla.sum[cnt,(lex+2)] = as.character(time_sp[length(sleep_sp)])
-            cnt = cnt + 1
+  if (length(un) != 0) {
+    if (is.numeric(max(un)) == TRUE) {
+      cnt = 1
+      for (i in 1:max(un)) { #nights #length(un)
+        qqq1 = which(night == i)[1]
+        qqq2 = which(night == i)[length(which(night == i))]
+        if (length(qqq1) == 1 & length(qqq2) == 1) {
+          time.t = time[qqq1:qqq2]
+          sleep.t = as.data.frame(sleep[qqq1:qqq2,], stringsAsFactors = TRUE)
+          colnames(sleep.t) = colnames(sleep)
+          invalid.t = invalid[qqq1:qqq2]
+          for (j in 1:ncol(sleep.t)) { #sleep definitions
+            nsleepperiods = length(which(diff(sleep.t[,j]) == 1))
+            if (nsleepperiods > 0) {
+              start_sp = which(diff(sleep.t[,j]) == 1)
+              end_sp = which(diff(sleep.t[,j]) == -1)
+              if(length(end_sp) == 0) end_sp = nrow(sleep.t) #if sleep period ends the next 'nightday'
+              if (start_sp[1] > end_sp[1]) { #if period starts with sleep
+                start_sp = c(1,start_sp)
+              }
+              if (start_sp[length(start_sp)] > end_sp[length(end_sp)]) { #if period ends with sleep
+                end_sp = c(end_sp,nrow(sleep.t))
+              }
+              nsleepperiods = length(start_sp)
+            }
+            colnames(sib.cla.sum)[1:9] = c("night", "definition", "start.time.day",
+                                           "nsib.periods", "tot.sib.dur.hrs",
+                                           "fraction.night.invalid",
+                                           "sib.period", "sib.onset.time",
+                                           "sib.end.time")
+            NepochsInDay = (60/ws3)*1440
+            Nmissingvalues = max(c(0, (NepochsInDay - length(invalid.t))))
+            fraction.night.invalid = (length(which(invalid.t != 0)) + Nmissingvalues) / NepochsInDay
+            if (fraction.night.invalid > 1) fraction.night.invalid = 1 # day with 25 hours
+            if (nsleepperiods == 0) {
+              sib.cla.sum[cnt, 1] = i #night
+              sib.cla.sum[cnt, 2] = colnames(sleep.t)[j] #definition
+              sib.cla.sum[cnt, 3] = as.character(time.t[1])
+              sib.cla.sum[cnt, 4] = nsleepperiods #number of sleep periods
+              sib.cla.sum[cnt, 5] = 0 #total sleep duration
+              sib.cla.sum[cnt, 6] = fraction.night.invalid #length(invalid.t)
+              sib.cla.sum[cnt, 7] = 0
+              sib.cla.sum[cnt, 8:9] = ""
+              cnt = cnt + 1
+            } else {
+              for (spi in 1:nsleepperiods) {
+                sib.cla.sum[cnt, 1] = i #night
+                sib.cla.sum[cnt, 2] = colnames(sleep.t)[j] #definition
+                sib.cla.sum[cnt, 3] = as.character(time.t[1])
+                sib.cla.sum[cnt, 4] = nsleepperiods #number of sleep periods
+                sleep_sp = sleep.t[start_sp[spi]:end_sp[spi],j]
+                time_sp = time.t[start_sp[spi]:end_sp[spi]]
+                sleep_dur = (round((length(which(sleep_sp==1))/(60/ws3)) * 100)) / 100
+                # general characteristics of the time window
+                sib.cla.sum[cnt, 5] = sleep_dur/60 #total sleep duration
+                sib.cla.sum[cnt, 6] = fraction.night.invalid #length(invalid.t)
+                sib.cla.sum[cnt, 7] = spi
+                sib.cla.sum[cnt, 8] = as.character(time_sp[which(sleep_sp == 1)[1]])
+                sib.cla.sum[cnt, 9] = as.character(time_sp[length(sleep_sp)])
+                cnt = cnt + 1
+              }
+            }
+            if (cnt  > 800) {
+              emptydf = as.data.frame(matrix(0,1000,ncol(sib.cla.sum)))
+              colnames(emptydf) = colnames(sib.cla.sum)
+              sib.cla.sum = rbind(sib.cla.sum, emptydf)
+            }
           }
         }
       }
     }
   }
+  sib.cla.sum = sib.cla.sum[-which(sib.cla.sum$night == 0 | sib.cla.sum$sib.period == 0), ]
   return(sib.cla.sum)
 }

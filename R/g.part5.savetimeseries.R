@@ -61,7 +61,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                          no = ifelse(mdat$guider == 'HDCZA', yes = 2,
                                      no =  ifelse(mdat$guider == 'setwindow', yes = 3,
                                                   no = ifelse(mdat$guider == 'L512', yes = 4,
-                                                              no = 0))))
+                                                              no = ifelse(mdat$guider == 'HorAngle', yes = 5,
+                                                              no = 0)))))
     mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns
     naS = colnames(mdat)
