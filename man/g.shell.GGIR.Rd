@@ -6,7 +6,7 @@ Shell function for analysing an accelerometer dataset.
 \description{
 This function is designed to help users operate all steps of the
 analysis. It helps to generate and structure milestone data, 
-produces user-friendly reports. The function acts as a shell with
+and produces user-friendly reports. The function acts as a shell with
 calls to \link{g.part1}, \link{g.part2}, \link{g.part3},
 \link{g.part4} and \link{g.part5}.
 }
