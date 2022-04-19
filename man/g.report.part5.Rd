@@ -18,13 +18,17 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
 }
 \arguments{
   \item{metadatadir}{
-  see \link{g.part5}
+    Directory that holds a folder 'meta' and inside this a folder 'basic'
+    which contains the milestone data produced by \link{g.part1}. The folderstructure
+    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    the value of metadatadir is.
   }
   \item{f0}{
-  see \link{g.part5}
+    File index to start with (default = 1). Index refers to the filenames sorted
+    in alphabetical order
   }
   \item{f1}{
-  see \link{g.part5}
+    File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{loglocation}{
   see \link{g.part4}
