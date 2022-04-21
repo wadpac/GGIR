@@ -620,6 +620,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           ds_names[fi] = "ACC_day_mg";      fi = fi + 1
                           dsummary[di, fi] = mean(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
                           ds_names[fi] = "ACC_spt_mg";      fi = fi + 1
+                          dsummary[di, fi] = median(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
+                          ds_names[fi] = "ACC_spt_mg_median";      fi = fi + 1
+                          dsummary[di, fi] = sd(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
+                          ds_names[fi] = "ACC_spt_mg_stdev";      fi = fi + 1
                           dsummary[di, fi] = mean(ts$ACC[sse], na.rm = TRUE)
                           ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
                           #===============================================
