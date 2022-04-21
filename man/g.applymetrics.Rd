@@ -9,7 +9,8 @@
 }
 \usage{
   g.applymetrics(data, sf, ws3, metrics2do,
-                          n = 4, lb = 0.2, hb = 15)
+                          n = 4, lb = 0.2, hb = 15,
+                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01)
 }
 \arguments{
   \item{data}{
@@ -37,7 +38,15 @@
   \item{hb}{
     Higher boundery of cut-off frequencies
   }
-  
+  \item{zc.lb}{
+    Used for zero-crossing counts only. Lower boundery of cut-off frequencies in filter.
+  }
+  \item{zc.hb}{
+    Used for zero-crossing counts only. Higher boundery of cut-off frequencies in filter.
+  }
+  \item{zc.sb}{
+    Stop band used for calculation of zero crossing counts. Value is the acceleration threshold in g units below which     acceleration will be rounded to zero.
+  }
 }
 \value{
 Dataframe with metric values in columns average per epoch (ws3)
