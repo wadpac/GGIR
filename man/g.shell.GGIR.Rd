@@ -332,11 +332,12 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         3600 seconds. So, when window3 is larger than window2 we use overlapping windows,
         while if window2 equals window3 non-wear periods are assessed by non-overlapping
         windows. Window2 is expected to be a multitude of 60 seconds.}
-      \item{idloc}{Numeric. If idloc = 1 (default) the code assumes that ID
+      \item{idloc}{Numeric. If idloc = 1 the code assumes that ID
         number is stored in the obvious header field. Note that for ActiGraph data
-        the ID never stored in the file header.  For value set to 2, 5, 6, and 7, GGIR
+        the ID never stored in the file header. For value set to 2, 5, 6, and 7, GGIR
         looks at the filename and extracts the character string preceding the first 
-        occurance of a '_', ' ' (space), '.' (dot), and '-', respecitvely. You may have 
+        occurance of a '_' (idloc = 2), ' ' (space, idloc = 5), '.' (dot, idloc = 6, default), 
+        and '-' (idloc = 7), respecitvely. You may have 
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
     }
@@ -358,9 +359,9 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.}
       \item{epochvalues2csv}{Boolean. If TRUE then epoch values are exported to a
         CSV spreadsheet. Here, non-wear time is imputed where possible (default = FALSE).}
-      \item{do.sibreport}{Boolean. Applied in g.part5. Boolean to indicate whether
+      \item{do.sibreport}{Boolean. Applied in g.part5. Boolean (default = TRUE) to indicate whether
         to generate report for the sustained inactivity bouts (sib).}
-      \item{do.visual}{Boolean. If g.part4 is run with do.visual == TRUE then
+      \item{do.visual}{Boolean. If g.part4 is run with do.visual == TRUE (default) then
         the function will generate a pdf with a visual representation of the
         overlap between the sleeplog entries and the accelerometer detections.
         This can be used to visualy verify that the sleeplog entries do
@@ -373,8 +374,8 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         criterror specifies the number of minimum number of hours difference
         between sleep log and  accelerometer estimate for the night to be
         included in the visualisation.}
-      \item{visualreport}{Boolean. If TRUE then generate visual report based on combined output from part 2
-        and 4. This is in beta-version at the moment.}
+      \item{visualreport}{Boolean. If TRUE (default) then generate visual report based on combined output from part 2
+        and 4.}
       \item{viewingwindow}{Numeric. Centre the day as displayed around noon (value = 1) or
         around midnight (value = 2).}
       \item{week_weekend_aggregate.part5}{

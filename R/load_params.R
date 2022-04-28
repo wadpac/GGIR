@@ -98,17 +98,17 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
                          save_ms5raw_format = "csv", save_ms5raw_without_invalid = TRUE,
                          storefolderstructure = FALSE, timewindow = c("MM","WW"), 
-                         viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE,
+                         viewingwindow = 1, dofirstpage = TRUE, visualreport = TRUE,
                          week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
-                         outliers.only = FALSE, criterror = 3, do.visual = FALSE,
-                         do.sibreport = FALSE)
+                         outliers.only = FALSE, criterror = 3, do.visual = TRUE,
+                         do.sibreport = TRUE)
     
   }
   if ("general" %in% group) {
     params_general = list(overwrite = FALSE, acc.metric = "ENMO",
                           maxNcores = c(), print.filename = FALSE,
                           do.parallel = TRUE, windowsizes = c(5,900,3600),
-                          desiredtz = "", configtz = c(), idloc = 1, dayborder = 0,
+                          desiredtz = Sys.timezone(), configtz = c(), idloc = 6, dayborder = 0,
                           part5_agg2_60seconds = FALSE,
                           sensor.location = "wrist")
   }
