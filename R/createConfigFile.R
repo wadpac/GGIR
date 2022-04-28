@@ -79,9 +79,9 @@ createConfigFile = function(config.parameters = c()) {
       }
     }
   }
+  SI = sessionInfo()
   if (!("GGIRversion" %in% names(config.parameters))) {
     GGIRversion = ""
-    SI = sessionInfo()
     try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
     if (length(GGIRversion) == 0) {
       try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
