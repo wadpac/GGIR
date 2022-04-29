@@ -212,7 +212,7 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs, 
         other values will be ceiled). After loading these hours only extra data is loaded 
         if calibration error has not been reduced to under 0.01 g.}
-      \item{printsummary}{Boolean. If TRUE will print a summary when done}
+      \item{printsummary}{Boolean (default = FASE). If TRUE will print a summary of the calibration procedure when done}
       \item{chunksize}{Numeric. Value between 0.2 and 1 to specificy the size of chunks to be 
         loaded as a fraction of a 12 hour period, e.g. 0.5 equals 6 hour chunks.
         The default is 1 (12 hrs). For machines with less than 4Gb of RAM memory a value
@@ -284,8 +284,8 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
     A list of parameters used across all GGIR parts that do not fall in any of the other
     categories.
     \describe{
-      \item{overwrite}{Boolean. Do you want to overwrite analysis for which milestone data exists?
-        If overwrite=FALSE then milestone data from a previous analysis will
+      \item{overwrite}{Boolean (default = FALSE). Do you want to overwrite analysis for which milestone 
+        data exists? If overwrite=FALSE, then milestone data from a previous analysis will
         be used if available and visual reports will not be created again.}
       \item{selectdaysfile}{Character. Do not use, this is legacy code for one specific data study.
         Character pointing at a csv file holding the relationship between device serial
@@ -305,7 +305,7 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         The metric of interest need to be calculated in M.}
       \item{part5_agg2_60seconds}{Boolean. Wether to use aggregate epochs to 60 seconds
         as part of the part 5 analysis.}
-      \item{print.filename}{Boolean. Whether to print the filename before before analysing
+      \item{print.filename}{Boolean (default = FALSE). Whether to print the filename before before analysing
         it (default is FALSE). Printing the filename can be useful to investigate
         problems (e.g. to verify that which file is being read).}
       \item{desiredtz}{Character, desired timezone: see also http://en.wikipedia.org/wiki/Zone.tab}
