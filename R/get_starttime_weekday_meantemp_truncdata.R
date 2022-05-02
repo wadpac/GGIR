@@ -27,12 +27,12 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
   }
   # extraction and modification of starting point of measurement
   if (i == 1 | (i != 1 & length(selectdaysfile) > 0)) { #only do this for first block of data
-    starttime = g.getstarttime(datafile=datafile,P=P,header=header,mon=monc,
-                               dformat=dformat,desiredtz=desiredtz,selectdaysfile=selectdaysfile)
+    starttime = g.getstarttime(datafile = datafile, P = P, header = header, mon = monc,
+                               dformat = dformat, desiredtz = desiredtz,selectdaysfile = selectdaysfile)
     if (exists("P")) rm(P); gc()
     #==================================================
     #inspection timezone
-    timezone = attr(unclass(as.POSIXlt(starttime[1])),which="tzone")
+    timezone = attr(unclass(as.POSIXlt(starttime[1])), which = "tzone")
     starttimebefore = as.POSIXlt(starttime)
     # assuming that timestamps is good, but that timezone might be lost in conversion from string to POSIXct
     if (dformat == 1) { #not sure whether this is required for csv-format (2)
@@ -82,7 +82,7 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     if (floor(sampleshift) > 1) {
       data = data[-c(1:floor(sampleshift)),] #delete data accordingly
     }
-    newmin = start_min+minshift #recalculate first timestamp
+    newmin = start_min + minshift #recalculate first timestamp
     newsec = 0
     remem2add24 = FALSE
     if (newmin >= 60) {
@@ -93,16 +93,16 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
         remem2add24 = TRUE #remember to add 24 hours because this is now the wrong day
       }
     }
-    starttime3 = paste(temp[1]," ",start_hr,":",newmin,":",newsec,sep="")
+    starttime3 = paste0(temp[1], " ", start_hr, ":", newmin, ":", newsec)
     #create timestamp from string (now desiredtz is added)
     if (length(desiredtz) == 0) {
       print("desiredtz not specified, local timezone used as default")
       desiredtz = ""
     }
-    starttime_a = as.POSIXct(starttime3,format="%d/%m/%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-    starttime_b = as.POSIXct(starttime3,format="%d-%m-%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-    starttime_c = as.POSIXct(starttime3,format="%Y/%m/%d %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
-    starttime_d = as.POSIXct(starttime3,format="%Y-%m-%d %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
+    starttime_a = as.POSIXct(starttime3,format = "%d/%m/%Y %H:%M:%S", tz = desiredtz) #,origin="1970-01-01"
+    starttime_b = as.POSIXct(starttime3,format = "%d-%m-%Y %H:%M:%S", tz = desiredtz) #,origin="1970-01-01"
+    starttime_c = as.POSIXct(starttime3,format = "%Y/%m/%d %H:%M:%S", tz = desiredtz) #,origin="1970-01-01"
+    starttime_d = as.POSIXct(starttime3,format = "%Y-%m-%d %H:%M:%S", tz = desiredtz) #,origin="1970-01-01"
     if (is.na(starttime_a) == FALSE) {
       starttime = starttime_a
     } else {
@@ -121,9 +121,9 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
       }
     }
     if (remem2add24 == TRUE) {
-      starttime = as.POSIXlt(as.numeric(starttime) + (24*3600),origin="1970-01-01")
+      starttime = as.POSIXlt(as.numeric(starttime) + (24*3600), origin = "1970-01-01")
     }
   }
-  invisible(list(starttime=starttime, meantemp=meantemp, use.temp=use.temp, wday=wday,
-                 weekdays=weekdays, wdayname=wdayname, desiredtz=desiredtz, data=data))
+  invisible(list(starttime = starttime, meantemp = meantemp, use.temp = use.temp, wday = wday,
+                 weekdays = weekdays, wdayname = wdayname, desiredtz = desiredtz, data = data))
 }

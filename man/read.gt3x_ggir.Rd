@@ -9,6 +9,8 @@ read.gt3x_ggir(
   imputeZeroes = FALSE,
   flag_idle_sleep = FALSE,
   cleanup = FALSE,
+  desiredtz = "",
+  configtz = "",
   ...,
   add_light = FALSE
 )
@@ -29,6 +31,10 @@ read.gt3x_ggir(
 this finds where all 3 axes are zero.}
 
 \item{cleanup}{should any unzipped files be deleted?}
+
+\item{desiredtz}{See params_general, as discussed in \link{g.shell.GGIR}}
+
+\item{configtz}{See params_general, as discussed in \link{g.shell.GGIR}}
 
 \item{...}{additional arguments to pass to \code{parseGT3X} C++ code}
 

@@ -427,11 +427,15 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = as.data.frame(read.gt3x_ggir(path = filename, batch_begin = startpage,
-                                                     batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
+                                                 desiredtz = params_general[["desiredtz"]],
+                                                 configtz = params_general[["configtz"]],
+                                                     batch_end = endpage, asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0) { # too short or not data at all
       P = c() ; switchoffLD = 1
-      if (blocknumber == 1) filequality$filetooshort = TRUE
-      if (blocknumber == 1) filequality$filecorrupt = TRUE
+      if (blocknumber == 1) {
+        filequality$filetooshort = TRUE
+        filequality$filecorrupt = TRUE
+      }
     } else {
       if (nrow(P) < ((sf * ws * 2) + 1)) {
         P = c() ; switchoffLD = 1
@@ -440,7 +444,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     }
   } else if (mon == 0 & dformat == 5) { # user specified csv format
     startpage = (1 + (blocksize * 300 * (blocknumber - 1)))
-    deltapage = (blocksize*300)
+    deltapage = (blocksize * 300)
     UPI = updatepageindexing(startpage = startpage,deltapage = deltapage,
                              blocknumber = blocknumber,PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage

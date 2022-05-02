@@ -8,7 +8,7 @@ Inspects accelerometer file for key information, including: monitor brand, sampl
 }
 \usage{
 g.inspectfile(datafile, desiredtz = "", params_rawdata = c(),
-                         configtz = c(), ...)
+                         ...)
 }
 \arguments{
   \item{datafile}{
@@ -19,9 +19,6 @@ g.inspectfile(datafile, desiredtz = "", params_rawdata = c(),
   }
   \item{params_rawdata}{
     See \link{g.part1}
-  }
-  \item{configtz}{
-    ...
   }
   \item{...}{
    Any argument used in the previous version of g.getmeta, which will now

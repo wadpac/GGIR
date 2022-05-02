@@ -1,8 +1,7 @@
-g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
-                         configtz = c(), ...) {
+g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(), ...) {
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("datafile", "desiredtz", "params_rawdata", "configtz")) == FALSE) {
+  if (any(names(input) %in% c("datafile", "desiredtz", "params_rawdata")) == FALSE) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.inspectfile is used on its own
     # as if it was still the old g.inspectfile function
@@ -16,7 +15,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste0(names(input)[i], "=", input[i])
-      if (class(unlist(input[i])) == "character") {
+      if (is(unlist(input[i]), "character")) {
         txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
       }
       eval(parse(text = txt))

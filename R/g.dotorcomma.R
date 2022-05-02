@@ -6,7 +6,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste0(names(input)[i], "=", input[i])
-      if (class(unlist(input[i])) == "character") {
+      if (is(unlist(input[i]), "character")) {
         txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
       }
       eval(parse(text = txt))
@@ -58,13 +58,13 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
     if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {
     try(expr = {deci = g.cwaread(fileName = inputfile,start = 1, end = 10, desiredtz = desiredtz,
-                               interpolationType = 1)$data},silent = TRUE)
+                                 interpolationType = 1)$data},silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .cwa file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 6) { # .gt3x
     try(expr = {deci = as.data.frame(read.gt3x_ggir(path = inputfile,
-                                                       batch_begin = 1, batch_end = 10, 
-                                                       asDataFrame = TRUE))}, silent = TRUE)
+                                                    batch_begin = 1, batch_end = 10, desiredtz = desiredtz,
+                                                    asDataFrame = TRUE))}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .gt3x file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   }

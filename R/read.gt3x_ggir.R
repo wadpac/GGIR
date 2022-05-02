@@ -12,9 +12,10 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
                            imputeZeroes = FALSE,
                            flag_idle_sleep = FALSE,
                            cleanup = FALSE,
+                           desiredtz = "",
+                           configtz = "",
                            ...,
                            add_light = FALSE) {
-  
   #=======================================================
   # Declare helper functions from ead.gt3x, but which it does not expose to the user:
   is_gt3x <- function(path) {
@@ -151,9 +152,9 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
     on.exit(unlink(path, recursive = TRUE))
   }
   
-  tz  <- "GMT" # used for parsing, times are actually in local timezone
-  info <- read.gt3x::parse_gt3x_info(path, tz = tz)
-  
+  # tz  <- "GMT" # used for parsing, times are actually in local timezone
+  if (configtz == "" | is.null(configtz)) configtz = desiredtz
+  info <- read.gt3x::parse_gt3x_info(path, tz = configtz) #tz
   if (verbose) {
     print(info)
   }
@@ -175,7 +176,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
       logpath, max_samples = samples,
       scale_factor = info[["Acceleration Scale"]],
       sample_rate = info[["Sample Rate"]],
-      start_time = as.numeric(info[["Start Date"]]),
+      start_time = as.numeric(info[["Start Date"]]), # this line converts it back to local time
       verbose = as.logical(verbose),
       impute_zeroes = imputeZeroes, ...)
     # need reordering for Y X Z ACTIVITY PACKETS
@@ -238,11 +239,10 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (!is_old_version) {
     attr(accdata, "missingness") <- data.frame(
       time = as.POSIXct(as.numeric(names(attr(accdata, "missingness"))),
-                        origin = "1970-01-01", tz = tz),
+                        origin = "1970-01-01", tz = desiredtz), #tz
       n_missing = attr(accdata, "missingness"),
       stringsAsFactors = FALSE)
   }
-  
   verbose_message(
     "Done", " (in ",
     as.numeric(
@@ -254,9 +254,12 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   
   accdata <- structure(accdata,
                        class = c("activity", class(accdata)))
-  
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
+  }
+  attr(accdata$time, "tzone") <- configtz
+  if (configtz != desiredtz) {
+    accdata$time = as.POSIXct(as.character(accdata$time), tz = desiredtz)
   }
   if (flag_idle_sleep) {
     if (asDataFrame) {
@@ -266,5 +269,6 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
                       idle = rowSums(accdata[, c("X", "Y", "Z")] == 0) == 3)
     }
   }
+  print(head(accdata))
   return(accdata)
 }
