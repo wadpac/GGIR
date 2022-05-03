@@ -332,11 +332,11 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         3600 seconds. So, when window3 is larger than window2 we use overlapping windows,
         while if window2 equals window3 non-wear periods are assessed by non-overlapping
         windows. Window2 is expected to be a multitude of 60 seconds.}
-      \item{idloc}{Numeric. If idloc = 1 the code assumes that ID
+      \item{idloc}{Numeric (default: idloc = 1). If idloc = 1 the code assumes that ID
         number is stored in the obvious header field. Note that for ActiGraph data
         the ID never stored in the file header. For value set to 2, 5, 6, and 7, GGIR
         looks at the filename and extracts the character string preceding the first 
-        occurance of a '_' (idloc = 2), ' ' (space, idloc = 5), '.' (dot, idloc = 6, default), 
+        occurance of a '_' (idloc = 2), ' ' (space, idloc = 5), '.' (dot, idloc = 6), 
         and '-' (idloc = 7), respecitvely. You may have 
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
@@ -357,10 +357,10 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.}
       \item{save_ms5raw_without_invalid}{Boolean to indicate whether to remove
         invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.}
-      \item{epochvalues2csv}{Boolean. If TRUE then epoch values are exported to a
-        CSV spreadsheet. Here, non-wear time is imputed where possible (default = FALSE).}
-      \item{do.sibreport}{Boolean. Applied in g.part5. Boolean (default = TRUE) to indicate whether
-        to generate report for the sustained inactivity bouts (sib).}
+      \item{epochvalues2csv}{Boolean (default: epochvalues2csv = FALSE). If TRUE then epoch values
+        are exported to a CSV spreadsheet. Here, non-wear time is imputed where possible.}
+      \item{do.sibreport}{Boolean (default: do.sibreport = FALSE). Applied in g.part5 to indicate
+        whether to generate report for the sustained inactivity bouts (sib).}
       \item{do.visual}{Boolean. If g.part4 is run with do.visual == TRUE (default) then
         the function will generate a pdf with a visual representation of the
         overlap between the sleeplog entries and the accelerometer detections.
