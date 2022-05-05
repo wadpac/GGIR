@@ -20,10 +20,10 @@ createConfigFile = function(config.parameters = c()) {
       # Replace non-empty lists by same value but without the list
       myfun = function(x) {
         x = ifelse(test = is.list(x) & length(unlist(x) == 1),
-               yes = ifelse(test = length(unlist(x)) > 1,
-                            yes = paste0("c(", paste0(unlist(x), collapse=","),")", collapse=""),
-                            no = unlist(x)),
-               no =  x)
+                   yes = ifelse(test = length(unlist(x)) > 1,
+                                yes = paste0("c(", paste0(unlist(x), collapse = ","),")", collapse = ""),
+                                no = unlist(x)),
+                   no =  x)
         x = ifelse(test = is.list(x) & length(unlist(x)) == 0,
                    yes = "c()",
                    no =  x)
@@ -79,11 +79,14 @@ createConfigFile = function(config.parameters = c()) {
       }
     }
   }
-  GGIRversion = ""
   SI = sessionInfo()
-  try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version},silent=TRUE)
+  GGIRversion = ""
+  try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
+  if (length(GGIRversion) == 0) {
+    try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
+  }
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
-  out[nrow(out) - 1,] = c("GGIR_version", GGIRversion, " not applicable")
+  out[nrow(out) - 1,] = c("GGIRversion", GGIRversion, " not applicable")
   out[nrow(out),] = c("R_version", SI$R.version$version.string, " not applicable")
   out = out[which(!is.na(out[,1])),]
   out = as.data.frame(out, stringsAsFactors = TRUE)

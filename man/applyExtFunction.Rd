@@ -33,7 +33,7 @@
     Short epoch size (first value of windowsizes in \link{g.getmeta}).
   }
   \item{interpolationType}{
-    See \link{g.getmeta}
+    Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
   }
 }
 \value{

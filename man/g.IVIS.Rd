@@ -28,7 +28,7 @@
   \item{IVIS.activity.metric}{
   Metric used for activity calculation.
   Value = 1, uses continuous scaled acceleration.
-  Value = 2, tries to collapse acce;eration into a binary score of rest
+  Value = 2, tries to collapse acceleration into a binary score of rest
   versus active to try to similate the original approach.
   }
 }

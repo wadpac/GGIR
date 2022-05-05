@@ -481,7 +481,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     cat("\n")
     cat(paste0("\nStatus: ",QCmessage))
     cat(paste0("\nCalibration error (g) before: ", cal.error.start))
-    cat(paste0("\nCallibration error (g) after: ", cal.error.end))
+    cat(paste0("\nCalibration error (g) after: ", cal.error.end))
     cat(paste0("\nOffset correction ",c("x","y","z"),": ", offset))
     cat(paste0("\nScale correction ",c("x","y","z"),": ", scale))
     cat(paste0("\nNumber of hours used: ",nhoursused))
