@@ -22,7 +22,10 @@ part of a bout of light PA.
 }
 \arguments{
   \item{metadatadir}{
-    See \link{g.part2}
+    Directory that holds a folder 'meta' and inside this a folder 'basic'
+    which contains the milestone data produced by \link{g.part1}. The folderstructure
+    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    the value of metadatadir is.
   }
   \item{dofirstpage}{
     Boolean to indicate whether a first page with historgrams summarizing the whole
@@ -32,10 +35,11 @@ part of a bout of light PA.
     See \link{g.shell.GGIR}
   }
   \item{f0}{
-    See \link{g.shell.GGIR}
+    File index to start with (default = 1). Index refers to the filenames sorted
+    in alphabetical order
   }
   \item{f1}{
-    See \link{g.shell.GGIR}
+    File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{overwrite}{
     See \link{g.shell.GGIR}
