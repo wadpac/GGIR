@@ -4,12 +4,12 @@
   Merge output from physical activity and sleep analysis into one report
 }
 \description{
-  Function to merge the output from g.part2 and g.part4 into one report enhanced with
+  Function to merge the output from \link{g.part2} and \link{g.part4} into one report enhanced with
   profiling of sleep and physical activity stratified across intensity levels and
   based on bouted periods as well as non-bouted periods.
 }
 \usage{
-g.part5(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
+g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_sleep = c(), params_metrics = c(),
                    params_247 = c(), params_phyact = c(), 
                    params_cleaning = c(), params_output = c(),
@@ -17,42 +17,43 @@ g.part5(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
 }
 \arguments{
   \item{datadir}{
-    Directory where the accelerometer files are stored or list of accelerometer
-    filenames and directories
+    Directory where the accelerometer files are stored, e.g. 
+    "C:/mydata", or list of accelerometer filenames and directories, e.g. 
+    c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
   \item{metadatadir}{
-    Directory that holds a folders 'meta' and inside this a folder 'basic' which
-    contains the milestone data produced by g.part1. The folderstructure
-    is normally created by g.part1 and g.shell.GGIR will recognise what the value
-    of metadatadir is.
+    Directory that holds a folder 'meta' and inside this a folder 'basic'
+    which contains the milestone data produced by \link{g.part1}. The folderstructure
+    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    the value of metadatadir is.
   }
   \item{f0}{
     File index to start with (default = 1). Index refers to the filenames sorted
-    in increasing order
+    in alphabetical order
   }
   \item{f1}{
-    File index to finish with (defaults to number of files available)
+    File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{params_sleep}{
-    List of parameters used for sleep analysis (GGIR part 3, 4, and 5): see documentation \link{g.part3}.
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_metrics}{
-    List of parameters used for metrics extraction (GGIR part 1): see documentation \link{g.part1}.
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_247}{
-    List, see \link{g.part2}
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_phyact}{
-    List, see \link{g.part2}
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_cleaning}{
-    List, see \link{g.part1}
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_output}{
-    List, see \link{g.part2}
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_general}{
-    List, see \link{g.part1}
+   See details in \link{g.shell.GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,

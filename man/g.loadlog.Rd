@@ -37,7 +37,7 @@
     interpretted as a number (TRUE=default) or a character (FALSE)?
   }
   \item{sleeplogsep}{
-    Value used as sep argument for reading sleeplog csv file.
+    Value used as sep argument for reading sleeplog csv file, usually "," or ";".
   }
   \item{meta.sleep.folder}{
     Path to part3 milestone data, only specify if sleeplog is in advanced format.
