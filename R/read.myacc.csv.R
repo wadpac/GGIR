@@ -1,4 +1,4 @@
-read.myacc.csv = function(rmc.file=c(), rmc.nrow=c(), rmc.skip=c(), rmc.dec=".",
+read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
