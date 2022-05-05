@@ -1,4 +1,4 @@
-load_params = function(group = c("sleep", "metrics", "rawdata", 
+load_params = function(group = c("sleep", "metrics", "rawdata",
                                  "247", "phyact", "cleaning",
                                  "output", "general")) {
   if (length(group) == 0) {
@@ -8,12 +8,12 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   params_sleep = params_metrics = params_rawdata = c()
   params_247 = params_phyact = params_cleaning = c()
   params_output = params_general = c()
-  
+
   # if (length(jsonfile) > 0) {
   #   # PLACEHOLDER FOR WHEN JSON FILE CONFIG FILE WILL BE FACILITATE
   # } else {
-  if ("sleep" %in% group) {  
-    params_sleep = list(anglethreshold = 5, timethreshold = 5, 
+  if ("sleep" %in% group) {
+    params_sleep = list(anglethreshold = 5, timethreshold = 5,
                         ignorenonwear = TRUE, constrain2range = TRUE,
                         HASPT.algo = "HDCZA",
                         HASIB.algo = "vanHees2015", Sadeh_axis = "Y",
@@ -22,11 +22,11 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                         loglocation = c(), colid = 1, coln1 = 2,
                         nnights = c(),
                         relyonguider = FALSE, sleeplogidnum = TRUE,
-                        def.noc.sleep = 1, 
+                        def.noc.sleep = 1,
                         sleeplogsep = ",", sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
-                        nap_model = c()) 
+                        nap_model = c())
   }
   if ("metrics" %in% group) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -69,7 +69,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                       IVIS_windowsize_minutes = 60, IVIS_epochsize_seconds = c(),
                       IVIS.activity.metric = 2, IVIS_acc_threshold = 20, qM5L5 = c(),
                       MX.ig.min.dur = 10, M5L5res = 10, winhr = 5, iglevels = c(),
-                      LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000), 
+                      LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000),
                       LUX_cal_constant = c(), LUX_cal_exponent = c(), LUX_day_segments = c(),
                       window.summary.size = 10, L5M5window = c(0, 24), cosinor = FALSE)
   }
@@ -85,7 +85,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   if ("cleaning" %in% group) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,
                            selectdaysfile = c(), strategy = 1, maxdur = 0,
-                           hrs.del.start = 0, hrs.del.end = 0, 
+                           hrs.del.start = 0, hrs.del.end = 0,
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,
                            data_cleaning_file = c(), minimum_MM_length.part5 = 23,
@@ -97,12 +97,12 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
                          save_ms5raw_format = "csv", save_ms5raw_without_invalid = TRUE,
-                         storefolderstructure = FALSE, timewindow = c("MM","WW"), 
-                         viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE,
+                         storefolderstructure = FALSE, timewindow = c("MM","WW"),
+                         viewingwindow = 1, dofirstpage = TRUE, visualreport = TRUE,
                          week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
-                         outliers.only = FALSE, criterror = 3, do.visual = FALSE,
+                         outliers.only = FALSE, criterror = 3, do.visual = TRUE,
                          do.sibreport = FALSE, do.part2.pdf = TRUE)
-    
+
   }
   if ("general" %in% group) {
     params_general = list(overwrite = FALSE, acc.metric = "ENMO",

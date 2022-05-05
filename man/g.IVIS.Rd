@@ -19,7 +19,7 @@
   \item{epochsizesecondsXi}{
     Epoch size of the values in Xi expressed in seconds.
   }
-  \item{IVIS_epochsize_seconds}{ 
+  \item{IVIS_epochsize_seconds}{
     This argument has been depricated.
   }
   \item{IVIS_windowsize_minutes}{
@@ -29,8 +29,8 @@
   \item{IVIS.activity.metric}{
     Metric used for activity calculation.
     Value = 1, uses continuous scaled acceleration.
-    Value = 2, tries to collapse acce;eration into a binary score of rest
-    versus active to try to similate the original approach.
+    Value = 2, tries to collapse acceleration into a binary score of rest
+    versus active to try to simulate the original approach.
   }
   \item{IVIS_acc_threshold}{
     Acceleration threshold to distinguish inactive from active
@@ -39,7 +39,7 @@
     Boolean to indicate whether IVIS should be calculated per day pair and
     then aggregated across day pairs weighted by day completeness (default FALSE).
   }
-  
+
 }
 \value{
   \item{InterdailyStability}{}

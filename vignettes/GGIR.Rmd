@@ -179,7 +179,7 @@ The table below shows all GGIR input arguments, the GGIR part (1, 2, 3, 4 and/or
 Argument (parameter) | Used in GGIR part | Parameter object
 -------------------- | ------------ | ----------------------
 datadir | 1, 2, 4, 5 | not in parameter objects
-f0 | 1, 2, 3, ,4 ,5 | not in parameter objects
+f0 | 1, 2, 3, 4, 5 | not in parameter objects
 f1 | 1, 2, 3, 4, 5 | not in parameter objects
 windowsizes | 1, 5 | params_general
 desiredtz | 1, 2, 3, 4, 5 | params_general

@@ -5,7 +5,7 @@
   part of the Sleep Period Time window or not
 }
 \description{
-  Combines output from g.part3 and guider information to estimate
+  Combines output from \link{g.part3} and guider information to estimate
   sleep variables. See vignette paragraph "Sleep and full day
   time-use analysis in GGIR" for an elaborate descript of the sleep detection.
 }
@@ -16,23 +16,22 @@
 }
 \arguments{
   \item{datadir}{
-    Directory where the accelerometer files are stored or list
-    of accelerometer filenames and directories
+     Directory where the accelerometer files are stored, e.g. 
+    "C:/mydata", or list of accelerometer filenames and directories, e.g. 
+    c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
   \item{metadatadir}{
-    Directory that holds a folders 'meta' and inside this a folder
-    'basic' which contains the milestone data produced by g.part1.
-    The folderstructure is normally created by g.part3. When using
-    g.part4 via g.shell.GGIR then g.shell.GGIR will automatically
-    recognise what the value of metadatadir is, so the user does not
-    need to specify this.
+    Directory that holds a folder 'meta' and inside this a folder 'basic'
+    which contains the milestone data produced by \link{g.part1}. The folderstructure
+    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    the value of metadatadir is.
   }
   \item{f0}{
-    File index to start with (default = 1). Index refers to the
-    filenames sorted in increasing order
+    File index to start with (default = 1). Index refers to the filenames sorted
+    in alphabetical order
   }
   \item{f1}{
-    File index to finish with (defaults to number of files available)
+    File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{params_sleep}{
     List of parameters used for sleep analysis (GGIR part 3, 4, and 5): 
@@ -43,13 +42,13 @@
     see documentation \link{g.part1}.
   }
   \item{params_cleaning}{
-    List, see \link{g.part1}
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_output}{
-    List, see \link{g.part2}
+   See details in \link{g.shell.GGIR}.
   }
   \item{params_general}{
-    List, see \link{g.part1}
+   See details in \link{g.shell.GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,

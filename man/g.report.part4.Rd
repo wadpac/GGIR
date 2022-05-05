@@ -13,19 +13,25 @@ g.report.part4(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),
 }
 \arguments{
   \item{datadir}{
-    see \link{g.part4}
+    Directory where the accelerometer files are stored, e.g. 
+    "C:/mydata", or list of accelerometer filenames and directories, e.g. 
+    c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
   \item{metadatadir}{
-    see \link{g.part4}
+    Directory that holds a folder 'meta' and inside this a folder 'basic'
+    which contains the milestone data produced by \link{g.part1}. The folderstructure
+    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    the value of metadatadir is.
   }
   \item{loglocation}{
     see \link{g.part4}
   }
   \item{f0}{
-    see \link{g.part4}
+    File index to start with (default = 1). Index refers to the filenames sorted
+    in alphabetical order
   }
   \item{f1}{
-    see \link{g.part4}
+    File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{storefolderstructure}{
     see \link{g.part4}
