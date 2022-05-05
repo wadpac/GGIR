@@ -98,9 +98,9 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
                          save_ms5raw_format = "csv", save_ms5raw_without_invalid = TRUE,
                          storefolderstructure = FALSE, timewindow = c("MM","WW"), 
-                         viewingwindow = 1, dofirstpage = TRUE, visualreport = FALSE,
+                         viewingwindow = 1, dofirstpage = TRUE, visualreport = TRUE,
                          week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
-                         outliers.only = FALSE, criterror = 3, do.visual = FALSE,
+                         outliers.only = FALSE, criterror = 3, do.visual = TRUE,
                          do.sibreport = FALSE)
     
   }

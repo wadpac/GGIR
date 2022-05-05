@@ -59,8 +59,8 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
 
           # establish variable class
           conv2logical = conv2num = c()
-          suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent=TRUE))
-          suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent=TRUE))
+          suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent = TRUE))
+          suppressWarnings(try(expr = {conv2logical = as.logical(config[ci,2])},silent = TRUE))
           if (length(conv2num) > 0) {
             numi = is.na(conv2num) == FALSE
           } else {

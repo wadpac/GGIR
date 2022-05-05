@@ -10,7 +10,7 @@
   with other GGIR functions.
 }
 \usage{
-  read.myacc.csv(rmc.file=c(), rmc.nrow=c(), rmc.skip = c(), rmc.dec=".",
+  read.myacc.csv(rmc.file=c(), rmc.nrow=Inf, rmc.skip = c(), rmc.dec=".",
                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), 
@@ -34,16 +34,16 @@
 }
 \arguments{
   \item{rmc.file}{
-    Filename of file to be read.
+    Filename of file to be read if it is in the working directory, or full path to the file otherwise.
   }
   \item{rmc.nrow}{
-    Number of rows to read, same as nrow argument in read.csv and in fread.
+    Number of rows to read, same as nrow argument in \link[utils]{read.csv} and nrows in \link[data.table]{fread}. The whole file is read by default (i.e., rmc.nrow = Inf).
   }
   \item{rmc.skip}{
-    Number of rows to skip, same as skip argument in read.csv and in fread.
+    Number of rows to skip, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.
   }
   \item{rmc.dec}{
-    Decimal used for numbers, same as skip argument in read.csv and in fread.
+    Decimal used for numbers, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.
   }
   \item{rmc.firstrow.acc}{
     First row (number) of the acceleration data.
@@ -62,7 +62,7 @@
   \item{rmc.col.temp}{
     Scalar with column (number) in which the temperature is stored.
     Leave in default setting if no temperature is avaible. The temperature
-    will be used by g.calibrate.
+    will be used by \link{g.calibrate}.
   }
   \item{rmc.col.time}{
     Scalar with column (number) in which the timestamps are stored.
@@ -76,13 +76,13 @@
   }
   \item{rmc.unit.time}{
     Character with unit of timestamps: "POSIX",
-    "UNIXsec" (seconds since origin, see argument origin), "character", or
+    "UNIXsec" (seconds since origin, see argument rmc.origin), "character", or
     "ActivPAL" (exotic timestamp format only used in the ActivPAL
     activity monitor).
     
   }
   \item{rmc.format.time}{
-    Format of timestamp, only used for rmc.unit.time: character and POSIX.
+    Character string giving a date-time format as used by \link[base]{strptime}. Only used for rmc.unit.time: character and POSIX.
   }
   \item{rmc.bitrate}{
     Numeric: If unit of acceleration is a bit then provide bit rate, e.g. 12 bit.
@@ -102,13 +102,13 @@
     Origin of time when unit of time is UNIXsec, e.g. 1970-1-1
   }
   \item{rmc.desiredtz}{
-    Timezone in which device was configured and expriments took place.
+    Timezone in which device was configured and experiments took place.
     If experiments took place in a different timezone, then use this
-    argument for the timezone in whcih the experiments took place and 
+    argument for the timezone in which the experiments took place and 
     argument configtz to specify where the device was configured (not implemented yet).
   }
   \item{rmc.sf}{
-    Sample rate in Hertz, if this is stored in the file header then the that will be used
+    Sample rate in Hertz, if this is stored in the file header then that will be used
     instead.
   }
   \item{rmc.headername.sf}{
@@ -143,15 +143,13 @@
    sample rate from the file header
   }
   \item{interpolationType}{
-    See \link{g.getmeta}
+    Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
   }
 
 }
 \details{
   To use this function in the context of GGIR use all arguments from this function,
-  except rmc.file, rmc.nrow, and  rmc.skip as input for function \link{g.shell.GGIR} or \link{g.part1}
-  and also specify arugment rmc.noise, which is not part of this function but needed to tell
-  GGIR what noise level to expect in the data.
+  except rmc.file, rmc.nrow, and  rmc.skip as input for function \link{g.shell.GGIR} or \link{g.part1} and also specify argument rmc.noise, which is not part of this function but needed to tell GGIR what noise level to expect in the data. The rmc.noise is taken from the params_rawdata object if not explicitly specified by user.
 }
 \value{
   List with objects data holding the time series of acceleration, and

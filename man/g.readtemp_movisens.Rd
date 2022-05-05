@@ -29,7 +29,7 @@ g.readtemp_movisens(datafile, desiredtz = "", from = c(), to = c(),
     calculated by GGIR)
   }
   \item{interpolationType}{
-    Integer, see \link{g.getmeta}
+    Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
   }
 }
 \value{
