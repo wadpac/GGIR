@@ -54,5 +54,6 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "quantile", "sd","coef", "lm", "embed", "na.pass",
             "residuals", "fitted")
 import(data.table)
+importFrom("methods", "is")
 useDynLib(GGIR, .registration = TRUE)
 importFrom(Rcpp, sourceCpp)

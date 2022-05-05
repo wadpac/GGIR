@@ -94,6 +94,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                            " not within 30 days of first date in accerometer recording"), call. = FALSE)
           } else {
             # only attempt to use sleeplog if start date could be recognisedd
+            # Add row to newsleeplog if somehow there are not enough rows
+            if (count > nrow(newsleeplog)) {
+              newsleeplog = rbind(newsleeplog, matrix(NA, 1, ncol(newsleeplog)))
+            }
             newsleeplog[count ,1] = ID
             newsleeplog_times = c()
             expected_dates = seq(startdate_sleeplog - deltadate, startdate_sleeplog + nnights, by = 1)
@@ -133,6 +137,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
               } else {
                 newsleeplog_times = c(newsleeplog_times, "", "")
               }
+            }
+            extracols = (length(newsleeplog_times) + 2) - ncol(newsleeplog)
+            if (extracols > 0) {
+              newsleeplog = cbind(newsleeplog, matrix(NA, nrow(newsleeplog), extracols))
             }
             newsleeplog[count, 2:(length(newsleeplog_times) + 1)] = newsleeplog_times
             count  = count + 1  
