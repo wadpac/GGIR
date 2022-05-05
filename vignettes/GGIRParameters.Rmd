@@ -1,0 +1,31 @@
+---
+title: "GGIR configuration parameters"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Description of configuration parameters in GGIR}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+# General parameters
+## datadir {-}
+datadir = `r format(formals(GGIR::g.shell.GGIR)[["datadir"]])`
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
