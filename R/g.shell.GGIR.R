@@ -35,7 +35,7 @@ g.shell.GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (derivef0f1 == TRUE) { # What file to start with?
     f0 = 1
     if (filelist == FALSE) {  # What file to end with?
-      f1 <- length(dir(datadir, recursive = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
+      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
     }

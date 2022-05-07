@@ -8,6 +8,8 @@
     \item Part4: Advanced sleeplog handling further improved as it now also handles dates in sleeplog far beyond recording dates.
     \item Part2 report: Number of days to plot now auto scales to length of measurement.
     \item Part2 report: Fixed bug introduced in 2.6-3 making it impossible to generate a report for more than 1 file and fix bug introduced in 2.6-4 messing up the merging of files.
+    \item Part1: Now auto-converts files with GT3X extension to gt3x as this is required for read.gt3x.
+    \item Part4: Removed unnecessary warning while loading sleeplog.
     \item Part 2: IVIS now able to handle missing data points
     \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
     \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses
