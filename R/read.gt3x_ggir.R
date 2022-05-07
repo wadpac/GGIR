@@ -153,7 +153,8 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   }
   
   # tz  <- "GMT" # used for parsing, times are actually in local timezone
-  if (configtz == "" | is.null(configtz)) configtz = desiredtz
+  if (is.null(configtz)) configtz = desiredtz
+  if (configtz == "") configtz = desiredtz
   info <- read.gt3x::parse_gt3x_info(path, tz = configtz) #tz
   if (verbose) {
     print(info)
@@ -269,6 +270,5 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
                       idle = rowSums(accdata[, c("X", "Y", "Z")] == 0) == 3)
     }
   }
-  print(head(accdata))
   return(accdata)
 }

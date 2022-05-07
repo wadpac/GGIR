@@ -2,6 +2,7 @@ library(GGIR)
 context("g.readaccfile")
 test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files correctly", {
   skip_on_cran()
+  
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
   binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIR")[1]
   wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]
@@ -21,8 +22,8 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
   Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300))
   expect_true(Mgt3x$filetooshort)
-  # expect_false(Mgt3x$filecorrupt)
-  
+  expect_false(Mgt3x$filecorrupt)
+
   # axivity .cwa
   Icwa = g.inspectfile(cwafile, desiredtz = desiredtz)
   expect_equal(Icwa$monc, 4)

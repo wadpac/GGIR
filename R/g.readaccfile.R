@@ -439,7 +439,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     } else {
       if (nrow(P) < ((sf * ws * 2) + 1)) {
         P = c() ; switchoffLD = 1
-        if (blocknumber == 1) filequality$filetooshort = TRUE
+        if (blocknumber == 1) {
+          filequality$filetooshort = TRUE
+          filequality$filecorrupt = FALSE
+        }
       } # If data passes these checks then it is usefull
     }
   } else if (mon == 0 & dformat == 5) { # user specified csv format
