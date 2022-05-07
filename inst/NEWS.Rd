@@ -10,6 +10,7 @@
     \item Part2 report: Fixed bug introduced in 2.6-3 making it impossible to generate a report for more than 1 file and fix bug introduced in 2.6-4 messing up the merging of files.
     \item Part1: Specifying desiredtz and configtz now possible for gt3x data.
     \item Part1: Now auto-converts files with GT3X extension to gt3x as this is required for read.gt3x.
+    \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
     \item Part4: Removed unnecessary warning while loading sleeplog.
     }
 }
