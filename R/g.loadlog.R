@@ -241,13 +241,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     }
   }
   # delete id-numbers that are unrecognisable
-  unrecognisable_ids = which(as.character(sleeplog[,1]) == "0")
-  if (length(unrecognisable_ids) > 0) {
-    warning(paste0(length(which(sleeplog[,1] == 0)), 
-                   " rows in sleeplog were ignored (",paste0(which(sleeplog[,1] == 0), collapse = " "),
-                   ") because unrecognisable ID number."), call. = FALSE)
-    sleeplog = sleeplog[-unrecognisable_ids,]
-    sleeplog_times = sleeplog_times[-unrecognisable_ids,]
+  empty_rows = which(as.character(sleeplog[,1]) == "0")
+  if (length(empty_rows) > 0) {
+    sleeplog = sleeplog[-empty_rows,]
+    sleeplog_times = sleeplog_times[-empty_rows,]
   }
   sleeplog = as.data.frame(sleeplog, stringsAsFactors = FALSE)
   names(sleeplog) = c("ID","night","duration")

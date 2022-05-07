@@ -42,7 +42,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
     tmp5 = unlist(strsplit(filename,"[.]cw"))
-    tmp6 = unlist(strsplit(filename,"[.]gt"))
+    tmp6 = unlist(strsplit(filename,"[.]gt3"))
+    tmp7 = unlist(strsplit(filename,"[.]GT3"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
       testcsv = read.csv(datafile, nrow = 10, skip = 10)
@@ -62,9 +63,20 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     } else if (tmp5[length(tmp5)] == "a") { #this is a cwa file
       dformat = 4 #4 = cwa
       mon = 4 # Axivity
-    } else if (tmp6[length(tmp6)] == "3x") { #this is a gt3x file
+    } else if (tmp6[length(tmp6)] == "x") { #this is a gt3x file
       dformat = 6 #6 = gt3x
       mon = 3 # actigraph
+    } else if (tmp7[length(tmp7)] == "X") { #this is a gt3x file from Centerpoint
+      if (file.access(datafile, 2) == 0) { # test for write access to file
+        # rename file to be lower case gt3x extension
+        file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
+        datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
+        warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extention")
+        dformat = 6 #6 = gt3x
+        mon = 3 # actigraph
+      } else {
+        stop("\nGGIR wants to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
+      }
     }
     is.mv = ismovisens(datafile)
     if (is.mv == TRUE) {
@@ -190,7 +202,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       info = info[lengths(info) != 0] # remove odd NULL in the list
       sf = info[["Sample Rate"]]
     }
-    invisible(list(dformat = dformat, mon = mon, sf = sf))
+    invisible(list(dformat = dformat, mon = mon, sf = sf, datafile = datafile))
   }
   #======================================================================
   # main script
@@ -235,10 +247,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = params_rawdata[["rmc.sf"]]
     }
   } else if (length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    INFI = getbrand(filename,datafile)
+    INFI = getbrand(filename, datafile)
     mon = INFI$mon
     dformat = INFI$dformat
     sf = INFI$sf
+    datafile = INFI$datafile
   }
   if (dformat == 1) { #binary data
     if (mon == 1) { # genea

@@ -437,10 +437,10 @@ Some of the above publications make use of acceleration metrics that sum their v
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
-- `threshold.lig = (LightCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- `threshold.mod = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
+- `threshold.lig = ((LightCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `threshold.mod = ((ModerateCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `threshold.vig = ((VigorousCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `mvpathreshold = ((ModerateCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
 - The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
 - [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated.
 -	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
@@ -995,6 +995,18 @@ Although many data points are collected we decide to only work with aggregated v
 4.	Collapsing the data to epoch summary measures may help to average out different noise levels and make sensor brands more comparable.
 
 
+### Why does the first epoch not allign with the original start of the recording
+
+GGIR uses short (default 5 seconds) and long epochs (default 15 minutes). The epochs are aligned to the hour in the day, and to each other.
+For example, if a recording starts at 9:52:00 then the GGIR will work with epochs derived from 10:00:00 onward. If the recording starts at 10:12 then GGIR will work with epochs derived from 10:15:00 onward.
+
+Motivation:
+
+- This allows us to have a standardised time grid across recordings to describe behaviour.
+- This allows us to calculate behaviour exactly per day or per specified time interval in a day. 
+
+If the first 15 minute epochs would start at 9:52 then the next one would start at 10:07, which makes it impossible to make statement about behaviour between 10:00 and 13:00.
+
 ## Sleep analysis {#Sleep_analysis}
 
 In GGIR sleep analysis has been implemented in part 3 and 4. Sleep analysis comes at two levels: The identification of the main Sleep Period Time (SPT) window or the time in bed window (TIB), and the discrimination of sleep and wakefulness periods. The term sleep is somewhat controversial in the context of accelerometry, because accelerometer only capture lack of movement. To acknowledge this challenge GGIR refers to these classified sleep periods as **sustained inactivity bouts (abbreviated as SIB)**.
@@ -1075,10 +1087,37 @@ In part 5 the sleep estimates from part 4 are used to describe 24-hour time use.
 
 If WW is used in combination with ignoring the first and last midnight, argument `excludefirstlast`, then the first wake-up time (on the second recording day) needs to be extracted for the first WW day. This is done with the guider method. This also means that the last WW window ends on the before last morning of the recording.
 
+A distinction is made between the full results stored in the `results/QC` folder and the cleaned results stored in the results folder.
+
 ### Time series output files
 
 If you want to inspect the time series corresponding to these windows then see argument `save_ms5rawlevels`, which allows you to export the time series including behavioral classes and non-wear information to csv files. The behavioral classes are included as numbers, the legend for these classes is stored as a separate legend file in the meta/ms5.outraw folder named "behavioralcodes2020-04-26.csv" where the date will correspond to the date of analysis.
-A distinction is made between the full results stored in the `results/QC` folder and the cleaned results stored in the results folder.
+
+**Additional input arguments that may be of interest:**
+
+- `save_ms5raw_format` is a character string to specify how data should be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.
+- `save_ms5raw_without_invalid` is Boolean to indicate whether to remove invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.
+
+**The time series output file comes with the following columns:**
+
+Column name | Description
+-----------| -------------------------
+SleepPeriodTime | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).
+invalidepoch | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.
+guider | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.
+window | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.
+class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id.
+invalid_fullwindow | Fraction of the window (see above) that represents invalid data. I added this to make it easier to filter the timeseries based on whether days are valid or not.
+invalid_sleepperiod | Fraction of SPT within the current window that represents invalid data.
+invalid_wakinghours | Fraction of SPT within the current window that represents invalid data.
+
+To familiarize yourself with how the variables it can be helpful to plot them yourself.
+
+For users we also want to export the time serie sof multiple metric values see argument `epochvalues2csv` which relates to the storage of time series in GGIR part 2.
+
+
+
+
 
 ### Day inclusion criteria
 
