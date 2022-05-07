@@ -437,10 +437,10 @@ Some of the above publications make use of acceleration metrics that sum their v
 **Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
-- `threshold.lig = (LightCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- `threshold.mod = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
-- `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateInStudy*60)) * 1000`
+- `threshold.lig = ((LightCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `threshold.mod = ((ModerateCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `threshold.vig = ((VigorousCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `mvpathreshold = ((ModerateCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
 - The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
 - [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated.
 -	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
