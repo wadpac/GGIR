@@ -23,7 +23,11 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300))
   expect_true(Mgt3x$filetooshort)
   expect_false(Mgt3x$filecorrupt)
-
+  Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, 
+                    configtz = "US/Pacific", windowsize = c(1,300,300))
+  expect_true(Mgt3x$filetooshort)
+  expect_false(Mgt3x$filecorrupt)
+  
   # axivity .cwa
   Icwa = g.inspectfile(cwafile, desiredtz = desiredtz)
   expect_equal(Icwa$monc, 4)
