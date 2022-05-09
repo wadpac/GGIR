@@ -1,35 +1,41 @@
 ShellDoc2Vignette <- function(argument = "mode") {  
   if (!is.character(argument)) argument <- deparse(substitute(argument))
-  # helpfile = utils:::.getHelpFile(help("g.shell.GGIR"))
   .utils <- asNamespace("utils")
   helpfile = .utils$.getHelpFile(help("g.shell.GGIR"))
   
   
-  hs <- capture.output(switch("Rd", 
-                              text=tools:::Rd2txt(helpfile),
-                              html=tools:::Rd2HTML(helpfile),
-                              latex=tools:::Rd2latex(helpfile),
-                              Rd=tools:::prepare_Rd(helpfile)))
+  # hs <- utils::capture.output(switch("Rd", 
+  #                                    text=tools::Rd2txt(helpfile),
+  #                                    html=tools::Rd2HTML(helpfile),
+  #                                    latex=tools::Rd2latex(helpfile),
+  #                                    Rd=tools:::prepare_Rd(helpfile)))
+  
+  hs <- utils::capture.output(switch("text", text = tools::Rd2txt(helpfile)))
   
   # substitute curly braces to avoid probles later on
   hs = gsub(pattern = "\\{|\\}", replacement = "__", x = hs)
   
   
   # argument to look for with Rd format
-  lookfor = paste0("\\item__",argument, "____")
+  # lookfor = paste0("\\item__",argument, "____")
+  lookfor = paste0(argument, ": ")
   
   # basic arguments
-  start_args = grep("__\\arguments__", hs, fixed = TRUE)
-  end_args = grep("__\\details__", x = hs, fixed = TRUE)
+  # start_args = grep("__\\arguments__", hs, fixed = TRUE)
+  # end_args = grep("__\\details__", x = hs, fixed = TRUE)
+  # basic_args = hs[start_args:(end_args - 1)]
+  
+  start_args = grep("_\bA_\br_\bg_\bu_\bm_\be_\bn_\bt_\bs:", hs, fixed = TRUE)
+  end_args = grep("_\bD_\be_\bt_\ba_\bi_\bl_\bs:", x = hs, fixed = TRUE)
   basic_args = hs[start_args:(end_args - 1)]
   
   # Arguments in parameters
-  start_details = grep("__\\details__", hs, fixed = TRUE)
-  end_details = grep("__\\value__", x = hs, fixed = TRUE)
+  start_details = grep("_\bD_\be_\bt_\ba_\bi_\bl_\bs:", x = hs, fixed = TRUE)
+  end_details = grep("_\bV_\ba_\bl_\bu_\be:", x = hs, fixed = TRUE)
   parameters = hs[start_details:(end_details - 1)]
   
   tmp = grep(lookfor, basic_args); if (length(tmp) > 1) tmp = tmp[1]
-  tmp2 = grep(lookfor, parameters); if (length(tmp2) > 1) tmp2 = tmp2[1]
+  tmp2 = grep(argument, parameters); if (length(tmp2) > 1) tmp2 = tmp2[1]
   
   # Find the argument definition --------------------------------------------
   if (length(tmp) > 0) { # the argument is within the basic arguments of g.shell
@@ -68,7 +74,6 @@ ShellDoc2Vignette <- function(argument = "mode") {
   
   # clean double underscore at the end
   def = gsub(pattern = "__", replacement = "", x = def)
-  
   
   # return ------------------------------------------------------------------
   return(def)
