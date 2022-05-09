@@ -17,9 +17,555 @@ vignette: >
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
-# General parameters
-## datadir {-}
-datadir = `r format(formals(GGIR::g.shell.GGIR)[["datadir"]])`
+# Basic settings
+
+### mode {-}
+`r format(GGIR::ShellDoc2Vignette("mode"))`
+
+### datadir {-}
+`r format(GGIR::ShellDoc2Vignette("datadir"))`
+
+### outputdir {-}
+`r format(GGIR::ShellDoc2Vignette("outputdir"))`
+
+### studyname {-}
+`r format(GGIR::ShellDoc2Vignette("studyname"))`
+
+### f0 {-}
+`r format(GGIR::ShellDoc2Vignette("f0"))`
+
+### f1 {-}
+`r format(GGIR::ShellDoc2Vignette("f1"))`
+
+### do.report {-}
+`r format(GGIR::ShellDoc2Vignette("do.report"))`
+
+### configfile {-}
+`r format(GGIR::ShellDoc2Vignette("configfile"))`
+
+### myfun {-}
+`r format(GGIR::ShellDoc2Vignette("myfun"))`
+
+# General Parameters
+
+### overwrite {-}
+`r format(GGIR::ShellDoc2Vignette("overwrite"))`
+
+### acc.metric {-}
+`r format(GGIR::ShellDoc2Vignette("acc.metric"))`
+
+### maxNcores {-}
+`r format(GGIR::ShellDoc2Vignette("maxNcores"))`
+
+### print.filename {-}
+`r format(GGIR::ShellDoc2Vignette("print.filename"))`
+
+### do.parallel {-}
+`r format(GGIR::ShellDoc2Vignette("do.parallel"))`
+
+### windowsizes {-}
+`r format(GGIR::ShellDoc2Vignette("windowsizes"))`
+
+### desiredtz {-}
+`r format(GGIR::ShellDoc2Vignette("desiredtz"))`
+
+### configtz {-}
+`r format(GGIR::ShellDoc2Vignette("configtz"))`
+
+### idloc {-}
+`r format(GGIR::ShellDoc2Vignette("idloc"))`
+
+### dayborder {-}
+`r format(GGIR::ShellDoc2Vignette("dayborder"))`
+
+### part5_agg2_60seconds {-}
+`r format(GGIR::ShellDoc2Vignette("part5_agg2_60seconds"))`
+
+### sensor.location {-}
+`r format(GGIR::ShellDoc2Vignette("sensor.location"))`
+
+# Raw Data Parameters
+
+### chunksize {-}
+`r format(GGIR::ShellDoc2Vignette("chunksize"))`
+
+### spherecrit {-}
+`r format(GGIR::ShellDoc2Vignette("spherecrit"))`
+
+### minloadcrit {-}
+`r format(GGIR::ShellDoc2Vignette("minloadcrit"))`
+
+### printsummary {-}
+`r format(GGIR::ShellDoc2Vignette("printsummary"))`
+
+### do.cal {-}
+`r format(GGIR::ShellDoc2Vignette("do.cal"))`
+
+### backup.cal.coef {-}
+`r format(GGIR::ShellDoc2Vignette("backup.cal.coef"))`
+
+### dynrange {-}
+`r format(GGIR::ShellDoc2Vignette("dynrange"))`
+
+### minimumFileSizeMB {-}
+`r format(GGIR::ShellDoc2Vignette("minimumFileSizeMB"))`
+
+### rmc.dec {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.dec"))`
+
+### rmc.firstrow.acc {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.firstrow.acc"))`
+
+### rmc.header.length {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.header.length"))`
+
+### rmc.firstrow.header {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.firstrow.header"))`
+
+### rmc.col.acc {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.col.acc"))`
+
+### rmc.col.temp {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.col.temp"))`
+
+### rmc.col.time {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.col.time"))`
+
+### rmc.unit.acc {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.unit.acc"))`
+
+### rmc.unit.temp {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.unit.temp"))`
+
+### rmc.unit.time {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.unit.time"))`
+
+### rmc.format.time {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.format.time"))`
+
+### rmc.bitrate {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.bitrate"))`
+
+### rmc.dynamic_range {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.dynamic_range"))`
+
+### rmc.unsignedbit {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.unsignedbit"))`
+
+### rmc.origin {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.origin"))`
+
+### rmc.desiredtz {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.desiredtz"))`
+
+### rmc.sf {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.sf"))`
+         
+### rmc.headername.sf {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.headername.sf"))`
+
+### rmc.headername.sn {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.headername.sn"))`
+
+### rmc.headername.recordingid {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.headername.recordingid"))`
+
+### rmc.header.structure {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.header.structure"))`
+
+### rmc.check4timegaps {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.check4timegaps"))`
+
+### rmc.noise {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.noise"))`
+
+### rmc.col.wear {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.col.wear"))`
+
+### rmc.doresample {-}
+`r format(GGIR::ShellDoc2Vignette("rmc.doresample"))`
+
+### interpolationType {-}
+`r format(GGIR::ShellDoc2Vignette("interpolationType"))`
+
+### imputeTimegaps {-}
+`r format(GGIR::ShellDoc2Vignette("imputeTimegaps"))`
+
+# Metrics Parameters
+
+### do.anglex {-}
+`r format(GGIR::ShellDoc2Vignette("do.anglex"))`
+
+### do.angley {-}
+`r format(GGIR::ShellDoc2Vignette("do.angley"))`
+
+### do.anglez {-}
+`r format(GGIR::ShellDoc2Vignette("do.anglez"))`
+
+### do.zcx {-}
+`r format(GGIR::ShellDoc2Vignette("do.zcx"))`
+
+### do.zcy {-}
+`r format(GGIR::ShellDoc2Vignette("do.zcy"))`
+
+### do.zcz {-}
+`r format(GGIR::ShellDoc2Vignette("do.zcz"))`
+
+### do.enmo {-}
+`r format(GGIR::ShellDoc2Vignette("do.enmo"))`
+
+### do.lfenmo {-}
+`r format(GGIR::ShellDoc2Vignette("do.lfenmo"))`
+
+### do.en {-}
+`r format(GGIR::ShellDoc2Vignette("do.en"))`
+
+### do.mad {-}
+`r format(GGIR::ShellDoc2Vignette("do.mad"))`
+
+### do.enmoa {-}
+`r format(GGIR::ShellDoc2Vignette("do.enmoa"))`
+
+### do.roll_med_acc_x {-}
+`r format(GGIR::ShellDoc2Vignette("do.roll_med_acc_x"))`
+
+### do.roll_med_acc_y {-}
+`r format(GGIR::ShellDoc2Vignette("do.roll_med_acc_y"))`
+
+### do.roll_med_acc_z {-}
+`r format(GGIR::ShellDoc2Vignette("do.roll_med_acc_z"))`
+
+### do.dev_roll_med_acc_x {-}
+`r format(GGIR::ShellDoc2Vignette("do.dev_roll_med_acc_x"))`
+
+### do.dev_roll_med_acc_y {-}
+`r format(GGIR::ShellDoc2Vignette("do.dev_roll_med_acc_y"))`
+
+### do.dev_roll_med_acc_z {-}
+`r format(GGIR::ShellDoc2Vignette("do.dev_roll_med_acc_z"))`
+            
+### do.bfen {-}
+`r format(GGIR::ShellDoc2Vignette("do.bfen"))`
+
+### do.hfen {-}
+`r format(GGIR::ShellDoc2Vignette("do.hfen"))`
+
+### do.hfenplus {-}
+`r format(GGIR::ShellDoc2Vignette("do.hfenplus"))`
+
+### do.lfen {-}
+`r format(GGIR::ShellDoc2Vignette("do.lfen"))`
+
+### do.lfx {-}
+`r format(GGIR::ShellDoc2Vignette("do.lfx"))`
+
+### do.lfy {-}
+`r format(GGIR::ShellDoc2Vignette("do.lfy"))`
+
+### do.lfz {-}
+`r format(GGIR::ShellDoc2Vignette("do.lfz"))`
+
+### do.hfx {-}
+`r format(GGIR::ShellDoc2Vignette("do.hfx"))`
+
+### do.hfy {-}
+`r format(GGIR::ShellDoc2Vignette("do.hfy"))`
+
+### do.hfz {-}
+`r format(GGIR::ShellDoc2Vignette("do.hfz"))`
+
+### do.bfx {-}
+`r format(GGIR::ShellDoc2Vignette("do.bfx"))`
+
+### do.bfy {-}
+`r format(GGIR::ShellDoc2Vignette("do.bfy"))`
+
+### do.bfz {-}
+`r format(GGIR::ShellDoc2Vignette("do.bfz"))`
+
+### do.brondcounts {-}
+`r format(GGIR::ShellDoc2Vignette("do.brondcounts"))`
+
+### hb {-}
+`r format(GGIR::ShellDoc2Vignette("hb"))`
+
+### lb {-}
+`r format(GGIR::ShellDoc2Vignette("lb"))`
+
+### n {-}
+`r format(GGIR::ShellDoc2Vignette("n"))`
+
+# Cleaning Parameters
+
+### includedaycrit {-}
+`r format(GGIR::ShellDoc2Vignette("includedaycrit"))`
+
+### ndayswindow {-}
+`r format(GGIR::ShellDoc2Vignette("ndayswindow"))`
+
+### selectdaysfile {-}
+`r format(GGIR::ShellDoc2Vignette("selectdaysfile"))`
+
+### strategy {-}
+`r format(GGIR::ShellDoc2Vignette("strategy"))`
+
+### maxdur {-}
+`r format(GGIR::ShellDoc2Vignette("maxdur"))`
+
+### hrs.del.start {-}
+`r format(GGIR::ShellDoc2Vignette("hrs.del.start"))`
+
+### hrs.del.end {-}
+`r format(GGIR::ShellDoc2Vignette("hrs.del.end"))`
+
+### includedaycrit.part5 {-}
+`r format(GGIR::ShellDoc2Vignette("includedaycrit.part5"))`
+
+### excludefirstlast.part5 {-}
+`r format(GGIR::ShellDoc2Vignette("excludefirstlast.part5"))`
+
+### TimeSegments2ZeroFile {-}
+`r format(GGIR::ShellDoc2Vignette("TimeSegments2ZeroFile"))`
+
+### do.imp {-}
+`r format(GGIR::ShellDoc2Vignette("do.imp"))`
+
+### data_cleaning_file {-}
+`r format(GGIR::ShellDoc2Vignette("data_cleaning_file"))`
+
+### minimum_MM_length.part5 {-}
+`r format(GGIR::ShellDoc2Vignette("minimum_MM_length.part5"))`
+
+### excludefirstlast {-}
+`r format(GGIR::ShellDoc2Vignette("excludefirstlast"))`
+
+### includenightcrit {-}
+`r format(GGIR::ShellDoc2Vignette("includenightcrit"))`
+
+### excludefirst.part4 {-}
+`r format(GGIR::ShellDoc2Vignette("excludefirst.part4"))`
+
+### excludelast.part4 {-}
+`r format(GGIR::ShellDoc2Vignette("excludelast.part4"))`
+
+### max_calendar_days {-}
+`r format(GGIR::ShellDoc2Vignette("max_calendar_days"))`
+
+# Sleep Parameters
+
+### anglethreshold {-}
+`r format(GGIR::ShellDoc2Vignette("anglethreshold"))`
+
+### timethreshold {-}
+`r format(GGIR::ShellDoc2Vignette("timethreshold"))`
+
+### ignorenonwear {-}
+`r format(GGIR::ShellDoc2Vignette("ignorenonwear"))`
+
+### constrain2range {-}
+`r format(GGIR::ShellDoc2Vignette("constrain2range"))`
+
+### HASPT.algo {-}
+`r format(GGIR::ShellDoc2Vignette("HASPT.algo"))`
+
+### HASIB.algo {-}
+`r format(GGIR::ShellDoc2Vignette("HASIB.algo"))`
+
+### Sadeh_axis {-}
+`r format(GGIR::ShellDoc2Vignette("Sadeh_axis"))`
+
+### longitudinal_axis {-}
+`r format(GGIR::ShellDoc2Vignette("longitudinal_axis"))`
+
+### HASPT.ignore.invalid {-}
+`r format(GGIR::ShellDoc2Vignette("HASPT.ignore.invalid"))`
+
+### loglocation {-}
+`r format(GGIR::ShellDoc2Vignette("loglocation"))`
+
+### colid {-}
+`r format(GGIR::ShellDoc2Vignette("colid"))`
+
+### coln1 {-}
+`r format(GGIR::ShellDoc2Vignette("coln1"))`
+
+### nnights {-}
+`r format(GGIR::ShellDoc2Vignette("nnights"))`
+
+### relyonguider {-}
+`r format(GGIR::ShellDoc2Vignette("relyonguider"))`
+
+### sleeplogidnum {-}
+`r format(GGIR::ShellDoc2Vignette("sleeplogidnum"))`
+
+### def.noc.sleep {-}
+`r format(GGIR::ShellDoc2Vignette("def.noc.sleep"))`
+
+### sleeplogsep {-}
+`r format(GGIR::ShellDoc2Vignette("sleeplogsep"))`
+
+### sleepwindowType {-}
+`r format(GGIR::ShellDoc2Vignette("sleepwindowType"))`
+
+### possible_nap_window {-}
+`r format(GGIR::ShellDoc2Vignette("possible_nap_window"))`
+
+### possible_nap_dur {-}
+`r format(GGIR::ShellDoc2Vignette("possible_nap_dur"))`
+
+### nap_model {-}
+`r format(GGIR::ShellDoc2Vignette("nap_model"))`
+
+# Physical activity Parameters
+
+### mvpathreshold {-}
+`r format(GGIR::ShellDoc2Vignette("mvpathreshold"))`
+
+### boutcriter {-}
+`r format(GGIR::ShellDoc2Vignette("boutcriter"))`
+
+### mvpadur {-}
+`r format(GGIR::ShellDoc2Vignette("mvpadur"))`
+
+### closedbout {-}
+`r format(GGIR::ShellDoc2Vignette("closedbout"))`
+
+### boutcriter.in {-}
+`r format(GGIR::ShellDoc2Vignette("boutcriter.in"))`
+
+### boutcriter.lig {-}
+`r format(GGIR::ShellDoc2Vignette("boutcriter.lig"))`
+
+### boutcriter.mvpa {-}
+`r format(GGIR::ShellDoc2Vignette("boutcriter.mvpa"))`
+
+### threshold.lig {-}
+`r format(GGIR::ShellDoc2Vignette("threshold.lig"))`
+
+### threshold.mod {-}
+`r format(GGIR::ShellDoc2Vignette("threshold.mod"))`
+
+### threshold.vig {-}
+`r format(GGIR::ShellDoc2Vignette("threshold.vig"))`
+
+### boutdur.mvpa {-}
+`r format(GGIR::ShellDoc2Vignette("boutdur.mvpa"))`
+
+### boutdur.in {-}
+`r format(GGIR::ShellDoc2Vignette("boutdur.in"))`
+
+### boutdur.lig {-}
+`r format(GGIR::ShellDoc2Vignette("boutdur.lig"))`
+
+### frag.metrics {-}
+`r format(GGIR::ShellDoc2Vignette("frag.metrics"))`
+
+### bout.metric {-}
+`r format(GGIR::ShellDoc2Vignette("bout.metric"))`
+
+# 24/7 Parameters
+
+### qwindow {-}
+`r format(GGIR::ShellDoc2Vignette("qwindow"))`
+
+### qlevels {-}
+`r format(GGIR::ShellDoc2Vignette("qlevels"))`
+
+### qwindow_dateformat {-}
+`r format(GGIR::ShellDoc2Vignette("qwindow_dateformat"))`
+
+### ilevels {-}
+`r format(GGIR::ShellDoc2Vignette("ilevels"))`
+
+### IVIS_windowsize_minutes {-}
+`r format(GGIR::ShellDoc2Vignette("IVIS_windowsize_minutes"))`
+
+### IVIS_epochsize_seconds {-}
+`r format(GGIR::ShellDoc2Vignette("IVIS_epochsize_seconds"))`
+
+### IVIS.activity.metric {-}
+`r format(GGIR::ShellDoc2Vignette("IVIS.activity.metric"))`
+
+### qM5L5 {-}
+`r format(GGIR::ShellDoc2Vignette("qM5L5"))`
+
+### MX.ig.min.dur {-}
+`r format(GGIR::ShellDoc2Vignette("MX.ig.min.dur"))`
+
+### M5L5res {-}
+`r format(GGIR::ShellDoc2Vignette("M5L5res"))`
+
+### winhr {-}
+`r format(GGIR::ShellDoc2Vignette("winhr"))`
+
+### iglevels {-}
+`r format(GGIR::ShellDoc2Vignette("iglevels"))`
+
+### LUXthresholds {-}
+`r format(GGIR::ShellDoc2Vignette("LUXthresholds"))`
+
+### LUX_cal_constant {-}
+`r format(GGIR::ShellDoc2Vignette("LUX_cal_constant"))`
+
+### LUX_cal_exponent {-}
+`r format(GGIR::ShellDoc2Vignette("LUX_cal_exponent"))`
+
+### LUX_day_segments {-}
+`r format(GGIR::ShellDoc2Vignette("LUX_day_segments"))`
+
+### window.summary.size {-}
+`r format(GGIR::ShellDoc2Vignette("window.summary.size"))`
+
+### L5M5window {-}
+`r format(GGIR::ShellDoc2Vignette("L5M5window"))`
+
+# Output Parameters
+
+### epochvalues2csv {-}
+`r format(GGIR::ShellDoc2Vignette("epochvalues2csv"))`
+
+### save_ms5rawlevels {-}
+`r format(GGIR::ShellDoc2Vignette("save_ms5rawlevels"))`
+
+### save_ms5raw_format {-}
+`r format(GGIR::ShellDoc2Vignette("save_ms5raw_format"))`
+
+### save_ms5raw_without_invalid {-}
+`r format(GGIR::ShellDoc2Vignette("save_ms5raw_without_invalid"))`
+
+### storefolderstructure {-}
+`r format(GGIR::ShellDoc2Vignette("storefolderstructure"))`
+
+### timewindow {-}
+`r format(GGIR::ShellDoc2Vignette("timewindow"))`
+
+### viewingwindow {-}
+`r format(GGIR::ShellDoc2Vignette("viewingwindow"))`
+
+### dofirstpage {-}
+`r format(GGIR::ShellDoc2Vignette("dofirstpage"))`
+
+### visualreport {-}
+`r format(GGIR::ShellDoc2Vignette("visualreport"))`
+
+### week_weekend_aggregate.part5 {-}
+`r format(GGIR::ShellDoc2Vignette("week_weekend_aggregate.part5"))`
+
+### do.part3.pdf {-}
+`r format(GGIR::ShellDoc2Vignette("do.part3.pdf"))`
+
+### outliers.only {-}
+`r format(GGIR::ShellDoc2Vignette("outliers.only"))`
+
+### criterror {-}
+`r format(GGIR::ShellDoc2Vignette("criterror"))`
+
+### do.visual {-}
+`r format(GGIR::ShellDoc2Vignette("do.visual"))`
+
+### do.sibreport {-}
+`r format(GGIR::ShellDoc2Vignette("do.sibreport"))`
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
