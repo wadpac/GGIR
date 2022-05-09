@@ -10,7 +10,8 @@
 \usage{
   g.applymetrics(data, sf, ws3, metrics2do,
                           n = 4, lb = 0.2, hb = 15,
-                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01)
+                          zc.lb = 0.25, zc.hb = 3, 
+                          zc.sb = 0.01, zc.order = 2, zc.scale = 1)
 }
 \arguments{
   \item{data}{
@@ -39,17 +40,27 @@
     Higher boundery of cut-off frequencies
   }
   \item{zc.lb}{
-    Used for zero-crossing counts only. Lower boundery of cut-off frequencies in filter.
+    Used for zero-crossing counts only. Lower boundery of cut-off frequencies
+    in filter.
   }
   \item{zc.hb}{
-    Used for zero-crossing counts only. Higher boundery of cut-off frequencies in filter.
+    Used for zero-crossing counts only. Higher boundery of cut-off frequencies
+    in filter.
   }
   \item{zc.sb}{
-    Stop band used for calculation of zero crossing counts. Value is the acceleration threshold in g units below which     acceleration will be rounded to zero.
+    Stop band used for calculation of zero crossing counts. Value is the 
+    acceleration threshold in g units below which  acceleration will be rounded to zero.
+  }
+  \item{zc.order}{
+    Used for zero-crossing counts only. Order of frequency filter.
+  }
+  \item{zc.scale}{
+    Used for zero-crossing counts only. Scaling factor to be applied after
+    counts are calculated.
   }
 }
 \value{
-Dataframe with metric values in columns average per epoch (ws3)
+  Dataframe with metric values in columns average per epoch (ws3)
 }
 
 \examples{
@@ -72,5 +83,5 @@ Dataframe with metric values in columns average per epoch (ws3)
 }
 
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

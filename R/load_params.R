@@ -42,7 +42,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           do.bfx = FALSE, do.bfy = FALSE, do.bfz = FALSE,
                           do.brondcounts = FALSE,
                           hb = 15, lb = 0.2, n = 4,
-                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01)
+                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01, zc.order = 2, zc.scale = 1)
   }
   if ("rawdata" %in% group) {
     params_rawdata = list(

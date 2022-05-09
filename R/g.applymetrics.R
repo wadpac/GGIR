@@ -1,6 +1,7 @@
 g.applymetrics = function(data, sf, ws3, metrics2do,
                           n = 4, lb = 0.2, hb = 15,
-                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01){
+                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01,
+                          zc.order = 2, zc.scale = 1){
   epochsize = ws3 #epochsize in seconds
   # data is a 3 column matrix with the x, y, and z acceleration
   do.bfen = metrics2do$do.bfen
@@ -143,7 +144,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     # Sadeh algorithm.
     # We use a second order filter because if it was an analog filter it was 
     # most likely not very steep filter.
-    data_processed = process_axes(data, filtertype = "pass", cut_point = c(zc.lb, zc.hb), n = 2, sf)
+    data_processed = process_axes(data, filtertype = "pass", cut_point = c(zc.lb, zc.hb), n = zc.order, sf) * zc.scale
     zil = c()
     
     # 2) Sadeh reported to have used the y-axis but did not specify the orientation of
