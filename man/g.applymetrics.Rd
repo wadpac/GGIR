@@ -11,7 +11,7 @@
   g.applymetrics(data, sf, ws3, metrics2do,
                           n = 4, lb = 0.2, hb = 15,
                           zc.lb = 0.25, zc.hb = 3, 
-                          zc.sb = 0.01, zc.order = 2, zc.scale = 1)
+                          zc.sb = 0.01, zc.order = 2)
 }
 \arguments{
   \item{data}{
@@ -53,10 +53,6 @@
   }
   \item{zc.order}{
     Used for zero-crossing counts only. Order of frequency filter.
-  }
-  \item{zc.scale}{
-    Used for zero-crossing counts only. Scaling factor to be applied after
-    counts are calculated.
   }
 }
 \value{

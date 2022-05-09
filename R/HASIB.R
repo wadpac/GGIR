@@ -167,6 +167,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       if (length(PSsibs) > 0) {
         PSscores[PSsibs] = 1 #sleep
       }
+      
       # re sample to original resolution and ensure length matches length of time
       sib_classification[,cti] = reformat_output(x = PSscores, time, new_epochsize = epochsize,
                                                  current_epochsize = 60)

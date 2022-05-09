@@ -77,7 +77,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         desiredtz = params_general[["desiredtz"]],
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
-                        params_sleep = params_sleep)
+                        params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
 
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {

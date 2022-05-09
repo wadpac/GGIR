@@ -489,8 +489,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                     zc.lb = params_metrics[["zc.lb"]],
                                     zc.hb = params_metrics[["zc.hb"]],
                                     zc.sb = params_metrics[["zc.sb"]],
-                                    zc.order = params_metrics[["zc.order"]],
-                                    zc.scale = params_metrics[["zc.scale"]])
+                                    zc.order = params_metrics[["zc.order"]])
         # round decimal places, because due to averaging we get a lot of information
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics, round, n_decimal_places)
