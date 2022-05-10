@@ -258,9 +258,9 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
   }
-  attr(accdata$time, "tzone") <- configtz
+  accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
   if (configtz != desiredtz) {
-    accdata$time = as.POSIXct(as.character(accdata$time), tz = desiredtz)
+    attr(accdata$time, "tzone") <- desiredtz
   }
   if (flag_idle_sleep) {
     if (asDataFrame) {
