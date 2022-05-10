@@ -11,6 +11,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
     timeCol = "time"
     remove_time_at_end = TRUE
   }
+
   zeros = which(rowSums(x[,xyzCol]) == 0)
   if (length(zeros) > 0) {
     if (zeros[1] == 1) {
@@ -25,11 +26,17 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
     }
     deltatime = diff(x[, timeCol])
     if (!is.numeric(deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
-    units(deltatime) = "secs"
-    deltatime = as.numeric(deltatime)
+      units(deltatime) = "secs"
+      deltatime = as.numeric(deltatime)
     }
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
     NumberOfGaps = length(gapsi)
+    if (sum(deltatime[gapsi]) > 3600 * 36) {
+      stop(paste0("There is more than 36 hours of missing data to be imputed.",
+                  " GGIR can currently not handle this. As a temporary solution: ", 
+                  "If you are using ActiGraph gt3x data export the data to csv ",
+                  "with the ActiLife software."))
+    }
     if (NumberOfGaps > 0) { 
       # if gaps exist impute them by repeating the last known value
       x$gap = 1

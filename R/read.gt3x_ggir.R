@@ -258,7 +258,10 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
   }
+  options(digits.secs = 5)
+  options(digits = 5)
   accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
+  # time is now POSIXct POSIXt object with 5 decimal places
   if (configtz != desiredtz) {
     attr(accdata$time, "tzone") <- desiredtz
   }
