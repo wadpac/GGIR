@@ -1,6 +1,7 @@
 cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   
-  # TEMPORARILY INCORPORATING ActCR CODE TO INVESTIGATE HOW WE CAN IMPROVE IT
+  # TEMPORARILY INCORPORATING ActCR CODE BY JUNRUI DI AND COLLEAGUES
+  # TO INVESTIGATE HOW WE CAN IMPROVE IT
   # AND USE THAT TO INFORM A POSSIBLE PULL REQUEST
   
   ActExtendCosinor = function(
@@ -36,30 +37,25 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
     e_amp0 = 2 * amp
     e_phi0 = acrotime
     e_par0 = c(e_min0, e_amp0, 0, 2, e_phi0) ## min, amp, alpha, beta, phi
-    valid = !is.na(tmp.dat$Y)
-    tmp.dat = tmp.dat[valid,]
+
+    
+    tmp.dat = tmp.dat[!is.na(tmp.dat$Y),] # new line relative to ActCR original
+    
     fit_nls = minpack.lm::nls.lm(e_par0, fn = fn_obj,
                      lower = lower,
                      upper = upper,
                      tmp.dat = tmp.dat,
                      control = minpack.lm::nls.lm.control(maxiter = 1000))
-    ## Estimated exteded cosinor parameters,in the order of
+
+    # Extract time series to ease plotting the models:
+    fittedYext = tmp.dat$Y - residuals(fit_nls) # new line relative to ActCR original
+    fittedY = fitted(fit$fit) # new line relative to ActCR original
+    original = tmp.dat$Y # new line relative to ActCR original
+    time = tmp.dat$time # new line relative to ActCR original
+    cosinor_ts = as.data.frame(cbind(time, original, fittedY, fittedYext)) # new line relative to ActCR original
+
+    # Estimated exteded cosinor parameters,in the order of
     ## minimum, amplitude, alpha, beta, acrophase
-    fittedYext = tmp.dat$Y - residuals(fit_nls)
-    fittedY = fitted(fit$fit)
-    original = tmp.dat$Y
-    time = tmp.dat$time
-    cosinor_ts = as.data.frame(cbind(time, original, fittedY, fittedYext))
-    # x11()
-    # par(mfrow = c(2,1))
-    # plot(cosinor_ts$original, type = "l", ylab = "log transformed", xlab = "time (minute)")
-    # lines(cosinor_ts$fittedY, type = "l", col = "red", lwd = 2)
-    # lines(cosinor_ts$fittedYext, type = "l", col = "blue", lwd = 2)
-    # 
-    # plot(exp(cosinor_ts$original) - 1, type = "l", ylim = c(0, 200), ylab = "transformation reverted", xlab = "time (minute)")
-    # lines(exp(cosinor_ts$fittedY) - 1, type = "l", col = "red", lwd = 2)
-    # lines(exp(cosinor_ts$fittedYext) - 1, type = "l", col = "blue", lwd = 2)
-    
     coef.nls = coef(fit_nls)
     
     e_min = coef.nls[1]
@@ -103,10 +99,12 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   
   # Continuation of actual GGIR code
   
-  # Apply Extended Cosinor function from ActRC
+  # Apply Cosinor function from ActRC
   N = 1440 * (60 / epochsize) # Number of epochs per day
   Xi = Xi[1:(N * floor(length(Xi) / N))] # ActCR expects integer number of days
   coef = ActCR::ActCosinor(x = Xi, window = 1440 / N)
+
+  # Apply Extended Cosinor function from ActRC (now temporarily turned of to apply my own version)
   # ActCR::
   coefext = ActExtendCosinor(x = Xi, window = 1440 / N) # need to set lower and upper argument?
   # Correct time estimates by offset in start of recording
@@ -120,7 +118,7 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   coefext$acrotime = add24ifneg(coefext$acrotime - timeOffsetHours)
   # do same for acrophase in radians (24 hours: 2 * pi)
   # take absolute value of acrophase, because it seems ActCR provides negative value in radians,
-  # which is inversaly correlated with acrotime
+  # which is inverse correlated with acrotime
   coef$acr = abs(coef$acr) - ((timeOffsetHours / 24) * 2 * pi)
   k = ceiling(abs(coef$acr) / (pi * 2))
   if (coef$acr < 0) coef$acr = coef$acr + (k * 2 * pi)
