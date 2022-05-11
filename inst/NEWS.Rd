@@ -12,6 +12,7 @@
     \item Part1: Now auto-converts files with GT3X extension to gt3x as this is required for read.gt3x.
     \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
     \item Part4: Removed unnecessary warning while loading sleeplog.
+    \item Part1: Changing mimimum timegap length to be imputed to 5 seconds (was two samples)
     }
 }
 \section{Changes in version 2.6-4 (GitHub-only-release date:13-04-2022)}{

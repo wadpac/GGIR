@@ -8,7 +8,7 @@
   gaps by the last recorded value per axis normalised to 1 _g_
 }
 \usage{
-  g.imputeTimegaps(x, xyzCol, timeCol, sf, k = 0.25, impute = TRUE)
+  g.imputeTimegaps(x, xyzCol, timeCol, sf, impute = TRUE)
 }
 \arguments{
   \item{x}{
@@ -23,10 +23,7 @@
   \item{sf}{
     Sample frequency in Hertz
   }
-   \item{k}{
-    Minimum time gap length to be imputed
-  }
-   \item{impute}{
+  \item{impute}{
     Boolean to indicate whether the time gaps identified should be imputed
   }
 }

@@ -1,4 +1,4 @@
-g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE) {
+g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
   remove_time_at_end = FALSE
   if (length(timeCol) == 0) { # add temporary timecolumn to enable timegap imputation where there are zeros
     dummytime = Sys.time()
@@ -21,9 +21,8 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
     x = x[-zeros,]
   }
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
-    if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
-      k = 2/sf
-    }
+    # prevent trying to impute timegaps shorter than 5 seconds
+    k = 5
     deltatime = diff(x[, timeCol])
     if (!is.numeric(deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
       units(deltatime) = "secs"
@@ -40,7 +39,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
     if (NumberOfGaps > 0) { 
       # if gaps exist impute them by repeating the last known value
       x$gap = 1
-      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) 
+      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf)
       x <- as.data.frame(lapply(x, rep, x$gap))
       #  normalise last known value to 1
       i_normalise = which(x$gap != 1)

@@ -204,8 +204,7 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
       \item{do.cal}{Boolean. Whether to apply auto-calibration or not by \link{g.calibrate}. Default and
         recommended setting is TRUE.}
       \item{imputeTimegaps}{Boolean to indicate whether timegaps larger than 1 sample should be imputed.
-        Currently onlly used for .gt3x data and ActiGraph .csv format, where timegaps can be expected as a result of
-        Actigraph's idle sleep.mode configuration that is turned on in some studies.}
+        Currently only used for .gt3x data and ActiGraph .csv format, where timegaps can be expected as a              result of Actigraph's idle sleep.mode configuration that is turned on in some studies.}
       \item{spherecrit}{The minimum required acceleration value (in g) on both sides of 0 g
         for each axis. Used to judge whether the sphere is sufficiently populated}
       \item{minloadcrit}{The minimum number of hours the code needs to read for the
