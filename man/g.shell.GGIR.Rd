@@ -308,8 +308,7 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         it (default is FALSE). Printing the filename can be useful to investigate
         problems (e.g. to verify that which file is being read).}
       \item{desiredtz}{Character, desired timezone: see also http://en.wikipedia.org/wiki/Zone.tab}
-      \item{configtz}{Character, Only functional for AX3 cwa and Actigraph gt3x data at the moment. 
-        Timezone in which the accelerometer was configured. Only use this argument
+      \item{configtz}{Character, Only functional for AX3 cwa, Actigraph gt3x, and ActiGraph csv data at the            moment. Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
         place are different.}
       \item{sensor.location}{
