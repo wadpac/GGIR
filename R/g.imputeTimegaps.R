@@ -41,6 +41,12 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
       # if gaps exist impute them by repeating the last known value
       x$gap = 1
       x$gap[gapsi] = as.integer(deltatime[gapsi] * sf)
+      
+      largegap = which(x$gap > 1*3600)
+      if (length(largegap) > 0) {
+        print(x[(largegap - 1):(largegap + 1),])
+      }
+      
       x <- as.data.frame(lapply(x, rep, x$gap))
       #  normalise last known value to 1
       i_normalise = which(x$gap != 1)
