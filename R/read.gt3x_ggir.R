@@ -263,7 +263,6 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
   # time is now POSIXct POSIXt object with 5 decimal places
   if (configtz != desiredtz) {
-    # print("change tz")
     attr(accdata$time, "tzone") <- desiredtz
   }
   # Set date format to POSIXlt to avoid further confusion about what timezone it is in
