@@ -29,7 +29,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
       units(deltatime) = "secs"
       deltatime = as.numeric(deltatime)
     }
-    gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
+    gapsi = which(deltatime >= k) # limit imputation to gaps larger than 5 seconds
     NumberOfGaps = length(gapsi)
     if (sum(deltatime[gapsi]) > 3600 * 36) {
       stop(paste0("There is more than 36 hours of missing data to be imputed.",
@@ -40,9 +40,9 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
     if (NumberOfGaps > 0) { 
       # if gaps exist impute them by repeating the last known value
       x$gap = 1
-      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf)
-      
-      largegap = which(x$gap > 1*3600)
+      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) # convert to samples, because we impute samples not seconds
+      print(summary(deltatime[gapsi]))
+      largegap = which(x$gap > 120 * sf)
       if (length(largegap) > 0) {
         print(x[(largegap - 1):(largegap + 1),])
       }
