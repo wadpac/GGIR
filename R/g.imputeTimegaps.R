@@ -57,8 +57,8 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
         x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / sqrt(rowSums(x[i_normalise, xyzCol]^2))
       }
       x = x[, which(colnames(x) != "gap")]
-      x = x[,-which(colnames(x) == "time_utc")]
     }
+    x = x[,-which(colnames(x) == "time_utc")]
   }
   # Note: Timestamps are not imputed because from here onward GGIR does not need them
   # Any problems with sample rate should have been fixed during data loading
