@@ -240,7 +240,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (!is_old_version) {
     attr(accdata, "missingness") <- data.frame(
       time = as.POSIXct(as.numeric(names(attr(accdata, "missingness"))),
-                        origin = "1970-01-01", tz = desiredtz), #tz
+                        origin = "1970-01-01"), #tz
       n_missing = attr(accdata, "missingness"),
       stringsAsFactors = FALSE)
   }
@@ -260,7 +260,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   }
   options(digits.secs = 5)
   options(digits = 5)
-  accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
+  accdata$time = as.POSIXlt(as.character(accdata$time), tz = configtz)
   # time is now POSIXct POSIXt object with 5 decimal places
   if (configtz != desiredtz) {
     attr(accdata$time, "tzone") <- desiredtz
