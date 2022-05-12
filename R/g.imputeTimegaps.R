@@ -21,6 +21,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
     x = x[-zeros,]
   }
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
+    print("impute gaps")
     # prevent trying to impute timegaps shorter than 5 seconds
     k = 5
     x$time_utc = as.POSIXct(x = as.numeric(x$time), tz = "UTC", origin = "1970-1-1")
@@ -44,7 +45,9 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
       print(summary(deltatime[gapsi]))
       largegap = which(x$gap > 120 * sf)
       if (length(largegap) > 0) {
-        print(x[(largegap - 1):(largegap + 1),])
+        for (i3 in 1:length(largegap)) {
+          print(x[(largegap[i3] - 1):(largegap[i3] + 1),])
+        }
       }
       
       x <- as.data.frame(lapply(x, rep, x$gap))
