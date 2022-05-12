@@ -268,6 +268,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   }
   # Set date format to POSIXlt to avoid further confusion about what timezone it is in
   accdata$time = as.POSIXlt(accdata$time, origin = "1970-01-01", tz = desiredtz)
+  accdata = accdata[duplicated(accdata$time),] # needed for Windows?
   if (flag_idle_sleep) {
     if (asDataFrame) {
       accdata$idle = rowSums(accdata[, c("X", "Y", "Z")] == 0) == 3
