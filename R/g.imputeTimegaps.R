@@ -23,7 +23,8 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
     # prevent trying to impute timegaps shorter than 5 seconds
     k = 5
-    deltatime = diff(x[, timeCol])
+    x$time_utc = as.POSIXct(x = as.numeric(x$time), tz = "UTC", origin = "1970-1-1")
+    deltatime = diff(x[, "time_utc"]) #timeCol
     if (!is.numeric(deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
       units(deltatime) = "secs"
       deltatime = as.numeric(deltatime)
@@ -47,6 +48,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, impute = TRUE) {
         x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / sqrt(rowSums(x[i_normalise, xyzCol]^2))
       }
       x = x[, which(colnames(x) != "gap")]
+      x = x[,-which(colnames(x) == "time_utc")]
     }
   }
   # Note: Timestamps are not imputed because from here onward GGIR does not need them
