@@ -111,24 +111,24 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
       filesummary[vi]  = c(cosinor_coef$timeOffsetHours)
       s_names[vi] = c("cosinor_timeOffsetHours")
       vi = vi + 1
-      try(expr = {filesummary[vi:(vi + 4)]  = as.numeric(c(cosinor_coef$coef$mes,
-                                  cosinor_coef$coef$amp,
-                                  cosinor_coef$coef$acr,
-                                  cosinor_coef$coef$acrotime,
-                                  cosinor_coef$coef$ndays))}, silent = TRUE)
+      try(expr = {filesummary[vi:(vi + 4)]  = as.numeric(c(cosinor_coef$coef$params$mes,
+                                  cosinor_coef$coef$params$amp,
+                                  cosinor_coef$coef$params$acr,
+                                  cosinor_coef$coef$params$acrotime,
+                                  cosinor_coef$coef$params$ndays))}, silent = TRUE)
       s_names[vi:(vi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                              "cosinor_acrotime", "cosinor_ndays")
       vi = vi + 5
-      try(expr = {filesummary[vi:(vi + 9)]  = c(cosinor_coef$coefext$minimum,
-                                    cosinor_coef$coefext$amp,
-                                    cosinor_coef$coefext$alpha,
-                                    cosinor_coef$coefext$beta,
-                                    cosinor_coef$coefext$acrotime,
-                                    cosinor_coef$coefext$UpMesor,
-                                    cosinor_coef$coefext$DownMesor,
-                                    cosinor_coef$coefext$MESOR,
-                                    cosinor_coef$coefext$ndays,
-                                    cosinor_coef$coefext$F_pseudo)}, silent = TRUE)
+      try(expr = {filesummary[vi:(vi + 9)]  = c(cosinor_coef$coefext$params$minimum,
+                                    cosinor_coef$coefext$params$amp,
+                                    cosinor_coef$coefext$params$alpha,
+                                    cosinor_coef$coefext$params$beta,
+                                    cosinor_coef$coefext$params$acrotime,
+                                    cosinor_coef$coefext$params$UpMesor,
+                                    cosinor_coef$coefext$params$DownMesor,
+                                    cosinor_coef$coefext$params$MESOR,
+                                    cosinor_coef$coefext$params$ndays,
+                                    cosinor_coef$coefext$params$F_pseudo)}, silent = TRUE)
       s_names[vi:(vi + 9)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
                                "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
                                "cosinorExt_DownMesor", "cosinorExt_MESOR",

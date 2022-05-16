@@ -31,23 +31,23 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef60_Offset17$coefext, coef60$coefext, tolerance = 0.001)
   
   # standard cosinor analyses
-  expect_equal(coef60$coef$mes, 6.259326, tolerance = 0.01)
-  expect_equal(coef60$coef$amp, 1.912535, tolerance = 0.01)
-  expect_equal(coef60$coef$acr, pi * 1/2, tolerance = 0.01)
-  expect_equal(coef60$coef$acrotime, 6, tolerance = 0.01)
-  expect_equal(coef60$coef$ndays, 7)
+  expect_equal(coef60$coef$params$mes, 6.259326, tolerance = 0.01)
+  expect_equal(coef60$coef$params$amp, 1.912535, tolerance = 0.01)
+  expect_equal(coef60$coef$params$acr, pi * 1/2, tolerance = 0.01)
+  expect_equal(coef60$coef$params$acrotime, 6, tolerance = 0.01)
+  expect_equal(coef60$coef$params$ndays, 7)
   expect_equal(coef60$coef, coef60$coef, tolerance = 0.01)
   expect_equal(coef60$coef, coef300$coef, tolerance = 0.01)
   expect_equal(coef60$IVIS, coef300$IVIS, tolerance = 0.01)
   
   # extended cosinor analyses
-  expect_equal(coef60$coefext$minimum, 0)
-  expect_equal(coef60$coefext$amp, 7.245069, tolerance = 0.01)
-  expect_equal(coef60$coefext$alpha, -0.921499, tolerance = 0.01)
-  expect_equal(coef60$coefext$beta, 5.939461, tolerance = 0.01)
-  expect_equal(coef60$coefext$UpMesor, 19.52358, tolerance = 0.01)
-  expect_equal(coef60$coefext$DownMesor, 16.47642, tolerance  = 0.01)
-  expect_equal(coef60$coefext$MESOR, 3.622534, tolerance  = 0.01)
+  expect_equal(coef60$coefext$params$minimum, 0)
+  expect_equal(coef60$coefext$params$amp, 7.245069, tolerance = 0.01)
+  expect_equal(coef60$coefext$params$alpha, -0.921499, tolerance = 0.01)
+  expect_equal(coef60$coefext$params$beta, 5.939461, tolerance = 0.01)
+  expect_equal(coef60$coefext$params$UpMesor, 19.52358, tolerance = 0.01)
+  expect_equal(coef60$coefext$params$DownMesor, 16.47642, tolerance  = 0.01)
+  expect_equal(coef60$coefext$params$MESOR, 3.622534, tolerance  = 0.01)
   
   # IV IS
   expect_equal(coef60$IVIS$InterdailyStability, 0.9945789, tolerance  = 0.01)
