@@ -1,14 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-6 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-6 (GitHub-only-release date:17-05-2022)}{
 \itemize{
     \item Part 2: IVIS now able to handle missing data points
     \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
     \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses
   }
 }
-\section{Changes in version 2.6-5 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-5 (GitHub-only-release date:16-05-2022)}{
 \itemize{
     \item Vignette for read.myacc.csv function included.
     \item Parameter objects documentation moved to g.shell.GGIR.
