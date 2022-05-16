@@ -314,14 +314,13 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         if the timezone of configuration and timezone in which recording took
         place are different.}
       \item{sensor.location}{
-      Character to indicate sensor location, default is wrist.
-    If it is hip HDCZA algorithm also requires longitudinal axis of sensor to be
-    between -45 and +45 degrees.
+        Character to indicate sensor location, default is wrist.
+        If it is hip HDCZA algorithm also requires longitudinal axis of sensor to be
+        between -45 and +45 degrees.
       }
       \item{acc.metric}{
-      Which one of the metrics do you want to consider to analyze L5. 
-    The metric of interest need to be calculated in
-    M (see \link{g.part1})
+        Which one of the metrics do you want to consider to analyze L5. 
+        The metric of interest need to be calculated in M (see \link{g.part1})
       }
       \item{windowsizes}{Numeric vector, three values to indicate the lengths of the 
         windows as in c(window1,window2,window3): window1 is the short epoch length
@@ -340,6 +339,13 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         and '-' (idloc = 7), respecitvely. You may have 
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
+      \item{expand_tail_max_hours}{
+        Numeric scalar, default=0. The maximum number of hours between the end of the 
+        recoridng and the following midnight to trigger the expansion of the timeseries
+        to reach this midnight. We have this option to trigger the detection of sleep
+        during the last night, if user has reason to believe that the participant slept after
+        the end of the recording.
+      }
     }
   }
   \subsection{params_output}{

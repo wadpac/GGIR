@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6-6 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Part2: Added option to expand the last day of the recording to
+      trigger analyses for that day, see argument expand_tail_max_hours.
+    }
+  }
 \section{Changes in version 2.6-5 (GitHub-only-release date:16-05-2022)}{
 \itemize{
     \item Vignette for read.myacc.csv function included.

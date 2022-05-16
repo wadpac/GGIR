@@ -139,6 +139,39 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero)
+        
+        if (params_general[["expand_tail_max_hours"]] > 0) {
+          # Identify gap between last timestamp and following midnight
+          ws3 = M$windowsizes[1] 
+          ws2 = M$windowsizes[2] 
+          # Check whether gap is less then criteria
+          last_ts = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
+          secs_to_midnight = ((24 + params_general[["dayborder"]])  * 3600) - (as.numeric(format(last_ts, "%H")) * 3600 + as.numeric(format(last_ts, "%M")) * 60  + as.numeric(format(last_ts, "%S")))
+          if (secs_to_midnight < params_general[["expand_tail_max_hours"]] * 3600) {
+            # If yes, expand data
+            N_long_epochs_expand = ceiling(secs_to_midnight / ws2)
+            N_short_epochs_expand = ((N_long_epochs_expand + 1) * (ws2/ws3) - 1)
+            print(N_long_epochs_expand)
+            print(N_short_epochs_expand)
+            # Expand metashort
+            NR = nrow(M$metashort)
+            metashort_expand = M$metashort[NR,]
+            metashort_expand[, grep(pattern = "timestamp|angle", x = names(metashort_expand), invert = TRUE, value = FALSE)] = 0
+            expand_indices = (NR + 1):(NR + N_short_epochs_expand)
+            expand_tsPOSIX = seq(last_ts + ws3, last_ts + (N_short_epochs_expand * ws3), by = ws3)
+            M$metashort[expand_indices,] = metashort_expand
+            M$metashort$timestamp[expand_indices] = POSIXtime2iso8601(expand_tsPOSIX, tz = params_general[["desiredtz"]])
+            # Expand metalong
+            NR = nrow(M$metalong)
+            metalong_expand = M$metalong[NR,]
+            metalong_expand[, grep(pattern = "timestamp", x = names(metalong_expand), invert = TRUE, value = FALSE)] = 0
+            metalong_expand$en = tail(M$metalong$en, n = 1)
+            expand_indices = (NR + 1):(NR + N_long_epochs_expand)
+            expand_tsPOSIX = seq(last_ts + ws2, last_ts + (N_long_epochs_expand * ws2), by = ws2)
+            M$metalong[expand_indices,] = metalong_expand
+            M$metalong$timestamp[expand_indices] = POSIXtime2iso8601(expand_tsPOSIX, tz = params_general[["desiredtz"]])
+          }
+        }
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
           IMP$metalong = M$metalong
