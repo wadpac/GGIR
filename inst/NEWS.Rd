@@ -1,13 +1,15 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-5 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-5 (GitHub-only-release date:16-05-2022)}{
 \itemize{
     \item Vignette for read.myacc.csv function included.
     \item Parameter objects documentation moved to g.shell.GGIR.
     \item Part4: Advanced sleeplog handling further improved as it now also handles dates in sleeplog far beyond recording dates.
     \item Part2 report: Number of days to plot now auto scales to length of measurement.
     \item Part2 report: Fixed bug introduced in 2.6-3 making it impossible to generate a report for more than 1 file and fix bug introduced in 2.6-4 messing up the merging of files.
+    \item Part1: Now auto-converts files with GT3X extension to gt3x as this is required for read.gt3x.
+    \item Part4: Removed unnecessary warning while loading sleeplog.
     }
 }
 \section{Changes in version 2.6-4 (GitHub-only-release date:13-04-2022)}{
