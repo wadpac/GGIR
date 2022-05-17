@@ -466,10 +466,10 @@ g.shell.GGIR(mode = \Sexpr{format(formals(GGIR::g.shell.GGIR)[["mode"]])},
         windows. Window2 is expected to be a multitude of 60 seconds.}
       \item{idloc}{Numeric (default: idloc = 1). If idloc = 1 the code assumes that ID
         number is stored in the obvious header field. Note that for ActiGraph data
-        the ID never stored in the file header. For value set to 2, 5, 6, and 7, GGIR
+        the ID is never stored in the file header. For value set to 2, 5, 6, and 7, GGIR
         looks at the filename and extracts the character string preceding the first 
         occurance of a '_' (idloc = 2), ' ' (space, idloc = 5), '.' (dot, idloc = 6), 
-        and '-' (idloc = 7), respecitvely. You may have 
+        and '-' (idloc = 7), respectively. You may have 
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
     }

@@ -65,6 +65,12 @@ ShellDoc2Vignette <- function(argument = "mode") {
   # clean double underscore at the end
   def = gsub(pattern = "__", replacement = "", x = def)
   
+  # clean next subsection if it is there
+  if (grepl("\\\\subsection", def)) {
+    stop = gregexpr("\\\\subsection", def)[[1]][1]
+    def = substr(x = def, start = 1, stop = stop - 1)
+  }
+  
   
   # return ------------------------------------------------------------------
   return(def)
