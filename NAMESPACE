@@ -40,7 +40,7 @@ export(g.analyse, g.calibrate,
        check_params, extract_params,
        g.imputeTimegaps, read.gt3x_ggir,
        parseGT3Xggir, g.part5.classifyNaps,
-       tidyup_df, ShellDoc2Vignette)
+       tidyup_df, ShellDoc2Vignette, parametersVignette)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
