@@ -343,6 +343,54 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     outputfolder = outputfolder,
                     selectdaysfile = params_cleaning[["selectdaysfile"]],
                     myfun = myfun)
+      
+      if (params_general[["expand_tail_max_hours"]] > 0) {
+        # Identify gap between last timestamp and following midnight
+        ws3 = M$windowsizes[1] 
+        ws2 = M$windowsizes[2] 
+        # Check whether gap is less then criteria
+        last_ts = c(Sys.time(), Sys.time())
+        secs_to_midnight = c(0, 0)
+        last_ts[1] = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
+        last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
+        refhour = (24 + 6 + params_general[["dayborder"]])
+        for (wsi in 1:2) {
+          secs_to_midnight[wsi] = (refhour * 3600) - 
+            (as.numeric(format(last_ts[wsi], "%H")) * 3600 + 
+               as.numeric(format(last_ts[wsi], "%M")) * 60  + 
+               as.numeric(format(last_ts[wsi], "%S")))
+        }
+        if (secs_to_midnight[1] <= refhour * 3600) {
+          # If yes, expand data
+          N_long_epochs_expand = ceiling(secs_to_midnight[1] / ws2) + 1
+          N_short_epochs_expand = ceiling(secs_to_midnight[2] / ws3) + 1
+          if (N_short_epochs_expand / (ws2 / ws3) < N_long_epochs_expand) {
+            N_short_epochs_expand = N_long_epochs_expand * (ws2 / ws3)
+          }
+          # N_short_epochs_expand = ((N_long_epochs_expand) * (ws2/ws3))
+          # Expand metashort
+          NR = nrow(M$metashort)
+          metashort_expand = M$metashort[NR,]
+          metashort_expand[, grep(pattern = "timestamp|angle", x = names(metashort_expand), invert = TRUE, value = FALSE)] = 0
+          expand_indices = (NR + 1):(NR + N_short_epochs_expand)
+          expand_tsPOSIX = seq(last_ts[2] + ws3, last_ts[2] + (N_short_epochs_expand * ws3), by = ws3)
+          M$metashort[expand_indices,] = metashort_expand
+          M$metashort$timestamp[expand_indices] = POSIXtime2iso8601(expand_tsPOSIX, tz = params_general[["desiredtz"]])
+          anglecol = grep(pattern = "angle", x = names(metashort_expand), value = FALSE)
+          if (length(anglecol) > 0) {
+            M$metashort[expand_indices,anglecol] = round(sin((1:length(expand_indices)) / (900/ws3))) * 15
+          }
+          # Expand metalong
+          NR = nrow(M$metalong)
+          metalong_expand = M$metalong[NR,]
+          metalong_expand[, grep(pattern = "timestamp", x = names(metalong_expand), invert = TRUE, value = FALSE)] = 0
+          metalong_expand$en = tail(M$metalong$en, n = 1)
+          expand_indices = (NR + 1):(NR + N_long_epochs_expand)
+          expand_tsPOSIX = seq(last_ts[1] + ws2, last_ts[1] + (N_long_epochs_expand * ws2), by = ws2)
+          M$metalong[expand_indices,] = metalong_expand
+          M$metalong$timestamp[expand_indices] = POSIXtime2iso8601(expand_tsPOSIX, tz = params_general[["desiredtz"]])
+        }
+      }
       #------------------------------------------------
       cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present
