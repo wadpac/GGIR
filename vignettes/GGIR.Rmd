@@ -260,6 +260,7 @@ dynrange | 1 | params_rawdata
 configtz | 1 | params_general
 minimumFileSizeMB | 1 | params_rawdata
 interpolationType | 1 | params_rawdata
+expand_tail_max_hours | 1 | params_general
 metadatadir | 2, 3, 4, 5 | not in parameter objects
 minimum_MM_length.part5 | 5 | params_cleaning
 strategy | 2, 5 | params_cleaning
