@@ -1232,7 +1232,7 @@ The implementation within GGIR part 2 is as follows:
 The default calculation uses IVIS.activity.metric = 1 which uses the continuous numeric acceleration values.
 However, as we later realised this is not compatible with the original approach by van Someren and colleagues, which uses a binary distinction between active and inactive. Therefore, a second option has been added (IVIS.activity.metric = 2), which needs to be used in combination with accelerometer metric ENMO, and collapses the acceleration values into a binary score of rest versus active.
 
-Further, the IV algorithm by van Someren has been modified in GGIR to ignore transitions between the epoch at the end of each day and the epoch at the start of the next day, because technically those would relate to intradaily variability.
+Further, the IV algorithm by van Someren has been modified in GGIR to ignore transitions between the epoch at the end of each day and the following epoch at the start of the next day, because technically these transitions do not relate to intradaily variability.
 
 #### IV and IS - Cosinor analysis compatible
 
