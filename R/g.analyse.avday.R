@@ -1,10 +1,11 @@
 g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
-                           ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), ...) {
+                           ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), 
+                           qcheck = c(), acc.metric = c(), ...) {
   #get input variables
   input = list(...)
   expectedArgs = c("doquan", "averageday", "M", "IMP",
                    "t_TWDI, quantiletype", "ws3", "ws2", 
-                   "doiglevels", "firstmidnighti", "midnightsi", "params_247") 
+                   "doiglevels", "firstmidnighti", "midnightsi", "params_247", "qcheck") 
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
@@ -14,6 +15,11 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                             input = input) # load default parameters
     params_247 = params$params_247
   }
+  if (length(acc.metric) == 0) {
+    acc.metric = colnames(IMP$metashort)[which(colnames(IMP$metashort) %in% 
+                                                 c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+  }
+  
   if (doquan == TRUE) {
     QLN = rep(" ",length(params_247[["qlevels"]]))
     for (QLNi in 1:length(params_247[["qlevels"]])) {
@@ -97,19 +103,87 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     }
   }
   # IS and IV variables
-  fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight
-  lmn = midnightsi[length(midnightsi)] * (ws2/ws3)
-  # By using the metahosrt from the IMP we do not need to ignore segments, because data imputed
-  Xi = IMP$metashort[fmn:lmn, which(colnames(IMP$metashort) %in% c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
-  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
-                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]], IVIS.activity.metric = params_247[["IVIS.activity.metric"]])
+  fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight because we need full calendar days to compare
+  lmn = (midnightsi[length(midnightsi)] * (ws2/ws3)) - 1
+  # By using the metashort from the IMP we do not need to ignore segments, because data imputed
+  Xi = IMP$metashort[fmn:lmn, acc.metric]
+  # IV IS
+  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, 
+                   IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
+                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
+                   IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
+                   IVIS_acc_threshold = params_247[["IVIS_acc_threshold"]])
   InterdailyStability = IVISout$InterdailyStability
   IntradailyVariability = IVISout$IntradailyVariability
+  rm(Xi)
+  
+  #----------------------------------
+  # (Extended) Cosinor analysis
+  if (params_247[["cosinor"]] == TRUE) {
+    # Re-derive Xi but this time include entire time series
+    Xi = IMP$metashort[, acc.metric]
+    # Xi = log((Xi * 1000) + 1)  # log transformed to be more robust against peaks in the data
+    # set non-wear to missing values, because for Cosinor fit
+    # it seems more logical to only fit with real data
+    # this comes at the price of not being able to extract F_pseudo
+    firstvalid = 1
+    if (length(which(qcheck == 1)) > 0) {
+      is.na(Xi[which(qcheck == 1)]) = TRUE
+      # ignore invalid start of recording (if applicable)
+      # such that 24 hour blocks start from first valid value
+      firstvalid = which(qcheck == 0)[1]
+      if (is.na(firstvalid) == FALSE) {
+        if (firstvalid != 1) {
+          Xi = Xi[firstvalid:length(Xi)]
+        }
+      }
+    }
+    if (length(which(is.na(Xi) == FALSE)) > (1440 * (60/ws3))) { # Only attempt cosinor analyses if there is more than 24 hours of data
+      midnightsi_ws3 = (midnightsi - 1) * (ws2 / ws3)
+      timeOffsetHours = (midnightsi_ws3[which(midnightsi_ws3 >= firstvalid - 1)[1]] - (firstvalid - 1)) / (3600 / ws3)
+      if (ws3 < 60) {
+        # If epochsize < 1 minute then aggregate to 1 minute by taking maximum value
+        # but keep NA values
+        XTtime = rep(1:length(Xi), each = 60 / ws3)
+        XT = data.frame(Xi = Xi, time = XTtime[1:length(Xi)])
+        custommean = function(x) {
+          y = NA
+          if (length(x) > 0) {
+            if (length(which(is.na(x) == FALSE) ) > 0) {
+              y = mean(x, na.rm = TRUE)
+            }
+          }
+          return(y)
+        }
+        XT = aggregate(x = XT, by = list(XT$time), FUN = custommean)
+        if (length(which(is.nan(XT$Xi) == TRUE)) > 0) {
+          is.na(XT$Xi[which(is.nan(XT$Xi) == TRUE)]) = TRUE
+        }
+        # experimental: clip all peaks above Xth percentile?
+        # Q9 = quantile(x = XT$Xi, probs = 0.75, na.rm = TRUE)
+        # XT$Xi[which(XT$Xi >= Q9)] = Q9
+        
+        # log transform of data in millig
+        notna = !is.na(XT$Xi)
+        XT$Xi[notna] = log((XT$Xi[notna]*1000) + 1) 
+        Xi = XT$Xi
+        epochsize = 60
+      } else {
+        epochsize = ws3
+      }
+      cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, timeOffsetHours = timeOffsetHours) 
+      cosinor_coef$timeOffsetHours = timeOffsetHours
+    } else {
+      cosinor_coef = c()
+    }
+  } else {
+    cosinor_coef = c()
+  }
   invisible(list(InterdailyStability = InterdailyStability,
                  IntradailyVariability = IntradailyVariability, 
                  igfullr_names = igfullr_names,
                  igfullr = igfullr, QUAN = QUAN,
                  qlevels_names = qlevels_names,
                  ML5AD = ML5AD,
-                 ML5AD_names = ML5AD_names))
+                 ML5AD_names = ML5AD_names, cosinor_coef = cosinor_coef))
 }

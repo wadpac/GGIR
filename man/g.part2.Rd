@@ -11,14 +11,14 @@
   \link{g.analyse}.
 }
 \usage{
-  g.part2(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(), 
+  g.part2(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         myfun = c(), params_cleaning = c(), params_247 = c(),
         params_phyact = c(), params_output = c(), params_general = c(), ...)
 }
 \arguments{
   \item{datadir}{
-    Directory where the accelerometer files are stored, e.g. 
-    "C:/mydata", or list of accelerometer filenames and directories, e.g. 
+    Directory where the accelerometer files are stored, e.g.
+    "C:/mydata", or list of accelerometer filenames and directories, e.g.
     c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
   \item{metadatadir}{
@@ -69,7 +69,7 @@
   you have the option to specifiy a configuration file, which will overrule the default
   parameter values. Further, as user you can set parameter values as input argument to both g.part2
   and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
-  
+
    See the GGIR package vignette or the details section in \link{g.shell.GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
 }
 \examples{

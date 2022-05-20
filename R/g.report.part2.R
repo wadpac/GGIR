@@ -1,5 +1,5 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          selectdaysfile = c(), store.long = FALSE) {
+                          selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -18,7 +18,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     }
     #---------------------------------
     # Specifying directories with meta-data and extracting filenames
-    path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
+    path = paste0(metadatadir, "/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
     fnames = dir(path) # part 1
     # ms2.out = "/meta/ms2.out"
     fnames.ms2 = dir(paste0(metadatadir,ms2.out))  #part 2
@@ -37,9 +37,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
-        dev.off()
+        if (do.part2.pdf == TRUE) dev.off()
       }
-      if (pdfpagecount == 1) {
+      if (pdfpagecount == 1 & do.part2.pdf == TRUE) {
         pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"),
             width = 7, height = 7)
       }
@@ -58,13 +58,15 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
         # Load part 2 data
         IMP = c()
-        fname2read = paste0(metadatadir,ms2.out,"/",fnames.ms2[selp])
+        fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
         try(expr = {load(file = fname2read)}, silent = TRUE)
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
-        Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
-        g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
+        if (do.part2.pdf == TRUE) {
+          Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
+          g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
+        }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
@@ -94,7 +96,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           }
         }
       }
-      if (length(SUMMARY) == 0 |length(daySUMMARY) == 0) {
+      if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports")
       }
       #-----------------
@@ -106,7 +108,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       }
       tm = which(colnames(M$metalong) == "temperaturemean")
       if (length(tm) > 0) {
-        tmean = as.character(mean(as.numeric(as.matrix(M$metalong[1:(nrow(M$metalong) - 1),tm]))))
+        tmean = as.character(mean(as.numeric(as.matrix(M$metalong[1:(nrow(M$metalong) - 1), tm]))))
       } else {
         tmean = ""
       }
@@ -168,7 +170,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (i == 1 | i == f0) {
         QCout = QC
       } else {
-        if (ncol(QCout) == ncol(QC)) {  
+        if (ncol(QCout) == ncol(QC)) {
         } else {
           QC = cbind(QC,matrix(" ",1,(ncol(QCout) - ncol(QC))))
           colnames(QC) = colnames(QCout)
@@ -179,23 +181,22 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
         SUMMARY_clean = tidyup_df(SUMMARY)
         daySUMMARY_clean = tidyup_df(daySUMMARY)
-        if (length(selectdaysfile) > 0) {
-          winSUMMARY_clean = tidyup_df(winSUMMARY)
-        }  
         #store matrix temporarily to keep track of process
         write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
         write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
         if (length(selectdaysfile) > 0) {
+          winSUMMARY_clean = tidyup_df(winSUMMARY)
           write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
         }
         write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
       }
       pdfpagecount = pdfpagecount + 1
     }
+    # tidy up memory
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
-    dev.off()
-    
+    if (do.part2.pdf == TRUE) dev.off()
+
     # tidy up data.frames
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
