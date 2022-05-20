@@ -9,7 +9,7 @@
   on accelerometer data while taking advantage of the existing comprehensive GGIR
   data management and analysis infrastructure.
   This function is not for direct interaction by user, please supply object 
-  \code{myfun} to \link{g.shell.GGIR} or \link{g.part1}. Object \code{myfun}
+  \code{myfun} to \link{GGIR} or \link{g.part1}. Object \code{myfun}
   is a list as detailed below.
 }
 \usage{

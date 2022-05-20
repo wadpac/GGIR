@@ -14,7 +14,7 @@
   decisions that directly impact on the variables that are of interest to the
   movement scientist. Therefore, the user may want to run g.part1 overnight
   or on a computing cluster, while g.part2 can then be the main playing ground
-  for the movement scientist. Function \link{g.shell.GGIR} provides the main shell
+  for the movement scientist. Function \link{GGIR} provides the main shell
   that allows for operating g.part1 and g.part2.
 }
 \usage{
@@ -51,16 +51,16 @@
     See details \link{applyExtFunction}.
   }
   \item{params_metrics}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_rawdata}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_cleaning}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_general}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{...}{
     If you are working with a non-standard csv formatted files, \link{g.part1} also takes any input
@@ -73,12 +73,12 @@
 \details{
   GGIR comes with many processing parameters, which have been thematically grouped in
   parameter objects (R list). By running print(load_params()) you can
-  see the default values of all the parameter objects. When g.part 1 is used via \link{g.shell.GGIR}
+  see the default values of all the parameter objects. When g.part 1 is used via \link{GGIR}
   you have the option to specifiy a configuration file, which will overrule the default
   parameter values. Further, as user you can set parameter values as input argument to both \link{g.part1}
-  and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
+  and \link{GGIR}. Directly specified argument overrule the configuration file and default values.
   
-  See the GGIR package vignette or the details section in \link{g.shell.GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
+  See the GGIR package vignette or the details section in \link{GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
   
 }
 \value{

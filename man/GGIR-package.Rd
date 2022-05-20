@@ -1,6 +1,5 @@
 \name{GGIR-package}
 \alias{GGIR-package}
-\alias{GGIR}
 \docType{package}
 \title{
   A package to process multi-day raw accelerometer data
@@ -63,6 +62,7 @@
     \item Dan Jackson helped with unpack function for AX3 data.
     \item Matthew R Patterson helped with enhancing the visual report.
     \item Lena Kushleyeva helped fix bug in sleep detection.
+    \item Taren Sanders helped tidy up the parallel processing functionality
   }
 }
 \references{
