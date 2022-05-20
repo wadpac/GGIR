@@ -1236,15 +1236,13 @@ Further, the IV algorithm by van Someren has been modified in GGIR to ignore tra
 
 #### IV and IS - Cosinor analysis compatible
 
-IS is sometimes used as a measure of behavioural robustness in combination with Cosinor analysis. However, to make a direct comparison between the two it is important that IS is calculated from the same time series. Therefore, when the user specifies `cosinor = TRUE` then IV and IS are calculated twice. Once as part of the default IV and IS analysis (described above), and once as part of the Cosinor analysis.
+IS is sometimes used as a measure of behavioural robustness when conducting Cosinor analysis. However, to work with the combination of the two outcomes it seems important that IS is calculated from the same time series. Therefore, when `cosinor = TRUE` IV and IS are calculated twice: Once as part of the default IV and IS analysis as discussed above, and once as part of the Cosinor analysis using the same log transformed time series. More specifically, the IV and IS algorithm is applied with `IVIS.activity.metric = 2` and `IVIS_acc_threshold = log(20 + 1)` to make the binary distinction between active and inactive, and `IVIS_per_daypair = TRUE`. The setting `IVIS_per_daypair` was specifically designed for this context to handle the potentially missing values in the time series as used for Cosinor analysis. Applying the default IVIS algorithm would not be able to handle the missing values and would result in a loss of information if all non-matching epochs across the entire recording were excluded. Instead, IV and IS are calculated as follows:
 
-Here, IV and IS are calculated from the same log transformed time series as used for the Cosinor analysis. The IV and IS algorithm is applied with `IVIS.activity.metric = 2` and `IVIS_acc_threshold = log(20 + 1)` to make the binary distinction between active and inactive, and `IVIS_per_daypair = TRUE`. The setting `IVIS_per_daypair` was specifically designed for this context to handle the potentially missing values in the time series used for cosinor analysis. Applying the default IVIS analysis would not be able to handle the missing values and would result in a loss of information if all non-matching epochs were excluded. Instead, IV and IS are now calculated as follows:
-
-1. Calculate both IS and IV per day pair based on matching valid epochs only, and keep a log per day pair of the number of valid epoch pairs.
-2. Omit day pairs where the fraction of valid epoch pairs is below 0.66.
+1. Per day pair based on matching valid epochs only IV and IS and calculated. Here, a log is kept of the number of valid epoch per day pair.
+2. Omit day pairs where the fraction of valid epoch pairs is below 0.66 (0.66 is hard-coded at the moment).
 3. Calculate average IS across days weighted by fraction of valid epochs per day pairs.
 
-You can find these new IV and IS estimates as output variables `cosinorIV` and `cosinorIS`.
+The new Cosinor-compatible IV and IS estimates are stored as output variables `cosinorIV` and `cosinorIS`.
 
 # Other Resources
 - The [GGIR package manual](https://CRAN.R-project.org/package=GGIR) provides documentation on individual functions.
