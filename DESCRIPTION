@@ -28,7 +28,7 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                     role = "ctb", email = "egpbos@gmail.com",
                     comment = c(ORCID = "0000-0002-6033-960X")),
                   person(given = "Taren",family = "Sanders", role = "ctb"),
-                  person("Medical Research Council",  role = c("cph", "fnd")),
+                  person("Medical Research Council UK",  role = c("cph", "fnd")),
                   person("Accelting",  role = c("cph", "fnd")),
                   person("French National Research Agency",  role = c("cph", "fnd")))
 Maintainer: Vincent T van Hees <v.vanhees@accelting.com>
