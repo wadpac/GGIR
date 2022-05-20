@@ -488,8 +488,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       }
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
-      cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
-      doParallel::registerDoParallel(cl)
+      if (Ncores2use > 1) {
+        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        doParallel::registerDoParallel(cl)
+      } else {
+        # Don't process in parallel if only one core
+        params_general[["do.parallel"]] = FALSE
+      }
       
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
