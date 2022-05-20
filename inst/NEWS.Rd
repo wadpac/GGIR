@@ -1,11 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-6 (GitHub-only-release date:17-05-2022)}{
+\section{Changes in version 2.6-6 (GitHub-only-release date:20-05-2022)}{
 \itemize{
     \item Part 2: IVIS now able to handle missing data points
     \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
-    \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses
+    \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses, see new argument cosinor.
+    \item General: If there is only 1 file to be processed then code skips the parallel processing .
   }
 }
 \section{Changes in version 2.6-5 (GitHub-only-release date:16-05-2022)}{
