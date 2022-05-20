@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-5 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.6-5 (GitHub-only-release date:16-05-2022)}{
 \itemize{
     \item Vignette for read.myacc.csv function included.
     \item Parameter objects documentation moved to g.shell.GGIR.
