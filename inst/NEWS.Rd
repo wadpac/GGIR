@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.6-7 (GitHub-only-release date:??-??-2022)}{
 \itemize{
-    \\item Part1: Changing mimimum timegap length to be imputed to 5 seconds (was two samples)
+    \item Part1: Changing mimimum timegap length to be imputed to 5 seconds (was two samples)
   }
 }
 \section{Changes in version 2.6-6 (GitHub-only-release date:20-05-2022)}{
