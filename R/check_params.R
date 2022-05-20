@@ -76,10 +76,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
+                       "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
+    boolean_params = "cosinor"
     character_params = c("qwindow_dateformat")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
+    check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
     check_class("247", params = params_247, parnames = character_params, parclass = "character")
   }
   if (length(params_phyact) > 0) {
@@ -106,7 +109,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid", 
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport")
-    character_params = c("save_ms5raw_format", "timewindow")
+    character_params = c("save_ms5raw_format", "timewindow", " do.part2.pdf")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")

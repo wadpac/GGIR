@@ -1,7 +1,7 @@
 g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    myfun=c(), params_cleaning = c(), params_247 = c(),
                    params_phyact = c(), params_output = c(), params_general = c(), ...) {
-  
+
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -20,10 +20,10 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   #-----------------------------
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
-  } else if (is.character(params_247[["qwindow"]])) { 
+  } else if (is.character(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["qwindow_dateformat"]])
     # This will be an object with numeric qwindow values for all individuals and days
-  }  
+  }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
@@ -51,7 +51,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (length(f1) ==  0) f1 = length(fnames)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
-  foldername = fullfilenames = folderstructure = referencefnames = c() 
+  foldername = fullfilenames = folderstructure = referencefnames = c()
   if (params_output[["storefolderstructure"]] == TRUE) {
     extractfilenames = function(x) {
       x2 = as.character(unlist(strsplit(x,".RDa"))[1])
@@ -68,15 +68,15 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
-  
+
   #---------------------------------------
   cnt78 = 1
-  
+
   #=========================================================
   # Declare core functionality, which at the end of this g.part2 is either
   # applied to the file in parallel with foreach or serially with a loop
-  main_part2 = function(i, ffdone, fnames, 
-                        metadatadir = c(), 
+  main_part2 = function(i, ffdone, fnames,
+                        metadatadir = c(),
                         myfun=c(), params_cleaning = c(), params_247 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
@@ -119,7 +119,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                  TimeSegments2Zero$windowend < timespan1)
             if (length(validtimes) > 0) {
               TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
-              
+
             } else {
               TimeSegments2Zero = c()
             }
@@ -134,7 +134,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
           }
         }
-        IMP = g.impute(M, I, 
+        IMP = g.impute(M, I,
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
@@ -151,7 +151,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         idloc = params_general[["idloc"]],
                         includedaycrit = params_cleaning[["includedaycrit"]],
                         selectdaysfile = params_cleaning[["selectdaysfile"]],
-                        myfun = myfun)
+                        myfun = myfun,
+                        acc.metric = params_general[["acc.metric"]])
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
@@ -191,14 +192,13 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        
-        save(SUM,IMP,file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        save(SUM, IMP, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
     }
   } # end of main_part2
-  
+
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
   if (params_general[["do.parallel"]] == TRUE) {
@@ -219,7 +219,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       params_general[["do.parallel"]] = FALSE
     }
     cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
-    
+
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
@@ -248,7 +248,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                  path, ms2.out, foldername, fullfilenames,
                                                  folderstructure, referencefnames,
                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
-                                      
+
                                     })
                                     return(tryCatchResult)
                                   }
@@ -259,13 +259,13 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
-  } else { 
+  } else {
     for (i in f0:f1) {
       cat(paste0(i, " "))
-      main_part2(i, ffdone, fnames, metadatadir, 
+      main_part2(i, ffdone, fnames, metadatadir,
                  myfun, params_cleaning, params_247,
                  params_phyact, params_output, params_general,
-                 path, ms2.out, foldername, fullfilenames, 
+                 path, ms2.out, foldername, fullfilenames,
                  folderstructure, referencefnames,
                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
     }

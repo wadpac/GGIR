@@ -79,7 +79,7 @@ remotes::install_github("wadpac/GGIR")
 1. GGIR works with the following accelerometer brands and formats:
     - [GENEActiv](https://www.activinsights.com/) .bin
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
-    - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
+     - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with "NEO" or "MRA" and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
     - [Movisens](https://www.movisens.com/en/) with data stored in folders.
     - Genea (an accelerometer that is not commercially available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
     - Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and argument `rmc.noise` in the [GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
@@ -281,6 +281,7 @@ idloc | 2, 4 | params_general
 do.imp | 2 | params_cleaning
 storefolderstructure | 2, 4, 5 | params_output
 epochvalues2csv | 2 | params_output
+do.part2.pdf | 2 | params_output
 mvpadur | 2 | params_phyact
 window.summary.size | 2 | params_247
 bout.metric | 2, 5| params_phyact
@@ -671,7 +672,7 @@ IVIS_epochsize_seconds | Argument has been deprecated
 `WE_` | Weekend days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over weekend days only
 `WD_` | Week days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over week days only
 `WWE_` | Weekend days (weighted average)	The variable was calculated per day and then averaged over weekend days. Double weekend days are averaged. This is only relevant for experiments that last for more than seven days.
-`WWD_` | Week days (weighted average)	The variable was calculated per day and then averaged over week days. Double weekend days were averaged. This is only relevant for experiments that last for more than seven days)
+`WWD_` | Week days (weighted average)	The variable was calculated per day and then averaged over week days. Double week days were averaged. This is only relevant for experiments that last for more than seven days)
 WWD_MVPA_E5S_T100_ENMO | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100
 `WWE_MVPA_E5S_B1M80%_T100_ENMO` | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 based on a bout criteria of 100
 `WE_[100,150)_mg_0-24h_ENMO` | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight) |	A log of decision made in part2.R
@@ -684,7 +685,10 @@ n hours ignored at end of meas (if strategy=1) | number of days of measurement a
 epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R
 pdffilenumb |	Indicator of in which pdf-file the plot was stored
 pdfpagecount |	Indicator of in which pdf-page the plot was stored
-
+`cosinor_` | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package.
+`cosinorExt_` | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package.
+`cosinorIV` | Cosinor analysis compatible estimate of the Intradaily Variability (IV)
+`cosinorIS` | Cosinor analysis compatible estimate of Interdaily Stability (IS)
 
 ### Day level summary
 
@@ -1203,6 +1207,43 @@ See also [this](https://medium.com/@vincentvanhees/ten-misunderstandings-surroun
 ## What does GGIR stand for?
 
 I wanted a short name and not to spend too much time finding it. At the time I was primarily working with GENEActiv and GENEA data In R, and that's how the name GGIR was born: Short, easy to remember, and as acronym sufficiently vague to not be tight up with a specific functionality. However, later the functionality expanded to other sensor brands, so the abbreviation has lost its functional meaning.
+
+
+## Circadian Rhythm analyses
+
+### MXLX
+
+Detection of the least active (LX) and most active (MX) X hours, where X is defined by argument `winhr`. For both GGIR calculates the average acceleration, the start time, and if argument `iglevels` is specified also the intensity gradient. If argument `winhr` is a vector then descriptive values for LX and MX are derived per value in `winhr`. Within GGIR part 2 MXLX is calculated per calendar day and, if argument `qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX is calculated per window, and if used in combination with the GENEActiv accelerometer brand LUX estimates per LX and MX are included.
+
+### Cosinor analysis and Extended Cosinor analysis
+
+The (Extended) Cosinor analysis quantifies the circadian 24 hour cycle. To do this GGIR uses R package [ActCR](https://CRAN.R-project.org/package=ActCR) as a dependency. Specify argument `cosinor = TRUE` to perform these analysis.
+
+The implementation within GGIR part 2 is as follows:
+
+- Acceleration values are averaged per minute, and then log transformation as `log(acceleration converted to _mg_ + 1)`.
+- Invalid data points such as caused by non-wear are set to missing (NA) in order to prevent the imputation approach used elsewhere in GGIR to influence the Cosinor analysis. We do this because imputation technique generally come with some assumptions about circadian rhythm.
+- GGIR looks for the first valid data point in the recording and then selects the maximum integer number of recording days following this data point and feeds these to the ActCosinor and ActExtendCosinor functions of ActCR. The time offset between the start and the following midnight is then used to reverse offset the ActCR results, to ensure that acrophase and acrotime can be interpreted relative to midnight.
+- Time series corresponding to the fitted models are stored inside the part 2 milestone data to facilitate visual inspection. For the moment they are not used in any GGIR visualisation, but you may want to look them up and try to plot them yourself.
+
+### Intradaily Variability (IV) and Interdaily Stability (IS)
+
+#### IV and IS - Default
+
+The default calculation uses IVIS.activity.metric = 1 which uses the continuous numeric acceleration values.
+However, as we later realised this is not compatible with the original approach by van Someren and colleagues, which uses a binary distinction between active and inactive. Therefore, a second option has been added (IVIS.activity.metric = 2), which needs to be used in combination with accelerometer metric ENMO, and collapses the acceleration values into a binary score of rest versus active.
+
+Further, the IV algorithm by van Someren has been modified in GGIR to ignore transitions between the epoch at the end of each day and the following epoch at the start of the next day, because technically these transitions do not relate to intradaily variability.
+
+#### IV and IS - Cosinor analysis compatible
+
+IS is sometimes used as a measure of behavioural robustness when conducting Cosinor analysis. However, to work with the combination of the two outcomes it seems important that IS is calculated from the same time series. Therefore, when `cosinor = TRUE` IV and IS are calculated twice: Once as part of the default IV and IS analysis as discussed above, and once as part of the Cosinor analysis using the same log transformed time series. More specifically, the IV and IS algorithm is applied with `IVIS.activity.metric = 2` and `IVIS_acc_threshold = log(20 + 1)` to make the binary distinction between active and inactive, and `IVIS_per_daypair = TRUE`. The setting `IVIS_per_daypair` was specifically designed for this context to handle the potentially missing values in the time series as used for Cosinor analysis. Applying the default IVIS algorithm would not be able to handle the missing values and would result in a loss of information if all non-matching epochs across the entire recording were excluded. Instead, IV and IS are calculated as follows:
+
+1. Per day pair based on matching valid epochs only IV and IS and calculated. Here, a log is kept of the number of valid epoch per day pair.
+2. Omit day pairs where the fraction of valid epoch pairs is below 0.66 (0.66 is hard-coded at the moment).
+3. Calculate average IS across days weighted by fraction of valid epochs per day pairs.
+
+The new Cosinor-compatible IV and IS estimates are stored as output variables `cosinorIV` and `cosinorIS`.
 
 # Other Resources
 - The [GGIR package manual](https://CRAN.R-project.org/package=GGIR) provides documentation on individual functions.

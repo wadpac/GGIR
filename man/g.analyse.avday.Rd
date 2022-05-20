@@ -10,7 +10,7 @@
 \usage{
   g.analyse.avday(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                    ws3, doiglevels, firstmidnighti, ws2, midnightsi,
-                   params_247 = c(), ...)
+                   params_247 = c(), qcheck = c(), acc.metric = c(), ...)
 }
 \arguments{
   \item{doquan}{Boolean whether quantile analysis should be done}
@@ -26,6 +26,13 @@
   \item{midnightsi}{see \link{g.detecmidnight}}
   \item{params_247}{
     See \link{g.part2}
+  }
+  \item{qcheck}{
+    Vector with indicators of when data is valid (value=0) or invalid (value=1).
+  }
+  \item{acc.metric}{
+    Character, see \link{g.part1}. Here, it is used to decided which acceleration metric
+    to use for IVIS and cosinor analyses.
   }
   \item{...}{
    Any argument used in the previous version of g.analyse.avday, which will now

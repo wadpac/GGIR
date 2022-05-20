@@ -40,7 +40,7 @@ export(g.analyse, g.calibrate,
        check_params, extract_params,
        g.imputeTimegaps, read.gt3x_ggir,
        parseGT3Xggir, g.part5.classifyNaps,
-       tidyup_df)
+       tidyup_df, cosinorAnalyses)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
@@ -51,7 +51,8 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv",
            "memory.limit", "memory.size", "tail", "unzip")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
-           "quantile", "sd","coef", "lm", "embed")
+           "quantile", "sd","coef", "lm", "embed", "na.pass",
+            "residuals", "fitted")
 import(data.table)
 importFrom("methods", "is")
 useDynLib(GGIR, .registration = TRUE)
