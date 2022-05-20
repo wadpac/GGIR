@@ -90,9 +90,11 @@ remotes::install_github("wadpac/GGIR")
 
 GGIR comes with a large number of functions and optional settings (arguments) per functions.
 
-To ease interacting with GGIR there is one central function, named `GGIR`, to talk to all the other functions.
+To ease interacting with GGIR there is one central function, named `GGIR`, to talk to all the other functions. In the past this function was called `g.shell.GGIR`, but we decided to shorten it to `GGIR` for convenience. You can still use `g.shell.GGIR` because `g.shell.GGIR` has become a wrapper function around `GGIR` passing on all arguments to `GGIR` and by that providing identical functionality.
 
-In this paragraph we will guide you through the main arguments relevant for 99% of research. First of all, it is important to understand that GGIR is structured in two ways. It has a computational structure of five parts which are applied sequentially to the data, and that `GGIR` controls each of these parts:
+In this paragraph we will guide you through the main arguments to `GGIR` relevant for 99% of research. First of all, it is important to understand that the GGIR package is structured in two ways.
+
+Firstly, it has a computational structure of five parts which are applied sequentially to the data, and that `GGIR` controls each of these parts:
 
 - Part 1: Loads the data and stores derived features (aggregations) needed for the other parts. This is the time-consuming part. Once this is done, parts 2-5 can be run (or re-run with different parameters in parts 2-5) relatively quickly.
 - Part 2: Data quality analyses and low-level description of signal features per day and per file. At this point a day is defined from midnight to midnight
