@@ -1,7 +1,7 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                       quantiletype = 7, includedaycrit = 16, 
-                      idloc = 1, snloc = 1, selectdaysfile=c(), 
-                      dayborder=0,  desiredtz = "", myfun=c(), ...) {
+                      idloc = 1, snloc = 1, selectdaysfile = c(), 
+                      dayborder = 0,  desiredtz = "", myfun = c(), acc.metric = c(), ...) {
   
   #get input variables
   input = list(...)
@@ -234,7 +234,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                  M = M, IMP = IMP, t_TWDI = t_TWDI,
                                  quantiletype = quantiletype, ws3 = ws3,
                                  doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
-                                 midnightsi = midnightsi, params_247 = params_247)
+                                 midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck,
+                                 acc.metric = acc.metric)
   InterdailyStability = output_avday$InterdailyStability
   IntradailyVariability = output_avday$IntradailyVariability
   igfullr_names = output_avday$igfullr_names
@@ -243,6 +244,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   qlevels_names = output_avday$qlevels_names
   ML5AD = output_avday$ML5AD
   ML5AD_names = output_avday$ML5AD_names
+  
+  cosinor_coef = output_avday$cosinor_coef
+  
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
@@ -324,14 +328,20 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
                                      qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
                                      IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                                     qwindow = params_247[["qwindow"]], longitudinal_axis_id)
+                                     qwindow = params_247[["qwindow"]], longitudinal_axis_id, cosinor_coef)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
+  
+  if (length(cosinor_coef) > 0) {
+    cosinor_ts = cosinor_coef$coefext$cosinor_ts
+  } else {
+    cosinor_ts = c()
+  }
   if (length(selectdaysfile) > 0) {
     windowsummary = data.frame(windowsummary,stringsAsFactors = FALSE) # addition for Millenium cohort
     names(windowsummary) = ws_names
-    invisible(list(summary = filesummary, daysummary = daysummary, windowsummary = windowsummary))
+    invisible(list(summary = filesummary, daysummary = daysummary, windowsummary = windowsummary, cosinor_ts = cosinor_ts))
   } else {
-    invisible(list(summary = filesummary, daysummary = daysummary))
+    invisible(list(summary = filesummary, daysummary = daysummary, cosinor_ts = cosinor_ts))
   }
 }
