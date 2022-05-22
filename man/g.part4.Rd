@@ -23,7 +23,7 @@
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
     which contains the milestone data produced by \link{g.part1}. The folderstructure
-    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{f0}{
@@ -42,13 +42,13 @@
     see documentation \link{g.part1}.
   }
   \item{params_cleaning}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_output}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_general}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,
