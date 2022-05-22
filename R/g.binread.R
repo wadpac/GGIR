@@ -1,9 +1,4 @@
 g.binread = function(binfile, start = 0, end = 0) {
-  # int8 = function(x) {
-  #   x[x < -128] = -128
-  #   x[x > 127] = 127
-  #   round(x)
-  # }
   int16 = function(x) {
     x[x < -32768] = -32768
     x[x > 32767] = 32767
@@ -14,16 +9,6 @@ g.binread = function(binfile, start = 0, end = 0) {
     x[x > 2147483648] = 2147483647
     round(x)
   }
-  # uint8 = function(x) {
-  #   x[x < 0] = 0
-  #   x[x > 255] = 255
-  #   round(x)
-  # }
-  # uint16 = function(x) {
-  #   x[x < 0] = 0
-  #   x[x > 65535] = 65535
-  #   round(x)
-  # }
   uint32 = function(x) {
     x[x < 0] = 0
     x[x > 4294967295] = 4294967295
