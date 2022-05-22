@@ -1,9 +1,10 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.7-0 (GitHub-only-release date:26-05-2022)}{
+\section{Changes in version 2.7-0 (GitHub-only-release date:22-05-2022)}{
 \itemize{
     \item Renaming function g.shell.GGIR to GGIR and adding new function g.shell.GGIR as a wrapper function around GGIR function preserve functionality
+    \item Depricating functionality to read GENEA bin files (not to be confused with GENEActiv), because dependency matlab is about to be archived. Once matlab is back online we will reinsert this functionality.
   }
 }
 \section{Changes in version 2.6-6 (GitHub-only-release date:20-05-2022)}{

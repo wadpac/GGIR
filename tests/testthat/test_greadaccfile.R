@@ -4,7 +4,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   skip_on_cran()
   
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
-  binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIR")[1]
+  # binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIR")[1] # turned off in 2.7-0
   wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIR")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
@@ -29,26 +29,26 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(Icwa$monc, 4)
   expect_equal(Icwa$dformc, 4)
   expect_equal(Icwa$sf, 100)
-  IDH = g.getidfromheaderobject(binfile, Icwa$header, 4, 4)
-  expect_equal(IDH, binfile)
+  IDH = g.getidfromheaderobject(cwafile, Icwa$header, 4, 4)
+  expect_equal(IDH, cwafile)
   EHV = g.extractheadervars(Icwa)
   expect_equal(EHV$deviceSerialNumber,"39434")
   Mcwa = g.getmeta(cwafile, desiredtz = desiredtz, windowsize = c(1,300,300))
   expect_true(Mcwa$filetooshort)
   expect_false(Mcwa$filecorrupt)
   
-  # genea .bin
-  Igenea = g.inspectfile(binfile, desiredtz = desiredtz)
-  expect_equal(Igenea$monc,1)
-  expect_equal(Igenea$dformc,1)
-  expect_equal(Igenea$sf,80)
-  IDH = g.getidfromheaderobject(binfile,Igenea$header,1,1)
-  expect_equal(IDH,"03")
-  EHV = g.extractheadervars(Igenea)
-  expect_equal(EHV$deviceSerialNumber,"01275")
-  Mgenea = g.getmeta(binfile, desiredtz = desiredtz, windowsize = c(1,300,300))
-  expect_true(Mgenea$filetooshort)
-  expect_false(Mgenea$filecorrupt)
+  # # genea .bin # turned off in 2.7-0
+  # Igenea = g.inspectfile(binfile, desiredtz = desiredtz)
+  # expect_equal(Igenea$monc,1)
+  # expect_equal(Igenea$dformc,1)
+  # expect_equal(Igenea$sf,80)
+  # IDH = g.getidfromheaderobject(binfile,Igenea$header,1,1)
+  # expect_equal(IDH,"03")
+  # EHV = g.extractheadervars(Igenea)
+  # expect_equal(EHV$deviceSerialNumber,"01275")
+  # Mgenea = g.getmeta(binfile, desiredtz = desiredtz, windowsize = c(1,300,300))
+  # expect_true(Mgenea$filetooshort)
+  # expect_false(Mgenea$filecorrupt)
   
   # axivity .wav
   Iwav = expect_warning(g.inspectfile(wavfile, desiredtz = desiredtz))
@@ -88,9 +88,9 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   cwa_read = g.readaccfile(cwafile, blocksize = 10, blocknumber = 1, filequality = filequality,
                            decn = ".", dayborder,ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = Icwa)
-  genea_read = g.readaccfile(binfile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
-                           inspectfileobject = Igenea)
+  # genea_read = g.readaccfile(binfile, blocksize = 10, blocknumber = 1, filequality = filequality,
+  #                          decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
+  #                          inspectfileobject = Igenea)
   wav_read = expect_warning(g.readaccfile(wavfile, blocksize = 2, blocknumber = 1, 
                                           filequality = filequality, selectdaysfile = c(),
                                           decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
@@ -102,8 +102,8 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(cwa_read$P$header$blocks, 145)
   expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 4.1133)
   
-  expect_equal(nrow(genea_read$P$header), 18)
-  expect_equal(sum(genea_read$P$rawxyz[20,]), 1000)
+  # expect_equal(nrow(genea_read$P$header), 18)
+  # expect_equal(sum(genea_read$P$rawxyz[20,]), 1000)
   
   expect_equal(round(sum(wav_read$P$rawxyz), digits = 1), -994.8)
   
