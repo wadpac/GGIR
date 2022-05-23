@@ -5,7 +5,7 @@
 \itemize{
     \item Renaming function g.shell.GGIR to GGIR and adding new function g.shell.GGIR
     as a wrapper function around GGIR function to preserve functionality.
-    \item Depricating functionality to read GENEA bin files (not to be confused
+    \item Deprecating functionality to read GENEA bin files (not to be confused
     with GENEActiv), because dependency matlab is about to be archived.
     Once matlab is back online we will reinsert this functionality.
     \item Cosinor analysis now accounts for DST (see vignette for details)
@@ -258,7 +258,7 @@
 }
 \section{Changes in version 2.1-3 (GitHub-only-release date:20-10-2020)}{
   \itemize{
-    \item Depricating sessionInfo storage as it caused problems for large scale parallel processing
+    \item Deprecating sessionInfo storage as it caused problems for large scale parallel processing
     \item Part 1 fix to 1 minute time shift when recording starts at full minute.
     \item Improved compatibility with older .cwa file formats.
   }
@@ -518,7 +518,7 @@
   and will derive all part2 variables for each time window that can be defined
   from the values of qwindow, e.g. value =c(0,8,24) will analyse the windows:
   0-8, 8-24 and 0-24 hour.
-  \item Argument L5M5window depricated because argument qwindow now defines the
+  \item Argument L5M5window deprecated because argument qwindow now defines the
   window over which L5M5 analysis is performed.
   \item Argument winhr is now reflected in g.analyse/g.part2 output variable
   names, previously this variable name was hardcoded as L5M5, even if winhr was not 5.
