@@ -8,14 +8,15 @@
     \item Depricating functionality to read GENEA bin files (not to be confused
     with GENEActiv), because dependency matlab is about to be archived.
     Once matlab is back online we will reinsert this functionality.
+    \item Cosinor analysis now accounts for DST (see vignette for details)
   }
 }
 \section{Changes in version 2.6-6 (GitHub-only-release date:20-05-2022)}{
 \itemize{
     \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses, see new argument cosinor.
-    \item Part 2: g.IVIS function now able to handle missing data points, this is used for cosinor analaysis
+    \item Part 2: g.IVIS function now able to handle missing data points, and used for cosinor analaysis
     \item Part 2: g.IVIS function now has option to specify acceleration threshold
-    when using IVIS.activity.metric=2, this is used for cosinor analaysis
+    when using IVIS.activity.metric=2, and used for cosinor analaysis
     \item General: If there is only 1 file to be processed then code skips setting
     up parallel processing interface.
   }
