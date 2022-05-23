@@ -1225,6 +1225,7 @@ The implementation within GGIR part 2 is as follows:
 - Acceleration values are averaged per minute, and then log transformation as `log(acceleration converted to _mg_ + 1)`.
 - Invalid data points such as caused by non-wear are set to missing (NA) in order to prevent the imputation approach used elsewhere in GGIR to influence the Cosinor analysis. We do this because imputation technique generally come with some assumptions about circadian rhythm.
 - GGIR looks for the first valid data point in the recording and then selects the maximum integer number of recording days following this data point and feeds these to the ActCosinor and ActExtendCosinor functions of ActCR. The time offset between the start and the following midnight is then used to reverse offset the ActCR results, to ensure that acrophase and acrotime can be interpreted relative to midnight.
+- In relation to Day Saving Time: Duplicated time stamps when clock moves backward are ignored and missing time stamps when clock moves forward are inserted as missing values.
 - Time series corresponding to the fitted models are stored inside the part 2 milestone data to facilitate visual inspection. For the moment they are not used in any GGIR visualisation, but you may want to look them up and try to plot them yourself.
 
 ### Intradaily Variability (IV) and Interdaily Stability (IS)
