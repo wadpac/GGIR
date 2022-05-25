@@ -1,7 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.7-0 (GitHub-only-release date:23-05-2022)}{
+\section{Changes in version 2.7-1 (release date:28-05-2022)}{
+\itemize{
+    \item Fixing bug #566 concerning decision to not parallel process happenning too late in the code
+  }
+}
+\section{Changes in version 2.7-0 (release date:23-05-2022)}{
 \itemize{
     \item Renaming function g.shell.GGIR to GGIR and adding new function g.shell.GGIR
     as a wrapper function around GGIR function to preserve functionality.
