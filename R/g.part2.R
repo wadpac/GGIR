@@ -201,25 +201,24 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
 
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
-  if (params_general[["do.parallel"]] == TRUE) {
-    cores = parallel::detectCores()
-    Ncores = cores[1]
-    if (Ncores > 3) {
-      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
-      if (Ncores2use > 1) {
-        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
-        doParallel::registerDoParallel(cl)
-      } else {
-        # Don't process in parallel if only one core
-        params_general[["do.parallel"]] = FALSE
-      }
+  cores = parallel::detectCores()
+  Ncores = cores[1]
+  if (Ncores > 3) {
+    if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+    Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
+    if (Ncores2use > 1) {
+      cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+      doParallel::registerDoParallel(cl)
     } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      # Don't process in parallel if only one core
       params_general[["do.parallel"]] = FALSE
     }
+  } else {
+    cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+    params_general[["do.parallel"]] = FALSE
+  }
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
-
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
