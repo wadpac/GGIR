@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-1 (GitHub-only-release date:28-05-2022)}{
+\itemize{
+    \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
+  }
+}
 \section{Changes in version 2.7-0 (GitHub-only-release date:23-05-2022)}{
 \itemize{
     \item Renaming function g.shell.GGIR to GGIR and adding new function g.shell.GGIR
