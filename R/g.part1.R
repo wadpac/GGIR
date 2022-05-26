@@ -154,7 +154,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   }
   fnames = sort(fnames)
   fnamesfull = sort(fnamesfull)
-  
   #=========================================================
   # Declare core functionality, which at the end of this g.part1 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -407,9 +406,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                      " reducing the value for argument chunksize or setting do.parallel to FALSE"))
     }
-    if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc < 3) { # default ENMO and anglez
-      params_rawdata[["chunksize"]] = 0.6 # put limit to chunksize, because when processing in parallel memory is more limited
-    } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
+    if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
       params_rawdata[["chunksize"]] = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
     } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
       params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
