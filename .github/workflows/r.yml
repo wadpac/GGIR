@@ -37,7 +37,7 @@ jobs:
         uses: szenius/set-timezone@v1.0
         with:
           timezoneLinux: "Europe/Amsterdam"
-          timezoneMacos: "Asia/Singapore"
+          timezoneMacos: "Pacific/Auckland"
           timezoneWindows: "America/New_York"
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-tinytex@master
