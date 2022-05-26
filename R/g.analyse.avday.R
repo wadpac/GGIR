@@ -132,6 +132,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
       gaplocation = ((midnightsi[dstgap[1]] * ws2) / ws3) + (2 * (3600/ws3))
       # Insert NA values
       Xi = c(Xi[1:gaplocation], rep(NA, 3600/ws3), Xi[(gaplocation + 1):length(Xi)])
+      qcheck = c(qcheck[1:gaplocation], rep(NA, 3600/ws3), qcheck[(gaplocation + 1):length(qcheck)])
     }
 
     # Xi = log((Xi * 1000) + 1)  # log transformed to be more robust against peaks in the data
