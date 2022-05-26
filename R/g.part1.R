@@ -394,23 +394,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   cores = parallel::detectCores()
   Ncores = cores[1]
   if (Ncores > 3) {
-    Nmetrics2calc = sum(unlist(params_metrics[c("do.anglex", "do.angley", "do.anglez",
-                                                "do.zcx", "do.zcy", "do.zcz",
-                                                "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
-                                                "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
-                                                "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
-                                                "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
-                                                "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
-                                                "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")]))
-    if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
-      warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
-                     " reducing the value for argument chunksize or setting do.parallel to FALSE"))
-    }
-    if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
-      params_rawdata[["chunksize"]] = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
-    } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
-      params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
-    }
+    
     if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
     Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
     if (Ncores2use > 1) {
@@ -446,6 +430,24 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.
     }
+    Nmetrics2calc = sum(unlist(params_metrics[c("do.anglex", "do.angley", "do.anglez",
+                                                "do.zcx", "do.zcy", "do.zcz",
+                                                "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
+                                                "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
+                                                "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
+                                                "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
+                                                "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
+                                                "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")]))
+    if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
+      warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
+                     " reducing the value for argument chunksize or setting do.parallel to FALSE"))
+    }
+    if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
+      params_rawdata[["chunksize"]] = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
+    } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
+      params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
+    }
+    
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
     `%myinfix%` = ifelse(params_general[["do.parallel"]], foreach::`%dopar%`, foreach::`%do%`)
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
