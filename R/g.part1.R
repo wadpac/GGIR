@@ -391,22 +391,24 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
-  cores = parallel::detectCores()
-  Ncores = cores[1]
-  if (Ncores > 3) {
-    
-    if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-    Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
-    if (Ncores2use > 1) {
-      cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
-      doParallel::registerDoParallel(cl)
+  if (params_general[["do.parallel"]] == TRUE) {
+    cores = parallel::detectCores()
+    Ncores = cores[1]
+    if (Ncores > 3) {
+      
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
+      if (Ncores2use > 1) {
+        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        doParallel::registerDoParallel(cl)
+      } else {
+        # Don't process in parallel if only one core
+        params_general[["do.parallel"]] = FALSE
+      }
     } else {
-      # Don't process in parallel if only one core
+      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
-  } else {
-    cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
-    params_general[["do.parallel"]] = FALSE
   }
   if (params_general[["do.parallel"]] == TRUE) {
     # Check whether we are in development mode (this never applies when the package is installed):
@@ -449,7 +451,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }
     
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], foreach::`%dopar%`, foreach::`%do%`)
+    `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
