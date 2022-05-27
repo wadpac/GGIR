@@ -13,9 +13,9 @@ test_that("Part 3 identifies 1-night scenario", {
   # so these are not true errors and warnings that would get caught by the testing module.
   # Instead, grab the console output and parse out any errors we should know about.
   # 
-  # Note: make sure to call g.shell.GGIR() with do.parallel = FALSE,
+  # Note: make sure to call GGIR() with do.parallel = FALSE,
   # otherwise not all console output will be captured.
-  out = capture.output(g.shell.GGIR(mode=c(1:3), datadir=fn, outputdir=getwd(), studyname="test", f0=1, f1=1,
+  out = capture.output(GGIR(mode=c(1:3), datadir=fn, outputdir=getwd(), studyname="test", f0=1, f1=1,
                                     do.report=c(), visualreport=FALSE, viewingwindow=1,
                                     overwrite=TRUE, do.parallel = FALSE, minimumFileSizeMB=0), 
                        type = c("output"))
