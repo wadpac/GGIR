@@ -8,7 +8,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
-
+  
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -29,7 +29,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
+  
   #======================================================================
   # create new folder (if not existent) for storing milestone data
   ms5.out = "/meta/ms5.out"
@@ -64,7 +64,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
-
+  
   fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -92,7 +92,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   if (params_output[["save_ms5raw_format"]] != "RData" & params_output[["save_ms5raw_format"]] != "csv") {
     params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
   }
-
+  
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (params_output[["storefolderstructure"]] == TRUE) {
@@ -114,11 +114,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure, fullfilenames, foldernam) {
-
+    
     fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
     fnames.ms2 = sort(dir(paste(metadatadir, "/meta/ms2.out", sep = "")))
     fnames.ms4 = sort(dir(paste(metadatadir, "/meta/ms4.out", sep = "")))
-
+    
     nfeatures = 500
     ws3 = params_general[["windowsizes"]][1]
     ds_names = rep("",nfeatures)
@@ -127,7 +127,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
     }
-
+    
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -317,7 +317,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             }
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
-            # Done at this point in the code, because it
             # does not depend on bout detection criteria or window definitions.
             if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
               if (params_sleep[["sleeplogidnum"]] == TRUE) {
@@ -345,7 +344,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   possible_nap_dur = params_sleep[["possible_nap_dur"]],
                                                   nap_model = params_sleep[["nap_model"]],
                                                   HASIB.algo = params_sleep[["HASIB.algo"]])
-
+              
               # store in ts object, such that it is exported in as time series
               ts$nap1_nonwear2 = 0
               # napsindices = which(naps_nonwear$probability_nap == 1)
@@ -945,7 +944,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
             if (length(emptycols) > 0) output = output[-emptycols]
           }
-
+          
           if (length(output) > 0) {
             if (nrow(output) > 0) {
               save(output, file = paste(metadatadir,
@@ -957,7 +956,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       }
     }
   }
-
+  
   #======================================================================
   # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
   # setup parallel backend to use many processors
@@ -978,6 +977,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
+  }
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir, ms5.out, ' for progress\n'))
     # check whether we are in development mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
@@ -997,10 +998,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "extract_params", "load_params", "check_params")
       errhand = 'stop'
     }
-    fe_dopar = foreach::`%dopar%`
-    fe_do = foreach::`%do%`
     i = 0 # declare i because foreach uses it, without declaring it
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do)
+    `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1,  .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
@@ -1015,7 +1014,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                      })
                                      return(tryCatchResult)
                                    }
-
+    
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {

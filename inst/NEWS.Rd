@@ -9,6 +9,7 @@
 }
 \section{Changes in version 2.7-1 (release date:28-05-2022)}{
 \itemize{
+    \item Fixing bug #566 concerning decision to not parallel process happenning too late in the code
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
   }
 }
