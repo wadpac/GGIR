@@ -90,9 +90,11 @@ remotes::install_github("wadpac/GGIR")
 
 GGIR comes with a large number of functions and optional settings (arguments) per functions.
 
-To ease interacting with GGIR there is one central function, named `g.shell.GGIR`, to talk to all the other functions.
+To ease interacting with GGIR there is one central function, named `GGIR`, to talk to all the other functions. In the past this function was called `g.shell.GGIR`, but we decided to shorten it to `GGIR` for convenience. You can still use `g.shell.GGIR` because `g.shell.GGIR` has become a wrapper function around `GGIR` passing on all arguments to `GGIR` and by that providing identical functionality.
 
-In this paragraph we will guide you through the main arguments relevant for 99% of research. First of all, it is important to understand that GGIR is structured in two ways. It has a computational structure of five parts which are applied sequentially to the data, and that `g.shell.GGIR` controls each of these parts:
+In this paragraph we will guide you through the main arguments to `GGIR` relevant for 99% of research. First of all, it is important to understand that the GGIR package is structured in two ways.
+
+Firstly, it has a computational structure of five parts which are applied sequentially to the data, and that `GGIR` controls each of these parts:
 
 - Part 1: Loads the data and stores derived features (aggregations) needed for the other parts. This is the time-consuming part. Once this is done, parts 2-5 can be run (or re-run with different parameters in parts 2-5) relatively quickly.
 - Part 2: Data quality analyses and low-level description of signal features per day and per file. At this point a day is defined from midnight to midnight
@@ -134,18 +136,18 @@ print(load_params()$params_sleep[["HASPT.algo"]])
 ```
 
 
-Documentation for this parameter objects can be found in the ([GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these are accepted as argument to function `g.shell.GGIR`, because `g.shell.GGIR` is a shell around all GGIR functionality. However, the `params_` objects themselves can not be provided as input to `g.shell.GGIR`.
+Documentation for this parameter objects can be found in the ([GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these are accepted as argument to function `GGIR`, because `GGIR` is a shell around all GGIR functionality. However, the `params_` objects themselves can not be provided as input to `GGIR`.
 
 
 ### Key general arguments
 
 You will probably never need to think about most of the arguments listed above, because a lot of arguments are only included to facilitate methodological studies where researchers want to have control over every little detail. See previous paragraph for links to the documentation and how to find the default value of each parameter.
 
-The bare minimum input needed for `g.shell.GGIR` is:
+The bare minimum input needed for `GGIR` is:
 
 ```{R,eval=FALSE}
 library(GGIR)
-g.shell.GGIR(datadir="C:/mystudy/mydata",
+GGIR(datadir="C:/mystudy/mydata",
              outputdir="D:/myresults")
 ```
 
@@ -495,11 +497,11 @@ Several studies that aimed to independently evaluate cut-point methods failed at
 
 ### Example call
 
-If you consider all the arguments above you me may end up with a call to `g.shell.GGIR` that could look as follows.
+If you consider all the arguments above you me may end up with a call to `GGIR` that could look as follows.
 
 ```{R,eval=FALSE}
 library(GGIR)
-g.shell.GGIR(
+GGIR(
              mode=c(1,2,3,4,5),
              datadir="C:/mystudy/mydata",
              outputdir="D:/myresults",
@@ -537,23 +539,23 @@ g.shell.GGIR(
              visualreport=TRUE)
 ```
 
-Once you have used `g.shell.GGIR` and the output directory (outputdir) will be filled with milestone data and results.
+Once you have used `GGIR` and the output directory (outputdir) will be filled with milestone data and results.
 
 ### Configuration file
 
-Function `g.shell.GGIR` stores all the explicitly entered argument values and default values for the argument that are not explicitly provided in a csv-file named config.csv stored in the root of the output folder. The config.csv file is accepted as input to `g.shell.GGIR`
+Function `GGIR` stores all the explicitly entered argument values and default values for the argument that are not explicitly provided in a csv-file named config.csv stored in the root of the output folder. The config.csv file is accepted as input to `GGIR`
 with argument `configfile` to replace the specification of all the arguments, except `datadir` and `outputdir`, see example below.
 
 ```{R,eval=FALSE}
 library(GGIR)
-g.shell.GGIR(datadir="C:/mystudy/mydata",
+GGIR(datadir="C:/mystudy/mydata",
              outputdir="D:/myresults", configfile = "D:/myconfigfiles/config.csv")
 ```
 
 The practical value of this is that it eases the replication of analysis, because instead of having to share you R script, sharing your config.csv file will be sufficient. Further, the config.csv file contribute to the reproducibility of your data analysis.
 
 Note 1: When combining a configuration file with explicitly provided argument values, the explicitly provided argument values will overrule the argument values in the configuration file.
-Note 2: The config.csv file in the root of the output folder will be overwritten every time you use `g.shell.GGIR`. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and explicitly point to it with `configfile` argument.
+Note 2: The config.csv file in the root of the output folder will be overwritten every time you use `GGIR`. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and explicitly point to it with `configfile` argument.
 
 # Time for action: How to run your analysis?
 
@@ -599,10 +601,10 @@ if(length(args) > 0) {
     eval(parse(text = args[[i]]))
   }
 }
-g.shell.GGIR(f0=f0,f1=f1,...)
+GGIR(f0=f0,f1=f1,...)
 ```
 
-You will need to update the `...` in the last line with the arguments you used for `g.shell.GGIR`. Note that `f0=f0,f1=f1` is essential for this to work. The values of `f0` and `f1` are passed on from the bash script.
+You will need to update the `...` in the last line with the arguments you used for `GGIR`. Note that `f0=f0,f1=f1` is essential for this to work. The values of `f0` and `f1` are passed on from the bash script.
 
 Once this is all setup you will need to call `bash submit.sh`
 from the command line.
@@ -947,7 +949,7 @@ PMID: 25103964 [link](https://journals.physiology.org/doi/full/10.1152/japplphys
 
 Key decisions to be made:
 
-1.	Whether to apply auto-calibration or not (default and recommended setting is YES). You  can turn this off by setting argument `do.call` in `g.shell.GGIR` to `do.call=FALSE`.
+1.	Whether to apply auto-calibration or not (default and recommended setting is YES). You  can turn this off by setting argument `do.call` in `GGIR` to `do.call=FALSE`.
 2.	Other variables are probably best left in their default setting
 
 Key output variables:
@@ -1224,6 +1226,7 @@ The implementation within GGIR part 2 is as follows:
 - Acceleration values are averaged per minute, and then log transformation as `log(acceleration converted to _mg_ + 1)`.
 - Invalid data points such as caused by non-wear are set to missing (NA) in order to prevent the imputation approach used elsewhere in GGIR to influence the Cosinor analysis. We do this because imputation technique generally come with some assumptions about circadian rhythm.
 - GGIR looks for the first valid data point in the recording and then selects the maximum integer number of recording days following this data point and feeds these to the ActCosinor and ActExtendCosinor functions of ActCR. The time offset between the start and the following midnight is then used to reverse offset the ActCR results, to ensure that acrophase and acrotime can be interpreted relative to midnight.
+- In relation to Day Saving Time: Duplicated time stamps when clock moves backward are ignored and missing time stamps when clock moves forward are inserted as missing values.
 - Time series corresponding to the fitted models are stored inside the part 2 milestone data to facilitate visual inspection. For the moment they are not used in any GGIR visualisation, but you may want to look them up and try to plot them yourself.
 
 ### Intradaily Variability (IV) and Interdaily Stability (IS)

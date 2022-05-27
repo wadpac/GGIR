@@ -144,12 +144,12 @@ test_that("chainof5parts", {
   expect_that(ncol(TSFILE),equals(10))
   expect_that(length(unique(TSFILE$class_id)),equals(10))
  #--------------------------------------------
-  #g.shell.GGIR
-  suppressWarnings(g.shell.GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
+  #GGIR
+  suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                                 studyname = "test", f0 = 1, f1 = 1,
                           do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
                           do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))
-  suppressWarnings(g.shell.GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
+  suppressWarnings(GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
                                 f0 = 1, f1 = 1,
                                 do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
                                 do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))

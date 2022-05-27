@@ -1,7 +1,7 @@
 g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    myfun=c(), params_cleaning = c(), params_247 = c(),
                    params_phyact = c(), params_output = c(), params_general = c(), ...) {
-
+  
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -16,7 +16,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_phyact = params$params_phyact
   params_output = params$params_output
   params_general = params$params_general
-
+  
   #-----------------------------
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
@@ -68,10 +68,10 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
-
+  
   #---------------------------------------
   cnt78 = 1
-
+  
   #=========================================================
   # Declare core functionality, which at the end of this g.part2 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -119,7 +119,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                  TimeSegments2Zero$windowend < timespan1)
             if (length(validtimes) > 0) {
               TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
-
+              
             } else {
               TimeSegments2Zero = c()
             }
@@ -198,12 +198,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       rm(M); rm(I)
     }
   } # end of main_part2
-
+  
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
+  cores = parallel::detectCores()
+  Ncores = cores[1]
   if (params_general[["do.parallel"]] == TRUE) {
-    cores = parallel::detectCores()
-    Ncores = cores[1]
     if (Ncores > 3) {
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
@@ -218,8 +218,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
+  }
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
-
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
@@ -235,23 +236,21 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            "iso8601chartime2POSIX", "extract_params", "load_params", "check_params")
       errhand = 'stop'
     }
-    fe_dopar = foreach::`%dopar%`
-    fe_do = foreach::`%do%`
     i = 0 # declare i because foreach uses it, without declaring it
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+    `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
-                                  .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
-                                    tryCatchResult = tryCatch({
-                                      main_part2(i, ffdone, fnames, metadatadir,
-                                                 myfun, params_cleaning, params_247,
-                                                 params_phyact, params_output, params_general,
-                                                 path, ms2.out, foldername, fullfilenames,
-                                                 folderstructure, referencefnames,
-                                                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
-
-                                    })
-                                    return(tryCatchResult)
-                                  }
+                                   .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
+                                     tryCatchResult = tryCatch({
+                                       main_part2(i, ffdone, fnames, metadatadir,
+                                                  myfun, params_cleaning, params_247,
+                                                  params_phyact, params_output, params_general,
+                                                  path, ms2.out, foldername, fullfilenames,
+                                                  folderstructure, referencefnames,
+                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
+                                       
+                                     })
+                                     return(tryCatchResult)
+                                   }
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {

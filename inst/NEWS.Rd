@@ -1,40 +1,61 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.6-7 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.7-2 (GitHub-only-release date:??-??-2022)}{
 \itemize{
     \item Part 1: Add extra arguments to modify zero-crossing count calculation.
+    \item Part 3: Adding ColeKripke sleep detection algorithm.
+    }
+}
+\section{Changes in version 2.7-1 (release date:28-05-2022)}{
+\itemize{
+    \item Fixing bug #566 concerning decision to not parallel process happenning too late in the code
+    \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
+  }
+}
+\section{Changes in version 2.7-0 (release date:23-05-2022)}{
+\itemize{
+    \item Renaming function g.shell.GGIR to GGIR and adding new function g.shell.GGIR
+    as a wrapper function around GGIR function to preserve functionality.
+    \item Deprecating functionality to read GENEA bin files (not to be confused
+    with GENEActiv), because dependency matlab is about to be archived.
+    Once matlab is back online we will reinsert this functionality.
+    \item Cosinor analysis now accounts for DST (see vignette for details)
   }
 }
 \section{Changes in version 2.6-6 (GitHub-only-release date:20-05-2022)}{
 \itemize{
-    \item Part 2: IVIS now able to handle missing data points
-    \item Part 2: IVIS option added to specify acceleration threshold when using IVIS.activity.metric=2
     \item Part 2: Dependency added to ActCR to perform Cosinor and Extended cosinor analyses, see new argument cosinor.
-    \item General: If there is only 1 file to be processed then code skips the parallel processing .
+    \item Part 2: g.IVIS function now able to handle missing data points, and used for cosinor analaysis
+    \item Part 2: g.IVIS function now has option to specify acceleration threshold
+    when using IVIS.activity.metric=2, and used for cosinor analaysis
+    \item General: If there is only 1 file to be processed then code skips setting
+    up parallel processing interface.
   }
 }
 \section{Changes in version 2.6-5 (GitHub-only-release date:16-05-2022)}{
 \itemize{
     \item Vignette for read.myacc.csv function included.
     \item Parameter objects documentation moved to g.shell.GGIR.
-    \item Part 3: Adding ColeKripke sleep detection algorithm.
-    \item Part 4: Advanced sleeplog handling further improved as it now also handles dates in sleeplog far beyond recording dates.
-    \item Part2 report: Number of days to plot now auto scales to length of measurement.
-    \item Part2 report: Fixed bug introduced in 2.6-3 making it impossible to generate a report for more than 1 file and fix bug introduced in 2.6-4 messing up the merging of files.
-    \item Part1: Now auto-converts files with GT3X extension to gt3x as this is required for read.gt3x.
-    \item Part4: Removed unnecessary warning while loading sleeplog.
+    \item Part 4: Advanced sleeplog handling further improved as it now also handles
+    dates in sleeplog far beyond recording dates.
+    \item Part 2 report: Number of days to plot now auto scales to length of measurement.
+    \item Part 2 report: Fixed bug introduced in 2.6-3 making it impossible to
+    generate a report for more than 1 file and fix bug introduced in 2.6-4 messing up the merging of files.
+    \item Part 1: Now auto-converts files with GT3X extension to gt3x as this is required for read.gt3x.
+    \item Part 4: Removed unnecessary warning while loading sleeplog.
   }
 }
 \section{Changes in version 2.6-4 (GitHub-only-release date:13-04-2022)}{
 \itemize{
     \item Part4: Bug fixed in handling of advanced sleeplog data when start of acc recording does not match start of sleeplog
-   \item Deprecated functionality for reading GENEActiv csv files through g.readaccfile
-    }
+    \item Deprecated functionality for reading GENEActiv csv files without the read.myacc.csv functionality.
+  }
 }
 \section{Changes in version 2.6-3 (GitHub-only-release date:08-04-2022)}{
 \itemize{
-    \item Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location        to be consistent with the term used in part 3.
+    \item Part2: Non-user facing arguments and object named BodyLocation replaced by
+    sensor.location to be consistent with the term used in part 3.
     \item Minor documentation updates to cover brondcounts and to reflect that
       bout.metric is no longer 4 by default
     \item Minor change to parallel processing so that GGIR does not create a cluster larger than the number of
@@ -250,7 +271,7 @@
 }
 \section{Changes in version 2.1-3 (GitHub-only-release date:20-10-2020)}{
   \itemize{
-    \item Depricating sessionInfo storage as it caused problems for large scale parallel processing
+    \item Deprecating sessionInfo storage as it caused problems for large scale parallel processing
     \item Part 1 fix to 1 minute time shift when recording starts at full minute.
     \item Improved compatibility with older .cwa file formats.
   }
@@ -510,7 +531,7 @@
   and will derive all part2 variables for each time window that can be defined
   from the values of qwindow, e.g. value =c(0,8,24) will analyse the windows:
   0-8, 8-24 and 0-24 hour.
-  \item Argument L5M5window depricated because argument qwindow now defines the
+  \item Argument L5M5window deprecated because argument qwindow now defines the
   window over which L5M5 analysis is performed.
   \item Argument winhr is now reflected in g.analyse/g.part2 output variable
   names, previously this variable name was hardcoded as L5M5, even if winhr was not 5.

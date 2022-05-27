@@ -154,7 +154,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   }
   fnames = sort(fnames)
   fnamesfull = sort(fnamesfull)
-  
   #=========================================================
   # Declare core functionality, which at the end of this g.part1 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -392,8 +391,25 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
- 
-  
+  if (params_general[["do.parallel"]] == TRUE) {
+    cores = parallel::detectCores()
+    Ncores = cores[1]
+    if (Ncores > 3) {
+      
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
+      if (Ncores2use > 1) {
+        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        doParallel::registerDoParallel(cl)
+      } else {
+        # Don't process in parallel if only one core
+        params_general[["do.parallel"]] = FALSE
+      }
+    } else {
+      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      params_general[["do.parallel"]] = FALSE
+    }
+  }
   if (params_general[["do.parallel"]] == TRUE) {
     # Check whether we are in development mode (this never applies when the package is installed):
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
@@ -416,44 +432,26 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.
     }
-    cores = parallel::detectCores()
-    Ncores = cores[1]
-    if (Ncores > 3) {
-      Nmetrics2calc = sum(unlist(params_metrics[c("do.anglex", "do.angley", "do.anglez",
-                                                  "do.zcx", "do.zcy", "do.zcz",
-                                                  "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
-                                                  "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
-                                                  "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
-                                                  "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
-                                                  "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
-                                                  "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")]))
-      if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
-        warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
-                       " reducing the value for argument chunksize or setting do.parallel to FALSE"))
-      }
-      if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc < 3) { # default ENMO and anglez
-        params_rawdata[["chunksize"]] = 0.6 # put limit to chunksize, because when processing in parallel memory is more limited
-      } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
-        params_rawdata[["chunksize"]] = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
-      } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
-        params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
-      }
-      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
-      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
-      if (Ncores2use > 1) {
-        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
-        doParallel::registerDoParallel(cl)
-      } else {
-        # Don't process in parallel if only one core
-        params_general[["do.parallel"]] = FALSE
-      }
-      
-    } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
-      params_general[["do.parallel"]] = FALSE
+    Nmetrics2calc = sum(unlist(params_metrics[c("do.anglex", "do.angley", "do.anglez",
+                                                "do.zcx", "do.zcy", "do.zcz",
+                                                "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
+                                                "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
+                                                "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
+                                                "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
+                                                "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
+                                                "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")]))
+    if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
+      warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
+                     " reducing the value for argument chunksize or setting do.parallel to FALSE"))
     }
+    if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 3 & Nmetrics2calc < 6) { # if user wants to extract 3-5 metrics
+      params_rawdata[["chunksize"]] = 0.5 # put limit to chunksize, because when processing in parallel memory is more limited
+    } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
+      params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
+    }
+    
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], foreach::`%dopar%`, foreach::`%do%`)
+    `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
