@@ -78,7 +78,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep)
-
+        
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
           if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
@@ -136,6 +136,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
+  }
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir,'/meta/ms3.out', ' for progress\n'))
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
@@ -151,10 +153,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                            "extract_params", "load_params", "check_params")
       errhand = 'stop'
     }
-    fe_dopar = foreach::`%dopar%`
-    fe_do = foreach::`%do%`
     i = 0 # declare i because foreach uses it, without declaring it
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+    `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
