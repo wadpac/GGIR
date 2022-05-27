@@ -20,7 +20,7 @@ g.report.part4(datadir=c(),metadatadir=c(),loglocation = c(),f0=c(),
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
     which contains the milestone data produced by \link{g.part1}. The folderstructure
-    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{loglocation}{

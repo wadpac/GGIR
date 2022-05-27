@@ -121,7 +121,20 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   # (Extended) Cosinor analysis
   if (params_247[["cosinor"]] == TRUE) {
     # Re-derive Xi but this time include entire time series
-    Xi = IMP$metashort[, acc.metric]
+    # Here, we ignore duplicated values (when clock moves backward due to DST)
+    handleDST = !duplicated(IMP$metashort)
+    qcheck = qcheck[handleDST]
+    Xi = IMP$metashort[handleDST, acc.metric]
+    Nlong_epochs_day =  (1440 * 60) / ws2 # this is 96 by default
+    dstgap = which(diff(midnightsi) != Nlong_epochs_day)
+    if (length(dstgap) > 0) {
+      # Time moved forward due to DST
+      gaplocation = ((midnightsi[dstgap[1]] * ws2) / ws3) + (2 * (3600/ws3))
+      # Insert NA values
+      Xi = c(Xi[1:gaplocation], rep(NA, 3600/ws3), Xi[(gaplocation + 1):length(Xi)])
+      qcheck = c(qcheck[1:gaplocation], rep(NA, 3600/ws3), qcheck[(gaplocation + 1):length(qcheck)])
+    }
+
     # Xi = log((Xi * 1000) + 1)  # log transformed to be more robust against peaks in the data
     # set non-wear to missing values, because for Cosinor fit
     # it seems more logical to only fit with real data

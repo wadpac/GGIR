@@ -19,7 +19,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
   
       startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
-      startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz))
+      startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
       if (sleeplogidnum == TRUE) {
         startdates$ID = as.numeric(startdates$ID)
       }
@@ -67,7 +67,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         ID = S[i,colid]
         if (ID %in% startdates$ID == TRUE) { # matching ID in acc data, if not ignore ID
           IDcouldNotBeMatched = FALSE
-          startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)])
+          startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)], tz = desiredtz)
           startdate_sleeplog = S[i, datecols[1]]
           Sdates_correct = c()
           # Detect data format in sleeplog:
@@ -75,8 +75,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                                "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m", 
                                "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%d/%m",
                                "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
-            startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat) 
-            Sdates = as.Date(as.character(S[i,datecols]), format = dateformat)
+            startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz) 
+            Sdates = as.Date(as.character(S[i,datecols]), format = dateformat, tz = desiredtz)
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
               deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
               if (is.na(deltadate) == FALSE) {
@@ -104,7 +104,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
             # loop over expect dates giving start date of sleeplog
             for (ni in 1:(length(expected_dates) - 1)) { 
               # checking whether date exists in sleeplog
-              ind = which(Sdates_correct == as.Date(expected_dates[ni]))
+              ind = which(Sdates_correct == as.Date(expected_dates[ni], tz = desiredtz))
               if (length(ind) > 0) {
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]

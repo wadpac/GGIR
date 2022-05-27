@@ -5,10 +5,10 @@
   in g.part4.
 }
 \description{
-  Function called by g.shell.GGIR. It estimates the sustained inactivity
+  Function called by function GGIR. It estimates the sustained inactivity
   periods in each day, which are used as input for g.part4 which then labels
   them as nocturnal sleep or day time sustained inactivity periods.
-  Typical users should work with function g.shell.GGIR only.
+  Typical users should work with function GGIR only.
 }
 \usage{
 g.part3(metadatadir=c(), f0, f1, myfun=c(), 
@@ -19,7 +19,7 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
     which contains the milestone data produced by \link{g.part1}. The folderstructure
-    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{f0}{
@@ -34,16 +34,16 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
     See details \link{applyExtFunction}.
   }
   \item{params_sleep}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_metrics}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_output}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_general}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,
@@ -53,12 +53,12 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
 \details{
   GGIR comes with many processing parameters, which have been thematically grouped in
   parameter objects (R list). By running print(load_params()) you can
-  see the default values of all the parameter objects. When g.part 3 is used via \link{g.shell.GGIR}
+  see the default values of all the parameter objects. When g.part 3 is used via \link{GGIR}
   you have the option to specifiy a configuration file, which will overrule the default
   parameter values. Further, as user you can set parameter values as input argument to both g.part3
-  and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
+  and \link{GGIR}. Directly specified argument overrule the configuration file and default values.
   
-  See the GGIR package vignette or the details section in \link{g.shell.GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
+  See the GGIR package vignette or the details section in \link{GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
 }
 \value{
   The function provides no values, it only ensures that other functions
