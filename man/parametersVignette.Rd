@@ -4,7 +4,7 @@
   Builds Section for Parameters Vignette
 }
 \description{
-  Function extracts the documentation for a given GGIR argument as provided in the \link{g.shell.GGIR} documentation
+  Function extracts the documentation for a given GGIR argument as provided in the \link{GGIR} documentation
   and builds the structure for the Parameters Vignette.
   Function not designed for direct use by package user.
 }

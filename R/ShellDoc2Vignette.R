@@ -2,7 +2,7 @@ ShellDoc2Vignette <- function(argument = "mode") {
   if (!is.character(argument)) argument <- deparse(substitute(argument))
   .utils <- asNamespace("utils")
   .tools <- asNamespace("tools")
-  helpfile = .utils$.getHelpFile(help("g.shell.GGIR"))
+  helpfile = .utils$.getHelpFile(help("GGIR"))
   
   
   hs <- utils::capture.output(switch("Rd", Rd = .tools$prepare_Rd(helpfile)))
@@ -28,7 +28,7 @@ ShellDoc2Vignette <- function(argument = "mode") {
   tmp2 = grep(lookfor, parameters); if (length(tmp2) > 1) tmp2 = tmp2[1]
   
   # Find the argument definition --------------------------------------------
-  if (length(tmp) > 0) { # the argument is within the basic arguments of g.shell
+  if (length(tmp) > 0) { # the argument is within the basic arguments of GGIR()
     definitions = grep("\\item", basic_args, fixed = TRUE)
     def0 = tmp +  1
     def1 = (definitions[which(definitions == tmp) + 1]) - 1

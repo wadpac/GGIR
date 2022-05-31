@@ -4,7 +4,7 @@
   Extract Definition from Shell Documentation
 }
 \description{
-  Function extracts the documentation for a given GGIR argument as provided in the \link{g.shell.GGIR} documentation.
+  Function extracts the documentation for a given GGIR argument as provided in the \link{GGIR} documentation.
   Function not designed for direct use by package user.
 }
 \usage{
