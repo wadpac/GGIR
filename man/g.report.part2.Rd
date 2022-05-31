@@ -8,14 +8,14 @@ Creates report from milestone data produced by \link{g.part2}. Not intended
   for direct use by package user
 }
 \usage{
-g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0, 
-selectdaysfile=c(), store.long=FALSE)
+g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0,
+selectdaysfile=c(), store.long=FALSE, do.part2.pdf = TRUE)
 }
 \arguments{
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
     which contains the milestone data produced by \link{g.part1}. The folderstructure
-    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{f0}{
@@ -26,15 +26,18 @@ selectdaysfile=c(), store.long=FALSE)
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{maxdur}{
-  see \link{g.part2}
+    see \link{g.part2}
   }
   \item{selectdaysfile}{
-  see \link{g.part2}
+    see \link{g.part2}
   }
   \item{store.long}{
-  Booelean to indicate whether output should stored in long
-  format in addition to default wide format. Automatically turned
-  to TRUE if using day segmentation with qwindow.
+    Booelean to indicate whether output should stored in long
+    format in addition to default wide format. Automatically turned
+    to TRUE if using day segmentation with qwindow.
+  }
+  \item{do.part2.pdf}{
+    Boolean, see \link{g.part2}
   }
 }
 \value{

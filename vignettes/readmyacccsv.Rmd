@@ -39,7 +39,7 @@ Internally GGIR loads csv files with accelerometer data and standardises the out
 
 # The read.myacc.csv function
 
-As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within `g.shell.GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". The g.shell.GGIR function checks whether the argument rmc.firstrow.acc is provided by the user; in such case, GGIR will derive the reading of the data to the `read.myacc.csv`.
+As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". The GGIR function checks whether the argument rmc.firstrow.acc is provided by the user; in such case, GGIR will derive the reading of the data to the `read.myacc.csv`.
 
 ## Input arguments
 
@@ -134,11 +134,11 @@ read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
 
 ## Example using the shell function
 
-If the `rmc.firstrow.acc` argument is defined within the `g.shell.GGIR` function, then the data will be read through `read.myacc.csv`. GGIR needs the user to specify in which row starts the accelerometer data within the csv, so this argument must be always explicitly specified by the user. Thus, a call to the `g.shell.GGIR` including the rmc arguments would look as follows (note that the `rmc.file`, `rmc.nrow`, and `rmc.skip` arguments will not be used by `g.shell.GGIR` as these arguments are already defined by `datadir`, `strategy`, and [header](#header) arguments, respectively).
+If the `rmc.firstrow.acc` argument is defined within the `GGIR` function, then the data will be read through `read.myacc.csv`. GGIR needs the user to specify in which row starts the accelerometer data within the csv, so this argument must be always explicitly specified by the user. Thus, a call to the `GGIR` including the rmc arguments would look as follows (note that the `rmc.file`, `rmc.nrow`, and `rmc.skip` arguments will not be used by `GGIR` as these arguments are already defined by `datadir`, `strategy`, and [header](#header) arguments, respectively).
 
 ```{R,eval=FALSE}
 library(GGIR)
-g.shell.GGIR(
+GGIR(
              mode=c(1,2,3,4,5),
              datadir="C:/mystudy/mydata/datafile.csv",
              outputdir="D:/myresults",

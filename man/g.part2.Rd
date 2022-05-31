@@ -6,25 +6,25 @@
 \description{
   Loads the output from \link{g.part1} and then applies \link{g.impute} and
   \link{g.analyse}, after which the output is converted to .RData-format
-  which will be used by \link{g.shell.GGIR} to generate reports.
+  which will be used by \link{GGIR} to generate reports.
   The variables in these reports are the same variables as described in
   \link{g.analyse}.
 }
 \usage{
-  g.part2(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(), 
+  g.part2(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         myfun = c(), params_cleaning = c(), params_247 = c(),
         params_phyact = c(), params_output = c(), params_general = c(), ...)
 }
 \arguments{
   \item{datadir}{
-    Directory where the accelerometer files are stored, e.g. 
-    "C:/mydata", or list of accelerometer filenames and directories, e.g. 
+    Directory where the accelerometer files are stored, e.g.
+    "C:/mydata", or list of accelerometer filenames and directories, e.g.
     c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
     which contains the milestone data produced by \link{g.part1}. The folderstructure
-    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{f0}{
@@ -39,19 +39,19 @@
     See details \link{applyExtFunction}.
   }
   \item{params_cleaning}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_247}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_phyact}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
  }
   \item{params_output}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_general}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,
@@ -65,12 +65,12 @@
 \details{
   GGIR comes with many processing parameters, which have been thematically grouped in
   parameter objects (R list). By running print(load_params()) you can
-  see the default values of all the parameter objects. When g.part 2 is used via \link{g.shell.GGIR}
+  see the default values of all the parameter objects. When g.part 2 is used via \link{GGIR}
   you have the option to specifiy a configuration file, which will overrule the default
   parameter values. Further, as user you can set parameter values as input argument to both g.part2
-  and \link{g.shell.GGIR}. Directly specified argument overrule the configuration file and default values.
-  
-   See the GGIR package vignette or the details section in \link{g.shell.GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
+  and \link{GGIR}. Directly specified argument overrule the configuration file and default values.
+
+   See the GGIR package vignette or the details section in \link{GGIR} for a more elaborate overview of parameter objects and their usage across GGIR.
 }
 \examples{
   \dontrun{

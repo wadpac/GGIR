@@ -9,6 +9,7 @@ test_that("gloadlog is able to load different log formats", {
   ID = "123A"
   rec_starttime = "2016-06-25T20:20:20+0200"
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
+  cat(paste0("\nLocal timezone: ", Sys.timezone()))
   logs1 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
                    sleeplogsep = ",", meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs1$sleeplog), 7)

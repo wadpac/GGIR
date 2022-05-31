@@ -1,6 +1,5 @@
 \name{GGIR-package}
 \alias{GGIR-package}
-\alias{GGIR}
 \docType{package}
 \title{
   A package to process multi-day raw accelerometer data
@@ -22,8 +21,8 @@
   \tabular{ll}{
   Package: \tab GGIR\cr
   Type: \tab Package\cr
-  Version: \tab 2.6-5\cr
-  Date: \tab 2022-05-16\cr
+  Version: \tab 2.7-1\cr
+  Date: \tab 2022-05-29\cr
   License: \tab LGPL (>= 2.0, < 3)\cr
   Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
   }
@@ -63,6 +62,7 @@
     \item Dan Jackson helped with unpack function for AX3 data.
     \item Matthew R Patterson helped with enhancing the visual report.
     \item Lena Kushleyeva helped fix bug in sleep detection.
+    \item Taren Sanders helped tidy up the parallel processing functionality
   }
 }
 \references{

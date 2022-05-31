@@ -24,7 +24,7 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   \item{metadatadir}{
     Directory that holds a folder 'meta' and inside this a folder 'basic'
     which contains the milestone data produced by \link{g.part1}. The folderstructure
-    is normally created by \link{g.part1} and \link{g.shell.GGIR} will recognise what
+    is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{f0}{
@@ -35,25 +35,25 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
   \item{params_sleep}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_metrics}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_247}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_phyact}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_cleaning}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_output}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{params_general}{
-   See details in \link{g.shell.GGIR}.
+   See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,

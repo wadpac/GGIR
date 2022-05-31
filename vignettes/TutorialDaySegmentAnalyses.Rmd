@@ -35,7 +35,7 @@ In the following sections I will discuss both scenarios.
 
 # Clock hour-based segmentation
 
-To perform clock hour segmentation, you will need to provide function g.shell.GGIR with
+To perform clock hour segmentation, you will need to provide function GGIR with
 argument `qwindow` and assign it a numeric vector with the hours for the segmentation.
 If the start and end of the day, are not explicitly provided in the 
 vector GGIR will add them.  Please find below some example values for `qwindow`.
@@ -56,7 +56,7 @@ This to ensure that segment length is identical across days of the week, which i
 
 # Segmentation guided by activity log
 
-To perform activity-log based segmentation, you will need to provide function `g.shell.GGIR` with
+To perform activity-log based segmentation, you will need to provide function `GGIR` with
 argument `qwindow` and assign it the full path to your activity log in `.csv format`, e.g. `qwindow="C:/myactivitylog.csv"`.
 
 The activity log is expected to be a .csv-file with the following structure:
@@ -70,7 +70,7 @@ ID | date | work | travelhome | home | date | work | travelhome | home
 First row represents the column headers after which each row represents one accelerometer recording.
 
 **ID-column:**
-The first column is expected to hold the recording ID, which needs to match with the ID GGIR extracts from the accelerometer file. If unsure how to format the ID values, apply g.shell.GGIR to a sample of your accelerometer files using the default argument settings. The ID column in the generated part 2 .csv reports will show how the participant ID is extracted by GGIR. If no ID is extracted, see documentation for argument `idloc`, which helps you to specify the location of the participant in the file name or file header. If ID extraction fails the accelerometer files cannot be matched with the corresponding activity log entries.
+The first column is expected to hold the recording ID, which needs to match with the ID GGIR extracts from the accelerometer file. If unsure how to format the ID values, apply GGIR to a sample of your accelerometer files using the default argument settings. The ID column in the generated part 2 .csv reports will show how the participant ID is extracted by GGIR. If no ID is extracted, see documentation for argument `idloc`, which helps you to specify the location of the participant in the file name or file header. If ID extraction fails the accelerometer files cannot be matched with the corresponding activity log entries.
 
 **Date-column:**
 The ID column is followed by a date column for the first log day. To ensure GGIR recognises this date correctly, specify argument `qwindow_dateformat`. The default format is `"\%d-\%m-\%Y"` as in 23-2-2021 to indicate the 23rd of February 2021. If your date is formatted as 2-23-21 then specify`"\%m-\%d-\%y"`. The column name of the date column needs to include the character combination "date" or "Date" or "DATE".
@@ -86,14 +86,14 @@ The date column is followed by one or multiple columns with start times for the 
 
 # Examples
 
-For more information about how to use the g.shell.GGIR function call
+For more information about how to use the GGIR function call
 see explanation in the main [GGIR vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html).
 
 ## Clock-hour based segmentation:
 
 ```{R,eval=FALSE}
 library("GGIR")
-g.shell.GGIR(datadir = "/your/data/directory",
+GGIR(datadir = "/your/data/directory",
              outputdir = "/your/output/directory",
              mode = 1:2, # <= run GGIR parts 1 and 2
              do.report = 2, # <= generate csv-report for GGIR part 2
@@ -105,7 +105,7 @@ g.shell.GGIR(datadir = "/your/data/directory",
 
 ```{R,eval=FALSE}
 library("GGIR")
-g.shell.GGIR(datadir = "/your/data/directory",
+GGIR(datadir = "/your/data/directory",
              outputdir = "/your/output/directory",
              mode = 1:2, # <= run GGIR parts 1 and 2
              do.report = 2, # <= generate csv-report for GGIR part 2

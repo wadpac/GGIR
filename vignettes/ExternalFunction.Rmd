@@ -94,19 +94,19 @@ function should be used for the aggregation, e.g. mean, sum, median.
     function as first columm of the data matrix..
 - `reporttype` Character to indicate the type of reporting by GGIR: "scalar" if it should be averaged per day, "event" if it should be summed per day, or "type" if it is categorical variable that can only be aggregated per day by tabulating it.
 
-Next, add a call to GGIR function g.shell.GGIR with `myfun` provided as one of its arguments:
+Next, add a call to GGIR function GGIR with `myfun` provided as one of its arguments:
 
 ```{R,eval=FALSE}
 library(GGIR)
-g.shell.GGIR(datadir="~/myaccelerometerdata",
+GGIR(datadir="~/myaccelerometerdata",
              outputdir="~/myresults",
              mode=1:2,
              epochvalues2csv = TRUE,
              do.report=2,
-             myfun=myfun) #<= this is where object myfun is provided to g.shell.GGIR
+             myfun=myfun) #<= this is where object myfun is provided to GGIR
 ```
 
-Please see the [\underline{general GGIR vignette}](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) for more information about function g.shell.GGIR.
+Please see the [\underline{general GGIR vignette}](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html) for more information about function GGIR.
 
 # Example with external Python function
 
@@ -180,12 +180,12 @@ myfun =  list(FUN=dominant_frequency,
               reporttype="scalar")
 ```
 
-Add a call to GGIR function g.shell.GGIR where `myfun` is provided as argument.
+Add a call to function GGIR where `myfun` is provided as argument.
 Note that, do.parallel is set to FALSE. Unfortunately Python embedding with R package reticulate and multi-threading with R package foreach as used in GGIR do not combine well.
 
 ```{R,eval=FALSE}
 library(GGIR)
-g.shell.GGIR(datadir="~/myaccelerometerdata",
+GGIR(datadir="~/myaccelerometerdata",
              outputdir="~/myresults",
              mode=1:2,
              epochvalues2csv = TRUE,
@@ -199,7 +199,7 @@ g.shell.GGIR(datadir="~/myaccelerometerdata",
 
 ## Part 1
 The external function output is included in the time series produced by function GGIR function g.part1 and stored in an RData-file in `/output_nameofstudy/meta/basic`.
-The resolution of these output in GGIR is set by g.shell.GGIR argument `windowsizes`, which is `c(5,900,3600)` by default. Here, the first element `5` specifies the short epoch size in seconds.
+The resolution of these output in GGIR is set by GGIR argument `windowsizes`, which is `c(5,900,3600)` by default. Here, the first element `5` specifies the short epoch size in seconds.
 If the output of the external function is less then this resolution it will be aggregated with the function as specificied by aggfunction in the `myfun` object. In the count example we used the sum for this and for the dominant frequency example we used the median.
 
 ## Part 2

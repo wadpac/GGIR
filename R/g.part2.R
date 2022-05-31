@@ -16,14 +16,14 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_phyact = params$params_phyact
   params_output = params$params_output
   params_general = params$params_general
-
+  
   #-----------------------------
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
-  } else if (is.character(params_247[["qwindow"]])) { 
+  } else if (is.character(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["qwindow_dateformat"]])
     # This will be an object with numeric qwindow values for all individuals and days
-  }  
+  }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
@@ -51,7 +51,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (length(f1) ==  0) f1 = length(fnames)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
-  foldername = fullfilenames = folderstructure = referencefnames = c() 
+  foldername = fullfilenames = folderstructure = referencefnames = c()
   if (params_output[["storefolderstructure"]] == TRUE) {
     extractfilenames = function(x) {
       x2 = as.character(unlist(strsplit(x,".RDa"))[1])
@@ -75,8 +75,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   #=========================================================
   # Declare core functionality, which at the end of this g.part2 is either
   # applied to the file in parallel with foreach or serially with a loop
-  main_part2 = function(i, ffdone, fnames, 
-                        metadatadir = c(), 
+  main_part2 = function(i, ffdone, fnames,
+                        metadatadir = c(),
                         myfun=c(), params_cleaning = c(), params_247 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
@@ -134,7 +134,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
           }
         }
-        IMP = g.impute(M, I, 
+        IMP = g.impute(M, I,
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
@@ -151,7 +151,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         idloc = params_general[["idloc"]],
                         includedaycrit = params_cleaning[["includedaycrit"]],
                         selectdaysfile = params_cleaning[["selectdaysfile"]],
-                        myfun = myfun)
+                        myfun = myfun,
+                        acc.metric = params_general[["acc.metric"]])
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
@@ -191,8 +192,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        
-        save(SUM,IMP,file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        save(SUM, IMP, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
@@ -201,20 +201,26 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
+  cores = parallel::detectCores()
+  Ncores = cores[1]
   if (params_general[["do.parallel"]] == TRUE) {
-    cores = parallel::detectCores()
-    Ncores = cores[1]
     if (Ncores > 3) {
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
-      cl <- parallel::makeCluster(Ncores2use) #not to overload your computer
-      doParallel::registerDoParallel(cl)
+      if (Ncores2use > 1) {
+        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        doParallel::registerDoParallel(cl)
+      } else {
+        # Don't process in parallel if only one core
+        params_general[["do.parallel"]] = FALSE
+      }
     } else {
       cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
+  }
+  if (params_general[["do.parallel"]] == TRUE) {
     cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
-    
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
@@ -230,23 +236,21 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            "iso8601chartime2POSIX", "extract_params", "load_params", "check_params")
       errhand = 'stop'
     }
-    fe_dopar = foreach::`%dopar%`
-    fe_do = foreach::`%do%`
     i = 0 # declare i because foreach uses it, without declaring it
-    `%myinfix%` = ifelse(params_general[["do.parallel"]], fe_dopar, fe_do) # thanks to https://stackoverflow.com/questions/43733271/how-to-switch-programmatically-between-do-and-dopar-in-foreach
+    `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
-                                  .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
-                                    tryCatchResult = tryCatch({
-                                      main_part2(i, ffdone, fnames, metadatadir,
-                                                 myfun, params_cleaning, params_247,
-                                                 params_phyact, params_output, params_general,
-                                                 path, ms2.out, foldername, fullfilenames,
-                                                 folderstructure, referencefnames,
-                                                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
-                                      
-                                    })
-                                    return(tryCatchResult)
-                                  }
+                                   .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
+                                     tryCatchResult = tryCatch({
+                                       main_part2(i, ffdone, fnames, metadatadir,
+                                                  myfun, params_cleaning, params_247,
+                                                  params_phyact, params_output, params_general,
+                                                  path, ms2.out, foldername, fullfilenames,
+                                                  folderstructure, referencefnames,
+                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
+                                       
+                                     })
+                                     return(tryCatchResult)
+                                   }
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
@@ -254,13 +258,13 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
-  } else { 
+  } else {
     for (i in f0:f1) {
       cat(paste0(i, " "))
-      main_part2(i, ffdone, fnames, metadatadir, 
+      main_part2(i, ffdone, fnames, metadatadir,
                  myfun, params_cleaning, params_247,
                  params_phyact, params_output, params_general,
-                 path, ms2.out, foldername, fullfilenames, 
+                 path, ms2.out, foldername, fullfilenames,
                  folderstructure, referencefnames,
                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
     }
