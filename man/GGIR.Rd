@@ -480,7 +480,10 @@ GGIR(mode = \Sexpr{format(formals(GGIR::g.shell.GGIR)[["mode"]])},
     process.
     \describe{
       \item{storefolderstructure}{Boolean. Store folder structure of the accelerometer data.}
-      \item{do.part3.pdf}{Boolean. In g.part3: Whether to generate a pdf for part 3 (default is TRUE).}
+      \item{do.part2.pdf}{Boolean (default: do.part2.pdf = TRUE). 
+      In g.part2: Whether to generate a pdf for part 2.}
+      \item{do.part3.pdf}{Boolean (default: do.part3.pdf = TRUE). 
+      In g.part3: Whether to generate a pdf for part 3.}
       \item{timewindow}{In g.part5: Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
         or both c("MM","WW").}
@@ -667,6 +670,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::g.shell.GGIR)[["mode"]])},
         Value = 2, tries to collapse acceleration into a binary score of rest
         versus active to try to similate the original approach.
       }
+      \item{IVIS_acc_threshold}{
+        Acceleration threshold to distinguish inactive from active.
+      }
       \item{qM5L5}{
         Percentiles (quantiles) to be calculated over L5 and M5 window.
       }
@@ -683,7 +689,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::g.shell.GGIR)[["mode"]])},
         the LUX analysis.}
       \item{L5M5window}{Argument depricated after version 1.5-24.
         This argument used to define the start and end time, in 24 hour clock hours,
-        over which L5M5 needs to be calculated. Now this is done with argument qwindow}
+        over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
+      \item{cosinor}{Argument depricated after version 1.5-24.
+        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
     }
   }
   \subsection{params_sleep}{
