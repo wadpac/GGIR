@@ -40,7 +40,8 @@ export(g.analyse, g.calibrate,
        check_params, extract_params,
        g.imputeTimegaps, read.gt3x_ggir,
        parseGT3Xggir, g.part5.classifyNaps,
-       tidyup_df, cosinorAnalyses)
+       tidyup_df, cosinorAnalyses,
+       ShellDoc2Vignette, parametersVignette)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
@@ -55,5 +56,7 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
             "residuals", "fitted")
 import(data.table)
 importFrom("methods", "is")
+importFrom("utils", "capture.output", "help")
 useDynLib(GGIR, .registration = TRUE)
 importFrom(Rcpp, sourceCpp)
+importFrom(stringr, str_squish)
