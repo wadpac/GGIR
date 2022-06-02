@@ -16,7 +16,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_phyact = params$params_phyact
   params_output = params$params_output
   params_general = params$params_general
-  
   #-----------------------------
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
@@ -81,6 +80,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
                         daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78) {
+    tail_expansion_log =  NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -193,12 +193,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        if (exists("tail_expansion_log")) {
-          save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
-        } else {
-          save(SUM, IMP, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
-        }
-          
+        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)

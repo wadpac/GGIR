@@ -161,6 +161,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                         params_cleaning, params_general, datadir, fnames, fnamesfull,
                         outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
                         use.temp, daylimit, path3, outputfolder, is.mv) {
+    tail_expansion_log = NULL
     if (params_general[["print.filename"]] == TRUE) {
       cat(paste0("\nFile name: ",fnames[i]))
     }

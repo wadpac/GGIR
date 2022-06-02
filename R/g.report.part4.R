@@ -51,15 +51,14 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
       f1 = length(fnames.ms4)
     cat(" loading all the milestone data from part 4 this can take a few minutes\n")
     myfun = function(x) {
+      tail_expansion_log = NULL
       load(file = x)
       cut = which(nightsummary[, 1] == "")
       if (length(cut) > 0 & length(cut) < nrow(nightsummary)) {
         nightsummary = nightsummary[-cut, ]
       }
-      if (exists("tail_expansion_log")) {
-        if (length(tail_expansion_log) != 0) {
-          nightsummary = nightsummary[-nrow(nightsummary),] # remove last row because it may not be trustworthy
-        }
+      if (length(tail_expansion_log) != 0) {
+        nightsummary = nightsummary[-nrow(nightsummary),] # remove last row because it may not be trustworthy
       }
       out = as.matrix(nightsummary)
     }
@@ -148,7 +147,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
       } else {
         nightsummary_clean = tidyup_df(nightsummary)
         write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                             sep = ""), row.names = FALSE)
+                                                   sep = ""), row.names = FALSE)
         nightsummary_bu = nightsummary
       }
       ####
@@ -501,14 +500,14 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
           personSummary_clean = tidyup_df(personSummary)
           if (dotwice == 1) {
             write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                 sep = ""), row.names = FALSE)
+                                                       sep = ""), row.names = FALSE)
             write.csv(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
-                                                  sep = ""), row.names = FALSE)
+                                                        sep = ""), row.names = FALSE)
           } else {
             write.csv(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
-                                                 sep = ""), row.names = FALSE)
+                                                       sep = ""), row.names = FALSE)
             write.csv(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
-                                                  sep = ""), row.names = FALSE)
+                                                        sep = ""), row.names = FALSE)
           }
         }
       }
