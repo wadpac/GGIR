@@ -193,7 +193,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        save(SUM, IMP, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        if (exists("tail_expansion_log")) {
+          save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        } else {
+          save(SUM, IMP, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        }
+          
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)

@@ -56,6 +56,16 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
       if (length(cut) > 0 & length(cut) < nrow(nightsummary)) {
         nightsummary = nightsummary[-cut, ]
       }
+      if (exists("tail_expansion_log")) {
+        if (length(tail_expansion_log) != 0) {
+          nightsummary = nightsummary[0,] # remove all rows because when data is expanded it cannot be used for sleep analysis
+          warning(paste0("Data tail was expanded by the user in GGIR part 1. As a result, performing sleep analysis",
+                         " are no longer meaningful for the last night.",
+                         " If you are interested in sleep analysis and want to generate a GGIR part 4 report,",
+                         " please reprocess your data with GGIR part 1, 2, 3 and 4 with ",
+                         " argument expand_tail_max_hours set to NULL."), call. = FALSE)
+        }
+      }
       out = as.matrix(nightsummary)
     }
     nightsummary2 = as.data.frame(do.call(rbind, lapply(fnames.ms4, myfun)), stringsAsFactors = FALSE)
@@ -122,11 +132,11 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
       NumberNotNA = length(which(is.na(nightsummary2[, 3:25]) == FALSE))
       if (NumberNotNA == 0) {
         skip = TRUE
-        warning("\nCannot create report part 4 report, because no sleep estimates present in milestone data.")
+        warning("\nCannot create report part 4 report, because no sleep estimates present in milestone data.", call. = FALSE)
       }
     } else {
       skip = TRUE
-      warning("\nCannot create report part 4 report, because no milestone data found for part4.")
+      warning("\nCannot create report part 4 report, because no milestone data found for part4.", call. = FALSE)
     }
     if (skip == FALSE) {
       # skip if no data was loaded or if it all rows were NA values

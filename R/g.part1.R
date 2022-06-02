@@ -352,7 +352,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         secs_to_midnight = c(0, 0)
         last_ts[1] = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
         last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
-        refhour = (24 + 6 + params_general[["dayborder"]])
+        refhour = (24 + 8 + params_general[["dayborder"]])
         for (wsi in 1:2) {
           secs_to_midnight[wsi] = (refhour * 3600) - 
             (as.numeric(format(last_ts[wsi], "%H")) * 3600 + 
@@ -379,6 +379,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           if (length(anglecol) > 0) {
             M$metashort[expand_indices,anglecol] = round(sin((1:length(expand_indices)) / (900/ws3))) * 15
           }
+          tail_expansion_log = list(short = length(expand_indices))
           # Expand metalong
           NR = nrow(M$metalong)
           metalong_expand = M$metalong[NR,]
@@ -388,6 +389,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           expand_tsPOSIX = seq(last_ts[1] + ws2, last_ts[1] + (N_long_epochs_expand * ws2), by = ws2)
           M$metalong[expand_indices,] = metalong_expand
           M$metalong$timestamp[expand_indices] = POSIXtime2iso8601(expand_tsPOSIX, tz = params_general[["desiredtz"]])
+          # Keep log of data expansion
+          tail_expansion_log[["long"]] = length(expand_indices)
+        } else {
+          tail_expansion_log = NULL
         }
       }
       #------------------------------------------------
@@ -403,7 +408,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       if (length(unlist(strsplit(fnames[1], "[.]RD"))) == 1) { # to avoid getting .RData.RData
         filename = paste0(filename,".RData")
       }
-      save(M, I, C, filename_dir, filefoldername,
+      save(M, I, C, filename_dir, filefoldername, tail_expansion_log,
            file = paste0(path3, "/meta/basic/meta_", filename))
       # as metadatdir is not known derive it:
       metadatadir = c()

@@ -595,6 +595,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           dsummary[di,fi] = length(which(ts$sibdetection[sse] == 1 &
                                                            ts$diur[sse] == 1)) / length(which(ts$diur[sse] == 1))
                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
+                          
                           #===============================================
                           # NAPS (estimation)
                           if (params_output[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(params_sleep[["nap_model"]]) > 0) {
@@ -602,6 +603,16 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             ds_names[fi] = "nap_count";      fi = fi + 1
                             dsummary[di,fi] = round((sum(ts$nap1_nonwear2[sse[which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
                             ds_names[fi] = "nap_totalduration";      fi = fi + 1
+                          }
+                          
+                          if (exists("tail_expansion_log")) {
+                            if (length(tail_expansion_log) != 0) {
+                              # do not store sleep variables if data was expanded in GGIR part 1
+                              dsummary[di, fi] = (tail_expansion_log[["short"]] * ws3new) / 60
+                            } else {
+                              dsummary[di, fi] = 0
+                            }
+                            ds_names[fi] = "tail_expansion_minutes";      fi = fi + 1
                           }
                           #===============================================
                           # AVERAGE ACC PER WINDOW

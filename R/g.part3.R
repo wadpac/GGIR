@@ -111,9 +111,16 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                   ignorenonwear = params_sleep[["ignorenonwear"]],
                                   desiredtz = params_general[["desiredtz"]])
           rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to align sleeplog with recording
-          save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
-               longitudinal_axis, SleepRegularityIndex,
-               file = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = ""))
+          ms3out_filename = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = "")
+          if (exists("tail_expansion_log")) {
+            save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
+               longitudinal_axis, SleepRegularityIndex, tail_expansion_log,
+               file = ms3out_filename)
+          } else {
+            save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
+                 longitudinal_axis, SleepRegularityIndex,
+                 file = ms3out_filename)
+          }
         }
       }
     }
