@@ -340,6 +340,12 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         and '-' (idloc = 7), respecitvely. You may have 
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
+        \item{expand_tail_max_hours}{Numeric (default = 0), Number hours to expand the 
+        part 1 output with synthetic data to trigger sleep detection for last night. Using
+        this implies the assumption that the participant fell asleep at or before the end
+        of the recording if the recording ended less than expand_tail_max_hours before midnight.
+        Therefore this argument should be used with caution.
+        }
     }
   }
   \subsection{params_output}{
