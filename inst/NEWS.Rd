@@ -7,9 +7,9 @@
       trigger analyses for that day, see argument expand_tail_max_hours.
     }
 }
-\section{Changes in version 2.7-1 (release date:28-05-2022)}{
+\section{Changes in version 2.7-1 (release date:29-05-2022)}{
 \itemize{
-    \item Fixing bug #566 concerning decision to not parallel process happenning too late in the code
+    \item Fixing bug #566 concerning decision to not parallel process being made too late
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
   }
 }
