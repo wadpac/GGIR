@@ -58,7 +58,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         nightsummary = nightsummary[-cut, ]
       }
       if (length(tail_expansion_log) != 0) {
-        nightsummary = nightsummary[-nrow(nightsummary),] # remove last row because it may not be trustworthy
+        nightsummary = nightsummary[-which(nightsummary$night == max(nightsummary$night)),] # remove last row because it may not be trustworthy
       }
       out = as.matrix(nightsummary)
     }
