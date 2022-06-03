@@ -4,7 +4,6 @@
   cran_version <- package_version(pkgs[which(pkgs[,1] == "GGIR"),"Version"])
   local_version <- packageVersion("GGIR")
   behind_cran <- cran_version > local_version
-  behind_cran = TRUE
   if (interactive()) {
     if (behind_cran) {
       msg <- paste0("A new version of GGIR (", cran_version,") is available with bug fixes and new features. Do not forget to install it.")
