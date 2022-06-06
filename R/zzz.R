@@ -6,7 +6,7 @@
   behind_cran <- cran_version > local_version
   if (interactive()) {
     if (behind_cran) {
-      msg <- paste0("A new version of GGIR (", cran_version,") is available with bug fixes and new features. Do not forget to install it.")
+      msg <- paste0("A newer version of GGIR is available with bug fixes and new features. [", local_version," --> ", cran_version, "]")
       packageStartupMessage(msg)
     }   
   }
