@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-2 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Fixing bug #577 concerning use of temperature data in ad-hoc csv file format
+  }
+}
+
 \section{Changes in version 2.7-1 (release date:29-05-2022)}{
 \itemize{
     \item Fixing bug #566 concerning decision to not parallel process being made too late
