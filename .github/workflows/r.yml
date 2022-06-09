@@ -75,11 +75,13 @@ jobs:
         run: |
           Sys.setenv(TZ="Europe/Amsterdam")
         shell: Rscript {0}
+        
        - name: Set timezone Windows
         if: runner.os == 'Windows'
         run: |
           Sys.setenv(TZ="America/New_York")
         shell: Rscript {0}
+        
       - name: Set timezone macOS
         if: runner.os == 'macOS'
         run: |
