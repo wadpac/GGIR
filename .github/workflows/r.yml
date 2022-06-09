@@ -37,7 +37,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cat /etc/timezone
-          export TZ="Europe/Amsterdam"
+          timedatectl set-timezone Europe/Amsterdam
           cat /etc/timezone
       - name: Set Timezone Windows
         if: runner.os == 'Windows'
@@ -48,9 +48,9 @@ jobs:
       - name: Set Timezone Macos
         if: runner.os == 'macOS'
         run: |
-          cat /etc/timezone
-          export TZ="Pacific/Auckland"
-          cat /etc/timezone
+          date +"%Z %z"
+          systemsetup -settimezone Pacific
+          date +"%Z %z"
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-tinytex@master
       - run: tlmgr --version
