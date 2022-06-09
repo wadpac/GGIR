@@ -70,35 +70,40 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         
-      - name: Set timezone Linux
+      - name: Check Ubuntu
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
         if: runner.os == 'Linux'
         run: |
           Sys.setenv(TZ="Europe/Amsterdam")
+          cat(Sys.timezone())
+          cat(Sys.getenv("TZ"))
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
-        
-      - name: Set timezone Windows
-        if: runner.os == 'Windows'
-        run: |
-          Sys.setenv(TZ="America/New_York")
-        shell: Rscript {0}
-        
-      - name: Set timezone macOS
+    
+      - name: Check macOS
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
         if: runner.os == 'macOS'
         run: |
           Sys.setenv(TZ="Pacific/Auckland")
-        shell: Rscript {0}
-        
-      - name: Check timezone
-        run: |
           cat(Sys.timezone())
           cat(Sys.getenv("TZ"))
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
-      - name: Check
+      - name: Check Windows
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        if: runner.os == 'Windows'
+        run: |
+          Sys.setenv(TZ="America/New_York")
+          cat(Sys.timezone())
+          cat(Sys.getenv("TZ"))
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
+        
+        
 
       - name: Upload check results
         if: failure()
