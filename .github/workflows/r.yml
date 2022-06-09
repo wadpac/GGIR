@@ -76,7 +76,7 @@ jobs:
           Sys.setenv(TZ="Europe/Amsterdam")
         shell: Rscript {0}
         
-       - name: Set timezone Windows
+      - name: Set timezone Windows
         if: runner.os == 'Windows'
         run: |
           Sys.setenv(TZ="America/New_York")
