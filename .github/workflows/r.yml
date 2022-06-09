@@ -33,19 +33,24 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Set Timezone
-        uses: szenius/set-timezone@v1.0
-        with:
-          timezoneLinux: "Europe/Amsterdam"
-          timezoneMacos: "Pacific/Auckland"
-          timezoneWindows: "America/New_York"
+      - name: Set Timezone Linux
+        if: runner.os == 'Linux'
+        run: |
+          export TZ="Europe/Amsterdam"
+      - name: Set Timezone Windows
+        if: runner.os == 'Windows'
+        run: |
+          export TZ="America/New_York"
+      - name: Set Timezone Macos
+        if: runner.os == 'macOS'
+        run: |
+          export TZ="Pacific/Auckland"
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-tinytex@master
       - run: tlmgr --version
       - uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
-
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Query dependencies
@@ -76,7 +81,11 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-
+      - name: Check timezone
+        run: |
+          cat(Sys.timezone())
+          cat(Sys.getenv("TZ"))
+        shell: Rscript {0}
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
