@@ -7,7 +7,8 @@ test_that("gloadlog is able to load different log formats", {
   tempdir = "mytestdir"
   if (dir.exists(tempdir) == FALSE) dir.create(tempdir)
   ID = "123A"
-  rec_starttime = "2016-06-25T20:20:20+0200"
+  # rec_starttime = "2016-06-25T20:20:20+0200"
+  rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   cat(paste0("\nLocal timezone: ", Sys.timezone()))
   logs1 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
