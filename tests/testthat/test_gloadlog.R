@@ -23,7 +23,7 @@ test_that("gloadlog is able to load different log formats", {
   expect_equal(ncol(logs1$naplog), 6)
   
   # start of accelerometer recording 6 days earlier
-  rec_starttime = "2016-06-20T20:20:20+0200"
+  rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   logs2 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
                    sleeplogsep = ",", meta.sleep.folder = tempdir , desiredtz = "")
@@ -37,7 +37,7 @@ test_that("gloadlog is able to load different log formats", {
   expect_equal(ncol(logs2$naplog), 6)
   
   # start of accelerometer recording 3 days later
-  rec_starttime = "2016-06-29T20:20:20+0200"
+  rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   logs3 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
                     sleeplogsep = ",", meta.sleep.folder = tempdir , desiredtz = "")
