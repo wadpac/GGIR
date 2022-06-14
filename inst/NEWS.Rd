@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-2 (release date:14-06-2022)}{
+\itemize{
+    \item Part 2: Enhancing activity diary functionality to warn user when date format is inconsistent and to treat cells with only a dot as missing values.
+  }
+}
+
 \section{Changes in version 2.7-1 (release date:29-05-2022)}{
 \itemize{
     \item Fixing bug #566 concerning decision to not parallel process being made too late
