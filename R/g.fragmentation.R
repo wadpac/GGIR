@@ -131,6 +131,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   DurationPA = frag2levels$length[which(frag2levels$value == 0)]
   output[["Nfrag_PA"]] = length(DurationPA)
   output[["Nfrag_IN"]] = length(DurationIN)
+  if ("NFragPM" %in% frag.metrics){
+    output[["NFragPM_PA"]] = 0
+    output[["NFragPM_IN"]] = 0
+  }
   if (Nfrag2levels > 1) {
       if ("mean" %in% frag.metrics){
       output[["mean_dur_PA"]] = mean(DurationPA)

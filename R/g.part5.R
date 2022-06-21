@@ -791,6 +791,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                         params_phyact[["bout.metric"]])
                           ds_names[fi:(fi + 6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                                                     "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
+                         
                           #===========================
                           # Intensity gradient over waking hours
                           if (length(params_247[["iglevels"]]) > 0) {
@@ -900,7 +901,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-        if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
+         if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
           output$window_number = as.numeric(output$window_number)
           cells2exclude = c(which(output$window_number == min(output$window_number,na.rm = TRUE)),
                             which(output$window_number == max(output$window_number,na.rm = TRUE)))
@@ -942,9 +943,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
             FRAG_variables_indices = grep(pattern = "FRAG_",x = names(output))
             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
-            if (length(emptycols) > 0) output = output[-emptycols]
+            if (length(emptycols) > 0) output = output[,-emptycols]
           }
-          
+       
           if (length(output) > 0) {
             if (nrow(output) > 0) {
               save(output, file = paste(metadatadir,
