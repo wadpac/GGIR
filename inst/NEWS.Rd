@@ -5,6 +5,7 @@
 \itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
     \item Inform user (onAttach) when local GGIR version is behind CRAN version.
+    \item Part 2: Enhancing activity diary functionality to warn user when date format is inconsistent and to treat cells with only a dot as missing values.
     \item Fixing bug #577 concerning use of temperature data in ad-hoc csv file format
   }
 }
