@@ -4,6 +4,7 @@
 \section{Changes in version 2.7-2 (release date:21-06-2022)}{
 \itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
+    \item Inform user (onAttach) when local GGIR version is behind CRAN version.
     \item Fixing bug #577 concerning use of temperature data in ad-hoc csv file format
   }
 }
