@@ -791,7 +791,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                         params_phyact[["bout.metric"]])
                           ds_names[fi:(fi + 6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                                                     "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
-                         
                           #===========================
                           # Intensity gradient over waking hours
                           if (length(params_247[["iglevels"]]) > 0) {
