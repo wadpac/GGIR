@@ -908,7 +908,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-        if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
+         if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
           output$window_number = as.numeric(output$window_number)
           cells2exclude = c(which(output$window_number == min(output$window_number,na.rm = TRUE)),
                             which(output$window_number == max(output$window_number,na.rm = TRUE)))
@@ -950,9 +950,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # While we explore the fragmentation variables, we want to make sure that all variables are kept in the output
             FRAG_variables_indices = grep(pattern = "FRAG_",x = names(output))
             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
-            if (length(emptycols) > 0) output = output[-emptycols]
+            if (length(emptycols) > 0) output = output[,-emptycols]
           }
-          
+       
           if (length(output) > 0) {
             if (nrow(output) > 0) {
               save(output, tail_expansion_log, file = paste(metadatadir,
