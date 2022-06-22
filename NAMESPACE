@@ -56,7 +56,7 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
             "residuals", "fitted")
 import(data.table)
 importFrom("methods", "is")
-importFrom("utils", "capture.output", "help")
+importFrom("utils", "available.packages", "packageVersion", "help")
 useDynLib(GGIR, .registration = TRUE)
 importFrom(Rcpp, sourceCpp)
 importFrom(stringr, str_squish)

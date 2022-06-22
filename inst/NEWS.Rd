@@ -1,10 +1,19 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-2 (GitHub-only-release date:22-06-2022)}{
+\itemize{
+    \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
+    \item Inform user (onAttach) when local GGIR version is behind CRAN version.
+    \item Part 2: Enhancing activity diary functionality to warn user when date format is inconsistent and to treat cells with only a dot as missing values.
+    \item Part 1: Fixing issue #577 concerning use of temperature data in ad-hoc csv file format
+    \item Part 5: Fixing issue #582 affecting windows where a single fragment spans the entire window.
+  }
+}
 \section{Changes in version 2.7-1 (release date:29-05-2022)}{
 \itemize{
     \item Fixing bug #566 concerning decision to not parallel process being made too late
-    \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
+    \item Part 4: Attempt to fix timezone sensitivity for OSx in Pacific timezone for gloadlog function.
   }
 }
 \section{Changes in version 2.7-0 (release date:23-05-2022)}{
