@@ -377,7 +377,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             } else if (mon == 5) {
               temperaturecolumn = 4
             } else if (mon == 0) {
-              temperaturecolumn = 5
+              temperaturecolumn = params_rawdata[["rmc.col.temp"]]
             }
             if (mon != 0 & mon != 5) {
               light = as.numeric(data[, lightcolumn])
