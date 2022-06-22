@@ -6,7 +6,8 @@
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
     \item Inform user (onAttach) when local GGIR version is behind CRAN version.
     \item Part 2: Enhancing activity diary functionality to warn user when date format is inconsistent and to treat cells with only a dot as missing values.
-    \item Fixing bug #577 concerning use of temperature data in ad-hoc csv file format
+    \item Part 1: Fixing issue #577 concerning use of temperature data in ad-hoc csv file format
+    \item Part 5: Fixing issue #582 affecting windows where a single fragment spans the entire window.
   }
 }
 \section{Changes in version 2.7-1 (release date:29-05-2022)}{
