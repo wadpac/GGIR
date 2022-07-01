@@ -205,6 +205,16 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     nhours = length(val) / (3600 / ws3) #valid hours per day (or half a day)
     #start collecting information about the day
     fi = 1
+    
+    
+    check_daysummary_size = function(daysummary, ds_names, fi) {
+      if (fi > ncol(daysummary) - 1000) {
+        expand = fi - (ncol(daysummary) - 1000)
+        daysummary = cbind(daysummary, matrix("",ceiling(ndays), expand +  1000))
+        ds_names = c(ds_names, rep("", expand + 1000))
+      }
+      invisible(list(daysummary = daysummary, ds_names = ds_names))
+    }
     daysummary[di,fi] = ID
     idremember = daysummary[di,fi]
     ds_names[fi] = "ID";      fi = fi + 1
@@ -242,7 +252,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
             if (length(which(qwindow_values_backup[qwi] %in% params_247[["qwindow"]] == TRUE)) > 0) {
               daysummary[di, (newncol - 1):newncol] = c(nvalidhours_qwindow[qwi], nhours_qwindow[qwi])
             } else {
-              daysummary[di, (newncol-1):newncol] = c("", "")
+              daysummary[di, (newncol - 1):newncol] = c("", "")
             }
           }
         }
@@ -353,7 +363,12 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
             # increase value of fi to leave enough space for the variables to be calculated in second day of measurement
             shift = (deltaLengthQwindow * (fi - fi_remember))
             fi = fi + shift
+            fi_remember = fi
           }
+          new = check_daysummary_size(daysummary, ds_names, fi)
+          daysummary = new$daysummary
+          ds_names = new$ds_names
+          
           L5M5window_name = anwi_nameindices[anwi_index]
           anwindices = anwi_t0[anwi_index]:anwi_t1[anwi_index] # indices of varnum corresponding to a segment
           if (length(anwindices) > 0) {
@@ -413,7 +428,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                                                                      L5M5window_name))
                   ds_names[fi:(fi - 1 + length(ML5colna))] = paste0(ML5colna, "_", colnames(metashort)[mi], "_mg", 
                                                                     L5M5window_name)
-                  collectfi = c(collectfi,fi)
+                  collectfi = c(collectfi, fi)
                   fi = fi + length(ML5colna)
                 }
                 if (length(varnum) > ((60 / ws3) * 60 * min(params_247[["winhr"]]) * 1.2)) { # Calculate values
@@ -448,7 +463,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
                     # winhr is not considered because we are in the winhr loop:
                     exfi = exfi + 4 + (length(params_247[["qM5L5"]]) * 2) 
                   }
-                  
                 } else {
                   daysummary[di,collectfi] = ""
                 }
