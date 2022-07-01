@@ -210,7 +210,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     check_daysummary_size = function(daysummary, ds_names, fi) {
       if (fi > ncol(daysummary) - 1000) {
         expand = fi - (ncol(daysummary) - 1000)
-        daysummary = cbind(daysummary, matrix("",ceiling(ndays), expand +  1000))
+        daysummary = cbind(daysummary, matrix("", nrow(daysummary), expand +  1000))
         ds_names = c(ds_names, rep("", expand + 1000))
       }
       invisible(list(daysummary = daysummary, ds_names = ds_names))
