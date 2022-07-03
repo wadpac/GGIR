@@ -56,6 +56,9 @@ ShellDoc2Vignette <- function(argument = "mode") {
   # clean links in def
   def = gsub(pattern = "\\\\link", replacement = "", x = def)
   
+  # clean \\code in def (used to mention arguments in Rd)
+  def = gsub(pattern = "\\\\code", replacement = "", x = def)
+  
   # clean multiple spaces in def
   def = stringr::str_squish(def)
   
