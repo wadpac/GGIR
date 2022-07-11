@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-3 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Part 1: Add extraction of ID and serial number from Movisens data
+  }
+}
 \section{Changes in version 2.7-2 (GitHub-only-release date:22-06-2022)}{
 \itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
