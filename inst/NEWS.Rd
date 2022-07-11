@@ -4,6 +4,7 @@
 \section{Changes in version 2.7-3 (GitHub-only-release date:??-??-2022)}{
 \itemize{
     \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
+    \item Fixed issue #592 which caused GGIR to incorrectly warn used about using the set time window guider functionality correctly
     }
 }
 
