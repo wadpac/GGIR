@@ -188,7 +188,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         tmp0 = read.csv(datafile, nrow = 100000, skip = 0)
         tmp1 = as.numeric(as.POSIXlt(tmp0[, 1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
-        sf = round((sf) / 5 ) * 5 # round to nearest integer of 5
+        sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is 
       }
     } else if (dformat == 3) { # wav
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
