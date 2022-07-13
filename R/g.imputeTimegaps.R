@@ -1,6 +1,7 @@
-g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, LastValueInPrevChunk = c(0, 0, 1)) {
+g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
+                            LastValueInPrevChunk = c(0, 0, 1), LastTimeInPrevChunk = NULL) {
   remove_time_at_end = FALSE
-  if (length(timeCol) == 0) { # add temporary timecolumn to enable timegap imputation where there are zeros
+  if (length(timeCol) == 0 | !(timeCol %in% colnames(x))) { # add temporary timecolumn to enable timegap imputation where there are zeros
     dummytime = Sys.time()
     adhoc_time = seq(dummytime, dummytime + (nrow(x) - 1) * (1/sf), by = 1/sf)
     if (length(adhoc_time) < nrow(x)) { 
@@ -11,41 +12,81 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     timeCol = "time"
     remove_time_at_end = TRUE
   }
+  # find zeros and remove them from dataset
   zeros = which(x[,xyzCol[1]] == 0 & x[,xyzCol[2]] == 0 & x[,xyzCol[3]] == 0)
+  FirstRowZeros = imputelast = FALSE
   if (length(zeros) > 0) {
+    # if first value is a zero, remember value from previous chunk to replicate
     if (zeros[1] == 1) {
       zeros = zeros[-1]
       x[1, xyzCol] = LastValueInPrevChunk
+      FirstRowZeros = TRUE
+    }
+    # if last value is a zero, we should not remove it (to keep track of the time)
+    if (zeros[length(zeros)] == nrow(x)) {
+      zeros = zeros[-length(zeros)]
+      imputelast = TRUE
     }
     x = x[-zeros,]
   }
+  # find missing timestamps (timegaps)
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
     if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
       k = 2/sf
     }
     deltatime = diff(x[, timeCol])
     if (!is.numeric(deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
-    units(deltatime) = "secs"
-    deltatime = as.numeric(deltatime)
+      units(deltatime) = "secs"
+      deltatime = as.numeric(deltatime)
     }
+    # refill if first value is not consecutive from last value in previous chunk
+    if (!is.null(LastTimeInPrevChunk)) {
+      first_deltatime = diff(c(LastTimeInPrevChunk, x[1, timeCol]))
+      if (!is.numeric(first_deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
+        units(first_deltatime) = "secs"
+        first_deltatime = as.numeric(first_deltatime)
+      }
+      if (first_deltatime >= k) { # prevent trying to impute timegaps shorter than 2 samples
+        x = rbind(x[1,], x)
+        x[1, timeCol] = LastTimeInPrevChunk
+        x[1, xyzCol] = LastValueInPrevChunk
+        deltatime = c(first_deltatime, deltatime)
+        firstimputed = TRUE
+      }
+    }
+    # impute time gaps
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
     NumberOfGaps = length(gapsi)
-    if (NumberOfGaps > 0) { 
-      # if gaps exist impute them by repeating the last known value
+    if (NumberOfGaps > 0) {
+      # if gaps exist, fill the dataset with NA values in the missing timestamps
       x$gap = 1
-      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) + 1 # an extra row should be added because the last known value is not part of the gap, which causes 1-row mismatch
+      x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
       x <- as.data.frame(lapply(x, rep, x$gap))
-      #  normalise last known value to 1 if it deviates more than 5 mg from 1
-      i_normalise = which(x$gap != 1)
-      en_lastknownvalue = sqrt(rowSums(x[i_normalise[1], xyzCol]^2))
-      if ((abs(en_lastknownvalue) - 1) > 0.005) {
-        if (length(i_normalise) > 0) {
-          x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
-        }
+      # turn copied values to NA
+      x[which(diff(x$gap) > 0) + 1, "gap"] = 0 # 0 means this value will be tested for normalisation below
+      if (FirstRowZeros) x[1, "gap"] = 0
+      if (exists("firstimputed")) {
+        x[1, "gap"] = 0
       }
-      x = x[, which(colnames(x) != "gap")]
+      x[which(x$gap > 1), xyzCol] = NA
     }
+    #  normalise last recorded value to 1 if it deviates more than 5 mg from 1
+    normalise = which(x$gap == 0)
+    for (i_normalise in normalise) {
+      en_lastknownvalue = sqrt(rowSums(x[i_normalise, xyzCol]^2))
+      if ((abs(en_lastknownvalue) - 1) > 0.005) {
+        x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
+      }
+    }
+    x = x[, which(colnames(x) != "gap")]
+  } else if (isFALSE(impute)) {
+    if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
+    if (isTRUE(imputelast)) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
   }
+  # impute timegaps copying the last recorded value
+  x = zoo::na.locf(x)
+  # impute last value?
+  if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
   # Note: Timestamps are not imputed because from here onward GGIR does not need them
   # Any problems with sample rate should have been fixed during data loading
   if (remove_time_at_end == TRUE) {
