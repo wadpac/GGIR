@@ -287,7 +287,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               timeCol = names(P)[1]
               xyzCol = names(P)[2:4]
             }
-            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25)
+            if (!exists("LastValueInPrevChunk")) LastValueInPrevChunk = c(0, 0, 1)
+            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, LastValueInPrevChunk = LastValueInPrevChunk)
+            LastValueInPrevChunk = P[nrow(P), xyzCol]
           }
           data = as.matrix(P)
         } else if (dformat == 3) { #wav
@@ -308,7 +310,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data = as.matrix(P)
         } else if (dformat == 6) { #gt3x
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25)
+            if (!exists("LastValueInPrevChunk")) LastValueInPrevChunk = c(0, 0, 1)
+            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, LastValueInPrevChunk = LastValueInPrevChunk)
+            LastValueInPrevChunk = P[nrow(P), 2:4]
           }
           data = as.matrix(P[,2:4])
         }

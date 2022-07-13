@@ -1,4 +1,4 @@
-g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE) {
+g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, LastValueInPrevChunk = c(0, 0, 1)) {
   remove_time_at_end = FALSE
   if (length(timeCol) == 0) { # add temporary timecolumn to enable timegap imputation where there are zeros
     dummytime = Sys.time()
@@ -11,11 +11,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
     timeCol = "time"
     remove_time_at_end = TRUE
   }
-  zeros = which(rowSums(x[,xyzCol]) == 0)
+  zeros = which(x[,xyzCol[1]] == 0 & x[,xyzCol[2]] == 0 & x[,xyzCol[3]] == 0)
   if (length(zeros) > 0) {
     if (zeros[1] == 1) {
       zeros = zeros[-1]
-      x[1, xyzCol] = c(0, 0, 1)
+      x[1, xyzCol] = LastValueInPrevChunk
     }
     x = x[-zeros,]
   }
@@ -33,12 +33,15 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE)
     if (NumberOfGaps > 0) { 
       # if gaps exist impute them by repeating the last known value
       x$gap = 1
-      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) 
+      x$gap[gapsi] = as.integer(deltatime[gapsi] * sf) + 1 # an extra row should be added because the last known value is not part of the gap, which causes 1-row mismatch
       x <- as.data.frame(lapply(x, rep, x$gap))
-      #  normalise last known value to 1
+      #  normalise last known value to 1 if it deviates more than 5 mg from 1
       i_normalise = which(x$gap != 1)
-      if (length(i_normalise) > 0) {
-        x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / sqrt(rowSums(x[i_normalise, xyzCol]^2))
+      en_lastknownvalue = sqrt(rowSums(x[i_normalise[1], xyzCol]^2))
+      if ((abs(en_lastknownvalue) - 1) > 0.005) {
+        if (length(i_normalise) > 0) {
+          x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
+        }
       }
       x = x[, which(colnames(x) != "gap")]
     }
