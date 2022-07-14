@@ -8,7 +8,8 @@
   gaps by the last recorded value per axis normalised to 1 _g_
 }
 \usage{
-  g.imputeTimegaps(x, xyzCol, timeCol, sf, k = 0.25, impute = TRUE, LastValueInPreChunk = c(0,0,1), LastTimeInPrevChunk = NULL)
+  g.imputeTimegaps(x, xyzCol, timeCol = c(), sf, k = 0.25, impute = TRUE, 
+                   LastValueInPrevChunk = c(0,0,1), LastTimeInPrevChunk = NULL)
 }
 \arguments{
   \item{x}{
@@ -32,7 +33,7 @@
   \item{LastValueInPrevChunk}{
     Automatically identified last value in previous chunk of data read.
   }
-    \item{LastValueInPrevChunk}{
+    \item{LastTimeInPrevChunk}{
     Automatically identified last timestamp in previous chunk of data read.
   }
 }

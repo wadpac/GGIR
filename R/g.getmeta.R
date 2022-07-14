@@ -292,8 +292,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
                                  LastValueInPrevChunk = LastValueInPrevChunk,
                                  LastTimeInPrevChunk = LastTimeInPrevChunk)
-            LastValueInPrevChunk = P[nrow(P), xyzCol]
-            LastTimeInPrevChunk = P[nrow(P), timeCol]
+            LastValueInPrevChunk = as.numeric(P[nrow(P), xyzCol])
+            if (is.null(timeCol)) LastTimeInPrevChunk = NULL else LastTimeInPrevChunk = as.POSIXct(P[nrow(P), timeCol])
           }
           data = as.matrix(P)
         } else if (dformat == 3) { #wav

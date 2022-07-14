@@ -1,7 +1,12 @@
 g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
                             LastValueInPrevChunk = c(0, 0, 1), LastTimeInPrevChunk = NULL) {
   remove_time_at_end = FALSE
-  if (length(timeCol) == 0 | !(timeCol %in% colnames(x))) { # add temporary timecolumn to enable timegap imputation where there are zeros
+  dummyTime = FALSE
+  # add temporary timecolumn to enable timegap imputation where there are zeros
+  if (length(timeCol) == 1) {# added conditional in case timecol is defined but not a variable in x
+    if (!(timeCol %in% colnames(x))) dummyTime = TRUE
+  }
+  if (length(timeCol) == 0 | isTRUE(dummyTime)) { 
     dummytime = Sys.time()
     adhoc_time = seq(dummytime, dummytime + (nrow(x) - 1) * (1/sf), by = 1/sf)
     if (length(adhoc_time) < nrow(x)) { 
@@ -41,6 +46,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     # refill if first value is not consecutive from last value in previous chunk
     if (!is.null(LastTimeInPrevChunk)) {
+      LastTimeInPrevChunk = LastTimeInPrevChunk
       first_deltatime = diff(c(LastTimeInPrevChunk, x[1, timeCol]))
       if (!is.numeric(first_deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
         units(first_deltatime) = "secs"
