@@ -1,9 +1,10 @@
 g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
                             LastValueInPrevChunk = c(0, 0, 1), LastTimeInPrevChunk = NULL) {
-  remove_time_at_end = FALSE
-  dummyTime = FALSE
+  # dummy variables to control the process
+  remove_time_at_end = dummyTime = FirstRowZeros = imputelast = FALSE
+  
   # add temporary timecolumn to enable timegap imputation where there are zeros
-  if (length(timeCol) == 1) {# added conditional in case timecol is defined but not a variable in x
+  if (length(timeCol) == 1) {
     if (!(timeCol %in% colnames(x))) dummyTime = TRUE
   }
   if (length(timeCol) == 0 | isTRUE(dummyTime)) { 
@@ -19,15 +20,16 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   }
   # find zeros and remove them from dataset
   zeros = which(x[,xyzCol[1]] == 0 & x[,xyzCol[2]] == 0 & x[,xyzCol[3]] == 0)
-  FirstRowZeros = imputelast = FALSE
   if (length(zeros) > 0) {
     # if first value is a zero, remember value from previous chunk to replicate
+    # if chunk = 1, then it will use c(0, 0, 1)
     if (zeros[1] == 1) {
       zeros = zeros[-1]
       x[1, xyzCol] = LastValueInPrevChunk
       FirstRowZeros = TRUE
     }
     # if last value is a zero, we should not remove it (to keep track of the time)
+    # This last row of zeros will be imputed afterwards (i.e., imputelast = TRUE)
     if (zeros[length(zeros)] == nrow(x)) {
       zeros = zeros[-length(zeros)]
       imputelast = TRUE
@@ -64,7 +66,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) {
-      # if gaps exist, fill the dataset with NA values in the missing timestamps
+      # NEW approach - if gaps exist, fill the dataset with NA values 
       x$gap = 1
       x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
       x <- as.data.frame(lapply(x, rep, x$gap))
@@ -76,11 +78,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
       }
       x[which(x$gap > 1), xyzCol] = NA
     }
-    #  normalise last recorded value to 1 if it deviates more than 5 mg from 1
+    #  normalisation to 1 G 
     normalise = which(x$gap == 0)
     for (i_normalise in normalise) {
       en_lastknownvalue = sqrt(rowSums(x[i_normalise, xyzCol]^2))
-      if ((abs(en_lastknownvalue) - 1) > 0.005) {
+      if ((abs(en_lastknownvalue) - 1) > 0.005) {   # only if it deviates more than 5 mg from 1 G
         x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
       }
     }
@@ -89,7 +91,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
     if (isTRUE(imputelast)) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
   }
-  # impute timegaps copying the last recorded value
+  # impute timegaps (NA values) copying the last recorded value
   x = zoo::na.locf(x)
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]

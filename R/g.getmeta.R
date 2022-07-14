@@ -161,6 +161,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     } else if (length(grep(pattern = "NEO", x = deviceSerialNumber)) == 1) {
       params_rawdata[["dynrange"]] = 6
     }
+    # If Actigraph gt3x format, then prevent the user that R may crash (if idle sleep mode activated for very long) 
+    # This is temporary, in the future we should try to estimate the memory usage and stop GGIR before R crashes?
+    if (dformat == 6) message("Note: in the case R session crashes, try to process ActiGraph csv files instead of gt3x")
   }
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(params_rawdata[["rmc.sf"]]) == 0) {
@@ -319,8 +322,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
                                  LastValueInPrevChunk = LastValueInPrevChunk,
                                  LastTimeInPrevChunk = LastTimeInPrevChunk)
-            LastValueInPrevChunk = P[nrow(P), c("X", "Y", "Z")]
-            LastTimeInPrevChunk = P[nrow(P), "time"]
+            LastValueInPrevChunk = as.numeric(P[nrow(P), c("X", "Y", "Z")])
+            LastTimeInPrevChunk = as.POSIXct(P[nrow(P), "time"])
           }
           data = as.matrix(P[,2:4])
         }
@@ -396,7 +399,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
             if (mon == 0 & length(params_rawdata[["rmc.col.wear"]]) > 0) {
               wearcol = as.character(data[, which(colnames(data) == "wear")])
-              suppressWarnings(storage.mode(wearcola) <- "logical")
+              suppressWarnings(storage.mode(wearcol) <- "logical")
             }
             temperature = as.numeric(data[, temperaturecolumn])
           }
