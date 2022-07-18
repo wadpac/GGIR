@@ -1,13 +1,15 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
 \section{Changes in version 2.7-3 (GitHub-only-release date:??-??-2022)}{
 \itemize{
     \item Part 1: Add extra arguments to modify zero-crossing count calculation.
     \item Part 3: Adding ColeKripke sleep detection algorithm.
+    \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
+    \item Fixed issue #592 which caused GGIR to incorrectly warn used about using the set time window guider functionality correctly
     }
 }
+
 \section{Changes in version 2.7-2 (GitHub-only-release date:22-06-2022)}{
 \itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
