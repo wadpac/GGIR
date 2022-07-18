@@ -372,6 +372,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           NR = nrow(M$metashort)
           metashort_expand = M$metashort[NR,]
           metashort_expand[, grep(pattern = "timestamp|angle", x = names(metashort_expand), invert = TRUE, value = FALSE)] = 0
+          if ("EN" %in% names(metashort_expand)) {
+            metashort_expand$EN = 1
+          }
           expand_indices = (NR + 1):(NR + N_short_epochs_expand)
           expand_tsPOSIX = seq(last_ts[2] + ws3, last_ts[2] + (N_short_epochs_expand * ws3), by = ws3)
           M$metashort[expand_indices,] = metashort_expand
