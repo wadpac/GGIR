@@ -340,6 +340,23 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         and '-' (idloc = 7), respecitvely. You may have 
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
+      \item{expand_tail_max_hours}{Numeric (default = 0), Number hours to expand the 
+        part 1 output with synthetic data to trigger sleep detection for last night. 
+        The synthetic data for metashort entails: timestamps continuing
+        regularly, zeros for acceleration metrics other than EN, one for EN.
+        Angle columns are created in a way that it triggers the sleep detection using
+        the equation: `round(sin((1:length_expansion) / (900/epochsize))) * 15`. 
+        To keep track of the tail expansion g.part1 stores the lenght of the expansion in 
+        the RData files, which is then passed via part2, part3, and part4 to part5. 
+        In part5 it is then included as an additional variable in the csv-reports. 
+        In the part 4 report the last nigth is omitted, because we know that sleep 
+        estimates from the last night will not be trustworthy. In the part5 output most
+        columns related to the sleep assessment will be omitted for the last window to avoid biassing the
+        averages. Using argument `expand_tail_max_hours` implies the assumption that the 
+        participant fell asleep at or before the end of the recording if the recording
+        ended less than `expand_tail_max_hours` before midnight. This assumption may not
+        always hold true and should be used with caution. 
+      }
     }
   }
   \subsection{params_output}{

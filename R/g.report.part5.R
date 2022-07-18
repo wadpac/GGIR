@@ -67,6 +67,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     if(f1 > length(fnames.ms5)) f1 = length(fnames.ms5)
     cat(" loading all the milestone data from part 5 this can take a few minutes\n")
     myfun = function(x, expectedCols = c()) {
+      tail_expansion_log = NULL
       load(file = x)
       cut = which(output[, 1] == "")
       if (length(cut) > 0 & length(cut) < nrow(output)) {
@@ -77,6 +78,17 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         tmp = as.data.frame(matrix(0, 0, length(expectedCols)))
         colnames(tmp) = expectedCols
         out = base::merge(tmp, out, all = TRUE)
+      }
+      if (length(tail_expansion_log) != 0) {
+        # col2na = grep(pattern = "spt|sleeplog_used",
+        #               x = names(out), value = FALSE)
+        col2na = grep(pattern = "sleep_efficiency|N_atleast5minwakenight|daysleeper|daysleeper|sleeplog_used|_spt_sleep|_spt_wake",
+                      x = names(out), value = FALSE)
+        window_number = as.numeric(out[,"window_number"])
+        lastwindow = which(window_number == max(window_number, na.rm = TRUE))
+        if (length(col2na) > 0 & length(lastwindow) > 0) {
+          out[lastwindow, col2na] = "" # set last row to NA for all sleep related variables
+        }
       }
       return(out)
     }

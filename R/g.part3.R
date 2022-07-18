@@ -48,6 +48,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         params_sleep = c(), params_metrics = c(), 
                         params_output = c(),
                         params_general = c(), fnames, ffdone) {
+    tail_expansion_log =  NULL
     nightsperpage = 7
     FI = file.info(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
     if (is.na(FI$size) == TRUE) FI$size = 0
@@ -111,9 +112,10 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                   ignorenonwear = params_sleep[["ignorenonwear"]],
                                   desiredtz = params_general[["desiredtz"]])
           rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to align sleeplog with recording
+          ms3out_filename = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = "")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
-               longitudinal_axis, SleepRegularityIndex,
-               file = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = ""))
+               longitudinal_axis, SleepRegularityIndex, tail_expansion_log,
+               file = ms3out_filename)
         }
       }
     }

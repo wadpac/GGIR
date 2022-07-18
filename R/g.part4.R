@@ -148,6 +148,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   # start of loop through the
   # participants
   for (i in f0:f1) {
+    tail_expansion_log = NULL
     # decide whether file was processed before
     if (params_general[["overwrite"]] == TRUE) {
       skip = 0  # this will make that analyses is done regardless of whether it was done before
@@ -1042,7 +1043,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           nightsummary = nightsummary[, which(colnames(nightsummary) %in% c("sleeplatency", "sleepefficiency") ==
                                                 FALSE)]
         }
-        save(nightsummary, file = paste0(metadatadir, ms4.out, "/", fnames[i]))
+        save(nightsummary, tail_expansion_log, file = paste0(metadatadir, ms4.out, "/", fnames[i]))
       }
     }
   }  #end of loop through acc files
