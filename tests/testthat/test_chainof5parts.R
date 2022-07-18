@@ -3,7 +3,7 @@ context("Chainof5parts")
 test_that("chainof5parts", {
   skip_on_cran()
 
-  
+
   # dirR = "~/GGIR/R"
   # ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
   # ffnames = ffnames[which(ffnames %in% c("g.cwaread.R", "read.gt3x_ggir.R") == FALSE)]
@@ -11,7 +11,7 @@ test_that("chainof5parts", {
   #   source(paste(dirR,"/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
   # }
   # library(testthat)
-  
+
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
   create_test_sleeplog_csv(advanced = FALSE)
@@ -134,7 +134,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(151))
+  expect_that(ncol(output),equals(152))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(35.9958))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)

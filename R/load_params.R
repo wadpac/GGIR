@@ -111,7 +111,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           do.parallel = TRUE, windowsizes = c(5,900,3600),
                           desiredtz = "", configtz = c(), idloc = 1, dayborder = 0,
                           part5_agg2_60seconds = FALSE,
-                          sensor.location = "wrist")
+                          sensor.location = "wrist",
+                          expand_tail_max_hours = 0)
   }
   # }
   invisible(list(params_sleep = params_sleep,
