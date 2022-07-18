@@ -112,7 +112,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         qqq1 = (midnightsi[di] - 1) * (ws2 / ws3) + 1
         qqq2 = ((midnightsi[(di + 1)] - 1) * (ws2 / ws3))  #remove +1 because I got some extra seconds per day
       } else if (di == floor(ndays)) {
-        qqq1 = (midnightsi[di] - 1) * (ws2 / ws3)
+        qqq1 = (midnightsi[di] - 1) * (ws2 / ws3) + 1
         qqq2 = nrow(metashort)
       }
     } else if (startatmidnight == 0 & endatmidnight == 0) {
