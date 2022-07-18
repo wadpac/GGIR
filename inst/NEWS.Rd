@@ -3,9 +3,12 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.7-3 (GitHub-only-release date:??-??-2022)}{
 \itemize{
+    \item Part1: Added option to expand the last day of the recording to
+      trigger analyses for that day, see argument expand_tail_max_hours in params_general.
     \item Part 1: Add extraction of ID and serial number from Movisens data
     \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
     \item Fixed issue #592 which caused GGIR to incorrectly warn used about using the set time window guider functionality correctly
+    \item Part 2: Corrected calendar date time stamps in daysummary report on last day of the recording.
     }
 }
 

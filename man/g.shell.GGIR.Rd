@@ -17,7 +17,7 @@
 \arguments{
   \item{...}{
     Any of the parameters used by \link{GGIR}.
-  }  
+  }
 }
 \value{
   The function provides no values, it only ensures that other functions are called
