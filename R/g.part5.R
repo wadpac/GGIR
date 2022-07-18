@@ -312,6 +312,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               Nts = nrow(ts)
             }
+            # if ("angle" %in% colnames(ts)) {
+            #   ts = ts[, -which(colnames(ts) == "angle")]
+            # }
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
@@ -889,6 +892,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
           }
+        }
+        if ("angle" %in% colnames(ts)) {
+          ts = ts[, -which(colnames(ts) == "angle")]
         }
         #remove NA values
         for (kik in 1:ncol(dsummary)) {

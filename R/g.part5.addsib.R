@@ -66,9 +66,9 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
     tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
     timethreshold = as.numeric(tempi[length(tempi)])
-    navalues = which(is.na(ts$angle[redo1:redo2]) == T)
-    if (length(navalues) > 0) {
-      ts$angle[redo1:redo2][navalues] = 0
+    # ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
+    if (any(is.na(ts$angle[redo1:redo2]))) {
+      ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
     }
     sdl1 = rep(0,length(ts$time[redo1:redo2]))
     postch = which(abs(diff(ts$angle[redo1:redo2])) > anglethreshold) #posture change of at least j degrees
