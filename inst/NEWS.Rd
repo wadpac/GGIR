@@ -5,6 +5,8 @@
 \itemize{
     \item Part1: Added option to expand the last day of the recording to
       trigger analyses for that day, see argument expand_tail_max_hours in params_general.
+    \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
+    \item Fixed issue #592 which caused GGIR to incorrectly warn used about using the set time window guider functionality correctly
     }
 }
 

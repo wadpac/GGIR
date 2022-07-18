@@ -107,7 +107,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   qwindow_actlog = FALSE
   if (is.data.frame(params_247[["qwindow"]]) == TRUE) {
     qwindow_actlog = TRUE
-    params_247[["qwindow"]] = params_247[["qwindow"]][which(params_247[["qwindow"]]$ID == ID),]
+    IDacc = gsub(pattern = " ", replacement = "", x = as.character(ID))
+    IDlog = gsub(pattern = " ", replacement = "", x = as.character(params_247[["qwindow"]]$ID))
+    params_247[["qwindow"]] = params_247[["qwindow"]][which(IDlog == IDacc),]
   }
   # # Time window for L5 & M5 analysis (commented out because this is now defined further down)
   # t0_LFMF = L5M5window[1] #start in 24 hour clock hours
