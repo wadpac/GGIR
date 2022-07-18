@@ -312,9 +312,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               Nts = nrow(ts)
             }
-            if ("angle" %in% colnames(ts)) {
-              ts = ts[, -which(colnames(ts) == "angle")]
-            }
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
@@ -732,7 +729,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           bc.mvpa = checkshape(bc.mvpa)
                           for (bci in 1:nrow(bc.mvpa)) {
                             RLE = rle(bc.mvpa[bci, sse])
-                            dsummary[di, fi + (bci-1)] = length(which(RLE$values == 1))
+                            dsummary[di, fi + (bci - 1)] = length(which(RLE$values == 1))
                             if (bci == 1) {
                               ds_names[fi + (bci - 1)] = paste0("Nbouts_day_MVPA_bts_", params_phyact[["boutdur.mvpa"]][bci])
                             } else {
