@@ -161,9 +161,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     } else if (length(grep(pattern = "NEO", x = deviceSerialNumber)) == 1) {
       params_rawdata[["dynrange"]] = 6
     }
-    # If Actigraph gt3x format, then prevent the user that R may crash (if idle sleep mode activated for very long) 
-    # This is temporary, in the future we should try to estimate the memory usage and stop GGIR before R crashes?
-    if (dformat == 6) message("Note: in the case R session crashes, try to process ActiGraph csv files instead of gt3x")
   }
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(params_rawdata[["rmc.sf"]]) == 0) {
@@ -233,13 +230,23 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
     options(warn = -1) #turn off warnings (code complains about unequal rowlengths
     if (useRDA == FALSE) {
+      if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
+      if (!exists("PreviousLastTime")) PreviousLastTime = NULL
       accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                               selectdaysfile = selectdaysfile,
                               filequality = filequality, decn = decn,
                               ws = ws, PreviousEndPage = PreviousEndPage,
                               inspectfileobject = INFI,
+                              PreviousLastValue = PreviousLastValue,
+                              PreviousLastTime = PreviousLastTime,
                               params_rawdata = params_rawdata, params_general = params_general)
-      P = accread$P
+      if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv 
+        P = accread$P[1:2]
+        PreviousLastValue = accread$P$PreviousLastValue
+        PreviousLastTime = accread$P$PreviousLastTime
+      } else {
+        P = accread$P
+      }
       filequality = accread$filequality
       filetooshort = filequality$filetooshort
       filecorrupt = filequality$filecorrupt
@@ -290,13 +297,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               timeCol = names(P)[1]
               xyzCol = names(P)[2:4]
             }
-            if (!exists("LastValueInPrevChunk")) LastValueInPrevChunk = c(0, 0, 1)
-            if (!exists("LastTimeInPrevChunk")) LastTimeInPrevChunk = NULL
+            if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
+            if (!exists("PreviousLastTime")) PreviousLastTime = NULL
             P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
-                                 LastValueInPrevChunk = LastValueInPrevChunk,
-                                 LastTimeInPrevChunk = LastTimeInPrevChunk)
-            LastValueInPrevChunk = as.numeric(P[nrow(P), xyzCol])
-            if (is.null(timeCol)) LastTimeInPrevChunk = NULL else LastTimeInPrevChunk = as.POSIXct(P[nrow(P), timeCol])
+                                 PreviousLastValue = PreviousLastValue,
+                                 PreviousLastTime = PreviousLastTime)
+            PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
+            if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
           }
           data = as.matrix(P)
         } else if (dformat == 3) { #wav
@@ -317,13 +324,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data = as.matrix(P)
         } else if (dformat == 6) { #gt3x
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-            if (!exists("LastValueInPrevChunk")) LastValueInPrevChunk = c(0, 0, 1)
-            if (!exists("LastTimeInPrevChunk")) LastTimeInPrevChunk = NULL
+            if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
+            if (!exists("PreviousLastTime")) PreviousLastTime = NULL
             P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
-                                 LastValueInPrevChunk = LastValueInPrevChunk,
-                                 LastTimeInPrevChunk = LastTimeInPrevChunk)
-            LastValueInPrevChunk = as.numeric(P[nrow(P), c("X", "Y", "Z")])
-            LastTimeInPrevChunk = as.POSIXct(P[nrow(P), "time"])
+                                 PreviousLastValue = PreviousLastValue,
+                                 PreviousLastTime = PreviousLastTime)
+            PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
+            PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
           }
           data = as.matrix(P[,2:4])
         }

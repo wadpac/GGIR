@@ -1,5 +1,6 @@
 g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(), filequality,
                          decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
+                         PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL,
                          params_rawdata = c(), params_general = c(), ...) {
   #get input variables
   input = list(...)
@@ -430,7 +431,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = as.data.frame(read.gt3x_ggir(path = filename, batch_begin = startpage,
+    try(expr = {P = as.data.frame(read.gt3x_ggir(path = filename, batch_begin = startpage, 
                                                  batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0) { # too short or not data at all
       P = c() ; switchoffLD = 1
@@ -446,7 +447,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     startpage = (1 + (blocksize * 300 * (blocknumber - 1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage = startpage,deltapage = deltapage,
-                             blocknumber = blocknumber,PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
+                             blocknumber = blocknumber,PreviousEndPage = PreviousEndPage, 
+                             mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = read.myacc.csv(rmc.file = filename,
                                    rmc.nrow = deltapage, rmc.skip = startpage,
@@ -474,10 +476,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
                                    rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
                                    rmc.col.wear = params_rawdata[["rmc.col.wear"]],
                                    rmc.doresample = params_rawdata[["rmc.doresample"]],
-                                   interpolationType = params_rawdata[["interpolationType"]])
+                                   interpolationType = params_rawdata[["interpolationType"]],
+                                   PreviousLastValue = PreviousLastValue,
+                                   PreviousLastTime = PreviousLastTime)
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
-    if (length(P) == 2) {
+    if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv
       # P = as.matrix(P) # turned off 21-5-2019
       if (nrow(P$data) < ((sf * ws * 2) + 1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012

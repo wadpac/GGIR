@@ -1,5 +1,5 @@
 g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
-                            LastValueInPrevChunk = c(0, 0, 1), LastTimeInPrevChunk = NULL) {
+                            PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL) {
   # dummy variables to control the process
   remove_time_at_end = dummyTime = FirstRowZeros = imputelast = FALSE
   
@@ -25,7 +25,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     # if chunk = 1, then it will use c(0, 0, 1)
     if (zeros[1] == 1) {
       zeros = zeros[-1]
-      x[1, xyzCol] = LastValueInPrevChunk
+      x[1, xyzCol] = PreviousLastValue
       FirstRowZeros = TRUE
     }
     # if last value is a zero, we should not remove it (to keep track of the time)
@@ -35,6 +35,30 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
       imputelast = TRUE
     }
     x = x[-zeros,]
+  }
+  # new versions of ActiGraph csv's do not have zeros but last observation carried forward
+  # find them and remove to get the same imputation as with the rest of files
+  dup = (diff(x[,xyzCol[1]]) == 0) & (diff(x[,xyzCol[2]]) == 0) & (diff(x[,xyzCol[3]]) == 0)
+  dup_rle = accelerometry::rle2(dup, indices = TRUE)
+  dup2remove = dup_rle[which(dup_rle[,"value"] == 1 & dup_rle[,"length"] >= sf),]
+  if (!is.matrix(dup2remove)) {
+    dup2remove = matrix(dup2remove, byrow = TRUE, ncol = 4)
+    colnames(dup2remove) = c("value", "start", "stop", "length")
+  }
+  if (nrow(dup2remove) > 0) {
+    remove = c()
+    for (i in 1:nrow(dup2remove)) {
+      remove = c(remove, seq(dup2remove[i,"start"], dup2remove[i,"stop"]))
+    }
+    if (remove[1] == 1) FirstRowZeros = TRUE # if first value is duplicated, we prevent removing it later on
+    remove = remove + 1
+    # if last value is duplicated, we should not remove it (to keep track of the time)
+    # This last row will be imputed afterwards (i.e., imputelast = TRUE)
+    if (remove[length(remove)] == nrow(x)) {
+      remove = remove[-length(remove)]
+      imputelast = TRUE
+    }
+    x = x[-remove,]
   }
   # find missing timestamps (timegaps)
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
@@ -47,17 +71,17 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
       deltatime = as.numeric(deltatime)
     }
     # refill if first value is not consecutive from last value in previous chunk
-    if (!is.null(LastTimeInPrevChunk)) {
-      LastTimeInPrevChunk = LastTimeInPrevChunk
-      first_deltatime = diff(c(LastTimeInPrevChunk, x[1, timeCol]))
+    if (!is.null(PreviousLastTime)) {
+      PreviousLastTime = PreviousLastTime
+      first_deltatime = diff(c(PreviousLastTime, x[1, timeCol]))
       if (!is.numeric(first_deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
         units(first_deltatime) = "secs"
         first_deltatime = as.numeric(first_deltatime)
       }
       if (first_deltatime >= k) { # prevent trying to impute timegaps shorter than 2 samples
         x = rbind(x[1,], x)
-        x[1, timeCol] = LastTimeInPrevChunk
-        x[1, xyzCol] = LastValueInPrevChunk
+        x[1, timeCol] = PreviousLastTime
+        x[1, xyzCol] = PreviousLastValue
         deltatime = c(first_deltatime, deltatime)
         firstimputed = TRUE
       }
