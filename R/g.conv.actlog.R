@@ -1,7 +1,6 @@
 g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
   # Function to read activity log and convert it into data.frame
   # that has for each ID and date a different qwindow vector
-  
   # local functions:
   time2numeric = function(x) {
     x = unlist(x)
@@ -25,7 +24,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
   actlog = read.csv(file = qwindow)
   # assume ID to be in first column
   actlog = actlog[which(actlog[,1] != ""),] # ignore rows for which there is no id
-  actlog_vec = unlist(actlog) # turn into vector
+  
   # replace cells with only a dot by empty character
   # the documentation clearly states that no dots should be used
   # to indeicate missing value, but this is just in case users still forget about it
@@ -41,6 +40,20 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
   if (length(datecols) > 0) {
     exampledates = unlist(actlog[,datecols])
     exampledates = exampledates[which(!is.na(exampledates))]
+    
+    e1 = strsplit(exampledates, split = "/|-")
+    e1 = e1[lengths(e1) > 0L]
+    date_consistency_check = t(as.data.frame(e1))
+    numrange = apply(X = date_consistency_check, MARGIN = 2, FUN = function(x) diff(range(sapply(x, nchar))))
+    if (any(numrange > 1)) {
+      stop(paste0("\nDifferent date formats were encountered in your activity ",
+                  "log: ",qwindow,". ",
+                  "Please note that this may not be visible when you open the activity log",
+                  " in MS Excel, but it should be visible in a plain text editor. ",
+                  "To resolve this update the format for all date cells in the ",
+                  "activity log to be consistent and in line with the value of argument",
+                  " qwindow_dateformat, which is currently: ", qwindow_dateformat), call. = FALSE)
+    }
   } else {
     exampledates = c()
   }
@@ -52,7 +65,21 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
                    "Please fix."),
             call. = FALSE)
   }
+  # Replace / by - if that is what is expected dateformat
+  if (Ndash > 0 & length(grep(pattern = "/", x = qwindow_dateformat)) == 0) {
+    for (rc in 1:ncol(actlog)) {
+      actlog[, rc] = gsub(pattern = "/", replacement = "-", x = actlog[, rc])
+    }
+  }
+  # Replace - by / if that is what is expected dateformat
+  if (Nhyphen > 0 & length(grep(pattern = "-", x = qwindow_dateformat)) == 0) {
+    for (rc in 1:ncol(actlog)) {
+      actlog[, rc] = gsub(pattern = "-", replacement = "/", x = actlog[, rc])
+    }
+  }
+  
   # find dates
+  actlog_vec = unlist(actlog) # turn into vector
   actlog_vec = sapply(actlog_vec, function(x) !all(is.na(as.Date(as.character(x),format=qwindow_dateformat))))
   Ndates = length(which(actlog_vec == TRUE))
   dim(actlog_vec) = c(nrow(actlog),ncol(actlog))
@@ -81,7 +108,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
           unlisted_qv = unlist(qwindow$qwindow_values[k])
           unlisted_qt = unlist(qwindow$qwindow_times[k])
           unlisted_qn = unlist(qwindow$qwindow_names[k])
-
+          
           if (length(which(is.na(unlisted_qv) == FALSE)) > 0) {
             if (min(unlisted_qv, na.rm = TRUE) > 0) {
               qwindow$qwindow_values[k] = list(c(0, unlisted_qv))
@@ -104,7 +131,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
     }
   }
   
-  # When testing the code it seemed to sometimes recognise the date.
+  # When testing the code it seemed sometimes not to recognise the date.
   # The following lines should hopefully help to catch any errors people may encounter.
   if (is.na(as.Date(qwindow$date[1],format="%y-%m-%d")) == FALSE) {
     qwindow$date =  as.Date(qwindow$date,format="%y-%m-%d")  
@@ -123,5 +150,6 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
       warning("\n Date not recognised in activity diary")
     }
   }
+  
   return(qwindow)
 }
