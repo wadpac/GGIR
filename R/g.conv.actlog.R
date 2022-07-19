@@ -102,7 +102,9 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
         # labels.
         k = cnt+j-1
         if ((datei[j+1] - datei[j]) >= 2) {
-          qwindow$qwindow_times[k] = list(actlog[i,(datei[j]+1):(datei[j+1]-1)]) # list of times for that day
+          actlog_tmp = actlog[i,(datei[j]+1):(datei[j+1]-1)]
+          actlog_tmp = actlog_tmp[which(is.na(actlog_tmp) == FALSE & actlog_tmp != "")]
+          qwindow$qwindow_times[k] = list(actlog_tmp) # list of times for that day
           qwindow$qwindow_values[k] = list(time2numeric(qwindow$qwindow_times[k]))
           qwindow$qwindow_names[k] = list(extract_names(qwindow$qwindow_times[k]))
           unlisted_qv = unlist(qwindow$qwindow_values[k])
@@ -150,6 +152,5 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
       warning("\n Date not recognised in activity diary")
     }
   }
-  
   return(qwindow)
 }
