@@ -61,6 +61,10 @@ g.extractheadervars = function(I) {
       seriali = which(hnames == "uniqueSerialCode")
       if (length(seriali) > 0) deviceSerialNumber = hvalues[seriali[1]] #serial number			
     }
+    if (mon == "movisens") {
+      deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "serialnumber")])
+      ID = as.character(I$header$value[which(row.names(I$header) == "ID")])
+    }
   } else if (mon == "unknown") {
     if (length(which(hnames == "recordingID")) > 0) {
       ID = hvalues[which(hnames == "recordingID")]
