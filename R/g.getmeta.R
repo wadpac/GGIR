@@ -314,7 +314,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         #add left over data from last time
         if (nrow(S) > 0) {
-          data = rbind(S,data)
+          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
         }
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
