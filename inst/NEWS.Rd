@@ -12,6 +12,7 @@
     \item Part 2: Further, improvement to activity diary functionality to warn user when date format is inconsistent.
     \item Part 2: Missing values in activity diary are now skipped by which non-neighboring cells with valid data can
     define segments.
+    \item Part 3: Improved handling of sleep that ends in the hour before noon on the last day of the recording.
     }
 }
 
