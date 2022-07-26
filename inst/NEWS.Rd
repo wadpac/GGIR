@@ -8,6 +8,7 @@
     \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
     \item Fixed issue #592 which caused GGIR to incorrectly warn used about using the set time window guider functionality correctly
     \item Part 2: Corrected calendar date time stamps in daysummary report on last day of the recording.
+    \item Part 3: Improved handling of sleep that ends in the hour before noon on the last day of the recording.
     }
 }
 
