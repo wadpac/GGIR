@@ -257,15 +257,15 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
   }
-  if (is.null(configtz)) {
-    accdata$time = as.POSIXlt(x = accdata$time, tz = desiredtz, format = "%Y-%m-%d %H:%M:%OS", origin = "1970-01-01")
-  } else {
-    options(digits.secs = 5)
-    options(digits = 5)
-    accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz, origin = "1970-01-01")
-    # next line is revised as we want to avoid reseting the tzone attribute of time
-    accdata$time = as.POSIXlt(accdata$time, tz = desiredtz, origin = "1970-01-01")
+  options(digits.secs = 5)
+  options(digits = 5)
+  accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
+  # time is now POSIXct POSIXt object with 5 decimal places
+  if (configtz != desiredtz) {
+    attr(accdata$time, "tzone") <- desiredtz
   }
+  # Set date format to POSIXlt to avoid further confusion about what timezone it is in
+  accdata$time = as.POSIXlt(accdata$time, origin = "1970-01-01", tz = desiredtz)
   
   #===========================
   accdata = accdata[!duplicated(accdata),] # needed for Windows?
