@@ -675,7 +675,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         SDF = read.csv(selectdaysfile)
         if (useRDA == FALSE) {
           I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                            params_rawdata = params_rawdata, configtz = params_general[["configtz"]])
+                            params_rawdata = params_rawdata)
         }
         hvars = g.extractheadervars(I)
         deviceSerialNumber = hvars$deviceSerialNumber
