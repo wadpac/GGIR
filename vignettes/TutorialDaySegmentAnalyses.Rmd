@@ -63,8 +63,8 @@ The activity log is expected to be a .csv-file with the following structure:
 
 ID | date | work | travelhome | home | date | work | travelhome | home 
 -----| -------- | ------- | --------- | ----- | -------- | ------- | -------- | --------
-1234 | 04-11-20 | 7:45:00 |  17:00:00 | 17:30 | 05-11-20 |  |  | 17:30
-4567 | 24-11-20 | 7:45:00 |  17:00:00 | 17:30 | 25-11-20 | 7:45:00 |  17:00:00 | 17:30
+1234 | 04-11-20 | 7:45:00 |  17:00:00 | 17:30:00 | 05-11-20 |  |  | 17:30:00
+4567 | 24-11-20 | 7:45:00 |  17:00:00 | 17:30:00 | 25-11-20 | 7:45:00 |  17:00:00 | 17:30:00
 
 **Rows:**
 First row represents the column headers after which each row represents one accelerometer recording.
@@ -77,6 +77,15 @@ The ID column is followed by a date column for the first log day. To ensure GGIR
 
 **Start-times:**
 The date column is followed by one or multiple columns with start times for the activity types in that day format in hours:minutes:seconds. Do not provide dates in these cells. The header of the column will be used as label for each activity type. Insert a new date column before continuing with activity types for next day. Leave missing values empty.
+
+**Missing values:**
+If values are missing the preceding and succeeding time point will be used as the edges of the segment.
+In the example below this means that we will define a segment from `A-C` for ID `1234`, while for ID `6789` we only defined segments `A-B` and `B-C`, segment `A-C` is not derived here.
+
+ID | date | A | B | C 
+-----| -------- | ------- | --------- | ----- 
+1234 | 04-11-20 | 7:45:00 |           | 17:30:00 
+6789 | 24-11-20 | 7:45:00 |  13:00:00         | 17:30:00 
 
 **Notes:**
 - If an activity log was collected for some individuals then those will be processed with qwindow value c(0,24).
