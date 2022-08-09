@@ -110,7 +110,6 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
     features
   }
   #=========================================
-  
   verbose_message <- function(..., verbose = verbose) {
     if (verbose) {
       message(...)
@@ -154,7 +153,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   
   # tz  <- "GMT" # used for parsing, times are actually in local timezone
   if (is.null(configtz)) configtz = desiredtz
-  if (configtz == "") configtz = desiredtz
+  # if (configtz == "") configtz = desiredtz
   info <- read.gt3x::parse_gt3x_info(path, tz = configtz) #tz
   if (verbose) {
     print(info)
@@ -251,22 +250,24 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
                fun_start_time, units = "secs")),
     " seconds)",
     verbose = verbose)
-  
-  
+
+
   accdata <- structure(accdata,
                        class = c("activity", class(accdata)))
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
   }
-  options(digits.secs = 5)
-  options(digits = 5)
-  accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
-  # time is now POSIXct POSIXt object with 5 decimal places
-  if (configtz != desiredtz) {
-    attr(accdata$time, "tzone") <- desiredtz
+  if (is.null(configtz)) {
+    accdata$time = as.POSIXlt(x = accdata$time, tz = desiredtz, format = "%Y-%m-%d %H:%M:%OS", origin = "1970-01-01")
+  } else {
+    options(digits.secs = 5)
+    options(digits = 5)
+    accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz, origin = "1970-01-01")
+    # next line is revised as we want to avoid reseting the tzone attribute of time
+    accdata$time = as.POSIXlt(accdata$time, tz = desiredtz, origin = "1970-01-01")
   }
-  # Set date format to POSIXlt to avoid further confusion about what timezone it is in
-  accdata$time = as.POSIXlt(accdata$time, origin = "1970-01-01", tz = desiredtz)
+  
+  #===========================
   accdata = accdata[!duplicated(accdata),] # needed for Windows?
   if (flag_idle_sleep) {
     if (asDataFrame) {
