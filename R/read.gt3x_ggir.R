@@ -154,7 +154,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   # tz  <- "GMT" # used for parsing, times are actually in local timezone
   if (is.null(configtz)) configtz = desiredtz
   # if (configtz == "") configtz = desiredtz
-  info <- read.gt3x::parse_gt3x_info(path, tz = configtz) #tz
+  info <- read.gt3x::parse_gt3x_info(path, tz = "GMT") #tz
   if (verbose) {
     print(info)
   }
@@ -239,7 +239,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (!is_old_version) {
     attr(accdata, "missingness") <- data.frame(
       time = as.POSIXct(as.numeric(names(attr(accdata, "missingness"))),
-                        origin = "1970-01-01", tz = configtz),
+                        origin = "1970-01-01", tz = "GMT"),
       n_missing = attr(accdata, "missingness"),
       stringsAsFactors = FALSE)
   }
