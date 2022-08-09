@@ -12,8 +12,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
                            imputeZeroes = FALSE,
                            flag_idle_sleep = FALSE,
                            cleanup = FALSE,
-                           desiredtz = "",
-                           configtz = "",
+                           desiredtz = "", configtz = "",
                            ...,
                            add_light = FALSE) {
   #=======================================================
@@ -153,7 +152,6 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   
   # tz  <- "GMT" # used for parsing, times are actually in local timezone
   if (is.null(configtz)) configtz = desiredtz
-  # if (configtz == "") configtz = desiredtz
   info <- read.gt3x::parse_gt3x_info(path, tz = "GMT") #tz
   if (verbose) {
     print(info)
@@ -243,6 +241,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
       n_missing = attr(accdata, "missingness"),
       stringsAsFactors = FALSE)
   }
+  
   verbose_message(
     "Done", " (in ",
     as.numeric(
@@ -251,27 +250,21 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
     " seconds)",
     verbose = verbose)
 
-
   accdata <- structure(accdata,
                        class = c("activity", class(accdata)))
   
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
   }
+  # set time to POSIXct POSIXt with 5 decimal places
+  # with the expected timezone of device configuration
   options(digits.secs = 5)
   options(digits = 5)
   accdata$time = as.POSIXct(as.character(accdata$time), tz = configtz)
-  # time is now POSIXct POSIXt object with 5 decimal places
+  
   if (configtz != desiredtz) {
     attr(accdata$time, "tzone") <- desiredtz
   }
-  options(digits.secs = 5)
-  options(digits = 5)
-  # Set date format to POSIXlt to avoid further confusion about what timezone it is in
-  accdata$time = as.POSIXlt(accdata$time, origin = "1970-01-01", tz = desiredtz)
-  
-  #===========================
-  accdata = accdata[!duplicated(accdata),] # needed for Windows?
   if (flag_idle_sleep) {
     if (asDataFrame) {
       accdata$idle = rowSums(accdata[, c("X", "Y", "Z")] == 0) == 3
