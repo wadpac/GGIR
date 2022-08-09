@@ -264,6 +264,8 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (configtz != desiredtz) {
     attr(accdata$time, "tzone") <- desiredtz
   }
+  options(digits.secs = 5)
+  options(digits = 5)
   # Set date format to POSIXlt to avoid further confusion about what timezone it is in
   accdata$time = as.POSIXlt(accdata$time, origin = "1970-01-01", tz = desiredtz)
   
