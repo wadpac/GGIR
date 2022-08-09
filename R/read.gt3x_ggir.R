@@ -239,7 +239,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
   if (!is_old_version) {
     attr(accdata, "missingness") <- data.frame(
       time = as.POSIXct(as.numeric(names(attr(accdata, "missingness"))),
-                        origin = "1970-01-01"),
+                        origin = "1970-01-01", tz = configtz),
       n_missing = attr(accdata, "missingness"),
       stringsAsFactors = FALSE)
   }
@@ -254,6 +254,7 @@ read.gt3x_ggir <- function(path, verbose = FALSE, asDataFrame = FALSE,
 
   accdata <- structure(accdata,
                        class = c("activity", class(accdata)))
+  
   if (asDataFrame) {
     accdata <- as.data.frame(accdata, verbose = verbose > 1)
   }

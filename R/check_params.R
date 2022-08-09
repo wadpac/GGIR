@@ -171,6 +171,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
+  
   if (length(params_cleaning) > 0) {
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.start"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ", 
