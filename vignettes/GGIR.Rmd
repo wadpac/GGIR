@@ -79,7 +79,7 @@ remotes::install_github("wadpac/GGIR")
 1. GGIR works with the following accelerometer brands and formats:
     - [GENEActiv](https://www.activinsights.com/) .bin
     - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
-     - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with "NEO" or "MRA" and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header.
+    - [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with "NEO" or "MRA" and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). Note for Actigraph users: If you want to work with .csv exports via the commercial ActiLife software then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will calculate timestamps from the sample frequency, the start time and start date as presented in the file header.
     - [Movisens](https://www.movisens.com/en/) with data stored in folders.
     - Genea (an accelerometer that is not commercially available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
     - Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and argument `rmc.noise` in the [GGIR function documentation (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
@@ -262,6 +262,7 @@ dynrange | 1 | params_rawdata
 configtz | 1 | params_general
 minimumFileSizeMB | 1 | params_rawdata
 interpolationType | 1 | params_rawdata
+expand_tail_max_hours | 1 | params_general
 metadatadir | 2, 3, 4, 5 | not in parameter objects
 minimum_MM_length.part5 | 5 | params_cleaning
 strategy | 2, 5 | params_cleaning
@@ -362,7 +363,7 @@ For an explanation on how sleep is detected and the specific role of the various
 - `def.noc.sleep` specifies how the sleep period time window should be estimated if no sleeplog is used.
 - `includenightcrit` Minimum number of valid hours per night (24 hour window between noon and noon or 6pm-6pm).
 - `data_cleaning_file` to ginore specific nights for specific individuals, see also section [Data cleaning file](#Data_cleaning_file).
-- If you want the sleep analysis to be guided by a sleeplog (diary) then check out arguments `loglocation` which specifies the location of the spreadsheet (csv) with sleep log information. Further, use arguments `colid`, `coln1`, `nnights`, and `sleeplogsep` to specify the details of your sleep log structure. 
+- If you want the sleep analysis to be guided by a sleeplog (diary) then check out arguments `loglocation` which specifies the location of the spreadsheet (csv) with sleep log information. Further, use arguments `colid`, `coln1`, `nnights`, and `sleeplogsep` to specify the details of your sleep log structure.
 
 GGIR facilitates two possible sleeplog file structures:
 
@@ -378,7 +379,7 @@ ID | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_
 - One column for participant id, this does not have to be the first column. Specify which column it is with  argument `colid`.
 - Alternatingly one column for onset time and one column for waking time. Specify which column is the column for the first night by argument `coln1`, in the above example `coln1=2`.
 - Timestamps are to be stored without date as in hh:mm:ss with hour values ranging between 0 and 23 (not 24). If onset corresponds to lights out or intention to fall asleep, then it specify `sleepwindowType = "TimeInBed"`.
-- There can be multiple sleeplogs in the same spreadsheet. Each row representing a single recording. 
+- There can be multiple sleeplogs in the same spreadsheet. Each row representing a single recording.
 - First row: The first row of the spreadsheet needs to be filled with column names. For the basic sleep log format it does not matter what these column names are.
 
 
@@ -429,7 +430,7 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 - [Roscoe et al 2017](https://link.springer.com/article/10.1007/s00431-017-2948-2): wrist in 4-5 year old pre-school children.
 7-11 and 21-61 years old.
 - [Sanders et al. 2018](https://doi.org/10.1080/02640414.2018.1555904): wrist and hip in older adults (mean: 69.6 years)
-- [Migueles et al  2021](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/): wrist and hip in older adults aged above 70 (mean: 78.7) years. 
+- [Migueles et al  2021](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/): wrist and hip in older adults aged above 70 (mean: 78.7) years.
 - [Fraysse et al. 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/): wrist in older adults aged above 70 (mean: 77) years.
 - [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7): wrist- and hip in adults with heart failure (mean age 71)
 - If you are aware of any additional publications then let us know.
@@ -761,7 +762,7 @@ WASO | Wake After Sleep Onset: SptDuration - SleepDurationInSpt
 SptDuration | Sleep Period Time window duration: wakeup - sleeponset
 error_onset | Difference between sleeponset and guider_onset (this variable is only available in the full report as stored in the QC folder)
 error_wake | Difference between wakeup and guider_wake (this variable is only available in the full report as stored in the QC folder)
-SleepRegularityIndex | The Sleep Regularity Index as proposed by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to 
+SleepRegularityIndex | The Sleep Regularity Index as proposed by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to
 enable user to study patterns across days.
 SriFractionValid | Fraction of the 24 hour period that was valid in both current as well
 as in matching timestamps for the next calendar day. See GGIR function manual for details.
@@ -769,8 +770,8 @@ as in matching timestamps for the next calendar day. See GGIR function manual fo
 
 #### Non-default variables in part 4 csv report
 
-These additional are only stored if you used a sleeplog that captures time in bed, 
-or when using guider HorAngle for hip-worn accelerometer data. If either of these 
+These additional are only stored if you used a sleeplog that captures time in bed,
+or when using guider HorAngle for hip-worn accelerometer data. If either of these
 applies set argument `sleepwindowType` to "TimeInBed".
 
 (Part of) variable name |   Description
@@ -1009,18 +1010,18 @@ For example, if a recording starts at 9:52:00 then the GGIR will work with epoch
 Motivation:
 
 - This allows us to have a standardised time grid across recordings to describe behaviour.
-- This allows us to calculate behaviour exactly per day or per specified time interval in a day. 
+- This allows us to calculate behaviour exactly per day or per specified time interval in a day.
 
 If the first 15 minute epochs would start at 9:52 then the next one would start at 10:07, which makes it impossible to make statement about behaviour between 10:00 and 13:00.
 
 ## Sleep analysis {#Sleep_analysis}
 
-In GGIR sleep analysis has been implemented in part 3 and 4. Sleep analysis comes at two levels: The identification of the main Sleep Period Time (SPT) window or the time in bed window (TIB), and the discrimination of sleep and wakefulness periods. The term sleep is somewhat controversial in the context of accelerometry, because accelerometer only capture lack of movement. To acknowledge this challenge GGIR refers to these classified sleep periods as **sustained inactivity bouts (abbreviated as SIB)**. 
+In GGIR sleep analysis has been implemented in part 3 and 4. Sleep analysis comes at two levels: The identification of the main Sleep Period Time (SPT) window or the time in bed window (TIB), and the discrimination of sleep and wakefulness periods. The term sleep is somewhat controversial in the context of accelerometry, because accelerometer only capture lack of movement. To acknowledge this challenge GGIR refers to these classified sleep periods as **sustained inactivity bouts (abbreviated as SIB)**.
 
 Current, GGIR offers the user the choice to identify SIB period using any of the following algorithms:
 
 - **vanHees2015:** Heuristic algorithm proposed in 2015 [link](https://doi.org/10.1371/journal.pone.0142533) which looks for periods of time where the z-angle does not change by more than 5 degrees for at least 5 minutes. This in contrast to conventional sleep detection algorithms such as Sadeh and Galland which rely on acceleration to estimate sleep. The vanHees2015 algorithm is the default.
-- **Sadeh1994:** The algorithm proposed by Sadeh et al. [link](https://doi.org/10.1093/sleep/17.3.201). 
+- **Sadeh1994:** The algorithm proposed by Sadeh et al. [link](https://doi.org/10.1093/sleep/17.3.201).
 To use the GGIR implementation of the zero-crossing counts and Sadeh algorithm, specify argument `HASIB.algo = “Sadeh1994"` and argument `Sadeh_axis = "Y"` to indicate that the algorithm should use the Y-axis of the sensor.
 - **Galland2012:** The count-scaled algorithm proposed by Galland et al. [link](http://dx.doi.org/10.1016/j.sleep.2012.01.018). To use our implementation of the Galland2012 algorithm specify argument `HASIB.algo = “Galland2012"`. Further, set `Sadeh_axis = "Y"` to specify that the algorithm should use the Y-axis.
 
@@ -1032,7 +1033,7 @@ Missing information about the calculation includes: (1) Sadeh specified that cal
 
 The method proposed by Galland and colleagues in 2012 was designed for counts captured with the Actical device (Mini Mitter Co, Inc Bend OR). Based on the correspondence with AMI we can conclude that Actical counts are not identical to AMI's actigraph counts. Further, a publicly accessible complete description of the Actical calculation does not exist. Therefore, we can also conclude that methodological consistency cannot be guaranteed for Actical counts.
 
-To aid research in exploring count type algorithms, we also implemented the `brondcounts` as proposed by Br&#248;nd and Brondeel and available via R package activityCounts. To extract this metric in addition to the zero crossing count, specify `do.brondcounts = TRUE` which is used in GGIR part 1 and uses R package activityCounts in the background. As a result, sleep estimates for Sadeh or Galland will be derived based on both the zero crossing algorithm and the `brondcounts` algorithms. 
+To aid research in exploring count type algorithms, we also implemented the `brondcounts` as proposed by Br&#248;nd and Brondeel and available via R package activityCounts. To extract this metric in addition to the zero crossing count, specify `do.brondcounts = TRUE` which is used in GGIR part 1 and uses R package activityCounts in the background. As a result, sleep estimates for Sadeh or Galland will be derived based on both the zero crossing algorithm and the `brondcounts` algorithms.
 
 
 ### Guiders

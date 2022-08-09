@@ -114,7 +114,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
   }
   if (length(params_general) > 0) {
-    numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder")
+    numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder", "expand_tail_max_hours")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
@@ -156,7 +156,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (length(params_sleep[["loglocation"]]) == 1) {
       if (params_sleep[["loglocation"]] == "") params_sleep[["loglocation"]] = c() #inserted because some users mistakingly use this
     }
-    if (length(params_sleep[["loglocation"]]) == 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
+    if (length(params_sleep[["loglocation"]]) > 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
       warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
                      " We assume you want to use the sleeplog and misunderstood",
                      " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"), call. = FALSE)

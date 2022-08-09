@@ -24,11 +24,13 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(), ...) {
   # Although also documented in the package manual files, here 
   # for convenience the monitor codes (mon):
   # 0 - ad-hoc file (currently only .csv format)
+  # 1 - GENEA (non-commercial); 2 - GENEActiv
   # 3 - Actigraph; 4 - Axivity (AX3, AX6)
   # 5 - Movisense; 6 - Verisense
   # data formats:
+  # 0 = ad-hoc .csv
   # 1 - bin; 2 - csv; 3 - wav
-  # 4 - cwa; 5 - ad-hoc .csv
+  # 4 - cwa; 5 - movisens
   # 6 - gt3x
   
   
@@ -187,7 +189,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(), ...) {
         tmp0 = read.csv(datafile, nrow = 100000, skip = 0)
         tmp1 = as.numeric(as.POSIXlt(tmp0[, 1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
-        sf = round((sf) / 5 ) * 5 # round to nearest integer of 5
+        sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is 
       }
     } else if (dformat == 3) { # wav
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
@@ -260,6 +262,25 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(), ...) {
       H = GENEAread::header.info(binfile = datafile, more = F)
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
+      xmlfile = paste0(dirname(datafile), "/unisens.xml")
+      if (file.exists(xmlfile)) {
+        # as we are only interested in two character fields
+        # try extract value by reading xml as text file to avoid having to add
+        # software dependencies
+        header = as.character(read.csv(xmlfile, nrow = 1))
+        tmp1 = unlist(strsplit(header, "measurementId="))[2]
+        ID = gsub(pattern = " ",replacement = "",  unlist(strsplit(tmp1, " timestampStart"))[1])
+        
+        header = paste0(read.csv(xmlfile, nrow = 10, skip = 2), collapse = " ")
+        tmp1 = unlist(strsplit(header, "sensorSerialNumber value="))[2]
+        SN = unlist(strsplit(tmp1, "/>"))[1]
+        header = data.frame(serialnumber = SN, ID = ID)
+        if (length(header) > 1) {
+          H = t(header)
+        }
+        filename = unlist(strsplit(as.character(datafile),"/"))
+        filename = filename[length(filename) - 1]
+      }
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { # geneactiv
@@ -357,7 +378,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(), ...) {
   if (dformat == 4) {
     header = data.frame(value = H, row.names = rownames(H), stringsAsFactors = TRUE)
   } else {
-    if (mon == 2 & dformat == 1) {
+    if ((mon == 2 & dformat == 1) | (mon == 5 & length(H) > 0)) {
       varname = rownames(as.matrix(H))
       H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
     } else {

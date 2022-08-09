@@ -66,19 +66,20 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
     tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
     timethreshold = as.numeric(tempi[length(tempi)])
-    Nsleep = length(timethreshold) * length(anglethreshold)
-    sleep = matrix(0,length(ts$angle[redo1:redo2]),Nsleep)
-    ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
+    # ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
+    if (any(is.na(ts$angle[redo1:redo2]))) {
+      ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
+    }
     sdl1 = rep(0,length(ts$time[redo1:redo2]))
     postch = which(abs(diff(ts$angle[redo1:redo2])) > anglethreshold) #posture change of at least j degrees
     # count posture changes that happen less than once per ten minutes
     q1 = c()
     if (length(postch) > 1) {
-      q1 = which(diff(postch) > (timethreshold*(60/ws3))) #less than once per i minutes
+      q1 = which(diff(postch) > (timethreshold * (60/ws3))) #less than once per i minutes
     }
     if (length(q1) > 0) {
       for (gi in 1:length(q1)) {
-        sdl1[postch[q1[gi]]:postch[q1[gi]+1]] = 1 #periods with no posture change
+        sdl1[postch[q1[gi]]:postch[q1[gi] + 1]] = 1 #periods with no posture change
       }
     } else { #possibly a day without wearing
       if (length(postch) < 5) {  #possibly a day without wearing
@@ -91,7 +92,7 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     if (redo2 > Nts) {
       delta = redo2 - Nts
       redo2 = Nts
-      sdl1 = sdl1[1:(length(sdl1)-delta)]
+      sdl1 = sdl1[1:(length(sdl1) - delta)]
     }
     if (redo1 > Nts) {
       redo1 = Nts

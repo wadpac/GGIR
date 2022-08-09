@@ -313,7 +313,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         #add left over data from last time
         if (nrow(S) > 0) {
-          data = rbind(S,data)
+          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
         }
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
@@ -376,7 +376,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             } else if (mon == 5) {
               temperaturecolumn = 4
             } else if (mon == 0) {
-              temperaturecolumn = 5
+              temperaturecolumn = params_rawdata[["rmc.col.temp"]]
             }
             if (mon != 0 & mon != 5) {
               light = as.numeric(data[, lightcolumn])

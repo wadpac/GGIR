@@ -1,17 +1,43 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.7-2 (GitHub-only-release date:??-??-2022)}{
+
+\section{Changes in version 2.7-4 (GitHub-only-release date:??-??-2022)}{
 \itemize{
     \item Part1: Changing mimimum timegap length to be imputed to 5 seconds (was two samples)
     \item Part1: Specifying desiredtz and configtz now possible for gt3x data.
     \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
     }
 }
-\section{Changes in version 2.7-1 (release date:28-05-2022)}{
+\section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
 \itemize{
-    \item Fixing bug #566 concerning decision to not parallel process happenning too late in the code
+    \item Part1: Added option to expand the last day of the recording to
+      trigger analyses for that day, see argument expand_tail_max_hours in params_general.
+    \item Part 1: Add extraction of ID and serial number from Movisens data
+    \item Part 2: Corrected calendar date time stamps in daysummary report on last day of the recording.
+    \item Part 2: Further, improvement to activity diary functionality to warn user when date format is inconsistent.
+    \item Part 2: Missing values in activity diary are now skipped by which non-neighboring cells with valid data can
+    define segments.
+    \item Part 3: Improved handling of sleep that ends in the hour before noon on the last day of the recording.
+    \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
+    \item Part 4: Fixed issue #592 which caused GGIR to incorrectly warn used about using the
+    set time window guider functionality correctly
+    }
+}
+
+\section{Changes in version 2.7-2 (GitHub-only-release date:22-06-2022)}{
+\itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
+    \item Inform user (onAttach) when local GGIR version is behind CRAN version.
+    \item Part 2: Enhancing activity diary functionality to warn user when date format is inconsistent and to treat cells with only a dot as missing values.
+    \item Part 1: Fixing issue #577 concerning use of temperature data in ad-hoc csv file format
+    \item Part 5: Fixing issue #582 affecting windows where a single fragment spans the entire window.
+  }
+}
+\section{Changes in version 2.7-1 (release date:29-05-2022)}{
+\itemize{
+    \item Fixing bug #566 concerning decision to not parallel process being made too late
+    \item Part 4: Attempt to fix timezone sensitivity for OSx in Pacific timezone for gloadlog function.
   }
 }
 \section{Changes in version 2.7-0 (release date:23-05-2022)}{

@@ -232,6 +232,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
               temperaturecolumn = 7
             } else if (mon == 4 | mon == 5) { #AX | Movisense
               temperaturecolumn = 5
+            } else if (mon == 0) {
+              temperaturecolumn = params_rawdata[["rmc.col.temp"]]
             }
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == 1 | mon == 3) { # GENEA or Actigraph
