@@ -8,7 +8,7 @@
   gaps by the last recorded value per axis normalised to 1 _g_
 }
 \usage{
-  g.imputeTimegaps(x, xyzCol, timeCol, sf, impute = TRUE)
+  g.imputeTimegaps(x, xyzCol, timeCol, sf, k = 0.25, impute = TRUE)
 }
 \arguments{
   \item{x}{
