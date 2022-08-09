@@ -23,6 +23,9 @@
   \item{sf}{
     Sample frequency in Hertz
   }
+  \item{k}{
+    Minimum time gap length to be imputed
+  }
   \item{impute}{
     Boolean to indicate whether the time gaps identified should be imputed
   }
