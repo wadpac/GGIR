@@ -176,18 +176,11 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectda
     print(P[1, 1])
     # starttime = as.POSIXlt(as.character(P[1, 1]), tz = desiredtz)
     if (is.null(configtz)) configtz = desiredtz
-    print("n-----")
-    print(paste0("configtz ", configtz))
-    print(paste0("desiredtz ", desiredtz))
     starttime = as.POSIXct(as.character(P[1, 1]), tz = configtz)
-    print(starttime)
     if (configtz != desiredtz) {
       attr(starttime, "tzone") <- desiredtz
     }
-    print(starttime)
     starttime = as.POSIXlt(starttime, tz = desiredtz)
-    print(starttime)
-    print("e-------")
   }
   return(starttime)
 }
