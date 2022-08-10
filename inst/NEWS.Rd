@@ -5,6 +5,7 @@
 \itemize{
     \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
     \item Part1: Temporary copy of read.gt3x code replaced by direct dependency on read.gt3x
+    \item Vignette: Cut-point documentation paragraph improved.
     }
 }
 \section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
