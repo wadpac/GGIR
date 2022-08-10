@@ -433,22 +433,27 @@ Cut-points to estimate time spent in acceleration levels that are roughly liked 
 - [Migueles et al  2021](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/): wrist and hip in older adults aged above 70 (mean: 78.7) years.
 - [Fraysse et al. 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/): wrist in older adults aged above 70 (mean: 77) years.
 - [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7): wrist- and hip in adults with heart failure (mean age 71)
+- [Dillon et al. 2016](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/): dominant- and non-dominant wrist , adults (50-69 years).
 - If you are aware of any additional publications then let us know.
 
 **Acceleration metric not available in GGIR?**
-Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point value we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant.
+Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point value we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency and epoch length dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant, so no information will be lost.
 
-**Esliger 2011, Phillips 2013, Fraysse 2020, Dibben2020:**
+**Esliger 2011, Phillips 2013, Fraysse 2020, Dibben 2020, Dillon 2016 :**
 
 -	In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
-- `threshold.lig = ((LightCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
-- `threshold.mod = ((ModerateCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
-- `threshold.vig = ((VigorousCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
-- `mvpathreshold = ((ModerateCutPointFromPaper_in_gmins/sampleRateInStudy)*60) * 1000`
+- `threshold.lig = ((LightCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+- `threshold.mod = ((ModerateCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+- `threshold.vig = ((VigorousCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+- `mvpathreshold = ((ModerateCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
 - The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
-- [Dibben et al. 2020](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7) does not report sample frequency by which the proposed cut-points cannot be replicated.
+- `EpochLengthInSecondsPaper` is 15 second in Dillon 2016, and 60 sec for the other studies.
 -	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
+
+**Dibben 2017:**
+- In GGIR use metric ENMOa instead of ENMO with arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
+- Use the cut-points as provided by Hildebrand directly. No need for scaling.
 
 **Roscoe 2017:**
 
@@ -481,7 +486,7 @@ Some of the above publications make use of acceleration metrics that sum their v
 -	Use default setting do.enmo= TRUE, acc.metric=”ENMO”
 -	Use the cut-points as provided by Hildebrand directly. No need for scaling.
 
-#### Notes on cut-point validity and 'validation' studies
+#### Notes on cut-point validity
 
 **Sensor calibration**
 
@@ -489,12 +494,11 @@ In all of the studies above, excluding Hildebrand et al. 2016, no effort was mad
 
 **Idle sleep mode and ActiGraph**
 
-Studies done with ActiGraph devices when configured with 'idle sleep mode' on, will have zero-strings in all three axes during periods of no movement. Studies do not clarify how these zeros strings are accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This directly impacts metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. However, also other metrics may be affected as the sudden disappearance of gravitational acceleration will cause a spike at the start and end of the non-movement time segment. More generally speaking, we advise ActiGraph users to disable the 'idle sleep mode' as it harms the transparency and reproducibility since no mechanism exists to replicate it in other accelerometer brands, and it is likely to challenge accurate assessment of sleep and sedentary behaviour. We also advise that data collected with 'idle sleep mode' turned on is not be referred to as raw data accelerometry, because the data collection process has involved proprietary pre-processing steps which is violates the core principle of raw data collection.
+Studies done with ActiGraph devices when configured with 'idle sleep mode' on, will have zero-strings in all three axes during periods of no movement. Although, ActiGraph at some point changed this to store the last recorded value. Studies often forget to  clarify whether idle sleep mode was used and if so, how it was accounted for. The insertion of zero strings is problematic as raw data accelerometers should always measure the gravitational component when not moving. This directly impacts metrics that rely on the presence of a gravitational component such as ENMO, EN, ENMOAa, and SVMgs. However, also other metrics may be affected as the sudden disappearance of gravitational acceleration will cause a spike at the start and end of the non-movement time segment. More generally speaking, we advise ActiGraph users to disable the 'idle sleep mode' as it harms the transparency and reproducibility since no mechanism exists to replicate it in other accelerometer brands, and it is likely to challenge accurate assessment of sleep and sedentary behaviour. We also advise that data collected with 'idle sleep mode' turned on is not be referred to as raw data accelerometry, because the data collection process has involved proprietary pre-processing steps which violate the core principle of raw data collection.
 
-**Validity of validation studies**
+**Why does GGIR facilitate cut-points?**
 
-Several studies that aimed to independently evaluate cut-point methods failed at recognising these challenges. Further, validation studies are typically limited to laboratory conditions and a small population. Therefore, it is best to interpret cut-points with caution. Future methodological studies around cut-points are advised to account for accelerometer calibration error and the problematic time gaps in for example the ActiGraph when configured with 'idle sleep mode'.
-
+For a more elaborate reflection on the limitations and value of cut-points see: https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/
 
 ### Example call
 
