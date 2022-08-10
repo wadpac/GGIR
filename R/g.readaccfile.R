@@ -426,7 +426,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = as.data.frame(read.gt3x_ggir(path = filename, batch_begin = startpage,
+    try(expr = {P = as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                                      batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0) { # too short or not data at all
       P = c() ; switchoffLD = 1

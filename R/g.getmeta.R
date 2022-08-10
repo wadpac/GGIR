@@ -320,7 +320,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                                         data, selectdaysfile,
                                                         P, header, desiredtz = params_general[["desiredtz"]],
                                                         sf, i, datafile,  ws2,
-                                                        starttime, wday, weekdays, wdayname)
+                                                        starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
         starttime = SWMT$starttime
         meantemp = SWMT$meantemp
         use.temp = SWMT$use.temp
