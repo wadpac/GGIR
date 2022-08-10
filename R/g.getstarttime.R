@@ -173,8 +173,6 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectda
   } else if (mon == 5) {
     starttime = unisensR::readUnisensStartTime(dirname(datafile))
   } else if (dformat == 6 & mon == 3) {
-    print(P[1, 1])
-    # starttime = as.POSIXlt(as.character(P[1, 1]), tz = desiredtz)
     if (is.null(configtz)) configtz = desiredtz
     starttime = as.POSIXct(as.character(P[1, 1]), tz = configtz)
     if (configtz != desiredtz) {
