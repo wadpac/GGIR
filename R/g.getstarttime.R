@@ -1,4 +1,4 @@
-g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectdaysfile) { 
+g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectdaysfile, configtz = NULL) { 
   #get input variables (relevant when read.myacc.csv is used)
   #------------------------------------------------------------
   if (mon  == 1 & dformat == 1) {
@@ -98,7 +98,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectda
     starttime = paste0(startdate," ",starttime)
     getOption("digits.secs")
     options(digits.secs = 3)
-    if (mon == 3 | mon == 6) {
+    if ((mon == 3 & dformat != 6) | mon == 6) {
       options(warn = -1)
       topline = as.matrix(colnames(as.matrix(read.csv(datafile, nrow = 1, skip = 0))))
       topline = topline[1]  #To avoid dots
@@ -173,7 +173,12 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, selectda
   } else if (mon == 5) {
     starttime = unisensR::readUnisensStartTime(dirname(datafile))
   } else if (dformat == 6 & mon == 3) {
-    starttime = as.POSIXlt(as.character(P[1, 1]), tz = desiredtz)
+    if (is.null(configtz)) configtz = desiredtz
+    starttime = as.POSIXct(as.character(P[1, 1]), tz = configtz)
+    if (configtz != desiredtz) {
+      attr(starttime, "tzone") <- desiredtz
+    }
+    starttime = as.POSIXlt(starttime, tz = desiredtz)
   }
   return(starttime)
 }

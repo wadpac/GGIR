@@ -3,15 +3,6 @@ context("Chainof5parts")
 test_that("chainof5parts", {
   skip_on_cran()
 
-
-  # dirR = "~/GGIR/R"
-  # ffnames = dir(dirR) # creating list of filenames of scriptfiles to load
-  # ffnames = ffnames[which(ffnames %in% c("g.cwaread.R", "read.gt3x_ggir.R") == FALSE)]
-  # for (i in 1:length(ffnames)) {
-  #   source(paste(dirR,"/",ffnames[i],sep="")) #loading scripts for reading geneactiv data
-  # }
-  # library(testthat)
-
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
   create_test_sleeplog_csv(advanced = FALSE)

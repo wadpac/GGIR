@@ -38,8 +38,7 @@ export(g.analyse, g.calibrate,
        HASIB, g.part4_extractid,
        CalcSleepRegularityIndex, load_params,
        check_params, extract_params,
-       g.imputeTimegaps, read.gt3x_ggir,
-       parseGT3Xggir, g.part5.classifyNaps,
+       g.imputeTimegaps, g.part5.classifyNaps,
        tidyup_df, cosinorAnalyses)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",

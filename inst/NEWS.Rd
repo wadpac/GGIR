@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-4 (GitHub-only-release date:??-??-2022)}{
+\itemize{
+    \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
+    \item Part1: Temporary copy of read.gt3x code replaced by direct dependency on read.gt3x
+    }
+}
 \section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
 \itemize{
     \item Part 1: Add extra arguments to modify zero-crossing count calculation.
