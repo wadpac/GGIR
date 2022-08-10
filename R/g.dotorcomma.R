@@ -65,7 +65,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
     if (length(grep(pattern = "[.]GT", x = inputfile)) > 0 & file.exists(inputfile) == FALSE) {
       inputfile = gsub(pattern = "[.]GT3X", replacement = "[.]gt3x", x = inputfile)
     }
-    try(expr = {deci = as.data.frame(read.gt3x_ggir(path = inputfile,
+    try(expr = {deci = as.data.frame(read.gt3x::read.gt3x(path = inputfile,
                                                        batch_begin = 1, batch_end = 10, 
                                                        asDataFrame = TRUE))}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .gt3x file in GGIR function dotorcomma")
