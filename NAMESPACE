@@ -53,7 +53,6 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed", "na.pass",
             "residuals", "fitted")
-importFrom("zoo", "na.locf")
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion")
