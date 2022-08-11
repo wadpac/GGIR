@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-4 (GitHub-only-release date:X-X-2022)}{
+\itemize{
+    \item Part1: Mismatches in the reading of ActiGraph csv files handled (mainly because of header = TRUE resulted in some acceleration values disregarded as they were considered a header in each iteration).
+    \item Part 1: Fixed issue #573 (code redundancy to impute time gaps in read.myacc.csv and g.imputeTimegaps)
+    \item Part 1: g.imputeTimegaps extended so that now it can handle time gaps at the begining, at the end of the file, and 
+    time gaps from one chunk to the next one.
+    }
+}
 \section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
 \itemize{
     \item Part1: Added option to expand the last day of the recording to

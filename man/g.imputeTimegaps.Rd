@@ -9,7 +9,7 @@
 }
 \usage{
   g.imputeTimegaps(x, xyzCol, timeCol = c(), sf, k = 0.25, impute = TRUE, 
-                   LastValueInPrevChunk = c(0,0,1), LastTimeInPrevChunk = NULL)
+                   PreviousLastValue = c(0,0,1), PreviousLastTime = NULL)
 }
 \arguments{
   \item{x}{
@@ -30,10 +30,10 @@
    \item{impute}{
     Boolean to indicate whether the time gaps identified should be imputed
   }
-  \item{LastValueInPrevChunk}{
+  \item{PreviousLastValue}{
     Automatically identified last value in previous chunk of data read.
   }
-    \item{LastTimeInPrevChunk}{
+    \item{PreviousLastTime}{
     Automatically identified last timestamp in previous chunk of data read.
   }
 }

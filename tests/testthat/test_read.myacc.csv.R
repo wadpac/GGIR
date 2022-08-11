@@ -195,12 +195,12 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.bit = "bit", rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c(), rmc.check4timegaps = TRUE)
   
-  expect_that(round(mean(D7$data[,2]), digits = 3), equals(0.955))
-  expect_that(round(mean(D7$data[,3]), digits = 2), equals(0.27))
-  expect_that(round(mean(D7$data[,4]), digits = 2), equals(-0.35))
-  expect_that(round(mean(D7$data[,5]), digits = 1), equals(20))
+  expect_that(round(mean(D7$data[,2]), digits = 3), equals(0.761))
+  expect_that(round(mean(D7$data[,3]), digits = 2), equals(-0.62))
+  expect_that(round(mean(D7$data[,4]), digits = 2), equals(-0.36))
+  expect_that(round(mean(D7$data[,5]), digits = 1), equals(20.1))
   expect_that(round(D7$data[2,2], digits = 3), equals(5.578))
-  expect_that(ncol(D7$data), equals(5))
+  expect_that(ncol(D7$data), equals(6))
   expect_that(nrow(D7$header), equals(5))
   expect_that(ncol(D7$header), equals(1))
     

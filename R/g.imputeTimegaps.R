@@ -68,16 +68,17 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (NumberOfGaps > 0) {
       x$gap = 1
       x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
-    }
-    #  normalisation to 1 G 
-    normalise = which(x$gap > 1)
-    for (i_normalise in normalise) {
-      en_lastknownvalue = sqrt(rowSums(x[i_normalise, xyzCol]^2))
-      if ((abs(en_lastknownvalue) - 1) > 0.005) {   # only if it deviates more than 5 mg from 1 G
-        x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
+      
+      #  normalisation to 1 G 
+      normalise = which(x$gap > 1)
+      for (i_normalise in normalise) {
+        en_lastknownvalue = sqrt(rowSums(x[i_normalise, xyzCol]^2))
+        if ((abs(en_lastknownvalue) - 1) > 0.005) {   # only if it deviates more than 5 mg from 1 G
+          x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
+        }
       }
+      x <- as.data.frame(lapply(x, rep, x$gap))
     }
-    x <- as.data.frame(lapply(x, rep, x$gap))
   } else if (isFALSE(impute)) {
     if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
     if (isTRUE(imputelast)) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
