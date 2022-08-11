@@ -335,7 +335,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
                            abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       meta_temp = meta_temp[nomovement,]
-      rm(nomovement)
+      dup = which(duplicated(meta_temp[,2]) & duplicated(meta_temp[,3]) & duplicated(meta_temp[,4])) # remove duplicated values
+      if (length(dup) > 0) meta_temp = meta_temp[-dup,]
+      rm(nomovement, dup)
       if (min(dim(meta_temp)) > 1) {
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)

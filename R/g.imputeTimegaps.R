@@ -36,30 +36,30 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     x = x[-zeros,]
   }
-  # new versions of ActiGraph csv's do not have zeros but last observation carried forward
-  # find them and remove to get the same imputation as with the rest of files
-  dup = (diff(x[,xyzCol[1]]) == 0) & (diff(x[,xyzCol[2]]) == 0) & (diff(x[,xyzCol[3]]) == 0)
-  dup_rle = accelerometry::rle2(dup, indices = TRUE)
-  dup2remove = dup_rle[which(dup_rle[,"value"] == 1 & dup_rle[,"length"] >= sf),]
-  if (!is.matrix(dup2remove)) {
-    dup2remove = matrix(dup2remove, byrow = TRUE, ncol = 4)
-    colnames(dup2remove) = c("value", "start", "stop", "length")
-  }
-  if (nrow(dup2remove) > 0) {
-    remove = c()
-    for (i in 1:nrow(dup2remove)) {
-      remove = c(remove, seq(dup2remove[i,"start"], dup2remove[i,"stop"]))
-    }
-    if (remove[1] == 1) FirstRowZeros = TRUE # if first value is duplicated, we prevent removing it later on
-    remove = remove + 1
-    # if last value is duplicated, we should not remove it (to keep track of the time)
-    # This last row will be imputed afterwards (i.e., imputelast = TRUE)
-    if (remove[length(remove)] == nrow(x)) {
-      remove = remove[-length(remove)]
-      imputelast = TRUE
-    }
-    x = x[-remove,]
-  }
+  # # new versions of ActiGraph csv's do not have zeros but last observation carried forward
+  # # find them and remove to get the same imputation as with the rest of files
+  # dup = (diff(x[,xyzCol[1]]) == 0) & (diff(x[,xyzCol[2]]) == 0) & (diff(x[,xyzCol[3]]) == 0)
+  # dup_rle = accelerometry::rle2(dup, indices = TRUE)
+  # dup2remove = dup_rle[which(dup_rle[,"value"] == 1 & dup_rle[,"length"] >= sf),]
+  # if (!is.matrix(dup2remove)) {
+  #   dup2remove = matrix(dup2remove, byrow = TRUE, ncol = 4)
+  #   colnames(dup2remove) = c("value", "start", "stop", "length")
+  # }
+  # if (nrow(dup2remove) > 0) {
+  #   remove = c()
+  #   for (i in 1:nrow(dup2remove)) {
+  #     remove = c(remove, seq(dup2remove[i,"start"], dup2remove[i,"stop"]))
+  #   }
+  #   if (remove[1] == 1) FirstRowZeros = TRUE # if first value is duplicated, we prevent removing it later on
+  #   remove = remove + 1
+  #   # if last value is duplicated, we should not remove it (to keep track of the time)
+  #   # This last row will be imputed afterwards (i.e., imputelast = TRUE)
+  #   if (remove[length(remove)] == nrow(x)) {
+  #     remove = remove[-length(remove)]
+  #     imputelast = TRUE
+  #   }
+  #   x = x[-remove,]
+  # }
   # find missing timestamps (timegaps)
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
     if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
