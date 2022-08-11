@@ -90,33 +90,22 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) {
-      # NEW approach - if gaps exist, fill the dataset with NA values 
       x$gap = 1
       x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
-      x <- as.data.frame(lapply(x, rep, x$gap))
-      # turn copied values to NA
-      x[which(diff(x$gap) > 0) + 1, "gap"] = 0 # 0 means this value will be tested for normalisation below
-      if (FirstRowZeros) x[1, "gap"] = 0
-      if (exists("firstimputed")) {
-        x[1, "gap"] = 0
-      }
-      x[which(x$gap > 1), xyzCol] = NA
     }
     #  normalisation to 1 G 
-    normalise = which(x$gap == 0)
+    normalise = which(x$gap > 1)
     for (i_normalise in normalise) {
       en_lastknownvalue = sqrt(rowSums(x[i_normalise, xyzCol]^2))
       if ((abs(en_lastknownvalue) - 1) > 0.005) {   # only if it deviates more than 5 mg from 1 G
         x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
       }
     }
-    x = x[, which(colnames(x) != "gap")]
+    x <- as.data.frame(lapply(x, rep, x$gap))
   } else if (isFALSE(impute)) {
     if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
     if (isTRUE(imputelast)) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
   }
-  # impute timegaps (NA values) copying the last recorded value
-  x = zoo::na.locf(x)
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
   # Note: Timestamps are not imputed because from here onward GGIR does not need them
