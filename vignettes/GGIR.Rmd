@@ -446,7 +446,7 @@ Some of the above publications make use of acceleration metrics that sum their v
 - `threshold.mod = ((ModerateCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
 - `threshold.vig = ((VigorousCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
 - `mvpathreshold = ((ModerateCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
-- The value for `sampleRateInStudy` was 80 for Esliger and Phillips and 100 for Fraysse.
+- The value for `sampleRateInStudy` was 80 for Esliger and Phillips, 100 for Fraysse, and 30 or 100 for Dillon.
 - `EpochLengthInSecondsPaper` is 15 second in Dillon 2016, and 60 sec for the other studies.
 -	In the part 2 results you will need the MVPA estimates that are related to ENMOa, not ENMO.
 -	In the part 5 results everything will be based on the new cut-points.
