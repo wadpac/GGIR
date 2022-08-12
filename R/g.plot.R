@@ -15,11 +15,34 @@ g.plot = function(IMP, M, I, durplot) {
   timeline = 1:nrow(M$metalong)
   durplot = durplot * n_ws2_perday
   
+  # Moved function here, because it was nowhere used inside GGIR
+  createcoordinates = function(r,timeline) {
+    if (length(which(abs(diff(r)) == 1) > 0)) {	
+      if (r[1] == 1) {
+        x0 = c(timeline[1],timeline[which(diff(r) == 1) + 1])
+        x1 = timeline[which(diff(r) == -1) + 1]
+        if (r[length(timeline)] == 1) { #file ends with non-wear
+          x1 = c(x1,timeline[length(timeline)])
+        }
+      } else {
+        x0 = timeline[which(diff(r) == 1) + 1]
+        x1 = timeline[which(diff(r) == -1) + 1]
+        if (r[length(timeline)] == 1) { #file ends with non-wear
+          x1 = c(x1,timeline[length(timeline)])
+        }
+      }
+    } else {
+      x0 = c()
+      x1 = c()
+    }
+    invisible(list(x0=x0,x1=x1))
+  }
+  
   #create coordinates for rectangles non-wear
-  cd1 = g.createcoordinates(IMP$rout[,1], timeline) #nonwear
-  cd2 = g.createcoordinates(IMP$rout[,2], timeline) #clipping
-  cd3 = g.createcoordinates(IMP$rout[,3], timeline) #additional nonwear
-  cd4 = g.createcoordinates(IMP$rout[,4], timeline) #protocol
+  cd1 = createcoordinates(IMP$rout[,1], timeline) #nonwear
+  cd2 = createcoordinates(IMP$rout[,2], timeline) #clipping
+  cd3 = createcoordinates(IMP$rout[,3], timeline) #additional nonwear
+  cd4 = createcoordinates(IMP$rout[,4], timeline) #protocol
   s0 = cd1$x0; 	s1 = cd1$x1
   b0 = cd2$x0; 	b1 = cd2$x1
   g0 = cd3$x0; 	g1 = cd3$x1
