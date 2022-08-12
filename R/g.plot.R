@@ -77,7 +77,7 @@ g.plot = function(IMP, M, I, durplot) {
   ticks = seq(n_ws2_perday, nrow(M$metalong), by = n_ws2_perday)
   # creating plot functions to avoid duplicated code
   plotacc = function(timeline, var1, durplot, ticks) {
-    plot(timeline, var1, type = "l", xlab = "Day", ylab = "Acceleration (g)",
+    plot(timeline, var1, type = "l", xlab = "24 Hour block relative to start recording", ylab = "Acceleration (g)",
          bty = "l", lwd = 0.1, xlim = c(0, durplot), ylim = c(0, 0.6), axes = FALSE)
     axis(side = 2, at = c(0, 0.2, 0.4, 0.6))
     axis(side = 1, at = ticks, labels = 1:length(ticks))
