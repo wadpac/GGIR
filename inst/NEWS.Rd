@@ -1,11 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.7-4 (GitHub-only-release date:X-X-2022)}{
+\section{Changes in version 2.7-4 (GitHub-only-release date:??-??-2022)}{
 \itemize{
+    \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
+    \item Part1: Temporary copy of read.gt3x code replaced by direct dependency on read.gt3x
+    \item Vignette: Cut-point documentation paragraph improved.
     \item Part1: Mismatches in the reading of ActiGraph csv files handled (mainly because of header = TRUE resulted in some acceleration values disregarded as they were considered a header in each iteration).
     \item Part 1: Fixed issue #573 (code redundancy to impute time gaps in read.myacc.csv and g.imputeTimegaps)
-    \item Part 1: g.imputeTimegaps extended so that now it can handle time gaps at the begining, at the end of the file, and 
+    \item Part 1: g.imputeTimegaps extended so that now it can handle time gaps at the begining, at the end of the file, and
     time gaps from one chunk to the next one.
     }
 }
@@ -20,7 +23,7 @@
     define segments.
     \item Part 3: Improved handling of sleep that ends in the hour before noon on the last day of the recording.
     \item Part 4: Fixing #592 concerning using a set time window as guider for the sleep analyses
-    \item Part 4: Fixed issue #592 which caused GGIR to incorrectly warn used about using the 
+    \item Part 4: Fixed issue #592 which caused GGIR to incorrectly warn used about using the
     set time window guider functionality correctly
     }
 }

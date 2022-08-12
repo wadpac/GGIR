@@ -29,7 +29,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
   # mon 4 = Axivity
   # mon 5 = Movisens
   # mon 6 = Verisense
-  
+
   # dformat 1 = binary
   # dformat 2 = csv
   # dformat 3 = wav
@@ -38,7 +38,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
   # dformat 6 = gt3x
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
-  
+
   switchoffLD = 0
   useRDA = TRUE
   if (length(unlist(strsplit(filename,"[.]RD"))) <= 1) useRDA = FALSE
@@ -124,14 +124,14 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       hhr <- GENEAread::header.info(filename)
       tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = params_general[["dayborder"]]),
                     getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = params_general[["dayborder"]]))
-      
+
       if (blocknumber == nrow(tint) + 1 | nrow(tint) == 0) {
         #all data read now make sure that it does not try to re-read it with mmap on
         switchoffLD = 1
       } else {
         try(expr = {
           P = GENEAread::read.bin(binfile = filename, start = tint[blocknumber, 1],
-                                  end = tint[blocknumber, 2], calibrate = TRUE, 
+                                  end = tint[blocknumber, 2], calibrate = TRUE,
                                   do.temp = TRUE, mmap.load = FALSE)
           if (sf != P$freq) sf = P$freq
         }, silent = TRUE)
@@ -236,16 +236,16 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    
+
     # load rows 11:13  to investigate whether the file has a header
     # invisible because R complains about poor Actigraph file format,
     # this is an an ActiGraph problem not a GGIR problem, so we ignore it
-    quiet <- function(x) { 
+    quiet <- function(x) {
       # from https://stackoverflow.com/a/54136863/5311763
-      sink(tempfile()) 
-      on.exit(sink()) 
-      invisible(force(x)) 
-    } 
+      sink(tempfile())
+      on.exit(sink())
+      invisible(force(x))
+    }
     testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
                                                         dec = decn, showProgress = FALSE,
                                                         header = TRUE),
@@ -261,7 +261,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
         endpage = endpage + 1
       }
     }
-    
+
     #--------------
     try(expr = {
       P = quiet(as.data.frame(
@@ -273,7 +273,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     if (length(P) > 1) {
       # data.matrix turnes num to char if there are missing values.
       if (ncol(P) == 3) {
-        P = data.matrix(P) 
+        P = data.matrix(P)
       } else {
         P = data.matrix(P[, 2:ncol(P)]) # avoid timestamp column
       }
@@ -431,8 +431,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = as.data.frame(read.gt3x_ggir(path = filename, batch_begin = startpage, 
-                                                 batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
+    try(expr = {P = as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
+                                                     batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0) { # too short or not data at all
       P = c() ; switchoffLD = 1
       if (blocknumber == 1) filequality$filetooshort = TRUE
@@ -447,7 +447,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     startpage = (1 + (blocksize * 300 * (blocknumber - 1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage = startpage,deltapage = deltapage,
-                             blocknumber = blocknumber,PreviousEndPage = PreviousEndPage, 
+                             blocknumber = blocknumber,PreviousEndPage = PreviousEndPage,
                              mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = read.myacc.csv(rmc.file = filename,
@@ -491,7 +491,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       P = c()
     }
   }
-  invisible(list(P = P, 
+  invisible(list(P = P,
                  filequality = filequality,
                  switchoffLD = switchoffLD,
                  endpage = endpage,  startpage = startpage))
