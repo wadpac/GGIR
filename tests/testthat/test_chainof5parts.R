@@ -32,7 +32,7 @@ test_that("chainof5parts", {
   expect_that(I$monc, equals(3))
   expect_that(I$sf, equals(3))
   expect_that(I$dformc, equals(2))
-  expect_that(C$npoints, equals(7494))
+  expect_equal(C$npoints, 7494, tolerance = 5)
   #-------------------------
   # part 2 with strategy = 3
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
