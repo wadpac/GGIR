@@ -24,7 +24,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_that(round(C$scale, digits = 5), equals(c(0.98473, 0.98425, 0.98462)))
+  expect_equal(round(C$scale, digits = 5), c(0.98473, 0.98425, 0.98462), tolerance = 3)
   expect_that(nrow(M$metalong), equals(47))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
   expect_that(nrow(M$metashort),equals(11280))
