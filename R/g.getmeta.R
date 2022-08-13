@@ -287,7 +287,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data = P$rawxyz / 1000 #convert mg output to g for genea
         } else if (mon == 2  & dformat == 1) { # GENEActiv bin
           data = P$data.out
-        } else if (dformat == 2) { #csv Actigraph/GENEActiv
+        } else if (dformat == 2) { #csv Actigraph
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
             P = as.data.frame(P)
             if (ncol(P) == 3) {
@@ -336,7 +336,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         #add left over data from last time
         if (nrow(S) > 0) {
-          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
+           data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
         }
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, selectdaysfile,
@@ -724,8 +724,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         time5[daych] = time5[daych] + (delta_day * 24 * 3600) #+ 5
       }
       if (length(params_general[["desiredtz"]]) == 0) {
-        print("desiredtz not specified, Europe/London used as default")
-        params_general[["desiredtz"]] = "Europe/London"
+        warning("\ndesiredtz not specified, system timezone used as default")
+        params_general[["desiredtz"]] = ""
       }
       time6 = as.POSIXlt(time5,origin = "1970-01-01", tz = params_general[["desiredtz"]])
       time6 = strftime(time6, format = "%Y-%m-%dT%H:%M:%S%z")
@@ -759,8 +759,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
       }
       if (length(params_general[["desiredtz"]]) == 0) {
-        print("desiredtz not specified, Europe/London used as default")
-        params_general[["desiredtz"]] = "Europe/London"
+        warning("desiredtz not specified, system timezone used as default")
+        params_general[["desiredtz"]] = ""
       }
       time2 = as.POSIXlt(time1, origin = "1970-01-01", tz = params_general[["desiredtz"]])
       time2 = strftime(time2, format = "%Y-%m-%dT%H:%M:%S%z")

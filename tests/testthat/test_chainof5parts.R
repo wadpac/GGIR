@@ -24,15 +24,15 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_that(round(C$scale, digits = 5), equals(c(0.94410, 0.98468, 0.98246)))
-  expect_that(nrow(M$metalong),equals(47))
+  expect_that(round(C$scale, digits = 5), equals(c(0.98473, 0.98425, 0.98462)))
+  expect_that(nrow(M$metalong), equals(47))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
   expect_that(nrow(M$metashort),equals(11280))
-  expect_that(round(mean(M$metashort$ENMO), digits = 5), equals(0.01015))
+  expect_that(round(mean(M$metashort$ENMO), digits = 5), equals(0.0291))
   expect_that(I$monc, equals(3))
   expect_that(I$sf, equals(3))
   expect_that(I$dformc, equals(2))
-  expect_that(C$npoints, equals(2114))
+  expect_that(C$npoints, equals(7494))
   #-------------------------
   # part 2 with strategy = 3
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -42,9 +42,9 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-  expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO), digits = 5), equals(0.00111))
-  expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), equals(0.417))
+  expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00801)
+  expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 0.417)
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
@@ -55,9 +55,9 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort),equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO),digits = 3), equals(0.01))
-  expect_that(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 2), equals(1))
-  expect_equal(round(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), digits = 2), -1.5)
+  expect_equal(mean(IMP$metashort$ENMO), 0.029, tolerance = 3)
+  expect_equal(as.numeric(SUM$summary$meas_dur_def_proto_day), 1, tolerance = 2)
+  expect_equal(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), -1.12, tolerance = 2)
   # part 2 with strategy = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
@@ -74,11 +74,11 @@ test_that("chainof5parts", {
   expect_true(file.exists(summarycsv))
   expect_true(file.exists(daysummarycsv))
   expect_that(nrow(IMP$metashort), equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO), digits = 5), equals(0.01015))
+  expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.0291)
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(1.95833))
   expect_that(ncol(SUM$daysummary), equals(32))
-  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), digits = 3), equals(44.811))
-  expect_that(round(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), digits = 3), equals(0.4))
+  expect_equal(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), 89.26, tolerance = 3)
+  expect_equal(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), 37.383, tolerance = 3)
 
   #--------------------------------------------
   # part 3
@@ -132,8 +132,8 @@ test_that("chainof5parts", {
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(4601))
-  expect_that(ncol(TSFILE),equals(10))
-  expect_that(length(unique(TSFILE$class_id)),equals(6))
+  expect_equal(ncol(TSFILE), 10)
+  expect_equal(length(unique(TSFILE$class_id)), 10)
  #--------------------------------------------
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
@@ -168,7 +168,7 @@ test_that("chainof5parts", {
   rn = dir(dirname, full.names = TRUE)
   load(rn[1])
   expect_that(nrow(IMP$metashort), equals(11280))
-  expect_that(round(mean(IMP$metashort$ENMO), digits = 5), equals(0.01015))
+  expect_equal(mean(IMP$metashort$ENMO), 0.0291, tolerance = 5)
 
   #=======================
   # Different variations on part 4:
@@ -314,20 +314,20 @@ test_that("chainof5parts", {
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 24)
-  expect_equal(round(mean(M$metashort$B, na.rm = T), digits = 3), 24.935)
-  expect_equal(round(mean(M$metashort$C, na.rm = T), digits = 3), -6.473)
-  expect_equal(round(mean(M$metashort$EN, na.rm = T), digits = 3), 0.978)
-  expect_equal(round(mean(M$metashort$angley, na.rm = T), digits = 3), 0.84)
-  expect_equal(round(mean(M$metashort$roll_med_acc_x, na.rm = T), digits = 3), 0.668)
-  expect_equal(round(mean(M$metashort$roll_med_acc_z, na.rm = T), digits = 3), 0.008)
-  expect_equal(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), digits = 3), 0.006)
-  expect_equal(round(mean(M$metashort$ENMOa, na.rm = T),digits = 3), 0.042)
+  expect_equal(mean(M$metashort$B, na.rm = T), 24.673, tolerance = 3)
+  expect_equal(mean(M$metashort$C, na.rm = T), -6.642, tolerance = 3)
+  expect_equal(mean(M$metashort$EN, na.rm = T), 1.029, tolerance = 3)
+  expect_equal(mean(M$metashort$angley, na.rm = T), 0.765, tolerance = 3)
+  expect_equal(mean(M$metashort$roll_med_acc_x, na.rm = T), 0.729, tolerance = 3)
+  expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
+  expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
+  expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
 
   SDF = "output_test/meta/raw/123A_testaccfile.csv_day1.RData"
   expect_true(file.exists(SDF))
   load(SDF)
   expect_that(nrow(data),equals(390600))
-  expect_that(round(mean(data),digits = 3), equals(0.245))
+  expect_that(round(mean(data),digits = 3), equals(0.266))
 
 
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
