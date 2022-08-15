@@ -11,6 +11,7 @@
 \usage{
   g.readaccfile(filename, blocksize, blocknumber, selectdaysfile = c(), filequality,
                            decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
+                           PreviousLastValue = c(0,0,1), PreviousLastTime = NULL,
                            params_rawdata = c(), params_general = c(), ...)
 }
 \arguments{
@@ -44,6 +45,12 @@
   }
   \item{inspectfileobject}{
     Output from the function \link{g.inspectfile}.
+  }
+  \item{PreviousLastValue}{
+    Automatically identified last value in previous chunk of data read.
+  }
+    \item{PreviousLastTime}{
+    Automatically identified last timestamp in previous chunk of data read.
   }
   \item{params_rawdata}{
     See \link{g.part1}
