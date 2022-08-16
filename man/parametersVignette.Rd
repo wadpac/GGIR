@@ -12,7 +12,7 @@
   parametersVignette(params = \Sexpr{format(paste0('"',formals(GGIR::parametersVignette)[["params"]],'"'))})
 }
 \arguments{
-  \item{argument}{
+  \item{params}{
     Character (default = \Sexpr{format(paste0('"',formals(GGIR::parametersVignette)[["params"]],'"'))}). 
     Name of the parameters object to build its corresponding section in the Parameters vignette.
   }

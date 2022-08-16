@@ -75,7 +75,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   }
   \item{...}{
     Any of the parameters used GGIR. Given the large number of parameters used in GGIR
-    we have grouped them in objects that start with 'params_'. These are documented in the
+    we have grouped them in objects that start with "params_". These are documented in the
     details section. You cannot provide these objects as argument to function GGIR, but
     you can provide the parameters inside them as input to function GGIR.
   }
@@ -90,8 +90,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   with milestone data and results. Function g.shell.GGIR stores all the explicitely
   entered argument values and default values for the argument that are not explicitely
   provided in a csv-file named config.csv stored in the root of the output folder.
-  The config.csv file is accepted as input to g.shell.GGIR with argument `configfile`
-  to replace the specification of all the arguments, except `datadir` and `outputdir`.
+  The config.csv file is accepted as input to g.shell.GGIR with argument \code{configfile}
+  to replace the specification of all the arguments, except \code{datadir} and \code{outputdir}.
 
   The practical value of this is that it eases the replication of analysis, because
   instead of having to share you R script, sharing your config.csv file will be
@@ -103,7 +103,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   the argument values in the configuration file. If a parameter is neither provided
   via the configuration file nor as input then GGIR uses its default paramter values which
   can be inspected with command \code{print(load_params())}, and if you are specifically
-  interested in a certain subgroup of parameters, let's say physical activity, then you
+  interested in a certain subgroup of parameters, e.g., physical activity, then you
   can do \code{print(load_params()$params_phyact)}. These defaults are part of the GGIR
   code and cannot be changed by the user.
 
@@ -112,11 +112,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   A list of parameters used to specify the signal metrics that need to be extract in GGIR part 1.
   \describe{
       \item{do.anglex}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
-        If TRUE, calculates the angle of the X axis relative to the horizontal: \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + acc_{rollmedian(z)}}}) · 180/\pi}}
+        If TRUE, calculates the angle of the X axis relative to the horizontal: \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + acc_{rollmedian(z)}}}) * 180/\pi}}
       \item{do.angley}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
-        If TRUE, calculates the angle of the Y axis relative to the horizontal: \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + acc_{rollmedian(z)}}}) · 180/\pi}}
+        If TRUE, calculates the angle of the Y axis relative to the horizontal: \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + acc_{rollmedian(z)}}}) * 180/\pi}}
       \item{do.anglez}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
-        If TRUE, calculates the angle of the Z axis relative to the horizontal: \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + acc_{rollmedian(y)}}}) · 180/\pi}}
+        If TRUE, calculates the angle of the Z axis relative to the horizontal: \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + acc_{rollmedian(y)}}}) * 180/\pi}}
       \item{do.zcx}{Boolean, if TRUE calculate metric zero-crossing count for x-axis.
         For computation specifics see source code of function \link{g.applymetrics}}
       \item{do.zcy}{Boolean, if TRUE calculate metric zero-crossing count for y-axis.
@@ -199,11 +199,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         fails then the user has the option to provide back-up
         calibration coefficients via this argument. The value of the argument needs to
         be the name and directory of a csv-spreadsheet with the following column names
-        and subsequent values: 'filename' with the names of accelerometer files on which
+        and subsequent values: "filename" with the names of accelerometer files on which
         the calibration coefficients need to be applied in case auto-calibration fails;
-        'scale.x', 'scale.y', and 'scale.z' with the scaling coefficients; 'offset.x',
-        'offset.y', and 'offset.z' with the offset coefficients, and;
-        'temperature.offset.x', 'temperature.offset.y', and 'temperature.offset.z'
+        "scale.x", "scale.y", and "scale.z" with the scaling coefficients; "offset.x",
+        "offset.y", and "offset.z" with the offset coefficients, and;
+        "temperature.offset.x", "temperature.offset.y", and "temperature.offset.z"
         with the temperature offset coefficients. This can be useful for analysing
         short lasting laboratory experiments with insufficient sphere data to perform
         the auto-calibration, but for which calibration coefficients can be derived
@@ -211,7 +211,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         csv-spreadsheet. Instead of building this file the user can also
         Use case 2: The user wants to avoid performing the auto-calibration repeatedly
         on the same file. If backup.cal.coef value is set to "retrieve" (default) then
-        GGIR will look out for the  data_quality_report.csv  file in the outputfolder
+        GGIR will look out for the "data_quality_report.csv" file in the outputfolder
         QC, which holds the previously generated calibration coefficients. If you
         do not want this happen, then deleted the data_quality_report.csv from the
         QC folder or set it to value "redo".}
@@ -363,7 +363,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   }
   \subsection{params_cleaning}{
     A list of parameters used across all GGIR parts releated to masking or
-    imputing data, abbreviated as 'cleaning'.
+    imputing data, abbreviated as "cleaning".
     \describe{
       \item{do.imp}{Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["do.imp"]]}). 
       Whether to impute missing values (e.g., suspected of monitor non-wear or clippling) 
@@ -433,7 +433,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         (second and third column). The date format should be dd/mm/yyyy. And the first row
         if the csv file is assumed to have a character variable names, e.g., "serialnumber"
         "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
-        directory in a new subfolder named 'raw'.}
+        directory in a new subfolder named "raw".}
       \item{dayborder}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}). 
       Hour at which days start and end (dayborder = 4 would mean 4 am).}
       \item{do.parallel}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). Whether to use 
@@ -478,8 +478,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         number is stored in the obvious header field. Note that for ActiGraph data
         the ID is never stored in the file header. For value set to 2, 5, 6, and 7, GGIR
         looks at the filename and extracts the character string preceding the first
-        occurance of a '_' (idloc = 2), ' ' (space, idloc = 5), '.' (dot, idloc = 6),
-        and '-' (idloc = 7), respectively. You may have
+        occurance of a "_" (idloc = 2), " " (space, idloc = 5), "." (dot, idloc = 6),
+        and "-" (idloc = 7), respectively. You may have
         noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
       \item{expand_tail_max_hours}{Numeric (default = 0), Number hours to expand the 
@@ -487,16 +487,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
-        the equation: `round(sin((1:length_expansion) / (900/epochsize))) * 15`. 
+        the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}. 
         To keep track of the tail expansion g.part1 stores the lenght of the expansion in 
         the RData files, which is then passed via part2, part3, and part4 to part5. 
         In part5 it is then included as an additional variable in the csv-reports. 
         In the part 4 report the last nigth is omitted, because we know that sleep 
         estimates from the last night will not be trustworthy. In the part5 output most
         columns related to the sleep assessment will be omitted for the last window to avoid biassing the
-        averages. Using argument `expand_tail_max_hours` implies the assumption that the 
+        averages. Using argument \code{expand_tail_max_hours} implies the assumption that the 
         participant fell asleep at or before the end of the recording if the recording
-        ended less than `expand_tail_max_hours` before midnight. This assumption may not
+        ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
         always hold true and should be used with caution. 
       }
     }
