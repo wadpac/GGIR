@@ -166,11 +166,13 @@ g.calibrate = function(datafile, params_rawdata = c(),
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
-      # remove 0s if ActiGraph csv (idle sleep mode)
-      if (mon == 3 & dformat == 2) {
+      # remove 0s if ActiGraph csv (idle sleep mode) OR if similar imputation done in ad-hoc csv
+      # current ActiGraph csv's are not wiht zeros but with last observation carried forward
+      zeros = which(data[,1] == 0 & data[,2] == 0 & data[,3] == 0)
+      if ((mon == 3 & dformat == 2) | length(zeros) > 0) {
         data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
         data = as.matrix(data)
-      }
+      } 
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
       use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
@@ -333,7 +335,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
                            abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       meta_temp = meta_temp[nomovement,]
-      rm(nomovement)
+      dup = which(rowSums(meta_temp[1:(nrow(meta_temp) - 1), 2:7] == meta_temp[2:nrow(meta_temp), 2:7]) == 3) # remove duplicated values
+      if (length(dup) > 0) meta_temp = meta_temp[-dup,]
+      rm(nomovement, dup)
       if (min(dim(meta_temp)) > 1) {
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)

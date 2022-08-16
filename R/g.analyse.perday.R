@@ -85,7 +85,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         qwindow_times = qwindow_times[!is.na(params_247[["qwindow"]])]
       }
       params_247[["qwindow"]] = params_247[["qwindow"]][!is.na(params_247[["qwindow"]])]
-      
       if (length(params_247[["qwindow"]]) == 1) params_247[["qwindow"]] = c()
       if (length(params_247[["qwindow"]]) == 0 | length(currentdate) == 0)  {
         qwindow_times = c("00:00","24:00")
@@ -112,7 +111,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         qqq1 = (midnightsi[di] - 1) * (ws2 / ws3) + 1
         qqq2 = ((midnightsi[(di + 1)] - 1) * (ws2 / ws3))  #remove +1 because I got some extra seconds per day
       } else if (di == floor(ndays)) {
-        qqq1 = (midnightsi[di] - 1) * (ws2 / ws3)
+        qqq1 = (midnightsi[di] - 1) * (ws2 / ws3) + 1
         qqq2 = nrow(metashort)
       }
     } else if (startatmidnight == 0 & endatmidnight == 0) {
@@ -146,11 +145,11 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       if (di == 1) {
         # Following 8 lines were turned off on June 5 2018 because first and last day are imputed,
         # but turned on again on 14 March 2019 because when the first day is half the relative start
-        # of the windows must be different. Yes, the half days are inputed, but we are still only
+        # of the windows must be different. Yes, the half days are imputed, but we are still only
         # interested in the non-imputed part. This is probably were the confusion came from.
         hours2delta = 24 - LENVAL_hours
         qw_select = which(params_247[["qwindow"]] > hours2delta)
-        if(qw_select[1] > 1) qw_select = c(qw_select[1] - 1, qw_select)
+        if (qw_select[1] > 1) qw_select = c(qw_select[1] - 1, qw_select)
         params_247[["qwindow"]] = params_247[["qwindow"]][qw_select]
         qwindowindices = params_247[["qwindow"]] - hours2delta # - LENVAL_hours # because 1 is now different
         if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
@@ -179,6 +178,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         }
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
+
         for (qwi in 1:(length(qwindowindices) - 1)) { #
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
@@ -229,7 +229,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     fi = fi + 4
     if (length(params_247[["qwindow"]] > 0)) {
       if (length(params_247[["qwindow"]]) > 2 | params_247[["qwindow"]][1] != 0 | params_247[["qwindow"]][2] != 24) {
-        for (qwi in 1:(length(qwindow_names) - 1)) { # create variables regardless of
+        for (qwi in 1:(length(qwindow_names) - 1)) {
           tmp_name = c(paste0("N_valid_hours_", qwindow_names[qwi], "-", qwindow_names[qwi + 1], "hr"),
                        paste0("N_hours_", qwindow_names[qwi], "-", qwindow_names[qwi + 1], "hr"))
           matchi1 = which(ds_names %in% tmp_name[1] == TRUE)
@@ -282,7 +282,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     }
     if (length(selectdaysfile) > 0) {
       #---------------------------
-      # Description per timewindow for millenium cohort:
+      # Description per timewindow for millennium cohort:
       for (metrici in  2:ncol(vari)) {
         Nfeatures = 7
         nhrs = (nrow(vari)/(3600/ws3))
