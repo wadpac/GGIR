@@ -1,12 +1,12 @@
-g.getbout = function(x,boutduration,boutcriter=0.8,closedbout=FALSE,bout.metric=6,ws3=5) {
+g.getbout = function(x, boutduration, boutcriter = 0.8, closedbout = FALSE, bout.metric = 6, ws3 = 5) {
   p = which(x == 1)
   if (bout.metric == 1) { # MVPA definition as used in 2014
     # p are the indices for which the intensity criteria are met
     xt = x
-    boutcount = rep(0,length(x)) #initialize zeros as long as there are epochs in the timewindow
+    boutcount = rep(0, length(x)) #initialize zeros as long as there are epochs in the timewindow
     jmvpa = 1 # index for going stepwise through vector p
     Lx = length(x) # Lx is length of vector x
-    while(jmvpa <= length(p)) { # go through all epochs that are possibly part of a bout
+    while (jmvpa <= length(p)) { # go through all epochs that are possibly part of a bout
       endi = p[jmvpa]+boutduration
       if (endi <= Lx) { #does bout fall without measurement?
         if (sum(x[p[jmvpa]:endi]) > (boutduration*boutcriter)) {

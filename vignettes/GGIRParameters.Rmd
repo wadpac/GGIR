@@ -1,0 +1,90 @@
+---
+title: "GGIR configuration parameters"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Description of configuration parameters in GGIR}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+# Basic settings
+
+### mode {-}
+`r format(GGIR::ShellDoc2Vignette("mode"))`
+
+### datadir {-}
+`r format(GGIR::ShellDoc2Vignette("datadir"))`
+
+### outputdir {-}
+`r format(GGIR::ShellDoc2Vignette("outputdir"))`
+
+### studyname {-}
+`r format(GGIR::ShellDoc2Vignette("studyname"))`
+
+### f0 {-}
+`r format(GGIR::ShellDoc2Vignette("f0"))`
+
+### f1 {-}
+`r format(GGIR::ShellDoc2Vignette("f1"))`
+
+### do.report {-}
+`r format(GGIR::ShellDoc2Vignette("do.report"))`
+
+### configfile {-}
+`r format(GGIR::ShellDoc2Vignette("configfile"))`
+
+### myfun {-}
+`r format(GGIR::ShellDoc2Vignette("myfun"))`
+
+# General Parameters
+
+`r format(GGIR::parametersVignette("general"))`
+
+# Raw Data Parameters
+
+`r format(GGIR::parametersVignette("rawdata"))`
+
+# Metrics Parameters
+
+`r format(GGIR::parametersVignette("metrics"))`
+
+# Cleaning Parameters
+
+`r format(GGIR::parametersVignette("cleaning"))`
+
+# Sleep Parameters
+
+`r format(GGIR::parametersVignette("sleep"))`
+
+
+# Physical activity Parameters
+
+`r format(GGIR::parametersVignette("phyact"))`
+
+# 24/7 Parameters
+
+`r format(GGIR::parametersVignette("247"))`
+
+# Output Parameters
+
+`r format(GGIR::parametersVignette("output"))`
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
