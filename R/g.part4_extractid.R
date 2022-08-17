@@ -54,6 +54,10 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplogidnum, sleeplog, accid
   if (dolog == TRUE) {
     accid_num = suppressWarnings(as.numeric(accid))
     if (sleeplogidnum == FALSE) {
+      # remove spaces in ID, to ease matching, because some accelerometer brands at several spaces behind ID
+      sleeplog$ID = gsub(pattern = " ", replacement = "", x = as.character(sleeplog$ID))
+      accid = gsub(pattern = " ", replacement = "", x = as.character(accid))
+      # attempt to match
       matching_indices_sleeplog = which(as.character(sleeplog$ID) == as.character(accid))
       if (length(matching_indices_sleeplog) == 0) {
         matching_indices_sleeplog_alternative = which(sleeplog$ID == accid_num)
