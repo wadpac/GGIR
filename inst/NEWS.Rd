@@ -1,15 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.7-4 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.7-4 (GitHub-only-release date:17-08-2022)}{
 \itemize{
-    \item Part1: Arguments configtz and desiredtz now also used for .gt3x data.
-    \item Part1: Temporary copy of read.gt3x code replaced by direct dependency on read.gt3x
+    \item Part 1: Arguments configtz and desiredtz now also used for .gt3x data.
+    \item Part 1: Temporary copy of read.gt3x code replaced by direct dependency on read.gt3x
     \item Vignette: Cut-point documentation paragraph improved.
-    \item Part1: Mismatches in the reading of ActiGraph csv files handled (mainly because of header = TRUE resulted in some acceleration values disregarded as they were considered a header in each iteration).
+    \item Part 1: Mismatches in the reading of ActiGraph csv files handled (mainly because of header = TRUE resulted in some acceleration values disregarded as they were considered a header in each iteration).
     \item Part 1: Fixed issue #573 (code redundancy to impute time gaps in read.myacc.csv and g.imputeTimegaps)
     \item Part 1: g.imputeTimegaps extended so that now it can handle time gaps at the begining, at the end of the file, and
     time gaps from one chunk to the next one.
+    \item Part 2: QC plot now with legend and minor updates to layout.
+    \item Part 4: Person level aggregation now takes place per filename instead of per ID, which should prevent that identical IDs in repeated recordings get aggregated into a single ling.
+    \item Part 4: ID matching between accelerometer file and sleep log improved by ignore spaces.
     }
 }
 \section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
