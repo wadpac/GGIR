@@ -108,86 +108,109 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   code and cannot be changed by the user.
 
   The parameters that can be used in g.shell.GGIR are:
-  \subsection{params_metrics}{
-  A list of parameters used to specify the signal metrics that need to be extract in GGIR part 1.
-  \describe{
-      \item{do.anglex}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
-        If TRUE, calculates the angle of the X axis relative to the horizontal: \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + acc_{rollmedian(z)}}}) * 180/\pi}}
-      \item{do.angley}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
-        If TRUE, calculates the angle of the Y axis relative to the horizontal: \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + acc_{rollmedian(z)}}}) * 180/\pi}}
-      \item{do.anglez}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
-        If TRUE, calculates the angle of the Z axis relative to the horizontal: \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + acc_{rollmedian(y)}}}) * 180/\pi}}
-      \item{do.zcx}{Boolean, if TRUE calculate metric zero-crossing count for x-axis.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.zcy}{Boolean, if TRUE calculate metric zero-crossing count for y-axis.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.zcz}{Boolean, if TRUE calculate metric zero-crossing count for z-axis.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.enmo}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmo"]])}).
-      If TRUE, calculates the metric: \deqn{ENMO = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMO < 0, then ENMO = 0)}
-      \item{do.lfenmo}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.en}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.mad}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.enmoa}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmoa"]])}).
-      If TRUE, calculates the metric: \deqn{ENMOa = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMOa < 0, then ENMOa = |ENMOa|)}
-      \item{do.roll_med_acc_x}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.roll_med_acc_y}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.roll_med_acc_z}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.dev_roll_med_acc_x}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.dev_roll_med_acc_y}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.dev_roll_med_acc_z}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfen}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfen}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfenplus}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfen}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfx}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfy}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfz}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfx}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfy}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfz}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfx}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfy}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfz}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.brondcounts}{Boolean, if TRUE calculate metric via R
-        package activityCounts. We call them BrondCounts because
-        there are large number of acitivty counts in the physical activity and
-        sleep research field. By calling them _brondcounts_ we clarify that
-        these are the counts proposed by Jan Br&#248;nd and implemented in R by
-        Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
-        one the counts produced by one of the closed source ActiLife software
-        by ActiGraph.}
-      \item{lb}{Numeric, lower boundary of the frequency filter (in Hertz) as
-        used in the filter-based metrics.}
-      \item{hb}{Numeric, higher boundary of the frequency filter (in Hertz) as
-        used in the filter-based metrics.}
-      \item{n}{Numeric, order of the frequency filter as used in a variety of metrics.}
+  
+     \subsection{params_general}{
+    A list of parameters used across all GGIR parts that do not fall in any of the other
+    categories.
+    \describe{
+    
+      \item{overwrite}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["overwrite"]]}). 
+        Do you want to overwrite analysis for which milestone
+        data exists? If overwrite = FALSE, then milestone data from a previous analysis will
+        be used if available and visual reports will not be created again.}
+        
+      \item{selectdaysfile}{Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["selectdaysfile"]]}). 
+        Do not use, this is legacy code for one specific data study.
+        Character pointing at a csv file holding the relationship between device serial
+        numbers (first column) and measurement dates of interest
+        (second and third column). The date format should be dd/mm/yyyy. And the first row
+        if the csv file is assumed to have a character variable names, e.g., "serialnumber"
+        "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
+        directory in a new subfolder named "raw".}
+        
+      \item{dayborder}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}). 
+      Hour at which days start and end (dayborder = 4 would mean 4 am).}
+      
+      \item{do.parallel}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). 
+      Whether to use multi-core processing (only works if at least 4 CPU cores are available).}
+      
+      \item{maxNcores}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["maxNcores"]]}).
+        Maximum number of cores to use when argument do.parallel is set to true.
+        GGIR by default uses either the maximum number of available cores or the number of files to
+        process (whichever is lower), but this argument allows you to set a lower maximum.}
+        
+      \item{acc.metric}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
+        Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1}.}
+        
+      \item{part5_agg2_60seconds}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
+        Wether to use aggregate epochs to 60 seconds as part of the part 5 analysis.}
+        
+      \item{print.filename}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["print.filename"]]}).
+        Whether to print the filename before before analysing it (in case do.parallel = FALSE). Printing the filename can be useful to investigate
+        problems (e.g., to verify that which file is being read).}
+        
+      \item{desiredtz}{Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["desiredtz"]]}", i.e., system timezone). 
+        Timezone in which device was configured and experiments took place.
+        If experiments took place in a different timezone, then use this
+        argument for the timezone in which the experiments took place and
+        argument \code{configtz} to specify where the device was configured. 
+        See also http://en.wikipedia.org/wiki/Zone.tab}
+        
+      \item{configtz}{Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone). 
+        Only functional for AX3 cwa and ActiGraph .gt3x data at the moment.
+        Timezone in which the accelerometer was configured. Only use this argument
+        if the timezone of configuration and timezone in which recording took
+        place are different. See also http://en.wikipedia.org/wiki/Zone.tab}
+        
+      \item{sensor.location}{Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["sensor.location"]]}"). 
+        To indicate sensor location, default is wrist. If it is hip, the HDCZA algorithm for sleep detection
+        also requires longitudinal axis of sensor to be between -45 and +45 degrees.}
+      
+      \item{windowsizes}{Numeric vector, three values 
+      (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_general"]][["windowsizes"]], collapse = ", "), ")")}). 
+        To indicate the lengths of the windows as in c(window1, window2, window3): 
+        window1 is the short epoch length in seconds, by default 5, and this is the time window over which acceleration and
+        angle metrics are calculated; 
+        window2 is the long epoch length in seconds for which non-wear and signal clipping are defined, default 900 
+        (expected to be a multitude of 60 seconds); 
+        window3 is the window length of data used for non-wear detection and by default
+        3600 seconds. 
+        So, when window3 is larger than window2 we use overlapping windows,
+        while if window2 equals window3 non-wear periods are assessed by non-overlapping
+        windows.}
+        
+      \item{idloc}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["idloc"]]}). 
+        If idloc = 1 the code assumes that ID number is stored in the obvious header field. Note that for ActiGraph data
+        the ID is never stored in the file header. 
+        For value set to 2, 5, 6, and 7, GGIR looks at the filename and extracts the character string preceding the first
+        occurance of a "_" (idloc = 2), " " (space, idloc = 5), "." (dot, idloc = 6),
+        and "-" (idloc = 7), respectively. 
+        You may have noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
+        and not actively maintained anymore, but because it is legacy code not omitted.}
+        
+      \item{expand_tail_max_hours}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
+        Number hours to expand the 
+        part 1 output with synthetic data to trigger sleep detection for last night. 
+        The synthetic data for metashort entails: timestamps continuing
+        regularly, zeros for acceleration metrics other than EN, one for EN.
+        Angle columns are created in a way that it triggers the sleep detection using
+        the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}. 
+        To keep track of the tail expansion g.part1 stores the lenght of the expansion in 
+        the RData files, which is then passed via part2, part3, and part4 to part5. 
+        In part5 it is then included as an additional variable in the csv-reports. 
+        In the part 4 report the last nigth is omitted, because we know that sleep 
+        estimates from the last night will not be trustworthy. In the part5 output most
+        columns related to the sleep assessment will be omitted for the last window to avoid biassing the
+        averages. Using argument \code{expand_tail_max_hours} implies the assumption that the 
+        participant fell asleep at or before the end of the recording if the recording
+        ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
+        always hold true and should be used with caution. 
+      }
     }
   }
-
-  \subsection{params_rawdata}{
+  
+  
+    \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
     raw data, excluding parameters related to metrics as those are in
     the params_metrics object.
@@ -310,10 +333,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Origin of time when unit of time is UNIXsec, e.g., 1970-1-1
       }
       \item{rmc.desiredtz}{
+        Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone). 
         Timezone in which device was configured and experiments took place.
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument configtz to specify where the device was configured (not implemented yet).
+        See also http://en.wikipedia.org/wiki/Zone.tab
       }
       \item{rmc.sf}{
         Sample rate in Hertz, if this is stored in the file header then that will be used
@@ -359,6 +384,85 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{interpolationType}{
         Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
       }
+    }
+  }
+  \subsection{params_metrics}{
+  A list of parameters used to specify the signal metrics that need to be extract in GGIR part 1.
+  \describe{
+      \item{do.anglex}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
+        If TRUE, calculates the angle of the X axis relative to the horizontal: \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + acc_{rollmedian(z)}}}) * 180/\pi}}
+      \item{do.angley}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
+        If TRUE, calculates the angle of the Y axis relative to the horizontal: \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + acc_{rollmedian(z)}}}) * 180/\pi}}
+      \item{do.anglez}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
+        If TRUE, calculates the angle of the Z axis relative to the horizontal: \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + acc_{rollmedian(y)}}}) * 180/\pi}}
+      \item{do.zcx}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcx"]]}).
+        If TRUE, calculates metric zero-crossing count for x-axis. For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.zcy}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcy"]]}).
+        If TRUE, calculates metric zero-crossing count for y-axis. For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.zcz}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcz"]]}).
+        If TRUE, calculates metric zero-crossing count for z-axis. For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.enmo}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmo"]])}).
+      If TRUE, calculates the metric: \deqn{ENMO = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMO < 0, then ENMO = 0)}
+      \item{do.lfenmo}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfenmo"]])}).
+      If TRUE, calculates the metric \code{ENMO} over the low-pass filtered accelerations (For computation specifics see source code of function \link{g.applymetrics}). 
+      The filter bound is defined by the parameter \code{hb}}
+      \item{do.en}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.en"]])}).
+      If TRUE, calculates the Euclidean Norm of the raw accelerations: \deqn{EN = \sqrt{acc_x^2 + acc_y^2 + acc_z^2}}}
+      \item{do.mad}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.enmoa}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmoa"]])}).
+      If TRUE, calculates the metric: \deqn{ENMOa = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMOa < 0, then ENMOa = |ENMOa|)}
+      \item{do.roll_med_acc_x}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.roll_med_acc_y}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.roll_med_acc_z}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.dev_roll_med_acc_x}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.dev_roll_med_acc_y}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.dev_roll_med_acc_z}{Boolean, if TRUE calculate metric.
+        For computation specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfen}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfen}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfenplus}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfen}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfx}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfy}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.lfz}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfx}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfy}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.hfz}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfx}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfy}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.bfz}{Boolean, if TRUE calculate metric. For computation
+        specifics see source code of function \link{g.applymetrics}}
+      \item{do.brondcounts}{Boolean, if TRUE calculate metric via R
+        package activityCounts. We call them BrondCounts because
+        there are large number of acitivty counts in the physical activity and
+        sleep research field. By calling them _brondcounts_ we clarify that
+        these are the counts proposed by Jan Br&#248;nd and implemented in R by
+        Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
+        one the counts produced by one of the closed source ActiLife software
+        by ActiGraph.}
+      \item{lb}{Numeric, lower boundary of the frequency filter (in Hertz) as
+        used in the filter-based metrics.}
+      \item{hb}{Numeric, higher boundary of the frequency filter (in Hertz) as
+        used in the filter-based metrics.}
+      \item{n}{Numeric, order of the frequency filter as used in a variety of metrics.}
     }
   }
   \subsection{params_cleaning}{
@@ -420,141 +524,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       The maximum number of calendar days to include (set to zero if unknown).}
     }
   }
-   \subsection{params_general}{
-    A list of parameters used across all GGIR parts that do not fall in any of the other
-    categories.
-    \describe{
-      \item{overwrite}{Boolean (default = FALSE). Do you want to overwrite analysis for which milestone
-        data exists? If overwrite=FALSE, then milestone data from a previous analysis will
-        be used if available and visual reports will not be created again.}
-      \item{selectdaysfile}{Character. Do not use, this is legacy code for one specific data study.
-        Character pointing at a csv file holding the relationship between device serial
-        numbers (first column) and measurement dates of interest
-        (second and third column). The date format should be dd/mm/yyyy. And the first row
-        if the csv file is assumed to have a character variable names, e.g., "serialnumber"
-        "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
-        directory in a new subfolder named "raw".}
-      \item{dayborder}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}). 
-      Hour at which days start and end (dayborder = 4 would mean 4 am).}
-      \item{do.parallel}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). Whether to use 
-      multi-core processing (only works if at least 4 CPU cores are available).}
-      \item{maxNcores}{Numeric. Maximum number of cores to use when argument do.parallel is set to true.
-        GGIR by default uses either the maximum number of available cores or the number of files to
-        process (whichever is lower), but this argument allows you to set a lower maximum.}
-      \item{acc.metric}{Boolean. Which one of the metrics do you want to consider to analyze L5.
-        The metric of interest need to be calculated in M.}
-      \item{part5_agg2_60seconds}{Boolean. Wether to use aggregate epochs to 60 seconds
-        as part of the part 5 analysis.}
-      \item{print.filename}{Boolean (default = FALSE). Whether to print the filename before before analysing
-        it (default is FALSE). Printing the filename can be useful to investigate
-        problems (e.g., to verify that which file is being read).}
-      \item{desiredtz}{Character, desired timezone: see also http://en.wikipedia.org/wiki/Zone.tab}
-      \item{configtz}{Character, Only functional for AX3 cwa data at the moment.
-        Timezone in which the accelerometer was configured. Only use this argument
-        if the timezone of configuration and timezone in which recording took
-        place are different.}
-      \item{sensor.location}{
-      Character to indicate sensor location, default is wrist.
-    If it is hip HDCZA algorithm also requires longitudinal axis of sensor to be
-    between -45 and +45 degrees.
-      }
-      \item{acc.metric}{
-      Which one of the metrics do you want to consider to analyze L5.
-    The metric of interest need to be calculated in
-    M (see \link{g.part1})
-      }
-      \item{windowsizes}{Numeric vector, three values 
-      (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_general"]][["windowsizes"]], collapse = ", "), ")")}) 
-      to indicate the lengths of the
-        windows as in c(window1,window2,window3): window1 is the short epoch length
-        in seconds and by default 5 this is the time window over which acceleration and
-        angle metrics are calculated, window2 is the long epoch length in seconds
-        for which non-wear and signal clipping are defined, default 900. However,
-        window3 is the window length of data used for non-wear detection and by default
-        3600 seconds. So, when window3 is larger than window2 we use overlapping windows,
-        while if window2 equals window3 non-wear periods are assessed by non-overlapping
-        windows. Window2 is expected to be a multitude of 60 seconds.}
-      \item{idloc}{Numeric (default: idloc = 1). If idloc = 1 the code assumes that ID
-        number is stored in the obvious header field. Note that for ActiGraph data
-        the ID is never stored in the file header. For value set to 2, 5, 6, and 7, GGIR
-        looks at the filename and extracts the character string preceding the first
-        occurance of a "_" (idloc = 2), " " (space, idloc = 5), "." (dot, idloc = 6),
-        and "-" (idloc = 7), respectively. You may have
-        noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
-        and not actively maintained anymore, but because it is legacy code not omitted.}
-      \item{expand_tail_max_hours}{Numeric (default = 0), Number hours to expand the 
-        part 1 output with synthetic data to trigger sleep detection for last night. 
-        The synthetic data for metashort entails: timestamps continuing
-        regularly, zeros for acceleration metrics other than EN, one for EN.
-        Angle columns are created in a way that it triggers the sleep detection using
-        the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}. 
-        To keep track of the tail expansion g.part1 stores the lenght of the expansion in 
-        the RData files, which is then passed via part2, part3, and part4 to part5. 
-        In part5 it is then included as an additional variable in the csv-reports. 
-        In the part 4 report the last nigth is omitted, because we know that sleep 
-        estimates from the last night will not be trustworthy. In the part5 output most
-        columns related to the sleep assessment will be omitted for the last window to avoid biassing the
-        averages. Using argument \code{expand_tail_max_hours} implies the assumption that the 
-        participant fell asleep at or before the end of the recording if the recording
-        ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
-        always hold true and should be used with caution. 
-      }
-    }
-  }
-  \subsection{params_output}{
-    A list of parameters used to specify whether and how GGIR stores its output at various stages of the
-    process.
-    \describe{
-      \item{storefolderstructure}{Boolean. Store folder structure of the accelerometer data.}
-      \item{do.part2.pdf}{Boolean (default: do.part2.pdf = TRUE).
-      In g.part2: Whether to generate a pdf for part 2.}
-      \item{do.part3.pdf}{Boolean (default: do.part3.pdf = TRUE).
-      In g.part3: Whether to generate a pdf for part 3.}
-      \item{timewindow}{In g.part5: Timewindow over which summary statistics are derived.
-        Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
-        or both c("MM","WW").}
-      \item{save_ms5rawlevels}{Boolean, whether to save the time series
-        classification (levels) as a csv files.}
-      \item{save_ms5raw_format}{Character string to specify how data should
-        be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.}
-      \item{save_ms5raw_without_invalid}{Boolean to indicate whether to remove
-        invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.}
-      \item{epochvalues2csv}{Boolean (default: epochvalues2csv = FALSE). If TRUE then epoch values
-        are exported to a CSV spreadsheet. Here, non-wear time is imputed where possible.}
-      \item{do.sibreport}{Boolean (default: do.sibreport = FALSE). Applied in g.part5 to indicate
-        whether to generate report for the sustained inactivity bouts (sib).}
-      \item{do.visual}{Boolean. If g.part4 is run with do.visual == TRUE (default) then
-        the function will generate a pdf with a visual representation of the
-        overlap between the sleeplog entries and the accelerometer detections.
-        This can be used to visualy verify that the sleeplog entries do
-        not come with obvious mistakes.}
-      \item{outliers.only}{Boolean. Relevant for do.visual == TRUE. Outliers.only == FALSE
-        will visualise all available nights in the data. Outliers.only == TRUE will visualise
-        only for nights with a difference in onset or waking time
-        larger than the variable of argument criterror.}
-      \item{criterror}{Numeric. Relevant for do.visual == TRUE and outliers.only == TRUE.
-        criterror specifies the number of minimum number of hours difference
-        between sleep log and  accelerometer estimate for the night to be
-        included in the visualisation.}
-      \item{visualreport}{Boolean. If TRUE (default) then generate visual report based on combined output from part 2
-        and 4.}
-      \item{viewingwindow}{Numeric. Centre the day as displayed around noon (value = 1) or
-        around midnight (value = 2).}
-      \item{week_weekend_aggregate.part5}{
-        Boolean to indicate whether week and weekend-days aggregates
-        should be stored. This is turned off by default as it generates a
-        large number of extra columns in the output report.
-      }
-      \item{dofirstpage}{
-        Boolean to indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports generated with \link{g.plot5}.
-      }
-      \item{timewindow}{Timewindow over which summary statistics are derived.
-        Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
-        or both c("MM","WW").}
-    }
-  }
-  \subsection{}{
+  \subsection{params_phyact}{
     A list of parameters releated to physical activity as used in GGIRpart2 and GGIRpart5.
     \describe{
       \item{threshold.lig}{Numeric. In g.part5: Threshold for light physical activity to
@@ -640,92 +610,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         fraction of a bout needs to be between the light and moderage threshold}
       \item{boutcriter.mvpa}{Numeric, a number between 0 and 1 and defines
         what fraction of a bout needs to be above the mvpathreshold}
-    }
-  }
-  \subsection{params_247}{
-    A list of parameters releated to description of 24/7 behaviours that do not fall
-    under conventional physical activity or sleep outcomes, these parameters are used
-    in GGIRpart2 and GGIRpart5:
-    \describe{
-      \item{qwindow}{Numeric or character (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["qwindow"]], collapse = ", "), ")")}). 
-      To specify windows over which all
-        variables are calculated, e.g., acceleration distirbution, number of valid
-        hours, LXMX analysis, MVPA. If qwindow = c(0, 24),
-        all variables will only be calculated over the full 24 hours in a day. If
-        qwindow = c(8, 24) variables will be calculated over the window 0-8, 8-24 and 0-24.
-        All days in the recording will be segmented based on these values. If you want
-        to use a day specific segmentation then you can set qwindow to be
-        the full path to activity diary file. Expected format of the activity diary is:
-        First column headers followed by one row per recording, first column is recording ID,
-        which needs to match with the ID GGIR extracts from the accelerometer file. Followed
-        by date column in format "23-04-2017", where date format is specified by argument
-        qwindow_dateformat (below). Use the character combination date, Date or DATE in the
-        column name. This is followed by one or multiple columns with start times for
-        the activity types in that day format in hours:minutes:seconds. The header of the
-        column will be used as label for each activity type. Insert a new date column before
-        continuing with activity types for next day. Leave missing values empty. If an
-        activitylog is used then individuals who do not appear in the activitylog will still
-        be processed with value c(0,24). Dates with no activiy log data can be skipped,
-        no need to have a column with the date followed by a column with the next date.
-        }
-      \item{qwindow_dateformat}{Character specifying the date format used in the activity log.}
-      \item{M5L5res}{Numeric, resolution of L5 and M5 analysis in minutes
-        (default: 10 minutes)}
-      \item{winhr}{Numeric, Vector of window size(s) (unit: hours) of L5 and
-        M5 analysis (dedault = 5 hours)}
-      \item{qlevels}{Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qlevels"]])}). 
-      Array of percentiles for which value needs to be extracted.
-        These need to be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75).
-        There is no limit to the number of percentiles. If left empty then percentiles will not be
-        extracted. Distribution will be derived from short epoch metric data.}
-      \item{ilevels}{Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}). 
-      Levels for acceleration value frequency distribution in mg, e.g., c(0,100,200). 
-      There is no limit to the number of levels. If left empty then percentiles will not be
-        extracted. Distribution will be derived from short epoch metric data.}
-      \item{window.summary.size}{Numeric, Functionality designed for the London Centre
-        of Longidutinal studies. Size in minutes of the summary window}
-      \item{iglevels}{Numeric, Levels for acceleration value frequency distribution
-        in mg used for intensity gradient calculation (according to the method by
-        Rowlands 2018). By default this is argument is empty and the intensity gradient
-        calculation is not done. The user can either provide a single value (any) to
-        make the intensity gradient use the bins c(seq(0,4000,by=25),8000) or the
-        user could specify their own distribution. There is no constriction to the
-        number of levels.}
-      \item{IVIS_windowsize_minutes}{
-        Window size of the Intradaily Variability (IV) and Interdaily
-        Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.
-      }
-      \item{IVIS_epochsize_seconds}{
-        This argument is deprecated.
-      }
-      \item{IVIS.activity.metric}{
-        Metric used for activity calculation.
-        Value = 1, uses continuous scaled acceleration.
-        Value = 2, tries to collapse acceleration into a binary score of rest
-        versus active to try to similate the original approach.
-      }
-      \item{IVIS_acc_threshold}{
-        Acceleration threshold to distinguish inactive from active.
-      }
-      \item{qM5L5}{
-        Percentiles (quantiles) to be calculated over L5 and M5 window.
-      }
-      \item{MX.ig.min.dur}{
-        Minimum MX duration needed in order for intensity gradient to be calculated
-      }
-      \item{LUXthresholds}{Numeric. Vector with numeric sequece corresponding to
-        the thresholds used to calculated time spent in LUX ranges.}
-      \item{LUX_cal_constant}{Numeric, if both LUX_cal_constant and LUX_cal_exponent are
-        provided LUX LUX values are converted based on formula y = constant * exp(x * exponent)}
-      \item{LUX_cal_exponent}{Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
-        LUX values are converted based on formula y = constant * exp(x * exponent)}
-      \item{LUX_day_segments}{Numeric vector with hours at which the day should be segmented for
-        the LUX analysis.}
-      \item{L5M5window}{Argument depricated after version 1.5-24.
-        This argument used to define the start and end time, in 24 hour clock hours,
-        over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
-      \item{cosinor}{Argument depricated after version 1.5-24.
-        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
     }
   }
   \subsection{params_sleep}{
@@ -814,6 +698,145 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Numeric vector of length two with range in duration (minutes) of a nap,
         e.g., c(15, 240)
       }
+    }
+  }
+  \subsection{params_247}{
+    A list of parameters releated to description of 24/7 behaviours that do not fall
+    under conventional physical activity or sleep outcomes, these parameters are used
+    in GGIRpart2 and GGIRpart5:
+    \describe{
+      \item{qwindow}{Numeric or character (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["qwindow"]], collapse = ", "), ")")}). 
+      To specify windows over which all
+        variables are calculated, e.g., acceleration distirbution, number of valid
+        hours, LXMX analysis, MVPA. If qwindow = c(0, 24),
+        all variables will only be calculated over the full 24 hours in a day. If
+        qwindow = c(8, 24) variables will be calculated over the window 0-8, 8-24 and 0-24.
+        All days in the recording will be segmented based on these values. If you want
+        to use a day specific segmentation then you can set qwindow to be
+        the full path to activity diary file. Expected format of the activity diary is:
+        First column headers followed by one row per recording, first column is recording ID,
+        which needs to match with the ID GGIR extracts from the accelerometer file. Followed
+        by date column in format "23-04-2017", where date format is specified by argument
+        qwindow_dateformat (below). Use the character combination date, Date or DATE in the
+        column name. This is followed by one or multiple columns with start times for
+        the activity types in that day format in hours:minutes:seconds. The header of the
+        column will be used as label for each activity type. Insert a new date column before
+        continuing with activity types for next day. Leave missing values empty. If an
+        activitylog is used then individuals who do not appear in the activitylog will still
+        be processed with value c(0,24). Dates with no activiy log data can be skipped,
+        no need to have a column with the date followed by a column with the next date.
+        }
+      \item{qwindow_dateformat}{Character specifying the date format used in the activity log.}
+      \item{M5L5res}{Numeric, resolution of L5 and M5 analysis in minutes
+        (default: 10 minutes)}
+      \item{winhr}{Numeric, Vector of window size(s) (unit: hours) of L5 and
+        M5 analysis (dedault = 5 hours)}
+      \item{qlevels}{Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qlevels"]])}). 
+      Array of percentiles for which value needs to be extracted.
+        These need to be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75).
+        There is no limit to the number of percentiles. If left empty then percentiles will not be
+        extracted. Distribution will be derived from short epoch metric data.}
+      \item{ilevels}{Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}). 
+      Levels for acceleration value frequency distribution in mg, e.g., c(0,100,200). 
+      There is no limit to the number of levels. If left empty then percentiles will not be
+        extracted. Distribution will be derived from short epoch metric data.}
+      \item{window.summary.size}{Numeric, Functionality designed for the London Centre
+        of Longidutinal studies. Size in minutes of the summary window}
+      \item{iglevels}{Numeric, Levels for acceleration value frequency distribution
+        in mg used for intensity gradient calculation (according to the method by
+        Rowlands 2018). By default this is argument is empty and the intensity gradient
+        calculation is not done. The user can either provide a single value (any) to
+        make the intensity gradient use the bins c(seq(0,4000,by=25),8000) or the
+        user could specify their own distribution. There is no constriction to the
+        number of levels.}
+      \item{IVIS_windowsize_minutes}{
+        Window size of the Intradaily Variability (IV) and Interdaily
+        Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.
+      }
+      \item{IVIS_epochsize_seconds}{
+        This argument is deprecated.
+      }
+      \item{IVIS.activity.metric}{
+        Metric used for activity calculation.
+        Value = 1, uses continuous scaled acceleration.
+        Value = 2, tries to collapse acceleration into a binary score of rest
+        versus active to try to similate the original approach.
+      }
+      \item{IVIS_acc_threshold}{
+        Acceleration threshold to distinguish inactive from active.
+      }
+      \item{qM5L5}{
+        Percentiles (quantiles) to be calculated over L5 and M5 window.
+      }
+      \item{MX.ig.min.dur}{
+        Minimum MX duration needed in order for intensity gradient to be calculated
+      }
+      \item{LUXthresholds}{Numeric. Vector with numeric sequece corresponding to
+        the thresholds used to calculated time spent in LUX ranges.}
+      \item{LUX_cal_constant}{Numeric, if both LUX_cal_constant and LUX_cal_exponent are
+        provided LUX LUX values are converted based on formula y = constant * exp(x * exponent)}
+      \item{LUX_cal_exponent}{Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
+        LUX values are converted based on formula y = constant * exp(x * exponent)}
+      \item{LUX_day_segments}{Numeric vector with hours at which the day should be segmented for
+        the LUX analysis.}
+      \item{L5M5window}{Argument depricated after version 1.5-24.
+        This argument used to define the start and end time, in 24 hour clock hours,
+        over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
+      \item{cosinor}{Argument depricated after version 1.5-24.
+        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
+    }
+  }
+  \subsection{params_output}{
+    A list of parameters used to specify whether and how GGIR stores its output at various stages of the
+    process.
+    \describe{
+      \item{storefolderstructure}{Boolean. Store folder structure of the accelerometer data.}
+      \item{do.part2.pdf}{Boolean (default: do.part2.pdf = TRUE).
+      In g.part2: Whether to generate a pdf for part 2.}
+      \item{do.part3.pdf}{Boolean (default: do.part3.pdf = TRUE).
+      In g.part3: Whether to generate a pdf for part 3.}
+      \item{timewindow}{In g.part5: Timewindow over which summary statistics are derived.
+        Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
+        or both c("MM","WW").}
+      \item{save_ms5rawlevels}{Boolean, whether to save the time series
+        classification (levels) as a csv files.}
+      \item{save_ms5raw_format}{Character string to specify how data should
+        be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.}
+      \item{save_ms5raw_without_invalid}{Boolean to indicate whether to remove
+        invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.}
+      \item{epochvalues2csv}{Boolean (default: epochvalues2csv = FALSE). If TRUE then epoch values
+        are exported to a CSV spreadsheet. Here, non-wear time is imputed where possible.}
+      \item{do.sibreport}{Boolean (default: do.sibreport = FALSE). Applied in g.part5 to indicate
+        whether to generate report for the sustained inactivity bouts (sib).}
+      \item{do.visual}{Boolean. If g.part4 is run with do.visual == TRUE (default) then
+        the function will generate a pdf with a visual representation of the
+        overlap between the sleeplog entries and the accelerometer detections.
+        This can be used to visualy verify that the sleeplog entries do
+        not come with obvious mistakes.}
+      \item{outliers.only}{Boolean. Relevant for do.visual == TRUE. Outliers.only == FALSE
+        will visualise all available nights in the data. Outliers.only == TRUE will visualise
+        only for nights with a difference in onset or waking time
+        larger than the variable of argument criterror.}
+      \item{criterror}{Numeric. Relevant for do.visual == TRUE and outliers.only == TRUE.
+        criterror specifies the number of minimum number of hours difference
+        between sleep log and  accelerometer estimate for the night to be
+        included in the visualisation.}
+      \item{visualreport}{Boolean. If TRUE (default) then generate visual report based on combined output from part 2
+        and 4.}
+      \item{viewingwindow}{Numeric. Centre the day as displayed around noon (value = 1) or
+        around midnight (value = 2).}
+      \item{week_weekend_aggregate.part5}{
+        Boolean to indicate whether week and weekend-days aggregates
+        should be stored. This is turned off by default as it generates a
+        large number of extra columns in the output report.
+      }
+      \item{dofirstpage}{
+        Boolean to indicate whether a first page with histograms summarizing the whole
+        measurement should be added in the file summary reports generated with \link{g.plot5}.
+      }
+      \item{timewindow}{Timewindow over which summary statistics are derived.
+        Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
+        or both c("MM","WW").}
     }
   }
 }
