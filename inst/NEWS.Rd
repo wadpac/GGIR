@@ -10,6 +10,7 @@
     \item Part 1: Fixed issue #573 (code redundancy to impute time gaps in read.myacc.csv and g.imputeTimegaps)
     \item Part 1: g.imputeTimegaps extended so that now it can handle time gaps at the begining, at the end of the file, and
     time gaps from one chunk to the next one.
+    \item Part 2: QC plot now with legend
     }
 }
 \section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
