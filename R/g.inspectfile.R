@@ -70,6 +70,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       mon = 3 # actigraph
     } else if (tmp7[length(tmp7)] == "X") { #this is a gt3x file from Centerpoint
       if (file.access(datafile, 2) == 0) { # test for write access to file
+        
         # rename file to be lower case gt3x extension
         file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
         datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)

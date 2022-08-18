@@ -196,29 +196,31 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         } else {
           personSummary = matrix(0, NIDS, ((NDEF * 3 * 22) + 13 + (6 * 3)))
         }
-        uid = unique(nightsummary$ID)
+        # unique filenames, previously we used unique IDs, but that would not allow
+        # for repeated measurements of the same ID to be summarised separately
+        uniquefn = unique(nightsummary$filename) 
         if (nrow(nightsummary) > 0) {
-          for (i in 1:length(uid)) {
+          for (i in 1:length(uniquefn)) {
             personSummarynames = c()  #moved here on 3/12/2014
             # fully cleaned from nights that need to be deleted
-            nightsummary.tmp = nightsummary[which(nightsummary$ID == uid[i]), ]  #back up
+            this_file = which(nightsummary$filename == uniquefn[i])
+            nightsummary.tmp = nightsummary[this_file, ]  #back up
             udef = as.character(unique(nightsummary.tmp$sleepparam))
             if (length(which(as.character(udef) == "0") > 0))
               udef = udef[-c(which(as.character(udef) == "0"))]
             udefn = udef
             #-------------------------------------------
             # general info about file
-            personSummary[i, 1] = uid[i]  #id
+            personSummary[i, 1] = nightsummary.tmp$ID[1]  #id
             personSummarynames = c(personSummarynames, "ID")
-            personSummary[i, 2] = as.character(nightsummary$filename[which(nightsummary$ID == uid[i])][1])  #filename
+            personSummary[i, 2] = uniquefn[i] #as.character(nightsummary$filename[which(nightsummary$ID == uid[i])][1])  #filename
             if (length(unlist(strsplit(as.character(personSummary[i, 2]), ".RDa"))) > 1)
               personSummary[i, 2] = unlist(strsplit(personSummary[i, 2], ".RDa"))[1]
             personSummarynames = c(personSummarynames, "filename")
             cntt = 2
-            personSummary[i, cntt + 1] = as.character(nightsummary$calendar_date[which(nightsummary$ID ==
-                                                                                         uid[i])][1])  #date
+            personSummary[i, cntt + 1] = as.character(nightsummary$calendar_date[this_file[1]])  #date
             personSummarynames = c(personSummarynames, "calendar_date")
-            personSummary[i, cntt + 2] = nightsummary$weekday[which(nightsummary$ID == uid[i])][1]  #date
+            personSummary[i, cntt + 2] = nightsummary$weekday[this_file[1]]  #date
             personSummarynames = c(personSummarynames, "weekday")
             # sleep log used
             personSummary[i, cntt + 3] = as.character(nightsummary.tmp$sleeplog_used[1])
@@ -316,20 +318,20 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
             }
             nightsummary$cleaningcode = as.numeric(nightsummary$cleaningcode)
             nightsummary$ID = as.character(nightsummary$ID)
-            uid = as.character(uid)
+            # uid = as.character(uid)
             #-------------------------------------------
             # accelerometer summary
             #----------------------------------------------
             if (only.use.sleeplog == FALSE) {
               # when sleep log is not available
               if (dotwice == 2) {
-                CRIT = which(nightsummary$ID == uid[i] & (nightsummary$cleaningcode == 0 | nightsummary$cleaningcode ==
+                CRIT = which(nightsummary$filename == uniquefn[i] & (nightsummary$cleaningcode == 0 | nightsummary$cleaningcode ==
                                                             1))
               } else {
-                CRIT = which(nightsummary$ID == uid[i])
+                CRIT = which(nightsummary$filename == uniquefn[i])
               }
             } else {
-              CRIT = which(nightsummary$ID == uid[i] & nightsummary$cleaningcode == 0)  #when sleep log is available
+              CRIT = which(nightsummary$filename == uniquefn[i] & nightsummary$cleaningcode == 0)  #when sleep log is available
             }
             personSummarynames_backup = c()
             if (length(CRIT) > 0) {
