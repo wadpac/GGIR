@@ -114,12 +114,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
     categories.
     \describe{
     
-      \item{overwrite}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["overwrite"]]}). 
+      \item{overwrite}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["overwrite"]]}). 
         Do you want to overwrite analysis for which milestone
         data exists? If overwrite = FALSE, then milestone data from a previous analysis will
         be used if available and visual reports will not be created again.}
         
-      \item{selectdaysfile}{Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["selectdaysfile"]]}). 
+      \item{selectdaysfile}{
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["selectdaysfile"]]}). 
         Do not use, this is legacy code for one specific data study.
         Character pointing at a csv file holding the relationship between device serial
         numbers (first column) and measurement dates of interest
@@ -128,46 +130,56 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
         directory in a new subfolder named "raw".}
         
-      \item{dayborder}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}). 
-      Hour at which days start and end (dayborder = 4 would mean 4 am).}
+      \item{dayborder}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}). 
+        Hour at which days start and end (dayborder = 4 would mean 4 am).}
       
-      \item{do.parallel}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). 
-      Whether to use multi-core processing (only works if at least 4 CPU cores are available).}
+      \item{do.parallel}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). 
+        Whether to use multi-core processing (only works if at least 4 CPU cores are available).}
       
-      \item{maxNcores}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["maxNcores"]]}).
+      \item{maxNcores}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["maxNcores"]]}).
         Maximum number of cores to use when argument do.parallel is set to true.
         GGIR by default uses either the maximum number of available cores or the number of files to
         process (whichever is lower), but this argument allows you to set a lower maximum.}
         
-      \item{acc.metric}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
+      \item{acc.metric}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
         Which one of the metrics do you want to consider to analyze L5. The metric of interest need to be calculated in M (see \link{g.part1}.}
         
-      \item{part5_agg2_60seconds}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
+      \item{part5_agg2_60seconds}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
         Wether to use aggregate epochs to 60 seconds as part of the part 5 analysis.}
         
-      \item{print.filename}{Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["print.filename"]]}).
+      \item{print.filename}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["print.filename"]]}).
         Whether to print the filename before before analysing it (in case do.parallel = FALSE). Printing the filename can be useful to investigate
         problems (e.g., to verify that which file is being read).}
         
-      \item{desiredtz}{Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["desiredtz"]]}", i.e., system timezone). 
+      \item{desiredtz}{
+        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["desiredtz"]]}", i.e., system timezone). 
         Timezone in which device was configured and experiments took place.
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument \code{configtz} to specify where the device was configured. 
         See also http://en.wikipedia.org/wiki/Zone.tab}
         
-      \item{configtz}{Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone). 
+      \item{configtz}{
+        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone). 
         Only functional for AX3 cwa and ActiGraph .gt3x data at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
         place are different. See also http://en.wikipedia.org/wiki/Zone.tab}
         
-      \item{sensor.location}{Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["sensor.location"]]}"). 
+      \item{sensor.location}{
+        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["sensor.location"]]}"). 
         To indicate sensor location, default is wrist. If it is hip, the HDCZA algorithm for sleep detection
         also requires longitudinal axis of sensor to be between -45 and +45 degrees.}
       
-      \item{windowsizes}{Numeric vector, three values 
-      (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_general"]][["windowsizes"]], collapse = ", "), ")")}). 
+      \item{windowsizes}{
+        Numeric vector, three values 
+        (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_general"]][["windowsizes"]], collapse = ", "), ")")}). 
         To indicate the lengths of the windows as in c(window1, window2, window3): 
         window1 is the short epoch length in seconds, by default 5, and this is the time window over which acceleration and
         angle metrics are calculated; 
@@ -179,7 +191,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         while if window2 equals window3 non-wear periods are assessed by non-overlapping
         windows.}
         
-      \item{idloc}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["idloc"]]}). 
+      \item{idloc}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["idloc"]]}). 
         If idloc = 1 the code assumes that ID number is stored in the obvious header field. Note that for ActiGraph data
         the ID is never stored in the file header. 
         For value set to 2, 5, 6, and 7, GGIR looks at the filename and extracts the character string preceding the first
@@ -188,7 +201,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         You may have noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
         
-      \item{expand_tail_max_hours}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
+      \item{
+        expand_tail_max_hours}{Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
         Number hours to expand the 
         part 1 output with synthetic data to trigger sleep detection for last night. 
         The synthetic data for metashort entails: timestamps continuing
@@ -209,13 +223,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
     }
   }
   
-  
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
     raw data, excluding parameters related to metrics as those are in
     the params_metrics object.
     \describe{
-      \item{backup.cal.coef}{Character. Default value is "retrieve".
+    
+      \item{backup.cal.coef}{
+        Character. Default value is "retrieve".
         Option to use backed-up calibration coefficient instead of
         deriving the calibration coefficients when analysing the same file twice.
         Argument backup.cal.coef has two usecase. Use case 1: If the auto-calibration
@@ -238,219 +253,335 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         QC, which holds the previously generated calibration coefficients. If you
         do not want this happen, then deleted the data_quality_report.csv from the
         QC folder or set it to value "redo".}
-      \item{minimumFileSizeMB}{Numeric. Minimum File size in MB required to enter processing,
+        
+      \item{minimumFileSizeMB}{
+        Numeric. Minimum File size in MB required to enter processing,
         default 2MB. This argument can help
         to avoid having short uninformative files to enter the analyses. Given that a typical accelerometer
         collects several MBs per hour, the default setting should only skip the very tiny files.}
-      \item{do.cal}{Boolean (default = \Sexpr{format(GGIR::load_params("rawdata")[["params_rawdata"]][["do.cal"]])}).
-      Whether to apply auto-calibration or not by \link{g.calibrate}.
-      Recommended setting is TRUE.}
-      \item{imputeTimegaps}{Boolean to indicate whether timegaps larger than 1 sample should be imputed.
+        
+      \item{do.cal}{
+        Boolean (default = \Sexpr{format(GGIR::load_params("rawdata")[["params_rawdata"]][["do.cal"]])}).
+        Whether to apply auto-calibration or not by \link{g.calibrate}.
+        Recommended setting is TRUE.}
+      
+      \item{imputeTimegaps}{
+        Boolean to indicate whether timegaps larger than 1 sample should be imputed.
         Currently onlly used for .gt3x data and ActiGraph .csv format, where timegaps can be expected as a result of
         Actigraph's idle sleep.mode configuration that is turned on in some studies.}
-      \item{spherecrit}{The minimum required acceleration value (in g) on both sides of 0 g
+      
+      \item{spherecrit}{
+        The minimum required acceleration value (in g) on both sides of 0 g
         for each axis. Used to judge whether the sphere is sufficiently populated}
-      \item{minloadcrit}{The minimum number of hours the code needs to read for the
+      
+      \item{minloadcrit}{
+        The minimum number of hours the code needs to read for the
         autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
         other values will be ceiled). After loading these hours only extra data is loaded
         if calibration error has not been reduced to under 0.01 g.}
-      \item{printsummary}{Boolean (default = FASE). If TRUE will print a summary of the calibration procedure when done}
-      \item{chunksize}{Numeric. Value between 0.2 and 1 to specificy the size of chunks to be
+      
+      \item{printsummary}{
+        Boolean (default = FASE). If TRUE will print a summary of the calibration procedure when done}
+      
+      \item{chunksize}{
+        Numeric. Value between 0.2 and 1 to specificy the size of chunks to be
         loaded as a fraction of a 12 hour period, e.g., 0.5 equals 6 hour chunks.
         The default is 1 (12 hrs). For machines with less than 4Gb of RAM memory a value
         below 1 is recommended.}
-      \item{dynrange}{Numeric, provide dynamic range for accelerometer data to
+      
+      \item{dynrange}{
+        Numeric, provide dynamic range for accelerometer data to
         overwrite hardcoded 6 g for GENEA and 8 g for other brands}
-      \item{interpolationType}{Integer to indicate type of interpolation to be used
+      
+      \item{interpolationType}{
+        Integer to indicate type of interpolation to be used
         when resampling time series (mainly relevant for Axivity sensors),
         1=linear, 2=nearest neighbour}
+      
       \item{rmc.file}{
         Filename of file to be read if it is in the working directory, or full path to the file             otherwise.
       }
+      
       \item{rmc.nrow}{
-        Number of rows to read, same as nrow argument in \link[utils]{read.csv} and nrows in \link[data.table]{fread}. The whole file is read by default (i.e., rmc.nrow = Inf).
-      }
+        Number of rows to read, same as nrow argument in \link[utils]{read.csv} and nrows in \link[data.table]{fread}. 
+        The whole file is read by default (i.e., rmc.nrow = Inf).}
+      
       \item{rmc.skip}{
-        Number of rows to skip, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.
-      }
+        Number of rows to skip, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.}
+      
       \item{rmc.dec}{
-        Decimal used for numbers, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.
-      }
+        Decimal used for numbers, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.}
+      
       \item{rmc.firstrow.acc}{
-        First row (number) of the acceleration data.
-      }
+        First row (number) of the acceleration data.}
+      
       \item{rmc.firstrow.header}{
         First row (number) of the header. Leave blank if the file does not have
-        a header.
-      }
+        a header.}
+      
       \item{rmc.header.length}{
-        If file has header, specify header length (numeric).
-      }
+        If file has header, specify header length (numeric).}
+      
       \item{rmc.col.acc}{
         Vector with three column (numbers) in which the acceleration signals
-        are stored
-      }
+        are stored.}
+      
       \item{rmc.col.temp}{
         Scalar with column (number) in which the temperature is stored.
         Leave in default setting if no temperature is avaible. The temperature
-        will be used by \link{g.calibrate}.
-      }
+        will be used by \link{g.calibrate}.}
+      
       \item{rmc.col.time}{
         Scalar with column (number) in which the timestamps are stored.
-        Leave in default setting if timestamps are not stored.
-      }
+        Leave in default setting if timestamps are not stored.}
+      
       \item{rmc.unit.acc}{
-        Character with unit of acceleration values: "g", "mg", or "bit"
-      }
+        Character with unit of acceleration values: "g", "mg", or "bit".}
+      
       \item{rmc.unit.temp}{
-        Character with unit of temperature values: (K)elvin, (C)elsius, or (F)ahrenheit
-      }
+        Character with unit of temperature values: (K)elvin, (C)elsius, or (F)ahrenheit.}
+      
       \item{rmc.unit.time}{
         Character with unit of timestamps: "POSIX",
         "UNIXsec" (seconds since origin, see argument rmc.origin), "character", or
         "ActivPAL" (exotic timestamp format only used in the ActivPAL
-        activity monitor).
-
-      }
+        activity monitor).}
+      
       \item{rmc.format.time}{
-        Character string giving a date-time format as used by \link[base]{strptime}. Only used for rmc.unit.time: character and POSIX.
-      }
+        Character string giving a date-time format as used by \link[base]{strptime}. Only used for rmc.unit.time: character and POSIX.}
+      
       \item{rmc.bitrate}{
-        Numeric: If unit of acceleration is a bit then provide bit rate, e.g., 12 bit.
-      }
+        Numeric: If unit of acceleration is a bit then provide bit rate, e.g., 12 bit.}
+        
       \item{rmc.dynamic_range}{
         Numeric, if unit of acceleration is a bit then provide dynamic range deviation
         in g from zero, e.g., +/-6g would mean this argument needs to be 6. If you give this
         argument a character value the code will search the file header for elements with
         a name equal to the character value and use the corresponding numeric value
-        next to it as dynamic range.
-      }
+        next to it as dynamic range.}
+        
       \item{rmc.unsignedbit}{
         Boolean, if unsignedbit = TRUE means that bits are only positive numbers.
-       if unsignedbit = FALSE then bits are both positive and negative.
-      }
+       if unsignedbit = FALSE then bits are both positive and negative.}
+       
       \item{rmc.origin}{
-        Origin of time when unit of time is UNIXsec, e.g., 1970-1-1
-      }
+        Origin of time when unit of time is UNIXsec, e.g., 1970-1-1.}
+        
       \item{rmc.desiredtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone). 
         Timezone in which device was configured and experiments took place.
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument configtz to specify where the device was configured (not implemented yet).
-        See also http://en.wikipedia.org/wiki/Zone.tab
-      }
+        See also http://en.wikipedia.org/wiki/Zone.tab}
+        
       \item{rmc.sf}{
         Sample rate in Hertz, if this is stored in the file header then that will be used
-        instead.
-      }
+        instead.}
+        
       \item{rmc.headername.sf}{
         If file has a header: Row name (character) under which the sample
-        frequency can be found.
-      }
+        frequency can be found.}
+        
       \item{rmc.headername.sn}{
         If file has a header: Row name (character) under which the
-        serial number can be found.
-      }
+        serial number can be found.}
+        
       \item{rmc.headername.recordingid}{
         If file has a header: Row name (character) under which the
-        recording ID can be found.
-      }
+        recording ID can be found.}
 
       \item{rmc.header.structure}{
         Character used to split the header name from the header
-        value, e.g., ":" or " "
-      }
+        value, e.g., ":" or " ".}
+        
       \item{rmc.check4timegaps}{
         Boolean to indicate whether gaps in time should be imputed with zeros.
         Some sensing equipment provides accelerometer with gaps in time. The rest of
         GGIR is not designed for this, by setting this argument to TRUE the the gaps
-        in time will be filled with zeros.
-      }
+        in time will be filled with zeros.}
+        
       \item{rmc.col.wear}{
         If external wear detection outcome is stored as part of the data then this can be used by GGIR.
-        This argument specifies the column in which the wear detection (Boolean) is stored.
-      }
+        This argument specifies the column in which the wear detection (Boolean) is stored.}
+        
       \item{rmc.doresample}{
         Boolean to indicate whether to resample the data based on the available timestamps and extracted
-       sample rate from the file header
-      }
+        sample rate from the file header.}
+       
       \item{rmc.noise}{
-    Noise level of acceleration signal in _g_-units, used when working ad-hoc .csv data formats
-    using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
-    but when interacting with \link{g.shell.GGIR} or \link{g.part1} rmc.noise is used.
-    There, rmc.noise is taken from the params_rawdata object if not explicitly specified by user.
-      }
+        Noise level of acceleration signal in _g_-units, used when working ad-hoc .csv data formats
+        using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
+        but when interacting with \link{g.shell.GGIR} or \link{g.part1} rmc.noise is used.
+        There, rmc.noise is taken from the params_rawdata object if not explicitly specified by user.}
+        
       \item{interpolationType}{
-        Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
-      }
+        Integer to indicate type of interpolation to be used when resampling time series 
+        (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.}
     }
   }
+  
   \subsection{params_metrics}{
   A list of parameters used to specify the signal metrics that need to be extract in GGIR part 1.
   \describe{
-      \item{do.anglex}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
-        If TRUE, calculates the angle of the X axis relative to the horizontal: \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + acc_{rollmedian(z)}}}) * 180/\pi}}
-      \item{do.angley}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
-        If TRUE, calculates the angle of the Y axis relative to the horizontal: \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + acc_{rollmedian(z)}}}) * 180/\pi}}
-      \item{do.anglez}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
-        If TRUE, calculates the angle of the Z axis relative to the horizontal: \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + acc_{rollmedian(y)}}}) * 180/\pi}}
-      \item{do.zcx}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcx"]]}).
-        If TRUE, calculates metric zero-crossing count for x-axis. For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.zcy}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcy"]]}).
-        If TRUE, calculates metric zero-crossing count for y-axis. For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.zcz}{Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcz"]]}).
-        If TRUE, calculates metric zero-crossing count for z-axis. For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.enmo}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmo"]])}).
-      If TRUE, calculates the metric: \deqn{ENMO = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMO < 0, then ENMO = 0)}
-      \item{do.lfenmo}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfenmo"]])}).
-      If TRUE, calculates the metric \code{ENMO} over the low-pass filtered accelerations (For computation specifics see source code of function \link{g.applymetrics}). 
-      The filter bound is defined by the parameter \code{hb}}
-      \item{do.en}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.en"]])}).
-      If TRUE, calculates the Euclidean Norm of the raw accelerations: \deqn{EN = \sqrt{acc_x^2 + acc_y^2 + acc_z^2}}}
-      \item{do.mad}{Boolean, if TRUE calculate metric. For computation
+  
+      \item{do.anglex}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
+        If TRUE, calculates the angle of the X axis relative to the horizontal: 
+        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + 
+        acc_{rollmedian(z)}}}) * 180/\pi}}
+      
+      \item{do.angley}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
+        If TRUE, calculates the angle of the Y axis relative to the horizontal: 
+        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + 
+        acc_{rollmedian(z)}}}) * 180/\pi}}
+        
+      \item{do.anglez}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
+        If TRUE, calculates the angle of the Z axis relative to the horizontal: 
+        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + 
+        acc_{rollmedian(y)}}}) * 180/\pi}}
+        
+      \item{do.zcx}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcx"]]}).
+        If TRUE, calculates metric zero-crossing count for x-axis. For computation specifics 
+        see source code of function \link{g.applymetrics}}
+        
+      \item{do.zcy}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcy"]]}).
+        If TRUE, calculates metric zero-crossing count for y-axis. For computation specifics 
+        see source code of function \link{g.applymetrics}}
+        
+      \item{do.zcz}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcz"]]}).
+        If TRUE, calculates metric zero-crossing count for z-axis. For computation 
         specifics see source code of function \link{g.applymetrics}}
-      \item{do.enmoa}{Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmoa"]])}).
-      If TRUE, calculates the metric: \deqn{ENMOa = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMOa < 0, then ENMOa = |ENMOa|)}
-      \item{do.roll_med_acc_x}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.roll_med_acc_y}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.roll_med_acc_z}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.dev_roll_med_acc_x}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.dev_roll_med_acc_y}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.dev_roll_med_acc_z}{Boolean, if TRUE calculate metric.
-        For computation specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfen}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfen}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfenplus}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfen}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfx}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfy}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.lfz}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfx}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfy}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.hfz}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfx}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfy}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.bfz}{Boolean, if TRUE calculate metric. For computation
-        specifics see source code of function \link{g.applymetrics}}
-      \item{do.brondcounts}{Boolean, if TRUE calculate metric via R
+        
+      \item{do.enmo}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmo"]])}).
+        If TRUE, calculates the metric: \deqn{ENMO = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} 
+        (if ENMO < 0, then ENMO = 0).}
+      
+      \item{do.lfenmo}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfenmo"]])}).
+        If TRUE, calculates the metric \code{ENMO} over the low-pass filtered accelerations 
+        (for computation specifics see source code of function \link{g.applymetrics}). 
+        The filter bound is defined by the parameter \code{hb}.}
+        
+      \item{do.en}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.en"]])}).
+        If TRUE, calculates the Euclidean Norm of the raw accelerations: 
+        \deqn{EN = \sqrt{acc_x^2 + acc_y^2 + acc_z^2}}}
+      
+      \item{do.mad}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.mad"]])}).
+        If TRUE, calculates the Mean Amplitude Deviation: 
+        \deqn{MAD = \frac{1}{n}\Sigma|r_i - \overline{r}|}}
+        
+      \item{do.enmoa}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmoa"]])}).
+        If TRUE, calculates the metric: 
+        \deqn{ENMOa = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMOa < 0, then ENMOa = |ENMOa|).}
+        
+      \item{do.roll_med_acc_x}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.roll_med_acc_x"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+        
+      \item{do.roll_med_acc_y}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.roll_med_acc_y"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.roll_med_acc_z}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.roll_med_acc_z"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.dev_roll_med_acc_x}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.dev_roll_med_acc_x"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.dev_roll_med_acc_y}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.dev_roll_med_acc_y"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.dev_roll_med_acc_z}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.dev_roll_med_acc_z"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.bfen}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfen"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.hfen}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfen"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.hfenplus}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfenplus"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.lfen}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfen"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.lfx}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfx"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.lfy}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfy"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.lfz}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfz"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.hfx}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfx"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.hfy}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfy"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.hfz}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfz"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.bfx}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfx"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.bfy}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfy"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.bfz}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfz"]])}).
+        If TRUE, calculates the metric. For computation
+        specifics see source code of function \link{g.applymetrics}.}
+      
+      \item{do.brondcounts}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.brondcounts"]])}).
+        If TRUE, calculates the metric via R
         package activityCounts. We call them BrondCounts because
         there are large number of acitivty counts in the physical activity and
         sleep research field. By calling them _brondcounts_ we clarify that
@@ -458,13 +589,21 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
         one the counts produced by one of the closed source ActiLife software
         by ActiGraph.}
-      \item{lb}{Numeric, lower boundary of the frequency filter (in Hertz) as
-        used in the filter-based metrics.}
-      \item{hb}{Numeric, higher boundary of the frequency filter (in Hertz) as
-        used in the filter-based metrics.}
-      \item{n}{Numeric, order of the frequency filter as used in a variety of metrics.}
+      
+      \item{lb}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}). 
+        Lower boundary of the frequency filter (in Hertz) as used in the filter-based metrics.}
+      
+      \item{hb}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["hb"]])}). 
+        Higher boundary of the frequency filter (in Hertz) as used in the filter-based metrics.}
+      
+      \item{n}{
+      Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["n"]])}). 
+      Order of the frequency filter as used in the filter-based metrics.}
     }
   }
+  
   \subsection{params_cleaning}{
     A list of parameters used across all GGIR parts releated to masking or
     imputing data, abbreviated as "cleaning".
