@@ -299,7 +299,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
             if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
             if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
+            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, ws3 = ws3, k = 0.25, 
                                  PreviousLastValue = PreviousLastValue,
                                  PreviousLastTime = PreviousLastTime)
             PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
@@ -326,13 +326,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
             if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
             if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
+            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, ws3 = ws3, k = 0.25, 
                                  PreviousLastValue = PreviousLastValue,
                                  PreviousLastTime = PreviousLastTime)
             PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
             PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
           }
-          data = as.matrix(P[,2:4])
+          data = as.matrix(P[,2:ncol(P)])
         }
         #add left over data from last time
         if (nrow(S) > 0) {
@@ -512,6 +512,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics, round, n_decimal_places)
         accmetrics = data.frame(sapply(accmetrics,c)) # collapse to data.frame
+        # update LD in case data has been imputed at epoch level
+        if (floor(LD / (ws3 * sf)) < nrow(accmetrics)) { # then, data has been imputed
+          LD = nrow(accmetrics) * ws3 * sf
+        }
         #--------------------------------------------------------------------
         if (length(myfun) != 0) { # apply external function to the data to extract extra features
           #starttime
@@ -560,7 +564,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         # count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
-        
+        browser()
         rm(accmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)

@@ -34,15 +34,21 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   do.zcz = metrics2do$do.zcz
   do.brondcounts = metrics2do$do.brondcounts
   allmetrics = c()
-  averagePerEpoch = function(x,sf,epochsize) {
+  averagePerEpoch = function(x, sf, epochsize, gaps) {
     x2 = cumsum(c(0,x))
-    select = seq(1,length(x2),by = sf*epochsize)
+    select = seq(1, length(x2), by = sf*epochsize)
     x3 = diff(x2[round(select)]) / abs(diff(round(select)))
+    if (is.null(gaps)) return(x3)
+    rep_gap = gaps[select - 1]
+    x4 = lapply(as.data.frame(x3), rep, rep_gap)[[1]]
   }
-  sumPerEpoch = function(x, sf, epochsize) {
+  sumPerEpoch = function(x, sf, epochsize, gaps) {
     x2 = cumsum(c(0,x))
     select = seq(1,length(x2), by = sf*epochsize)
     x3 = diff(x2[round(select)])
+    if (is.null(gaps)) return(x3)
+    rep_gap = gaps[select - 1]
+    x4 = lapply(as.data.frame(x3), rep, rep_gap)[[1]]
   }
   
   if (sf <= (hb * 2)) { #avoid having a higher filter boundary higher than sf/2
@@ -115,21 +121,24 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   EuclideanNorm = function(xyz) {
     return(sqrt((xyz[,1]^2) + (xyz[,2]^2) + (xyz[,3]^2)))
   }
+  #================================================
+  gaps = NULL
+  if ("remaining_epochs" %in% colnames(data)) gaps = data[, "remaining_epochs"]
   #==========================
   # Band-pass filtering related metrics
   if (do.bfen == TRUE | do.bfx == TRUE | do.bfy == TRUE | do.bfz == TRUE) {
     data_processed = abs(process_axes(data, filtertype = "pass", cut_point = c(lb,hb), n, sf))
     if (do.bfx == TRUE) {
-      allmetrics$BFX = averagePerEpoch(x = data_processed[,1], sf, epochsize)
+      allmetrics$BFX = averagePerEpoch(x = data_processed[,1], sf, epochsize, gaps)
     }
     if (do.bfy == TRUE) {
-      allmetrics$BFY = averagePerEpoch(x = data_processed[,2], sf, epochsize)
+      allmetrics$BFY = averagePerEpoch(x = data_processed[,2], sf, epochsize, gaps)
     }
     if (do.bfz == TRUE) {
-      allmetrics$BFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize)
+      allmetrics$BFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize, gaps)
     }
     if (do.bfen == TRUE) {
-      allmetrics$BFEN = averagePerEpoch(x = EuclideanNorm(data_processed),sf,epochsize)
+      allmetrics$BFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize, gaps)
     }
   }
   if (do.zcx == TRUE | do.zcy == TRUE | do.zcz == TRUE) { # Zero crossing count
@@ -171,11 +180,11 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         return(tmp)
       }
       if (zi == 1) {
-        allmetrics$ZCX = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize)
+        allmetrics$ZCX = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize, gaps)
       } else if (zi == 2) {
-        allmetrics$ZCY = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize)
+        allmetrics$ZCY = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize, gaps)
       } else if (zi == 3) {
-        allmetrics$ZCZ = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize)
+        allmetrics$ZCZ = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize, gaps)
       }
     }
     # Note that this is per epoch, in GGIR part 3 we aggregate (sum) this per minute
@@ -188,21 +197,21 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   if (do.lfenmo == TRUE | do.lfx == TRUE | do.lfy == TRUE | do.lfz == TRUE | do.lfen == TRUE) {
     data_processed = abs(process_axes(data, filtertype = "low", cut_point = hb, n, sf))
     if (do.lfx == TRUE) {
-      allmetrics$LFX = averagePerEpoch(x = data_processed[,1], sf, epochsize)
+      allmetrics$LFX = averagePerEpoch(x = data_processed[,1], sf, epochsize, gaps)
     }
     if (do.lfy == TRUE) {
-      allmetrics$LFY = averagePerEpoch(x = data_processed[,2], sf, epochsize)
+      allmetrics$LFY = averagePerEpoch(x = data_processed[,2], sf, epochsize, gaps)
     }
     if (do.lfz == TRUE) {
-      allmetrics$LFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize)
+      allmetrics$LFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize, gaps)
     }
     if (do.lfen == TRUE) {
-      allmetrics$LFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize)
+      allmetrics$LFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize, gaps)
     }
     if (do.lfenmo == TRUE) {
       LFENMO = EuclideanNorm(data_processed) - gravity
       LFENMO[which(LFENMO < 0)] = 0
-      allmetrics$LFENMO = averagePerEpoch(x = LFENMO,sf,epochsize)
+      allmetrics$LFENMO = averagePerEpoch(x = LFENMO, sf, epochsize, gaps)
     }
   }
   #================================================
@@ -210,15 +219,15 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   if (do.hfen == TRUE | do.hfx == TRUE | do.hfy == TRUE | do.hfz == TRUE) {
     data_processed = abs(process_axes(data, filtertype = "high", cut_point = c(lb), n, sf))
     if (do.hfx == TRUE) {
-      allmetrics$HFX = averagePerEpoch(x = data_processed[,1], sf, epochsize)
+      allmetrics$HFX = averagePerEpoch(x = data_processed[,1], sf, epochsize, gaps)
     }
     if (do.hfy == TRUE) {
-      allmetrics$HFY = averagePerEpoch(x = data_processed[,2], sf, epochsize)
+      allmetrics$HFY = averagePerEpoch(x = data_processed[,2], sf, epochsize, gaps)
     }
     if (do.hfz == TRUE) {
-      allmetrics$HFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize)
+      allmetrics$HFZ = averagePerEpoch(x = data_processed[,3], sf, epochsize, gaps)
     }
-    allmetrics$HFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize)
+    allmetrics$HFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize, gaps)
   }
   #================================================
   # Combined low-pass and high-pass filtering metric:
@@ -230,7 +239,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     data_processed = process_axes(data, filtertype = "high", cut_point = lb, n, sf)
     HFENplus = EuclideanNorm(data_processed) + GCP
     HFENplus[which(HFENplus < 0)] = 0
-    allmetrics$HFENplus = averagePerEpoch(x = HFENplus,sf,epochsize)
+    allmetrics$HFENplus = averagePerEpoch(x = HFENplus,sf,epochsize, gaps)
   }
   #================================================
   # Rolling median filter related metrics:
@@ -240,14 +249,14 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     data_processed = process_axes(data, filtertype = "rollmedian", cut_point = c(), n, sf)
     roll_median_done  = TRUE
     if (do.roll_med_acc_x == TRUE | do.roll_med_acc_y == TRUE | do.roll_med_acc_z == TRUE) { #rolling median of acceleration
-      allmetrics$roll_med_acc_x = averagePerEpoch(x = data_processed[,1], sf, epochsize)
-      allmetrics$roll_med_acc_y = averagePerEpoch(x = data_processed[,2], sf, epochsize)
-      allmetrics$roll_med_acc_z = averagePerEpoch(x = data_processed[,3], sf, epochsize)
+      allmetrics$roll_med_acc_x = averagePerEpoch(x = data_processed[,1], sf, epochsize, gaps)
+      allmetrics$roll_med_acc_y = averagePerEpoch(x = data_processed[,2], sf, epochsize, gaps)
+      allmetrics$roll_med_acc_z = averagePerEpoch(x = data_processed[,3], sf, epochsize, gaps)
     }
     if (do.dev_roll_med_acc_x == TRUE | do.dev_roll_med_acc_y == TRUE | do.dev_roll_med_acc_z == TRUE) { #rolling median of acceleration
-      allmetrics$dev_roll_med_acc_x = averagePerEpoch(x = abs(data[,1] - data_processed[,1]), sf, epochsize)
-      allmetrics$dev_roll_med_acc_y = averagePerEpoch(x = abs(data[,2] - data_processed[, 2]), sf, epochsize)
-      allmetrics$dev_roll_med_acc_z = averagePerEpoch(x = abs(data[,3] - data_processed[, 3]), sf, epochsize)
+      allmetrics$dev_roll_med_acc_x = averagePerEpoch(x = abs(data[,1] - data_processed[,1]), sf, epochsize, gaps)
+      allmetrics$dev_roll_med_acc_y = averagePerEpoch(x = abs(data[,2] - data_processed[,2]), sf, epochsize, gaps)
+      allmetrics$dev_roll_med_acc_z = averagePerEpoch(x = abs(data[,3] - data_processed[,3]), sf, epochsize, gaps)
     }
   }
   if (do.anglex == TRUE | do.angley == TRUE | do.anglez == TRUE) {
@@ -255,13 +264,13 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
       data_processed = process_axes(data, filtertype = "rollmedian", cut_point = c(), n, sf)
     }
     if (do.anglex == TRUE) {
-      allmetrics$angle_x = averagePerEpoch(x = anglex(data_processed), sf, epochsize)
+      allmetrics$angle_x = averagePerEpoch(x = anglex(data_processed), sf, epochsize, gaps)
     }
     if (do.angley == TRUE) {
-      allmetrics$angle_y = averagePerEpoch(x = angley(data_processed), sf, epochsize)
+      allmetrics$angle_y = averagePerEpoch(x = angley(data_processed), sf, epochsize, gaps)
     }
     if (do.anglez == TRUE) {
-      allmetrics$angle_z = averagePerEpoch(x = anglez(data_processed), sf, epochsize)
+      allmetrics$angle_z = averagePerEpoch(x = anglez(data_processed), sf, epochsize, gaps)
     }
   }
   #================================================
@@ -270,19 +279,19 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   if (do.enmo == TRUE) {
     ENMO = EN - 1
     ENMO[which(ENMO < 0)] = 0 #turning negative values into zero
-    allmetrics$ENMO = averagePerEpoch(x = ENMO, sf, epochsize)
+    allmetrics$ENMO = averagePerEpoch(x = ENMO, sf, epochsize, gaps)
   }
   if (do.mad == TRUE) { # metric MAD (Mean Amplitude Deviation)
-    MEANS = rep(averagePerEpoch(x = EN, sf, epochsize), each = sf * epochsize)
+    MEANS = rep(averagePerEpoch(x = EN, sf, epochsize, gaps), each = sf * epochsize)
     MAD = abs(EN - MEANS)
-    allmetrics$MAD = averagePerEpoch(x = MAD, sf, epochsize)
+    allmetrics$MAD = averagePerEpoch(x = MAD, sf, epochsize, gaps)
   }
   if (do.en == TRUE) {
-    allmetrics$EN = averagePerEpoch(x = EN,sf,epochsize)
+    allmetrics$EN = averagePerEpoch(x = EN,sf,epochsize, gaps)
   }
   if (do.enmoa == TRUE) {
     ENMOa = abs(EN - gravity)
-    allmetrics$ENMOa = averagePerEpoch(x = ENMOa, sf, epochsize)
+    allmetrics$ENMOa = averagePerEpoch(x = ENMOa, sf, epochsize, gaps)
   }
   #================================================
   # Brond Counts
@@ -296,10 +305,23 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     }
     # activityCount output is per second
     # aggregate to our epoch size:
-    allmetrics$BrondCount_x = sumPerEpoch(mycounts[, 2], sf = 1, epochsize)
-    allmetrics$BrondCount_y = sumPerEpoch(mycounts[, 3], sf = 1, epochsize)
-    allmetrics$BrondCount_z = sumPerEpoch(mycounts[, 4], sf = 1, epochsize)
+    allmetrics$BrondCount_x = sumPerEpoch(mycounts[, 2], sf = 1, epochsize, gaps)
+    allmetrics$BrondCount_y = sumPerEpoch(mycounts[, 3], sf = 1, epochsize, gaps)
+    allmetrics$BrondCount_z = sumPerEpoch(mycounts[, 4], sf = 1, epochsize, gaps)
   }
   return(allmetrics)
 } 
+
+
+
+
+
+
+
+
+
+
+
+
+
 

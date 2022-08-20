@@ -470,7 +470,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       QC = "recalibration not done because recalibration does not decrease error"
     }
   }
-  if (length(ncol(meta_temp)) != 0) {
+  if (all(dim(meta_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
     spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
