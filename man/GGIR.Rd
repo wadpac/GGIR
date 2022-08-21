@@ -138,7 +138,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). 
         Whether to use multi-core processing (only works if at least 4 CPU cores are available).}
       
-      \item{}{
+      \item{maxNcores}{
         Numeric (default maxNcores= \Sexpr{GGIR::load_params()[["params_general"]][["maxNcores"]]}).
         Maximum number of cores to use when argument do.parallel is set to true.
         GGIR by default uses either the maximum number of available cores or the number of files to
