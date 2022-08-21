@@ -147,11 +147,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{acc.metric}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
         Which one of the metrics do you want to consider to analyze L5. 
-        The metric of interest need to be calculated in M (see \link{g.part1}.}
+        The metric of interest need to be calculated in M (see \link{g.part1}).}
         
       \item{part5_agg2_60seconds}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
-        Wether to use aggregate epochs to 60 seconds as part of the part 5 analysis.}
+        Wether to use aggregate epochs to 60 seconds as part of the GGIR \link{g.part5} analysis.}
         
       \item{print.filename}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["print.filename"]]}).
@@ -207,16 +207,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{expand_tail_max_hours}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
         Number hours to expand the 
-        part 1 output with synthetic data to trigger sleep detection for last night. 
+        \link{g.part1} output with synthetic data to trigger sleep detection for last night. 
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
         the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}. 
-        To keep track of the tail expansion g.part1 stores the lenght of the expansion in 
-        the RData files, which is then passed via part2, part3, and part4 to part5. 
-        In part5 it is then included as an additional variable in the csv-reports. 
-        In the part 4 report the last nigth is omitted, because we know that sleep 
-        estimates from the last night will not be trustworthy. In the part5 output most
+        To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in 
+        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, and \link{g.part4} to \link{g.part5}. 
+        In \link{g.part5} it is then included as an additional variable in the csv-reports. 
+        In the \link{g.part4} report the last nigth is omitted, because we know that sleep 
+        estimates from the last night will not be trustworthy. In the \link{g.part5} output most
         columns related to the sleep assessment will be omitted for the last window to avoid biassing the
         averages. Using argument \code{expand_tail_max_hours} implies the assumption that the 
         participant fell asleep at or before the end of the recording if the recording
@@ -445,14 +445,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        
       \item{rmc.noise}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.noise"]])}). 
-        Noise level of acceleration signal in m_g_-units, used when working ad-hoc .csv data formats
+        Noise level of acceleration signal in m\emph{g}-units, used when working ad-hoc .csv data formats
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
     }
   }
   
   \subsection{params_metrics}{
-  A list of parameters used to specify the signal metrics that need to be extract in GGIR part 1.
+  A list of parameters used to specify the signal metrics that need to be extract in GGIR \link{g.part1}.
   \describe{
   
       \item{do.anglex}{
@@ -640,7 +640,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{do.imp}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["do.imp"]]}). 
         Whether to impute missing values (e.g., suspected of monitor non-wear or clippling) 
-        or not by \link{g.impute} in GGIR part2. Recommended setting is TRUE.}
+        or not by \link{g.impute} in GGIR \link{g.part2}. Recommended setting is TRUE.}
       
       \item{TimeSegments2ZeroFile}{
         Data frame (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["TimeSegments2ZeroFile"]])}). 
@@ -654,36 +654,36 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Optional path to a csv file you create that holds four columns: 
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the 
         participant ID. Columns day_part5 and night_part4 allow you to specify which 
-        day(s) and night(s) need to be excluded from part 5 and 4, respectively. 
+        day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively. 
         So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
         are valid. Column relyonguider_part4 allows you to specify for which nights
-        part 4 should fully rely on the guider. See also package vignette.}
+        \link{g.part4} should fully rely on the guider. See also package vignette.}
       
       \item{excludefirstlast.part5}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}). 
-        If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in part 5.}
+        If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in \link{g.part5}.}
       
       \item{excludefirstlast}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast"]]}).  
         If TRUE then the first and last night of the measurement are ignored for 
-        the sleep assessment (part 4).}
+        the sleep assessment in \link{g.part4}.}
       
       \item{excludefirst.part4}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirst.part4"]]}). 
-        If TRUE then the first night of the measurement are ignored for the sleep assessment (part 4.}
+        If TRUE then the first night of the measurement are ignored for the sleep assessment in \link{g.part4}.}
       
       \item{excludelast.part4}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludelast.part4"]]}). 
-        If TRUE then the last night of the measurement are ignored for the sleep assessment.}
+        If TRUE then the last night of the measurement are ignored for the sleep assessment in \link{g.part4}.}
       
       \item{includenightcrit}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includenightcrit"]]}). 
         Minimum number of valid hours per night (24 hour window between noon and noon), 
-        used for sleep assessment (part 4).}
+        used for sleep assessment in \link{g.part4}.}
       
       \item{minimum_MM_length.part5}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["minimum_MM_length.part5"]]}). 
-        Minimum length in hours of a MM day to be included in the cleaned part 5 results.}
+        Minimum length in hours of a MM day to be included in the cleaned \link{g.part4} results.}
       
       \item{selectdaysfile}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["selectdaysfile"]])}). 
@@ -703,12 +703,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{hrs.del.start}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.start"]]}). 
         How many HOURS after start of experiment did wearing
-        of monitor start? Used in GGIR part 2 when \code{strategy = 1}.}
+        of monitor start? Used in GGIR \link{g.part2} when \code{strategy = 1}.}
       
       \item{hrs.del.end}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.end"]]}). 
         How many HOURS before the end of the experiment did
-        wearing of monitor definitely end? Used in GGIR part 2 when \code{strategy = 1}.}
+        wearing of monitor definitely end? Used in GGIR \link{g.part2} when \code{strategy = 1}.}
       
       \item{maxdur}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["maxdur"]]}). 
@@ -739,7 +739,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   }
   
   \subsection{params_phyact}{
-    A list of parameters releated to physical activity as used in GGIRpart2 and GGIRpart5.
+    A list of parameters releated to physical activity as used in GGIR \link{g.part2} and GGIR \link{g.part5}.
     \describe{
     
       \item{mvpathreshold}{
@@ -872,7 +872,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
  
   \subsection{params_sleep}{
     A list of parameters used to configure the sleep analysis as performend in
-    GGIR part 3 and 4.
+    GGIR \link{g.part3} and \link{g.part4}.
     \describe{
      
       \item{relyonguider}{
@@ -1016,19 +1016,19 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   \subsection{params_247}{
     A list of parameters releated to description of 24/7 behaviours that do not fall
     under conventional physical activity or sleep outcomes, these parameters are used
-    in GGIRpart2 and GGIRpart5:
+    in GGIR \link{g.part2} and GGIR \link{g.part5}:
     \describe{
       
       \item{qwindow}{
         Numeric or character (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["qwindow"]], collapse = ", "), ")")}). 
-        To specify windows over which all
-        variables are calculated, e.g., acceleration distirbution, number of valid
-        hours, LXMX analysis, MVPA. If qwindow = c(0, 24),
+        To specify windows over which all variables are calculated, e.g., acceleration distirbution, number of valid
+        hours, LXMX analysis, MVPA. 
+        If numeric, qwindow should have length two, e.g., \code{qwindow = c(0, 24)},
         all variables will only be calculated over the full 24 hours in a day. If
-        qwindow = c(8, 24) variables will be calculated over the window 0-8, 8-24 and 0-24.
-        All days in the recording will be segmented based on these values. If you want
-        to use a day specific segmentation then you can set qwindow to be
-        the full path to activity diary file. Expected format of the activity diary is:
+        \code{qwindow = c(8, 24)} variables will be calculated over the window 0-8, 8-24 and 0-24.
+        All days in the recording will be segmented based on these values. 
+        If you want to use a day specific segmentation in each day then you can set qwindow to be
+        the full path to activity diary file (character). Expected format of the activity diary is:
         First column headers followed by one row per recording, first column is recording ID,
         which needs to match with the ID GGIR extracts from the accelerometer file. Followed
         by date column in format "23-04-2017", where date format is specified by argument
@@ -1038,78 +1038,105 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         column will be used as label for each activity type. Insert a new date column before
         continuing with activity types for next day. Leave missing values empty. If an
         activitylog is used then individuals who do not appear in the activitylog will still
-        be processed with value c(0,24). Dates with no activiy log data can be skipped,
+        be processed with value \code{qwindow = c(0, 24)}. Dates with no activiy log data can be skipped,
         no need to have a column with the date followed by a column with the next date.}
         
-      \item{qwindow_dateformat}{Character specifying the date format used in the activity log.}
+      \item{qwindow_dateformat}{
+        Character (default = "\Sexpr{GGIR::load_params()[["params_247"]][["qwindow_dateformat"]]}").
+        To specify the date format used in the activity log as used by \link[base]{strptime}.}
       
-      \item{M5L5res}{Numeric, resolution of L5 and M5 analysis in minutes
-        (default: 10 minutes)}
+      \item{M5L5res}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["M5L5res"]])}).
+        Resolution of L5 and M5 analysis in minutes.}
       
-      \item{winhr}{Numeric, Vector of window size(s) (unit: hours) of L5 and
-        M5 analysis (dedault = 5 hours)}
+      \item{winhr}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["winhr"]])}).
+        Vector of window size(s) (unit: hours) of L5 and M5 analysis.}
       
-      \item{qlevels}{Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qlevels"]])}). 
-      Array of percentiles for which value needs to be extracted.
+      \item{qlevels}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qlevels"]])}). 
+        Array of percentiles for which value needs to be extracted.
         These need to be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75).
         There is no limit to the number of percentiles. If left empty then percentiles will not be
         extracted. Distribution will be derived from short epoch metric data.}
       
-      \item{ilevels}{Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}). 
-      Levels for acceleration value frequency distribution in mg, e.g., c(0,100,200). 
-      There is no limit to the number of levels. If left empty then percentiles will not be
+      \item{ilevels}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}). 
+        Levels for acceleration value frequency distribution in m\emph{g}, e.g., \code{ilevels = c(0,100,200)}. 
+        There is no limit to the number of levels. If left empty then the intensity levels will not be
         extracted. Distribution will be derived from short epoch metric data.}
       
-      \item{window.summary.size}{Numeric, Functionality designed for the London Centre
+      \item{window.summary.size}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["window.summary.size"]])}). 
+        Functionality designed for the London Centre
         of Longidutinal studies. Size in minutes of the summary window}
       
-      \item{iglevels}{Numeric, Levels for acceleration value frequency distribution
-        in mg used for intensity gradient calculation (according to the method by
+      \item{iglevels}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["iglevels"]])}). 
+        Levels for acceleration value frequency distribution
+        in m\emph{g} used for intensity gradient calculation (according to the method by
         Rowlands 2018). By default this is argument is empty and the intensity gradient
         calculation is not done. The user can either provide a single value (any) to
-        make the intensity gradient use the bins c(seq(0,4000,by=25),8000) or the
-        user could specify their own distribution. There is no constriction to the
+        make the intensity gradient use the bins \code{iglevels = c(seq(0,4000,by=25), 8000)}
+        or the user could specify their own distribution. There is no constriction to the
         number of levels.}
       
       \item{IVIS_windowsize_minutes}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_windowsize_minutes"]])}). 
         Window size of the Intradaily Variability (IV) and Interdaily
         Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.}
         
       \item{IVIS_epochsize_seconds}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_epochsize_seconds"]])}). 
         This argument is deprecated.}
         
       \item{IVIS.activity.metric}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS.activity.metric"]])}). 
         Metric used for activity calculation.
         Value = 1, uses continuous scaled acceleration.
         Value = 2, tries to collapse acceleration into a binary score of rest
         versus active to try to similate the original approach.}
         
       \item{IVIS_acc_threshold}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_acc_threshold"]])}). 
         Acceleration threshold to distinguish inactive from active.}
         
       \item{qM5L5}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qM5L5"]])}). 
         Percentiles (quantiles) to be calculated over L5 and M5 window.}
         
       \item{MX.ig.min.dur}{
-        Minimum MX duration needed in order for intensity gradient to be calculated.}
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["MX.ig.min.dur"]])}). 
+        Minimum MX duration needed in order 
+        for intensity gradient to be calculated.}
         
-      \item{LUXthresholds}{Numeric. Vector with numeric sequece corresponding to
-        the thresholds used to calculated time spent in LUX ranges.}
+      \item{LUXthresholds}{
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["LUXthresholds"]], collapse = ", "), ")")}). 
+        Vector with numeric sequece corresponding to
+        the thresholds used to calculate time spent in LUX ranges.}
       
-      \item{LUX_cal_constant}{Numeric, if both LUX_cal_constant and LUX_cal_exponent are
-        provided LUX LUX values are converted based on formula y = constant * exp(x * exponent)}
+      \item{LUX_cal_constant}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_cal_constant"]])}). 
+        If both LUX_cal_constant and LUX_cal_exponent are
+        provided LUX values are converted based on formula y = constant * exp(x * exponent)}
       
-      \item{LUX_cal_exponent}{Numeric, if both LUX_cal_constant and LUX_cal_exponent are provided LUX
+      \item{LUX_cal_exponent}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_cal_exponent"]])}). 
+        If both LUX_cal_constant and LUX_cal_exponent are provided LUX
         LUX values are converted based on formula y = constant * exp(x * exponent)}
       
-      \item{LUX_day_segments}{Numeric vector with hours at which the day should be segmented for
+      \item{LUX_day_segments}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_day_segments"]])}). 
+        Vector with hours at which the day should be segmented for
         the LUX analysis.}
       
-      \item{L5M5window}{Argument depricated after version 1.5-24.
+      \item{L5M5window}{
+        Argument depricated after version 1.5-24.
         This argument used to define the start and end time, in 24 hour clock hours,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
       
-      \item{cosinor}{Argument depricated after version 1.5-24.
+      \item{cosinor}{
+        Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
     }
   }
@@ -1119,67 +1146,88 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
     process.
     \describe{
       
-      \item{storefolderstructure}{Boolean. Store folder structure of the accelerometer data.}
+      \item{storefolderstructure}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["storefolderstructure"]])}). 
+        Store folder structure of the accelerometer data.}
       
-      \item{do.part2.pdf}{Boolean (default: do.part2.pdf = TRUE).
-      In g.part2: Whether to generate a pdf for part 2.}
+      \item{do.part2.pdf}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.part2.pdf"]])}). 
+        In \link{g.part2}: Whether to generate a pdf for \link{g.part2}.}
       
-      \item{do.part3.pdf}{Boolean (default: do.part3.pdf = TRUE).
-      In g.part3: Whether to generate a pdf for part 3.}
+      \item{do.part3.pdf}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.part3.pdf"]])}). 
+        In \link{g.part3}: Whether to generate a pdf for \link{g.part3}.}
       
-      \item{timewindow}{In g.part5: Timewindow over which summary statistics are derived.
+      \item{timewindow}{
+        Character (default = \Sexpr{paste0("c(", paste0('"',GGIR::load_params()[["params_output"]][["timewindow"]],'"',  collapse = ", "), ")")}). 
+        In \link{g.part5}: Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
         or both c("MM","WW").}
       
-      \item{save_ms5rawlevels}{Boolean, whether to save the time series
-        classification (levels) as a csv files.}
+      \item{save_ms5rawlevels}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5rawlevels"]])}). 
+        In \link{g.part5}: Whether to save the time series classification (levels) 
+        as csv or RData files (as defined by \code{save_ms5raw_format}).}
       
-      \item{save_ms5raw_format}{Character string to specify how data should
-        be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.}
+      \item{save_ms5raw_format}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5raw_format"]])}"). 
+        In \link{g.part5}: To specify how data should be stored: either "csv" or "RData". 
+        Only used if \code{save_ms5rawlevels = TRUE}.}
       
-      \item{save_ms5raw_without_invalid}{Boolean to indicate whether to remove
-        invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.}
+      \item{save_ms5raw_without_invalid}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5raw_without_invalid"]])}). 
+        In \link{g.part5}: To indicate whether to remove invalid days from the time series output files. 
+        Only used if \code{save_ms5rawlevels = TRUE}.}
       
-      \item{epochvalues2csv}{Boolean (default: epochvalues2csv = FALSE). If TRUE then epoch values
-        are exported to a CSV spreadsheet. Here, non-wear time is imputed where possible.}
+      \item{epochvalues2csv}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["epochvalues2csv"]])}). 
+        In \link{g.part2}: If TRUE then epoch values are exported to a csv file. 
+        Here, non-wear time is imputed where possible.}
       
-      \item{do.sibreport}{Boolean (default: do.sibreport = FALSE). Applied in g.part5 to indicate
-        whether to generate report for the sustained inactivity bouts (sib).}
+      \item{do.sibreport}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.sibreport"]])}). 
+        In \link{g.part4}: To indicate whether to generate report for the sustained inactivity bouts (SIB).}
       
-      \item{do.visual}{Boolean. If g.part4 is run with do.visual == TRUE (default) then
-        the function will generate a pdf with a visual representation of the
-        overlap between the sleeplog entries and the accelerometer detections.
-        This can be used to visualy verify that the sleeplog entries do
+      \item{do.visual}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.visual"]])}). 
+        In \link{g.part4}: If TRUE, the function will generate a pdf with a visual 
+        representation of the overlap between the sleeplog entries and the accelerometer 
+        detections. This can be used to visually verify that the sleeplog entries do
         not come with obvious mistakes.}
       
-      \item{outliers.only}{Boolean. Relevant for do.visual == TRUE. Outliers.only == FALSE
-        will visualise all available nights in the data. Outliers.only == TRUE will visualise
-        only for nights with a difference in onset or waking time
-        larger than the variable of argument criterror.}
+      \item{outliers.only}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["outliers.only"]])}). 
+        In \link{g.part4}: Only used if \code{do.visual = TRUE}. If FALSE,
+        all available nights are included in the visual representation of the data and sleeplog. 
+        If TRUE, then only nights with a difference in onset or waking time
+        larger than the variable of argument \code{criterror} will be included.}
       
-      \item{criterror}{Numeric. Relevant for do.visual == TRUE and outliers.only == TRUE.
+      \item{criterror}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["criterror"]])}). 
+        In \link{g.part4}: Only used if \code{do.visual = TRUE} and \code{outliers.only = TRUE}.
         criterror specifies the number of minimum number of hours difference
         between sleep log and  accelerometer estimate for the night to be
         included in the visualisation.}
       
-      \item{visualreport}{Boolean. If TRUE (default) then generate visual report based on combined output from part 2
-        and 4.}
+      \item{visualreport}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport"]])}). 
+        If TRUE, then generate visual report based on combined output from \link{g.part2} and \link{g.part4}.}
       
-      \item{viewingwindow}{Numeric. Centre the day as displayed around noon (value = 1) or
-        around midnight (value = 2).}
+      \item{viewingwindow}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["viewingwindow"]])}). 
+        Centre the day as displayed around noon (\code{viewingwindow = 1}) or around midnight (\code{viewingwindow = 2})
+        in the visual report generated with \code{visualreport = TRUE}.}
       
       \item{week_weekend_aggregate.part5}{
-        Boolean to indicate whether week and weekend-days aggregates
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["week_weekend_aggregate.part5"]])}). 
+        In \link{g.part5}: To indicate whether week and weekend-days aggregates
         should be stored. This is turned off by default as it generates a
         large number of extra columns in the output report.}
         
       \item{dofirstpage}{
-        Boolean to indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports generated with \link{g.plot5}.}
-        
-      \item{timewindow}{Timewindow over which summary statistics are derived.
-        Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
-        or both c("MM","WW").}
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["dofirstpage"]])}). 
+        To indicate whether a first page with histograms summarizing the whole
+        measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
     }
   }
 }
@@ -1192,85 +1240,85 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   f0 = 1
   f1 = 2
   GGIR(#-------------------------------
-               # General parameters
-               #-------------------------------
-               mode=mode,
-               datadir=datadir,
-               outputdir=outputdir,
-               studyname=studyname,
-               f0=f0,
-               f1=f1,
-               overwrite = FALSE,
-               do.imp=TRUE,
-               idloc=1,
-               print.filename=FALSE,
-               storefolderstructure = FALSE,
-               #-------------------------------
-               # Part 1 parameters:
-               #-------------------------------
-               windowsizes = c(5,900,3600),
-               do.cal=TRUE,
-               do.enmo = TRUE,
-               do.anglez=TRUE,
-               chunksize=1,
-               printsummary=TRUE,
-               #-------------------------------
-               # Part 2 parameters:
-               #-------------------------------
-               strategy = 1,
-               ndayswindow=7,
-               hrs.del.start = 1,
-               hrs.del.end = 1,
-               maxdur = 9,
-               includedaycrit = 16,
-               L5M5window = c(0,24),
-               M5L5res = 10,
-               winhr = c(5,10),
-               qlevels = c(c(1380/1440),c(1410/1440)),
-               qwindow=c(0,24),
-               ilevels = c(seq(0,400,by=50),8000),
-               mvpathreshold =c(100,120),
-               #-------------------------------
-               # Part 3 parameters:
-               #-------------------------------
-               timethreshold= c(5,10),
-               anglethreshold=5,
-               ignorenonwear = TRUE,
-               #-------------------------------
-               # Part 4 parameters:
-               #-------------------------------
-               excludefirstlast = FALSE,
-               includenightcrit = 16,
-               def.noc.sleep = 1,
-               loglocation= "D:/sleeplog.csv",
-               outliers.only = FALSE,
-               criterror = 4,
-               relyonsleeplog = FALSE,
-               sleeplogidnum = TRUE,
-               colid=1,
-               coln1=2,
-               do.visual = TRUE,
-               nnights = 9,
-               #-------------------------------
-               # Part 5 parameters:
-               #-------------------------------
-               # Key functions: Merging physical activity with sleep analyses
-               threshold.lig = c(30,40,50),
-               threshold.mod = c(100,120),
-               threshold.vig = c(400,500),
-               excludefirstlast = FALSE,
-               boutcriter = 0.8,
-               boutcriter.in = 0.9,
-               boutcriter.lig = 0.8,
-               boutcriter.mvpa = 0.8,
-               boutdur.in = c(10,20,30),
-               boutdur.lig = c(1,5,10),
-               boutdur.mvpa = c(1,5,10),
-               timewindow = c("WW"),
-               #-----------------------------------
-               # Report generation
-               #-------------------------------
-               do.report=c(2,4,5))
+       # General parameters
+       #-------------------------------
+       mode=mode,
+       datadir=datadir,
+       outputdir=outputdir,
+       studyname=studyname,
+       f0=f0,
+       f1=f1,
+       overwrite = FALSE,
+       do.imp=TRUE,
+       idloc=1,
+       print.filename=FALSE,
+       storefolderstructure = FALSE,
+       #-------------------------------
+       # Part 1 parameters:
+       #-------------------------------
+       windowsizes = c(5,900,3600),
+       do.cal=TRUE,
+       do.enmo = TRUE,
+       do.anglez=TRUE,
+       chunksize=1,
+       printsummary=TRUE,
+       #-------------------------------
+       # Part 2 parameters:
+       #-------------------------------
+       strategy = 1,
+       ndayswindow=7,
+       hrs.del.start = 1,
+       hrs.del.end = 1,
+       maxdur = 9,
+       includedaycrit = 16,
+       L5M5window = c(0,24),
+       M5L5res = 10,
+       winhr = c(5,10),
+       qlevels = c(c(1380/1440),c(1410/1440)),
+       qwindow=c(0,24),
+       ilevels = c(seq(0,400,by=50),8000),
+       mvpathreshold =c(100,120),
+       #-------------------------------
+       # Part 3 parameters:
+       #-------------------------------
+       timethreshold= c(5,10),
+       anglethreshold=5,
+       ignorenonwear = TRUE,
+       #-------------------------------
+       # Part 4 parameters:
+       #-------------------------------
+       excludefirstlast = FALSE,
+       includenightcrit = 16,
+       def.noc.sleep = 1,
+       loglocation= "D:/sleeplog.csv",
+       outliers.only = FALSE,
+       criterror = 4,
+       relyonguider = FALSE,
+       sleeplogidnum = TRUE,
+       colid=1,
+       coln1=2,
+       do.visual = TRUE,
+       nnights = 9,
+       #-------------------------------
+       # Part 5 parameters:
+       #-------------------------------
+       # Key functions: Merging physical activity with sleep analyses
+       threshold.lig = c(30,40,50),
+       threshold.mod = c(100,120),
+       threshold.vig = c(400,500),
+       excludefirstlast = FALSE,
+       boutcriter = 0.8,
+       boutcriter.in = 0.9,
+       boutcriter.lig = 0.8,
+       boutcriter.mvpa = 0.8,
+       boutdur.in = c(10,20,30),
+       boutdur.lig = c(1,5,10),
+       boutdur.mvpa = c(1,5,10),
+       timewindow = c("WW"),
+       #-----------------------------------
+       # Report generation
+       #-------------------------------
+       do.report=c(2,4,5))
   }
 }
 \author{
