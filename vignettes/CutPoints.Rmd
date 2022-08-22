@@ -1,0 +1,74 @@
+---
+title: "Published cut-points and how to use them in GGIR"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Definition of published cut-points}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+# Summary of published cut-points
+
++-----------------+-----------------+----------------+----------------------+---------------+
+| Cut-points      | Attachment site | Population     | Relevant arguments   | thresholds    |
++=================+=================+================+======================+===============+
+| Esliger 2011\*  | Left wrist      | Adults         | do.enmoa = TRUE      | Light: 45     |
+|                 |                 |                |                      |               |
+|                 |                 |                | do.enmo = FALSE      | Moderate: 134 |
+|                 |                 |                |                      |               |
+|                 |                 |                | acc.metric = "ENMOa" | Vigorous: 377 |
++-----------------+-----------------+----------------+----------------------+---------------+
+| Esliger 2011\*  | Right wrist     | Adults         | do.enmoa = TRUE      | Light: 80     |
+|                 |                 |                |                      |               |
+|                 |                 |                | do.enmo = FALSE      | Moderate: 92  |
+|                 |                 |                |                      |               |
+|                 |                 |                | acc.metric = "ENMOa" | Vigorous: 437 |
++-----------------+-----------------+----------------+----------------------+---------------+
+| Esliger 2011\*  | Waist           | Adults         | do.enmoa = TRUE      | Light: 16     |
+|                 |                 |                |                      |               |
+|                 |                 |                | do.enmo = FALSE      | Moderate: 46  |
+|                 |                 |                |                      |               |
+|                 |                 |                | acc.metric = "ENMOa" | Vigorous: 428 |
++-----------------+-----------------+----------------+----------------------+---------------+
+| Phillips 2013\* | Left wrist      | 8-14 year olds | do.enmoa = TRUE      | Light: 1      |
+|                 |                 |                |                      |               |
+|                 |                 |                | do.enmo = FALSE      | Moderate: 46  |
+|                 |                 |                |                      |               |
+|                 |                 |                | acc.metric = "ENMOa" | Vigorous: 428 |
++-----------------+-----------------+----------------+----------------------+---------------+
+| Phillips 2013\* | Right wrist     | 8-14 year olds | do.enmoa = TRUE      | Light: 1      |
+|                 |                 |                |                      |               |
+|                 |                 |                | do.enmo = FALSE      | Moderate: 46  |
+|                 |                 |                |                      |               |
+|                 |                 |                | acc.metric = "ENMOa" | Vigorous: 428 |
++-----------------+-----------------+----------------+----------------------+---------------+
+| Phillips 2013\* | Hip             | 8-14 year olds | do.enmoa = TRUE      | Light: 1      |
+|                 |                 |                |                      |               |
+|                 |                 |                | do.enmo = FALSE      | Moderate: 46  |
+|                 |                 |                |                      |               |
+|                 |                 |                | acc.metric = "ENMOa" | Vigorous: 428 |
++-----------------+-----------------+----------------+----------------------+---------------+
+
+# Considerations
+
+This is not an exhaustive list of all the cut-points that can be used in GGIR.
+
+Some of the above publications make use of acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point value we need to multiply the proposed cut-point by the sample frequency used in the study that proposed it. For each of the studies this is detailed below. Note that GGIR intentionally does not sum values per epoch because that approach makes the cut-point sample frequency and epoch length dependent, which complicates comparisons and harmonisation of literature. The explained variance and accuracy remains identical because we are only multiplying with a constant, so no information will be lost.
+
+**Sensor calibration**
+
+In all of the studies above, excluding Hildebrand et al. 2016, no effort was made to calibrate the acceleration sensors relative to gravitational acceleration prior to cut-point development. Theoretically this can be expected to cause a bias in the cut-point estimates proportional to the calibration error in each device, especially for cut-points based on acceleration metrics which rely on the assumption of accurate calibration such as metrics: ENMO, EN, ENMOa, and by that also metric SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben 2020.
+
+# References
+
+-   Esliger 2011: <https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx>
