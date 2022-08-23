@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-5 (GitHub-only-release date: ?-?-2022)}{
+\itemize{
+    \item Part 1: AX6 gyroscope data correctly ignored in g.getmeta.
+    }
+}
 \section{Changes in version 2.7-4 (GitHub-only-release date:17-08-2022)}{
 \itemize{
     \item Part 1: Arguments configtz and desiredtz now also used for .gt3x data.
