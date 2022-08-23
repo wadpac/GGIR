@@ -315,9 +315,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (P$header$hardwareType == "AX6") { # cwa AX6
             # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
             data = P$data[,-c(2:4)]
+            P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
+            gyro_available = FALSE
+          } else {
+            data = P$data
+            P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
           }
-          data = P$data
-          P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
         } else if (dformat == 5) { # ad-hoc csv
           data = P$data
         } else if (mon == 5) { #movisense
