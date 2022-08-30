@@ -11,7 +11,7 @@ prepareNewRelease = function(version = c()) {
   dateReversed = unlist(strsplit(date,"-"))
   dateReversed = paste0(dateReversed[3],"-",dateReversed[2],"-",dateReversed[1])
   # Check DESCRIPTION file
-  D = read.csv(file = "./DESCRIPTION",sep="\n")
+  D = read.csv(file = "./DESCRIPTION", sep = "\n")
   errorfound = FALSE
   i = 1
   while (i <= nrow(D)) {
