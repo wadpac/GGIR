@@ -11,7 +11,13 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
   }
   meantemp =c()
   if (monc == 2 | (monc == 4 & dformat == 4) | monc == 5 | (monc == 0 & use.temp == TRUE)) {
-    if (monc == 2) tempcolumn = 7
+    if (monc == 2) {
+      if ("temperature" %in% colnames(data)) {
+        tempcolumn = which(colnames(data) == "temperature") #GGIRread
+      } else {
+        tempcolumn = 7
+      }
+    }
     if (monc == 4 | monc == 0) tempcolumn = 5
     if (monc == 5) tempcolumn = 4
     meantemp = mean(as.numeric(data[,tempcolumn]),na.rm=TRUE)

@@ -160,7 +160,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
         # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-        isitageneactive = nrow(GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$data.out)
+        
+        isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
         # try read the file as if it is a genea and store output in variable 'isitagenea'
         try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
         #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
@@ -179,10 +180,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
             skip = 1 #reconsider decision to analyse this file as it is possibly corrupt
             print("Possibibly corrupt genea File")
           }
-        } else if (length(as.matrix(isitageneactive)) >= 1 & length(isitagenea) == 0) {
-          ppp = unlist(isitageneactive)
-          if (ppp[2] != "NA:NA") {
-            mon = 2 #mon = 1 is code for saying that it is a geneactive
+        } else if (length(isitageneactive) >= 1 & length(isitagenea) == 0) {
+          if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
+            mon = 2 #mon = 2 is code for saying that it is a geneactive
             H = isitageneactive$header
             tmp = unlist(strsplit(unlist(as.character(H$SampleRate))," "))
             tmp2 = unlist(strsplit(as.character(tmp[1]), ","))
@@ -225,7 +225,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
             }
           } else {
             print("Possibibly corrupt geneactive File")
-          }
+          } 
+          
         }
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
@@ -325,7 +326,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     datafile = INFI$datafile
   }
   if (dformat == 1) { #binary data
-    print(paste0("mon ",mon))
     if (mon == 1) { # genea
       genea = GGIRread::readGenea(filename = datafile, start = 0,end = 1)
       H = genea$header

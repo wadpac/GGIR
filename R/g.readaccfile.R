@@ -118,7 +118,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                           mmap.load = FALSE)}, silent = TRUE)
     } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
       try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
-                                              end = endpage)}, silent = TRUE)
+                                              end = endpage, desiredtz = params_general[["desiredtz"]],
+                                              configtz = params_general[["configtz"]])}, silent = TRUE)
     }
     
     if (length(P) <= 2) {
@@ -152,7 +153,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
           }, silent = TRUE)
         } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
           try(expr = {
-            P = GGIRread::readGENEActiv(filename = filename)
+            P = GGIRread::readGENEActiv(filename = filename, desiredtz = params_general[["desiredtz"]],
+                                        configtz = params_general[["configtz"]])
           }, silent = TRUE)
         }
         if (length(P) == 0) {

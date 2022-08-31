@@ -208,8 +208,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
           } else if (mon == 2 & dformat == 1) { #GENEActiv bin
-            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperature = data[,7]
-            temperature = as.numeric(data[,7])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
+            use.temp = TRUE
           } else if (mon == 5) { # Movisense
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = TRUE
@@ -232,7 +232,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
           
           if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 0 & use.temp == TRUE)) {
             if (mon == 2) { # GENEActiv
-              temperaturecolumn = 7
+              if ("temperature" %in% colnames(data)) {
+                temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
+              } else {
+                temperaturecolumn = 7
+              }
             } else if (mon == 4 | mon == 5) { #AX | Movisense
               temperaturecolumn = 5
             } else if (mon == 0) {

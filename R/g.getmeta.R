@@ -391,7 +391,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           #--------------------------------------------
           if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
             if (mon == 2) {
-              temperaturecolumn = 7; lightcolumn = 5
+              if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
+                temperaturecolumn = 7; lightcolumn = 5
+              } else {
+                temperaturecolumn = 6; lightcolumn = 5
+              }
             } else if (mon == 4) {
               temperaturecolumn = 5; lightcolumn = 7
               if (gyro_available == TRUE) {
@@ -431,7 +435,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               data = data[,2:4]
             }
           } else if (mon == 2 & dformat == 1) {
-            yy = as.matrix(cbind(as.numeric(data[, 7]),as.numeric(data[,7]),as.numeric(data[,7])))
+            yy = as.matrix(cbind(as.numeric(data[,temperaturecolumn]),
+                                 as.numeric(data[,temperaturecolumn]),
+                                 as.numeric(data[,temperaturecolumn])))
             data = data[,2:4]
             data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
               scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
