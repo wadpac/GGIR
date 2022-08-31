@@ -1,4 +1,4 @@
-get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dformat, data, selectdaysfile,
+get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dformat, data, 
                                                     P, header, desiredtz, sf, i, datafile,
                                                     ws2, starttime, wday, weekdays, wdayname, configtz = NULL) {
   #ensures that first window starts at logical timepoint relative to its size
@@ -26,9 +26,9 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     }
   }
   # extraction and modification of starting point of measurement
-  if (i == 1 | (i != 1 & length(selectdaysfile) > 0)) { #only do this for first block of data
+  if (i == 1) { #only do this for first block of data
     starttime = g.getstarttime(datafile=datafile,P=P,header=header,mon=monc,
-                               dformat=dformat,desiredtz=desiredtz,selectdaysfile=selectdaysfile, configtz=configtz)
+                               dformat=dformat,desiredtz=desiredtz, configtz=configtz)
     if (exists("P")) rm(P); gc()
     #==================================================
     #inspection timezone

@@ -15,19 +15,22 @@ g.extractheadervars = function(I) {
     SX = "not available" #not stored by genea
     deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
   } else if (mon == "geneactive") {
-    ID = hvalues[which(hnames == "Subject_Code")] #; temp2 = unlist(strsplit(as.character(temp)," "))
-    iID = hvalues[which(hnames == "Investigator_ID")] #investigator ID
-    HN = hvalues[which(hnames == "Handedness_Code")] #handedness
-    sensor.location = as.character(as.matrix(hvalues[which(hnames == "Device_Location_Code")])) #body location
-    SX = hvalues[which(hnames == "Sex")] #gender
-    deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
-    if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
-      ID = hvalues[which(hnames == "Subject Code")]# ; temp2 = unlist(strsplit(as.character(temp)," "))
-      iID = hvalues[which(hnames == "Investigator ID")] #investigator ID
-      HN = hvalues[which(hnames == "Handedness Code")] #handedness
-      sensor.location = hvalues[which(hnames == "Device Location Code")] #body location
+    check_GENEAread = which(hnames == "Subject_Code")
+    if (length(check_GENEAread) > 0) { 
+      # This if-statement can be deprecated once GENEAread is deprecated as a dependency
+      ID = hvalues[which(hnames == "Subject_Code")] #; temp2 = unlist(strsplit(as.character(temp)," "))
+      iID = hvalues[which(hnames == "Investigator_ID")] #investigator ID
+      HN = hvalues[which(hnames == "Handedness_Code")] #handedness
+      sensor.location = as.character(as.matrix(hvalues[which(hnames == "Device_Location_Code")])) #body location
       SX = hvalues[which(hnames == "Sex")] #gender
-      deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number			
+      deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
+    } else {
+      ID = ""
+      iID = ""
+      HN = ""
+      sensor.location = ""
+      SX = ""
+      deviceSerialNumber = hvalues[which(hnames == "serial_number")] #serial number
     }
   } else if (mon == "actigraph" | mon == 'verisense') {
     if (I$dformn == "gt3x") {

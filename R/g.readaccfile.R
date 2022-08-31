@@ -1,11 +1,11 @@
-g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(), filequality,
+g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                          decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
                          PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL,
                          params_rawdata = c(), params_general = c(), ...) {
   #get input variables
   input = list(...)
   if (any(names(input) %in% c("filename", "blocksize", "blocknumber",
-                              "selectdaysfile", "filequality",
+                              "filequality",
                               "decn", "ws", "PreviousEndPage",
                               "inspectfileobject", "params_rawdata",
                               "params_general")) == FALSE) {
@@ -29,7 +29,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
   # mon 4 = Axivity
   # mon 5 = Movisens
   # mon 6 = Verisense
-
+  
   # dformat 1 = binary
   # dformat 2 = csv
   # dformat 3 = wav
@@ -38,7 +38,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
   # dformat 6 = gt3x
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
-
+  
   switchoffLD = 0
   useRDA = TRUE
   if (length(unlist(strsplit(filename,"[.]RD"))) <= 1) useRDA = FALSE
@@ -106,87 +106,26 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       if (blocknumber == 1) filequality$filecorrupt = TRUE
     }
   } else if (mon == 2 & dformat == 1 & useRDA == FALSE) { # GENEActiv binary non-RDA format
-    if (length(selectdaysfile) > 0) { # code to only read fragments of the data (Millenium cohort)
-      #===================================================================
-      # All of the below needed for Millenium cohort
-      SDF = read.csv(selectdaysfile, stringsAsFactors = FALSE) # small change by CLS
-      hvars = g.extractheadervars(I)
-      deviceSerialNumber = hvars$deviceSerialNumber
-      SDFi = which(basename(SDF$binFile) == basename(filename))
-      if (length(SDFi) != 1) {
-        save(SDF, SDFi, file = "debuggingFile.Rda")
-        stop(paste0("CLS error: there are zero or more than one files: ",
-                    filename, "in the wearcodes file"))
-      }
-      if ("GENEAread" %in% rownames(installed.packages()) == FALSE) {
-        cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
-      }
-      hhr <- GENEAread::header.info(filename)
-      tint <- rbind(getStartEndNumeric(SDF$Day1[SDFi], hhr = hhr, startHour = params_general[["dayborder"]]),
-                    getStartEndNumeric(SDF$Day2[SDFi], hhr = hhr, startHour = params_general[["dayborder"]]))
-
-      if (blocknumber == nrow(tint) + 1 | nrow(tint) == 0) {
-        #all data read now make sure that it does not try to re-read it with mmap on
-        switchoffLD = 1
-      } else {
-        try(expr = {
-          P = GENEAread::read.bin(binfile = filename, start = tint[blocknumber, 1],
-                                  end = tint[blocknumber, 2], calibrate = TRUE,
-                                  do.temp = TRUE, mmap.load = FALSE)
-          if (sf != P$freq) sf = P$freq
-        }, silent = TRUE)
-        if (length(P) <= 2) {
-          #try again but now with mmap.load turned on
-          if (length(P) == 0) switchoffLD = 1
-        }
-      }
-      if (length(P) > 0) {
-        if (length(selectdaysfile) > 0) {
-          if (tint[blocknumber,1] == "0") {
-            switchoffLD = 1
-          }
-        } else {
-          if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
-        }
-      }
-      if (length(P) == 0) { #if first block doens't read then probably corrupt
-        if (blocknumber == 1) {
-          #try to read without specifying blocks (file too short)
-          try(expr = {P = GENEAread::read.bin(binfile = filename, start = 1, end = 10,
-                                              calibrate = TRUE, do.temp = TRUE,
-                                              mmap.load = FALSE)}, silent = TRUE)
-          if (length(P) == 0) {
-            warning('\nFile possibly corrupt\n')
-            P = c(); switchoffLD = 1
-            filequality$filecorrupt = TRUE
-          } else { #if not then P is now filled with data, but we are not interested in readin this
-            P = c() # we do not want to analyse this data, the above lines are onnly to check that file is not corrupt
-            filequality$filedoesnotholdday = TRUE
-          }
-        } else {
-          P = c() #just no data in this last block
-        }
-      } else { #check whether there is enough data
-        if (nrow(P$data.out) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-          P = c();  switchoffLD = 1
-          cat("\nError code 2: data too short for doing non-wear detection\n")
-          filequality$filetooshort = filequality$filedoesnotholdday = TRUE
-        }
-      }
-      # All of the above needed for Millenium cohort
-      #======================================================================
-    } else {
-      startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
-      deltapage = blocksize
-      UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
-                               blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-      startpage = UPI$startpage;    endpage = UPI$endpage
+    
+    startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
+    deltapage = blocksize
+    UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
+                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
+    startpage = UPI$startpage;    endpage = UPI$endpage
+    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
       try(expr = {P = GENEAread::read.bin(binfile = filename, start = startpage,
                                           end = endpage, calibrate = TRUE, do.temp = TRUE,
                                           mmap.load = FALSE)}, silent = TRUE)
-      if (length(P) <= 2) {
+    } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
+      try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
+                                              end = endpage)}, silent = TRUE)
+    }
+    
+    if (length(P) <= 2) {
+      if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
         #try again but now with mmap.load turned on
         options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
+        
         try(expr = {
           P = GENEAread::read.bin(binfile = filename, start = startpage,
                                   end = endpage, calibrate = TRUE, do.temp = TRUE, mmap.load = TRUE)
@@ -197,34 +136,38 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
         } else {
           switchoffLD = 1
         }
+      } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
+        switchoffLD = 1
       }
-      if (length(P) > 0) {
-        if (length(selectdaysfile) > 0) {
-          if (tint[blocknumber,1] == "0") switchoffLD = 1
-        } else {
-          if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
-        }
-      }
-      if (length(P) == 0) { #if first block doens't read then probably corrupt
-        if (blocknumber == 1) {
-          #try to read without specifying blocks (file too short)
+    }
+    if (length(P) > 0) {
+      if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
+    }
+    if (length(P) == 0) { #if first block doens't read then probably corrupt
+      if (blocknumber == 1) {
+        #try to read without specifying blocks (file too short)
+        if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
           try(expr = {
             P = GENEAread::read.bin(binfile = filename, calibrate = TRUE, do.temp = TRUE, mmap.load = FALSE)
           }, silent = TRUE)
-          if (length(P) == 0) {
-            warning('\nFile possibly corrupt\n')
-            P = c(); switchoffLD = 1
-            filequality$filecorrupt = TRUE
-          } #if not then P is now filled with data
-        } else {
-          P = c() #just no data in this last block
+        } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
+          try(expr = {
+            P = GGIRread::readGENEActiv(filename = filename)
+          }, silent = TRUE)
         }
+        if (length(P) == 0) {
+          warning('\nFile possibly corrupt\n')
+          P = c(); switchoffLD = 1
+          filequality$filecorrupt = TRUE
+        } #if not then P is now filled with data
+      } else {
+        P = c() #just no data in this last block
       }
-      if (length(P) > 0) { #check whether there is enough data
-        if (nrow(P$data.out) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-          P = c();  switchoffLD = 1
-          filequality$filetooshort = TRUE
-        }
+    }
+    if (length(P) > 0) { #check whether there is enough data
+      if (nrow(P$data.out) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+        P = c();  switchoffLD = 1
+        filequality$filetooshort = TRUE
       }
     }
     #===============
@@ -236,7 +179,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-
+    
     # load rows 11:13  to investigate whether the file has a header
     # invisible because R complains about poor Actigraph file format,
     # this is an an ActiGraph problem not a GGIR problem, so we ignore it
@@ -261,7 +204,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
         endpage = endpage + 1
       }
     }
-
+    
     #--------------
     try(expr = {
       P = quiet(as.data.frame(
@@ -291,8 +234,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage, # try to read block first time
-                              end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
-                              configtz = params_general[["configtz"]], interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                          end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
+                                          configtz = params_general[["configtz"]], interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
@@ -310,19 +253,19 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       PtestLastPage = PtestStartPage = c()
       # try to read the last page of the block, because if it exists then there might be something wrong with the first page(s).
       try(expr = {PtestLastPage = GGIRread::readAxivity(filename = filename, start = endpage, #note this is intentionally endpage
-                                            end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
-                                            configtz = params_general[["configtz"]],
-                                            interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                                        end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
+                                                        configtz = params_general[["configtz"]],
+                                                        interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
       if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1
           startpage = startpage + NFilePagesSkipped
           try(expr = {PtestStartPage = GGIRread::readAxivity(filename = filename, start = startpage , # note: end is intentionally startpage
-                                                 end = startpage, progressBar = FALSE,
-                                                 desiredtz = params_general[["desiredtz"]],
-                                                 configtz = params_general[["configtz"]],
-                                                 interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                                             end = startpage, progressBar = FALSE,
+                                                             desiredtz = params_general[["desiredtz"]],
+                                                             configtz = params_general[["configtz"]],
+                                                             interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
         cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
@@ -331,10 +274,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
         try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage,
-                                  end = endpage, progressBar = FALSE,
-                                  desiredtz = params_general[["desiredtz"]],
-                                  configtz = params_general[["configtz"]],
-                                  interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                              end = endpage, progressBar = FALSE,
+                                              desiredtz = params_general[["desiredtz"]],
+                                              configtz = params_general[["configtz"]],
+                                              interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
@@ -432,7 +375,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
-                                                     batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
+                                                       batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0) { # too short or not data at all
       P = c() ; switchoffLD = 1
       if (blocknumber == 1) filequality$filetooshort = TRUE

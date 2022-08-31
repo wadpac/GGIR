@@ -1,4 +1,4 @@
-g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatures, 
+g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures, 
                             midnightsi, metashort, averageday,
                             doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
                             fname, idloc, sensor.location, wdayname, tooshort, includedaycrit,
@@ -11,7 +11,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
   input = list(...)
   
   expectedArgs = c("params_247", "params_phyact", 
-                   "selectdaysfile", "ndays", "firstmidnighti", "time", "nfeatures", 
+                   "ndays", "firstmidnighti", "time", "nfeatures", 
                    "midnightsi", "metashort", "averageday",
                    "doiglevels", "nfulldays","lastmidnight", "ws3", "ws2", "qcheck",
                    "fname", "idloc", "sensor.location", "wdayname", "tooshort", "includedaycrit",
@@ -30,39 +30,23 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
     params_phyact = params$params_phyact
   }
   
-  if (length(selectdaysfile) > 0 & ndays == 2) {
-    ndays = 1
-    startatmidnight = endatmidnight  = 1
-  } else {
-    startatmidnight = endatmidnight = 0
-    if (nfulldays >= 1) {
-      if (firstmidnighti == 1) {  #if measurement starts at midnight
-        ndays = ndays - 1
-        startatmidnight =  1
-        cat("measurement starts at midnight or there is no midnight")
-      }
-      if (lastmidnight == time[length(time)] & nrow(metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
-        ndays = ndays - 1
-        endatmidnight = 1
-        cat("measurement ends at midnight or there is no midnight")
-      }
+  startatmidnight = endatmidnight = 0
+  if (nfulldays >= 1) {
+    if (firstmidnighti == 1) {  #if measurement starts at midnight
+      ndays = ndays - 1
+      startatmidnight =  1
+      cat("measurement starts at midnight or there is no midnight")
+    }
+    if (lastmidnight == time[length(time)] & nrow(metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
+      ndays = ndays - 1
+      endatmidnight = 1
+      cat("measurement ends at midnight or there is no midnight")
     }
   }
+  
   daysummary = matrix("",ceiling(ndays),nfeatures)
   ds_names = rep("",nfeatures)
   windowsummary = ws_names = c()
-  #=============================
-  if (length(selectdaysfile) > 0) {   # Millenium cohort related:
-    ndays = ceiling(ndays)
-    if (ndays > 2) ndays = 2 # this is now hardcoded to be a maximum of two days
-    nwindows = 1440 / params_247[["window.summary.size"]] # now defining it as X windows per 24
-    windowL = 24/nwindows # now defined up hear, because window length should be a constant
-    windowsummary = matrix("", (ndays * nwindows), (ncol(metashort) * 7) + 5)
-    ws_names = rep("", ncol(windowsummary))
-    # Features per day (based on on single variables)
-    if (ndays > 2) ndays = 2
-    gikb = 0
-  }
   #===============================================
   # Features per day (based on on single variables)
   qwindow_names = qwindowbackup = params_247[["qwindow"]]
@@ -100,10 +84,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       qwindow_names = as.character(params_247[["qwindow"]])
     }
     # extract day from matrix D and qcheck
-    if (length(selectdaysfile) > 0 & startatmidnight == 1 & endatmidnight == 1) { #added on 14/9/2016
-      qqq1 = 1 	#a day starts at 00:00
-      qqq2 = midnightsi[di] * (ws2/ws3)
-    } else if (length(selectdaysfile) == 0 & startatmidnight == 1 & endatmidnight == 1) {
+    if (startatmidnight == 1 & endatmidnight == 1) {
       qqq1 = midnightsi[di] * (ws2/ws3)	#a day starts at 00:00
       qqq2 = (midnightsi[(di + 1)]*(ws2/ws3)) - 1
     } else if (startatmidnight == 1 & endatmidnight == 0) {
@@ -178,7 +159,7 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
         }
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
-
+        
         for (qwi in 1:(length(qwindowindices) - 1)) { #
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
@@ -279,43 +260,6 @@ g.analyse.perday = function(selectdaysfile, ndays, firstmidnighti, time, nfeatur
       ds_names[fi] =  "qwindow_names"
       daysummary[di,fi] = paste0(qwindow_names, collapse = "_")
       fi = fi + 1
-    }
-    if (length(selectdaysfile) > 0) {
-      #---------------------------
-      # Description per timewindow for millennium cohort:
-      for (metrici in  2:ncol(vari)) {
-        Nfeatures = 7
-        nhrs = (nrow(vari)/(3600/ws3))
-        if (ceiling(nhrs/windowL) < nwindows) nwindows = ceiling(nhrs/windowL)
-        for (gik in 1:nwindows) {
-          bbb1 = (windowL * (3600 / ws3) * (gik - 1)) + 1
-          bbb2 = (windowL * (3600 / ws3) * (gik))
-          if (bbb2 > length(val)) bbb2 = length(val)
-          windowsummary[gikb + gik, 1] = idremember #id number
-          windowsummary[gikb + gik, 2] = deviceSerialNumber #sn number
-          windowsummary[gikb + gik, 3] = fname #filename
-          windowsummary[gikb + gik, 4] = as.character(vari[bbb1, 1])
-          windowsummary[gikb + gik, 5] = length(which(val[bbb1:bbb2] == 0)) / (3600 / ws3) #hours of valid data
-          windowsummary[gikb + gik, ((metrici - 2) * Nfeatures) + 6] = mean(as.numeric(vari[bbb1:bbb2, metrici]))
-          windowsummary[gikb + gik, ((metrici - 2) * Nfeatures) + 7] = sd(as.numeric(vari[bbb1:bbb2, metrici]))
-          if (nrow(vari) > 10 & (bbb2 - bbb1) > 10) {
-            windowsummary[gikb + gik, ((metrici - 2) * Nfeatures) + 8:12] =
-              quantile(as.numeric(vari[bbb1:bbb2, metrici]), probs = c(0.05, 0.25, 0.5, 0.75, 0.95), na.rm = TRUE)
-          } else {
-            windowsummary[gikb + gik, (((metrici - 2) * Nfeatures) + 8):(((metrici - 2) * Nfeatures) + 12)] = NA
-          }
-        }
-      }
-      ws_names = c("ID", "serial number", "filename", "time", "Nhoursvalid")
-      if (ncol(vari) >= 3) {
-        for (columnvari in 2:ncol(vari)) {
-          metricname_end = colnames(vari)[columnvari]
-          metricname_begin = c("mean metric ", "sd metric ", "p5 metric ", "p25 metric ", "p50 metric ",
-                               "p75 metric ", "p95 metric ")
-          ws_names = c(ws_names, paste0(metricname_begin, metricname_end))
-        }
-      }
-      gikb = gikb + gik
     }
     correct_fi = function(di, ds_names, fi, varname) {
       # function to reset variable index to allign with previous day

@@ -91,7 +91,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
   options(warn = -1) #turn off warnings
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon, 
                                                desiredtz = params_general[["desiredtz"]],
-                                               rmc.dec = params_rawdata[["rmc.dec"]])}) #detect dot or comma dataformat
+                                               rmc.dec = params_rawdata[["rmc.dec"]],
+                                               loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
   options(warn = 0) #turn on warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data

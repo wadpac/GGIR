@@ -4,7 +4,12 @@ g.getidfromheaderobject = function(filename, header, dformat, mon) {
       ID = as.character(header[which(rownames(header) == "Volunteer_Number"),1])
     } else if (mon == 2) { #reading the binary file
       # ID = as.character(header[which(header[,1] == "Subject_Code"),2])
-      ID = as.character(header[which(rownames(header) == "Subject_Code"),1])
+      row_index = which(rownames(header) == "Subject_Code")
+      if (length(row_index) > 0) {
+        ID = as.character(header[row_index,1])
+      } else {
+        ID = c()
+      }
     } else if (mon == 5) {
       ID = c()
     }

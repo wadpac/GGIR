@@ -77,9 +77,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     dir.create(file.path(outputdir, outputfolder))
     dir.create(file.path(outputdir, outputfolder, "meta"))
     dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "basic"))
-    if (length(params_cleaning[["selectdaysfile"]]) > 0) {
-      dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "raw"))
-    }
     dir.create(file.path(outputdir, outputfolder, "results"))
     dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
   }
@@ -341,7 +338,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     meantempcal = C$meantempcal,
                     outputdir = outputdir,
                     outputfolder = outputfolder,
-                    selectdaysfile = params_cleaning[["selectdaysfile"]],
                     myfun = myfun)
       
       if (params_general[["expand_tail_max_hours"]] > 0) {
