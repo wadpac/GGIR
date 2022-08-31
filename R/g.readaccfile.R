@@ -106,7 +106,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       if (blocknumber == 1) filequality$filecorrupt = TRUE
     }
   } else if (mon == 2 & dformat == 1 & useRDA == FALSE) { # GENEActiv binary non-RDA format
-    
     startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
@@ -137,12 +136,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         } else {
           switchoffLD = 1
         }
-      } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
-        switchoffLD = 1
       }
     }
     if (length(P) > 0) {
-      if (nrow(P$data.out) < (blocksize*300)) switchoffLD = 1 #last block
+      if (nrow(P$data.out) < (blocksize*300)) {
+        switchoffLD = 1 #last block
+      }
     }
     if (length(P) == 0) { #if first block doens't read then probably corrupt
       if (blocknumber == 1) {
