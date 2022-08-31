@@ -1,4 +1,5 @@
 library(GGIR)
+library(GGIRread)
 context("shor functions only used in MCS (Milennium COhort study)")
 test_that("MCS functions still produce same output", {
   
@@ -10,7 +11,7 @@ test_that("MCS functions still produce same output", {
   # or revise the functionality to be more generally useful.
   # For now, it seems good to have at least some unit tests in place:
   
-  GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIR")[1]
+  GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   d = "30/4/2013"
   options(warn=-1)
   hhr = GENEAread::header.info(binfile = GAfile)

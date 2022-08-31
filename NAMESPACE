@@ -19,8 +19,7 @@ export(g.analyse, g.calibrate,
        g.sib.plot, g.wavread,
        g.weardec, isfilelist,
        iso8601chartime2POSIX, is_this_a_dst_night,
-       POSIXtime2iso8601, numUnpack,
-       resample, is.ISO8601,
+       POSIXtime2iso8601, is.ISO8601,
        updateBlocksize, g.IVIS,
        createConfigFile, identify_levels,
        g.sib.sum, datadir2fnames,
@@ -54,5 +53,3 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion")
-useDynLib(GGIR, .registration = TRUE)
-importFrom(Rcpp, sourceCpp)

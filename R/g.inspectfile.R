@@ -95,7 +95,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
       suppressWarnings(try(expr = {isitageneactive = GENEAread::header.info(binfile = datafile, more = F)}, silent = TRUE))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
-      try(expr = {isitagenea = g.binread(datafile, 0, 1)} , silent = TRUE)
+      try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
       if (length(isitagenea) > 1) {
         mon = 1 #mon = 1 is code for saying that it is a genea
@@ -197,7 +197,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
       sf = H$sample.rate
     } else if (dformat == 4) { # cwa
-      PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
+      PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
       H = PP$header
       sf = H$frequency
     } else if (dformat == 6) { # gt3
@@ -258,7 +258,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   }
   if (dformat == 1) { #binary data
     if (mon == 1) { # genea
-      genea = g.binread(datafile,0,1)
+      genea = GGIRread::readGenea(datafile,0,1)
       H = genea$header
     } else if (mon == 2) { #geneactive
       H = GENEAread::header.info(binfile = datafile, more = F)
@@ -334,7 +334,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
     names(H) = c("hnames","hvalues")
   } else if (dformat == 4) { #cwa data
-    PP = g.cwaread(datafile,start = 1, end = 10, desiredtz = desiredtz)
+    PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
     
   } else if (dformat == 5) { # csv data in a user-specified format

@@ -36,7 +36,7 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
       # at the moment the function is designed for reading the r3 acceleration channels only,
       # because that is the situation of the use-case we had.
       rawLast = nrow(rawAccel)
-      accelRes = resample(rawAccel, rawTime, timeRes, rawLast, 
+      accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, 
                           type=interpolationType) # this is now the resampled acceleration data
       return(accelRes)
     }

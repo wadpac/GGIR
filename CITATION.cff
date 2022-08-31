@@ -13,19 +13,9 @@ authors:
     family-names: Fang
     given-names: Zhou
   -
-    affiliation: "University of Leicester"
-    family-names: Mirkes
-    given-names: Evgeny
-    orcid: "https://orcid.org/0000-0003-1474-1734"
-  -
     affiliation: "University College London"
     family-names: Heywood
     given-names: Joe
-  -
-    affiliation: "MRC Epidemiology Unit"
-    family-names: Zhao
-    given-names: "Jing Hua"
-    orcid: "https://orcid.org/0000-0003-4930-3582"
   -
     affiliation: "Polytechnical University of Catalonia"
     family-names: Joan
@@ -44,10 +34,6 @@ authors:
     affiliation: "Shimmer Ltd"
     family-names: Patterson
     given-names: "Matt"
-  -
-    affiliation: "Axivity Ltd"
-    family-names: Jackson
-    given-names: "Dan"
   -
     affiliation: Inserm
     family-names: Chen

@@ -77,7 +77,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = g.binread(binfile = filename, startpage, endpage)}, silent = TRUE)
+    try(expr = {P = GGIRread::readGenea(filename = filename, start = startpage, end = endpage)}, silent = TRUE)
     if (length(P) > 1) {
       if (nrow(P$rawxyz) < ((sf * ws * 2) + 1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
@@ -290,7 +290,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = g.cwaread(fileName = filename, start = startpage, # try to read block first time
+    try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage, # try to read block first time
                               end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
                               configtz = params_general[["configtz"]], interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
     if (length(P) > 1) { # data reading succesful
@@ -309,7 +309,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       # and address it inside the g.cwaread function. For example, are the page corrupted, and if so then why?
       PtestLastPage = PtestStartPage = c()
       # try to read the last page of the block, because if it exists then there might be something wrong with the first page(s).
-      try(expr = {PtestLastPage = g.cwaread(fileName = filename, start = endpage, #note this is intentionally endpage
+      try(expr = {PtestLastPage = GGIRread::readAxivity(filename = filename, start = endpage, #note this is intentionally endpage
                                             end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
                                             configtz = params_general[["configtz"]],
                                             interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
@@ -318,7 +318,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1
           startpage = startpage + NFilePagesSkipped
-          try(expr = {PtestStartPage = g.cwaread(fileName = filename, start = startpage , # note: end is intentionally startpage
+          try(expr = {PtestStartPage = GGIRread::readAxivity(filename = filename, start = startpage , # note: end is intentionally startpage
                                                  end = startpage, progressBar = FALSE,
                                                  desiredtz = params_general[["desiredtz"]],
                                                  configtz = params_general[["configtz"]],
@@ -330,7 +330,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       if (length(PtestStartPage) > 1) {
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
-        try(expr = {P = g.cwaread(fileName = filename, start = startpage,
+        try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage,
                                   end = endpage, progressBar = FALSE,
                                   desiredtz = params_general[["desiredtz"]],
                                   configtz = params_general[["configtz"]],
@@ -400,7 +400,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, selectdaysfile = c(),
       # at the moment the function is designed for reading the r3 acceleration channels only,
       # because that is the situation of the use-case we had.
       rawLast = nrow(rawAccel)
-      accelRes = resample(rawAccel, rawTime, timeRes, rawLast, params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
+      accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
       P = cbind(timeRes,accelRes)
     } else {
       P = c()

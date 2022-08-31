@@ -53,13 +53,10 @@
   \itemize{
     \item Vincent T van Hees <v.vanhees@accelting.com> main creator and developer
     \item Zhou Fang developed calibration algorithm used in function \link{g.calibrate}
-    \item Jing Hua Zhao <jinghua.zhao@mrc-epid.cam.ac.uk> co-developed function \link{g.binread}
     \item Joe Heywood helped develop the functionality to process specific recording days
-    \item Evgeny Mirkes created function \link{g.cwaread}
     \item Severine Sabia, Mathilde Chen, and Manasa Yerramalla extensively tested and provided feedback on various functions
     \item Joan Capdevila Pujol helped to improve various functions
     \item Jairo H Migueles <jairohm@ugr.es> helped to improve various functions
-    \item Dan Jackson helped with unpack function for AX3 data.
     \item Matthew R Patterson helped with enhancing the visual report.
     \item Lena Kushleyeva helped fix bug in sleep detection.
     \item Taren Sanders helped tidy up the parallel processing functionality
