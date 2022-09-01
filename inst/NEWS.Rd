@@ -9,6 +9,7 @@
     \item Part 1: Added temporary option to choose between using GENEAread or 
       GGIRread::readGENEActiv for reading GENEActiv .bin files.
     \item Part 1 + 2: Deprecated selectdaysfile functionality.
+    \item Deprecated function g.getidfromheaderobject, and functionality merged with g.extractheadervars
     }
 }
 \section{Changes in version 2.7-5 (GitHub-only-release date: ?-?-2022)}{
