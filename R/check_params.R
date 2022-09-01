@@ -124,8 +124,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
-  if (length(params_raw) > 0) {
-    if (params_raw[["loadGENEActiv"]] == "GENEAread") {
+  if (length(params_rawdata) > 0) {
+    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
       warning(paste0("\nYou are using GENEAread instead of GGIRread for reading GENEActiv .bin files.",
       " The opton to use GENEAread will be deprecated in the next release."))
     }
