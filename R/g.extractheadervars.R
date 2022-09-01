@@ -4,15 +4,21 @@ g.extractheadervars = function(I) {
   hnames = rownames(header)
   hvalues = as.character(as.matrix(header))
   pp = which(hvalues == "")
-  hvalues[pp] = c("not stored in header")
+  if (length(pp) > 0) hvalues[pp] = c("not stored in header")
+  # set defaults
+  ID = I$filename # recording ID
+  SX = "not available" # sex
+  iID = "not extracted" #investigator ID
+  HN = "not extracted" #handedness
+  sensor.location = "not extracted" #body location
+  deviceSerialNumber = "not extracted"
+  # attempt to extract from hvalues and hnames
   if (mon == "genea") {
     IDd = hvalues[which(hnames == "Volunteer_Number")]    	
     ID = as.character(unlist(IDd))
     iIDd = hvalues[which(hnames == "Investigator_Id")]			
     iID = as.character(unlist(iIDd))
-    HN = "not available" #not stored by genea
     sensor.location = hvalues[which(hnames == "Body_Location")]
-    SX = "not available" #not stored by genea
     deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
   } else if (mon == "geneactive") {
     check_GENEAread = which(hnames == "Subject_Code")
@@ -25,11 +31,9 @@ g.extractheadervars = function(I) {
       SX = hvalues[which(hnames == "Sex")] #gender
       deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
     } else {
-      ID = ""
-      iID = ""
-      HN = ""
-      sensor.location = ""
-      SX = ""
+      ID = hvalues[which(hnames == "RecordingID")]
+      HN = hvalues[which(hnames == "Handedness")]
+      sensor.location = hvalues[which(hnames == "DeviceLocation")]
       deviceSerialNumber = hvalues[which(hnames == "serial_number")] #serial number
     }
   } else if (mon == "actigraph" | mon == 'verisense') {
@@ -45,23 +49,15 @@ g.extractheadervars = function(I) {
       firmwareversion = unlist(strsplit(unlist(strsplit(as.character(I$header$value[1]),"Firmware[.]"))[2],"[.]date"))[1]
     }
     if (length(firmwareversion) == 1) deviceSerialNumber = paste0(deviceSerialNumber,"_firmware_",firmwareversion)
-    ID = "not extracted"	# volunteer ID as stored in binary file header
-    iID = "not extracted" #investigator ID
-    HN = "not extracted" #handedness
-    sensor.location = "not extracted" #body location
-    SX = "not extracted" #gender
-  } else if (mon == "axivity" | mon == "movisens") { #todo: create automatic extraction of information from actigraph fileheader
+  } else if (mon == "axivity" | mon == "movisens") {
     if (mon  == "actigraph") {
       deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
     }
-    ID = "not extracted"	# volunteer ID as stored in binary file header
-    iID = "not extracted" #investigator ID
-    HN = "not extracted" #handedness
-    sensor.location = "not extracted" #body location
-    SX = "not extracted" #gender
-    deviceSerialNumber = "not extracted" #serial number
     if (mon == "axivity") {
-      seriali = which(hnames == "uniqueSerialCode")
+      seriali = which(hnames %in% c("uniqueSerialCode", "IART2Id"))
+      print(hnames)
+      print(hvalues)
+      print(header)
       if (length(seriali) > 0) deviceSerialNumber = hvalues[seriali[1]] #serial number			
     }
     if (mon == "movisens") {
@@ -71,17 +67,9 @@ g.extractheadervars = function(I) {
   } else if (mon == "unknown") {
     if (length(which(hnames == "recordingID")) > 0) {
       ID = hvalues[which(hnames == "recordingID")]
-    } else {
-      ID = "not extracted"
     }
-    iID = "not extracted" #investigator ID
-    HN = "not extracted" #handedness
-    sensor.location = "not extracted" #body location
-    SX = "not extracted" #gender
     if (length(which(hnames == "device_serial_number")) > 0) {
       deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]			 #serial number
-    } else {
-      deviceSerialNumber = "not extracted" #gender
     }
   }
   invisible(list(ID = ID, iID = iID, HN = HN, sensor.location = sensor.location,

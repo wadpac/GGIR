@@ -180,8 +180,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                            desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
                                            loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
   options(warn = 0)
+  ID = hvars$ID
   
-  ID = g.getidfromheaderobject(filename = filename, header = header, dformat = dformat, mon = mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
                                         dynrange = params_rawdata[["dynrange"]],
