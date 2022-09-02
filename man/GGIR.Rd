@@ -223,7 +223,9 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
         when resampling time series (mainly relevant for Axivity sensors),
         1=linear, 2=nearest neighbour}
       \item{all arguments that start with "rmc.".}{see function \link{read.myacc.csv} and
-      \link{get_nw_clip_block_params}}
+        \link{get_nw_clip_block_params}}
+      \item{loadGENEActiv}{Character, to indicate which package should be used to read
+      GENEActiv .bin files: either GENEAread or GGIRread (default)}
     }
   }   
   \subsection{params_cleaning}{
@@ -251,9 +253,6 @@ f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
       \item{includenightcrit}{Numeric. Minimum number of valid hours per night (24 hour window between
         noon and noon), used for sleep assessment (part 4).}
       \item{minimum_MM_length.part5}{Numeric. Minimum length in hours of a MM day to be included in the cleaned part 5 results.}
-      \item{selectdaysfile}{Character, Functionality designed for the London Centre
-        of Longidutinal studies. Csv file holding the relation between device 
-        serial numbers and measurement days of interest.}
       \item{strategy}{Numeric, how to deal with knowledge about study protocol.
         value = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
         Value = 2 makes that only the data between the first

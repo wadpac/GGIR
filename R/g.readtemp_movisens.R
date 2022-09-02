@@ -15,7 +15,7 @@ g.readtemp_movisens = function(datafile, desiredtz = "", from = c(), to = c(), i
     timeRes = as.vector(timeRes[1:nr])
     tempRes = matrix(0,nrow = nr, ncol = ncol(rawTemp), dimnames = list(NULL,colnames(rawTemp)))
     rawLast = nrow(rawTemp)
-    tempRes = resample(rawTemp, rawTime, timeRes, rawLast, type=interpolationType) # this is now the resampled temp data
+    tempRes = GGIRread::resample(rawTemp, rawTime, timeRes, rawLast, type=interpolationType) # this is now the resampled temp data
     if(length(from) > 0 & length(to) > 0) {
        temperature = tempRes[from:to]
     } else {
