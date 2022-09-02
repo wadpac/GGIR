@@ -448,6 +448,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Noise level of acceleration signal in m\emph{g}-units, used when working ad-hoc .csv data formats
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
+      
+      \item{loadGENEActiv}{
+      Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["loadGENEActiv"]])}).
+      To indicate which package should be used to read
+      GENEActiv .bin files: either GENEAread or GGIRread}
     }
   }
 
