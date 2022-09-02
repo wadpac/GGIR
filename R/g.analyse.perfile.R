@@ -221,11 +221,11 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     #get GGIR version
     SI = sessionInfo()
     GGIRversion = c()
-    try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
-    if (length(GGIRversion) == 0) {
-      try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
+    if ("GGIR" %in% names(SI$otherPkgs)) {
+      GGIRversion = SI$otherPkgs$GGIR$Version
+    } else if ("GGIR" %in% names(SI$loadedOnly)) {
+      GGIRversion = SI$loadedOnly$GGIR$Version
     }
-    # GGIRversion = SI$otherPkgs$GGIR$Version
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
     filesummary[(vi + 6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
     s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",

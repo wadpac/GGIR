@@ -9,7 +9,7 @@
   then deleted from memory. This is needed for memory management.
 }
 \usage{
-  g.readaccfile(filename, blocksize, blocknumber, selectdaysfile = c(), filequality,
+  g.readaccfile(filename, blocksize, blocknumber, filequality,
                            decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
                            PreviousLastValue = c(0,0,1), PreviousLastTime = NULL,
                            params_rawdata = c(), params_general = c(), ...)
@@ -23,9 +23,6 @@
   }
   \item{blocknumber}{
     Block number relative to start of file
-  }
-  \item{selectdaysfile}{
-    See documentation \link{g.getmeta}
   }
   \item{filequality}{
     Single row dataframe with columns: filetooshort, filecorrupt,

@@ -61,7 +61,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
       rmc.check4timegaps = FALSE,  rmc.noise = 13,
       rmc.col.wear = c(), rmc.doresample = FALSE,
       interpolationType = 1,
-      imputeTimegaps = TRUE)
+      imputeTimegaps = TRUE, loadGENEActiv = "GGIRread")
   }
   if ("247" %in% group) {
     params_247 = list(qwindow = c(0,24), qlevels = c(),
@@ -84,7 +84,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   }
   if ("cleaning" %in% group) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,
-                           selectdaysfile = c(), strategy = 1, maxdur = 0,
+                           strategy = 1, maxdur = 0,
                            hrs.del.start = 0, hrs.del.end = 0,
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,

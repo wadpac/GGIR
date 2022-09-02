@@ -108,20 +108,20 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   code and cannot be changed by the user.
 
   The parameters that can be used in g.shell.GGIR are:
-  
+
      \subsection{params_general}{
     A list of parameters used across all GGIR parts that do not fall in any of the other
     categories.
     \describe{
-    
+
       \item{overwrite}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["overwrite"]]}). 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["overwrite"]]}).
         Do you want to overwrite analysis for which milestone
         data exists? If overwrite = FALSE, then milestone data from a previous analysis will
         be used if available and visual reports will not be created again.}
-        
+
       \item{selectdaysfile}{
-        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["selectdaysfile"]]}). 
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["selectdaysfile"]]}).
         Do not use, this is legacy code for one specific data study.
         Character pointing at a csv file holding the relationship between device serial
         numbers (first column) and measurement dates of interest
@@ -129,109 +129,109 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         if the csv file is assumed to have a character variable names, e.g., "serialnumber"
         "Day1" and "Day2" respectively. Raw data will be extracted and stored in the output
         directory in a new subfolder named "raw".}
-        
+
       \item{dayborder}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["dayborder"]]}).
         Hour at which days start and end (dayborder = 4 would mean 4 am).}
-      
+
       \item{do.parallel}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}). 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["do.parallel"]]}).
         Whether to use multi-core processing (only works if at least 4 CPU cores are available).}
-      
+
       \item{maxNcores}{
         Numeric (default maxNcores= \Sexpr{GGIR::load_params()[["params_general"]][["maxNcores"]]}).
         Maximum number of cores to use when argument do.parallel is set to true.
         GGIR by default uses either the maximum number of available cores or the number of files to
         process (whichever is lower), but this argument allows you to set a lower maximum.}
-        
+
       \item{acc.metric}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
-        Which one of the metrics do you want to consider to analyze L5. 
+        Which one of the metrics do you want to consider to analyze L5.
         The metric of interest need to be calculated in M (see \link{g.part1}).}
-        
+
       \item{part5_agg2_60seconds}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
         Wether to use aggregate epochs to 60 seconds as part of the GGIR \link{g.part5} analysis.}
-        
+
       \item{print.filename}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["print.filename"]]}).
-        Whether to print the filename before before analysing it (in case do.parallel = FALSE). 
+        Whether to print the filename before before analysing it (in case do.parallel = FALSE).
         Printing the filename can be useful to investigate
         problems (e.g., to verify that which file is being read).}
-        
+
       \item{desiredtz}{
-        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["desiredtz"]]}", i.e., system timezone). 
+        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["desiredtz"]]}", i.e., system timezone).
         Timezone in which device was configured and experiments took place.
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
-        argument \code{configtz} to specify where the device was configured. 
+        argument \code{configtz} to specify where the device was configured.
         See also http://en.wikipedia.org/wiki/Zone.tab}
-        
+
       \item{configtz}{
-        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone). 
+        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone).
         Only functional for AX3 cwa and ActiGraph .gt3x data at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
         place are different. See also http://en.wikipedia.org/wiki/Zone.tab}
-        
+
       \item{sensor.location}{
-        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["sensor.location"]]}"). 
+        Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["sensor.location"]]}").
         To indicate sensor location, default is wrist. If it is hip, the HDCZA algorithm for sleep detection
         also requires longitudinal axis of sensor to be between -45 and +45 degrees.}
-      
+
       \item{windowsizes}{
-        Numeric vector, three values 
-        (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_general"]][["windowsizes"]], 
-        collapse = ", "), ")")}). 
-        To indicate the lengths of the windows as in c(window1, window2, window3): 
+        Numeric vector, three values
+        (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_general"]][["windowsizes"]],
+        collapse = ", "), ")")}).
+        To indicate the lengths of the windows as in c(window1, window2, window3):
         window1 is the short epoch length in seconds, by default 5, and this is the time window over which acceleration and
-        angle metrics are calculated; 
-        window2 is the long epoch length in seconds for which non-wear and signal clipping are defined, default 900 
-        (expected to be a multitude of 60 seconds); 
+        angle metrics are calculated;
+        window2 is the long epoch length in seconds for which non-wear and signal clipping are defined, default 900
+        (expected to be a multitude of 60 seconds);
         window3 is the window length of data used for non-wear detection and by default
-        3600 seconds. 
+        3600 seconds.
         So, when window3 is larger than window2 we use overlapping windows,
         while if window2 equals window3 non-wear periods are assessed by non-overlapping
         windows.}
-        
+
       \item{idloc}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["idloc"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["idloc"]]}).
         If idloc = 1 the code assumes that ID number is stored in the obvious header field. Note that for ActiGraph data
-        the ID is never stored in the file header. 
+        the ID is never stored in the file header.
         For value set to 2, 5, 6, and 7, GGIR looks at the filename and extracts the character string preceding the first
         occurance of a "_" (idloc = 2), " " (space, idloc = 5), "." (dot, idloc = 6),
-        and "-" (idloc = 7), respectively. 
+        and "-" (idloc = 7), respectively.
         You may have noticed that idloc 3 and 4 are skipped, they were used for one study in 2012,
         and not actively maintained anymore, but because it is legacy code not omitted.}
-        
+
       \item{expand_tail_max_hours}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
-        Number hours to expand the 
-        \link{g.part1} output with synthetic data to trigger sleep detection for last night. 
+        Number hours to expand the
+        \link{g.part1} output with synthetic data to trigger sleep detection for last night.
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
-        the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}. 
-        To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in 
-        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, and \link{g.part4} to \link{g.part5}. 
-        In \link{g.part5} it is then included as an additional variable in the csv-reports. 
-        In the \link{g.part4} report the last nigth is omitted, because we know that sleep 
+        the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}.
+        To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in
+        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, and \link{g.part4} to \link{g.part5}.
+        In \link{g.part5} it is then included as an additional variable in the csv-reports.
+        In the \link{g.part4} report the last nigth is omitted, because we know that sleep
         estimates from the last night will not be trustworthy. In the \link{g.part5} output most
         columns related to the sleep assessment will be omitted for the last window to avoid biassing the
-        averages. Using argument \code{expand_tail_max_hours} implies the assumption that the 
+        averages. Using argument \code{expand_tail_max_hours} implies the assumption that the
         participant fell asleep at or before the end of the recording if the recording
         ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
-        always hold true and should be used with caution. 
+        always hold true and should be used with caution.
       }
     }
   }
-  
+
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
     raw data, excluding parameters related to metrics as those are in
     the params_metrics object.
     \describe{
-    
+
       \item{backup.cal.coef}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["backup.cal.coef"]])}").
         Option to use backed-up calibration coefficient instead of
@@ -256,130 +256,130 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         QC, which holds the previously generated calibration coefficients. If you
         do not want this happen, then deleted the data_quality_report.csv from the
         QC folder or set it to value "redo".}
-        
+
       \item{minimumFileSizeMB}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["minimumFileSizeMB"]])}).
-        Minimum File size in MB required to enter processing. 
-        This argument can help to avoid having short uninformative files to enter the analyses. 
-        Given that a typical accelerometer collects several MBs per hour, 
+        Minimum File size in MB required to enter processing.
+        This argument can help to avoid having short uninformative files to enter the analyses.
+        Given that a typical accelerometer collects several MBs per hour,
         the default setting should only skip the very tiny files.}
-        
+
       \item{do.cal}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["do.cal"]])}).
         Whether to apply auto-calibration or not by \link{g.calibrate}.
         Recommended setting is TRUE.}
-      
+
       \item{imputeTimegaps}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["imputeTimegaps"]])}).
         To indicate whether timegaps larger than 1 sample should be imputed.
-        Currently only used for .gt3x data and ActiGraph .csv format, where timegaps 
+        Currently only used for .gt3x data and ActiGraph .csv format, where timegaps
         can be expected as a result of Actigraph's idle sleep.mode configuration.}
-      
+
       \item{spherecrit}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["spherecrit"]])}).
         The minimum required acceleration value (in g) on both sides of 0 g
         for each axis. Used to judge whether the sphere is sufficiently populated}
-      
+
       \item{minloadcrit}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["minloadcrit"]])}).
         The minimum number of hours the code needs to read for the
         autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
         other values will be ceiled). After loading these hours only extra data is loaded
         if calibration error has not been reduced to under 0.01 g.}
-      
+
       \item{printsummary}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["printsummary"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["printsummary"]])}).
         If TRUE will print a summary of the calibration procedure in the console when done.}
-      
+
       \item{chunksize}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["chunksize"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["chunksize"]])}).
         Value between 0.2 and 1 to specificy the size of chunks to be
         loaded as a fraction of a 12 hour period, e.g., 0.5 equals 6 hour chunks, 1 equals 12 hour chunks.
         For machines with less than 4Gb of RAM memory a value below 1 is recommended.}
-      
+
       \item{dynrange}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["dynrange"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["dynrange"]])}).
         Provide dynamic range for accelerometer data to
         overwrite hardcoded 6 g for GENEA and 8 g for other brands.}
-      
+
       \item{interpolationType}{
-        Integer (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["interpolationType"]])}). 
+        Integer (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["interpolationType"]])}).
         To indicate type of interpolation to be used
         when resampling time series (mainly relevant for Axivity sensors),
         1=linear, 2=nearest neighbour.}
-      
+
       \item{rmc.file}{
-        Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.file"]])}). 
-        Filename of file to be read if it is in the working directory, 
+        Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.file"]])}).
+        Filename of file to be read if it is in the working directory,
         or full path to the file otherwise.
       }
-      
+
       \item{rmc.nrow}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.nrow"]])}).
-        Number of rows to read, same as nrow argument in \link[utils]{read.csv} and nrows in \link[data.table]{fread}. 
+        Number of rows to read, same as nrow argument in \link[utils]{read.csv} and nrows in \link[data.table]{fread}.
         The whole file is read by default (i.e., rmc.nrow = Inf).}
-      
+
       \item{rmc.skip}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.skip"]])}).
         Number of rows to skip, same as skip argument in \link[utils]{read.csv} and in \link[data.table]{fread}.}
-      
+
       \item{rmc.dec}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.dec"]])}").
         Decimal used for numbers, same as dec argument in \link[utils]{read.csv} and in \link[data.table]{fread}.}
-      
+
       \item{rmc.firstrow.acc}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.firstrow.acc"]])}).
         First row (number) of the acceleration data.}
-      
+
       \item{rmc.firstrow.header}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.firstrow.header"]])}).
         First row (number) of the header. Leave blank if the file does not have a header.}
-      
+
       \item{rmc.header.length}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.header.length"]])}).
         If file has header, specify header length (number of rows).}
-      
+
       \item{rmc.col.acc}{
-        Numeric, three values 
-        (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_rawdata"]][["rmc.col.acc"]], 
+        Numeric, three values
+        (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_rawdata"]][["rmc.col.acc"]],
         collapse = ", "), ")")}).
         Vector with three column (numbers) in which the acceleration signals
         are stored.}
-      
+
       \item{rmc.col.temp}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.col.temp"]])}).
         Scalar with column (number) in which the temperature is stored.
         Leave in default setting if no temperature is avaible. The temperature
         will be used by \link{g.calibrate}.}
-      
+
       \item{rmc.col.time}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.col.time"]])}).
         Scalar with column (number) in which the timestamps are stored.
         Leave in default setting if timestamps are not stored.}
-      
+
       \item{rmc.unit.acc}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.unit.acc"]])}").
         Character with unit of acceleration values: "g", "mg", or "bit".}
-      
+
       \item{rmc.unit.temp}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.unit.temp"]])}").
         Character with unit of temperature values: (K)elvin, (C)elsius, or (F)ahrenheit.}
-      
+
       \item{rmc.unit.time}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.unit.time"]])}").
-        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument \code{rmc.origin}), 
+        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument \code{rmc.origin}),
         "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL
         activity monitor).}
-      
+
       \item{rmc.format.time}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.format.time"]])}").
-        Character  giving a date-time format as used by \link[base]{strptime}. 
+        Character  giving a date-time format as used by \link[base]{strptime}.
         Only used for rmc.unit.time: character and POSIX.}
-      
+
       \item{rmc.bitrate}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.bitrate"]])}).
         If unit of acceleration is a bit then provide bit rate, e.g., 12 bit.}
-        
+
       \item{rmc.dynamic_range}{
         Numeric or character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.dynamic_range"]])}).
         If unit of acceleration is a bit then provide dynamic range deviation
@@ -387,37 +387,37 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         argument a character value the code will search the file header for elements with
         a name equal to the character value and use the corresponding numeric value
         next to it as dynamic range.}
-        
+
       \item{rmc.unsignedbit}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.unsignedbit"]])}).
         If unsignedbit = TRUE means that bits are only positive numbers.
         if unsignedbit = FALSE then bits are both positive and negative.}
-       
+
       \item{rmc.origin}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.origin"]])}").
         Origin of time when unit of time is UNIXsec, e.g., 1970-1-1.}
-        
+
       \item{rmc.desiredtz}{
-        Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone). 
+        Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone).
         Timezone in which device was configured and experiments took place.
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument configtz to specify where the device was configured (not implemented yet).
         See also http://en.wikipedia.org/wiki/Zone.tab}
-        
+
       \item{rmc.sf}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.sf"]])}).
         Sample rate in Hertz, if this is stored in the file header then that will be used
         instead (see argument \code{rmc.headername.sf}).}
-        
+
       \item{rmc.headername.sf}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.headername.sf"]])}).
         If file has a header: Row name under which the sample frequency can be found.}
-        
+
       \item{rmc.headername.sn}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.headername.sn"]])}).
         If file has a header: Row name under which the serial number can be found.}
-        
+
       \item{rmc.headername.recordingid}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.headername.recordingid"]])}).
         If file has a header: Row name under which the recording ID can be found.}
@@ -425,372 +425,372 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{rmc.header.structure}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.headername.structure"]])}).
         Used to split the header name from the header value, e.g., ":" or " ".}
-        
+
         \item{rmc.check4timegaps}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.check4timegaps"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.check4timegaps"]])}).
         To indicate whether gaps in time should be imputed with zeros.
         Some sensing equipment provides accelerometer with gaps in time. The rest of
         GGIR is not designed for this, by setting this argument to TRUE the gaps
         in time will be filled with zeros.}
-        
+
       \item{rmc.col.wear}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.col.wear"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.col.wear"]])}).
         If external wear detection outcome is stored as part of the data then this can be used by GGIR.
         This argument specifies the column in which the wear detection (Boolean) is stored.}
-        
+
       \item{rmc.doresample}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.doresample"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.doresample"]])}).
         To indicate whether to resample the data based on the available timestamps and extracted
         sample rate from the file header.}
-       
+
       \item{rmc.noise}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.noise"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.noise"]])}).
         Noise level of acceleration signal in m\emph{g}-units, used when working ad-hoc .csv data formats
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
     }
   }
-  
+
   \subsection{params_metrics}{
   A list of parameters used to specify the signal metrics that need to be extract in GGIR \link{g.part1}.
   \describe{
-  
+
       \item{do.anglex}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
-        If TRUE, calculates the angle of the X axis relative to the horizontal: 
-        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} + 
+        If TRUE, calculates the angle of the X axis relative to the horizontal:
+        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} +
         acc_{rollmedian(z)}}}) * 180/\pi}}
-      
+
       \item{do.angley}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
-        If TRUE, calculates the angle of the Y axis relative to the horizontal: 
-        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} + 
+        If TRUE, calculates the angle of the Y axis relative to the horizontal:
+        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} +
         acc_{rollmedian(z)}}}) * 180/\pi}}
-        
+
       \item{do.anglez}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
-        If TRUE, calculates the angle of the Z axis relative to the horizontal: 
-        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} + 
+        If TRUE, calculates the angle of the Z axis relative to the horizontal:
+        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} +
         acc_{rollmedian(y)}}}) * 180/\pi}}
-        
+
       \item{do.zcx}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcx"]]}).
-        If TRUE, calculates metric zero-crossing count for x-axis. For computation specifics 
+        If TRUE, calculates metric zero-crossing count for x-axis. For computation specifics
         see source code of function \link{g.applymetrics}}
-        
+
       \item{do.zcy}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcy"]]}).
-        If TRUE, calculates metric zero-crossing count for y-axis. For computation specifics 
+        If TRUE, calculates metric zero-crossing count for y-axis. For computation specifics
         see source code of function \link{g.applymetrics}}
-        
+
       \item{do.zcz}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcz"]]}).
-        If TRUE, calculates metric zero-crossing count for z-axis. For computation 
+        If TRUE, calculates metric zero-crossing count for z-axis. For computation
         specifics see source code of function \link{g.applymetrics}}
-        
+
       \item{do.enmo}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmo"]])}).
-        If TRUE, calculates the metric: \deqn{ENMO = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} 
+        If TRUE, calculates the metric: \deqn{ENMO = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1}
         (if ENMO < 0, then ENMO = 0).}
-      
+
       \item{do.lfenmo}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfenmo"]])}).
-        If TRUE, calculates the metric \code{ENMO} over the low-pass filtered accelerations 
-        (for computation specifics see source code of function \link{g.applymetrics}). 
+        If TRUE, calculates the metric \code{ENMO} over the low-pass filtered accelerations
+        (for computation specifics see source code of function \link{g.applymetrics}).
         The filter bound is defined by the parameter \code{hb}.}
-        
+
       \item{do.en}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.en"]])}).
-        If TRUE, calculates the Euclidean Norm of the raw accelerations: 
+        If TRUE, calculates the Euclidean Norm of the raw accelerations:
         \deqn{EN = \sqrt{acc_x^2 + acc_y^2 + acc_z^2}}}
-      
+
       \item{do.mad}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.mad"]])}).
-        If TRUE, calculates the Mean Amplitude Deviation: 
+        If TRUE, calculates the Mean Amplitude Deviation:
         \deqn{MAD = \frac{1}{n}\Sigma|r_i - \overline{r}|}}
-        
+
       \item{do.enmoa}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.enmoa"]])}).
-        If TRUE, calculates the metric: 
+        If TRUE, calculates the metric:
         \deqn{ENMOa = \sqrt{acc_x^2 + acc_y^2 + acc_z^2} - 1} (if ENMOa < 0, then ENMOa = |ENMOa|).}
-        
+
       \item{do.roll_med_acc_x}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.roll_med_acc_x"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-        
+
       \item{do.roll_med_acc_y}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.roll_med_acc_y"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.roll_med_acc_z}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.roll_med_acc_z"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.dev_roll_med_acc_x}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.dev_roll_med_acc_x"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.dev_roll_med_acc_y}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.dev_roll_med_acc_y"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.dev_roll_med_acc_z}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.dev_roll_med_acc_z"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.bfen}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfen"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.hfen}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfen"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.hfenplus}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfenplus"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.lfen}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfen"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.lfx}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfx"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.lfy}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfy"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.lfz}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.lfz"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.hfx}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfx"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.hfy}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfy"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.hfz}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.hfz"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.bfx}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfx"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.bfy}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfy"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.bfz}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.bfz"]])}).
         If TRUE, calculates the metric. For computation
         specifics see source code of function \link{g.applymetrics}.}
-      
+
       \item{do.brondcounts}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.brondcounts"]])}).
-        If TRUE, calculates the metric via R package activityCounts. 
-        We call them BrondCounts because there are large number of acitivty counts in 
-        the physical activity and sleep research field. By calling them _brondcounts_ 
-        we clarify that these are the counts proposed by Jan Br&#248;nd and implemented 
+        If TRUE, calculates the metric via R package activityCounts.
+        We call them BrondCounts because there are large number of acitivty counts in
+        the physical activity and sleep research field. By calling them _brondcounts_
+        we clarify that these are the counts proposed by Jan Br&#248;nd and implemented
         in R by Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
         the counts produced by one of the closed source ActiLife software by ActiGraph.}
-      
+
       \item{lb}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}).
         Lower boundary of the frequency filter (in Hertz) as used in the filter-based metrics.}
-      
+
       \item{hb}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["hb"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["hb"]])}).
         Higher boundary of the frequency filter (in Hertz) as used in the filter-based metrics.}
-      
+
       \item{n}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["n"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["n"]])}).
         Order of the frequency filter as used in the filter-based metrics.}
     }
   }
-  
+
   \subsection{params_cleaning}{
     A list of parameters used across all GGIR parts releated to masking or
     imputing data, abbreviated as "cleaning".
     \describe{
-    
+
       \item{do.imp}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["do.imp"]]}). 
-        Whether to impute missing values (e.g., suspected of monitor non-wear or clippling) 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["do.imp"]]}).
+        Whether to impute missing values (e.g., suspected of monitor non-wear or clippling)
         or not by \link{g.impute} in GGIR \link{g.part2}. Recommended setting is TRUE.}
-      
+
       \item{TimeSegments2ZeroFile}{
-        Data frame (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["TimeSegments2ZeroFile"]])}). 
+        Data frame (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["TimeSegments2ZeroFile"]])}).
         Optional data.frame to specify which time segments need to be ignored for the imputation,
         and acceleration metrics to be imputed by zeros. The data.frame is expected
         to contain two columns named windowstart and windowend, with the start- and end
         time of the time segment in POSIXlt class.}
-      
+
       \item{data_cleaning_file}{
-        Character (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["data_cleaning_file"]])}). 
-        Optional path to a csv file you create that holds four columns: 
-        ID, day_part5, relyonguider_part4, and night_part4. ID should hold the 
-        participant ID. Columns day_part5 and night_part4 allow you to specify which 
-        day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively. 
+        Character (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["data_cleaning_file"]])}).
+        Optional path to a csv file you create that holds four columns:
+        ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
+        participant ID. Columns day_part5 and night_part4 allow you to specify which
+        day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively.
         So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
         are valid. Column relyonguider_part4 allows you to specify for which nights
         \link{g.part4} should fully rely on the guider. See also package vignette.}
-      
+
       \item{excludefirstlast.part5}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}). 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
         If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in \link{g.part5}.}
-      
+
       \item{excludefirstlast}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast"]]}).  
-        If TRUE then the first and last night of the measurement are ignored for 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast"]]}).
+        If TRUE then the first and last night of the measurement are ignored for
         the sleep assessment in \link{g.part4}.}
-      
+
       \item{excludefirst.part4}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirst.part4"]]}). 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirst.part4"]]}).
         If TRUE then the first night of the measurement are ignored for the sleep assessment in \link{g.part4}.}
-      
+
       \item{excludelast.part4}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludelast.part4"]]}). 
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludelast.part4"]]}).
         If TRUE then the last night of the measurement are ignored for the sleep assessment in \link{g.part4}.}
-      
+
       \item{includenightcrit}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includenightcrit"]]}). 
-        Minimum number of valid hours per night (24 hour window between noon and noon), 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includenightcrit"]]}).
+        Minimum number of valid hours per night (24 hour window between noon and noon),
         used for sleep assessment in \link{g.part4}.}
-      
+
       \item{minimum_MM_length.part5}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["minimum_MM_length.part5"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["minimum_MM_length.part5"]]}).
         Minimum length in hours of a MM day to be included in the cleaned \link{g.part4} results.}
-      
+
       \item{selectdaysfile}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["selectdaysfile"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["selectdaysfile"]])}).
         Functionality designed for the London Centre
         of Longidutinal studies. Csv file holding the relation between device
         serial numbers and measurement days of interest.}
-      
+
       \item{strategy}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["strategy"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["strategy"]]}).
         How to deal with knowledge about study protocol.
         strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
         strategy = 2 makes that only the data between the first
-        midnight and the last midnight is used. 
+        midnight and the last midnight is used.
         strategy = 3 only selects the most active X days in the file where X is specified by argument \code{ndayswindow}.
         strategy = 4 to only use the data after the first midnight.}
-      
+
       \item{hrs.del.start}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.start"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.start"]]}).
         How many HOURS after start of experiment did wearing
         of monitor start? Used in GGIR \link{g.part2} when \code{strategy = 1}.}
-      
+
       \item{hrs.del.end}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.end"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.end"]]}).
         How many HOURS before the end of the experiment did
         wearing of monitor definitely end? Used in GGIR \link{g.part2} when \code{strategy = 1}.}
-      
+
       \item{maxdur}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["maxdur"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["maxdur"]]}).
         How many DAYS after start of experiment did experiment
         definitely stop? (set to zero if unknown).}
-      
+
       \item{ndayswindow}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["ndayswindow"]]}).  
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["ndayswindow"]]}).
         If \code{strategy} is set to 3 then this is the size of the window as a number of days.}
-      
+
       \item{includedaycrit.part5}{
-        Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includedaycrit.part5"]], 3)}).  
+        Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includedaycrit.part5"]], 3)}).
         Inclusion criteria for number of valid hours, either
         as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
-    
-      
+
+
       \item{includedaycrit}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includedaycrit"]]}).  
-        Minimum required number of valid hours in day specific analysis 
-        (NOTE: there is no minimum required number of hours per day in the summary of 
-        an entire measurement, every available hour is used to make the best possible 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includedaycrit"]]}).
+        Minimum required number of valid hours in day specific analysis
+        (NOTE: there is no minimum required number of hours per day in the summary of
+        an entire measurement, every available hour is used to make the best possible
         inference on average metric value per average day).}
-      
+
       \item{max_calendar_days}{
-      Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["max_calendar_days"]]}). 
+      Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["max_calendar_days"]]}).
       The maximum number of calendar days to include (set to zero if unknown).}
     }
   }
-  
+
   \subsection{params_phyact}{
     A list of parameters releated to physical activity as used in GGIR \link{g.part2} and GGIR \link{g.part5}.
     \describe{
-    
+
       \item{mvpathreshold}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["mvpathreshold"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["mvpathreshold"]]}).
         Acceleration threshold for MVPA estimation in GGIR \link{g.part2}.
         This can be a single number or an array of numbers, e.g., \code{mvpathreshold = c(100, 120)}.
-        In the later case the code will estimate MVPA seperately for each threshold. 
+        In the later case the code will estimate MVPA seperately for each threshold.
         If this variable is left blank, e.g., \code{mvpathreshold = c()}, then MVPA is not estimated.}
-      
+
       \item{mvpadur}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["mvpadur"]], 
-        collapse = ", "), ")")}). 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["mvpadur"]],
+        collapse = ", "), ")")}).
         The bout duration(s) for which MVPA will be calculated. Only used in GGIR \link{g.part2}.}
-       
+
       \item{boutcriter}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["boutcriter"]]}). 
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["boutcriter"]]}).
         A number between 0 and 1, it defines what fraction of a bout needs to be above the
         mvpathreshold, only used in GGIR \link{g.part2}.}
-      
+
       \item{threshold.lig}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["threshold.lig"]]}).  
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["threshold.lig"]]}).
         In \link{g.part5}: Threshold for light physical activity to
         separate inactivity from light. Value can be one number or an array of multiple
         numbers, e.g., \code{threshold.lig =c(30,40)}. If multiple numbers are entered then
         analysis will be repeated for each combination of threshold values. Threshold is
         applied to the first metric in the milestone data, so if you have only specified
         \code{do.enmo = TRUE} then it will be applied to ENMO.}
-      
+
       \item{threshold.mod}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["threshold.mod"]]}).  
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["threshold.mod"]]}).
         In \link{g.part5}: Threshold for moderate physical activity
         to separate light from moderate. Value can be one number or an array of
         multiple numbers, e.g., \code{threshold.mod = c(100, 120)}.
         If multiple numbers are entered then analysis will be repliced for each
         ombination of threshold values. Threshold is applied to the first metric in the
-        milestone data, so if you have only specified \code{do.enmo = TRUE} 
+        milestone data, so if you have only specified \code{do.enmo = TRUE}
         then it will be applied to ENMO.}
-      
+
       \item{threshold.vig}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["threshold.vig"]]}).  
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["threshold.vig"]]}).
         In \link{g.part5}: Threshold for vigorous physical activity
         to separate moderate from vigorous. Value can be one number or an array of
         multiple numbers, e.g., \code{threshold.vig =c(400,500)}. If multiple numbers are
         entered then analysis will be repliced for each combination of threshold values.
         Threshold is applied to the first metric in the milestone data, so if you
         have only specified \code{do.enmo = TRUE} then it will be applied to ENMO.}
-        
+
         \item{bout.metric}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["bout.metric"]]}).
         Specify a metric for bout detection (recommended setting is \code{bout.metric = 6} since
-        it is the most updated version of the bout calculation in GGIR). 
+        it is the most updated version of the bout calculation in GGIR).
         If \code{bout.metric = 1} the code uses the MVPA bout definition as has
         been available since 2014 (see papers by Sabia AJE 2014 and da Silva IJE 2014).
         Here, the algorithm looks for 10 minute windows in which more than XX percent
@@ -803,95 +803,95 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         without taking a break. Therefore, both should be counted equal and counted as
         10 minute MVPA bout. The motivation for the definition 2 is: not counting breaks
         towards MVPA may simplify interpretation and still counts the two persons in
-        the example as each others equal. 
+        the example as each others equal.
         If \code{bout.metric = 3}, using sliding window across the
         data to test bout criteria per window and do not allow for breaks larger than 1 minute
         and with fraction of time larger than the boutcriter threshold.
         If \code{bout.metric = 4}, same as 3 but also requires the first and last epoch to
-        meet the threshold criteria. 
+        meet the threshold criteria.
         If \code{bout.metric = 5}, same as 4, but now looks for breaks larger
         than a minute such that 1 minute breaks are allowe, and the fraction of time that meets
         the threshold should be equal than or greater than the \code{bout.criter} threshold.
         If \code{bout.metric = 6}, algorithm improved (2021) to check for first and last epoch.}
-      
+
       \item{closedbout}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["closedbout"]]}).  
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["closedbout"]]}).
         TRUE if you want breaks in bouts to be counted towards
         time spent in bouts (argument only active for bout.metric 1 and 2).}
-        
+
       \item{boutdur.mvpa}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.mvpa"]], 
-        collapse = ", "), ")")}). 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.mvpa"]],
+        collapse = ", "), ")")}).
         Duration(s) of MVPA bouts in minutes to be extracted.
         It will start with the identification of the longest to the shortest duration.
-        In the default setting, it will start with the 10 minute bouts, followed by 5 minute 
+        In the default setting, it will start with the 10 minute bouts, followed by 5 minute
         bouts in the rest of the data, and followed by 1 minute bouts in the rest of the data.}
-      
+
       \item{boutdur.in}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.in"]], 
-        collapse = ", "), ")")}). 
-        Duration(s) of inactivty bouts in minutes to be extracted. 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.in"]],
+        collapse = ", "), ")")}).
+        Duration(s) of inactivty bouts in minutes to be extracted.
         Inactivity bouts are detected in the segments of the data which
-        were not labelled as sleep or MVPA bouts. 
+        were not labelled as sleep or MVPA bouts.
         It will start with the identification of the longest to the shortest duration.
         In the default setting, it will start with the identification of 30 minute bouts,
         followed by 20 minute bouts in the rest of the data, and followed by 10 minute
         bouts in the rest of the data.}
-      
+
       \item{boutdur.lig}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.lig"]], 
-        collapse = ", "), ")")}). 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.lig"]],
+        collapse = ", "), ")")}).
         Duration(s) of light activty bouts in minutes
         to be extracted. Light activity bouts are detected in the segments of the data
-        which were not labelled as sleep, MVPA, or inactivity bouts. 
+        which were not labelled as sleep, MVPA, or inactivity bouts.
         It will start with the identification of the longest to the shortest duration.
         In the default setting, this will start with the identification of
         10 minute bouts, followed by 5 minute bouts in the rest of the data, and followed
         by 1 minute bouts in the rest of the data.}
-        
+
       \item{boutcriter.mvpa}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["boutcriter.in"]]}).
         A number between 0 and 1, it defines what fraction of a bout needs to be above the \code{threshold.mod}.}
-      
+
       \item{boutcriter.in}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["boutcriter.in"]]}).
         A number between 0 and 1, it defines what fraction of a bout needs to be below the \code{threshold.lig}.}
-      
+
       \item{boutcriter.lig}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["boutcriter.lig"]]}).
-        A number between 0 and 1, it defines what fraction of a bout needs to be between 
+        A number between 0 and 1, it defines what fraction of a bout needs to be between
         the \code{threshold.lig} and the \code{threshold.mod}.}
-      
+
       \item{frag.metrics}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_phyact"]][["frag.metrics"]])}).
         Fragmentation metric to exract. Can be "mean", "TP", "Gini",
-        "power", or "CoV", "NFragPM", or all the above metrics with "all". 
+        "power", or "CoV", "NFragPM", or all the above metrics with "all".
         See package vignette for description of fragmentation metrics.}
     }
   }
- 
+
   \subsection{params_sleep}{
     A list of parameters used to configure the sleep analysis as performend in
     GGIR \link{g.part3} and \link{g.part4}.
     \describe{
-     
+
       \item{relyonguider}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["relyonguider"]]}).
         If TRUE, then sleep onset and waking time are defined based on
         timestamps derived from the guider. If participants were instructed NOT to wear the accelerometer
         during waking hours then set to TRUE, in all other scenarios set to FALSE.}
-      
+
       \item{relyonsleeplog}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["relyonsleeplog"]])}).
         Do not use, now replaced by argument relyonguider.
         Values provided to argument relyonsleeplog will be passed on to
         argument relyonguider to not preserve functionality of old R scripts.}
-      
+
       \item{def.noc.sleep}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["def.noc.sleep"]]}).
         The time window during which sustained
         inactivity will be assumed to represent sleep, e.g., \code{def.noc.sleep = c(21, 9)}.
-        This is only used if no sleep log entry is available. If 
+        This is only used if no sleep log entry is available. If
         left blank \code{def.noc.sleep = c()} then the 12 hour window centred
         at the least active 5 hours of the 24 hour period will be used
         instead. Here, L5 is hardcoded and will not change by changing
@@ -900,133 +900,133 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         will be detected with based on built in algorithms.
         See argument \code{HASPT.algo} from \link{HASPT} for specifying which of the
         algorithms to use.}
-      
+
       \item{sleepwindowType}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["sleepwindowType"]]}").
         To indicate type of information in the sleeplog, "SPT" for sleep period time.
         Set to "TimeInBed" if sleep log recorded time in bed to enable calculation
         of sleep latency and sleep efficiency.}
-      
+
       \item{nnights}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["nnights"]])}).
         Number of nights for which sleep log information should be available.
         It assumes that this is constant within a study. If sleep log information
         is missing for certain nights then leave these blank.}
-      
+
       \item{loglocation}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["loglocation"]])}).
-        Path to csv file with sleep log information. 
+        Path to csv file with sleep log information.
         See package vignette for how to format this file.}
-      
+
       \item{colid}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["colid"]]}).
         Column number in the sleep log spreadsheet in which the participant ID code is stored.}
-      
+
       \item{coln1}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["coln1"]]}).
         Column number in the sleep log spreadsheet where the onset of the first night starts.}
-      
+
       \item{sleeplogidnum}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogidnum"]]}).
         Should the participant identifier as stored in
         the sleeplog be interpretted as a number (TRUE) or character (FALSE)?}
-      
+
       \item{ignorenonwear}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["ignorenonwear"]]}).
         If TRUE then ignore detected monitor non-wear periods to avoid
         confusion between monitor non-wear time and sustained inactivity.}
-      
+
       \item{constrain2range}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["constrain2range"]]}).
         Whether or not to constrain the range of
         threshold used in the diary free sleep period time window detection.}
-        
+
       \item{HASPT.algo}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["HASPT.algo"]]}").
-        To indicate what algorithm should be used for the sleep period time detection. 
+        To indicate what algorithm should be used for the sleep period time detection.
         Default "HDCZA" is Heuristic algorithm looking at Distribution of Change in Z-Angle as
         described in van Hees et al. 2018. Other options included:
         "HorAngle", which is based on HDCZA but replaces non-movement detection of
         the HDCZA algorithm by looking for time segments where the angle of the
         longitudinal sensor axis has an angle relative to the horizontal plane
         between -45 and +45 degrees.}
-      
+
       \item{HASPT.ignore.invalid}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["HASPT.ignore.invalid"]]}).
-        To indicate whether invalid time segments should be ignored in the 
+        To indicate whether invalid time segments should be ignored in the
         Sleep Period Time detection.}
-        
+
       \item{HASIB.algo}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["HASIB.algo"]]}").
-        To indicate which algorithm should be used to define the 
-        sustained inactivity bouts (i.e., likely sleep). 
+        To indicate which algorithm should be used to define the
+        sustained inactivity bouts (i.e., likely sleep).
         Options: "vanHees2015", "Sadeh1994", "Galland2012".}
-      
+
       \item{Sadeh_axis}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["Sadeh_axis"]]}").
-        To indicate which axis to use for the Sadeh1994 algorithm, and  other algortihms 
+        To indicate which axis to use for the Sadeh1994 algorithm, and  other algortihms
         that relied on count-based Actigraphy such as Galland2012.}
-      
+
       \item{sleeplogsep}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogsep"]]}").
-        Value used as sep argument in \link[utils]{read.csv} for reading sleeplog csv file, 
+        Value used as sep argument in \link[utils]{read.csv} for reading sleeplog csv file,
         usually "," or ";".}
-      
+
       \item{nap_model}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["nap_model"]])}).
         To specify classification model. Currently the only option is "hip3yr", which
         corresponds to a model trained with hip data in 3-3.5 olds trained with parent diary data.}
-        
+
       \item{longitudinal_axis}{
         Integer (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["longitudinal_axis"]])}).
         To indicate which axis is the longitudinal axis.
         If not provided, the function will estimate longitudinal axis. Only used when
         \code{sensor.location = "hip"} or \code{HASPT.algo = "HorAngle"}.}
-      
+
       \item{anglethreshold}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["anglethreshold"]])}).
-        Angle threshold (degrees) for sustained inactivity periods detection. 
-        The algorithm will look for periods of time (\code{timethreshold}) 
+        Angle threshold (degrees) for sustained inactivity periods detection.
+        The algorithm will look for periods of time (\code{timethreshold})
         in which the angle variability is lower than \code{anglethreshold}.
         This can be specified as multiple thresholds, each of which will be implemented, e.g.,
         \code{anglethreshold = c(5,10)}.}
-      
+
       \item{timethreshold}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["timethreshold"]])}).
         Time threshold (minutes) for sustained inactivity periods detection.
-        The algorithm will look for periods of time (\code{timethreshold}) 
+        The algorithm will look for periods of time (\code{timethreshold})
         in which the angle variability is lower than \code{anglethreshold}.
         This can be specified as multiple thresholds, each of which will be implemented, e.g.,
         \code{timethreshold = c(5,10)}.}
-      
+
       \item{possible_nap_window}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_sleep"]][["possible_nap_window"]], 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_sleep"]][["possible_nap_window"]],
         collapse = ", "), ")")}).
         Numeric vector of length two with range in clock hours during which naps are
         assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}.}
-      
+
       \item{possible_nap_dur}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_sleep"]][["possible_nap_dur"]], 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_sleep"]][["possible_nap_dur"]],
         collapse = ", "), ")")}).
         Numeric vector of length two with range in duration (minutes) of a nap,
         e.g., \code{possible_nap_dur = c(15, 240)}.}
     }
   }
-  
+
   \subsection{params_247}{
     A list of parameters releated to description of 24/7 behaviours that do not fall
     under conventional physical activity or sleep outcomes, these parameters are used
     in GGIR \link{g.part2} and GGIR \link{g.part5}:
     \describe{
-      
+
       \item{qwindow}{
-        Numeric or character (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["qwindow"]], collapse = ", "), ")")}). 
+        Numeric or character (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["qwindow"]], collapse = ", "), ")")}).
         To specify windows over which all variables are calculated, e.g., acceleration distirbution, number of valid
-        hours, LXMX analysis, MVPA. 
+        hours, LXMX analysis, MVPA.
         If numeric, qwindow should have length two, e.g., \code{qwindow = c(0, 24)},
         all variables will only be calculated over the full 24 hours in a day. If
         \code{qwindow = c(8, 24)} variables will be calculated over the window 0-8, 8-24 and 0-24.
-        All days in the recording will be segmented based on these values. 
+        All days in the recording will be segmented based on these values.
         If you want to use a day specific segmentation in each day then you can set qwindow to be
         the full path to activity diary file (character). Expected format of the activity diary is:
         First column headers followed by one row per recording, first column is recording ID,
@@ -1040,39 +1040,39 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         activitylog is used then individuals who do not appear in the activitylog will still
         be processed with value \code{qwindow = c(0, 24)}. Dates with no activiy log data can be skipped,
         no need to have a column with the date followed by a column with the next date.}
-        
+
       \item{qwindow_dateformat}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_247"]][["qwindow_dateformat"]]}").
         To specify the date format used in the activity log as used by \link[base]{strptime}.}
-      
+
       \item{M5L5res}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["M5L5res"]])}).
         Resolution of L5 and M5 analysis in minutes.}
-      
+
       \item{winhr}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["winhr"]])}).
         Vector of window size(s) (unit: hours) of L5 and M5 analysis.}
-      
+
       \item{qlevels}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qlevels"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qlevels"]])}).
         Array of percentiles for which value needs to be extracted.
         These need to be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75).
         There is no limit to the number of percentiles. If left empty then percentiles will not be
         extracted. Distribution will be derived from short epoch metric data.}
-      
+
       \item{ilevels}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}). 
-        Levels for acceleration value frequency distribution in m\emph{g}, e.g., \code{ilevels = c(0,100,200)}. 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}).
+        Levels for acceleration value frequency distribution in m\emph{g}, e.g., \code{ilevels = c(0,100,200)}.
         There is no limit to the number of levels. If left empty then the intensity levels will not be
         extracted. Distribution will be derived from short epoch metric data.}
-      
+
       \item{window.summary.size}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["window.summary.size"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["window.summary.size"]])}).
         Functionality designed for the London Centre
         of Longidutinal studies. Size in minutes of the summary window}
-      
+
       \item{iglevels}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["iglevels"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["iglevels"]])}).
         Levels for acceleration value frequency distribution
         in m\emph{g} used for intensity gradient calculation (according to the method by
         Rowlands 2018). By default this is argument is empty and the intensity gradient
@@ -1080,152 +1080,152 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         make the intensity gradient use the bins \code{iglevels = c(seq(0,4000,by=25), 8000)}
         or the user could specify their own distribution. There is no constriction to the
         number of levels.}
-      
+
       \item{IVIS_windowsize_minutes}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_windowsize_minutes"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_windowsize_minutes"]])}).
         Window size of the Intradaily Variability (IV) and Interdaily
         Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.}
-        
+
       \item{IVIS_epochsize_seconds}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_epochsize_seconds"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_epochsize_seconds"]])}).
         This argument is deprecated.}
-        
+
       \item{IVIS.activity.metric}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS.activity.metric"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS.activity.metric"]])}).
         Metric used for activity calculation.
         Value = 1, uses continuous scaled acceleration.
         Value = 2, tries to collapse acceleration into a binary score of rest
         versus active to try to similate the original approach.}
-        
+
       \item{IVIS_acc_threshold}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_acc_threshold"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["IVIS_acc_threshold"]])}).
         Acceleration threshold to distinguish inactive from active.}
-        
+
       \item{qM5L5}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qM5L5"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["qM5L5"]])}).
         Percentiles (quantiles) to be calculated over L5 and M5 window.}
-        
+
       \item{MX.ig.min.dur}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["MX.ig.min.dur"]])}). 
-        Minimum MX duration needed in order 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["MX.ig.min.dur"]])}).
+        Minimum MX duration needed in order
         for intensity gradient to be calculated.}
-        
+
       \item{LUXthresholds}{
-        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["LUXthresholds"]], collapse = ", "), ")")}). 
+        Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_247"]][["LUXthresholds"]], collapse = ", "), ")")}).
         Vector with numeric sequece corresponding to
         the thresholds used to calculate time spent in LUX ranges.}
-      
+
       \item{LUX_cal_constant}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_cal_constant"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_cal_constant"]])}).
         If both LUX_cal_constant and LUX_cal_exponent are
         provided LUX values are converted based on formula y = constant * exp(x * exponent)}
-      
+
       \item{LUX_cal_exponent}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_cal_exponent"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_cal_exponent"]])}).
         If both LUX_cal_constant and LUX_cal_exponent are provided LUX
         LUX values are converted based on formula y = constant * exp(x * exponent)}
-      
+
       \item{LUX_day_segments}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_day_segments"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["LUX_day_segments"]])}).
         Vector with hours at which the day should be segmented for
         the LUX analysis.}
-      
+
       \item{L5M5window}{
         Argument depricated after version 1.5-24.
         This argument used to define the start and end time, in 24 hour clock hours,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
-      
+
       \item{cosinor}{
         Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
     }
   }
-  
+
   \subsection{params_output}{
     A list of parameters used to specify whether and how GGIR stores its output at various stages of the
     process.
     \describe{
-      
+
       \item{storefolderstructure}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["storefolderstructure"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["storefolderstructure"]])}).
         Store folder structure of the accelerometer data.}
-      
+
       \item{do.part2.pdf}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.part2.pdf"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.part2.pdf"]])}).
         In \link{g.part2}: Whether to generate a pdf for \link{g.part2}.}
-      
+
       \item{do.part3.pdf}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.part3.pdf"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.part3.pdf"]])}).
         In \link{g.part3}: Whether to generate a pdf for \link{g.part3}.}
-      
+
       \item{timewindow}{
-        Character (default = \Sexpr{paste0("c(", paste0('"',GGIR::load_params()[["params_output"]][["timewindow"]],'"',  collapse = ", "), ")")}). 
+        Character (default = \Sexpr{paste0("c(", paste0('"',GGIR::load_params()[["params_output"]][["timewindow"]],'"',  collapse = ", "), ")")}).
         In \link{g.part5}: Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
         or both c("MM","WW").}
-      
+
       \item{save_ms5rawlevels}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5rawlevels"]])}). 
-        In \link{g.part5}: Whether to save the time series classification (levels) 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5rawlevels"]])}).
+        In \link{g.part5}: Whether to save the time series classification (levels)
         as csv or RData files (as defined by \code{save_ms5raw_format}).}
-      
+
       \item{save_ms5raw_format}{
-        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5raw_format"]])}"). 
-        In \link{g.part5}: To specify how data should be stored: either "csv" or "RData". 
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5raw_format"]])}").
+        In \link{g.part5}: To specify how data should be stored: either "csv" or "RData".
         Only used if \code{save_ms5rawlevels = TRUE}.}
-      
+
       \item{save_ms5raw_without_invalid}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5raw_without_invalid"]])}). 
-        In \link{g.part5}: To indicate whether to remove invalid days from the time series output files. 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["save_ms5raw_without_invalid"]])}).
+        In \link{g.part5}: To indicate whether to remove invalid days from the time series output files.
         Only used if \code{save_ms5rawlevels = TRUE}.}
-      
+
       \item{epochvalues2csv}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["epochvalues2csv"]])}). 
-        In \link{g.part2}: If TRUE then epoch values are exported to a csv file. 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["epochvalues2csv"]])}).
+        In \link{g.part2}: If TRUE then epoch values are exported to a csv file.
         Here, non-wear time is imputed where possible.}
-      
+
       \item{do.sibreport}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.sibreport"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.sibreport"]])}).
         In \link{g.part4}: To indicate whether to generate report for the sustained inactivity bouts (SIB).}
-      
+
       \item{do.visual}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.visual"]])}). 
-        In \link{g.part4}: If TRUE, the function will generate a pdf with a visual 
-        representation of the overlap between the sleeplog entries and the accelerometer 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["do.visual"]])}).
+        In \link{g.part4}: If TRUE, the function will generate a pdf with a visual
+        representation of the overlap between the sleeplog entries and the accelerometer
         detections. This can be used to visually verify that the sleeplog entries do
         not come with obvious mistakes.}
-      
+
       \item{outliers.only}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["outliers.only"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["outliers.only"]])}).
         In \link{g.part4}: Only used if \code{do.visual = TRUE}. If FALSE,
-        all available nights are included in the visual representation of the data and sleeplog. 
+        all available nights are included in the visual representation of the data and sleeplog.
         If TRUE, then only nights with a difference in onset or waking time
         larger than the variable of argument \code{criterror} will be included.}
-      
+
       \item{criterror}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["criterror"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["criterror"]])}).
         In \link{g.part4}: Only used if \code{do.visual = TRUE} and \code{outliers.only = TRUE}.
         criterror specifies the number of minimum number of hours difference
         between sleep log and  accelerometer estimate for the night to be
         included in the visualisation.}
-      
+
       \item{visualreport}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport"]])}).
         If TRUE, then generate visual report based on combined output from \link{g.part2} and \link{g.part4}.}
-      
+
       \item{viewingwindow}{
-        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["viewingwindow"]])}). 
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["viewingwindow"]])}).
         Centre the day as displayed around noon (\code{viewingwindow = 1}) or around midnight (\code{viewingwindow = 2})
         in the visual report generated with \code{visualreport = TRUE}.}
-      
+
       \item{week_weekend_aggregate.part5}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["week_weekend_aggregate.part5"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["week_weekend_aggregate.part5"]])}).
         In \link{g.part5}: To indicate whether week and weekend-days aggregates
         should be stored. This is turned off by default as it generates a
         large number of extra columns in the output report.}
-        
+
       \item{dofirstpage}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["dofirstpage"]])}). 
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["dofirstpage"]])}).
         To indicate whether a first page with histograms summarizing the whole
         measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
     }

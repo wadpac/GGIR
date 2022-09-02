@@ -13,7 +13,7 @@
 }
 \usage{
   get_starttime_weekday_meantemp_truncdata(temp.available, monc, 
-  dformat, data, selectdaysfile, P, header, desiredtz, sf, i,
+  dformat, data, P, header, desiredtz, sf, i,
   datafile, ws2, starttime, wday, weekdays, wdayname, configtz = NULL)
 }
 \arguments{
@@ -28,9 +28,6 @@
   }
   \item{data}{
     Data part of \link{g.readaccfile} output
-  }
-  \item{selectdaysfile}{
-    See \link{g.dotorcomma}
   }
   \item{P}{
     data loaded from accelerometer file with \link{g.readaccfile}
