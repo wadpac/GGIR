@@ -55,9 +55,6 @@ g.extractheadervars = function(I) {
     }
     if (mon == "axivity") {
       seriali = which(hnames %in% c("uniqueSerialCode", "IART2Id"))
-      print(hnames)
-      print(hvalues)
-      print(header)
       if (length(seriali) > 0) deviceSerialNumber = hvalues[seriali[1]] #serial number			
     }
     if (mon == "movisens") {
