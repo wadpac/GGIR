@@ -120,8 +120,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     skip = skip + rmc.skip
   }
   # read data from file
-  P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip=skip,
-                                      dec=rmc.dec, showProgress = FALSE, header = freadheader),
+  P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip = skip,
+                                      dec = rmc.dec, showProgress = FALSE, header = freadheader),
                     stringsAsFactors = TRUE)
   if (length(rmc.col.wear) > 0) {
     wearIndicator = P[, rmc.col.wear] # keep wear channel seperately and reinsert at the end
@@ -145,19 +145,19 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin=rmc.origin,tz = rmc.desiredtz, format = rmc.format.time)
+      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.desiredtz, format = rmc.format.time)
     } else if (rmc.unit.time == "character") {
-      P$timestamp = as.POSIXlt(P$timestamp,format= rmc.format.time,tz = rmc.desiredtz)
+      P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = rmc.desiredtz)
     } else if (rmc.unit.time == "UNIXsec") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin=rmc.origin,tz = rmc.desiredtz)
+      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.desiredtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
       rmc.origin = "1899-12-30"
       datecode = round(P$timestamp) * 3600*24
       tmp2 = P$timestamp - round(P$timestamp)
-      timecode = ((tmp2 * 10^10)*8.64) / 1000000
-      numerictime = datecode +timecode
-      P$timestamp= as.POSIXlt(numerictime,origin=rmc.origin,tz=rmc.desiredtz)
+      timecode = ((tmp2 * 10^10) * 8.64) / 1000000
+      numerictime = datecode + timecode
+      P$timestamp = as.POSIXlt(numerictime, origin = rmc.origin, tz = rmc.desiredtz)
     }
     if (length(which(is.na(P$timestamp) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
@@ -172,9 +172,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # If acceleration is stored in bit values then convert to gravitational unit
   if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
     if (rmc.unsignedbit == TRUE) {
-      P$accx = ((P$accx / (2^rmc.bitrate)) - 0.5) * 2* rmc.dynamic_range
-      P$accy = ((P$accy / (2^rmc.bitrate)) - 0.5) * 2* rmc.dynamic_range
-      P$accz = ((P$accz / (2^rmc.bitrate)) - 0.5) * 2* rmc.dynamic_range
+      P$accx = ((P$accx / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
+      P$accy = ((P$accy / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
+      P$accz = ((P$accz / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
     } else if (rmc.unsignedbit == FALSE) { # signed bit
       P$accx = (P$accx / ((2^rmc.bitrate)/2)) * rmc.dynamic_range
       P$accy = (P$accy / ((2^rmc.bitrate)/2)) * rmc.dynamic_range
@@ -199,7 +199,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     }
     P = g.imputeTimegaps(P, xyzCol = c("accx", "accy", "accz"), timeCol = "timestamp", sf = sf, k = 0.25, 
                          PreviousLastValue = PreviousLastValue,
-                         PreviousLastTime = PreviousLastTime)
+                         PreviousLastTime = PreviousLastTime, epochsize = NULL)
     PreviousLastValue = as.numeric(P[nrow(P), c("accx", "accy", "accz")])
     PreviousLastTime = as.POSIXct(P[nrow(P), "timestamp"])
 
