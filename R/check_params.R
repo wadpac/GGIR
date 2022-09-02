@@ -126,8 +126,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   # Check value combinations and apply corrections if not logical
   if (length(params_rawdata) > 0) {
     if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-      warning(paste0("\nYou are using GENEAread instead of GGIRread for reading GENEActiv .bin files.",
-      " The opton to use GENEAread will be deprecated in the next release."))
+      warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
+      " Note that this option will be deprecated in the next CRAN release."))
     }
   }
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {

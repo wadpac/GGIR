@@ -130,12 +130,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Print GGIR header to console
   GGIRversion = ""
   SI = sessionInfo()
-  try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
-  if (length(GGIRversion) == 0) {
-    try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
-  }
+  GGIRversion = SI$otherPkgs$GGIR$Version
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
-  GGIRversion = paste0(" ",GGIRversion)
+  # GGIRversion = paste0(" ",GGIRversion)
   rm(SI)
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
@@ -206,9 +203,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
-                          "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull") == FALSE)]
+                          "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
+                          "GGIRversion") == FALSE)]
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters))
+  config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
     write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
   } else {
