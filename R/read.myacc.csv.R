@@ -18,7 +18,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.doresample=FALSE,
                           interpolationType=1,
                           PreviousLastValue = c(0, 0, 1),
-                          PreviousLastTime = NULL) {
+                          PreviousLastTime = NULL,
+                          epochsize = NULL) {
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
