@@ -701,7 +701,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             for (gi in 1:length(gaps_to_fill)) {
               # metalong
               impute_at_epoch_level(gapsize = floor(data[gaps_to_fill[gi], "remaining_epochs"] * (ws3/ws2)),
-                                    timeseries = metashort,
+                                    timeseries = metalong,
                                     gap_index = gaps_to_fill[gi] / (ws2 * sfold))
               # metashort
               impute_at_epoch_level(gapsize = floor(data[gaps_to_fill[gi], "remaining_epochs"]),
