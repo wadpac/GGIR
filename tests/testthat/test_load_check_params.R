@@ -5,15 +5,15 @@ test_that("load_params can load parameters", {
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
   expect_equal(params$params_sleep[[7]], "Y")
-  expect_equal(params$params_cleaning[[7]], 0)
+  expect_equal(params$params_cleaning[[6]], 0)
 
   # Test length of objects
   expect_equal(length(params), 8)
   expect_equal(length(params$params_sleep), 21)
   expect_equal(length(params$params_metrics), 34)
-  expect_equal(length(params$params_rawdata), 35)
+  expect_equal(length(params$params_rawdata), 36)
   expect_equal(length(params$params_247), 20)
-  expect_equal(length(params$params_cleaning), 18)
+  expect_equal(length(params$params_cleaning), 17)
   expect_equal(length(params$params_phyact), 15)
   expect_equal(length(params$params_output), 16)
   expect_equal(length(params$params_general), 13)

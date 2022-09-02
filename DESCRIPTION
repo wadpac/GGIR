@@ -1,19 +1,16 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 2.7-4
-Date: 2022-08-17
+Version: 2.7-6
+Date: 2022-09-02
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                   email="v.vanhees@accelting.com"),
                   person("Jairo H","Migueles",role="aut"),
                   person("Severine","Sabia",role="ctb"),
                   person("Matthew R","Patterson",role="ctb"),
                   person("Zhou","Fang",role="ctb"),
-                  person("Jing Hua","Zhao",role="ctb"),
                   person("Joe","Heywood",role="ctb"),
-                  person("Evgeny","Mirkes",role="ctb"),
                   person("Joan","Capdevila Pujol",role="ctb"),
-                  person("Dan","Jackson",role="ctb"),
                   person("Lena","Kushleyeva",role="ctb"),
                   person("Mathilde","Chen",role="ctb"),
                   person("Manasa","Yerramalla",role="ctb"),
@@ -30,9 +27,7 @@ URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/Rp
 BugReports: https://github.com/wadpac/GGIR/issues
 License: LGPL (>= 2.0, < 3) | file LICENSE
 Suggests: testthat, covr, knitr, rmarkdown
-Imports: data.table, Rcpp (>= 0.12.10), foreach, doParallel, signal, zoo, GENEAread, tuneR, unisensR, ineq, read.gt3x, activityCounts, ActCR, methods
+Imports: data.table, foreach, doParallel, signal, zoo, GENEAread, tuneR, unisensR, ineq, read.gt3x, activityCounts, ActCR, methods, GGIRread
 Depends: stats, utils, R (>= 3.5.0)
-NeedsCompilation: yes
-LinkingTo: Rcpp
 VignetteBuilder: knitr
-ByteCompile: yes
+

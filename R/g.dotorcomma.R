@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
+g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv = "GGIRread", ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
@@ -42,22 +42,26 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
   } else if (dformat == 1) {
     if (mon == 1) {
       # GENEA values are stroed in g without decimal place.
-      # try(expr={deci = g.binread(inputfile,0,2)},silent=TRUE)
-      # if(is.na(suppressWarnings(as.numeric(deci[2,2]))) == T) decn = ","
+      try(expr = {deci = GGIRread::readGenea(inputfile,0,2)}, silent = TRUE)
+      if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T) decn = ","
     } else if (mon == 2 ) {
-      if ("GENEAread" %in% rownames(installed.packages()) == FALSE) {
-        cat("\nWarning: R package GENEAread has not been installed, please install it before continuing")
+      if (loadGENEActiv == "GENEAread") {
+        try(expr = {deci = GENEAread::read.bin(binfile = inputfile, start = 1,end = 3,mmap.load = FALSE, calibrate = TRUE)}, silent = TRUE)
+        if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
+        if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
+      } else if (loadGENEActiv == "GGIRread") {
+        try(expr = {deci = GGIRread::readGENEActiv(filename = inputfile,
+                                                   start = 1, end = 3)}, silent = TRUE)
+        if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
+        if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
       }
-      try(expr = {deci = GENEAread::read.bin(binfile = inputfile, start = 1,end = 3,mmap.load = FALSE, calibrate = TRUE)}, silent = TRUE)
-      if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
-      if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == 3) {
     try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .wav file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {
-    try(expr = {deci = g.cwaread(fileName = inputfile,start = 1, end = 10, desiredtz = desiredtz,
+    try(expr = {deci = GGIRread::readAxivity(filename = inputfile,start = 1, end = 10, desiredtz = desiredtz,
                                interpolationType = 1)$data},silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .cwa file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","

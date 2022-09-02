@@ -63,7 +63,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                          "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
                          "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
                          "rmc.headername.sn", "rmc.headername.recordingid", 
-                         "rmc.header.structure")
+                         "rmc.header.structure", "loadGENEActiv")
     if (is.logical(params_rawdata[["rmc.noise"]])) {
       # Older config files used this, so overwrite with NULL value
       params_rawdata[["rmc.noise"]] = c() 
@@ -98,7 +98,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit", "max_calendar_days")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
-    character_params = c("selectdaysfile", "data_cleaning_file", "TimeSegments2ZeroFile")
+    character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")
     check_class("cleaning", params = params_cleaning, parnames = character_params, parclass = "character")
@@ -124,6 +124,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
+  if (length(params_rawdata) > 0) {
+    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
+      warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
+      " Note that this option will be deprecated in the next CRAN release."))
+    }
+  }
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
       if (params_sleep[["HASPT.algo"]] != "HorAngle") {

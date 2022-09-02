@@ -1,7 +1,7 @@
 g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), daylimit = FALSE, 
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-                     meantempcal = c(), selectdaysfile = c(), myfun = c(), ...) {
+                     meantempcal = c(), myfun = c(), ...) {
   
   #get input variables
   input = list(...)
@@ -9,7 +9,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                    "params_rawdata", "params_general",
                    "daylimit", "offset", 
                    "scale", "tempoffset", "meantempcal", 
-                   "selectdaysfile", "myfun", "outputdir", "outputfolder")
+                   "myfun", "outputdir", "outputfolder")
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
@@ -177,10 +177,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   header = INFI$header
   options(warn = -1)
   if (useRDA == FALSE) decn = g.dotorcomma(datafile, dformat, mon = mon,
-                                           desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]])
+                                           desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
+                                           loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
   options(warn = 0)
+  ID = hvars$ID
   
-  ID = g.getidfromheaderobject(filename = filename, header = header, dformat = dformat, mon = mon)
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
                                         dynrange = params_rawdata[["dynrange"]],
@@ -233,7 +234,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
       if (!exists("PreviousLastTime")) PreviousLastTime = NULL
       accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                              selectdaysfile = selectdaysfile,
                               filequality = filequality, decn = decn,
                               ws = ws, PreviousEndPage = PreviousEndPage,
                               inspectfileobject = INFI,
@@ -310,14 +310,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data = P$rawxyz
         } else if (dformat == 4) { #cwa
           if (P$header$hardwareType == "AX6") { # cwa AX6
-            gyro_available = TRUE
-          }
-          if (P$header$hardwareType == "AX6") { # cwa AX6
             # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
             data = P$data[,-c(2:4)]
+            P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
+            gyro_available = FALSE 
+            # If we ever want to use gyroscope data then
+            # comment out this if statement and set gyro_available = TRUE
+          } else {
+            data = P$data
+            P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
           }
-          data = P$data
-          P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
         } else if (dformat == 5) { # ad-hoc csv
           data = P$data
         } else if (mon == 5) { #movisense
@@ -336,10 +338,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         #add left over data from last time
         if (nrow(S) > 0) {
-           data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
+          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
         }
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
-                                                        data, selectdaysfile,
+                                                        data, 
                                                         P, header, desiredtz = params_general[["desiredtz"]],
                                                         sf, i, datafile,  ws2,
                                                         starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
@@ -350,7 +352,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
         rm(SWMT)
         if (exists("P")) rm(P); gc()
-        if (i != 0 & length(selectdaysfile) == 0 & exists("P")) rm(P); gc()
+        if (i != 0 & exists("P")) rm(P); gc()
         LD = nrow(data)
         if (LD < (ws*sf) & i == 1) {
           warning('\nWarning data too short for doing non-wear detection 3\n')
@@ -389,7 +391,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           #--------------------------------------------
           if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
             if (mon == 2) {
-              temperaturecolumn = 7; lightcolumn = 5
+              if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
+                temperaturecolumn = 7; lightcolumn = 5
+              } else {
+                temperaturecolumn = 6; lightcolumn = 5
+              }
             } else if (mon == 4) {
               temperaturecolumn = 5; lightcolumn = 7
               if (gyro_available == TRUE) {
@@ -429,7 +435,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               data = data[,2:4]
             }
           } else if (mon == 2 & dformat == 1) {
-            yy = as.matrix(cbind(as.numeric(data[, 7]),as.numeric(data[,7]),as.numeric(data[,7])))
+            yy = as.matrix(cbind(as.numeric(data[,temperaturecolumn]),
+                                 as.numeric(data[,temperaturecolumn]),
+                                 as.numeric(data[,temperaturecolumn])))
             data = data[,2:4]
             data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
               scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
@@ -475,28 +483,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
           # STORE THE RAW DATA
           # data[,1], data[,2], data[,3], starttime, (temperature, light)
-          if (length(selectdaysfile) > 0) {
-            path3 = paste0(outputdir,outputfolder) #where is output stored?
-            raw_output_dir = paste0(path3, "/meta/raw")
-            if (!dir.exists(raw_output_dir)) {
-              dir.create(raw_output_dir)
-            }
-            # calculate extra timestamp in a more complete format
-            # i am doing this here and not at the top of the code, because at this point the starttime has already be adjusted
-            # to the starttime of the first epoch in the data
-            # starttime_aschar_tz = strftime(as.POSIXlt(as.POSIXct(starttime),tz=desiredtz),format="%Y-%m-%d %H:%M:%S %z")
-            if (mon == 2 | (mon == 4 & dformat == 4) | (dformat == 5 & mon == 0)) {
-              I = INFI
-              save(I, sf, wday, wdayname, decn, data, starttime, temperature, light,
-                   file = paste0(raw_output_dir, "/", filename, "_day", i, ".RData"))
-            } else if (mon == 5) {
-              save(I, sf, wday, wdayname, decn, data, starttime, temperature,
-                   file = paste0(raw_output_dir, "/", filename, "_day", i, ".RData"))
-            } else {
-              save(I, sf, wday, wdayname, decn, data, starttime,
-                   file = paste0(raw_output_dir, "/", filename, "_day", i, ".RData"))
-            }
-          }
         } else {
           data = cbind(rep(0, nrow(data)), data)
           LD = nrow(data)
@@ -696,37 +682,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time5 = seq(starttime3, (starttime3 + ((nrow(metashort) - 1) * ws3)), by = ws3)
-      if (length(selectdaysfile) > 0 & length(time5) > round((24 * (3600/ws3)) + 1)) { # (Millenium cohort)
-        #===================================================================
-        # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile)
-        if (useRDA == FALSE) {
-          I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                            params_rawdata = params_rawdata, configtz = params_general[["configtz"]])
-        }
-        hvars = g.extractheadervars(I)
-        deviceSerialNumber = hvars$deviceSerialNumber
-        options(warn = -1)
-        char_deviceSerialNumber = is.na(as.numeric(deviceSerialNumber))
-        options(warn = 0)
-        if (char_deviceSerialNumber ==  FALSE) {
-          SDFi = which(as.numeric(SDF$Monitor) == as.numeric(deviceSerialNumber))
-        } else {
-          SDFi = which(SDF$Monitor == deviceSerialNumber)
-        }
-        dateday1 = as.character(SDF[SDFi, 2])
-        dateday2 = as.character(SDF[SDFi, 3])
-        dtday1 = as.POSIXlt(paste0(dateday1, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
-        dtday2 = as.POSIXlt(paste0(dateday2, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
-        deltat = as.numeric(dtday2) - as.numeric(dtday1)
-        delta_day = round(deltat / (3600*24)) - 1 # minus 1 because you naturally already
-        # make a jump of 1 day
-        daych = seq(round((24 * (3600/ws3)) + 1),length(time5), by = 1)
-        if (length(daych) > (24 * (3600/ws3))) {
-          daych = daych[1:(24 * (3600/ws3))]
-        }
-        time5[daych] = time5[daych] + (delta_day * 24 * 3600) #+ 5
-      }
       if (length(params_general[["desiredtz"]]) == 0) {
         warning("\ndesiredtz not specified, system timezone used as default")
         params_general[["desiredtz"]] = ""
@@ -742,26 +697,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (nrow(metalong) > 2) {
       starttime4 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time1 = seq(starttime4,(starttime4 + (nrow(metalong) * ws2) - 1), by = ws2)
-      if (length(selectdaysfile) > 0 & round((24 * (3600/ws2)) + 1) < length(time1)) { # (Millenium cohort)
-        #===================================================================
-        # All of the below needed for Millenium cohort
-        SDF = read.csv(selectdaysfile)
-        if (useRDA == FALSE) {
-          I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                            params_rawdata = params_rawdata,
-                            configtz = params_general[["configtz"]])
-        }
-        if (length(SDFi) == 1) { # if deviceSerialNumber is not in the file then this is skipped
-          dateday1 = as.character(SDF[SDFi, 2])
-          dateday2 = as.character(SDF[SDFi, 3])
-          dtday1 = as.POSIXlt(paste0(dateday1, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
-          dtday2 = as.POSIXlt(paste0(dateday2, " 01:00:00"), format = "%d/%m/%Y %H:%M:%S")
-          deltat = as.numeric(dtday2) - as.numeric(dtday1)
-          delta_day = round(deltat / (3600 * 24)) - 1 # minues 1 because you naturally already make a jump of 1 day
-          daych = seq(round((24 * (3600/ws2)) + 1), length(time1), by = 1)
-          time1[daych] = time1[daych] + (delta_day * 24 * 3600) #+ 5
-        }
-      }
       if (length(params_general[["desiredtz"]]) == 0) {
         warning("desiredtz not specified, system timezone used as default")
         params_general[["desiredtz"]] = ""

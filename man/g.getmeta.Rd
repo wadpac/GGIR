@@ -17,7 +17,7 @@
   g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), daylimit = FALSE, 
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-                     meantempcal = c(), selectdaysfile = c(), myfun = c(), ...)
+                     meantempcal = c(), myfun = c(), ...)
 }
 \arguments{
   \item{datafile}{
@@ -53,9 +53,6 @@
     mean temperature corresponding to the data as used for
     autocalibration. If autocalibration is not done or if temperature was not
     available then leave blank (default)
-  }
-  \item{selectdaysfile}{
-    see \link{g.part1}
   }
   \item{myfun}{
     External function object to be applied to raw data.

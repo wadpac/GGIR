@@ -150,26 +150,7 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
-  #--------------------------------------------
-  # create dummy selectdaysfile
-  selectdays = data.frame(Monitor = "MOS2D12345678",
-                          Day1 = "24/06/2016",
-                          Day2 = "25/06/2016", stringsAsFactors = TRUE)
-  selectdaysfile = paste0(getwd(), "/selectdaysfile.csv")
-  write.csv(selectdays, file = selectdaysfile, row.names = FALSE, fileEncoding = "UTF-8")
-  # we will now use it in g.part2, not sure whether g.part2 will actually be able to handle this.
-  # normally, g.part1 would use the file to cut up the measurement, but that only works for GENEActiv
-  # data and we do not have a multi-data GENEActiv test file in the package.
-  g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-          idloc = 2, desiredtz = desiredtz, strategy = 1,
-          overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, selectdaysfile = selectdaysfile,
-          storefolderstructure = TRUE, do.parallel = do.parallel, myfun = c())
-  rn = dir(dirname, full.names = TRUE)
-  load(rn[1])
-  expect_that(nrow(IMP$metashort), equals(11280))
-  expect_equal(mean(IMP$metashort$ENMO), 0.0291, tolerance = 5)
-
+  
   #=======================
   # Different variations on part 4:
   #--------------------------------------------
@@ -322,12 +303,6 @@ test_that("chainof5parts", {
   expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
-
-  SDF = "output_test/meta/raw/123A_testaccfile.csv_day1.RData"
-  expect_true(file.exists(SDF))
-  load(SDF)
-  expect_that(nrow(data),equals(390600))
-  expect_that(round(mean(data),digits = 3), equals(0.266))
 
 
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
