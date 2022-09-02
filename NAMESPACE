@@ -36,7 +36,8 @@ export(g.analyse, g.calibrate,
        CalcSleepRegularityIndex, load_params,
        check_params, extract_params,
        g.imputeTimegaps, g.part5.classifyNaps,
-       tidyup_df, cosinorAnalyses)
+       tidyup_df, cosinorAnalyses,
+       ShellDoc2Vignette, parametersVignette)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
@@ -51,4 +52,5 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
             "residuals", "fitted")
 import(data.table)
 importFrom("methods", "is")
-importFrom("utils", "available.packages", "packageVersion")
+importFrom("utils", "available.packages", "packageVersion", "help")
+importFrom(stringr, str_squish)
