@@ -55,6 +55,4 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help")
-useDynLib(GGIR, .registration = TRUE)
-importFrom(Rcpp, sourceCpp)
 importFrom(stringr, str_squish)
