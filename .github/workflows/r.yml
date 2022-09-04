@@ -44,6 +44,7 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
+          install.packages('tinytex')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -63,16 +64,12 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-          
-      - name: add TeX deps
-        run: |
-          tinytex::tlmgr_install(pkgs = "name")
-        shell: Rscript {0}
 
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          tinytex::tlmgr_install(pkgs = "name")
           tinytex::parse_install(text = "! LaTeX Error: File `pdfpages.sty' not found.")
           tinytex::parse_install(text = "! LaTeX Error: File `ae.sty' not found.")
           tinytex::parse_install(text = "! LaTeX Error: File `pdflscape.sty' not found.")
