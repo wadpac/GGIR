@@ -524,10 +524,10 @@ GGIR facilitates two possible sleeplog file structures:
 
 Example of a basic sleeplog:
 
-| ID  | onse t_N1 | w akeu p_N1 | onse t_N2 | w akeu p_N2 | onse t_N3 | w akeu p_N3 | onse t_N4 | ... |
-|-------|-------|-------|-------|-------|-------|-------|-------|-------|
-| 123 | 22:0 0:00 | 09:0 0:00   | 21:0 0:00 | 08:0 0:00   | 23:4 5:00 | 06:3 0:00   | 00:0 0:00 | ... |
-| 345 | 21:5 5:00 | 08:4 7:00   |           |             | 23:4 5:00 | 06:3 0:00   | 00:0 0:00 | ... |
+| ID  | onset_N1  | wakeup_N1 | onset_N2  | wakeup_N2 | onset_N3  | wakeup_N3 | onset_N4  | ... |
+|-----|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----|
+| 123 | 22:0 0:00 | 09:0 0:00 | 21:0 0:00 | 08:0 0:00 | 23:4 5:00 | 06:3 0:00 | 00:0 0:00 | ... |
+| 345 | 21:5 5:00 | 08:4 7:00 |           |           | 23:4 5:00 | 06:3 0:00 | 00:0 0:00 | ... |
 
 -   One column for participant id, this does not have to be the first
     column. Specify which column it is with argument `colid`.
@@ -969,7 +969,7 @@ Part 2 generates the following output:
 ### Person level summary
 
 | (Part of) variable name                                 | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|-----------------------|------------------------------------------------|
+|------------------------|-----------------------------------------------|
 | ID                                                      | Participant id                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | device_sn                                               | Device serial number                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | bodylocation                                            | Body location extracted from file header                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -1029,7 +1029,7 @@ This is a non-exhaustive list, because most concepts have been explained
 in summary.csv
 
 | (Part of) variable name    | Description                                                                                                                                                                                                                                               |
-|-------------------------|---------------------------------------------|
+|--------------------------|----------------------------------------------|
 | ID                         | Participant id                                                                                                                                                                                                                                            |
 | filename                   | Name of the data file                                                                                                                                                                                                                                     |
 | calender_date              | Timestamp and date on which measurement started                                                                                                                                                                                                           |
@@ -1057,7 +1057,7 @@ Part 4 generates the following output:
 The csv. files contain the variables as shown below.
 
 | (Part of) variable name                | Description                                                                                                                                                                                                                                                                                                                                                                                                |
-|-----------------------|------------------------------------------------|
+|------------------------|-----------------------------------------------|
 | ID                                     | Participant ID extracted from file                                                                                                                                                                                                                                                                                                                                                                         |
 | night                                  | Number of the night in the recording                                                                                                                                                                                                                                                                                                                                                                       |
 | sleeponset                             | Detected onset of sleep expressed as hours since the midnight of the previous night.                                                                                                                                                                                                                                                                                                                       |
@@ -1106,7 +1106,7 @@ data. If either of these applies set argument `sleepwindowType` to
 "TimeInBed".
 
 | (Part of) variable name   | Description                                                                |
-|-----------------------|------------------------------------------------|
+|------------------------|-----------------------------------------------|
 | guide r_guider_inbedStart | Time of getting in bed                                                     |
 | gui der_guider_inbedEnd   | Time of getting out of bed                                                 |
 | g uider_inbedDuration     | Time in Bed: guider_inbedEnd - guider_inbedStart                           |
@@ -1125,7 +1125,7 @@ extra clarification on a few of the variable names for which the meaning
 may not be obvious:
 
 | (Part of) variable name       | Description                                                                                                                                                                                                                                                               |
-|-----------------------|------------------------------------------------|
+|------------------------|-----------------------------------------------|
 | `_mn`                         | mean across days                                                                                                                                                                                                                                                          |
 | `_sd`                         | standard deviation across days                                                                                                                                                                                                                                            |
 | `_AD`                         | All days                                                                                                                                                                                                                                                                  |
@@ -1191,7 +1191,7 @@ reports/Report_nameofdatafile.pdf
 ### Day level summary
 
 | (Term in) variable name | Description                                                                                                                                                                                                                                                                     |
-|-------------------------|---------------------------------------------|
+|--------------------------|----------------------------------------------|
 | sleeponset              | onset of sleep expressed in hours since the midnight in the night preceding the night of interest, e.g. 26 is 2am.                                                                                                                                                              |
 | wakeup                  | waking up time express in the same way as sleeponset.                                                                                                                                                                                                                           |
 | sleeponset_ts           | onset of sleep expressed as a timestamp hours:minutes:seconds                                                                                                                                                                                                                   |
@@ -1272,7 +1272,7 @@ where weekend days always weighted 2/5 relative to the contribution of
 week days.
 
 | Variable name       | Description                                                                                                                                                    |
-|-------------------------|---------------------------------------------|
+|--------------------------|----------------------------------------------|
 | Nvaliddays          | Total number of valid days.                                                                                                                                    |
 | Nvaliddays_WD       | Number of valid week days.                                                                                                                                     |
 | Nvaliddays_WE       | Number of valid weekend days, where the days that start on Saturday or Sunday are considered weekend.                                                          |
@@ -1778,7 +1778,7 @@ correspond to the date of analysis.
 **The time series output file comes with the following columns:**
 
 | Column name          | Description                                                                                                                                                                                                                                                                                                                                |
-|----------------------|------------------------------------------------|
+|------------------------|------------------------------------------------|
 | SleepPeriodTime      | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).                                                                                                                                                                                           |
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.                                                                                                                                                                                                                                                                             |
 | guider               | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.                                                                                                                                                                                   |
