@@ -44,7 +44,6 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
-          install.packages('tinytex')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -69,10 +68,6 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          tinytex::tlmgr_install(pkgs = "name")
-          tinytex::parse_install(text = "! LaTeX Error: File `pdfpages.sty' not found.")
-          tinytex::parse_install(text = "! LaTeX Error: File `ae.sty' not found.")
-          tinytex::parse_install(text = "! LaTeX Error: File `pdflscape.sty' not found.")
         shell: Rscript {0}
         
       - name: Check Ubuntu
