@@ -282,6 +282,20 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       }
     }
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
+      #add left over data from last time
+      imputed = NULL # re-initialize vaiable in every loop
+      if (nrow(S) > 0) {
+        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
+          if ("remaining_epochs" %in% colnames(S)) {
+            # previous block had time gaps
+            imputed = S$remaining_epochs
+            S = S[, 1:(ncol(S) - 1)]
+            
+          }
+        }
+        P = suppressWarnings(rbind(S, P)) # suppress warnings about string as factor
+      }
+      # define data and impute
       if (useRDA == FALSE) {
         if (mon == 1 & dformat == 1) { # GENEA bin
           data = P$rawxyz / 1000 #convert mg output to g for genea
@@ -301,7 +315,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             if (!exists("PreviousLastTime")) PreviousLastTime = NULL
             P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
                                  PreviousLastValue = PreviousLastValue,
-                                 PreviousLastTime = PreviousLastTime, epochsize = c(ws3, ws2))
+                                 PreviousLastTime = PreviousLastTime, 
+                                 epochsize = c(ws3, ws2), imputed = imputed)
             PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
             if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
           }
@@ -330,30 +345,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             if (!exists("PreviousLastTime")) PreviousLastTime = NULL
             P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
                                  PreviousLastValue = PreviousLastValue,
-                                 PreviousLastTime = PreviousLastTime, epochsize = c(ws3, ws2))
+                                 PreviousLastTime = PreviousLastTime, 
+                                 epochsize = c(ws3, ws2), imputed = imputed)
             PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
             PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
           }
           data = as.matrix(P[,2:ncol(P)])
         }
-        #add left over data from last time
-        if (nrow(S) > 0) {
-          if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-            if ("remaining_epochs" %in% colnames(data)) {
-              if (ncol(S) == (ncol(data) - 1)) {
-                # this block has time gaps while the previous block did not
-                S = cbind(S, 1)
-                colnames(S)[4] = "remaining_epochs"
-              }
-            } else {
-              if ((ncol(S) - 1) == ncol(data)) {
-                 # this block does not have time gaps while the previous blog did
-                S = S[, 1:(ncol(S) - 1)]
-              }
-            }
-          }
-          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
-        }
+        
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, 
                                                         P, header, desiredtz = params_general[["desiredtz"]],
@@ -365,8 +364,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
         params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
         rm(SWMT)
-        if (exists("P")) rm(P); gc()
-        if (i != 0 & exists("P")) rm(P); gc()
         LD = nrow(data)
         if (LD < (ws*sf) & i == 1) {
           warning('\nWarning data too short for doing non-wear detection 3\n')
@@ -388,15 +385,17 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           if ((LD - use) > 1) {
             # reading csv files
-            S = as.matrix(data[(use + 1):LD,]) #store left over (included as.matrix)
+            S = P[(use + 1):nrow(P),] # store left over (this should be nrow(P) and not LD since data is likely shorter than P after line 356)
             if (ncol(S) == 1) {
               S = t(S)
             }
           } else { #use all data
-            S = matrix(0, 0, ncol(data))
+            S = matrix(0, 0, ncol(P))
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
+          if (exists("P")) rm(P); gc()
+          if (i != 0 & exists("P")) rm(P); gc()
           ##==================================================
           # Feature calculation
           dur = nrow(data)	#duration of experiment in data points

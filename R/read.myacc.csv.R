@@ -204,45 +204,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     PreviousLastValue = as.numeric(P[nrow(P), c("accx", "accy", "accz")])
     PreviousLastTime = as.POSIXct(P[nrow(P), "timestamp"])
 
-    # deltatime = abs(diff(as.numeric(P$timestamp)))
-    # gapsi = which(deltatime > 0.25) # look for gaps indices larger than a quarter of a second, because otherwise resampling may be able to address it
-    # newP = c()
-    # if (length(gapsi) > 0) { # if gaps exist
-    #   if (length(sf) == 0) { # estimate sample frequency if not given in header
-    #     sf = (P$timestamp[gapsi[jk]] - P$timestamp[1]) / (gapsi[1]-1)
-    #   }
-    #   newP = rbind(newP,P[1:gapsi[1],])
-    #   NumberOfGaps = length(gapsi)
-    #   for (jk in 1:NumberOfGaps) { # fill up gaps
-    #     # use average value from last second before gap for imputation
-    #     # this is flexible to both recording with and without temperature
-    #     non_time_colnames = colnames(P)[which(colnames(P) %in% "timestamp" == FALSE)]
-    #     tmp = colMeans(P[(max(gapsi[jk] - sf, 1)):gapsi[jk], non_time_colnames])
-    #     last_record = t(as.data.frame(tmp))
-    #     if (all(last_record[1,c("accx", "accy", "accz")] == c(0, 0, 0))) { # if it is only zero impute by c(1, 0, 0)
-    #       last_record[1,c("accx", "accy", "accz")] = c(1, 0, 0)
-    #     }
-    #     last_record[,c("accx", "accy", "accz")] = last_record[,c("accx", "accy", "accz")] / sqrt(sum(last_record[,c("accx", "accy", "accz")]^2))
-    #     dt = as.numeric(difftime(P$timestamp[gapsi[jk]+1], P$timestamp[gapsi[jk]], units="secs")) # difference in time
-    #     tmp = rep(seq_len(nrow(last_record)), each = dt*sf)
-    #     newblock = as.data.frame(last_record[rep(seq_len(nrow(last_record)), each = dt*sf), ])
-    #     # newblock = as.data.frame(matrix(0,dt*sf,ncol(P)), stringsAsFactors = TRUE)
-    #     # add timestamps
-    #     seqi = seq(P$timestamp[gapsi[jk]], P$timestamp[gapsi[jk]+1] - (1/sf), by=1/sf)
-    #     if (length(seqi) >= nrow(newblock)) {
-    #       newblock$timestamp = seqi[1:nrow(newblock)]
-    #       newblock = newblock[, colnames(P)] # reorder columns
-    #       # colnames(newblock) = colnames(P)
-    #       newP = rbind(newP, newblock)
-    #       if (jk != NumberOfGaps) {
-    #         newP = rbind(newP,P[((gapsi[jk]+1):gapsi[jk+1]),])
-    #       } else {
-    #         newP = rbind(newP,P[((gapsi[jk]+1):nrow(P)),]) # last block
-    #       }
-    #     }
-    #   }
-    #   P = newP
-    # }
   }
   if (rmc.doresample == TRUE) { #resample
     rawTime = vector(mode = "numeric", nrow(P))

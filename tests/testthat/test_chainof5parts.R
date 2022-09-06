@@ -25,9 +25,9 @@ test_that("chainof5parts", {
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(round(C$scale, digits = 5), c(0.98473, 0.98425, 0.98462), tolerance = 3)
-  expect_that(nrow(M$metalong), equals(47))
+  expect_that(nrow(M$metalong), equals(48))
   # expect_that(M$metalong[2,1],equals("2016-06-23T09:15:00+0100")) # turned off because not consistent across machines, to investigate
-  expect_that(nrow(M$metashort),equals(11280))
+  expect_that(nrow(M$metashort),equals(11520))
   expect_equal(round(mean(M$metashort$ENMO), digits = 5), 0.02911, tolerance = 3)
   expect_that(I$monc, equals(3))
   expect_that(I$sf, equals(3))
@@ -42,7 +42,7 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-  expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(nrow(IMP$metashort), 11520)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 0.417)
   # part 2 with strategy = 2 and iglevels = 1
@@ -54,7 +54,7 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-  expect_that(nrow(IMP$metashort),equals(11280))
+  expect_that(nrow(IMP$metashort),equals(11520))
   expect_equal(mean(IMP$metashort$ENMO), 0.029, tolerance = 3)
   expect_equal(as.numeric(SUM$summary$meas_dur_def_proto_day), 1, tolerance = 2)
   expect_equal(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), -1.12, tolerance = 2)
@@ -73,9 +73,9 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(summarycsv))
   expect_true(file.exists(daysummarycsv))
-  expect_that(nrow(IMP$metashort), equals(11280))
+  expect_that(nrow(IMP$metashort), equals(11520))
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.02911, tolerance = 3)
-  expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(1.95833))
+  expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(2))
   expect_that(ncol(SUM$daysummary), equals(32))
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), 89.26, tolerance = 3)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), 37.383, tolerance = 3)
@@ -90,7 +90,7 @@ test_that("chainof5parts", {
   load(rn3[1])
 
   expect_true(dir.exists(dirname))
-  expect_that(round(sum(sib.cla.sum[,4:7]), digits = 0), equals(2957))
+  expect_that(round(sum(sib.cla.sum[,4:7]), digits = 0), equals(2956))
 
   #--------------------------------------------
   # part 4
@@ -131,7 +131,7 @@ test_that("chainof5parts", {
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
-  expect_that(nrow(TSFILE),equals(4601))
+  expect_that(nrow(TSFILE),equals(4619))
   expect_equal(ncol(TSFILE), 10)
   expect_equal(length(unique(TSFILE$class_id)), 10)
  #--------------------------------------------
