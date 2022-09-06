@@ -11,8 +11,7 @@ calls to \link{g.part1}, \link{g.part2}, \link{g.part3},
 \link{g.part4} and \link{g.part5}.
 }
 \usage{
-GGIR(mode = 1:5, datadir = c(), outputdir = c(), studyname = c(),
-f0 = 1, f1 = 0, do.report = c(2, 4, 5), configfile = c(), myfun = c(), ...)
+GGIR(mode = \Sexpr{})
 }
 \arguments{
   \item{mode}{
