@@ -80,18 +80,9 @@ createConfigFile = function(config.parameters = c()) {
     }
   }
   SI = sessionInfo()
-  GGIRread_version = GGIRversion = ""
   
-  if ("GGIR" %in% names(SI$otherPkgs)) {
-    GGIRversion = SI$otherPkgs$GGIR$Version
-  } else if ("GGIR" %in% names(SI$loadedOnly)) {
-    GGIRversion = SI$loadedOnly$GGIR$Version
-  }
-  if ("GGIRread" %in% names(SI$otherPkgs)) {
-    GGIRread_version = SI$otherPkgs$GGIRread$Version
-  } else if ("GGIRread" %in% names(SI$loadedOnly)) {
-    GGIRread_version = SI$loadedOnly$GGIRread$Version
-  }
+  GGIRversion =  utils::packageVersion("GGIR")
+  GGIRread_version =  utils::packageVersion("GGIRread")
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
   if (length(GGIRread_version) == 0) GGIRread_version = "Could not retrieve GGIRread version"
 

@@ -128,9 +128,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
 
   #-----------------------------------------------------------
   # Print GGIR header to console
-  GGIRversion = ""
   SI = sessionInfo()
-  GGIRversion = SI$otherPkgs$GGIR$Version
+  GGIRversion =  utils::packageVersion("GGIR")
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
   # GGIRversion = paste0(" ",GGIRversion)
   rm(SI)
