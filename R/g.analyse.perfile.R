@@ -221,8 +221,9 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     #get GGIR version
     SI = sessionInfo()
     
-    GGIRversion =  utils::packageVersion("GGIR")
+    GGIRversion =  as.character(utils::packageVersion("GGIR"))
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
+    if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
     filesummary[(vi + 6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
     s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
                                                  " value=2, ignore all data before the first midnight and",
