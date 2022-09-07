@@ -36,6 +36,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     nonwearlog = logs_diaries$nonwearlog
     naplog = logs_diaries$naplog
     dateformat = logs_diaries$dateformat
+    
     extract_logs = function(log, ID, logname) {
       logreport = c()
       if (length(log) > 0) {
@@ -45,21 +46,11 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
           for (i in 1:nrow(log)) { # loop over lines (days)
             tmp = log[i,] # convert into timestamps
             # only attempt if there are at least 2 timestamps to process
-            nonempty = which(tmp[3:ncol(tmp)] != "")
+            nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
               date = as.Date(as.character(tmp[1,2]), format=dateformat)
               times = as.character(unlist(tmp[1,3:ncol(tmp)]))
-              # ignore entries without start and/or end time
-              t_to_remove = c()
-              for (ji in 1:floor(length(times)/2)) {
-                check = ((ji*2)-1):(ji*2)
-                if (length(which(times[check] == "")) > 0) {
-                  t_to_remove = c(t_to_remove, check)
-                }
-              }
-              if (length(t_to_remove) > 0) {
-                times = times[-t_to_remove]
-              }
+              times = times[which(times %in% c("", "NA") == FALSE)]
               # put remaining timestamps in logreport
               if (length(times) > 1) {
                 Nevents = floor(length(times) / 2)
@@ -71,12 +62,13 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                 for (bi in 1:Nevents) {
                   logreport_tmp$start[bi]  = as.character(timestamps[(bi*2)-1])
                   logreport_tmp$end[bi] = as.character(timestamps[(bi*2)])
+                  # logreport_tmp$duration[bi] = as.numeric(difftime(time1 = timestamps[(bi*2)], time2 = timestamps[(bi*2)-1], units = "min"))
                 }
-                if (length(logreport) == 0) {
-                  logreport = logreport_tmp
-                } else {
-                  logreport = rbind(logreport, logreport_tmp)
-                }
+              }
+              if (length(logreport) == 0) {
+                logreport = logreport_tmp
+              } else {
+                logreport = rbind(logreport, logreport_tmp)
               }
             }
           }

@@ -13,7 +13,8 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
       sibreport$end = as.POSIXlt(sibreport$end, tz = desiredtz)
       # remove all short gaps between SIBs
       sibreport$gap2next = NA
-      sibreport$gap2next[sibs[1:(length(sibs) - 1)]] = as.numeric(sibreport$start[sibs[2:length(sibs)]]) - as.numeric(sibreport$end[sibs[1:(length(sibs) - 1)]])
+      sibreport$gap2next[1:(length(sibs) - 1)] = as.numeric(sibreport$start[2:length(sibs)]) - as.numeric(sibreport$end[1:(length(sibs) - 1)])
+      
       iter = 1
       while (iter < nrow(sibreport)) {
         if (sibreport$gap2next[iter] < 300 & sibreport$type[iter] == "sib" & sibreport$type[iter + 1] == "sib") {
