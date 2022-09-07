@@ -1,5 +1,10 @@
 g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
-                            PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL) {
+                            PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL, 
+                            epochsize = NULL, imputed = NULL) {
+  if (!is.null(epochsize)) {
+    shortEpochSize = epochsize[1]
+    longEpochSize = epochsize[2]
+  }
   # dummy variables to control the process
   remove_time_at_end = dummyTime = FirstRowZeros = imputelast = FALSE
   # add temporary timecolumn to enable timegap imputation where there are zeros
@@ -61,6 +66,9 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     # impute time gaps
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
+    if (!is.null(imputed)) {
+      gapsi = gapsi[which(gapsi > length(imputed))] # ignore gaps that have been already imputed in previous chunk
+    }
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) {
       x$gap = 1
@@ -73,8 +81,64 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
           x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
         }
       }
-      x <- as.data.frame(lapply(x, rep, x$gap))
-      x = x[, which(colnames(x) != "gap")] # remove column gap because g.getmeta cannot handle this extra column yet, when reading multiple chunks of data
+      imputation_done = FALSE
+      if (!is.null(epochsize)) {
+        # identify gaps larger than 6 long epochs (defaults to 90 minutes) or
+        # 90 minutes, where the highest of the two is the criterium
+        GapLimit =  max(c(((longEpochSize / 60) * 6), 90)) * 60 * sf
+        gap90 = ifelse(x$gap > GapLimit, x$gap, 1) # keep track of gaps > 90 min
+        gap90i = which(gap90 > 1)
+        x$remaining_epochs = 1 # initialize variable
+        if (!is.null(imputed)) {
+          # add remaining epochs identified in previous chunk
+          x$remaining_epochs[1:length(imputed)] = imputed
+        }
+        if (length(gap90i) > 0) {
+          # if gap > 90 min, then impute only to fill up the epoch
+          # and keep track of how many epochs to impute
+          x$next_epoch_delay = 0
+          x$imputation = 0; imp = 0 # keep track of the imputation to organize data later on
+          for (i in gap90i) { 
+            imp = imp + 1
+            seconds = data.table::second(x$time[i]) + 1 
+            epochs2add = ceiling(seconds / shortEpochSize) - (seconds / shortEpochSize)
+            time2add = (epochs2add * sf * shortEpochSize) + 1
+            x$remaining_epochs[i] = ((x$gap[i] - time2add) / (sf * shortEpochSize)) + 1   # plus 1 to count current epoch
+            x$gap[i] = time2add # redefine gap to only fill up to next epoch
+            x$imputation[i] = imp
+            # if remaining_epochs[i] has decimal places, there is part of the next 
+            # epoch (after the time gap) that we also should impute now.
+            decs = x$remaining_epochs[i] - floor(x$remaining_epochs[i])
+            if (decs > 0) {
+              x$next_epoch_delay[i] = (decs * (sf * shortEpochSize))
+              x$gap[i] = x$gap[i] +  x$next_epoch_delay[i] # redefine gap to fill up the first epoch after the gap
+              x$remaining_epochs[i] = x$remaining_epochs[i] - (x$next_epoch_delay[i] / (sf * shortEpochSize)) 
+            } 
+          }
+          x$gap = round(x$gap) # to make sure that small decimals do not mess up the imputation in next line
+          x$next_epoch_delay = round(x$next_epoch_delay)
+          x <- as.data.frame(lapply(x, rep, x$gap))
+          imputation_done = TRUE
+          # when imputing, the track of remaining_epochs has been repeated through the data frame
+          # let's keep only the last record for the imputation later on
+          keep_remaining_epochs = data.frame(index = which(x$remaining_epochs > 1),
+                                             delay = x$next_epoch_delay[which(x$remaining_epochs > 1)],
+                                             imp = x$imputation[which(x$remaining_epochs > 1)])
+          keep_remaining_epochs$index = keep_remaining_epochs$index - keep_remaining_epochs$delay
+          points2keep = aggregate(index ~ imp, data = keep_remaining_epochs, FUN = max)
+          points2keep = points2keep$index
+          # when turn_to_one is 1, then the record in x should also be 1 (this way we only keep the last record)
+          x$remaining_epochs[-c(points2keep)] = 1 
+          # cleanup x, we only need remaining epochs
+          x = x[, which(colnames(x) != "next_epoch_delay")]
+          x = x[, which(colnames(x) != "imputation")]
+        }
+      }
+      if (imputation_done == FALSE) {
+        x <- as.data.frame(lapply(x, rep, x$gap))
+      }
+      # cleanup x, we only need remaining epochs
+      x = x[, which(colnames(x) != "gap")]
     }
   } else if (isFALSE(impute)) {
     if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
