@@ -32,7 +32,8 @@
                           rmc.doresample=FALSE,
                           interpolationType=1, 
                           PreviousLastValue = c(0, 0, 1),
-                          PreviousLastTime = NULL)	
+                          PreviousLastTime = NULL,
+                          epochsize = NULL)	
 }
 \arguments{
   \item{rmc.file}{
@@ -152,6 +153,9 @@
   }
     \item{PreviousLastTime}{
     Automatically identified last timestamp in previous chunk of data read.
+  }
+  \item{epochsize}{
+    Numeric vector of length two, with short and long epoch sizes. Only used by GGIR internally.
   }
 }
 \details{

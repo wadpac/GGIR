@@ -282,6 +282,20 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       }
     }
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
+      #add left over data from last time
+      imputed = NULL # re-initialize vaiable in every loop
+      if (nrow(S) > 0) {
+        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
+          if ("remaining_epochs" %in% colnames(S)) {
+            # previous block had time gaps
+            imputed = S$remaining_epochs
+            S = S[, 1:(ncol(S) - 1)]
+            
+          }
+        }
+        P = suppressWarnings(rbind(S, P)) # suppress warnings about string as factor
+      }
+      # define data and impute
       if (useRDA == FALSE) {
         if (mon == 1 & dformat == 1) { # GENEA bin
           data = P$rawxyz / 1000 #convert mg output to g for genea
@@ -299,9 +313,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
             if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
             if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, ws3 = ws3, k = 0.25, 
+            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
                                  PreviousLastValue = PreviousLastValue,
-                                 PreviousLastTime = PreviousLastTime)
+                                 PreviousLastTime = PreviousLastTime, 
+                                 epochsize = c(ws3, ws2), imputed = imputed)
             PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
             if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
           }
@@ -328,18 +343,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
             if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
             if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, ws3 = ws3, k = 0.25, 
+            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
                                  PreviousLastValue = PreviousLastValue,
-                                 PreviousLastTime = PreviousLastTime)
+                                 PreviousLastTime = PreviousLastTime, 
+                                 epochsize = c(ws3, ws2), imputed = imputed)
             PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
             PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
           }
           data = as.matrix(P[,2:ncol(P)])
         }
-        #add left over data from last time
-        if (nrow(S) > 0) {
-          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
-        }
+        
         SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
                                                         data, 
                                                         P, header, desiredtz = params_general[["desiredtz"]],
@@ -351,8 +364,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
         params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
         rm(SWMT)
-        if (exists("P")) rm(P); gc()
-        if (i != 0 & exists("P")) rm(P); gc()
         LD = nrow(data)
         if (LD < (ws*sf) & i == 1) {
           warning('\nWarning data too short for doing non-wear detection 3\n')
@@ -374,15 +385,17 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           if ((LD - use) > 1) {
             # reading csv files
-            S = as.matrix(data[(use + 1):LD,]) #store left over (included as.matrix)
+            S = P[(use + 1):nrow(P),] # store left over (this should be nrow(P) and not LD since data is likely shorter than P after line 356)
             if (ncol(S) == 1) {
               S = t(S)
             }
           } else { #use all data
-            S = matrix(0, 0, ncol(data))
+            S = matrix(0, 0, ncol(P))
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
+          if (exists("P")) rm(P); gc()
+          if (i != 0 & exists("P")) rm(P); gc()
           ##==================================================
           # Feature calculation
           dur = nrow(data)	#duration of experiment in data points
@@ -518,10 +531,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
         #extend metashort and metalong if it is expected to be too short
-        if (count > (nrow(metashort) - (2.5*(3600/ws3) * 24))) {
-          extension = matrix(" ", ((3600/ws3) * 24), ncol(metashort)) #add another day to metashort once you reach the end of it
+        if ("remaining_epochs" %in% colnames(data)) {
+          totalgap = sum(data[which(data[,"remaining_epochs"] != 1),"remaining_epochs"])
+        } else {
+          totalgap = 0
+        }
+        if (count > (nrow(metashort) - ((2.5*(3600/ws3) * 24)) + totalgap)) {
+          extension = matrix(" ", ((3600/ws3) * 24) + totalgap, ncol(metashort)) #add another day to metashort once you reach the end of it
           metashort = rbind(metashort,extension)
-          extension2 = matrix(" ", ((3600/ws2) * 24), ncol(metalong)) #add another day to metashort once you reach the end of it
+          extension2 = matrix(" ", ((3600/ws2) * 24)  + (totalgap * (ws2/ws3)), ncol(metalong)) #add another day to metashort once you reach the end of it
           metalong = rbind(metalong, extension2)
           cat("\nvariable metashort extended\n")
         }
@@ -548,9 +566,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
           metashort[count:(count - 1 + nrow(OutputExternalFunction)), col_msi:(col_msi + NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-        # count = count + length(EN_shortepoch) #increasing "count" the indicator of how many seconds have been read
         count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
-        browser()
         rm(accmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
@@ -558,7 +574,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         blocksize = BlocksizeNew$blocksize
         ##==================================================
         # MODULE 2 - non-wear time & clipping
-        #cat("\nmodule 2\n") #notice that windows overlap for non-wear detecting
         window2 = ws2 * sf #window size in samples
         window = ws * sf #window size in samples
         nmin = floor(LD/(window2)) #nmin = minimum number of windows that fit in this block of data
@@ -653,6 +668,47 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           col_mli = col_mli + 1
         }
         metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
+        if ("remaining_epochs" %in% colnames(data)) {
+          # Impute long gaps at epoch levels, because imputing them at raw level would
+          # be too memory hungry
+          impute_at_epoch_level = function(gapsize, timeseries, gap_index) {
+            if (gapsize > 0) {
+              N_time = nrow(timeseries)
+              if (gap_index <= N_time) {
+                newindi = c(1:gap_index, rep(gap_index, gapsize))
+                if ("nonwearscore" %in% colnames(timeseries)) {
+                  timeseries[gap_index, "nonwearscore"]  = 3
+                } else {
+                  # set all features to zero except time and angle feature
+                  timeseries[gap_index, grep(pattern = "time|angle", x = colnames(timeseries), invert = TRUE)] = 0
+                  # set EN to 1 if it is available
+                  if ("EN" %in% colnames(timeseries)) timeseries[,"EN"] = 1
+                }
+                if (gap_index < N_time) {
+                  newindi = c(newindi, (gap_index + 1):N_time)
+                }
+              } else if (gap_index > N_time) {
+                newindi = 1:N_time
+              }
+              
+              timeseries = timeseries[newindi,]
+            }
+            return(timeseries)
+          }
+          gaps_to_fill = which(data[,"remaining_epochs"] != 1)
+          if (length(gaps_to_fill) > 0) {
+            for (gi in 1:length(gaps_to_fill)) {
+              # metalong
+              impute_at_epoch_level(gapsize = floor(data[gaps_to_fill[gi], "remaining_epochs"] * (ws3/ws2)),
+                                    timeseries = metalong,
+                                    gap_index = gaps_to_fill[gi] / (ws2 * sfold))
+              # metashort
+              impute_at_epoch_level(gapsize = floor(data[gaps_to_fill[gi], "remaining_epochs"]),
+                                    timeseries = metashort,
+                                    gap_index = gaps_to_fill[gi] / (ws3 * sfold))
+            }
+          }
+        }
         col_mli = col_mli + 1
         count2 = count2 + nmin
         if (exists("data")) rm(data)
