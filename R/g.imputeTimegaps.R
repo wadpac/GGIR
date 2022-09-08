@@ -1,6 +1,6 @@
 g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
                             PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL, 
-                            epochsize = NULL, imputed = NULL) {
+                            epochsize = NULL) {
   if (!is.null(epochsize)) {
     shortEpochSize = epochsize[1]
     longEpochSize = epochsize[2]
@@ -66,9 +66,6 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     # impute time gaps
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
-    if (!is.null(imputed)) {
-      gapsi = gapsi[which(gapsi > length(imputed))] # ignore gaps that have been already imputed in previous chunk
-    }
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) {
       x$gap = 1
@@ -88,14 +85,10 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
         GapLimit =  max(c(((longEpochSize / 60) * 6), 90)) * 60 * sf
         gap90 = ifelse(x$gap > GapLimit, x$gap, 1) # keep track of gaps > 90 min
         gap90i = which(gap90 > 1)
-        x$remaining_epochs = 1 # initialize variable
-        if (!is.null(imputed)) {
-          # add remaining epochs identified in previous chunk
-          x$remaining_epochs[1:length(imputed)] = imputed
-        }
         if (length(gap90i) > 0) {
           # if gap > 90 min, then impute only to fill up the epoch
           # and keep track of how many epochs to impute
+          x$remaining_epochs = 1
           x$next_epoch_delay = 0
           x$imputation = 0; imp = 0 # keep track of the imputation to organize data later on
           for (i in gap90i) { 

@@ -10,7 +10,7 @@
 \usage{
   g.imputeTimegaps(x, xyzCol, timeCol = c(), sf, k = 0.25, impute = TRUE, 
                    PreviousLastValue = c(0,0,1), 
-                   PreviousLastTime = NULL, epochsize = NULL, imputed = NULL)
+                   PreviousLastTime = NULL, epochsize = NULL)
 }
 \arguments{
   \item{x}{
@@ -40,9 +40,6 @@
   }
   \item{epochsize}{
     Numeric vector of length two, with short and long epoch sizes.
-  }
-  \item{imputed}{
-    Automatically identified imputed timepoints from previous chunk of data read.
   }
 }
 \value{
