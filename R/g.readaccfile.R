@@ -40,15 +40,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # ws = large window size (default 3600 seconds)
   
   switchoffLD = 0
-  useRDA = TRUE
-  if (length(unlist(strsplit(filename,"[.]RD"))) <= 1) useRDA = FALSE
-  if (useRDA == FALSE) {
-    I = inspectfileobject
-    mon = I$monc
-    if (mon == 6) mon = 3
-    dformat = I$dformc
-    sf = I$sf
-  }
+  I = inspectfileobject
+  mon = I$monc
+  if (mon == 6) mon = 3
+  dformat = I$dformc
+  sf = I$sf
+  
   P = c()
   updatepageindexing = function(startpage = c(), deltapage = c(), blocknumber = c(), PreviousEndPage = c(),
                                 mon = c(), dformat = c()) {
@@ -105,7 +102,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       P = c()
       if (blocknumber == 1) filequality$filecorrupt = TRUE
     }
-  } else if (mon == 2 & dformat == 1 & useRDA == FALSE) { # GENEActiv binary non-RDA format
+  } else if (mon == 2 & dformat == 1) { # GENEActiv binary non-RDA format
     startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
