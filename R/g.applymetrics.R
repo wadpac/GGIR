@@ -91,6 +91,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
       rollmed = function(x, sf) {
         winsi = round(sf * 5)
         if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
+        if ((winsi %% 2) == 0) winsi = winsi + 1
         stepsize = max(c(floor(sf / 10), 1))
         xm = zoo::rollmedian(x[seq(1, length(x), by = stepsize)],
                              k = winsi, fill = c(0, 0, 0), na.pad = FALSE)
@@ -99,6 +100,13 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         LN = length(xm)
         xm[which(xm[LN:(LN - 1000)] == 0)] = xm[which(xm[LN:(LN - 1000)] != 0)[1]]
         xm = rep(xm, each = stepsize)
+        LN = length(xm)
+        LX = length(x)
+        if (LN > LX) {
+          xm = x[1:LX]
+        } else if (LN < LX) {
+          xm = c(xm, rep(xm[LN], LX - LN))
+        }
         return(xm)
       }
       data_processed = data
