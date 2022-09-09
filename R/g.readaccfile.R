@@ -422,7 +422,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    rmc.doresample = params_rawdata[["rmc.doresample"]],
                                    interpolationType = params_rawdata[["interpolationType"]],
                                    PreviousLastValue = PreviousLastValue,
-                                   PreviousLastTime = PreviousLastTime)
+                                   PreviousLastTime = PreviousLastTime,
+                                   epochsize = params_general[["windowsizes"]][1:2])
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
     if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv

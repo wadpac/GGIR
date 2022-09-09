@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7-7 (GitHub-only-release date:0??-??-2022)}{
+  \itemize{
+    \item Part 1: Long timegaps in ActiGraph data or ad-hoc .csv data as a result of idle sleep mode are now dealt with at metric level rather than raw data level.
+    }
+}
 \section{Changes in version 2.7-6 (GitHub-only-release date:02-09-2022)}{
   \itemize{
     \item Part 1: Deprecated g.cwaread and internally replaced by GGIRread::readAxivity.
