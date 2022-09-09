@@ -81,11 +81,24 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         data_processed[, i] = signal::filter(coef, data[,i])
       }
     } else if (filtertype == "rollmedian") {
+      # rollmed = function(x, sf) {
+      #   winsi = round(sf * 5)
+      #   if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
+      #   xm = zoo::rollmedian(x, k = winsi, na.pad = TRUE)
+      #   xm[which(is.na(xm[1:1000]) == TRUE)] = xm[which(is.na(xm[1:1000]) == FALSE)[1]]
+      #   return(xm)
+      # }
       rollmed = function(x, sf) {
         winsi = round(sf * 5)
         if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
-        xm = zoo::rollmedian(x, k = winsi, na.pad = TRUE)
-        xm[which(is.na(xm[1:1000]) == TRUE)] = xm[which(is.na(xm[1:1000]) == FALSE)[1]]
+        stepsize = max(c(floor(sf / 10), 1))
+        xm = zoo::rollmedian(x[seq(1, length(x), by = stepsize)],
+                             k = winsi, fill = c(0, 0, 0), na.pad = FALSE)
+        # replace zeros at tail and head by nearest values
+        xm[which(xm[1:1000] == 0)] = xm[which(xm[1:1000] != 0)[1]]
+        LN = length(xm)
+        xm[which(xm[LN:(LN - 1000)] == 0)] = xm[which(xm[LN:(LN - 1000)] != 0)[1]]
+        xm = rep(xm, each = stepsize)
         return(xm)
       }
       data_processed = data

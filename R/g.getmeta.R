@@ -338,6 +338,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           data = as.matrix(P[,2:ncol(P)])
         }
+
         #add left over data from last time
         if (nrow(S) > 0) {
           if (params_rawdata[["imputeTimegaps"]] == TRUE) {
@@ -396,7 +397,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           } else { #use all data
             S = matrix(0, 0, ncol(data))
           }
-          data = as.matrix(data[1:use,])
+          data = as.matrix(data[1:use,], rownames.force = FALSE)
           LD = nrow(data) #redefine LD because there is less data
           ##==================================================
           # Feature calculation
