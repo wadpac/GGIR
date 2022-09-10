@@ -89,10 +89,10 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
       #   return(xm)
       # }
       rollmed = function(x, sf) {
-        winsi = round(sf * 5)
+        stepsize = max(c(floor(sf / 10), 1))
+        winsi = round((1/stepsize) * 5)
         if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
         if ((winsi %% 2) == 0) winsi = winsi + 1
-        stepsize = max(c(floor(sf / 10), 1))
         xm = zoo::rollmedian(x[seq(1, length(x), by = stepsize)],
                              k = winsi, fill = c(0, 0, 0), na.pad = FALSE)
         # replace zeros at tail and head by nearest values
