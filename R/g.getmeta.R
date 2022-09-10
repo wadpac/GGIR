@@ -274,7 +274,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
           if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
         }
-        data = as.matrix(P)
+        data = P
       } else if (dformat == 3) { #wav
         data = P$rawxyz
       } else if (dformat == 4) { #cwa
@@ -292,7 +292,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       } else if (dformat == 5) { # ad-hoc csv
         data = P$data
       } else if (mon == 5) { #movisense
-        data = as.matrix(P)
+        data = P
       } else if (dformat == 6) { #gt3x
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
           if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
@@ -304,9 +304,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
           PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
         }
-        data = as.matrix(P[,2:ncol(P)])
+        data = P[,2:ncol(P)]
       }
-      
+      data = as.matrix(data[1:use,], rownames.force = FALSE)
       #add left over data from last time
       if (nrow(S) > 0) {
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
@@ -354,20 +354,19 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
         }
         if ((LD - use) > 1) {
-          S = as.matrix(data[(use + 1):LD,]) #store left over (included as.matrix)
+          S = data[(use + 1):LD,] #store left over (included as.matrix)
           if (ncol(S) == 1) {
             S = t(S)
           }
         } else { #use all data
           S = matrix(0, 0, ncol(data))
         }
-        data = as.matrix(data[1:use,], rownames.force = FALSE)
+        
         LD = nrow(data) #redefine LD because there is less data
         ##==================================================
         # Feature calculation
         dur = nrow(data)	#duration of experiment in data points
         durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
-        data = as.matrix(data)
         #--------------------------------------------
         if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
           if (mon == 2) {
