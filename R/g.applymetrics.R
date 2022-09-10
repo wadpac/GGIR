@@ -90,15 +90,24 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
       # }
       rollmed = function(x, sf) {
         stepsize = max(c(floor(sf / 10), 1))
-        winsi = round((1/stepsize) * 5)
+        newsf = ifelse(test = stepsize > 1, yes = 10, no = sf)
+        winsi = round(newsf * 5)
         if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
         if ((winsi %% 2) == 0) winsi = winsi + 1
         xm = zoo::rollmedian(x[seq(1, length(x), by = stepsize)],
                              k = winsi, fill = c(0, 0, 0), na.pad = FALSE)
-        # replace zeros at tail and head by nearest values
-        xm[which(xm[1:1000] == 0)] = xm[which(xm[1:1000] != 0)[1]]
+        # replace zeros:
+        S2check = max(c(sf * 10, 1000))
+        # head
+        xm[which(xm[1:S2check] == 0)] = xm[which(xm[1:S2check] != 0)[1]]
+        # tail
         LN = length(xm)
-        xm[which(xm[LN:(LN - 1000)] == 0)] = xm[which(xm[LN:(LN - 1000)] != 0)[1]]
+        xm_tail = xm[(LN - S2check):LN]
+        lastvalue = xm_tail[which(xm_tail != 0)][1]
+        if (length(lastvalue) == 0) lastvalue = xm[which(xm != 0)][1]
+        xm_tail[which(xm_tail == 0)] = lastvalue
+        xm[(LN - S2check):LN] = xm_tail
+        # repeat values to get back to original sample rate
         xm = rep(xm, each = stepsize)
         LN = length(xm)
         LX = length(x)
