@@ -97,7 +97,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         xm = zoo::rollmedian(x[seq(1, length(x), by = stepsize)],
                              k = winsi, fill = c(0, 0, 0), na.pad = FALSE)
         # replace zeros:
-        S2check = max(c(sf * 10, 1000))
+        S2check = max(c(sf * 60, 1000))
         # head
         xm[which(xm[1:S2check] == 0)] = xm[which(xm[1:S2check] != 0)[1]]
         # tail
