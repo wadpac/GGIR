@@ -130,6 +130,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
       if (imputation_done == FALSE) {
         x <- as.data.frame(lapply(x, rep, x$gap))
       }
+      # print("N days we have here")
+      # print(nrow(x)/(sf * 3600 * 24))
+      # print("N days to impute later at epoch level in g.getmeta")
+      # print((sum(x$remaining_epochs[which(x$remaining_epochs != 1)])) / (12*1440))
+      
       # cleanup x, we only need remaining epochs
       x = x[, which(colnames(x) != "gap")]
     }
