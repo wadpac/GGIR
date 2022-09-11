@@ -149,6 +149,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       }
       # Convert unit to counts per minute if aggwindow is not 60
       if (aggwindow != 60) CountperWindow = CountperWindow * (60/aggwindow)
+      # Calculate back to Counts per 10 seconds as not clearly described in the original study
+      # but current impression is that this provides more plausible output
+      CountperWindow = CountperWindow / 6 
       # if (count_type != "zeroCrossingCount") {
       #   CountperWindow = ifelse(test = CountperWindow > 300, yes = CountperWindow, no = 300)  # CountperWindow = CountperWindow / 100 # this is what ActiLife claims to do, but generates unlikely output
       # }
