@@ -112,7 +112,8 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
             # there would be a mismatch later on e.g., if 00:15:00 is in the middle of
             # the first time gap. So, time until the first long epoch should be imputed now
             firstLongEpoch = (sf * longEpochSize)
-            if (i < firstLongEpoch) { # impute data until first long epoch
+            if (i < firstLongEpoch &  # impute data until first long epoch
+                i == gap90i[1]) {     # and do this only in the first iteration
               x$first_longepoch_delay[i] = firstLongEpoch - i
               x$gap[i] = x$gap[i] +  x$first_longepoch_delay[i] # redefine gap to fill up the first epoch after the gap
               x$remaining_epochs[i] = x$remaining_epochs[i] - (x$first_longepoch_delay[i] / (sf * shortEpochSize)) 
