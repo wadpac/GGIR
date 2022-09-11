@@ -151,7 +151,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         desiredtz = params_general[["desiredtz"]],
                         idloc = params_general[["idloc"]],
                         includedaycrit = params_cleaning[["includedaycrit"]],
-                        selectdaysfile = params_cleaning[["selectdaysfile"]],
                         myfun = myfun,
                         acc.metric = params_general[["acc.metric"]])
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
@@ -164,26 +163,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           if (cnt78 == 1) {
             SUMMARY = SUM$summary
             daySUMMARY = SUM$daysummary
-            if (length(params_cleaning[["selectdaysfile"]]) > 0) {
-              winSUMMARY = SUM$windowsummary[,which(
-                is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
-            }
             cnt78 = 2
-          } else {
-            if (length(params_cleaning[["selectdaysfile"]]) > 0) {
-              # windowsummary
-              winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
-              if (ncol(winSUMMARY) != ncol(winSUMMARY2)) {
-                winSUMMARY2 = cbind(winSUMMARY2,matrix(" ",1,(ncol(winSUMMARY) - ncol(winSUMMARY2))))
-                colnames(winSUMMARY2) = colnames(winSUMMARY)
-              }
-              if (length(which(colnames(winSUMMARY) != names(winSUMMARY2)) ) > 0) {
-                names(winSUMMARY2) =   colnames(winSUMMARY)
-              }
-              if (length(which(colnames(daySUMMARY) != names(SUM$daysummary)) ) > 0) {
-                names(SUM$windowsummary) =   colnames(winSUMMARY2)
-              }
-            }
           }
         }
         if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData

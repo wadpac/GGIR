@@ -13,19 +13,9 @@ authors:
     family-names: Fang
     given-names: Zhou
   -
-    affiliation: "University of Leicester"
-    family-names: Mirkes
-    given-names: Evgeny
-    orcid: "https://orcid.org/0000-0003-1474-1734"
-  -
     affiliation: "University College London"
     family-names: Heywood
     given-names: Joe
-  -
-    affiliation: "MRC Epidemiology Unit"
-    family-names: Zhao
-    given-names: "Jing Hua"
-    orcid: "https://orcid.org/0000-0003-4930-3582"
   -
     affiliation: "Polytechnical University of Catalonia"
     family-names: Joan
@@ -45,10 +35,6 @@ authors:
     family-names: Patterson
     given-names: "Matt"
   -
-    affiliation: "Axivity Ltd"
-    family-names: Jackson
-    given-names: "Dan"
-  -
     affiliation: Inserm
     family-names: Chen
     given-names: "Mathilde"
@@ -57,7 +43,7 @@ authors:
     family-names: Manasa
     given-names: "Yerramalla"
 cff-version: "1.0.3"
-date-released: 2022-08-17
+date-released: 2022-09-07
 doi: "10.5281/zenodo.1051064"
 keywords:
   - "activity tracker"
@@ -69,5 +55,5 @@ license: "LGPL-2.0-only"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/wadpac/GGIR"
 title: GGIR
-version: "2.7-4"
+version: "2.7-7"
 ...

@@ -305,4 +305,3 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   }
   return(allmetrics)
 } 
-

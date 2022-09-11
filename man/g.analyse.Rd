@@ -17,7 +17,7 @@
 \usage{
   g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
             quantiletype = 7, includedaycrit = 16, 
-            idloc = 1, snloc = 1, selectdaysfile=c(), 
+            idloc = 1, snloc = 1, 
             dayborder=0,  desiredtz = "", myfun=c(), acc.metric = c(), ...)
 }
 \arguments{
@@ -53,9 +53,6 @@
     If value = 1 (default) the code assumes that device serial number is stored in
     the obvious header field. If value = 2 the code uses the character string between
     the first and second character '_' in the filename as the serial number
-  }
-  \item{selectdaysfile}{
-    See \link{g.part1}
   }
   \item{dayborder}{
     See \link{g.part1}

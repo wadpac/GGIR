@@ -77,9 +77,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     dir.create(file.path(outputdir, outputfolder))
     dir.create(file.path(outputdir, outputfolder, "meta"))
     dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "basic"))
-    if (length(params_cleaning[["selectdaysfile"]]) > 0) {
-      dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "raw"))
-    }
     dir.create(file.path(outputdir, outputfolder, "results"))
     dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
   }
@@ -341,7 +338,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     meantempcal = C$meantempcal,
                     outputdir = outputdir,
                     outputfolder = outputfolder,
-                    selectdaysfile = params_cleaning[["selectdaysfile"]],
                     myfun = myfun)
 
       if (params_general[["expand_tail_max_hours"]] > 0) {
@@ -479,12 +475,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # pass on functions
       # packages2passon = 'Rcpp'
       functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
-                           "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
-                           "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
+                           "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
+                           "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                           "g.extractheadervars", "g.imputeTimegaps", "resample",
-                           "extract_params", "load_params", "check_params")
+                           "g.extractheadervars", "g.imputeTimegaps", "parseGT3Xggir")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.

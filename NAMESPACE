@@ -9,9 +9,8 @@ export(g.analyse, g.calibrate,
        chartime2iso8601, g.abr.day.names,
        g.applymetrics, g.create.sp.mat, g.detecmidnight,
        g.dotorcomma, g.downsample,
-       getFirstTimestamp, getStartEndNumeric,
-       getStartEnd, g.extractheadervars,
-       g.getidfromheaderobject, g.getM5L5,
+       getFirstTimestamp, g.extractheadervars,
+       g.getM5L5,
        g.getstarttime, g.loadlog,
        g.plot5, g.readaccfile,
        g.report.part2, g.report.part4,
@@ -19,8 +18,7 @@ export(g.analyse, g.calibrate,
        g.sib.plot, g.wavread,
        g.weardec, isfilelist,
        iso8601chartime2POSIX, is_this_a_dst_night,
-       POSIXtime2iso8601, numUnpack,
-       resample, is.ISO8601,
+       POSIXtime2iso8601, is.ISO8601,
        updateBlocksize, g.IVIS,
        createConfigFile, identify_levels,
        g.sib.sum, datadir2fnames,
@@ -54,5 +52,3 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion")
-useDynLib(GGIR, .registration = TRUE)
-importFrom(Rcpp, sourceCpp)

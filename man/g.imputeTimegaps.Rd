@@ -4,16 +4,18 @@
   Impute gaps in three axis raw accelerometer data
 }
 \description{
-  Removes all sample with a zero in each of the three axes, and then (as default) imputes time 
-  gaps by the last recorded value per axis normalised to 1 _g_
+  Removes all sample with a zero in each of the three axes, and then (as default)
+  imputes time  gaps by the last recorded value per axis normalised to 1 _g_
 }
 \usage{
   g.imputeTimegaps(x, xyzCol, timeCol = c(), sf, k = 0.25, impute = TRUE, 
-                   PreviousLastValue = c(0,0,1), PreviousLastTime = NULL)
+                   PreviousLastValue = c(0,0,1), 
+                   PreviousLastTime = NULL, epochsize = NULL)
 }
 \arguments{
   \item{x}{
-    Data.frame with raw accelerometer data, and a timestamp column with millisecond resolution.
+    Data.frame with raw accelerometer data, and a timestamp column with
+    millisecond resolution.
   }
   \item{xyzCol}{
     Columnnames or numbers for the x, y and z column
@@ -35,6 +37,9 @@
   }
     \item{PreviousLastTime}{
     Automatically identified last timestamp in previous chunk of data read.
+  }
+  \item{epochsize}{
+    Numeric vector of length two, with short and long epoch sizes.
   }
 }
 \value{

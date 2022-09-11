@@ -122,9 +122,13 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (mon == "genea") {
         deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
       } else if (mon == "geneactive") {
-        deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
-        if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
-          deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number
+        if ("Device_Unique_Serial_Code" %in% hnames) {
+          deviceSerialNumber = hvalues[which(hnames == "Device_Unique_Serial_Code")] #serial number
+          if (I$dformn == "csv") { #if it was stored in csv-format then underscores were replaced by spaces (by company)
+            deviceSerialNumber = hvalues[which(hnames == "Device Unique Serial Code")] #serial number
+          }
+        } else {
+          deviceSerialNumber = hvalues[which(hnames == "serial_number")] #serial number
         }
       } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") {
         deviceSerialNumber = "not extracted"
@@ -153,6 +157,23 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         C$tempoffset = c(0, 0, 0)
       }
       if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
+      
+      QC = data.frame(filename = fnames[i],
+                      file.corrupt = M$filecorrupt,
+                      file.too.short = M$filetooshort,
+                      use.temperature = C$use.temp,
+                      scale.x = C$scale[1], scale.y = C$scale[2], scale.z = C$scale[3],
+                      offset.x = C$offset[1], offset.y = C$offset[2], offset.z = C$offset[3],
+                      temperature.offset.x = C$tempoffset[1],  temperature.offset.y = C$tempoffset[2],
+                      temperature.offset.z = C$tempoffset[3],
+                      cal.error.start = C$cal.error.start,
+                      cal.error.end = C$cal.error.end,
+                      n.10sec.windows = C$npoints,
+                      n.hours.considered = C$nhoursused, QCmessage = C$QCmessage, mean.temp = tmean,
+                      device.serial.number = deviceSerialNumber,
+                      NFilePagesSkipped = M$NFilePagesSkipped, stringsAsFactors = FALSE)
+      
+      
       QC = data.frame(filename = fnames[i],
                       file.corrupt = M$filecorrupt,
                       file.too.short = M$filetooshort,
