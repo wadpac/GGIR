@@ -377,12 +377,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         } else if (mon == 5) {
           metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
         }
-        
-        if ("remaining_epochs" %in% colnames(data)) {
-          # remove remaining_epochs from data object and keep it seperately
-          remaining_epochs = data[,"remaining_epochs"]
-          data = data[, -which(colnames(data) == "remaining_epochs")]
-        }
         rm(SWMT)
         if (exists("P")) rm(P); gc()
         if (i != 0 & exists("P")) rm(P); gc()
@@ -416,6 +410,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
+          if ("remaining_epochs" %in% colnames(data)) { #
+            # remove remaining_epochs from data object and keep it seperately
+            remaining_epochs = data[,"remaining_epochs"]
+            data = data[, -which(colnames(data) == "remaining_epochs")]
+          }
           ##==================================================
           # Feature calculation
           dur = nrow(data)	#duration of experiment in data points
@@ -695,14 +694,21 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           impute_at_epoch_level = function(gapsize, timeseries, gap_index, metnames) {
             # gap_index: where do gaps occur (epoch indexing)
             # gap_size: how long is gap (epoch numbers)
+            if (any(duplicated(gap_index))) { # then combine info from same index 
+              dup_index = which(duplicated(gap_index))
+              to_combine = which(gap_index == gap_index[dup_index])
+              gap_index = gap_index[-dup_index] # remove from gap index
+              gapsize[to_combine[1]] = sum(gapsize[to_combine]) # sum in gapsize
+              gapsize = gapsize[-dup_index]
+            }
             if ("nonwearscore" %in% metnames) {
-              timeseries[gap_index, which("nonwearscore" %in% metnames)]  = 3
+              timeseries[gap_index, which(metnames == "nonwearscore")]  = 3
             } else {
               # set all features to zero except time and angle feature
               timeseries[gap_index, grep(pattern = "time|angle", 
                                          x = metnames, invert = TRUE, value = FALSE)] = 0
               # set EN to 1 if it is available
-              if ("EN" %in% metnames) timeseries[gap_index, which("EN" %in% metnames)] = 1
+              if ("EN" %in% metnames) timeseries[gap_index, which(metnames == "EN")] = 1
             }
             N_time = nrow(timeseries)
             newindi = rep(1, N_time)
@@ -715,9 +721,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (length(gaps_to_fill) > 0) {
             nr_before = c(nrow(metalong), nrow(metashort))
             # metalong
-            metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)),
+            metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)) + 1, # plus 1 needed to count for current epoch
                                              timeseries = metalong,
-                                             gap_index = round(gaps_to_fill / (ws2 * sfold)) + count2,
+                                             gap_index = round(gaps_to_fill / (ws2 * sfold)) + count2 - 1, # minus 1 needed to account the diff index between short and long epoch
                                              metnames = metricnames_long)
             
             # metashort
@@ -728,6 +734,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])
             count = count + (nr_after[2] - nr_before[2])
+            # make sure count2 and count are compatible
+            if ((count2 - 1) * (ws2 / ws3) > (count - 1)) count2 = ((count - 1) * (ws3 / ws2) + 1)
           }
         }
         col_mli = col_mli + 1
