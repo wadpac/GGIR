@@ -4,7 +4,9 @@
 \section{Changes in version 2.7-7 (GitHub-only-release date:0??-??-2022)}{
   \itemize{
     \item Part 1: Long timegaps in ActiGraph data or ad-hoc .csv data as a result of idle sleep mode are now dealt with at metric level rather than raw data level.
-    }
+    \item Part 1: Add extra arguments to modify zero-crossing count calculation.
+    \item Part 3: Adding ColeKripke sleep detection algorithm.
+  }
 }
 \section{Changes in version 2.7-6 (GitHub-only-release date:02-09-2022)}{
   \itemize{
@@ -38,8 +40,6 @@
 }
 \section{Changes in version 2.7-3 (GitHub-only-release date:26-07-2022)}{
 \itemize{
-    \item Part 1: Add extra arguments to modify zero-crossing count calculation.
-    \item Part 3: Adding ColeKripke sleep detection algorithm.
     \item Part1: Added option to expand the last day of the recording to
       trigger analyses for that day, see argument expand_tail_max_hours in params_general.
     \item Part 1: Add extraction of ID and serial number from Movisens data
