@@ -90,6 +90,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
           # and keep track of how many epochs to impute
           x$remaining_epochs = 1
           x$next_epoch_delay = 0
+          x$first_longepoch_delay = 0 # to always impute data before first long epoch
           x$imputation = 0; imp = 0 # keep track of the imputation to organize data later on
           for (i in gap90i) { 
             imp = imp + 1
@@ -107,6 +108,15 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
               x$gap[i] = x$gap[i] +  x$next_epoch_delay[i] # redefine gap to fill up the first epoch after the gap
               x$remaining_epochs[i] = x$remaining_epochs[i] - (x$next_epoch_delay[i] / (sf * shortEpochSize)) 
             } 
+            # if the first round clock time is before the first long epoch size, then
+            # there would be a mismatch later on e.g., if 00:15:00 is in the middle of
+            # the first time gap. So, time until the first long epoch should be imputed now
+            firstLongEpoch = (sf * longEpochSize)
+            if (i < firstLongEpoch) { # impute data until first long epoch
+              x$first_longepoch_delay[i] = firstLongEpoch - i
+              x$gap[i] = x$gap[i] +  x$first_longepoch_delay[i] # redefine gap to fill up the first epoch after the gap
+              x$remaining_epochs[i] = x$remaining_epochs[i] - (x$first_longepoch_delay[i] / (sf * shortEpochSize)) 
+            }
           }
           x$gap = round(x$gap) # to make sure that small decimals do not mess up the imputation in next line
           x$next_epoch_delay = round(x$next_epoch_delay)
