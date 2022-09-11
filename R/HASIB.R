@@ -139,23 +139,19 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       # which corresponds to non-overlapping 1 minute epochs of activity per minute.
       # The other algorithms proposed are less clearly described:
       # - How does aggration per epoch takes place, sum or average? Without knowing this it is hard
-      # to oversee whether it matters whether we use 2 or 5 seconds as input.
+      # to oversee whether it matters whether we use 2 or 5 seconds as input. 
       # - Are maximum 10 seconds converted back to the unit of counts per minute?
+      # For now we assume that the unit is counts per 10 seconds
       if (count_type == "zeroCrossingCount") {
         CountperWindow = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = aggwindow)
       } else {
         CountperWindow = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = aggwindow)
-        # CountperWindow = CountperWindow / 100 # this is what ActiLife claims to do, but generates unlikely output
       }
       # Convert unit to counts per minute if aggwindow is not 60
       if (aggwindow != 60) CountperWindow = CountperWindow * (60/aggwindow)
-      # Calculate back to Counts per 10 seconds as not clearly described in the original study
-      # but current impression is that this provides more plausible output
+      # Convert back to Counts per 10 seconds as impression is that this provides more plausible output
       CountperWindow = CountperWindow / 6 
-      # if (count_type != "zeroCrossingCount") {
-      #   CountperWindow = ifelse(test = CountperWindow > 300, yes = CountperWindow, no = 300)  # CountperWindow = CountperWindow / 100 # this is what ActiLife claims to do, but generates unlikely output
-      # }
-      # Prepare matrix to ease applying weighted 
+      # Prepare matrix to ease applying weights
       CountperWindow_matrix = create_rollfun_mat(CountperWindow, Ncol = 7)
       CountperWindow_matrix = CountperWindow_matrix[7:(nrow(CountperWindow_matrix) - 6),]
       # Apply weights
@@ -170,7 +166,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       if (length(PSsibs) > 0) {
         PSscores[PSsibs] = 1 #sleep
       }
-      
       # re sample to original resolution and ensure length matches length of time
       sib_classification[,cti] = reformat_output(x = PSscores, time, new_epochsize = epochsize,
                                                  current_epochsize = 60)
