@@ -218,6 +218,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   } else {
     useRDA = FALSE
   }
+  
+  
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part "end of loop mechanism"
@@ -347,10 +349,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                 S = cbind(S, 1)
                 colnames(S)[4] = "remaining_epochs"
               }
-            } else {
+            } else if ("remaining_epochs" %in% colnames(S) == TRUE) {
               if ((ncol(S) - 1) == ncol(data)) {
                 # this block does not have time gaps while the previous blog did
-                S = S[, 1:(ncol(S) - 1)]
+                data = cbind(data, 1)
+                colnames(data)[4] = "remaining_epochs"
               }
             }
           }
@@ -366,6 +369,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         use.temp = SWMT$use.temp
         wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
         params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
+        
+        if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
+        } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
+        } else if (mon == 5) {
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
+        }
         rm(SWMT)
         if (exists("P")) rm(P); gc()
         if (i != 0 & exists("P")) rm(P); gc()
@@ -378,6 +389,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       } else { # if useRDA == TRUE
         LD = nrow(data)
       }
+ 
       #store data that could not be used for this block, but will be added to next block
       if (LD >= (ws*sf)) {
         if (useRDA == FALSE) {
@@ -398,6 +410,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
+          if ("remaining_epochs" %in% colnames(data)) { #
+            # remove remaining_epochs from data object and keep it seperately
+            remaining_epochs = data[,"remaining_epochs"]
+            data = data[, -which(colnames(data) == "remaining_epochs")]
+          }
           ##==================================================
           # Feature calculation
           dur = nrow(data)	#duration of experiment in data points
@@ -533,8 +550,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       if (LD >= (ws*sf)) { #LD != 0
         #-----------------------------------------------------
         #extend metashort and metalong if it is expected to be too short
-        if ("remaining_epochs" %in% colnames(data)) {
-          totalgap = sum(data[which(data[,"remaining_epochs"] != 1),"remaining_epochs"])
+        if (exists("remaining_epochs")) {
+          totalgap = sum(remaining_epochs[which(remaining_epochs != 1)])
         } else {
           totalgap = 0
         }
@@ -568,7 +585,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
           metashort[count:(count - 1 + nrow(OutputExternalFunction)), col_msi:(col_msi + NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-        count = count + length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
+        
+        length_acc_metrics =  length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
         rm(accmetrics)
         # update blocksize depending on available memory
         BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
@@ -670,49 +688,59 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           col_mli = col_mli + 1
         }
         metalong[(count2):((count2 - 1) + nrow(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
-        if ("remaining_epochs" %in% colnames(data)) {
+        if (exists("remaining_epochs")) {
           # Impute long gaps at epoch levels, because imputing them at raw level would
           # be too memory hungry
-          impute_at_epoch_level = function(gapsize, timeseries, gap_index) {
-            if (gapsize > 0) {
-              N_time = nrow(timeseries)
-              if (gap_index <= N_time) {
-                newindi = c(1:gap_index, rep(gap_index, gapsize))
-                if ("nonwearscore" %in% colnames(timeseries)) {
-                  timeseries[gap_index, "nonwearscore"]  = 3
-                } else {
-                  # set all features to zero except time and angle feature
-                  timeseries[gap_index, grep(pattern = "time|angle", x = colnames(timeseries), invert = TRUE)] = 0
-                  # set EN to 1 if it is available
-                  if ("EN" %in% colnames(timeseries)) timeseries[,"EN"] = 1
-                }
-                if (gap_index < N_time) {
-                  newindi = c(newindi, (gap_index + 1):N_time)
-                }
-              } else if (gap_index > N_time) {
-                newindi = 1:N_time
-              }
-              
-              timeseries = timeseries[newindi,]
+          impute_at_epoch_level = function(gapsize, timeseries, gap_index, metnames) {
+            # gap_index: where do gaps occur (epoch indexing)
+            # gap_size: how long is gap (epoch numbers)
+            if (any(duplicated(gap_index))) { 
+              # When 2 gap_index are within the same epoch (either short or long)
+              # we would have a duplicated gap_index here, then combine information
+              dup_index = which(duplicated(gap_index))
+              to_combine = which(gap_index == gap_index[dup_index])
+              gap_index = gap_index[-dup_index] # remove from gap index
+              gapsize[to_combine[1]] = sum(gapsize[to_combine]) - 1 # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
+              gapsize = gapsize[-dup_index]
             }
+            if ("nonwearscore" %in% metnames) {
+              timeseries[gap_index, which(metnames == "nonwearscore")]  = 3
+            } else {
+              # set all features to zero except time and angle feature
+              timeseries[gap_index, grep(pattern = "time|angle", 
+                                         x = metnames, invert = TRUE, value = FALSE)] = 0
+              # set EN to 1 if it is available
+              if ("EN" %in% metnames) timeseries[gap_index, which(metnames == "EN")] = 1
+            }
+            N_time = nrow(timeseries)
+            newindi = rep(1, N_time)
+            newindi[gap_index] = as.numeric(gapsize)
+            newindi = rep(1:N_time, newindi)
+            timeseries = timeseries[newindi,]
             return(timeseries)
           }
-          gaps_to_fill = which(data[,"remaining_epochs"] != 1)
+          gaps_to_fill = which(remaining_epochs != 1)
           if (length(gaps_to_fill) > 0) {
-            for (gi in 1:length(gaps_to_fill)) {
-              # metalong
-              impute_at_epoch_level(gapsize = floor(data[gaps_to_fill[gi], "remaining_epochs"] * (ws3/ws2)),
-                                    timeseries = metalong,
-                                    gap_index = gaps_to_fill[gi] / (ws2 * sfold))
-              # metashort
-              impute_at_epoch_level(gapsize = floor(data[gaps_to_fill[gi], "remaining_epochs"]),
-                                    timeseries = metashort,
-                                    gap_index = gaps_to_fill[gi] / (ws3 * sfold))
-            }
+            nr_before = c(nrow(metalong), nrow(metashort))
+            # metalong
+            metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)) + 1, # plus 1 needed to count for current epoch
+                                             timeseries = metalong,
+                                             gap_index = round(gaps_to_fill / (ws2 * sfold)) + count2 - 1, # minus 1 needed to account the diff index between short and long epoch
+                                             metnames = metricnames_long)
+            
+            # metashort
+            metashort = impute_at_epoch_level(gapsize = remaining_epochs[gaps_to_fill], # gapsize in epochs
+                                              timeseries = metashort,
+                                              gap_index = round(gaps_to_fill / (ws3 * sfold)) + count,
+                                              metnames = c("timestamp", metnames)) # epoch level index of gap
+            nr_after = c(nrow(metalong), nrow(metashort))
+            count2 = count2 + (nr_after[1] - nr_before[1])
+            count = count + (nr_after[2] - nr_before[2])
           }
         }
         col_mli = col_mli + 1
         count2 = count2 + nmin
+        count = count + length_acc_metrics
         if (exists("data")) rm(data)
         if (exists("light")) rm(light)
         if (exists("temperature")) rm(temperature)
@@ -777,13 +805,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
-      metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-    } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
-      metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-    } else if (mon == 5) {
-      metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
-    }
+   
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {
