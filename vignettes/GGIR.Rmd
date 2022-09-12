@@ -90,9 +90,13 @@ If you need dedicated support with the use of GGIR or need someone to
 adapt GGIR to your needs then Vincent van Hees is available as
 [independent consultant](https://www.accelting.com/).
 
-**GGIR training**
-We offer frequent online GGIR training courses, both standard training on GGIR (3 x 3 hours) and private training to focus on your outstanding issues (3 x 2 hours). Check our dedicated training [website](https://www.accelting.com/ggir-training) with more details and the option to book your training   .
-Do you have questions about the training or the booking process? Do not hesitate to contact us via: training@accelting.com.
+**GGIR training** We offer frequent online GGIR training courses, both
+standard training on GGIR (3 x 3 hours) and private training to focus on
+your outstanding issues (3 x 2 hours). Check our dedicated training
+[website](https://www.accelting.com/ggir-training) with more details and
+the option to book your training . Do you have questions about the
+training or the booking process? Do not hesitate to contact us via:
+[training\@accelting.com](mailto:training@accelting.com){.email}.
 
 **Change log**
 
@@ -312,186 +316,6 @@ for that.
 -   `viewingwindow` and `visualreport` - to create a visual report, this
     only works when all five parts of GGIR have successfully run.
 
-### Input arguments overview
-
-The table below shows all GGIR input arguments, the GGIR part (1, 2, 3,
-4 and/or 5) they are used in, and the parameter object they belong too.
-As you will see a few parameters are not part of any parameter object.
-Their default values can be found in the [GGIR function documentation
-(pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
-
-| Argument (parameter)        | Used in GGIR part | Parameter object         |
-|-----------------------------|-------------------|--------------------------|
-| datadir                     | 1, 2, 4, 5        | not in parameter objects |
-| f0                          | 1, 2, 3, 4, 5     | not in parameter objects |
-| f1                          | 1, 2, 3, 4, 5     | not in parameter objects |
-| windowsizes                 | 1, 5              | params_general           |
-| desiredtz                   | 1, 2, 3, 4, 5     | params_general           |
-| overwrite                   | 1, 2, 3, 4, 5     | params_general           |
-| do.parallel                 | 1, 2, 3, 5        | params_general           |
-| maxNcores                   | 1, 2, 3, 5        | params_general           |
-| myfun                       | 1, 2, 3           | not in parameter objects |
-| outputdir                   | 1                 | not in parameter objects |
-| studyname                   | 1                 | not in parameter objects |
-| chunksize                   | 1                 | params_rawdata           |
-| do.enmo                     | 1                 | params_metrics           |
-| do.lfenmo                   | 1                 | params_metrics           |
-| do.en                       | 1                 | params_metrics           |
-| do.bfen                     | 1                 | params_metrics           |
-| do.hfen                     | 1                 | params_metrics           |
-| do.hfenplus                 | 1                 | params_metrics           |
-| do.mad                      | 1                 | params_metrics           |
-| do.anglex                   | 1                 | params_metrics           |
-| do.angley                   | 1                 | params_metrics           |
-| do.angle                    | 1                 | params_metrics           |
-| do.enmoa                    | 1                 | params_metrics           |
-| do.roll_med_acc_x           | 1                 | params_metrics           |
-| do.roll_med_acc_y           | 1                 | params_metrics           |
-| do.roll_med_acc_z           | 1                 | params_metrics           |
-| do.dev_roll_med_acc_x       | 1                 | params_metrics           |
-| do.dev_roll_med_acc_y       | 1                 | params_metrics           |
-| do.dev_roll_med_acc_z       | 1                 | params_metrics           |
-| do.lfen                     | 1                 | params_metrics           |
-| do.lfx                      | 1                 | params_metrics           |
-| do.lfy                      | 1                 | params_metrics           |
-| do.lfz                      | 1                 | params_metrics           |
-| do.hfx                      | 1                 | params_metrics           |
-| do.hfy                      | 1                 | params_metrics           |
-| do.hfz                      | 1                 | params_metrics           |
-| do.bfx                      | 1                 | params_metrics           |
-| do.bfy                      | 1                 | params_metrics           |
-| do.bfz                      | 1                 | params_metrics           |
-| do.zcx                      | 1                 | params_metrics           |
-| do.zcy                      | 1                 | params_metrics           |
-| do.zcz                      | 1                 | params_metrics           |
-| lb                          | 1                 | params_metrics           |
-| hb                          | 1                 | params_metrics           |
-| n                           | 1                 | params_metrics           |
-| do.cal                      | 1                 | params_rawdata           |
-| spherecrit                  | 1                 | params_rawdata           |
-| minloadcrit                 | 1                 | params_rawdata           |
-| printsummary                | 1                 | params_rawdata           |
-| print.filename              | 1                 | params_general           |
-| backup.cal.coef             | 1                 | params_rawdata           |
-| rmc.noise                   | 1                 | params_rawdata           |
-| rmc.dec                     | 1                 | params_rawdata           |
-| rmc.firstrow.acc            | 1                 | params_rawdata           |
-| rmc.firstrow.header         | 1                 | params_rawdata           |
-| rmc.col.acc                 | 1                 | params_rawdata           |
-| rmc.col.temp                | 1                 | params_rawdata           |
-| rmc.col.time                | 1                 | params_rawdata           |
-| rmc.unit.acc                | 1                 | params_rawdata           |
-| rmc.unit.temp               | 1                 | params_rawdata           |
-| rmc.origin                  | 1                 | params_rawdata           |
-| rmc.header.length           | 1                 | params_rawdata           |
-| mc.format.time              | 1                 | params_rawdata           |
-| rmc.bitrate                 | 1                 | params_rawdata           |
-| rmc.dynamic_range           | 1                 | params_rawdata           |
-| rmc.unsignedbit             | 1                 | params_rawdata           |
-| rmc.desiredtz               | 1                 | params_rawdata           |
-| rmc.sf                      | 1                 | params_rawdata           |
-| rmc.headername.sf           | 1                 | params_rawdata           |
-| rmc.headername.sn           | 1                 | params_rawdata           |
-| rmc.headername.recordingid  | 1                 | params_rawdata           |
-| rmc.header.structure        | 1                 | params_rawdata           |
-| rmc.check4timegaps          | 1                 | params_rawdata           |
-| rmc.col.wear                | 1                 | params_rawdata           |
-| rmc.doresample              | 1                 | params_rawdata           |
-| imputeTimegaps              | 1                 | params_rawdata           |
-| selectdaysfile              | 1, 2              | params_cleaning          |
-| dayborder                   | 1, 2, 5           | params_general           |
-| dynrange                    | 1                 | params_rawdata           |
-| configtz                    | 1                 | params_general           |
-| minimumFileSizeMB           | 1                 | params_rawdata           |
-| interpolationType           | 1                 | params_rawdata           |
-| expand_tail_max_hours       | 1                 | params_general           |
-| metadatadir                 | 2, 3, 4, 5        | not in parameter objects |
-| minimum_MM_length.part5     | 5                 | params_cleaning          |
-| strategy                    | 2, 5              | params_cleaning          |
-| hrs.del.start               | 2, 5              | params_cleaning          |
-| hrs.del.end                 | 2, 5              | params_cleaning          |
-| maxdur                      | 2, 5              | params_cleaning          |
-| max_calendar_days           | 2                 | params_cleaning          |
-| includedaycrit              | 2                 | params_cleaning          |
-| L5M5window                  | 2                 | params_247               |
-| M5L5res                     | 2, 5              | params_247               |
-| winhr                       | 2, 5              | params_247               |
-| qwindow                     | 2                 | params_247               |
-| qlevels                     | 2                 | params_247               |
-| ilevels                     | 2                 | params_247               |
-| mvpathreshold               | 2                 | params_phyact            |
-| boutcriter                  | 2                 | params_phyact            |
-| ndayswindow                 | 2                 | params_cleaning          |
-| idloc                       | 2, 4              | params_general           |
-| do.imp                      | 2                 | params_cleaning          |
-| storefolderstructure        | 2, 4, 5           | params_output            |
-| epochvalues2csv             | 2                 | params_output            |
-| do.part2.pdf                | 2                 | params_output            |
-| mvpadur                     | 2                 | params_phyact            |
-| window.summary.size         | 2                 | params_247               |
-| bout.metric                 | 2, 5              | params_phyact            |
-| closedbout                  | 2                 | params_phyact            |
-| IVIS_windowsize_minutes     | 2                 | params_247               |
-| IVIS_epochsize_seconds      | 2                 | params_247               |
-| IVIS.activity.metric        | 2                 | params_247               |
-| iglevels                    | 2, 5              | params_247               |
-| TimeSegments2ZeroFile       | 2                 | params_cleaning          |
-| qM5L5                       | 2                 | params_247               |
-| MX.ig.min.dur               | 2                 | params_247               |
-| qwindow_dateformat          | 2                 | params_247               |
-| anglethreshold              | 3                 | params_sleep             |
-| timethreshold               | 3                 | params_sleep             |
-| acc.metric                  | 3, 5              | params_general           |
-| ignorenonwear               | 3                 | params_sleep             |
-| constrain2range             | 3                 | params_sleep             |
-| do.part3.pdf                | 3                 | params_output            |
-| sensor.location             | 3, 4              | params_general           |
-| HASPT.algo                  | 3                 | params_sleep             |
-| HASIB.algo                  | 3                 | params_sleep             |
-| Sadeh_axis                  | 3                 | params_sleep             |
-| longitudinal_axis           | 3                 | params_sleep             |
-| HASPT.ignore.invalid        | 3                 | params_sleep             |
-| loglocation                 | 4, 5              | params_sleep             |
-| colid                       | 4                 | params_sleep             |
-| coln1                       | 4                 | params_sleep             |
-| nnights                     | 4                 | params_sleep             |
-| sleeplogidnum               | 4, 5              | params_sleep             |
-| do.visual                   | 4                 | params_output            |
-| outliers.only               | 4                 | params_output            |
-| excludefirstlast            | 4                 | params_cleaning          |
-| criterror                   | 4                 | params_output            |
-| includenightcrit            | 4                 | params_cleaning          |
-| relyonguider                | 4                 | params_sleep             |
-| relyonsleeplog              | 4                 | not in parameter objects |
-| def.noc.sleep               | 4                 | params_sleep             |
-| data_cleaning_file          | 4, 5              | params_cleaning          |
-| excludefirst.part4          | 4                 | params_cleaning          |
-| excludelast.part4           | 4                 | params_cleaning          |
-| sleeplogsep                 | 4                 | params_cleaning          |
-| sleepwindowType             | 4                 | params_cleaning          |
-| excludefirstlast.part5      | 5                 | params_cleaning          |
-| boutcriter.mvpa             | 5                 | params_phyact            |
-| boutcriter.in               | 5                 | params_phyact            |
-| boutcriter.lig              | 5                 | params_phyact            |
-| threshold.lig               | 5                 | params_phyact            |
-| threshold.mod               | 5                 | params_phyact            |
-| threshold.vig               | 5                 | params_phyact            |
-| timewindow                  | 5                 | params_output            |
-| boutdur.mvpa                | 5                 | params_phyact            |
-| boutdur.in                  | 5                 | params_phyact            |
-| boutdur.lig                 | 5                 | params_phyact            |
-| save_ms5rawlevels           | 5                 | params_output            |
-| part5_agg2_60seconds        | 5                 | params_general           |
-| save_ms5raw_format          | 5                 | params_output            |
-| save_ms5raw_without_invalid | 5                 | params_output            |
-| includedaycrit.part5        | 5                 | params_cleaning          |
-| frag.metrics                | 5                 | params_phyact            |
-| LUXthresholds               | 5                 | params_247               |
-| LUX_cal_constant            | 5                 | params_247               |
-| LUX_cal_exponent            | 5                 | params_247               |
-| LUX_day_segments            | 5                 | params_247               |
-| do.sibreport                | 5                 | params_output            |
-
 ### Key arguments related to sleep analysis {#key-arguments-related-to-sleep-analysis}
 
 For an explanation on how sleep is detected and the specific role of the
@@ -528,10 +352,10 @@ GGIR facilitates two possible sleeplog file structures:
 
 Example of a basic sleeplog:
 
-| ID  | onset_N1  | wakeup_N1 | onset_N2  | wakeup_N2 | onset_N3  | wakeup_N3 | onset_N4  | ... |
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-| 123 | 22:0 0:00 | 09:0 0:00 | 21:0 0:00 | 08:0 0:00 | 23:4 5:00 | 06:3 0:00 | 00:0 0:00 | ... |
-| 345 | 21:5 5:00 | 08:4 7:00 |           |           | 23:4 5:00 | 06:3 0:00 | 00:0 0:00 | ... |
+| ID  | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_N4 | ... |
+|-----|----------|-----------|----------|-----------|----------|-----------|----------|-----|
+| 123 | 22:00:00 | 09:00:00  | 21:00:00 | 08:00:00  | 23:45:00 | 06:30:00  | 00:00:00 | ... |
+| 345 | 21:55:00 | 08:47:00  |          |           | 23:45:00 | 06:30:00  | 00:00:00 | ... |
 
 -   One column for participant id, this does not have to be the first
     column. Specify which column it is with argument `colid`.
@@ -632,9 +456,10 @@ For an explanation on how time use analysis is performed see section
 
 ### Published cut-points and how to use them
 
-Please, visit the [cut-points vignette](https://cran.r-project.org/package=GGIR/news.html)
-for more details on the cut-points available, how to use them, and some additional
-refletions on the use of cut-points in GGIR.
+Please, visit the [cut-points
+vignette](https://cran.r-project.org/package=GGIR/news.html) for more
+details on the cut-points available, how to use them, and some
+additional refletions on the use of cut-points in GGIR.
 
 ### Example call
 
@@ -774,16 +599,6 @@ work. The values of `f0` and `f1` are passed on from the bash script.
 Once this is all setup you will need to call `bash submit.sh` from the
 command line.
 
-**Important Note:**
-
-Please make sure that you process one GGIR part at the same time on a
-cluster, because each part assumes that preceding parts have been ran.
-You can make sure of this by always specifying argument `mode` to a
-single part of GGIR. Once the analysis stops update argument `mode` to
-the next part until all parts are done. The speed of the parallel
-processing is obviously dependent on the capacity of your computing
-cluster and the size of your dataset.
-
 # Inspecting the results
 
 GGIR generates the following types of output. - csv-spreadsheets with
@@ -814,7 +629,7 @@ Part 2 generates the following output:
 ### Person level summary
 
 | (Part of) variable name                                 | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|------------------------|-----------------------------------------------|
+|-------------------------|-----------------------------------------------|
 | ID                                                      | Participant id                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | device_sn                                               | Device serial number                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | bodylocation                                            | Body location extracted from file header                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -902,7 +717,7 @@ Part 4 generates the following output:
 The csv. files contain the variables as shown below.
 
 | (Part of) variable name                | Description                                                                                                                                                                                                                                                                                                                                                                                                |
-|------------------------|-----------------------------------------------|
+|-------------------------|-----------------------------------------------|
 | ID                                     | Participant ID extracted from file                                                                                                                                                                                                                                                                                                                                                                         |
 | night                                  | Number of the night in the recording                                                                                                                                                                                                                                                                                                                                                                       |
 | sleeponset                             | Detected onset of sleep expressed as hours since the midnight of the previous night.                                                                                                                                                                                                                                                                                                                       |
@@ -951,7 +766,7 @@ data. If either of these applies set argument `sleepwindowType` to
 "TimeInBed".
 
 | (Part of) variable name   | Description                                                                |
-|------------------------|-----------------------------------------------|
+|-------------------------|-----------------------------------------------|
 | guide r_guider_inbedStart | Time of getting in bed                                                     |
 | gui der_guider_inbedEnd   | Time of getting out of bed                                                 |
 | g uider_inbedDuration     | Time in Bed: guider_inbedEnd - guider_inbedStart                           |
@@ -970,7 +785,7 @@ extra clarification on a few of the variable names for which the meaning
 may not be obvious:
 
 | (Part of) variable name       | Description                                                                                                                                                                                                                                                               |
-|------------------------|-----------------------------------------------|
+|-------------------------|-----------------------------------------------|
 | `_mn`                         | mean across days                                                                                                                                                                                                                                                          |
 | `_sd`                         | standard deviation across days                                                                                                                                                                                                                                            |
 | `_AD`                         | All days                                                                                                                                                                                                                                                                  |
@@ -1623,7 +1438,7 @@ correspond to the date of analysis.
 **The time series output file comes with the following columns:**
 
 | Column name          | Description                                                                                                                                                                                                                                                                                                                                |
-|------------------------|------------------------------------------------|
+|------------------------|-----------------------------------------------|
 | SleepPeriodTime      | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).                                                                                                                                                                                           |
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.                                                                                                                                                                                                                                                                             |
 | guider               | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.                                                                                                                                                                                   |
