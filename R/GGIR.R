@@ -120,12 +120,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
 
   #-----------------------------------------------------------
   # Print GGIR header to console
-  GGIRversion = ""
-  SI = sessionInfo()
-  GGIRversion = SI$otherPkgs$GGIR$Version
+  GGIRversion = as.character(utils::packageVersion("GGIR"))
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
-  # GGIRversion = paste0(" ",GGIRversion)
-  rm(SI)
+  if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
