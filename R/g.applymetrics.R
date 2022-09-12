@@ -83,11 +83,41 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         data_processed[, i] = signal::filter(coef, data[,i])
       }
     } else if (filtertype == "rollmedian") {
+      # rollmed = function(x, sf) {
+      #   winsi = round(sf * 5)
+      #   if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
+      #   xm = zoo::rollmedian(x, k = winsi, na.pad = TRUE)
+      #   xm[which(is.na(xm[1:1000]) == TRUE)] = xm[which(is.na(xm[1:1000]) == FALSE)[1]]
+      #   return(xm)
+      # }
       rollmed = function(x, sf) {
-        winsi = round(sf * 5)
+        stepsize = max(c(floor(sf / 10), 1))
+        newsf = ifelse(test = stepsize > 1, yes = 10, no = sf)
+        winsi = round(newsf * 5)
         if (round(winsi/2) == (winsi/2)) winsi = winsi + 1
-        xm = zoo::rollmedian(x, k = winsi, na.pad = TRUE)
-        xm[which(is.na(xm[1:1000]) == TRUE)] = xm[which(is.na(xm[1:1000]) == FALSE)[1]]
+        if ((winsi %% 2) == 0) winsi = winsi + 1
+        xm = zoo::rollmedian(x[seq(1, length(x), by = stepsize)],
+                             k = winsi, fill = c(0, 0, 0), na.pad = FALSE)
+        # replace zeros:
+        S2check = max(c(sf * 60, 1000))
+        # head
+        xm[which(xm[1:S2check] == 0)] = xm[which(xm[1:S2check] != 0)[1]]
+        # tail
+        LN = length(xm)
+        xm_tail = xm[(LN - S2check):LN]
+        lastvalue = xm_tail[which(xm_tail != 0)][1]
+        if (length(lastvalue) == 0) lastvalue = xm[which(xm != 0)][1]
+        xm_tail[which(xm_tail == 0)] = lastvalue
+        xm[(LN - S2check):LN] = xm_tail
+        # repeat values to get back to original sample rate
+        xm = rep(xm, each = stepsize)
+        LN = length(xm)
+        LX = length(x)
+        if (LN > LX) {
+          xm = x[1:LX]
+        } else if (LN < LX) {
+          xm = c(xm, rep(xm[LN], LX - LN))
+        }
         return(xm)
       }
       data_processed = data

@@ -41,12 +41,15 @@ When you use GGIR in publications do not forget to cite it properly as that make
 
 The development version of GGIR can be found on [github](https://github.com/wadpac/GGIR), which is also where you will find [guidance](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md) on how to contribute.
 
-
 **How can I get service and support?**
 
 GGIR is open source software and does not come with service or support guarantees. However, as user-community you can help each other via the [GGIR google group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the [GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please use these public platform rather than private e-mails such that other users can learn from the conversations.
 
 If you need dedicated support with the use of GGIR or need someone to adapt GGIR to your needs then Vincent van Hees is available as [independent consultant](https://www.accelting.com/).
+
+**GGIR training**
+We offer frequent online GGIR training courses, both standard training on GGIR (3 x 3 hours) and private training to focus on your outstanding issues (3 x 2 hours). Check our dedicated training [website](https://www.accelting.com/ggir-training) with more details and the option to book your training   . 
+Do you have questions about the training or the booking process? Do not hesitate to contact us via: training@accelting.com.
 
 **Change log**
 
