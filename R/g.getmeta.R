@@ -694,11 +694,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           impute_at_epoch_level = function(gapsize, timeseries, gap_index, metnames) {
             # gap_index: where do gaps occur (epoch indexing)
             # gap_size: how long is gap (epoch numbers)
-            if (any(duplicated(gap_index))) { # then combine info from same index 
+            if (any(duplicated(gap_index))) { 
+              # When 2 gap_index are within the same epoch (either short or long)
+              # we would have a duplicated gap_index here, then combine information
               dup_index = which(duplicated(gap_index))
               to_combine = which(gap_index == gap_index[dup_index])
               gap_index = gap_index[-dup_index] # remove from gap index
-              gapsize[to_combine[1]] = sum(gapsize[to_combine]) # sum in gapsize
+              gapsize[to_combine[1]] = sum(gapsize[to_combine]) - 1 # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
               gapsize = gapsize[-dup_index]
             }
             if ("nonwearscore" %in% metnames) {
@@ -734,8 +736,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])
             count = count + (nr_after[2] - nr_before[2])
-            # make sure count2 and count are compatible
-            if ((count2 - 1) * (ws2 / ws3) > (count - 1)) count2 = ((count - 1) * (ws3 / ws2) + 1)
           }
         }
         col_mli = col_mli + 1
