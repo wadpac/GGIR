@@ -11,8 +11,8 @@ vignette: >
   %\VignetteIndexEntry{Accelerometer data processing with GGIR}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -89,6 +89,10 @@ users can learn from the conversations.
 If you need dedicated support with the use of GGIR or need someone to
 adapt GGIR to your needs then Vincent van Hees is available as
 [independent consultant](https://www.accelting.com/).
+
+**GGIR training**
+We offer frequent online GGIR training courses, both standard training on GGIR (3 x 3 hours) and private training to focus on your outstanding issues (3 x 2 hours). Check our dedicated training [website](https://www.accelting.com/ggir-training) with more details and the option to book your training   .
+Do you have questions about the training or the booking process? Do not hesitate to contact us via: training@accelting.com.
 
 **Change log**
 
