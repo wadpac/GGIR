@@ -142,6 +142,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (mon == 1) {
         data = P$rawxyz / 1000 #convert g output to mg for genea
+        data = as.matrix(data, rownames.force = FALSE)
       } else if (mon == 4 & dformat == 3) {
         data = P$rawxyz #change scalling for Axivity?
       } else if (mon == 2 & dformat == 1) {

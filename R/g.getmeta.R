@@ -127,21 +127,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   LD = 2 #dummy variable used to identify end of file and to make the process stop
   bsc_qc = data.frame(time = c(), size = c(), stringsAsFactors = FALSE)
   # inspect file
-  if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-    useRDA = TRUE
-  } else {
-    useRDA = FALSE
-  }
   options(warn = -1)
-  if (useRDA == FALSE) {
-    INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                         params_rawdata = params_rawdata,
-                         configtz = params_general[["configtz"]])
-  } else {
-    load(datafile)
-    INFI = I
-    sf = INFI$sf #= sf #new line
-  }
+  INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
+                       params_rawdata = params_rawdata,
+                       configtz = params_general[["configtz"]])
   options(warn = 0)
   mon = INFI$monc
   dformat = INFI$dformc
@@ -176,9 +165,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
   header = INFI$header
   options(warn = -1)
-  if (useRDA == FALSE) decn = g.dotorcomma(datafile, dformat, mon = mon,
-                                           desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
-                                           loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
+  decn = g.dotorcomma(datafile, dformat, mon = mon,
+                      desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
+                      loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
   options(warn = 0)
   ID = hvars$ID
   
@@ -212,14 +201,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   } else if (temp.available == TRUE & mon == 5) {
     metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
   }
-  #------------------------------------------
-  if (length(unlist(strsplit(datafile, "[.]RD"))) > 1) {
-    useRDA = TRUE
-  } else {
-    useRDA = FALSE
-  }
-  
-  
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part "end of loop mechanism"
@@ -232,293 +213,275 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       cat(paste0(" ", i))
     }
     options(warn = -1) #turn off warnings (code complains about unequal rowlengths
-    if (useRDA == FALSE) {
-      if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
-      if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-      accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                              filequality = filequality, decn = decn,
-                              ws = ws, PreviousEndPage = PreviousEndPage,
-                              inspectfileobject = INFI,
-                              PreviousLastValue = PreviousLastValue,
-                              PreviousLastTime = PreviousLastTime,
-                              params_rawdata = params_rawdata, params_general = params_general)
-      if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv 
-        P = accread$P[1:2]
-        PreviousLastValue = accread$P$PreviousLastValue
-        PreviousLastTime = accread$P$PreviousLastTime
-      } else {
-        P = accread$P
-      }
-      filequality = accread$filequality
-      filetooshort = filequality$filetooshort
-      filecorrupt = filequality$filecorrupt
-      filedoesnotholdday = filequality$filedoesnotholdday
-      NFilePagesSkipped = filequality$NFilePagesSkipped
-      switchoffLD = accread$switchoffLD
-      PreviousEndPage = accread$endpage
-      startpage = accread$startpage
-      options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
-      rm(accread); gc()
-      options(warn = 0) # to ignore warnings relating to failed mmap.load attempt
-      if (mon == 5) { # if movisens, then read temperature
-        PreviousStartPage = startpage
-        temperature = g.readtemp_movisens(datafile, desiredtz = params_general[["desiredtz"]], PreviousStartPage,
-                                          PreviousEndPage, interpolationType = params_rawdata[["interpolationType"]])
-        P = cbind(P, temperature[1:nrow(P)])
-        colnames(P)[4] = "temp"
-      }
+    
+    if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
+    if (!exists("PreviousLastTime")) PreviousLastTime = NULL
+    accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
+                            filequality = filequality, decn = decn,
+                            ws = ws, PreviousEndPage = PreviousEndPage,
+                            inspectfileobject = INFI,
+                            PreviousLastValue = PreviousLastValue,
+                            PreviousLastTime = PreviousLastTime,
+                            params_rawdata = params_rawdata, params_general = params_general)
+    if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv 
+      P = accread$P[1:2]
+      PreviousLastValue = accread$P$PreviousLastValue
+      PreviousLastTime = accread$P$PreviousLastTime
     } else {
-      filetooshort = FALSE
-      filecorrupt = FALSE
-      filedoesnotholdday = FALSE
-      NFilePagesSkipped = 0
+      P = accread$P
+    }
+    filequality = accread$filequality
+    filetooshort = filequality$filetooshort
+    filecorrupt = filequality$filecorrupt
+    filedoesnotholdday = filequality$filedoesnotholdday
+    NFilePagesSkipped = filequality$NFilePagesSkipped
+    switchoffLD = accread$switchoffLD
+    PreviousEndPage = accread$endpage
+    startpage = accread$startpage
+    options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
+    rm(accread); gc()
+    options(warn = 0) # to ignore warnings relating to failed mmap.load attempt
+    if (mon == 5) { # if movisens, then read temperature
+      PreviousStartPage = startpage
+      temperature = g.readtemp_movisens(datafile, desiredtz = params_general[["desiredtz"]], PreviousStartPage,
+                                        PreviousEndPage, interpolationType = params_rawdata[["interpolationType"]])
+      P = cbind(P, temperature[1:nrow(P)])
+      colnames(P)[4] = "temp"
     }
     options(warn = 0) #turn on warnings
     #============
     #process data as read from binary file
-    if (useRDA == TRUE) {
-      if (i == 1) {
-        P = 1
-      } else {
-        P = c()
-      }
-    }
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-      if (useRDA == FALSE) {
-        if (mon == 1 & dformat == 1) { # GENEA bin
-          data = P$rawxyz / 1000 #convert mg output to g for genea
-        } else if (mon == 2  & dformat == 1) { # GENEActiv bin
-          data = P$data.out
-        } else if (dformat == 2) { #csv Actigraph
-          if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-            P = as.data.frame(P)
-            if (ncol(P) == 3) {
-              timeCol = c()
-              xyzCol = names(P)[1:3]
-            } else if (ncol(P) == 4) {
-              timeCol = names(P)[1]
-              xyzCol = names(P)[2:4]
-            }
-            if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
-            if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-            P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
-                                 PreviousLastValue = PreviousLastValue,
-                                 PreviousLastTime = PreviousLastTime, 
-                                 epochsize = c(ws3, ws2))
-            PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
-            if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
+      
+      if (mon == 1 & dformat == 1) { # GENEA bin
+        data = P$rawxyz / 1000 #convert mg output to g for genea
+      } else if (mon == 2  & dformat == 1) { # GENEActiv bin
+        data = P$data.out
+      } else if (dformat == 2) { #csv Actigraph
+        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
+          P = as.data.frame(P)
+          if (ncol(P) == 3) {
+            timeCol = c()
+            xyzCol = names(P)[1:3]
+          } else if (ncol(P) == 4) {
+            timeCol = names(P)[1]
+            xyzCol = names(P)[2:4]
           }
-          data = as.matrix(P)
-        } else if (dformat == 3) { #wav
-          data = P$rawxyz
-        } else if (dformat == 4) { #cwa
-          if (P$header$hardwareType == "AX6") { # cwa AX6
-            # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
-            data = P$data[,-c(2:4)]
-            P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
-            gyro_available = FALSE 
-            # If we ever want to use gyroscope data then
-            # comment out this if statement and set gyro_available = TRUE
-          } else {
-            data = P$data
-            P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
-          }
-        } else if (dformat == 5) { # ad-hoc csv
+          if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
+          if (!exists("PreviousLastTime")) PreviousLastTime = NULL
+          P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
+                               PreviousLastValue = PreviousLastValue,
+                               PreviousLastTime = PreviousLastTime, 
+                               epochsize = c(ws3, ws2))
+          PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
+          if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
+        }
+        data = P
+      } else if (dformat == 3) { #wav
+        data = P$rawxyz
+      } else if (dformat == 4) { #cwa
+        if (P$header$hardwareType == "AX6") { # cwa AX6
+          # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
+          data = P$data[,-c(2:4)]
+          P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
+          gyro_available = FALSE 
+          # If we ever want to use gyroscope data then
+          # comment out this if statement and set gyro_available = TRUE
+        } else {
           data = P$data
-        } else if (mon == 5) { #movisense
-          data = as.matrix(P)
-        } else if (dformat == 6) { #gt3x
-          if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-            if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
-            if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-            P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
-                                 PreviousLastValue = PreviousLastValue,
-                                 PreviousLastTime = PreviousLastTime, 
-                                 epochsize = c(ws3, ws2))
-            PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
-            PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
-          }
-          data = as.matrix(P[,2:ncol(P)])
+          P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
         }
-        #add left over data from last time
-        if (nrow(S) > 0) {
-          if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-            if ("remaining_epochs" %in% colnames(data)) {
-              if (ncol(S) == (ncol(data) - 1)) {
-                # this block has time gaps while the previous block did not
-                S = cbind(S, 1)
-                colnames(S)[4] = "remaining_epochs"
-              }
-            } else if ("remaining_epochs" %in% colnames(S) == TRUE) {
-              if ((ncol(S) - 1) == ncol(data)) {
-                # this block does not have time gaps while the previous blog did
-                data = cbind(data, 1)
-                colnames(data)[4] = "remaining_epochs"
-              }
+      } else if (dformat == 5) { # ad-hoc csv
+        data = P$data
+      } else if (mon == 5) { #movisense
+        data = P
+      } else if (dformat == 6) { #gt3x
+        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
+          if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
+          if (!exists("PreviousLastTime")) PreviousLastTime = NULL
+          P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
+                               PreviousLastValue = PreviousLastValue,
+                               PreviousLastTime = PreviousLastTime, 
+                               epochsize = c(ws3, ws2))
+          PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
+          PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
+        }
+        data = P[,2:ncol(P)]
+      }
+      data = as.matrix(data, rownames.force = FALSE)
+      #add left over data from last time
+      if (nrow(S) > 0) {
+        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
+          if ("remaining_epochs" %in% colnames(data)) {
+            if (ncol(S) == (ncol(data) - 1)) {
+              # this block has time gaps while the previous block did not
+              S = cbind(S, 1)
+              colnames(S)[4] = "remaining_epochs"
+            }
+          } else if ("remaining_epochs" %in% colnames(S) == TRUE) {
+            if ((ncol(S) - 1) == ncol(data)) {
+              # this block does not have time gaps while the previous blog did
+              data = cbind(data, 1)
+              colnames(data)[4] = "remaining_epochs"
             }
           }
-          data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
         }
-        SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
-                                                        data, 
-                                                        P, header, desiredtz = params_general[["desiredtz"]],
-                                                        sf, i, datafile,  ws2,
-                                                        starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
-        starttime = SWMT$starttime
-        meantemp = SWMT$meantemp
-        use.temp = SWMT$use.temp
-        wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
-        params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
-        
-        if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
-          metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-        } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
-          metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-        } else if (mon == 5) {
-          metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
-        }
-        rm(SWMT)
-        if (exists("P")) rm(P); gc()
-        if (i != 0 & exists("P")) rm(P); gc()
-        LD = nrow(data)
-        if (LD < (ws*sf) & i == 1) {
-          warning('\nWarning data too short for doing non-wear detection 3\n')
-          switchoffLD = 1
-          LD = 0 #ignore rest of the data and store what has been loaded so far.
-        }
-      } else { # if useRDA == TRUE
-        LD = nrow(data)
+        data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
       }
- 
+      SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
+                                                      data, 
+                                                      P, header, desiredtz = params_general[["desiredtz"]],
+                                                      sf, i, datafile,  ws2,
+                                                      starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
+      starttime = SWMT$starttime
+      meantemp = SWMT$meantemp
+      use.temp = SWMT$use.temp
+      wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
+      params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
+      
+      if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
+      } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
+      } else if (mon == 5) {
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
+      }
+      rm(SWMT)
+      if (exists("P")) rm(P); gc()
+      if (i != 0 & exists("P")) rm(P); gc()
+      LD = nrow(data)
+      if (LD < (ws*sf) & i == 1) {
+        warning('\nWarning data too short for doing non-wear detection 3\n')
+        switchoffLD = 1
+        LD = 0 #ignore rest of the data and store what has been loaded so far.
+      }
+      
+      
       #store data that could not be used for this block, but will be added to next block
       if (LD >= (ws*sf)) {
-        if (useRDA == FALSE) {
-          use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
-          if (length(myfun) != 0) { # if using external function, then check that use is a multitude of the expected windowlength
-            Nminlength = use / myfun$minlength
-            if (Nminlength != floor(Nminlength)) { # it is not a multitude
-              use = floor(Nminlength) * myfun$minlength # correct use accordingly
-            }
+        
+        use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
+        if (length(myfun) != 0) { # if using external function, then check that use is a multitude of the expected windowlength
+          Nminlength = use / myfun$minlength
+          if (Nminlength != floor(Nminlength)) { # it is not a multitude
+            use = floor(Nminlength) * myfun$minlength # correct use accordingly
           }
-          if ((LD - use) > 1) {
-            S = as.matrix(data[(use + 1):LD,]) #store left over (included as.matrix)
-            if (ncol(S) == 1) {
-              S = t(S)
-            }
-          } else { #use all data
-            S = matrix(0, 0, ncol(data))
-          }
-          data = as.matrix(data[1:use,])
-          LD = nrow(data) #redefine LD because there is less data
-          if ("remaining_epochs" %in% colnames(data)) { #
-            # remove remaining_epochs from data object and keep it seperately
-            remaining_epochs = data[,"remaining_epochs"]
-            data = data[, -which(colnames(data) == "remaining_epochs")]
-          }
-          ##==================================================
-          # Feature calculation
-          dur = nrow(data)	#duration of experiment in data points
-          durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
-          data = as.matrix(data)
-          #--------------------------------------------
-          if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
-            if (mon == 2) {
-              if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-                temperaturecolumn = 7; lightcolumn = 5
-              } else {
-                temperaturecolumn = 6; lightcolumn = 5
-              }
-            } else if (mon == 4) {
-              temperaturecolumn = 5; lightcolumn = 7
-              if (gyro_available == TRUE) {
-                temperaturecolumn = temperaturecolumn + 3
-                lightcolumn = lightcolumn + 3
-              }
-            } else if (mon == 5) {
-              temperaturecolumn = 4
-            } else if (mon == 0) {
-              temperaturecolumn = params_rawdata[["rmc.col.temp"]]
-            }
-            if (mon != 0 & mon != 5) {
-              light = as.numeric(data[, lightcolumn])
-            }
-            if (mon == 0 & length(params_rawdata[["rmc.col.wear"]]) > 0) {
-              wearcol = as.character(data[, which(colnames(data) == "wear")])
-              suppressWarnings(storage.mode(wearcol) <- "logical")
-            }
-            temperature = as.numeric(data[, temperaturecolumn])
-          }
-          # Initialization of variables
-          if (mon == 1) {
-            data = data[, 1:3]
-            data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
-          } else if (mon == 4 & dformat == 3) {
-            data = data[, 1:3]
-            data[, 1:3] = scale(data[, 1:3],center = -offset, scale = 1/scale) #rescale data
-          } else if (mon == 4 & (dformat == 4 |  dformat == 2)) {
-            extraction_succeeded = FALSE
-            if (gyro_available == TRUE) {
-              data[,5:7] = scale(data[,5:7],center = -offset, scale = 1/scale) #rescale data
-              extraction_succeeded = TRUE
-              data = data[, 2:7]
-            }
-            if (extraction_succeeded == FALSE) {
-              data[, 2:4] = scale(data[, 2:4],center = -offset, scale = 1/scale) #rescale data
-              data = data[,2:4]
-            }
-          } else if (mon == 2 & dformat == 1) {
-            yy = as.matrix(cbind(as.numeric(data[,temperaturecolumn]),
-                                 as.numeric(data[,temperaturecolumn]),
-                                 as.numeric(data[,temperaturecolumn])))
-            data = data[,2:4]
-            data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
-              scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
-            rm(yy); gc()
-          } else if (mon == 5) {
-            yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
-            data = data[,1:3]
-            data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
-              scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
-            rm(yy); gc()
-          } else if ((dformat == 2 | dformat == 5) & (mon != 4)) {
-            if (mon == 2 | (mon == 0 & use.temp == TRUE)) {
-              tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))
-              yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
-              meantemp = mean(as.numeric(data[,temperaturecolumn]))
-              if (length(meantempcal) == 0) meantempcal = meantemp
-            }
-            if (ncol(data) == 3) data = data[,1:3]
-            if (ncol(data) >= 4) {
-              data = data[,2:4]
-              if (is(data[,1], "character")) {
-                data = apply(data, 2,as.numeric)
-              }
-            }
-            if (ncol(data) >= 4 & mon == 0) {
-              columns_to_use = params_rawdata[["rmc.col.acc"]]
-            } else {
-              columns_to_use = 1:3
-            }
-            data = data[,columns_to_use]
-            suppressWarnings(storage.mode(data) <- "numeric")
-            if ((mon == 3 | mon == 0 | mon == 6) & use.temp == FALSE) {
-              data = scale(data,center = -offset, scale = 1/scale)  #rescale data
-            } else if ((mon == 2 | mon == 0) & use.temp == TRUE) {
-              # meantemp replaced by meantempcal # 19-12-2013
-              data = scale(data,center = -offset, scale = 1/scale) +
-                scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
-              rm(yy); gc()
-            }
-          }
-          suppressWarnings(storage.mode(data) <- "numeric")
-          ## resample experiment to see whehter processing time can be much improved if data is resampled
-          sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
-          # STORE THE RAW DATA
-          # data[,1], data[,2], data[,3], starttime, (temperature, light)
-        } else {
-          data = cbind(rep(0, nrow(data)), data)
-          LD = nrow(data)
         }
+        if ((LD - use) > 1) {
+          S = data[(use + 1):LD,] #store left over
+          if (ncol(S) == 1) {
+            S = t(S)
+          }
+        } else { #use all data
+          S = matrix(0, 0, ncol(data))
+        }
+        data = data[1:use,]
+        LD = nrow(data) #redefine LD because there is less data
+        if ("remaining_epochs" %in% colnames(data)) { #
+          # remove remaining_epochs from data object and keep it seperately
+          remaining_epochs = data[,"remaining_epochs"]
+          data = data[, -which(colnames(data) == "remaining_epochs")]
+        }
+        ##==================================================
+        # Feature calculation
+        dur = nrow(data)	#duration of experiment in data points
+        durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
+        #--------------------------------------------
+        if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
+          if (mon == 2) {
+            if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
+              temperaturecolumn = 7; lightcolumn = 5
+            } else {
+              temperaturecolumn = 6; lightcolumn = 5
+            }
+          } else if (mon == 4) {
+            temperaturecolumn = 5; lightcolumn = 7
+            if (gyro_available == TRUE) {
+              temperaturecolumn = temperaturecolumn + 3
+              lightcolumn = lightcolumn + 3
+            }
+          } else if (mon == 5) {
+            temperaturecolumn = 4
+          } else if (mon == 0) {
+            temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+          }
+          if (mon != 0 & mon != 5) {
+            light = as.numeric(data[, lightcolumn])
+          }
+          if (mon == 0 & length(params_rawdata[["rmc.col.wear"]]) > 0) {
+            wearcol = as.character(data[, which(colnames(data) == "wear")])
+            suppressWarnings(storage.mode(wearcol) <- "logical")
+          }
+          temperature = as.numeric(data[, temperaturecolumn])
+        }
+        # Initialization of variables
+        if (mon == 1) {
+          data = data[, 1:3]
+          data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
+        } else if (mon == 4 & dformat == 3) {
+          data = data[, 1:3]
+          data[, 1:3] = scale(data[, 1:3],center = -offset, scale = 1/scale) #rescale data
+        } else if (mon == 4 & (dformat == 4 |  dformat == 2)) {
+          extraction_succeeded = FALSE
+          if (gyro_available == TRUE) {
+            data[,5:7] = scale(data[,5:7],center = -offset, scale = 1/scale) #rescale data
+            extraction_succeeded = TRUE
+            data = data[, 2:7]
+          }
+          if (extraction_succeeded == FALSE) {
+            data[, 2:4] = scale(data[, 2:4],center = -offset, scale = 1/scale) #rescale data
+            data = data[,2:4]
+          }
+        } else if (mon == 2 & dformat == 1) {
+          yy = as.matrix(cbind(as.numeric(data[,temperaturecolumn]),
+                               as.numeric(data[,temperaturecolumn]),
+                               as.numeric(data[,temperaturecolumn])))
+          data = data[,2:4]
+          data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
+            scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
+          rm(yy); gc()
+        } else if (mon == 5) {
+          yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
+          data = data[,1:3]
+          data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
+            scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
+          rm(yy); gc()
+        } else if ((dformat == 2 | dformat == 5) & (mon != 4)) {
+          if (mon == 2 | (mon == 0 & use.temp == TRUE)) {
+            tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))
+            yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
+            meantemp = mean(as.numeric(data[,temperaturecolumn]))
+            if (length(meantempcal) == 0) meantempcal = meantemp
+          }
+          if (ncol(data) == 3) data = data[,1:3]
+          if (ncol(data) >= 4) {
+            data = data[,2:4]
+            if (is(data[,1], "character")) {
+              data = apply(data, 2,as.numeric)
+            }
+          }
+          if (ncol(data) >= 4 & mon == 0) {
+            columns_to_use = params_rawdata[["rmc.col.acc"]]
+          } else {
+            columns_to_use = 1:3
+          }
+          data = data[,columns_to_use]
+          suppressWarnings(storage.mode(data) <- "numeric")
+          if ((mon == 3 | mon == 0 | mon == 6) & use.temp == FALSE) {
+            data = scale(data,center = -offset, scale = 1/scale)  #rescale data
+          } else if ((mon == 2 | mon == 0) & use.temp == TRUE) {
+            # meantemp replaced by meantempcal # 19-12-2013
+            data = scale(data,center = -offset, scale = 1/scale) +
+              scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
+            rm(yy); gc()
+          }
+        }
+        suppressWarnings(storage.mode(data) <- "numeric")
+        ## resample experiment to see whehter processing time can be much improved if data is resampled
+        sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
+        # STORE THE RAW DATA
+        # data[,1], data[,2], data[,3], starttime, (temperature, light)
+        
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data, 
                                     sf = sf, ws3 = ws3,
@@ -805,7 +768,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-   
+    
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {
