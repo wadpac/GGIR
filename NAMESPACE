@@ -53,4 +53,3 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help")
-importFrom(stringr, str_squish)

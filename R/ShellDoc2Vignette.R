@@ -60,7 +60,7 @@ ShellDoc2Vignette <- function(argument = "mode") {
   def = gsub(pattern = "\\\\code", replacement = "", x = def)
   
   # clean multiple spaces in def
-  def = stringr::str_squish(def)
+  def = gsub(pattern = "^ *|(?<= ) | *$", replacement = "", x = def, perl = TRUE)
   
   # clean double quotes in def
   def = gsub(pattern = "\"", replacement = "'", x = def)
