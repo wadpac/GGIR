@@ -91,7 +91,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
   options(warn = -1) #turn off warnings
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon, 
                                                desiredtz = params_general[["desiredtz"]],
-                                               rmc.dec = params_rawdata[["rmc.dec"]])}) #detect dot or comma dataformat
+                                               rmc.dec = params_rawdata[["rmc.dec"]],
+                                               loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
   options(warn = 0) #turn on warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
@@ -141,6 +142,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (mon == 1) {
         data = P$rawxyz / 1000 #convert g output to mg for genea
+        data = as.matrix(data, rownames.force = FALSE)
       } else if (mon == 4 & dformat == 3) {
         data = P$rawxyz #change scalling for Axivity?
       } else if (mon == 2 & dformat == 1) {
@@ -207,8 +209,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
           } else if (mon == 2 & dformat == 1) { #GENEActiv bin
-            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]; temperature = data[,7]
-            temperature = as.numeric(data[,7])
+            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
+            use.temp = TRUE
           } else if (mon == 5) { # Movisense
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = TRUE
@@ -231,7 +233,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
           
           if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 0 & use.temp == TRUE)) {
             if (mon == 2) { # GENEActiv
-              temperaturecolumn = 7
+              if ("temperature" %in% colnames(data)) {
+                temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
+              } else {
+                temperaturecolumn = 7
+              }
             } else if (mon == 4 | mon == 5) { #AX | Movisense
               temperaturecolumn = 5
             } else if (mon == 0) {
@@ -253,7 +259,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               cat("\ntemperature is NA\n")
               use.temp = FALSE
-            } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 40)) > 0) {
+            } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 120)) > 0) {
               cat("\ntemperature is too high\n")
               use.temp = FALSE
             }
@@ -470,7 +476,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       QC = "recalibration not done because recalibration does not decrease error"
     }
   }
-  if (length(ncol(meta_temp)) != 0) {
+  if (all(dim(meta_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
     spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")

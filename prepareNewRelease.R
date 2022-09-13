@@ -1,7 +1,7 @@
 prepareNewRelease = function(version = c()) {
   # In preparation of a new package release this function helps
   # to check that version number and release date are correct
-  # in the DESCRIPTION file, GGIR-package.Rd, CITATION.cff, and NEWS.Rd
+  # in the DESCRIPTION file, GGIR-package.Rd, and NEWS.Rd
   # The function does not fix any errors, it only warns the user about
   # mistakes via messages in the console.
   # The function is not part of the package on CRAN, because it's name is
@@ -46,25 +46,6 @@ prepareNewRelease = function(version = c()) {
         cat("\nError: Date is not correct in GGIR-package.Rd file")
         errorfound = TRUE
       }
-    }
-    i = i + 1
-  }
-  # Check CITATION.cff
-  CIT = read.csv(file = "./CITATION.cff",sep="\n")
-  i = 1
-  while (i <= nrow(CIT)) {
-    tmp = as.character(unlist(strsplit(as.character(CIT[i,]),": ")))
-    if (tmp[1] == "version") {
-      if (tmp[2] != version) {
-        cat("\nError: Version number is not correct in CITATION.cff file")
-        errorfound = TRUE
-      } 
-    }
-    if (tmp[1] == "date-released") {
-      if (tmp[2] != date) {
-        cat("\nError: Date is not correct in CITATION.cff file")
-        errorfound = TRUE
-      } 
     }
     i = i + 1
   }

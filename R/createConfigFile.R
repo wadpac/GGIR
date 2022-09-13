@@ -80,14 +80,16 @@ createConfigFile = function(config.parameters = c()) {
     }
   }
   SI = sessionInfo()
-  GGIRversion = ""
-  try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
-  if (length(GGIRversion) == 0) {
-    try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
-  }
+  
+  GGIRversion =  as.character(utils::packageVersion("GGIR"))
+  GGIRread_version =  as.character(utils::packageVersion("GGIRread"))
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
-  out[nrow(out) - 1,] = c("GGIRversion", GGIRversion, " not applicable")
-  out[nrow(out),] = c("R_version", SI$R.version$version.string, " not applicable")
+  if (length(GGIRread_version) == 0) GGIRread_version = "Could not retrieve GGIRread version"
+  if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+  
+  out[nrow(out) - 2,] = c("GGIRread_version", GGIRread_version, "not applicable")
+  out[nrow(out) - 1,] = c("GGIRversion", GGIRversion, "not applicable")
+  out[nrow(out),] = c("R_version", SI$R.version$version.string, "not applicable")
   out = out[which(!is.na(out[,1])),]
   out = as.data.frame(out, stringsAsFactors = TRUE)
   row.names(out) <- NULL

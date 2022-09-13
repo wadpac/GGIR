@@ -48,20 +48,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
     fnames = dir(datadir, recursive = FALSE)
   }
-  # check whether these are .RDA files
-  if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
-    useRDA = TRUE
-  } else {
-    useRDA = FALSE
-  }
-  if (useRDA == FALSE) {
-    filesizes = file.info(fnamesfull)$size # in bytes
-    bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
-    fnamesfull = fnamesfull[bigEnough]
-    fnames = fnames[bigEnough]
-  }
+  filesizes = file.info(fnamesfull)$size # in bytes
+  bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
+  fnamesfull = fnamesfull[bigEnough]
+  fnames = fnames[bigEnough]
+  
   # create output directory if it does not exist
-  if (filelist == TRUE | useRDA == TRUE) {
+  if (filelist == TRUE) {
     if (length(studyname) == 0) {
       studyname = "mystudy"
       stop('\nError: studyname not specified in part1. Needed for analysing lists of files')
@@ -77,9 +70,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     dir.create(file.path(outputdir, outputfolder))
     dir.create(file.path(outputdir, outputfolder, "meta"))
     dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "basic"))
-    if (length(params_cleaning[["selectdaysfile"]]) > 0) {
-      dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "raw"))
-    }
     dir.create(file.path(outputdir, outputfolder, "results"))
     dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
   }
@@ -201,22 +191,12 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     } else {
       skip = 0
     }
-    if (length(unlist(strsplit(datafile,"[.]RD"))) > 1) {
-      useRDA = TRUE
-    } else {
-      useRDA = FALSE
-    }
     #=============================================================
     # Inspect file (and store output later on)
     options(warn = -1) #turn off warnings
-    if (useRDA == FALSE) {
-      I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
+    I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
                         params_rawdata = params_rawdata,
                         configtz = params_general[["configtz"]])
-    } else {
-      load(datafile) # to do: would be nice to only load the object I and not the entire datafile
-      I$filename = fnames[i]
-    }
     options(warn = 0) #turn on warnings
     if (params_general[["overwrite"]] == TRUE) skip = 0
     if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
@@ -245,7 +225,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       #data_quality_report.csv does not exist and there is also no ot
       if (assigned.backup.cal.coef == FALSE) params_rawdata[["backup.cal.coef"]] = c()
       #--------------------------------------
-      if (params_rawdata[["do.cal"]] == TRUE & useRDA == FALSE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
+      if (params_rawdata[["do.cal"]] == TRUE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
         # cat(paste0("\n",rep('-',options()$width),collapse=''))
         cat("\n")
         cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
@@ -320,7 +300,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         } else {
           # cat("\nNo matching filename found in backup.cal.coef\n")
           # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
-          if (params_rawdata[["do.cal"]] == TRUE & useRDA == FALSE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
+          if (params_rawdata[["do.cal"]] == TRUE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
             cat("\n")
             cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
             C = g.calibrate(datafile,
@@ -341,7 +321,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     meantempcal = C$meantempcal,
                     outputdir = outputdir,
                     outputfolder = outputfolder,
-                    selectdaysfile = params_cleaning[["selectdaysfile"]],
                     myfun = myfun)
       
       if (params_general[["expand_tail_max_hours"]] > 0) {
@@ -427,16 +406,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           dir2fn = datadir2fnames(datadir, filelist)
           fnames = dir2fn$fnames
         }
-        # check whether these are RDA
-        if (length(unlist(strsplit(fnames[1],"[.]RD"))) > 1) {
-          useRDA = TRUE
-        } else {
-          useRDA = FALSE
-        }
-      } else {
-        useRDA = FALSE
       }
-      if (filelist == TRUE | useRDA == TRUE) {
+      if (filelist == TRUE) {
         metadatadir = paste0(outputdir,"/output_",studyname)
       } else {
         outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
@@ -479,11 +450,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # pass on functions
       # packages2passon = 'Rcpp'
       functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
-                           "g.binread", "g.cwaread", "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
-                           "g.getidfromheaderobject", "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
+                           "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
+                           "g.getstarttime", "POSIXtime2iso8601", "chartime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                           "g.extractheadervars", "g.imputeTimegaps", "resample", "parseGT3Xggir")
+                           "g.extractheadervars", "g.imputeTimegaps", "parseGT3Xggir")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.

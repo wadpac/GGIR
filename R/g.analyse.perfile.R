@@ -12,7 +12,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   filesummary[vi] = ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
   g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)]
-
+  
   # Serial number
   if (snloc == 1) {
     filesummary[(vi + 1)] = deviceSerialNumber
@@ -43,7 +43,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   filesummary[(vi + 1)] = LMp / 1440 #measurement duration according to protocol
   filesummary[(vi + 2)] = LWp / 1440 #wear duration in days (out of measurement protocol)
   s_names[vi:(vi + 2)] = c("complete_24hcycle", # day (fraction of 24 hours for which data is available at all)
-                         "meas_dur_def_proto_day", "wear_dur_def_proto_day")
+                           "meas_dur_def_proto_day", "wear_dur_def_proto_day")
   vi = vi + 3
   # calibration error after auto-calibration
   if (length(C$cal.error.end) == 0)   C$cal.error.end = c(" ")
@@ -56,7 +56,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   filesummary[(vi + 2):(vi + q0)] = AveAccAve24hr
   colnames_to_lookat = paste0(colnames_to_lookat, "_fullRecordingMean")
   s_names[vi:(vi + q0)] = c("calib_err",
-                          "calib_status", colnames_to_lookat)
+                            "calib_status", colnames_to_lookat)
   vi = vi + q0 + 2
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
@@ -101,7 +101,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     vi = vi + 2
     # Add ISIV to filesummary
     filesummary[vi:(vi + 2)] = c(InterdailyStability, IntradailyVariability,
-                               IVIS_windowsize_minutes)
+                                 IVIS_windowsize_minutes)
     iNA = which(is.na(filesummary[vi:(vi + 3)]) == TRUE)
     if (length(iNA) > 0) filesummary[(vi:(vi + 3))[iNA]] = " "
     s_names[vi:(vi + 2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
@@ -112,23 +112,23 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
       s_names[vi] = c("cosinor_timeOffsetHours")
       vi = vi + 1
       try(expr = {filesummary[vi:(vi + 4)]  = as.numeric(c(cosinor_coef$coef$params$mes,
-                                  cosinor_coef$coef$params$amp,
-                                  cosinor_coef$coef$params$acr,
-                                  cosinor_coef$coef$params$acrotime,
-                                  cosinor_coef$coef$params$ndays))}, silent = TRUE)
+                                                           cosinor_coef$coef$params$amp,
+                                                           cosinor_coef$coef$params$acr,
+                                                           cosinor_coef$coef$params$acrotime,
+                                                           cosinor_coef$coef$params$ndays))}, silent = TRUE)
       s_names[vi:(vi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
-                             "cosinor_acrotime", "cosinor_ndays")
+                               "cosinor_acrotime", "cosinor_ndays")
       vi = vi + 5
       try(expr = {filesummary[vi:(vi + 9)]  = c(cosinor_coef$coefext$params$minimum,
-                                    cosinor_coef$coefext$params$amp,
-                                    cosinor_coef$coefext$params$alpha,
-                                    cosinor_coef$coefext$params$beta,
-                                    cosinor_coef$coefext$params$acrotime,
-                                    cosinor_coef$coefext$params$UpMesor,
-                                    cosinor_coef$coefext$params$DownMesor,
-                                    cosinor_coef$coefext$params$MESOR,
-                                    cosinor_coef$coefext$params$ndays,
-                                    cosinor_coef$coefext$params$F_pseudo)}, silent = TRUE)
+                                                cosinor_coef$coefext$params$amp,
+                                                cosinor_coef$coefext$params$alpha,
+                                                cosinor_coef$coefext$params$beta,
+                                                cosinor_coef$coefext$params$acrotime,
+                                                cosinor_coef$coefext$params$UpMesor,
+                                                cosinor_coef$coefext$params$DownMesor,
+                                                cosinor_coef$coefext$params$MESOR,
+                                                cosinor_coef$coefext$params$ndays,
+                                                cosinor_coef$coefext$params$F_pseudo)}, silent = TRUE)
       s_names[vi:(vi + 9)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
                                "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
                                "cosinorExt_DownMesor", "cosinorExt_MESOR",
@@ -139,12 +139,12 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
       s_names[vi:(vi + 1)] = c("cosinorIS", "cosinorIV")
       vi = vi + 2
     }
-
+    
     # Variables per metric - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:length(ds_names))
     md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday", "qwindow_timestamps", "qwindow_names"))
     if (length(md) > 0) daytoweekvar = daytoweekvar[-md]
-
+    
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
@@ -220,22 +220,19 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     filesummary[(vi + 5)] = longitudinal_axis_id
     #get GGIR version
     SI = sessionInfo()
-    GGIRversion = c()
-    try(expr = {GGIRversion = SI$loadedOnly$GGIR$Version}, silent = TRUE)
-    if (length(GGIRversion) == 0) {
-      try(expr = {GGIRversion = SI$otherPkgs$GGIR$Version}, silent = TRUE)
-    }
-    # GGIRversion = SI$otherPkgs$GGIR$Version
+    
+    GGIRversion =  as.character(utils::packageVersion("GGIR"))
     if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
+    if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
     filesummary[(vi + 6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
     s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
-                                               " value=2, ignore all data before the first midnight and",
-                                               " after the last midnight)"),
-                                        "n hours ignored at start of meas (if strategy=1)",
-                                        "n hours ignored at end of meas (if strategy=1)",
-                                        "n days of measurement after which all data is ignored (if strategy=1)",
-                                        "epoch size to which acceleration was averaged (seconds)",
-                                        "if_hip_long_axis_id", "GGIR version"))
+                                                 " value=2, ignore all data before the first midnight and",
+                                                 " after the last midnight)"),
+                                          "n hours ignored at start of meas (if strategy=1)",
+                                          "n hours ignored at end of meas (if strategy=1)",
+                                          "n days of measurement after which all data is ignored (if strategy=1)",
+                                          "epoch size to which acceleration was averaged (seconds)",
+                                          "if_hip_long_axis_id", "GGIR version"))
     vi = vi + 6
   }
   rm(LD); rm(ID)
@@ -278,7 +275,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   }
   filesummary = data.frame(value = t(filesummary), stringsAsFactors = FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
-
+  
   columns2order = c()
   if (ncol(filesummary) > 37) {
     columns2order = grep(pattern = "AD_|WE_|WD_|WWD_|WWE_", x = names(filesummary))

@@ -8,7 +8,7 @@
   output matrix, \link{g.analyse}.
 }
 \usage{
-g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures, 
+g.analyse.perday(ndays, firstmidnighti, time, nfeatures, 
                 midnightsi, metashort, averageday,
                 doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
                 fname, idloc, sensor.location, wdayname, tooshort, includedaycrit,
@@ -19,7 +19,6 @@ g.analyse.perday(selectdaysfile, ndays, firstmidnighti, time, nfeatures,
                 ...)
 }
 \arguments{
-  \item{selectdaysfile}{see \link{g.analyse}}
   \item{ndays}{Number of days in file} 
   \item{firstmidnighti}{see \link{g.detecmidnight}}
   \item{time}{timestamp column from metalong converted to character}
