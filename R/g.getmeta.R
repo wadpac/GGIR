@@ -660,11 +660,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             if (any(duplicated(gap_index))) { 
               # When 2 gap_index are within the same epoch (either short or long)
               # we would have a duplicated gap_index here, then combine information
-              dup_index = which(duplicated(gap_index))
-              to_combine = which(gap_index == gap_index[dup_index])
-              gap_index = gap_index[-dup_index] # remove from gap index
-              gapsize[to_combine[1]] = sum(gapsize[to_combine]) - 1 # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
-              gapsize = gapsize[-dup_index]
+              dup_index_tmp = which(duplicated(gap_index))
+              dup_index = gap_index[dup_index_tmp]
+              for (dup_index_i in dup_index) {
+                to_combine = which(gap_index == dup_index_i)
+                length_to_combine = length(to_combine) # In the unlikely event that a gap_index appears more than 2, this should be able to deal with it.
+                delete = to_combine[-1] # leave only the first index and remove duplicates
+                gap_index = gap_index[-delete] # remove from gap index
+                gapsize[to_combine[1]] = sum(gapsize[to_combine]) - (length_to_combine - 1) # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
+                gapsize = gapsize[-delete] 
+              }
             }
             if ("nonwearscore" %in% metnames) {
               timeseries[gap_index, which(metnames == "nonwearscore")]  = 3
