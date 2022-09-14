@@ -607,6 +607,41 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           CWav[h,1] = max(c(CW[h,1],CW[h,2],CW[h,3])) #indicator of clipping
         }
+        # Revise edges of nonwear score
+        # they might be imputed in g.imputeTimegaps and not revised for nonwear
+        # browser()
+        look4NWedges = NWav > 0
+        NWedges = diff(look4NWedges)
+        NWstarts = which(NWedges > 0) + 1
+        NWends = which(NWedges < 0)
+        windows2check = round(window/window2)
+        # check startpoint of nonwears
+        for (start_i in NWstarts) {
+          for (wi in 1:windows2check) {
+            if (wi == 1) {
+              to = (start_i * ws2 * sfold) - 1
+              from = (start_i * ws2 * sfold) - window2 - 1
+            }
+            sdacc_i = apply(data[from:to,], MARGIN = 2, FUN = sd)
+            NWav[(start_i - wi)] = sum(sdacc_i < sdcriter)
+            if (sum(sdacc_i < sdcriter) == 0) break # break look if the end of nonwear has been found
+            to = from - 1
+            from = from - window2
+          }
+        }
+        # check end point of nonwears
+        for (end_i in NWends) {
+          for (wi in 1:windows2check) {
+            if (wi == 1) {
+              from = (end_i * ws2 * sfold) + 1
+              to = (end_i * ws2 * sfold) + 1 + window2
+            }
+            sdacc_i = apply(data[from:to,], MARGIN = 2, FUN = sd)
+            NWav[(end_i + wi)] = sum(sdacc_i < sdcriter)
+            from = to + 1
+            to = to + window2
+          }
+        }
         col_mli = 2
         metalong[count2:((count2 - 1) + nrow(NWav)),col_mli] = NWav; col_mli = col_mli + 1
         metalong[(count2):((count2 - 1) + nrow(NWav)),col_mli] = CWav; col_mli = col_mli + 1
