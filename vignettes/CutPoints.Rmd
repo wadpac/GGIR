@@ -272,7 +272,7 @@ is likely to challenge accurate assessment of sleep and sedentary behaviour.
 - That data collected with 'idle sleep mode' turned on is not be referred to as 
 raw data accelerometry, because the data collection process has involved proprietary 
 pre-processing steps which violate the core principle of raw data collection.
-- Report whether `idle sleep mode was used`. If the choice was not consistent within
+- Report whether 'idle sleep mode' was used. If the choice was not consistent within
 a study then try to account for idle mode sleep usage in the statistical analyses.
 
 **How about all the criticism towards cut-point methods?**
