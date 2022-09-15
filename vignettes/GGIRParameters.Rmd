@@ -17,12 +17,18 @@ vignette: >
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
-# Input arguments/parameters overview
+The GGIR
+[shell function](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
+groups the input arguments into parameter objects. The first section below displays
+all optional GGIR input argument names, the GGIR part (1, 2, 3,
+4 and/or 5) they are used in, and the parameter object they are stored in. 
+As you will see, a few parameters are not part of any parameter object because
+they are direct arguments of the GGIR shell function.
 
-The table below shows all GGIR input arguments, the GGIR part (1, 2, 3,
-4 and/or 5) they are used in, and the parameter object they belong too.
-As you will see a few parameters are not part of any parameter object.
-Their default values can be found below.
+In the [second section of this vignette](#default-argument-values) you will find a
+description and default value for all the arguments.
+
+# Input arguments/parameters overview
 
 | Argument (parameter)        | Used in GGIR part | Parameter object         |
 |-----------------------------|-------------------|--------------------------|
@@ -197,7 +203,10 @@ Their default values can be found below.
 | do.sibreport                | 5                 | params_output            |
 
 
-# Arguments/parameters description
+# Arguments/parameters description {#default-argument-values}
+
+All information as shown below has been auto-generated and
+is identical to the information provided in the [GGIR package pdf manual](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
 
 ## GGIR function input arguments
 
