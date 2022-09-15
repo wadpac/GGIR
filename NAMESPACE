@@ -36,7 +36,8 @@ export(g.analyse, g.calibrate,
        CalcSleepRegularityIndex, load_params,
        check_params, extract_params,
        g.imputeTimegaps, g.part5.classifyNaps,
-       tidyup_df, cosinorAnalyses)
+       tidyup_df, cosinorAnalyses,
+       detect_nonwear_clipping)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
