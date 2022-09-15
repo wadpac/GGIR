@@ -244,12 +244,15 @@ library(GGIR)
 print(load_params()$params_sleep[["HASPT.algo"]])
 ```
 
-Documentation for this parameter objects can be found in the ([GGIR
+Documentation for this parameter objects can be found the vignette 
+[Description of configuration parameters in GGIR](https://cran.r-project.org/package=GGIR),
+which technically is identical to the information provided in the [GGIR
 function documentation
-(pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)). All of these
-are accepted as argument to function `GGIR`, because `GGIR` is a shell
-around all GGIR functionality. However, the `params_` objects themselves
-can not be provided as input to `GGIR`.
+(pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf)).
+
+All of these arguments are accepted as argument to function `GGIR`, 
+because `GGIR` is a shell around all GGIR functionality. 
+However, the `params_` objects themselves can not be provided as input to `GGIR`.
 
 ### Key general arguments
 
@@ -456,10 +459,10 @@ For an explanation on how time use analysis is performed see section
 
 ### Published cut-points and how to use them
 
-Please, visit the [cut-points
-vignette](https://cran.r-project.org/package=GGIR/news.html) for more
-details on the cut-points available, how to use them, and some
-additional refletions on the use of cut-points in GGIR.
+This section has been rewritten and moved. Please, visit the vignette 
+[Published cut-points and how to use them in GGIR](https://cran.r-project.org/package=GGIR) 
+for more details on the cut-points available, how to use them, and some
+additional reflections on the use of cut-points in GGIR.
 
 ### Example call
 

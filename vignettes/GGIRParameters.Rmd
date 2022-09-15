@@ -8,7 +8,7 @@ output:
     toc_float: true #by turning this on, the table of contents moves to the left of the page.
 urlcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Description of configuration parameters in GGIR}
+  %\VignetteIndexEntry{GGIR configuration parameters}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -18,7 +18,7 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
 The GGIR
-[shell function](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
+[shell function](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
 groups the input arguments into parameter objects. The first section below displays
 all optional GGIR input argument names, the GGIR part (1, 2, 3,
 4 and/or 5) they are used in, and the parameter object they are stored in. 

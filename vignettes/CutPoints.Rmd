@@ -8,7 +8,7 @@ output:
     toc_float: true #by turning this on, the table of contents moves to the left of the page.
 urlcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Definition of published cut-points}
+  %\VignetteIndexEntry{Published cut-points and how to use them in GGIR}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
 ---
