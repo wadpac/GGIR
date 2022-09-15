@@ -19,6 +19,26 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 
 # Summary of published cut-points
 
+In this vignette we have compiled a list of published cut-points with
+instructions on how to use them with GGIR. As newer cut-points are frequently
+published the list below may not be up to date. **Please let us know you if know of 
+any cut-points we missed!**
+
+It is important to highlight that some of the presented cut-points were originally 
+based on acceleration metrics that are not available in GGIR. In particular 
+acceleration metrics that sum their values per epoch rather than average them
+per epoch like GGIR does. However, we can use them in GGIR by multiplying the 
+cut-point by the sample frequency as used in the study that proposed it.
+For each of the studies this is detailed in the footnotes.In the tables below these 
+conversion are already performed. Thus, some of the cut-points as shown differ with the
+values reported in the publications.
+
+Note that GGIR intentionally does not sum values per epoch because that approach
+makes the cut-point sample frequency and epoch length dependent, which complicates
+comparisons and harmonisation of literature. The explained variance and accuracy
+remains identical because we are only multiplying with a constant, so no 
+information will be lost.
+
 ## Cut-points for preschoolers
 
 +---------------+--------------------+-------------+------------------------+------------------+
@@ -34,7 +54,8 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 |               |                    |             | `acc.metric = "ENMOa"` | Vigorous: N/A    |
 +---------------+--------------------+-------------+------------------------+------------------+
 
-\*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+\*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as:
+`(CutPointFromPaper_in_gsecs/85.7) * 1000`. Note that sample frequency of 87.5 as reported in the publication was incorrect and correct for (based on correspondence with authors).
 
 ## Cut-points for children/adolescents
 
@@ -54,36 +75,41 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 |                  | Hip                |          | `do.enmo = FALSE`\                | Moderate: 212.5\ |
 |                  |                    |          | `acc.metric = "ENMOa"`            | Vigorous: 637.5  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Schaefer 2014\*  | GENEActiv\         | 8-14 yr  | `do.en = TRUE`\                   | Light: 2.5\      |
-|                  | Non-dominant wrist |          | `do.enmo = FALSE`\                | Moderate: 4\     |
-|                  |                    |          | `acc.metric = "EN"`               | Vigorous: 13     |
+| Schaefer 2014\*  | GENEActiv\         | 6-11 yr  | `do.bfen = TRUE`\                 | Light: 190\      |
+|                  | Non-dominant wrist |          | `lb = 0.2`\                       | Moderate: 314\   |
+|                  |                    |          | `hb = 15 `\                       | Vigorous: 998    |
+|                  |                    |          | `do.enmo = FALSE`\                |                  |
+|                  |                    |          | `acc.metric = "EN"`               |                  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default options\                | Light: 35.6\     |
+| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default values\                 | Light: 35.6\     |
 | Hildebrand 2016  | Non-dominant wrist |          | **`do.enmo = TRUE`\               | Moderate: 201.4\ |
 |                  |                    |          | `acc.metric = "ENMO"`             | Vigorous: 707.0  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default options\                | Light: 56.3\     |
+| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default values\                 | Light: 56.3\     |
 | Hildebrand 2016  | Non-dominant wrist |          | **`do.enmo = TRUE`\               | Moderate: 191.6\ |
 |                  |                    |          | `acc.metric = "ENMO"`             | Vigorous: 695.8  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default options\                | Light: 63.3\     |
+| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default values\                 | Light: 63.3\     |
 | Hildebrand 2016  | Hip                |          | **`do.enmo = TRUE`\               | Moderate: 142.6\ |
 |                  |                    |          | `acc.metric = "ENMO"`             | Vigorous: 464.6  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default options\                | Light: 64.1\     |
+| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default values\                 | Light: 64.1\     |
 | Hildebrand 2016  | Hip                |          | **`do.enmo = TRUE`\               | Moderate: 152.8\ |
 |                  |                    |          | `acc.metric = "ENMO"`             | Vigorous: 514.3  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Aittasalo 2015   | ActiGraph\         | 13-15 yr | **Default options\                | Light: 26.9\     |
-|                  | Hip                |          | **`do.mad = TRUEdo.enmo = FALSE`\ | Moderate: 332\   |
-|                  |                    |          | `acc.metric = "MAD"`              | Vigorous: 558.3  |
+| Aittasalo 2015   | ActiGraph\         | 13-15 yr | **Default values\                 | Light: 26.9\     |
+|                  | Hip                |          | **`do.mad = TRUE`\                | Moderate: 332\   |
+|                  |                    |          | `do.enmo = FALSE`\                | Vigorous: 558.3  |
+|                  |                    |          | `acc.metric = "MAD"`              |                  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
-| Aittasalo 2015   | Hookie AM20\       | 13-15 yr | **Default options\                | Light: 28.7\     |
-|                  | Hip                |          | **`do.mad = TRUEdo.enmo = FALSE`\ | Moderate: 338\   |
-|                  |                    |          | `acc.metric = "MAD"`              | Vigorous: 603.8  |
+| Aittasalo 2015   | Hookie AM20\       | 13-15 yr | **Default values\                 | Light: 28.7\     |
+|                  | Hip                |          | **`do.mad = TRUE`\                | Moderate: 338\   |
+|                  |                    |          | `do.enmo = FALSE`\                | Vigorous: 558.3  |
+|                  |                    |          | `acc.metric = "MAD"`              |                  |
 +------------------+--------------------+----------+-----------------------------------+------------------+
 
 \*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+\*\* This  publication used acceleration metrics that expressed their cut-points in _g_ units. So, to use their cut-point in GGIR, we provide a cut-point  multiplied by 1000.
 
 ## Cut-points for adults
 
@@ -103,25 +129,26 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 |                   |                    |               | `do.enmo = FALSE`\                | Moderate: 46\    |
 |                   |                    |               | `acc.metric = "ENMOa"`            | Vigorous: 428    |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default options\                | Light: 44.8\     |
+| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default values\                 | Light: 44.8\     |
 | Hildebrand 2016   | Non-dominant wrist |               | **`do.enmo = TRUE`\               | Moderate: 100.6\ |
 |                   |                    |               | `acc.metric = "ENMO"`             | Vigorous: 428.8  |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default options\                | Light: 45.8\     |
+| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default values\                 | Light: 45.8\     |
 | Hildebrand 2016   | Non-dominant wrist |               | **`do.enmo = TRUE`\               | Moderate: 93.2\  |
 |                   |                    |               | `acc.metric = "ENMO"`             | Vigorous: 418.3  |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default options\                | Light: 47.4\     |
+| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default values\                 | Light: 47.4\     |
 | Hildebrand 2016   | Hip                |               | **`do.enmo = TRUE`\               | Moderate: 69.1\  |
 |                   |                    |               | `acc.metric = "ENMO"`             | Vigorous: 258.7  |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default options\                | Light: 46.9\     |
+| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default values\                 | Light: 46.9\     |
 | Hildebrand 2016   | Hip                |               | **`do.enmo = TRUE`\               | Moderate: 68.7\  |
 |                   |                    |               | `acc.metric = "ENMO"`             | Vigorous: 266.8  |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Vähä-Ypyä 2015    | Hookie AM20\       | 35 (SD=11) yr | **Default options\                | Light: N/A\      |
-|                   | Hip                |               | **`do.mad = TRUEdo.enmo = FALSE`\ | Moderate: 91\    |
-|                   |                    |               | `acc.metric = "MAD"`              | Vigorous: 414    |
+| Vähä-Ypyä 2015    | Hookie AM20\       | 35 (SD=11) yr | **Default values\                 | Light: N/A\      |
+|                   | Hip                |               | **`do.mad = TRUE`\                | Moderate: 91\    |
+|                   |                    |               | `do.enmo = FALSE`\                | Vigorous: 414    |
+|                   |                    |               | `acc.metric = "MAD"`              |                  |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
 | Dillon 2016\*^,†^ | GENEActiv\         | 50-69 yr      | `do.enmoa = TRUE`\                | Light: 105.6\    |
 |                   | Non-dominant wrist |               | `do.enmo = FALSE`\                | Moderate: 174.2\ |
@@ -132,7 +159,8 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 |                   |                    |               | `acc.metric = "ENMOa"`            | Vigorous: 396.4  |
 +-------------------+--------------------+---------------+-----------------------------------+------------------+
 
-\*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`^†^ In this [publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/), there are cut-point based on data sampled at 30 Hz and 100 Hz. When scaling the cut-points as specified in (\*), the resulting thresholds are virtually the same (the ones presented in this table).
+\*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+^†^ In this [publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/), there are cut-point based on data sampled at 30 Hz and 100 Hz. When scaling the cut-points as specified in (\*), the resulting thresholds are virtually the same (the ones presented in this table).
 
 ## Cut-points for older adults
 
@@ -140,31 +168,31 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 | Cut-points       | Device\            | Age               | Relevant arguments     | thresholds      |
 |                  | Attachment site    |                   |                        |                 |
 +:=================+:===================+:==================+:=======================+:================+
-| Sanders 2019\*   | GENEActiv\         | 60-86 yr          | **Default options\     | Light: 20\      |
+| Sanders 2019\*   | GENEActiv\         | 60-86 yr          | **Default values\      | Light: 20\      |
 |                  | Non-dominant wrist |                   | **`do.enmo = TRUE`\    | Moderate: 32\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Sanders 2019\*\* | GENEActiv\         | 60-86 yr          | **Default options\     | Light: 57\      |
+| Sanders 2019\*\* | GENEActiv\         | 60-86 yr          | **Default values\      | Light: 57\      |
 |                  | Non-dominant wrist |                   | **`do.enmo = TRUE`\    | Moderate: 104\  |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Sanders 2019\*   | ActiGraph\         | 60-86 yr          | **Default options\     | Light: 6\       |
+| Sanders 2019\*   | ActiGraph\         | 60-86 yr          | **Default values\      | Light: 6\       |
 |                  | Hip                |                   | **`do.enmo = TRUE`\    | Moderate: 19\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Sanders 2019\*\* | ActiGraph\         | 60-86 yr          | **Default options\     | Light: 15\      |
+| Sanders 2019\*\* | ActiGraph\         | 60-86 yr          | **Default values\      | Light: 15\      |
 |                  | Hip                |                   | **`do.enmo = TRUE`\    | Moderate: 69\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default options\     | Light: 18\      |
+| Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default values\      | Light: 18\      |
 |                  | Non-dominant wrist | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 60\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default options\     | Light: 22\      |
+| Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default values\      | Light: 22\      |
 |                  | Dominant wrist     | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 64\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default options\     | Light: 7\       |
+| Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default values\      | Light: 7\       |
 |                  | Hip                | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 14\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
@@ -176,24 +204,24 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 |                  | Dominant wrist     | (mean: 77 yr)     | `do.enmo = FALSE`\     | Moderate: 92.5\ |
 |                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Dibben 2020^†,‡^ | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 3.1\     |
-|                  | Right wrist        |                   | `do.enmo = FALSE`\     | Moderate: 7.6\  |
+| Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 18.6\    |
+|                  | Right wrist        |                   | `do.enmo = FALSE`\     | Moderate: 45.5\ |
 |                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.mad = TRUE`\       | Light: 18.3\    |
 |                  | Right wrist        |                   | `do.enmo = FALSE`\     | Moderate: 26.2\ |
 |                  |                    |                   | `acc.metric = "MAD"`   | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Dibben 2020^†,‡^ | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 2.8\     |
-|                  | Left wrist         |                   | `do.enmo = FALSE`\     | Moderate: 7.3\  |
+| Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 16.7\    |
+|                  | Left wrist         |                   | `do.enmo = FALSE`\     | Moderate: 43.6\ |
 |                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.mad = TRUE`\       | Light: 18.7\    |
 |                  | Left wrist         |                   | `do.enmo = FALSE`\     | Moderate: 22.8\ |
 |                  |                    |                   | `acc.metric = "MAD"`   | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Dibben 2020^†,‡^ | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 1.3\     |
-|                  | Hip                |                   | `do.enmo = FALSE`\     | Moderate: 6.8\  |
+| Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 7.6\     |
+|                  | Hip                |                   | `do.enmo = FALSE`\     | Moderate: 40.6\ |
 |                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.mad = TRUE`\       | Light: 1\       |
@@ -203,89 +231,8 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 
 \*Cut-points derived from applying the Youden index on ROC curves.\
 \*\* Cut-points derived from increasing Sensitivity over Specificity for light and vice versa for moderate on ROC curves (see [paper](https://doi.org/10.1080/02640414.2018.1555904) for more details).\
-^†^ These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`^‡^ More cut-points excluding data on aided walking and washing up activities can be found in the [publication](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7).
-
-# Considerations
-
-This is not an exhaustive list of all the cut-points that can be used in GGIR.
-If you are aware of any additional publications then let us know.
-
-**Acceleration metric not available in GGIR?** Some of the above
-publications make use of acceleration metrics that sum their values per
-epoch rather than average them per epoch like GGIR does. So, to use
-their cut-point value we need to multiply the proposed cut-point by the
-sample frequency used in the study that proposed it. For each of the
-studies this is detailed below. Note that GGIR intentionally does not
-sum values per epoch because that approach makes the cut-point sample
-frequency and epoch length dependent, which complicates comparisons and
-harmonisation of literature. The explained variance and accuracy remains
-identical because we are only multiplying with a constant, so no
-information will be lost.
-
-Note that in the table above, such a conversion is already performed. Thus,
-some of the cut-points shown differ with the values reported in the publications.
-Below the specific conversion that has been performed for each set of cut-points.
-
-**Esliger 2011, Phillips 2013, Fraysse 2020, Dillon 2016 :**
-
--   In GGIR use metric ENMOa instead of ENMO with arguments
-    `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
--   `threshold.lig = (LightCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
--   `threshold.mod = (ModerateCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
--   `threshold.vig = (VigorousCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
--   `mvpathreshold = (ModerateCutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
--   The value for `sampleRateFromPaper` was 80 for Esliger and Phillips,
-    100 for Fraysse, and 30 or 100 for Dillon.
--   `EpochLengthInSecondsPaper` is 15 second in Dillon 2016, and 60 sec
-    for the other studies.
--   In the part 2 results you will need the MVPA estimates that are
-    related to ENMOa, not ENMO.
--   In the part 5 results everything will be based on the new
-    cut-points.
-
-**Dibben 2017:** - In GGIR use metric ENMOa instead of ENMO with
-arguments `do.enmoa = TRUE`, `do.enmo = FALSE`, and
-`acc.metric=”ENMOa”`. - Use the cut-points as provided by Dibben
-directly. No need for scaling.
-
-**Roscoe 2017:**
-
--   In GGIR use metric ENMOa instead of ENMO with arguments
-    `do.enmoa = TRUE`, `do.enmo = FALSE`, and `acc.metric=”ENMOa”`.
--   `threshold.lig = (LightCutPointFromPaper_in_gsecs/85.7) * 1000`
--   `threshold.mod = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
--   `threshold.vig = (VigorousCutPointFromPaper_in_gsecs/85.7) * 1000`
--   `mvpathreshold = (ModerateCutPointFromPaper_in_gsecs/85.7) * 1000`
--   In the part 2 results you will need the MVPA estimates that are
-    related to ENMOa, not ENMO.
--   In the part 5 results everything will be based on the new
-    cut-points.
-
-**Schaeffer 2014:**
-
--   In GGIR use metric EN instead of ENMO with arguments `do.en = TRUE`,
-    `do.enmo = FALSE`, and `acc.metric=”EN”`.
--   Specify Schaeffer cut-points as:
--   `threshold.lig = (LightCutPointFromPaper/75) * 1000`
--   `threshold.mod = (ModerateCutPointFromPaper/75) * 1000`
--   `threshold.vig = (VigorousCutPointFromPaper/75) * 1000`
--   `mvpathreshold = (ModerateCutPointFromPaper/75) * 1000`
--   In the part2 results you will need the MVPA estimates that are
-    related to EN, not ENMO.
--   In the part 5 results everything will be based on the new
-    cut-points.
-
-**Vaha-Ypya et al 2015 and Aittasalo et al 2015:**
-
--   Use default setting do.mad= TRUE, acc.metric="MAD"
--   Use the cut-points as provided by Vaha-Ypya directly. No need for
-    scaling.
-
-**Hildebrand 2014, Hildebrand 2016, Migueles 2021. Sanders 2018:**
-
--   Use default setting do.enmo= TRUE, acc.metric="ENMO"
--   Use the cut-points as provided by Hildebrand directly. No need for
-    scaling.
+^†^ These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
+^‡^ More cut-points excluding data on aided walking and washing up activities can be found in the [publication](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7).
 
 # Notes on cut-point validity
 
@@ -305,15 +252,15 @@ SVMgs used by studies such as Esliger 2011, Phillips 2013, and Dibben
 
 Studies done with ActiGraph devices when configured with 'idle sleep
 mode' on, will have zero-strings in all three axes during periods of no
-movement. Although, ActiGraph at some point changed this to store the
-last recorded value. Studies often forget to clarify whether idle sleep
-mode was used and if so, how it was accounted for. The insertion of zero
+movement or other constant values as ActiGraph at some point change 
+the algorithm. Studies often forget to clarify whether idle sleep mode was used
+and if so, how it was accounted for. Especially, the insertion of zero
 strings is problematic as raw data accelerometers should always measure
 the gravitational component when not moving. This directly impacts
 metrics that rely on the presence of a gravitational component such as
 ENMO, EN, ENMOAa, and SVMgs. However, also other metrics may be affected
 as the sudden disappearance of gravitational acceleration will cause a
-spike at the start and end of the non-movement time segment. More
+spike at the start and end of the idle sleep mode period. More
 generally speaking, we advise ActiGraph users to disable the 'idle sleep
 mode' as it harms the transparency and reproducibility since no
 mechanism exists to replicate it in other accelerometer brands, and it
@@ -323,10 +270,10 @@ turned on is not be referred to as raw data accelerometry, because the
 data collection process has involved proprietary pre-processing steps
 which violate the core principle of raw data collection.
 
-**Why does GGIR facilitate cut-points?**
+**How about all the criticism towards cut-point methods?**
 
-For a more elaborate reflection on the limitations and value of
-cut-points see:
+For a more elaborate reflection on the limitations and a motivation why cut-points
+still have value in GGIR see:
 <https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/>
 
 
