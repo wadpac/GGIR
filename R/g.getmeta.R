@@ -609,7 +609,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         # Revise edges of nonwear score
         # they might be imputed in g.imputeTimegaps and not revised for nonwear
-        # browser()
+        # if (i == 16) browser()
         look4NWedges = NWav > 0
         NWedges = diff(look4NWedges)
         NWstarts = which(NWedges > 0) + 1
@@ -622,9 +622,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               to = (start_i * ws2 * sfold) - 1
               from = (start_i * ws2 * sfold) - window2 - 1
             }
+            if (from < 1) from = 1 # in case the nonwear occurs in the very begining
+            if (length(from:to) < window2) break # break if we are getting too close to the begining of the file
             sdacc_i = apply(data[from:to,], MARGIN = 2, FUN = sd)
             NWav[(start_i - wi)] = sum(sdacc_i < sdcriter)
-            if (sum(sdacc_i < sdcriter) == 0) break # break look if the end of nonwear has been found
+            if (sum(sdacc_i < sdcriter) == 0) break # break if the end of nonwear has been found
             to = from - 1
             from = from - window2
           }
@@ -636,6 +638,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               from = (end_i * ws2 * sfold) + 1
               to = (end_i * ws2 * sfold) + 1 + window2
             }
+            if (to > nrow(data)) to = nrow(data) # in case the nonwear occurs in the very begining
+            if (length(from:to) < window2) break # break if we are getting too close to the begining of the file
             sdacc_i = apply(data[from:to,], MARGIN = 2, FUN = sd)
             NWav[(end_i + wi)] = sum(sdacc_i < sdcriter)
             from = to + 1
