@@ -244,7 +244,7 @@ library(GGIR)
 print(load_params()$params_sleep[["HASPT.algo"]])
 ```
 
-Documentation for this parameter objects can be found the vignette: 
+Documentation for all arguments in the parameter objects can be found the vignette: 
 [GGIR configuration parameters](https://cran.r-project.org/package=GGIR).
 
 All of these arguments are accepted as argument to function `GGIR`, 
