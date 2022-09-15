@@ -693,13 +693,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             # metalong
             metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)) + 1, # plus 1 needed to count for current epoch
                                              timeseries = metalong,
-                                             gap_index = round(gaps_to_fill / (ws2 * sfold)) + count2 - 1, # minus 1 needed to account the diff index between short and long epoch
+                                             gap_index = floor(gaps_to_fill / (ws2 * sfold)) + count2, # Using floor so that the gap is filled in the epoch in which it is occurring
                                              metnames = metricnames_long)
             
             # metashort
             metashort = impute_at_epoch_level(gapsize = remaining_epochs[gaps_to_fill], # gapsize in epochs
                                               timeseries = metashort,
-                                              gap_index = round(gaps_to_fill / (ws3 * sfold)) + count,
+                                              gap_index = floor(gaps_to_fill / (ws3 * sfold)) + count, # Using floor so that the gap is filled in the epoch in which it is occurring
                                               metnames = c("timestamp", metnames)) # epoch level index of gap
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])
