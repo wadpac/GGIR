@@ -9,16 +9,16 @@ accelerometer signal was stuck very close to the dynamic range limit
 of the accelerometer.
 }
 \usage{
-detect_nonwear_clipping(data = data, windowsizes = c(900, 3600), sf = sf,
-                        clipthres = clipthres, sdcriter = sdcriter, racriter = racriter,
+detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
+                        clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
                         params_rawdata = params_rawdata)
 }
 \arguments{
   \item{data}{
-  Data.frame with raw accelerometer data for X, Y, and Z axes.
+  Matrix with raw accelerometer data for X, Y, and Z axes.
 }
  \item{windowsizes}{
-  Numeric vector of length two, with short and long window sizes in seconds.
+  Numeric vector of length three, with short, long epoch and window size in seconds.
 }
  \item{sf}{
   Sample frequency in Hertz.
