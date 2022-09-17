@@ -19,7 +19,7 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 
 The GGIR
 [shell function](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
-groups the input arguments into parameter objects. The first section below displays
+takes the input arguments and groups them into parameter objects. The first section below displays
 all optional GGIR input argument names, the GGIR part (1, 2, 3,
 4 and/or 5) they are used in, and the parameter object they are stored in. 
 As you will see, a few parameters are not part of any parameter object because
