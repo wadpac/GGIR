@@ -1,6 +1,6 @@
 g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
                             PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL, 
-                            epochsize = NULL, imputed = NULL) {
+                            epochsize = NULL) {
   if (!is.null(epochsize)) {
     shortEpochSize = epochsize[1]
     longEpochSize = epochsize[2]
@@ -34,11 +34,14 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     # if last value is a zero, we should not remove it (to keep track of the time)
     # This last row of zeros will be imputed afterwards (i.e., imputelast = TRUE)
-    if (zeros[length(zeros)] == nrow(x)) {
-      zeros = zeros[-length(zeros)]
-      imputelast = TRUE
+    if (length(zeros) > 0) { # safe check just in case that removing zeros[1] have made length(zeros) == 0
+      if (zeros[length(zeros)] == nrow(x)) {
+        zeros = zeros[-length(zeros)]
+        imputelast = TRUE
+      }
     }
-    x = x[-zeros,]
+    # Again, check that length(zeros) is still > 0 
+    if (length(zeros) > 0) x = x[-zeros,]
   }
   # find missing timestamps (timegaps)
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
@@ -66,9 +69,6 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     # impute time gaps
     gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
-    if (!is.null(imputed)) {
-      gapsi = gapsi[which(gapsi > length(imputed))] # ignore gaps that have been already imputed in previous chunk
-    }
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) {
       x$gap = 1
@@ -88,21 +88,26 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
         GapLimit =  max(c(((longEpochSize / 60) * 6), 90)) * 60 * sf
         gap90 = ifelse(x$gap > GapLimit, x$gap, 1) # keep track of gaps > 90 min
         gap90i = which(gap90 > 1)
-        x$remaining_epochs = 1 # initialize variable
-        if (!is.null(imputed)) {
-          # add remaining epochs identified in previous chunk
-          x$remaining_epochs[1:length(imputed)] = imputed
-        }
         if (length(gap90i) > 0) {
-          # if gap > 90 min, then impute only to fill up the epoch
+          # if gap > 90 min, then impute only to fill up the long epoch
           # and keep track of how many epochs to impute
+          x$remaining_epochs = 1
           x$next_epoch_delay = 0
+          longEpochDayCut = seq(0, 24 * 60^2, by = longEpochSize)
           x$imputation = 0; imp = 0 # keep track of the imputation to organize data later on
           for (i in gap90i) { 
             imp = imp + 1
-            seconds = data.table::second(x$time[i]) + 1 
-            epochs2add = ceiling(seconds / shortEpochSize) - (seconds / shortEpochSize)
-            time2add = (epochs2add * sf * shortEpochSize) + 1
+            # short epochs to add to fill up to next long epoch cut
+            seconds = data.table::hour(x$time[i]) * 60^2 + data.table::minute(x$time[i]) * 60 + data.table::second(x$time[i]) + 1 
+            seconds_from_prevCut = seconds - max(longEpochDayCut[which(longEpochDayCut <= seconds)])
+            shortEpochs2add_1 = (longEpochSize - seconds_from_prevCut) / shortEpochSize
+            # short epochs to add after time gap
+            seconds = data.table::hour(x$time[i + 1]) * 60^2 + data.table::minute(x$time[i + 1]) * 60 + data.table::second(x$time[i + 1]) + 1 
+            seconds_from_prevCut = seconds - max(longEpochDayCut[which(longEpochDayCut <= seconds)])
+            shortEpochs2add_2 = (seconds_from_prevCut - 1) / shortEpochSize
+            # short epochs to add - total
+            shortEpochs2add = shortEpochs2add_1 + shortEpochs2add_2
+            time2add = (shortEpochs2add * sf * shortEpochSize) + 1
             x$remaining_epochs[i] = ((x$gap[i] - time2add) / (sf * shortEpochSize)) + 1   # plus 1 to count current epoch
             x$gap[i] = time2add # redefine gap to only fill up to next epoch
             x$imputation[i] = imp
@@ -137,6 +142,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
       if (imputation_done == FALSE) {
         x <- as.data.frame(lapply(x, rep, x$gap))
       }
+      # print("N days we have here")
+      # print(nrow(x)/(sf * 3600 * 24))
+      # print("N days to impute later at epoch level in g.getmeta")
+      # print((sum(x$remaining_epochs[which(x$remaining_epochs != 1)])) / (12*1440))
+      
       # cleanup x, we only need remaining epochs
       x = x[, which(colnames(x) != "gap")]
     }

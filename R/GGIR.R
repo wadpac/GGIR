@@ -59,16 +59,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     dir2fn = datadir2fnames(datadir, filelist)
     fnames = dir2fn$fnames
     fnamesfull = dir2fn$fnamesfull
-    # check whether these are RDA
-    if (length(unlist(strsplit(fnames[1], "[.]RD"))) > 1) {
-      useRDA = TRUE
-    } else {
-      useRDA = FALSE
-    }
-  } else {
-    useRDA = FALSE
   }
-  if (filelist == TRUE | useRDA == TRUE) {
+  if (filelist == TRUE) {
     metadatadir = paste0(outputdir, "/output_", studyname)
   } else {
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
@@ -128,12 +120,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
 
   #-----------------------------------------------------------
   # Print GGIR header to console
-  GGIRversion = ""
-  SI = sessionInfo()
-  GGIRversion = SI$otherPkgs$GGIR$Version
+  GGIRversion = as.character(utils::packageVersion("GGIR"))
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
-  # GGIRversion = paste0(" ",GGIRversion)
-  rm(SI)
+  if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
@@ -200,7 +190,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Store configuration parameters in config file
   LS = ls()
   LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
-                          "dopart4", "dopart5", "fnames", "useRDA", "metadatadir", "ci", "config",
+                          "dopart4", "dopart5", "fnames", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
