@@ -54,8 +54,7 @@ information will be lost.
 |               |                    |             | `acc.metric = "ENMOa"` | Vigorous: N/A    |
 +---------------+--------------------+-------------+------------------------+------------------+
 
-\*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as:
-`(CutPointFromPaper_in_gsecs/85.7) * 1000`. Note that sample frequency of 87.5 as reported in the publication was incorrect and based on correspondence with authors we replaced this by 85.7.
+\*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gsecs/85.7) * 1000`. Note that sample frequency of 87.5 as reported in the publication was incorrect and based on correspondence with authors we replaced this by 85.7.
 
 ## Cut-points for children/adolescents
 
