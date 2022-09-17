@@ -49,7 +49,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
                        "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")
     check_class("Metrics", params = params_metrics, parnames = boolean_params, parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parnames = c("hb", "lb", "n"), parclass = "numeric")
+    check_class("Metrics", params = params_metrics, parnames = c("hb", "lb", "n", "zc.lb", "zc.hb", 
+                                                                 "zc.sb", "zc.order", "zc.scale"), parclass = "numeric")
   }
   if (length(params_rawdata) > 0) {
     numeric_params = c("chunksize", "spherecrit", "minloadcrit", "minimumFileSizeMB", "dynrange",
@@ -149,7 +150,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
     }
-    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012") == TRUE) {
+    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
         warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
       }

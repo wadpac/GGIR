@@ -627,6 +627,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           ds_names[fi] = "ACC_day_mg";      fi = fi + 1
                           dsummary[di, fi] = mean(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
                           ds_names[fi] = "ACC_spt_mg";      fi = fi + 1
+                          dsummary[di, fi] = median(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
+                          ds_names[fi] = "ACC_spt_mg_median";      fi = fi + 1
+                          dsummary[di, fi] = sd(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
+                          ds_names[fi] = "ACC_spt_mg_stdev";      fi = fi + 1
                           dsummary[di, fi] = mean(ts$ACC[sse], na.rm = TRUE)
                           ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
                           #===============================================
@@ -649,7 +653,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             if (ignore == FALSE) {
                               # Calculate running window variables
                               ACCrunwin = matrix(0, nwindow_f, 1)
-                              TIMErunwin= matrix("", nwindow_f, 1)
+                              TIMErunwin = matrix("", nwindow_f, 1)
                               for (hri in 0:floor((((endd - wini) * (60/reso)) - 1))) {
                                 e1 = (hri * reso * (60/ws3new)) + 1
                                 e2 = (hri + (wini * (60/reso))) * reso * (60/ws3new)
@@ -666,7 +670,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                 M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
                                 M5VALUE = max(ACCrunwin)
                                 if (lightpeak_available == TRUE) {
-                                  startM5 = which(ts$time == M5HOUR)
+                                  if (length(unlist(strsplit(M5HOUR, " "))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
+                                  startM5 = which(as.character(ts$time) == M5HOUR)
                                   M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                   M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                 }
