@@ -4,9 +4,11 @@
 \section{Changes in version 2.7-7 (GitHub-only-release date:17-09-2022)}{
   \itemize{
     \item Part 1: Long timegaps in ActiGraph data or ad-hoc .csv data as a result of idle sleep mode are now dealt with at metric level rather than raw data level.
-    \item Part 1: Speed up to code by changing how GENEActiv data converted to matrix and by changing how rolling median is derived. 
+    \item Part 1: Speed up to code by changing how GENEActiv data converted to matrix and by changing how rolling median is derived.
     \item Part 1" Deprecate option to read raw data from in RData files, which was connected to the selectdaysfile functionality as deprecated in previous release.
     \item Remove zenodo and .cff file to simplify package citation and avoid tracking by RSD (issue #636)
+    \item Part 1: Add extra arguments to modify zero-crossing count calculation.
+    \item Part 3: Adding ColeKripke sleep detection algorithm.
     }
 }
 \section{Changes in version 2.7-6 (GitHub-only-release date:02-09-2022)}{
@@ -124,6 +126,7 @@
 }
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
 \itemize{
+
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
     \item Part 1: Fixed issue #520 with handling Movisens data
     \item Part 1: Fixed issue #523 with calibration of ActiGraph csv files

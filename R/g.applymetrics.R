@@ -1,5 +1,7 @@
 g.applymetrics = function(data, sf, ws3, metrics2do,
-                          n = 4, lb = 0.2, hb = 15){
+                          n = 4, lb = 0.2, hb = 15,
+                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01,
+                          zc.order = 2){
   epochsize = ws3 #epochsize in seconds
   # data is a 3 column matrix with the x, y, and z acceleration
   do.bfen = metrics2do$do.bfen
@@ -172,7 +174,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     # Sadeh algorithm.
     # We use a second order filter because if it was an analog filter it was 
     # most likely not very steep filter.
-    data_processed = process_axes(data, filtertype = "pass", cut_point = c(0.25, 3), n = 2, sf)
+    data_processed = process_axes(data, filtertype = "pass", cut_point = c(zc.lb, zc.hb), n = zc.order, sf)
     zil = c()
     
     # 2) Sadeh reported to have used the y-axis but did not specify the orientation of
@@ -185,7 +187,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
       # 3) apply stop-band to minic sensitivity of 1980s and 1990s accelerometer
       # technology. Using a 0.01g threshold based on book by Tyron 
       # "Activity Measurementy in Psychology And Medicine"
-      smallvalues = which(abs(data_processed[,zi]) < 0.01)
+      smallvalues = which(abs(data_processed[,zi]) < zc.sb)
       if (length(smallvalues) > 0) {
         data_processed[smallvalues, zi] = 0
       }
@@ -208,6 +210,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         allmetrics$ZCZ = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize)
       }
     }
+
     # Note that this is per epoch, in GGIR part 3 we aggregate (sum) this per minute
     # to follow Sadeh. In Sadeh 1987 this resulted in values up to 280
     # 280 = 60 x 2 x frequency of movement which would mean near 2.33 Hertz average
@@ -251,7 +254,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     allmetrics$HFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize)
   }
   #================================================
-  # Combined low-pass and high-pass filtering metric:
+  # Combined low-pass and high-pass filtering metric:)
   if (do.hfenplus == TRUE) { 
     # Note that we are using intentionally the lower boundary for the low pass filter
     data_processed = process_axes(data, filtertype = "low", cut_point = lb, n, sf)
@@ -315,7 +318,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     allmetrics$ENMOa = averagePerEpoch(x = ENMOa, sf, epochsize)
   }
   #================================================
-  # Brond Counts
+  # Brond Counts)
   if (do.brondcounts == TRUE) {
     if (ncol(data) > 3) data = data[,2:4]
     mycounts = activityCounts::counts(data = data, hertz = sf, 
