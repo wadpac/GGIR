@@ -634,6 +634,25 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{n}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["n"]])}).
         Order of the frequency filter as used in the filter-based metrics.}
+      
+      \item{zc.lb}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.lb"]])})
+          Used for zero-crossing counts only. Lower boundery of cut-off frequency filter.}
+        
+      \item{zc.hb}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.hb"]])})
+          Used for zero-crossing counts only. Higher boundery of cut-off frequencies in filter.}
+        
+      \item{zc.sb}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.sb"]])})
+        Stop band used for calculation of zero crossing counts. Value is the acceleration threshold
+        in g units below which  acceleration will be rounded to zero.}
+      
+      \item{zc.order}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.order"]])})
+        Used for zero-crossing counts only. Order of frequency filter.}
+      
+      \item{zc.scale}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.scale"]])})
+        Used for zero-crossing counts only. Scaling factor to be applied after
+        counts are calculated (GGIR part 3).}
+        
+        
     }
   }
 
@@ -1143,6 +1162,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{cosinor}{
         Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
+        
     }
   }
 
