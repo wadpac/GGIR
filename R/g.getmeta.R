@@ -660,11 +660,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             if (any(duplicated(gap_index))) { 
               # When 2 gap_index are within the same epoch (either short or long)
               # we would have a duplicated gap_index here, then combine information
-              dup_index = which(duplicated(gap_index))
-              to_combine = which(gap_index == gap_index[dup_index])
-              gap_index = gap_index[-dup_index] # remove from gap index
-              gapsize[to_combine[1]] = sum(gapsize[to_combine]) - 1 # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
-              gapsize = gapsize[-dup_index]
+              dup_index_tmp = which(duplicated(gap_index))
+              dup_index = gap_index[dup_index_tmp]
+              for (dup_index_i in dup_index) {
+                to_combine = which(gap_index == dup_index_i)
+                length_to_combine = length(to_combine) # In the unlikely event that a gap_index appears more than 2, this should be able to deal with it.
+                delete = to_combine[-1] # leave only the first index and remove duplicates
+                gap_index = gap_index[-delete] # remove from gap index
+                gapsize[to_combine[1]] = sum(gapsize[to_combine]) - (length_to_combine - 1) # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
+                gapsize = gapsize[-delete] 
+              }
             }
             if ("nonwearscore" %in% metnames) {
               timeseries[gap_index, which(metnames == "nonwearscore")]  = 3
@@ -688,13 +693,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             # metalong
             metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)) + 1, # plus 1 needed to count for current epoch
                                              timeseries = metalong,
-                                             gap_index = round(gaps_to_fill / (ws2 * sfold)) + count2 - 1, # minus 1 needed to account the diff index between short and long epoch
+                                             gap_index = floor(gaps_to_fill / (ws2 * sfold)) + count2, # Using floor so that the gap is filled in the epoch in which it is occurring
                                              metnames = metricnames_long)
             
             # metashort
             metashort = impute_at_epoch_level(gapsize = remaining_epochs[gaps_to_fill], # gapsize in epochs
                                               timeseries = metashort,
-                                              gap_index = round(gaps_to_fill / (ws3 * sfold)) + count,
+                                              gap_index = floor(gaps_to_fill / (ws3 * sfold)) + count, # Using floor so that the gap is filled in the epoch in which it is occurring
                                               metnames = c("timestamp", metnames)) # epoch level index of gap
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])
