@@ -1,6 +1,6 @@
 g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                      acc.metric = "ENMO", desiredtz = "",
-                     myfun=c(), sensor.location = "wrist", params_sleep = c(), ...) {
+                     myfun=c(), sensor.location = "wrist", params_sleep = c(), zc.scale = 1, ...) {
   
   #get input variables
   input = list(...)
@@ -117,14 +117,19 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(anglez))
-    if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | params_sleep[["HASIB.algo"]] == "Galland2012") { # extract zeroCrossingCount
+    if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
+        params_sleep[["HASIB.algo"]] == "Galland2012" |
+        params_sleep[["HASIB.algo"]] == "ColeKripke1992") { # extract zeroCrossingCount
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
+      zeroCrossingCount = zeroCrossingCount * zc.scale
       # always do zeroCrossingCount but optionally also add BrondCounts to output for comparison
       BrondCount_colname = paste0("BrondCount_", tolower(params_sleep[["Sadeh_axis"]]))
       if (BrondCount_colname %in% colnames(IMP$metashort)) {
         BrondCount =  IMP$metashort[, BrondCount_colname]
         BrondCount = fix_NA_invector(BrondCount)
+      } else {
+        BrondCount = c()
       }
     } else {
       zeroCrossingCount = c()
@@ -144,7 +149,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       sleep = HASIB(HASIB.algo = params_sleep[["HASIB.algo"]], 
                     timethreshold = params_sleep[["timethreshold"]],
                     anglethreshold = params_sleep[["anglethreshold"]], 
-                    time = time, anglez = anglez, ws3=ws3,
+                    time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
                     BrondCount = BrondCount)
     } else { # getSleepFromExternalFunction == TRUE
