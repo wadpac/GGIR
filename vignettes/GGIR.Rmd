@@ -1793,6 +1793,10 @@ imputation: Time gaps shorter than 90 minutes are imputed at raw data level with
 last known recorded  value before the timeg gap, while longer time gaps are imputed at
 epoch level. We do this to make the data processing more memory efficient and faster.
 
+Time gaps in the data are considered non-wear time in GGIR, this implies that we 
+trust the ActiGraph sleep mode to only be activated when the device is not worn, 
+although there is always a risk of sleep/sedentary misclassification.
+
 ### The importance of reporting idle.sleep.mode usage
 
 Studies often forget to clarify whether idle sleep mode was used
