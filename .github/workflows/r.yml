@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-tinytex@master
+      - uses: r-lib/actions/setup-tinytex@v2 #- uses: r-lib/actions/setup-tinytex@master
       - run: tlmgr --version
       - uses: r-lib/actions/setup-r@master
         with:
@@ -78,7 +78,7 @@ jobs:
           Sys.setenv(TZ="Europe/Amsterdam")
           cat(Sys.timezone())
           cat(Sys.getenv("TZ"))
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), build_args = "--no-manual", error_on = "warning", check_dir = "check")
         shell: Rscript {0}
     
       - name: Check macOS
@@ -89,7 +89,7 @@ jobs:
           Sys.setenv(TZ="Pacific/Auckland")
           cat(Sys.timezone())
           cat(Sys.getenv("TZ"))
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), build_args = "--no-manual", error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
       - name: Check Windows
@@ -100,7 +100,7 @@ jobs:
           Sys.setenv(TZ="America/New_York")
           cat(Sys.timezone())
           cat(Sys.getenv("TZ"))
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), build_args = "--no-manual", error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
         

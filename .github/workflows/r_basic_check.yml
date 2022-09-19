@@ -36,7 +36,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - uses: r-lib/actions/setup-pandoc@v1
-
+      
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -68,7 +68,7 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual"), check_dir = "check")
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual"), build_args = "--no-manual", check_dir = "check")
         shell: Rscript {0}
 
       - name: Upload check results

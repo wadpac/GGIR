@@ -48,7 +48,7 @@
   }
   \item{zc.scale}{
     Used for zero-crossing counts only. Scaling factor to be applied after
-    counts are calculated (GGIR part 3).
+    counts are calculated (GGIR part 3). See \link{GGIR}.
   }
   \item{...}{
      Any argument used in the previous version of g.sib.det, which will now
