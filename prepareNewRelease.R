@@ -50,7 +50,7 @@ prepareNewRelease = function(version = c()) {
     i = i + 1
   }
   # Check NEWs.rd file
-  NE = read.csv(file = "./inst/NEWS.Rd", sep = "\n")
+  NE = read.table(file = "./inst/NEWS.Rd", sep = "\n", quote = "")
   i = 1
   versioninfile = dateinfile = c()
   while (i <= nrow(NE)) {
@@ -74,7 +74,7 @@ prepareNewRelease = function(version = c()) {
       }
       break() # only check first date and version number
     }
-    i = i + 1
+        i = i + 1
   }
   if (errorfound == FALSE) cat(paste0("\nNo problem found. Package consistently uses version ",version," and release date ", dateReversed))
 }

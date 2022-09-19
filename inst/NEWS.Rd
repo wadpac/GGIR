@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-0 (GitHub-only-release date:19-09-2022)}{
+\section{Changes in version 2.8-0 (release date:19-09-2022)}{
   \itemize{
     \item Documentation: New package vignette added for cut-points.
     \item Documentation: New package vignette added for arguments
@@ -67,7 +67,6 @@
     set time window guider functionality correctly
     }
 }
-
 \section{Changes in version 2.7-2 (GitHub-only-release date:22-06-2022)}{
 \itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.

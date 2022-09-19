@@ -71,7 +71,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
     List (default = \Sexpr{format(formals(GGIR::GGIR)[["myfun"]])}).
     External function object to be applied to raw data. See package vignette for detailed tutorial with
     examples on how to use the function embedding:
-    https://cran.r-project.org/web/packages/GGIR/vignettes/ExternalFunction.pdf
+    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf
   }
   \item{...}{
     Any of the parameters used GGIR. Given the large number of parameters used in GGIR
@@ -165,14 +165,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument \code{configtz} to specify where the device was configured.
-        See also http://en.wikipedia.org/wiki/Zone.tab}
+        See also https://en.wikipedia.org/wiki/Zone.tab}
 
       \item{configtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone).
         Only functional for AX3 cwa and ActiGraph .gt3x data at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
-        place are different. See also http://en.wikipedia.org/wiki/Zone.tab}
+        place are different. See also https://en.wikipedia.org/wiki/Zone.tab}
 
       \item{sensor.location}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["sensor.location"]]}").
@@ -403,7 +403,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument configtz to specify where the device was configured (not implemented yet).
-        See also http://en.wikipedia.org/wiki/Zone.tab}
+        See also https://en.wikipedia.org/wiki/Zone.tab}
 
       \item{rmc.sf}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.sf"]])}).
