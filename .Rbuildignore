@@ -1,7 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.zenodo.json
-CITATION.cff
 prepareNewRelease.R
 ^doc$
 ^Meta$
