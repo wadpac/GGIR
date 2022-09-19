@@ -539,9 +539,10 @@ the output folder and explicitly point to it with `configfile` argument.
 
 # Time for action: How to run your analysis?
 
-## From the console
+## From the R console on your own desktop/laptop
 
-You can use
+Create an R-script and put the GGIR call in it. Next, you can source the R-script
+with the `source` function in R:
 
 `source("pathtoscript/myshellscript.R")`
 
@@ -551,12 +552,12 @@ or use the Source button in RStudio if you use RStudio.
 
 GGIR by default support multi-thread processing, which can be turned off
 by seting argument `do.parallel = FALSE`. If this is still not fast
-enough then I advise using a GGIR on a computing cluster. The way I did
+enough then we advise using a GGIR on a computing cluster. The way we did
 it on a Sun Grid Engine cluster is shown below, please note that some of
 these commands are specific to the computing cluster you are working on.
 Also, you may actually want to use an R package like clustermq or
 snowfall, which avoids having to write bash script. Please consult your
-local cluster specialist to tailor this to your situation. In my case, I
+local cluster specialist to tailor this to your situation. In our case, we
 had three files for the SGE setting:
 
 **submit.sh**
@@ -598,6 +599,33 @@ work. The values of `f0` and `f1` are passed on from the bash script.
 
 Once this is all setup you will need to call `bash submit.sh` from the
 command line.
+
+With the help of computing clusters GGIR has successfully been run on some of the
+worlds largest accelerometer data sets such as UK Biobank and German NAKO study.
+
+## Processing time
+
+The time to process a typical seven day recording should be anywhere in between 
+3 and 10 minutes depending on the sample frequency of the
+recording, the sensor brand, data format, the exact configuration of GGIR, and 
+the specifications of your computer. If you are observing processing times of 20
+minutes or longer for a 7 day recording then probably you are slowed down by other 
+factors. 
+
+Some tips on how you may be able to address this:
+
+- Make sure the data you process is on the same machine as where GGIR is run.
+Processing data located somewhere else on a computer network can substantially 
+slow software down.
+- Make sure your machine has 8GB or more RAM memory, using GGIR on old machines with
+only 4GB is known to be slow. However, total memory is not the only bottle neck, also 
+consider the number of processes (threads) your CPU can run relative to the 
+amount of memory. Ending up with 2GB per process seems a good target.
+- Avoid doing other computational activities with your machine while running GGIR. 
+For example, if you use DropBox or OneDrive make sure they do not sync while you
+are running GGIR. When using GGIR to process large datasets it is probably best to
+not use the machine, but make sure the machine is configured not to fall
+asleep as that would terminate the analyses.
 
 # Inspecting the results
 
