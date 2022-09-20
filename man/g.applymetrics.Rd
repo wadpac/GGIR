@@ -18,8 +18,7 @@
     Three column matrix with x, y, and z acceleration data
   }
   \item{n}{
-    filter order, only needed if a metric is selected
-    that involves a frequency filter
+    filter order, see \link{GGIR} for details
   }
   \item{sf}{
      sample frequency
@@ -34,25 +33,22 @@
     should be extracted
   }
   \item{lb}{
-    Lower boundery of cut-off frequencies
+    Lower boundery of cut-off frequencies, see \link{GGIR}.
   }
   \item{hb}{
-    Higher boundery of cut-off frequencies
+    Higher boundery of cut-off frequencies, see \link{GGIR}.
   }
   \item{zc.lb}{
-    Used for zero-crossing counts only. Lower boundery of cut-off frequencies
-    in filter.
+    See \link{GGIR}
   }
   \item{zc.hb}{
-    Used for zero-crossing counts only. Higher boundery of cut-off frequencies
-    in filter.
+    See \link{GGIR}
   }
   \item{zc.sb}{
-    Stop band used for calculation of zero crossing counts. Value is the 
-    acceleration threshold in g units below which  acceleration will be rounded to zero.
+    See \link{GGIR}
   }
   \item{zc.order}{
-    Used for zero-crossing counts only. Order of frequency filter.
+    See \link{GGIR}
   }
 }
 \value{
