@@ -438,7 +438,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   for (rq46i in 1:length(rownames(as.matrix(q46)))) {
                     tmp1 = rownames(as.matrix(q46))[rq46i]
                     tmp2 = as.character(unlist(strsplit(tmp1, "%")))
-                    namesq46[rq46i] = paste0("p", tmp2, "_", colnames(metashort)[mi], "_mg",
+                    namesq46[rq46i] = paste0("p", tmp2, "_", cn_metashort[mi], "_mg",
                                              anwi_nameindices[anwi_index])
                   }
                   fi = correct_fi(di, ds_names, fi, varname = namesq46[1])
@@ -459,7 +459,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   keepindex_48[mi - 1,] = c(fi, (fi + (length(q48) - 1)))
                   namesq47 = rep(0, length(rownames(q47)))
                   for (rq47i in 1:length(rownames(q47))) {
-                    namesq47[rq47i] = paste0(rownames(q47)[rq47i], "_", colnames(metashort)[mi], "_mg",
+                    namesq47[rq47i] = paste0(rownames(q47)[rq47i], "_", cn_metashort[mi], "_mg",
                                              anwi_nameindices[anwi_index])
                   }
                   fi = correct_fi(di, ds_names, fi, varname = namesq47[1])
@@ -480,7 +480,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   y_ig = q49
                   igout = g.intensitygradient(x_ig, y_ig)
                   varnameig = paste0(c("ig_gradient", "ig_intercept", "ig_rsquared"),
-                                     paste0("_", colnames(metashort)[mi], anwi_nameindices[anwi_index]))
+                                     paste0("_", cn_metashort[mi], anwi_nameindices[anwi_index]))
                   fi = correct_fi(di, ds_names, fi, varname = varnameig[1])
                   if (length(varnum) > 0) {
                     daysummary[di, fi:(fi + 2)] = as.vector(unlist(igout))
@@ -545,7 +545,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                            paste0("MVPA_E", ws3, "S_B", params_phyact[["mvpadur"]][2], "M", (params_phyact[["boutcriter"]] * 100), "%_T", params_phyact[["mvpathreshold"]][mvpai]),
                                            paste0("MVPA_E", ws3, "S_B", params_phyact[["mvpadur"]][3], "M", (params_phyact[["boutcriter"]] * 100), "%_T", params_phyact[["mvpathreshold"]][mvpai]))
                     for (fillds in 1:6) {
-                      mvpavarname = paste0(mvpanames[fillds,mvpai], "_", colnames(metashort)[mi], anwi_nameindices[anwi_index])
+                      mvpavarname = paste0(mvpanames[fillds,mvpai], "_", cn_metashort[mi], anwi_nameindices[anwi_index])
                       fi = correct_fi(di, ds_names, fi, varname = mvpavarname)
                       daysummary[di,fi] = mvpa[fillds]
                       ds_names[fi] = mvpavarname; fi = fi + 1
@@ -555,10 +555,38 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
-                  varnameevent = paste0(colnames(metashort)[mi], "_sum", anwi_nameindices[anwi_index])
+                  # sum per window total
+                  varnameevent = paste0(cn_metashort[mi], "_sum", anwi_nameindices[anwi_index])
                   fi = correct_fi(di, ds_names, fi, varname = varnameevent)
                   daysummary[di,fi] = sum(varnum)
                   ds_names[fi] = varnameevent; fi = fi + 1
+                  # sum per window per acceleration level
+                  acc.metrics = cn_metashort[cn_metashort %in% c("timestamp","anglex","angley","anglez", cn_metashort[mi]) == FALSE]
+                  acc.thresholds = c(0, 50, 100) # hard-coded make this a user input arguments myfun
+                  for (ami in 1:length(acc.metrics)) {
+                    for (ti in 1:length(acc.thresholds)) {
+                      if (ti < length(acc.thresholds)) {
+                        varnameevent = paste0(cn_metashort[mi], "_sum_", acc.metrics[ami], "_",
+                                              acc.thresholds[ti], "-", acc.thresholds[ti + 1], "mg",
+                                              anwi_nameindices[anwi_index])
+                        fi = correct_fi(di, ds_names, fi, varname = varnameevent)
+                        selection_1 = which(metashort[,acc.metrics[ami]] >= (acc.thresholds[ti]/1000) &
+                                              metashort[,acc.metrics[ami]] < (acc.thresholds[ti + 1]/1000))
+                      } else {
+                        varnameevent = paste0(cn_metashort[mi], "_sum_", "_atleast",
+                                              acc.thresholds[ti], "mg",
+                                              anwi_nameindices[anwi_index])
+                        fi = correct_fi(di, ds_names, fi, varname = varnameevent)
+                        selection_1 = which(metashort[,acc.metrics[ami]] >= (acc.thresholds[ti]/1000))
+                      }
+                      if (length(selection_1) > 0)  {
+                        daysummary[di,fi] = sum(varnum[selection_1], na.rm = TRUE)
+                      } else {
+                        daysummary[di,fi] = 0
+                      }
+                      ds_names[fi] = varnameevent; fi = fi + 1
+                    }
+                  }
                 } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
                   varnamescalar = paste0(colnames(metashort)[mi], "_mean", anwi_nameindices[anwi_index])
                   fi = correct_fi(di, ds_names, fi, varname = varnamescalar)
