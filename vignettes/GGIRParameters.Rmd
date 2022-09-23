@@ -1,0 +1,281 @@
+---
+title: "GGIR configuration parameters"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{GGIR configuration parameters}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+The GGIR
+[shell function](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
+takes the input arguments and groups them into parameter objects. 
+The first section below displays all optional GGIR input argument names, the 
+GGIR part (1, 2, 3, 4 and/or 5) they are used in, and the parameter object 
+they are stored in. As you will see, a few parameters are not part of any parameter 
+object because they are direct arguments of the GGIR shell function.
+
+In the [second section of this vignette](#default-argument-values) you will 
+find a description and default value for all the arguments.
+
+# Input arguments/parameters overview
+
+| Argument (parameter)        | Used in GGIR part | Parameter object         |
+|-----------------------------|-------------------|--------------------------|
+| datadir                     | 1, 2, 4, 5        | not in parameter objects |
+| f0                          | 1, 2, 3, 4, 5     | not in parameter objects |
+| f1                          | 1, 2, 3, 4, 5     | not in parameter objects |
+| windowsizes                 | 1, 5              | params_general           |
+| desiredtz                   | 1, 2, 3, 4, 5     | params_general           |
+| overwrite                   | 1, 2, 3, 4, 5     | params_general           |
+| do.parallel                 | 1, 2, 3, 5        | params_general           |
+| maxNcores                   | 1, 2, 3, 5        | params_general           |
+| myfun                       | 1, 2, 3           | not in parameter objects |
+| outputdir                   | 1                 | not in parameter objects |
+| studyname                   | 1                 | not in parameter objects |
+| chunksize                   | 1                 | params_rawdata           |
+| do.enmo                     | 1                 | params_metrics           |
+| do.lfenmo                   | 1                 | params_metrics           |
+| do.en                       | 1                 | params_metrics           |
+| do.bfen                     | 1                 | params_metrics           |
+| do.hfen                     | 1                 | params_metrics           |
+| do.hfenplus                 | 1                 | params_metrics           |
+| do.mad                      | 1                 | params_metrics           |
+| do.anglex                   | 1                 | params_metrics           |
+| do.angley                   | 1                 | params_metrics           |
+| do.angle                    | 1                 | params_metrics           |
+| do.enmoa                    | 1                 | params_metrics           |
+| do.roll_med_acc_x           | 1                 | params_metrics           |
+| do.roll_med_acc_y           | 1                 | params_metrics           |
+| do.roll_med_acc_z           | 1                 | params_metrics           |
+| do.dev_roll_med_acc_x       | 1                 | params_metrics           |
+| do.dev_roll_med_acc_y       | 1                 | params_metrics           |
+| do.dev_roll_med_acc_z       | 1                 | params_metrics           |
+| do.lfen                     | 1                 | params_metrics           |
+| do.lfx                      | 1                 | params_metrics           |
+| do.lfy                      | 1                 | params_metrics           |
+| do.lfz                      | 1                 | params_metrics           |
+| do.hfx                      | 1                 | params_metrics           |
+| do.hfy                      | 1                 | params_metrics           |
+| do.hfz                      | 1                 | params_metrics           |
+| do.bfx                      | 1                 | params_metrics           |
+| do.bfy                      | 1                 | params_metrics           |
+| do.bfz                      | 1                 | params_metrics           |
+| do.zcx                      | 1                 | params_metrics           |
+| do.zcy                      | 1                 | params_metrics           |
+| do.zcz                      | 1                 | params_metrics           |
+| lb                          | 1                 | params_metrics           |
+| hb                          | 1                 | params_metrics           |
+| n                           | 1                 | params_metrics           |
+| do.cal                      | 1                 | params_rawdata           |
+| spherecrit                  | 1                 | params_rawdata           |
+| minloadcrit                 | 1                 | params_rawdata           |
+| printsummary                | 1                 | params_rawdata           |
+| print.filename              | 1                 | params_general           |
+| backup.cal.coef             | 1                 | params_rawdata           |
+| rmc.noise                   | 1                 | params_rawdata           |
+| rmc.dec                     | 1                 | params_rawdata           |
+| rmc.firstrow.acc            | 1                 | params_rawdata           |
+| rmc.firstrow.header         | 1                 | params_rawdata           |
+| rmc.col.acc                 | 1                 | params_rawdata           |
+| rmc.col.temp                | 1                 | params_rawdata           |
+| rmc.col.time                | 1                 | params_rawdata           |
+| rmc.unit.acc                | 1                 | params_rawdata           |
+| rmc.unit.temp               | 1                 | params_rawdata           |
+| rmc.origin                  | 1                 | params_rawdata           |
+| rmc.header.length           | 1                 | params_rawdata           |
+| mc.format.time              | 1                 | params_rawdata           |
+| rmc.bitrate                 | 1                 | params_rawdata           |
+| rmc.dynamic_range           | 1                 | params_rawdata           |
+| rmc.unsignedbit             | 1                 | params_rawdata           |
+| rmc.desiredtz               | 1                 | params_rawdata           |
+| rmc.sf                      | 1                 | params_rawdata           |
+| rmc.headername.sf           | 1                 | params_rawdata           |
+| rmc.headername.sn           | 1                 | params_rawdata           |
+| rmc.headername.recordingid  | 1                 | params_rawdata           |
+| rmc.header.structure        | 1                 | params_rawdata           |
+| rmc.check4timegaps          | 1                 | params_rawdata           |
+| rmc.col.wear                | 1                 | params_rawdata           |
+| rmc.doresample              | 1                 | params_rawdata           |
+| imputeTimegaps              | 1                 | params_rawdata           |
+| selectdaysfile              | 1, 2              | params_cleaning          |
+| dayborder                   | 1, 2, 5           | params_general           |
+| dynrange                    | 1                 | params_rawdata           |
+| configtz                    | 1                 | params_general           |
+| minimumFileSizeMB           | 1                 | params_rawdata           |
+| interpolationType           | 1                 | params_rawdata           |
+| expand_tail_max_hours       | 1                 | params_general           |
+| metadatadir                 | 2, 3, 4, 5        | not in parameter objects |
+| minimum_MM_length.part5     | 5                 | params_cleaning          |
+| strategy                    | 2, 5              | params_cleaning          |
+| hrs.del.start               | 2, 5              | params_cleaning          |
+| hrs.del.end                 | 2, 5              | params_cleaning          |
+| maxdur                      | 2, 5              | params_cleaning          |
+| max_calendar_days           | 2                 | params_cleaning          |
+| includedaycrit              | 2                 | params_cleaning          |
+| L5M5window                  | 2                 | params_247               |
+| M5L5res                     | 2, 5              | params_247               |
+| winhr                       | 2, 5              | params_247               |
+| qwindow                     | 2                 | params_247               |
+| qlevels                     | 2                 | params_247               |
+| ilevels                     | 2                 | params_247               |
+| mvpathreshold               | 2                 | params_phyact            |
+| boutcriter                  | 2                 | params_phyact            |
+| ndayswindow                 | 2                 | params_cleaning          |
+| idloc                       | 2, 4              | params_general           |
+| do.imp                      | 2                 | params_cleaning          |
+| storefolderstructure        | 2, 4, 5           | params_output            |
+| epochvalues2csv             | 2                 | params_output            |
+| do.part2.pdf                | 2                 | params_output            |
+| mvpadur                     | 2                 | params_phyact            |
+| window.summary.size         | 2                 | params_247               |
+| bout.metric                 | 2, 5              | params_phyact            |
+| closedbout                  | 2                 | params_phyact            |
+| IVIS_windowsize_minutes     | 2                 | params_247               |
+| IVIS_epochsize_seconds      | 2                 | params_247               |
+| IVIS.activity.metric        | 2                 | params_247               |
+| iglevels                    | 2, 5              | params_247               |
+| TimeSegments2ZeroFile       | 2                 | params_cleaning          |
+| qM5L5                       | 2                 | params_247               |
+| MX.ig.min.dur               | 2                 | params_247               |
+| qwindow_dateformat          | 2                 | params_247               |
+| anglethreshold              | 3                 | params_sleep             |
+| timethreshold               | 3                 | params_sleep             |
+| acc.metric                  | 3, 5              | params_general           |
+| ignorenonwear               | 3                 | params_sleep             |
+| constrain2range             | 3                 | params_sleep             |
+| do.part3.pdf                | 3                 | params_output            |
+| sensor.location             | 3, 4              | params_general           |
+| HASPT.algo                  | 3                 | params_sleep             |
+| HASIB.algo                  | 3                 | params_sleep             |
+| Sadeh_axis                  | 3                 | params_sleep             |
+| longitudinal_axis           | 3                 | params_sleep             |
+| HASPT.ignore.invalid        | 3                 | params_sleep             |
+| loglocation                 | 4, 5              | params_sleep             |
+| colid                       | 4                 | params_sleep             |
+| coln1                       | 4                 | params_sleep             |
+| nnights                     | 4                 | params_sleep             |
+| sleeplogidnum               | 4, 5              | params_sleep             |
+| do.visual                   | 4                 | params_output            |
+| outliers.only               | 4                 | params_output            |
+| excludefirstlast            | 4                 | params_cleaning          |
+| criterror                   | 4                 | params_output            |
+| includenightcrit            | 4                 | params_cleaning          |
+| relyonguider                | 4                 | params_sleep             |
+| relyonsleeplog              | 4                 | not in parameter objects |
+| def.noc.sleep               | 4                 | params_sleep             |
+| data_cleaning_file          | 4, 5              | params_cleaning          |
+| excludefirst.part4          | 4                 | params_cleaning          |
+| excludelast.part4           | 4                 | params_cleaning          |
+| sleeplogsep                 | 4                 | params_cleaning          |
+| sleepwindowType             | 4                 | params_cleaning          |
+| excludefirstlast.part5      | 5                 | params_cleaning          |
+| boutcriter.mvpa             | 5                 | params_phyact            |
+| boutcriter.in               | 5                 | params_phyact            |
+| boutcriter.lig              | 5                 | params_phyact            |
+| threshold.lig               | 5                 | params_phyact            |
+| threshold.mod               | 5                 | params_phyact            |
+| threshold.vig               | 5                 | params_phyact            |
+| timewindow                  | 5                 | params_output            |
+| boutdur.mvpa                | 5                 | params_phyact            |
+| boutdur.in                  | 5                 | params_phyact            |
+| boutdur.lig                 | 5                 | params_phyact            |
+| save_ms5rawlevels           | 5                 | params_output            |
+| part5_agg2_60seconds        | 5                 | params_general           |
+| save_ms5raw_format          | 5                 | params_output            |
+| save_ms5raw_without_invalid | 5                 | params_output            |
+| includedaycrit.part5        | 5                 | params_cleaning          |
+| frag.metrics                | 5                 | params_phyact            |
+| LUXthresholds               | 5                 | params_247               |
+| LUX_cal_constant            | 5                 | params_247               |
+| LUX_cal_exponent            | 5                 | params_247               |
+| LUX_day_segments            | 5                 | params_247               |
+| do.sibreport                | 5                 | params_output            |
+
+
+# Arguments/parameters description {#default-argument-values}
+
+All information as shown below has been auto-generated and
+is identical to the information provided in the [GGIR package pdf manual](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
+
+## GGIR function input arguments
+
+### mode {-}
+`r format(GGIR::ShellDoc2Vignette("mode"))`
+
+### datadir {-}
+`r format(GGIR::ShellDoc2Vignette("datadir"))`
+
+### outputdir {-}
+`r format(GGIR::ShellDoc2Vignette("outputdir"))`
+
+### studyname {-}
+`r format(GGIR::ShellDoc2Vignette("studyname"))`
+
+### f0 {-}
+`r format(GGIR::ShellDoc2Vignette("f0"))`
+
+### f1 {-}
+`r format(GGIR::ShellDoc2Vignette("f1"))`
+
+### do.report {-}
+`r format(GGIR::ShellDoc2Vignette("do.report"))`
+
+### configfile {-}
+`r format(GGIR::ShellDoc2Vignette("configfile"))`
+
+### myfun {-}
+`r format(GGIR::ShellDoc2Vignette("myfun"))`
+
+## General Parameters
+
+`r format(GGIR::parametersVignette("general"))`
+
+## Raw Data Parameters
+
+`r format(GGIR::parametersVignette("rawdata"))`
+
+## Metrics Parameters
+
+`r format(GGIR::parametersVignette("metrics"))`
+
+## Cleaning Parameters
+
+`r format(GGIR::parametersVignette("cleaning"))`
+
+## Sleep Parameters
+
+`r format(GGIR::parametersVignette("sleep"))`
+
+
+## Physical activity Parameters
+
+`r format(GGIR::parametersVignette("phyact"))`
+
+## 24/7 Parameters
+
+`r format(GGIR::parametersVignette("247"))`
+
+## Output Parameters
+
+`r format(GGIR::parametersVignette("output"))`
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```

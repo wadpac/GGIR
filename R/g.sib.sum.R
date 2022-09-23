@@ -75,7 +75,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
                 sib.cla.sum[cnt, 4] = nsleepperiods #number of sleep periods
                 sleep_sp = sleep.t[start_sp[spi]:end_sp[spi],j]
                 time_sp = time.t[start_sp[spi]:end_sp[spi]]
-                sleep_dur = (round((length(which(sleep_sp==1))/(60/ws3)) * 100)) / 100
+                sleep_dur = (round((length(which(sleep_sp == 1))/(60/ws3)) * 100)) / 100
                 # general characteristics of the time window
                 sib.cla.sum[cnt, 5] = sleep_dur/60 #total sleep duration
                 sib.cla.sum[cnt, 6] = fraction.night.invalid #length(invalid.t)
@@ -86,7 +86,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
               }
             }
             if (cnt  > 800) {
-              emptydf = as.data.frame(matrix(0,1000,ncol(sib.cla.sum)))
+              emptydf = as.data.frame(matrix(0, 1000, ncol(sib.cla.sum)))
               colnames(emptydf) = colnames(sib.cla.sum)
               sib.cla.sum = rbind(sib.cla.sum, emptydf)
             }

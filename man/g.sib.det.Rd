@@ -10,7 +10,7 @@
 \usage{
   g.sib.det(M, IMP, I, twd = c(-12, 12),
              acc.metric = "ENMO", desiredtz = "",
-             myfun=c(), sensor.location = "wrist", params_sleep = c(), ...)
+             myfun=c(), sensor.location = "wrist", params_sleep = c(), zc.scale = 1, ...)
 }
 \arguments{
   \item{M}{
@@ -45,6 +45,10 @@
   }
    \item{params_sleep}{
     See \link{g.part3}
+  }
+  \item{zc.scale}{
+    Used for zero-crossing counts only. Scaling factor to be applied after
+    counts are calculated (GGIR part 3). See \link{GGIR}.
   }
   \item{...}{
      Any argument used in the previous version of g.sib.det, which will now

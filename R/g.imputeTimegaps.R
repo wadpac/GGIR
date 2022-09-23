@@ -34,11 +34,14 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     }
     # if last value is a zero, we should not remove it (to keep track of the time)
     # This last row of zeros will be imputed afterwards (i.e., imputelast = TRUE)
-    if (zeros[length(zeros)] == nrow(x)) {
-      zeros = zeros[-length(zeros)]
-      imputelast = TRUE
+    if (length(zeros) > 0) { # safe check just in case that removing zeros[1] have made length(zeros) == 0
+      if (zeros[length(zeros)] == nrow(x)) {
+        zeros = zeros[-length(zeros)]
+        imputelast = TRUE
+      }
     }
-    x = x[-zeros,]
+    # Again, check that length(zeros) is still > 0 
+    if (length(zeros) > 0) x = x[-zeros,]
   }
   # find missing timestamps (timegaps)
   if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
