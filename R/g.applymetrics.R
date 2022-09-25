@@ -338,6 +338,12 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   #================================================
   # Actilife Counts)
   if (do.actilifecounts == TRUE) {
+    # I do not include actilifecounts as dependency to avoid overwritten methods
+    # message from package signal (this package has not well defined the source 
+    # package of their functions and we get an inoffensive but unwanted message 
+    # printed in the console).
+    # I followed suggestion in: https://bit.ly/3SaP69u
+    suppressMessages(requireNamespace("actilifecounts"))
     if (ncol(data) > 3) data = data[,2:4]
     mycounts = actilifecounts::get_counts(raw = data, sf = sf,
                                           epoch = epochsize, lfe_select = actilife_LFE,
