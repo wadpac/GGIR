@@ -622,6 +622,13 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         we clarify that these are the counts proposed by Jan Br&#248;nd and implemented
         in R by Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
         the counts produced by one of the closed source ActiLife software by ActiGraph.}
+        
+      \item{do.actilifecounts}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.actilifecounts"]])}).
+        If TRUE, calculates the metric via R package actilifecounts.
+        We call them ActilifeCount because this metric follow the method to calculate 
+        activity counts as performed in the closed source ActiLife software by ActiGraph (following the
+        methods published in doi: 10.1038/s41598-022-16003-x).}
 
       \item{lb}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}).
@@ -652,7 +659,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Used for zero-crossing counts only. Scaling factor to be applied after
         counts are calculated (GGIR part 3).}
         
-        
+      \item{actilife_LFE}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["actilife_LFE"]])}).
+        If TRUE, calculates the ActilifeCount metric with the low-frequency extension filter
+        as proposed in the closed source ActiLife software by ActiGraph. Only applicable to 
+        the metric ActilifeCount.}
     }
   }
 
