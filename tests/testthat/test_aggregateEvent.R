@@ -16,54 +16,56 @@ test_that("Events from external function are correctly aggregated", {
   varnum = metashort$step_count[anwindices]
   ws3 = 5
   anwi_nameindices = "_1234hrs"
-  daysummary = matrix("", 1, 21)
+  daysummary = matrix("", 1, 20)
   fi = 1
   di = 1
   ds_names = ""
+  myfun = list(ilevels = c(0, 50, 100),
+               clevels = c(0, 30, 50),
+               qlevels = c(0.25, 0.5, 0.75))
   # run function  
   eventAgg = aggregateEvent(metric_name = "step_count", varnum = varnum,
                             epochsize = ws3, anwi_nameindices = anwi_nameindices,
                             anwi_index = anwi_index, ds_names = ds_names,
                             fi = fi, di = di, daysummary = daysummary,
-                            acc.thresholds = c(0, 50, 100), metashort = metashort, 
-                            anwindices = anwindices, cadence.thresholds = c(0, 30, 50))
+                            metashort = metashort,  anwindices = anwindices, myfun)
   
   daysummary = as.data.frame(eventAgg$daysummary)
-  names(daysummary)[1:21] = eventAgg$ds_names
+  names(daysummary)[1:20] = eventAgg$ds_names
   
   # total steps
-  expect_equal(daysummary$total_step_count_1234hrs, "120")
+  expect_equal(daysummary$tot_step_count_1234hrs, "120")
   
   #total steps per acc range
-  expect_equal(daysummary$`total_step_count_0-50mg_ENMO_1234hrs`, "0")
-  expect_equal(daysummary$`total_step_count_50-100mg_ENMO_1234hrs`, "60")
-  expect_equal(daysummary$total_step_count_atleast_100mg_ENMO_1234hrs, "60")
+  expect_equal(daysummary$`tot_step_count_acc0-50mg_ENMO_1234hrs`, "0")
+  expect_equal(daysummary$`tot_step_count_acc50-100mg_ENMO_1234hrs`, "60")
+  expect_equal(daysummary$tot_step_count_accatleast100mg_ENMO_1234hrs, "60")
   
   #total steps per cadence range
-  expect_equal(daysummary$`total_step_count_0-30steppm_1234hrs`, "0")
-  expect_equal(daysummary$`total_step_count_30-50steppm_1234hrs`, "0")
-  expect_equal(daysummary$total_step_count_atleast_50steppm_1234hrs, "120")
+  expect_equal(daysummary$`tot_step_count_cad0-30spm_1234hrs`, "0")
+  expect_equal(daysummary$`tot_step_count_cad30-50spm_1234hrs`, "0")
+  expect_equal(daysummary$tot_step_count_cadatleast50spm_1234hrs, "120")
   
   #mean cadence
-  expect_equal(daysummary$mean_cadence_1234hrs, "40")
+  expect_equal(daysummary$mn_cad_1234hrs, "40")
   
   #mean cadence per acc range
-  expect_equal(daysummary$`mean_cadence_0-50mg_ENMO_1234hrs`, "0")
-  expect_equal(daysummary$`mean_cadence_50-100mg_ENMO_1234hrs`, "60")
-  expect_equal(daysummary$mean_cadence_atleast_100mg_ENMO_1234hrs, "60")
+  expect_equal(daysummary$`mn_cad_acc0-50mg_ENMO_1234hrs`, "0")
+  expect_equal(daysummary$`mn_cad_acc50-100mg_ENMO_1234hrs`, "60")
+  expect_equal(daysummary$mn_cad_accatleast100mg_ENMO_1234hrs, "60")
   
   #mean cadence per cadence range
-  expect_equal(daysummary$`mean_cadence_0-30steppm_1234hrs`, "0")
-  expect_equal(daysummary$`mean_cadence_30-50steppm_1234hrs`, "0")
-  expect_equal(daysummary$mean_cadence_atleast_50steppm_1234hrs, "60")
+  expect_equal(daysummary$`mn_cad_cad0-30spm_1234hrs`, "0")
+  expect_equal(daysummary$`mn_cad_cad30-50spm_1234hrs`, "0")
+  expect_equal(daysummary$mn_cad_cadatleast50spm_1234hrs, "60")
 
   # mean acc per cadence range
-  expect_equal(daysummary$`mean_ENMO_0-30steppm_1234hrs`, "0")
-  expect_equal(daysummary$`mean_ENMO_30-50steppm_1234hrs`, "0")
-  expect_equal(daysummary$mean_ENMO_atleast_50steppm_1234hrs, "100")
+  expect_equal(daysummary$`mn_ENMO_cad0-30spm_1234hrs`, "0")
+  expect_equal(daysummary$`mn_ENMO_cad30-50spm_1234hrs`, "0")
+  expect_equal(daysummary$mn_ENMO_cadatleast50spm_1234hrs, "100")
   
   # time per cadence range
-  expect_equal(daysummary$`dur_0-30steppm_1234hrs`, "1")
-  expect_equal(daysummary$`dur_30-50steppm_1234hrs`, "0")
-  expect_equal(daysummary$dur_atleast_50steppm_1234hrs, "2")
+  expect_equal(daysummary$`dur_cad0-30spm_1234hrs`, "1")
+  expect_equal(daysummary$`dur_cad30-50spm_1234hrs`, "0")
+  expect_equal(daysummary$dur_cadatleast50spm_1234hrs, "2")
 })

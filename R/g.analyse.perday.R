@@ -555,12 +555,18 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
+                  if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
+                  if ("clevels" %in% names(myfun) == FALSE) myfun$clevels = c(0, 30)
+                  if ("qlevels" %in% names(myfun) == FALSE) myfun$qlevels = c(0.25, 0.5, 0.75)
+                  if (length(myfun$ilevels) == 0) myfun$ilevels = 0
+                  if (length(myfun$clevels) == 0) myfun$clevels = 0
+                  if (length(myfun$qlevels) == 0) myfun$qlevels = 0.5
                   eventAgg = aggregateEvent(metric_name = cn_metashort[mi], varnum = varnum,
                                             epochsize = ws3, anwi_nameindices = anwi_nameindices,
                                             anwi_index = anwi_index, ds_names = ds_names,
                                             fi = fi, di = di, daysummary = daysummary,
-                                            acc.thresholds = c(0, 50, 100), metashort = metashort, 
-                                            anwindices = anwindices, cadence.thresholds = c(0, 30, 60))
+                                            metashort = metashort, 
+                                            anwindices = anwindices, myfun)
                   
                   daysummary = eventAgg$daysummary
                   ds_names = eventAgg$ds_names
