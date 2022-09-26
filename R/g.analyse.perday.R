@@ -555,116 +555,17 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
-                  if (cn_metashort[mi] == "step_count") {
-                    cadence = varnum * (60/ws3)
-                  }
-                  # aggregate per window total
-                  varnameevent = paste0("total_", cn_metashort[mi], anwi_nameindices[anwi_index])
-                  fi = correct_fi(di, ds_names, fi, varname = varnameevent)
-                  daysummary[di,fi] = sum(varnum)
-                  ds_names[fi] = varnameevent; fi = fi + 1
+                  eventAgg = aggregateEvent(metric_name = cn_metashort[mi], varnum = varnum,
+                                            epochsize = ws3, anwi_nameindices = anwi_nameindices,
+                                            anwi_index = anwi_index, ds_names = ds_names,
+                                            fi = fi, di = di, daysummary = daysummary,
+                                            acc.thresholds = c(0, 50, 100), metashort = metashort, 
+                                            anwindices = anwindices, cadence.thresholds = c(0, 30, 60))
                   
-                  if (cn_metashort[mi] == "step_count") {
-                    # cadence
-                    varnameevent = paste0("mean_cadence", anwi_nameindices[anwi_index])
-                    daysummary[di,fi] = mean(cadence, na.rm = TRUE)
-                    ds_names[fi] = varnameevent; fi = fi + 1
-                  }
-                  
-                  #========================================
-                  # per acceleration level
-                  acc.metrics = cn_metashort[cn_metashort %in% c("timestamp","anglex","angley","anglez", cn_metashort[mi]) == FALSE]
-                  acc.thresholds = c(0, 50, 100) # hard-coded make this a user input arguments myfun
-                  for (ami in 1:length(acc.metrics)) {
-                    for (ti in 1:length(acc.thresholds)) {
-                      # step_count per acceleration level
-                      if (ti < length(acc.thresholds)) {
-                        acc_level_name = paste0(acc.thresholds[ti], "-", acc.thresholds[ti + 1], "mg",  "_",  acc.metrics[ami])
-                        whereAccLevel = which(metashort[,acc.metrics[ami]] >= (acc.thresholds[ti]/1000) &
-                                              metashort[,acc.metrics[ami]] < (acc.thresholds[ti + 1]/1000))
-                      } else {
-                        acc_level_name = paste0("atleast_", acc.thresholds[ti], "mg",  "_",  acc.metrics[ami])
-                        whereAccLevel = which(metashort[,acc.metrics[ami]] >= (acc.thresholds[ti]/1000))
-                      }
-                      varnameevent = paste0("total_", cn_metashort[mi], "_", acc_level_name, anwi_nameindices[anwi_index])
-                      if (length(whereAccLevel) > 0)  {
-                        daysummary[di,fi] = sum(varnum[whereAccLevel], na.rm = TRUE)
-                      } else {
-                        daysummary[di,fi] = 0
-                      }
-                      ds_names[fi] = varnameevent; fi = fi + 1
-                      
-                      if (cn_metashort[mi] == "step_count") {
-                        # cadence per acceleration level
-                        varnameevent = paste0("mean_cadence_", 
-                                              acc_level_name, anwi_nameindices[anwi_index])
-                        if (length(whereAccLevel) > 0)  {
-                          daysummary[di,fi] = mean(cadence[whereAccLevel], na.rm = TRUE)
-                        } else {
-                          daysummary[di,fi] = 0
-                        }
-                        ds_names[fi] = varnameevent; fi = fi + 1
-                      }
-                    }
-                  }
-                  if (cn_metashort[mi] == "step_count") {
-                    varnamescalar = paste0("mean_cadence", anwi_nameindices[anwi_index])
-                    daysummary[di,fi] = mean(cadence)
-                    ds_names[fi] = varnamescalar; fi = fi + 1
-                    #========================================
-                    # per cadence level
-                    acc.metrics = cn_metashort[cn_metashort %in% c("timestamp","anglex","angley","anglez", cn_metashort[mi]) == FALSE]
-                    cadence.thresholds = c(0, 30, 60) # hard-coded make this a user input arguments myfun
-                    for (ti in 1:length(cadence.thresholds)) {
-                      # define cadence level
-                      if (ti < length(cadence.thresholds)) {
-                        cadence_level_name = paste0(cadence.thresholds[ti], "-", cadence.thresholds[ti + 1], "steppm")
-                        whereCadenceLevel = which(cadence >= (cadence.thresholds[ti]/1000) &
-                                              cadence < (cadence.thresholds[ti + 1]/1000))
-                      } else {
-                        cadence_level_name = paste0("atleast_", cadence.thresholds[ti], "steppm")
-                        whereCadenceLevel = which(cadence >= (cadence.thresholds[ti]/1000))
-                      }
-                      # cadence per cadence level
-                      varnameevent = paste0("mean_cadence_", cadence_level_name, anwi_nameindices[anwi_index])
-                      if (length(whereCadenceLevel) > 0)  {
-                        daysummary[di,fi] = mean(cadence[whereCadenceLevel], na.rm = TRUE)
-                      } else {
-                        daysummary[di,fi] = 0
-                      }
-                      ds_names[fi] = varnameevent; fi = fi + 1
-
-                      # step count per cadence level
-                      varnameevent = paste0("total_", cn_metashort[mi], "_", 
-                                            cadence_level_name, anwi_nameindices[anwi_index])
-                      if (length(whereCadenceLevel) > 0)  {
-                        daysummary[di,fi] = sum(varnum[whereCadenceLevel], na.rm = TRUE)
-                      } else {
-                        daysummary[di,fi] = 0
-                      }
-                      ds_names[fi] = varnameevent; fi = fi + 1
-                      
-                      # time per cadence level
-                      varnameevent = paste0("dur_", cadence_level_name, anwi_nameindices[anwi_index])
-                      daysummary[di,fi] = length(whereCadenceLevel) / (60/ws3)
-                      ds_names[fi] = varnameevent; fi = fi + 1
-                      
-                      for (ami in 1:length(acc.metrics)) {
-                        # acceleration per cadence level
-                        varnameevent = paste0("mean_",  acc.metrics[ami],"_",
-                                              cadence_level_name, anwi_nameindices[anwi_index])
-                        if (length(whereCadenceLevel) > 0)  {
-                          daysummary[di,fi] = mean(metashort[whereCadenceLevel, acc.metrics[ami]], na.rm = TRUE) * 1000
-                        } else {
-                          daysummary[di,fi] = 0
-                        }
-                        # browser()
-                        ds_names[fi] = varnameevent; fi = fi + 1
-                      }
-                    }
-                  }
-                  # end of event aggregation <<
-                } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
+                  daysummary = eventAgg$daysummary
+                  ds_names = eventAgg$ds_names
+                  fi = eventAgg$fi
+              } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
                   varnamescalar = paste0(colnames(metashort)[mi], "_mean", anwi_nameindices[anwi_index])
                   fi = correct_fi(di, ds_names, fi, varname = varnamescalar)
                   daysummary[di,fi] = mean(varnum)
