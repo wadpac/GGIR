@@ -615,7 +615,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 }
               }
-              if (mi == ExtFunColsi) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+              if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
                   eventAgg = aggregateEvent(metric_name = cn_metashort[mi], varnum = varnum,
                                             epochsize = ws3, anwi_nameindices = anwi_nameindices,
