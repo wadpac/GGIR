@@ -228,7 +228,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
     g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                    maxdur = params_cleaning[["maxdur"]],
-                   selectdaysfile = params_cleaning[["selectdaysfile"]],
                    store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]])
   }
   if (length(which(do.report == 4)) > 0) {

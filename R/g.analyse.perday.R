@@ -329,7 +329,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 } else {
                   a56 = length(averageday[,(mi - 1)]) - abs(difference)
                   a57 = length(averageday[, (mi - 1)])
-                  varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                  varnum = c(varnum, averageday[a56:a57, (mi - 1)])
                 }
               }
               if (anwi_index != 1) {
@@ -342,6 +342,28 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   varnum = c()
                 }
               }
+              #==============================
+              # varnum_step
+              if (mi == 2 & length(ExtFunColsi) > 0) {
+                varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
+                if (NRV != length(averageday[, (ExtFunColsi - 1)])) {
+                  if (di == 1) {
+                    varnum_event = c(averageday[1:abs(difference), (ExtFunColsi - 1)], varnum_event)
+                  } else {
+                    a56 = length(averageday[,(ExtFunColsi - 1)]) - abs(difference)
+                    a57 = length(averageday[, (ExtFunColsi - 1)])
+                    varnum_event = c(varnum_event, averageday[a56:a57, (ExtFunColsi - 1)])
+                  }
+                }
+                if (anwi_index != 1) {
+                  if (length(anwindices) > 0) {
+                    varnum_event = as.numeric(varnum_event[anwindices]) #cut short varnum_event to match day segment of interest
+                  } else {
+                    varnum_event = c()
+                  }
+                }
+              }
+              #=====
               gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)) > 0
               UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
@@ -552,26 +574,59 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     }
                   }
                 }
+                
+                # Step bout detection is done for evry acceleration metric
+                if (length(ExtFunColsi) > 0) { # If events are detected with external function
+                  if (myfun$reporttype == "event") {
+                    if ("ebout.dur" %in% names(myfun) == FALSE) myfun$ebout.dur = c(1, 5, 10)
+                    if ("ebout_th.cad" %in% names(myfun) == FALSE) myfun$ebout_th.cad = 30
+                    if ("ebout.th.acc" %in% names(myfun) == FALSE) myfun$ebout.th.acc = 50
+                    if ("ebout.criter" %in% names(myfun) == FALSE) myfun$ebout.criter = 0.8
+                    if ("ebout.condition" %in% names(myfun) == FALSE) myfun$ebout.condition = "AND"
+                    
+                    # varnum = metashort[anwindices, mi]
+                    cadence = varnum_event * (60/ws3)
+                    # Event bouts
+                    for (boutdur in myfun$ebout.dur) {
+                      boutduration = boutdur * (60/ws3) # per minute
+                      rr1 = matrix(0, length(varnum), 1)
+                      if (myfun$ebout.condition == "AND") {
+                        p = which(varnum * UnitReScale >= myfun$ebout.th.acc &
+                                    cadence >= myfun$ebout_th.cad); rr1[p] = 1
+                      } else if (myfun$ebout.condition == "OR") {
+                        p = which(varnum * UnitReScale >= myfun$ebout.th.acc | 
+                                    cadence >= myfun$ebout_th.cad); rr1[p] = 1
+                      }
+                      getboutout = g.getbout(x = rr1, boutduration = boutduration,
+                                             boutcriter = myfun$ebout.criter,
+                                             bout.metric = 6, ws3 = ws3)
+                      eventbout = length(which(getboutout$x == 1)) / (60/ws3) #time spent bout in minutes
+                      eboutname = paste0("eBout_E", ws3, "S_B", boutdur,
+                                         "M", (myfun$ebout.criter  * 100),
+                                         "_cadT",myfun$ebout_th.cad,"_",
+                                         myfun$ebout.condition,
+                                         "%_accT", myfun$ebout.th.acc)
+                      ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
+                      fi = correct_fi(di, ds_names, fi, varname = ebout_varname)
+                      daysummary[di,fi] = eventbout
+                      ds_names[fi] = ebout_varname;
+                      fi = fi + 1
+                    }
+                  }
+                }
               }
-              if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+              if (mi == ExtFunColsi) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
-                  if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
-                  if ("clevels" %in% names(myfun) == FALSE) myfun$clevels = c(0, 30)
-                  if ("qlevels" %in% names(myfun) == FALSE) myfun$qlevels = c(0.25, 0.5, 0.75)
-                  if (length(myfun$ilevels) == 0) myfun$ilevels = 0
-                  if (length(myfun$clevels) == 0) myfun$clevels = 0
-                  if (length(myfun$qlevels) == 0) myfun$qlevels = 0.5
                   eventAgg = aggregateEvent(metric_name = cn_metashort[mi], varnum = varnum,
                                             epochsize = ws3, anwi_nameindices = anwi_nameindices,
                                             anwi_index = anwi_index, ds_names = ds_names,
                                             fi = fi, di = di, daysummary = daysummary,
-                                            metashort = metashort, 
+                                            metashort = metashort,
                                             anwindices = anwindices, myfun)
-                  
                   daysummary = eventAgg$daysummary
                   ds_names = eventAgg$ds_names
                   fi = eventAgg$fi
-              } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
+                } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
                   varnamescalar = paste0(colnames(metashort)[mi], "_mean", anwi_nameindices[anwi_index])
                   fi = correct_fi(di, ds_names, fi, varname = varnamescalar)
                   daysummary[di,fi] = mean(varnum)

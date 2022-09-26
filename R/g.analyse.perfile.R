@@ -254,11 +254,14 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   }
   daysummary = data.frame(value = daysummary, stringsAsFactors = FALSE)
   names(daysummary) = ds_names
+  
   # remove double columns with 1-6am variables
   columnswith16am = grep("1-6am", x = colnames(daysummary))
   if (length(columnswith16am) > 1) {
     daysummary = daysummary[,-columnswith16am[2:length(columnswith16am)]]
   }
+ 
+  
   # tidy up filesummary object
   mw = which(is.na(filesummary) == T)
   mw = c(mw, grep(pattern = "NaN", x = filesummary))
