@@ -26,10 +26,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     # house keeping variables
     pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
     pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
-    winSUMMARY = daySUMMARY = c()
+    SUMMARY = daySUMMARY = c()
+    
     if (length(f0) ==  0) f0 = 1
     if (length(f1) ==  0) f1 = length(fnames)
     if (f1 > length(fnames)) f1 = length(fnames)
+    
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
@@ -63,7 +65,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         if (length(IMP) == 0) {
           cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
         }
-        if (do.part2.pdf == TRUE) {
+        if (do.part2.pdf == TRUE & length(IMP) > 0) {
           Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
           g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
         }
@@ -74,10 +76,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
             SUMMARY$pdfpagecount = pdfpagecount
             SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
-            if (length(selectdaysfile) > 0) {
-              winSUMMARY = SUM$windowsummary[,which(
-                is.na(colnames(SUM$windowsummary)) == FALSE)] # added for Millenium cohort
-            }
           } else {
             SUM$summary$pdffilenumb = pdffilenumb
             SUM$summary$pdfpagecount = pdfpagecount
@@ -88,14 +86,10 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
             }
             SUMMARY = bind_with_prev_data(SUMMARY, SUM$summary)
             daySUMMARY = bind_with_prev_data(daySUMMARY, SUM$daysummary)
-            if (length(selectdaysfile) > 0) {
-              # winsummary
-              winSUMMARY2 = SUM$windowsummary[,which(is.na(colnames(SUM$windowsummary)) == FALSE)]
-              winSUMMARY = bind_with_prev_data(winSUMMARY, SUM$winsummary)
-            }
           }
         }
       }
+      
       if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports")
       }
@@ -198,42 +192,38 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
         QCout = rbind(QCout,QC)
       }
-      #---------------------------------------------------------------
-      if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
-        SUMMARY_clean = tidyup_df(SUMMARY)
-        daySUMMARY_clean = tidyup_df(daySUMMARY)
-        #store matrix temporarily to keep track of process
-        write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-        write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
-        if (length(selectdaysfile) > 0) {
-          winSUMMARY_clean = tidyup_df(winSUMMARY)
-          write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
+      if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
+        #---------------------------------------------------------------
+        if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
+          SUMMARY_clean = tidyup_df(SUMMARY)
+          daySUMMARY_clean = tidyup_df(daySUMMARY)
+          #store matrix temporarily to keep track of process
+          write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+          write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+          write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
         }
-        write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
+        pdfpagecount = pdfpagecount + 1
       }
-      pdfpagecount = pdfpagecount + 1
     }
     # tidy up memory
-    if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
+    if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
     rm(M); rm(I)
     if (do.part2.pdf == TRUE) dev.off()
-
-    # tidy up data.frames
-    SUMMARY_clean = tidyup_df(SUMMARY)
-    daySUMMARY_clean = tidyup_df(daySUMMARY)
-    #===============================================================================
-    # store final matrices again
-    write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-    write.csv(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
-    if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
-      df = g.convert.part2.long(daySUMMARY)
-      df_clean = tidyup_df(df)
-      write.csv(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
+    if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
+      # tidy up data.frames
+      SUMMARY_clean = tidyup_df(SUMMARY)
+      daySUMMARY_clean = tidyup_df(daySUMMARY)
+      
+      #===============================================================================
+      # store final matrices again
+      write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
+      write.csv(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+      if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
+        df = g.convert.part2.long(daySUMMARY)
+        df_clean = tidyup_df(df)
+        write.csv(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
+      }
+      write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
     }
-    if (length(selectdaysfile) > 0) {
-      winSUMMARY_clean = tidyup_df(winSUMMARY)
-      write.csv(x = winSUMMARY_clean, file = paste0(metadatadir, "/results/part2_windowsummary.csv"), row.names = F)
-    }
-    write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
   }
 }
