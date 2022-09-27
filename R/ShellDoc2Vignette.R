@@ -21,7 +21,7 @@ ShellDoc2Vignette <- function(argument = "mode") {
   
   # Arguments in parameters
   start_details = grep("__\\details__", hs, fixed = TRUE)
-  end_details = grep("__\\value__", x = hs, fixed = TRUE)
+  end_details = grep("__\\examples__", x = hs, fixed = TRUE)
   parameters = hs[start_details:(end_details - 1)]
   
   tmp = grep(lookfor, basic_args); if (length(tmp) > 1) tmp = tmp[1]
@@ -35,9 +35,14 @@ ShellDoc2Vignette <- function(argument = "mode") {
     
     def = paste(basic_args[def0:def1], collapse = " ")
   } else { # argument is in details (parameter objects)
-    definitions = grep("\\item", parameters, fixed = TRUE)
+    definitions = grep("\\item_", parameters, fixed = TRUE)
     def0 = tmp2
     def1 = (definitions[which(definitions == tmp2) + 1]) - 1
+    
+    if (def0 == max(definitions)) { # last parameter in GGIR.Rd
+      def1_tmp = grep("__\\\\", parameters[(def0 + 1):length(parameters)])
+      def1 = def0 + def1_tmp[1] - 1
+    }
     
     if (is.na(def1)) {
       def1_tmp = grep("__", parameters)
