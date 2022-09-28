@@ -188,7 +188,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-  NWav2 = c() # empty vector to store short-epoch-level nonwear indicator
   if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) |
       (mon == 4 & dformat == 2) | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) == 0)) {
     temp.available = FALSE
@@ -565,8 +564,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         NWCW = detect_nonwear_clipping(data = data, windowsizes = c(ws3, ws2, ws), sf = sfold,
                                        clipthres = clipthres, sdcriter = sdcriter, racriter = racriter,
                                        params_rawdata = params_rawdata)
-        NWav = NWCW$NWav; NWav2 = c(NWav2, NWCW$NWav2); CWav = NWCW$CWav; nmin = NWCW$nmin
-        # 2022-09-16 - NWav2: nonwear indicator at ws3 resolution (short epoch) 
+        NWav = NWCW$NWav; CWav = NWCW$CWav; nmin = NWCW$nmin
         # metalong
         col_mli = 2
         metalong[count2:((count2 - 1) + length(NWav)),col_mli] = NWav; col_mli = col_mli + 1
@@ -638,9 +636,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               # set all features to zero except time and angle feature
               timeseries[gap_index, grep(pattern = "time|angle", 
                                          x = metnames, invert = TRUE, value = FALSE)] = 0
-              if ("NWav2" %in% colnames(timeseries)) { # NWav2 is in metashort temporarily, so it is not in metnames
-                timeseries[gap_index, colnames(timeseries == "NWav2")]  = 3
-              }
               # set EN to 1 if it is available
               if ("EN" %in% metnames) timeseries[gap_index, which(metnames == "EN")] = 1
             }
@@ -661,15 +656,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                              metnames = metricnames_long)
             # metashort
             # added epoch-level nonwear to metashort to get it imputed, then remove it
-            metashort = cbind(metashort,
-                              c(NWav2, rep(" ", times = nrow(metashort) - length(NWav2))))
             metashort = impute_at_epoch_level(gapsize = remaining_epochs[gaps_to_fill], # gapsize in epochs
                                               timeseries = metashort,
                                               gap_index = floor(gaps_to_fill / (ws3 * sfold)) + count, # Using floor so that the gap is filled in the epoch in which it is occurring
                                               metnames = c("timestamp", metnames)) # epoch level index of gap
-            NWav2 = as.numeric(metashort[, ncol(metashort)])
-            NWav2 = NWav2[!is.na(NWav2)]
-            metashort = metashort[, -ncol(metashort)]
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])
             count = count + (nr_after[2] - nr_before[2])
@@ -754,5 +744,5 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
   invisible(list(filecorrupt = filecorrupt, filetooshort = filetooshort, NFilePagesSkipped = NFilePagesSkipped,
                  metalong = metalong, metashort = metashort, wday = wday, wdayname = wdayname,
-                 windowsizes = params_general[["windowsizes"]], bsc_qc = bsc_qc, nonwear = NWav2))
+                 windowsizes = params_general[["windowsizes"]], bsc_qc = bsc_qc))
 }
