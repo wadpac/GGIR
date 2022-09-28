@@ -2,7 +2,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                    studyname = c(), myfun = c(),
                    params_metrics = c(), params_rawdata = c(),
                    params_cleaning = c(), params_general = c(), ...) {
-  
+
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -10,7 +10,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                           params_rawdata = params_rawdata,
                           params_cleaning = params_cleaning,
                           params_general = params_general,
-                          input = input, 
+                          input = input,
                           params2check = c("metrics", "rawdata",
                                            "cleaning", "general")) # load default parameters
   params_metrics = params$params_metrics
@@ -26,7 +26,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       stop('\nVariable outputdir is not specified')
     }
   }
-  
+
   if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) {
@@ -76,7 +76,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   path3 = paste0(outputdir, outputfolder) #where is output stored?
   use.temp = TRUE
   daylimit = FALSE
-  
+
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
@@ -132,7 +132,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
   ffdone = fdone = dir(paste0(outputdir, outputfolder, "/meta/basic"))
-  
+
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
       tmp = unlist(strsplit(fdone[ij],".RData"))
@@ -322,11 +322,11 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     outputdir = outputdir,
                     outputfolder = outputfolder,
                     myfun = myfun)
-      
+
       if (params_general[["expand_tail_max_hours"]] > 0) {
         # Identify gap between last timestamp and following midnight
-        ws3 = M$windowsizes[1] 
-        ws2 = M$windowsizes[2] 
+        ws3 = M$windowsizes[1]
+        ws2 = M$windowsizes[2]
         # Check whether gap is less then criteria
         last_ts = c(Sys.time(), Sys.time())
         secs_to_midnight = c(0, 0)
@@ -334,9 +334,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
         refhour = (24 + 8 + params_general[["dayborder"]])
         for (wsi in 1:2) {
-          secs_to_midnight[wsi] = (refhour * 3600) - 
-            (as.numeric(format(last_ts[wsi], "%H")) * 3600 + 
-               as.numeric(format(last_ts[wsi], "%M")) * 60  + 
+          secs_to_midnight[wsi] = (refhour * 3600) -
+            (as.numeric(format(last_ts[wsi], "%H")) * 3600 +
+               as.numeric(format(last_ts[wsi], "%M")) * 60  +
                as.numeric(format(last_ts[wsi], "%S")))
         }
         if (secs_to_midnight[1] <= refhour * 3600) {
@@ -417,14 +417,14 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       rm(M); rm(I); rm(C)
     }
   } # end of main_part1
-  
+
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
   if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
     if (Ncores > 3) {
-      
+
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       if (Ncores2use > 1) {
@@ -477,7 +477,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     } else if (params_rawdata[["chunksize"]] > 0.6 & Nmetrics2calc >= 6) { # if user wants to extract more than 5 metrics
       params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
     }
-    
+
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
     `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
@@ -487,7 +487,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                                                   params_cleaning, params_general, datadir, fnames, fnamesfull,
                                                   outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
                                                   use.temp, daylimit, path3, outputfolder, is.mv)
-                                     }) 
+                                     })
                                      return(tryCatchResult)
                                    }
     on.exit(parallel::stopCluster(cl))
@@ -504,7 +504,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                  params_cleaning, params_general, datadir, fnames, fnamesfull,
                  outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
                  use.temp, daylimit, path3, outputfolder, is.mv)
-      
+
     }
   }
 }

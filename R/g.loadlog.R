@@ -173,7 +173,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       if (length(newsleeplog) > 0) {
         emptyrows = which(rowSums(newsleeplog == "") == ncol(newsleeplog)) 
         if (length(emptyrows)) {
-          newsleeplog = newsleeplog[-emptyrows,]
+          newsleeplog = as.matrix(newsleeplog[-emptyrows,])
+        }
+        if (length(newsleeplog) != 0) {
+          if (ncol(newsleeplog) == 1 & nrow(newsleeplog) > 1) {
+            newsleeplog = t(newsleeplog)
+          }
         }
         emptycols = which(colSums(newsleeplog == "") == nrow(newsleeplog)) 
         colp = ncol(newsleeplog)
