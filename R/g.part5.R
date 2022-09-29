@@ -485,14 +485,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           # Add to dsummary output matrix
                           if (skiponset == FALSE) {
                             dsummary[di,fi] = onset
-                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[onseti]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
+                            dsummary[di,fi + 1] = as.character(strftime(format(time_POSIX[onseti]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
                           } else {
                             dsummary[di,fi:(fi + 1)] = rep(NA, 2)
                           }
                           ds_names[fi:(fi + 1)] = c("sleeponset", "sleeponset_ts");      fi = fi + 2
                           if (skipwake == FALSE) {
                             dsummary[di,fi] = wake
-                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[wakei]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
+                            dsummary[di,fi + 1] = as.character(strftime(format(time_POSIX[wakei]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
                           } else {
                             dsummary[di,fi:(fi + 1)] = rep(NA, 2)
                           }
@@ -659,7 +659,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                 e2 = (hri + (wini * (60/reso))) * reso * (60/ws3new)
                                 if (e2 > length(sse)) e2 = length(sse)
                                 ACCrunwin[(hri + 1), 1] = mean(ts$ACC[sse[e1:e2]])
-                                TIMErunwin[(hri + 1), 1] = as.character(ts$time[sse[e1]])
+                                TIMErunwin[(hri + 1), 1] = format(ts$time[sse[e1]])
                               }
                               ACCrunwin = ACCrunwin[is.na(ACCrunwin) == F]
                               TIMErunwin = TIMErunwin[is.na(ACCrunwin) == F]
@@ -671,7 +671,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                 M5VALUE = max(ACCrunwin)
                                 if (lightpeak_available == TRUE) {
                                   if (length(unlist(strsplit(M5HOUR, " "))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
-                                  startM5 = which(as.character(ts$time) == M5HOUR)
+                                  startM5 = which(format(ts$time) == M5HOUR)
                                   M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                   M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                 }
@@ -707,8 +707,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             if (ignore == FALSE) {
                               # Add also numeric time
                               if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
-                                L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR, tz = params_general[["desiredtz"]]))
-                                M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR, tz = params_general[["desiredtz"]]))
+                                L5HOUR = format(iso8601chartime2POSIX(L5HOUR, tz = params_general[["desiredtz"]]))
+                                M5HOUR = format(iso8601chartime2POSIX(M5HOUR, tz = params_general[["desiredtz"]]))
                               }
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
