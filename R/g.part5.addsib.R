@@ -15,15 +15,15 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
   pr1 = pr0 + ((60/ws3)*1440*6)
   pr2 = Nts
   if (nrow(S2) > 0) {
-    gik.ons = as.character(S2$sib.onset.time)
-    gik.end = as.character(S2$sib.end.time)
+    gik.ons = format(S2$sib.onset.time)
+    gik.end = format(S2$sib.end.time)
     for (g in 1:nrow(S2)) { # sustained inactivity bouts
       lastpr0 = pr0
       pr1 = pr0 + ((60/ws3)*1440*6)
       if (pr1 > pr2) pr1 = pr2
       if (pr0 > pr1) pr0 = pr1
       #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
-      timebb = as.character(ts$time[pr0:pr1])
+      timebb = format(ts$time[pr0:pr1])
       if (is.ISO8601(timebb[1]) == FALSE) { # only do this for POSIX format
         timebb = POSIXtime2iso8601(timebb,tz=desiredtz)
       }

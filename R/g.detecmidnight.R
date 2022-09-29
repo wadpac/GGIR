@@ -1,22 +1,22 @@
 g.detecmidnight = function(time,desiredtz,dayborder) {
   # code in this function is able to deal with two types of timestamp format
   convert2clock = function(x) { #ISO format
-    return(as.character(format(as.POSIXlt(x,format="%Y-%m-%dT%H:%M:%S%z",tz=desiredtz),"%H:%M:%S")))
+    return(format(as.POSIXlt(x, format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz), "%H:%M:%S"))
   }
   convert2clock_space = function(x) { #POSIX format
-    return(unlist(strsplit(x," "))[2])
+    return(unlist(strsplit(x, " "))[2])
   }
   checkmidnight = function(x){
-    temp1 = as.numeric(unlist(strsplit(x,":")))
+    temp1 = as.numeric(unlist(strsplit(x, ":")))
     return(sum(temp1 / c(1, 60, 3600)))
   }
-  space = ifelse(length(unlist(strsplit(time[1]," "))) > 1,TRUE,FALSE)
+  space = ifelse(length(unlist(strsplit(time[1], " "))) > 1,TRUE,FALSE)
   if (space == TRUE) {
-    time_clock = sapply(time,FUN=convert2clock_space)
-    checkmidnight_out = lapply(time_clock,FUN=checkmidnight)
+    time_clock = sapply(time, FUN = convert2clock_space)
+    checkmidnight_out = lapply(time_clock, FUN = checkmidnight)
   } else {
     time_clock = convert2clock(time)
-    checkmidnight_out = unlist(lapply(time_clock,FUN=checkmidnight))
+    checkmidnight_out = unlist(lapply(time_clock, FUN = checkmidnight))
   }
   midn = which(checkmidnight_out == dayborder) #replaced "== 0" for "== dayborder" to work in any scenario
   if (length(midn) == 0) { # measurement with no midnights, use last timestamp as dummy midnight for g.analyse() to work
@@ -37,7 +37,7 @@ g.detecmidnight = function(time,desiredtz,dayborder) {
     firstmidnight = midnights[1]
     firstmidnighti = midnightsi[1]
   }
-  invisible(list(firstmidnight=firstmidnight,firstmidnighti=firstmidnighti,
-                 lastmidnight=lastmidnight,lastmidnighti=lastmidnighti,
-                 midnights=midnights,midnightsi=midnightsi))
+  invisible(list(firstmidnight = firstmidnight, firstmidnighti = firstmidnighti,
+                 lastmidnight = lastmidnight, lastmidnighti = lastmidnighti,
+                 midnights = midnights, midnightsi = midnightsi))
 }

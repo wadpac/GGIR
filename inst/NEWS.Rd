@@ -1,8 +1,9 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-1 (release date:?-?-2022)}{
+\section{Changes in version 2.8-1 (release date:29-09-2022)}{
   \itemize{
+    \item Changed POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
     \item Part 1: Added actilifecounts metrics and dependency to actilifecounts package.
     }
 }
