@@ -192,16 +192,16 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           # not sure why I had to change x to 0 (from 1) in the following line:
           text(x=0,y=(max(YXLIM)*0.95),labels=vars[3],pos=4,font=2,cex=1.2)
           #Sleep efficiency
-          YXLIM = c(0,120)
+          YXLIM = c(0, 120)
           B5 = barplot(as.matrix(f06),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
                        ylim=YXLIM,cex.names=CEXN,las=0,col=CLS_B,density = 20) #,density = 20
           abline(h = 60, lty = 2, lwd = 2)
           abline(h = 100,lty = 3, lwd = 1)
           topp = mean(as.matrix(round(f06))) * 0.1
-          text(y = as.matrix(round(f06))+topp, x= B5, labels=as.character(as.matrix(round(f06))), xpd=TRUE,cex=1)
-          text(x=1,y=(max(YXLIM)-10),labels=vars[4],pos=4,font=2,cex=1.2)
+          text(y = as.matrix(round(f06)) + topp, x = B5, labels = as.character(as.matrix(round(f06))), xpd = TRUE,cex = 1)
+          text(x = 1, y = (max(YXLIM) - 10), labels = vars[4], pos = 4, font = 2, cex = 1.2)
           #-----------------------------------------------------------------------------------
-          mtext(paste("Activity and sleep report: ",fnamesmeta[i],sep=""), side = 3, line = 0, outer = TRUE,font=2,cex=0.7)
+          mtext(paste("Activity and sleep report: ",fnamesmeta[i], sep = ""), side = 3, line = 0, outer = TRUE,font=2,cex=0.7)
         }
         LWDX = 2.5 #linewidth for coloured lines
         LWDA = 0.2
