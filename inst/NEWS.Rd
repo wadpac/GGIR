@@ -4,15 +4,16 @@
 \section{Changes in version 2.8-1 (release date:29-09-2022)}{
   \itemize{
     \item Part4 report now also able to handle longitudinal studies with repeated measurement for the same ID
+    \item Changed POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
     }
 }
 \section{Changes in version 2.8-0 (release date:19-09-2022)}{
   \itemize{
     \item Documentation: New package vignette added for cut-points.
     \item Documentation: New package vignette added for arguments
-    \item Documentation: GGIR function manual and parameter/argument vignette 
+    \item Documentation: GGIR function manual and parameter/argument vignette
     auto-integrate default values to avoid inconsistencies.
-    \item Documentation: Main vignette sections on cut-points and input argument 
+    \item Documentation: Main vignette sections on cut-points and input argument
     shortened with reference to the new vignettes.
     \item Documentation: Paragraph added on processing time.
     }
@@ -32,7 +33,7 @@
     \item Part 1: Deprecated g.cwaread and internally replaced by GGIRread::readAxivity.
     \item Part 1: Deprecated g.binread and internally replaced by GGIRread::readGenea.
     \item Part 1: Deprecated resample and internally replaced by GGIRread::resample.
-    \item Part 1: Added temporary option to choose between using GENEAread or 
+    \item Part 1: Added temporary option to choose between using GENEAread or
       GGIRread::readGENEActiv for reading GENEActiv .bin files.
     \item Part 1 + 2: Deprecated selectdaysfile functionality.
     \item Deprecated function g.getidfromheaderobject, and functionality merged with g.extractheadervars
