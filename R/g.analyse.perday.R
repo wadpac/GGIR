@@ -600,15 +600,45 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
                                              boutcriter = myfun$ebout.criter,
                                              bout.metric = 6, ws3 = ws3)
-                      eventbout = length(which(getboutout$x == 1)) / (60/ws3) #time spent bout in minutes
-                      eboutname = paste0("eBout_E", ws3, "S_B", boutdur,
+                      # time spent in bouts in minutes
+                      eventbout = length(which(getboutout$x == 1)) / (60/ws3)
+                      eboutname = paste0("ExtFunEvent_Bout_totdur_E", ws3, "S_B", boutdur,
                                          "M", (myfun$ebout.criter  * 100),
-                                         "_cadT",myfun$ebout_th.cad,"_",
+                                         "%_cadT",myfun$ebout_th.cad,"_",
                                          myfun$ebout.condition,
-                                         "%_accT", myfun$ebout.th.acc)
+                                         "_accT", myfun$ebout.th.acc)
                       ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
                       fi = correct_fi(di, ds_names, fi, varname = ebout_varname)
-                      daysummary[di,fi] = eventbout
+                      daysummary[di,fi] = eventbout # total time in ebouts
+                      ds_names[fi] = ebout_varname;
+                      fi = fi + 1
+                      # number of bouts
+                      rle_bout = rle(as.numeric(getboutout$x))
+                      rle_bout1 = which(rle_bout$values == 1)
+                      number_of_bouts = length(rle_bout1)
+                      
+                      eboutname = paste0("ExtFunEvent_Bout_number_E", ws3, "S_B", boutdur,
+                                         "M", (myfun$ebout.criter  * 100),
+                                         "%_cadT",myfun$ebout_th.cad,"_",
+                                         myfun$ebout.condition,
+                                         "_accT", myfun$ebout.th.acc)
+                      ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
+                      daysummary[di,fi] = number_of_bouts
+                      ds_names[fi] = ebout_varname;
+                      fi = fi + 1
+                      # average bout duration in minutes
+                      if (number_of_bouts > 0) {
+                        mn_dur_bouts = mean(rle_bout$lengths[which(rle_bout$values == 1)]) / (60/ws3) 
+                      } else {
+                        mn_dur_bouts = 0
+                      }
+                      eboutname = paste0("ExtFunEvent_Bout_meandur_E", ws3, "S_B", boutdur,
+                                         "M", (myfun$ebout.criter  * 100),
+                                         "%_cadT",myfun$ebout_th.cad,"_",
+                                         myfun$ebout.condition,
+                                         "_accT", myfun$ebout.th.acc)
+                      ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
+                      daysummary[di,fi] = mn_dur_bouts
                       ds_names[fi] = ebout_varname;
                       fi = fi + 1
                     }
