@@ -205,18 +205,36 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
     rm(M); rm(I)
     if (do.part2.pdf == TRUE) dev.off()
-    # reoder EventVariable names if they exist
+    
+    #--------------------------------------
+    # Store Event reports
+    # split daySUMMARY in two files and reoder EventVariable names if they exist
     ds_names = names(daySUMMARY)
     EventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE)
     NotEventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE, invert = TRUE)
     if (length(EventVars) > 0) {
-      daySUMMARY = cbind(daySUMMARY[,NotEventVars], daySUMMARY[,EventVars])
-      EventVars2 = grep(pattern = "ExtFunEvent_", x = names(daySUMMARY), value = FALSE)
-      NotEventVars2 = grep(pattern = "ExtFunEvent_", x = names(daySUMMARY), value = FALSE, invert = TRUE)
-      daySUMMARY = cbind(daySUMMARY[,NotEventVars2], daySUMMARY[ , sort(names(daySUMMARY[, EventVars2]))])
-      names(daySUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(daySUMMARY))
+      dayEVENTSUMMARY = daySUMMARY[ , c("ID", "filename", "calendar_date", 
+                                        "N valid hours", "N hours", "weekday",
+                                        sort(names(daySUMMARY[, EventVars])))]
+      names(dayEVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(dayEVENTSUMMARY))
+      daySUMMARY = daySUMMARY[,NotEventVars]
+      dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
+      write.csv(x = dayEVENTSUMMARY_clean, paste0(metadatadir, "/results/part2_dayeventsummary.csv"), row.names = F)
     }
-    
+    # split SUMMARY in two files and reoder EventVariable names if they exist
+    s_names = names(SUMMARY)
+    EventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE)
+    NotEventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE, invert = TRUE)
+    if (length(EventVars) > 0) {
+      EVENTSUMMARY = SUMMARY[ , c("ID", "filename", "start_time",
+                                        "wear_dur_def_proto_day",
+                                        sort(names(SUMMARY[, EventVars])))]
+      names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
+      SUMMARY = SUMMARY[,NotEventVars]
+      EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
+      write.csv(x = EVENTSUMMARY_clean, paste0(metadatadir, "/results/part2_eventsummary.csv"), row.names = F)
+    }
+    #-----------------------------
     # tidy up data.frames
     SUMMARY_clean = tidyup_df(SUMMARY)
     daySUMMARY_clean = tidyup_df(daySUMMARY)
