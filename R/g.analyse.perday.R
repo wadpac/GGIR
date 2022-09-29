@@ -579,7 +579,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (length(ExtFunColsi) > 0) { # If events are detected with external function
                   if (myfun$reporttype == "event") {
                     if ("ebout.dur" %in% names(myfun) == FALSE) myfun$ebout.dur = c(1, 5, 10)
-                    if ("ebout_th.cad" %in% names(myfun) == FALSE) myfun$ebout_th.cad = 30
+                    if ("ebout.th.cad" %in% names(myfun) == FALSE) myfun$ebout.th.cad = 30
                     if ("ebout.th.acc" %in% names(myfun) == FALSE) myfun$ebout.th.acc = 50
                     if ("ebout.criter" %in% names(myfun) == FALSE) myfun$ebout.criter = 0.8
                     if ("ebout.condition" %in% names(myfun) == FALSE) myfun$ebout.condition = "AND"
@@ -592,10 +592,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       rr1 = matrix(0, length(varnum), 1)
                       if (myfun$ebout.condition == "AND") {
                         p = which(varnum * UnitReScale >= myfun$ebout.th.acc &
-                                    cadence >= myfun$ebout_th.cad); rr1[p] = 1
+                                    cadence >= myfun$ebout.th.cad); rr1[p] = 1
                       } else if (myfun$ebout.condition == "OR") {
                         p = which(varnum * UnitReScale >= myfun$ebout.th.acc | 
-                                    cadence >= myfun$ebout_th.cad); rr1[p] = 1
+                                    cadence >= myfun$ebout.th.cad); rr1[p] = 1
                       }
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
                                              boutcriter = myfun$ebout.criter,
@@ -604,7 +604,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       eventbout = length(which(getboutout$x == 1)) / (60/ws3)
                       eboutname = paste0("ExtFunEvent_Bout_totdur_E", ws3, "S_B", boutdur,
                                          "M", (myfun$ebout.criter  * 100),
-                                         "%_cadT",myfun$ebout_th.cad,"_",
+                                         "%_cadT",myfun$ebout.th.cad,"_",
                                          myfun$ebout.condition,
                                          "_accT", myfun$ebout.th.acc)
                       ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
@@ -619,7 +619,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       
                       eboutname = paste0("ExtFunEvent_Bout_number_E", ws3, "S_B", boutdur,
                                          "M", (myfun$ebout.criter  * 100),
-                                         "%_cadT",myfun$ebout_th.cad,"_",
+                                         "%_cadT",myfun$ebout.th.cad,"_",
                                          myfun$ebout.condition,
                                          "_accT", myfun$ebout.th.acc)
                       ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
@@ -634,7 +634,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       }
                       eboutname = paste0("ExtFunEvent_Bout_meandur_E", ws3, "S_B", boutdur,
                                          "M", (myfun$ebout.criter  * 100),
-                                         "%_cadT",myfun$ebout_th.cad,"_",
+                                         "%_cadT",myfun$ebout.th.cad,"_",
                                          myfun$ebout.condition,
                                          "_accT", myfun$ebout.th.acc)
                       ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])

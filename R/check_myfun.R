@@ -12,7 +12,7 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
                                               "outputtype", "aggfunction",
                                               "timestamp","reporttype", 
                                               "clevels", "ilevels", "qlevels",
-                                              "ebout.dur", "ebout_th.cad", "ebout.th.acc",
+                                              "ebout.dur", "ebout.th.cad", "ebout.th.acc",
                                               "ebout.criter", "ebout.condition") == FALSE)
   if (length(foreignElements) != 0) {
     status = 1
