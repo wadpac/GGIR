@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8-1 (release date:29-09-2022)}{
+  \itemize{
+    \item Part4 report now also able to handle longitudinal studies with repeated measurement for the same ID
+    }
+}
 \section{Changes in version 2.8-0 (release date:19-09-2022)}{
   \itemize{
     \item Documentation: New package vignette added for cut-points.
