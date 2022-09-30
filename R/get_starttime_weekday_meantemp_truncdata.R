@@ -61,6 +61,8 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     temp = unlist(strsplit(format(starttime)," "))
     if (length(temp) > 1) {
       starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
+    } else if (length(temp) == 1 & !grepl("T", temp)) {
+      starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
     } else {
       # first get char to POSIX
       temp = iso8601chartime2POSIX(starttime,tz=desiredtz)
