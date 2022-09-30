@@ -1296,13 +1296,19 @@ try to optimise the zero crossing count parameters as discussed below.
 
 To aid research in exploring count type algorithms, we also implemented the
 `brondcounts` as proposed by Br&#248;nd and Brondeel and available via R package
-activityCounts. To extract this metric in addition to the zero crossing count,
-specify `do.brondcounts = TRUE` which is used in GGIR part 1 and uses R package
-activityCounts in the background. As a result, sleep estimates for Sadeh, Cole-Kripke
-or Galland will be derived based on both the zero crossing algorithm and
-the `brondcounts` algorithms. Further, we have added parameters to help modify
+activityCounts, as well as the `neishabouricounts` that follows the algorithm implemented
+in the close-source software ActiLife by ActiGraph and is available in the R package
+actilifecounts. 
+To extract these metrics in addition to the zero crossing count,
+specify `do.brondcounts = TRUE` and/or `do.neishabouricounts = TRUE` which is used 
+in GGIR part 1 and uses R packages activityCounts and actilifecounts in the background. 
+As a result, sleep estimates for Sadeh, Cole-Kripke
+or Galland will be derived based on the zero crossing algorithm and additionally on
+the `brondcounts` or/and `actilifecounts` algorithms if requested by the user. 
+Further, we have added parameters to help modify
 the configuration of the zero-crossing count calculation, see arguments:
-`zc.lb`, `zc.hb`, `zc.sb`, `zc/order`, and `zc.scale`.
+`zc.lb`, `zc.hb`, `zc.sb`, `zc/order`, and `zc.scale`. As well as one parameter to modify the
+neishabouricounts calculation, see argument: `actilife_LFE`.
 
 ### Guiders
 
