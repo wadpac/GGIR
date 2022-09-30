@@ -11,7 +11,8 @@
   g.applymetrics(data, sf, ws3, metrics2do,
                           n = 4, lb = 0.2, hb = 15,
                           zc.lb = 0.25, zc.hb = 3, 
-                          zc.sb = 0.01, zc.order = 2)
+                          zc.sb = 0.01, zc.order = 2,
+                          actilife_LFE = FALSE)
 }
 \arguments{
   \item{data}{
@@ -50,6 +51,9 @@
   \item{zc.order}{
     See \link{GGIR}
   }
+  \item{actilife_LFE}{
+    See \link{GGIR}
+  }
 }
 \value{
   Dataframe with metric values in columns average per epoch (ws3)
@@ -69,7 +73,8 @@
   do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
   do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
   do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
-  do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE, do.brondcounts=FALSE)
+  do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE, 
+  do.brondcounts=FALSE, do.neishabouricounts=FALSE)
   
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 }

@@ -5,8 +5,10 @@
   \itemize{
     \item Part4 report now also able to handle longitudinal studies with repeated measurement for the same ID
     \item Changed POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
+    \item Part 1: Added neishabouricounts metrics and dependency to actilifecounts package
     \item Documentation: minor fix in ShellDoc2Vignette that affected the parameters vignette
-    }
+    \item Documentation: Added information on Neishabouri counts in help files and main vignette
+   }
 }
 \section{Changes in version 2.8-0 (release date:19-09-2022)}{
   \itemize{
