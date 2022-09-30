@@ -8,7 +8,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   # description: function called by g.shell.GGIR
   # aimed to merge the milestone output from g.part2, g.part3, and g.part4
   # in order to create a merged report of both physical activity and sleep
-
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -29,7 +28,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
   #======================================================================
   # create new folder (if not existent) for storing milestone data
   ms5.out = "/meta/ms5.out"
@@ -92,7 +90,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   if (params_output[["save_ms5raw_format"]] != "RData" & params_output[["save_ms5raw_format"]] != "csv") {
     params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
   }
-
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (params_output[["storefolderstructure"]] == TRUE) {
@@ -345,7 +342,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   possible_nap_dur = params_sleep[["possible_nap_dur"]],
                                                   nap_model = params_sleep[["nap_model"]],
                                                   HASIB.algo = params_sleep[["HASIB.algo"]])
-
               # store in ts object, such that it is exported in as time series
               ts$nap1_nonwear2 = 0
               # napsindices = which(naps_nonwear$probability_nap == 1)
@@ -961,7 +957,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             emptycols = emptycols[which(emptycols %in% FRAG_variables_indices == FALSE)]
             if (length(emptycols) > 0) output = output[,-emptycols]
           }
-
           if (length(output) > 0) {
             if (nrow(output) > 0) {
               save(output, tail_expansion_log, file = paste(metadatadir,
@@ -973,7 +968,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       }
     }
   }
-
   #======================================================================
   # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
   # setup parallel backend to use many processors
@@ -1031,7 +1025,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                      })
                                      return(tryCatchResult)
                                    }
-
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
