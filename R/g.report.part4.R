@@ -183,7 +183,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
           if (length(coldel) > 0)
             nightsummary = nightsummary[, -coldel]
         }
-        NIDS = length(unique(nightsummary$ID))
+        NIDS = max(c(length(unique(nightsummary$filename)), length(unique(nightsummary$ID))))
         NDEF = length(unique(nightsummary$sleepparam))
         uuu = unique(nightsummary$sleepparam)
         rem = which(uuu == 0 | uuu == "0" | is.na(uuu) == TRUE)
