@@ -59,7 +59,9 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     #======================================================
     #assess how much data to delete till next 15 minute period
     temp = unlist(strsplit(format(starttime)," "))
-    if (length(temp) > 1 | !grepl("T", temp)) {
+    if (length(temp) > 1) {
+      starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
+    } else if (length(temp) == 1 & !grepl("T", temp)) {
       starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
     } else {
       # first get char to POSIX
