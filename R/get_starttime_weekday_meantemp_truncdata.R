@@ -58,14 +58,16 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     wdayname = weekdays[wday]
     #======================================================
     #assess how much data to delete till next 15 minute period
-    temp = unlist(strsplit(as.character(starttime)," "))
+    temp = unlist(strsplit(format(starttime)," "))
     if (length(temp) > 1) {
+      starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
+    } else if (length(temp) == 1 & !grepl("T", temp)) {
       starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
     } else {
       # first get char to POSIX
       temp = iso8601chartime2POSIX(starttime,tz=desiredtz)
-      temp = unlist(strsplit(as.character(temp)," ")) # to keep it consistent with what we had
-      starttime2 = as.numeric(unlist(strsplit(as.character(temp[2]),":")))
+      temp = unlist(strsplit(format(temp)," ")) # to keep it consistent with what we had
+      starttime2 = as.numeric(unlist(strsplit(format(temp[2]),":")))
     }
     if (length(which(is.na(starttime2) ==  TRUE)) > 0 | length(starttime2) ==0) {
       starttime2 = c(0,0,0)
