@@ -163,7 +163,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         for (qwi in 1:(length(qwindowindices) - 1)) { #
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
-          if(startindex <= length(val) & endindex <= length(val)) {
+          if (startindex <= length(val) & endindex <= length(val)) {
             valq = val[(startindex + 1):endindex]
           } else if (startindex <= length(val) & endindex >= length(val)) {
             valq = val[(startindex + 1):length(val)]
@@ -326,6 +326,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 difference = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
                   varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  # readjust anwi indices in case that varnum has been imputed
+                  if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
+                    anwi_t0 = anwi_t0 + abs(difference)
+                    anwi_t1 = anwi_t1 + abs(difference)
+                    # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
+                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                  }
                 } else {
                   a56 = length(averageday[,(mi - 1)]) - abs(difference)
                   a57 = length(averageday[, (mi - 1)])
