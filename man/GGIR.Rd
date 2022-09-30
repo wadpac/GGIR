@@ -622,6 +622,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         we clarify that these are the counts proposed by Jan Br&#248;nd and implemented
         in R by Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
         the counts produced by one of the closed source ActiLife software by ActiGraph.}
+        
+      \item{do.neishabouricounts}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.neishabouricounts"]])}).
+        If TRUE, calculates the metric via R package actilifecounts, which is an implementation
+        of the algorithm used in the closed-source software ActiLife by ActiGraph (methods published in doi: 
+        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the paper and
+        call them NeishabouriCount under the uncertainty that ActiLife will implement this same
+        algorithm over time.}
 
       \item{lb}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}).
@@ -652,7 +660,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Used for zero-crossing counts only. Scaling factor to be applied after
         counts are calculated (GGIR part 3).}
         
-        
+      \item{actilife_LFE}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["actilife_LFE"]])}).
+        If TRUE, calculates the NeishabouriCount metric with the low-frequency extension filter
+        as proposed in the closed source ActiLife software by ActiGraph. Only applicable to 
+        the metric NeishabouriCount.}
     }
   }
 

@@ -9,7 +9,8 @@
 }
 \usage{
   HASIB(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c(), 
-                 time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c(), BrondCount = c())
+                 time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c(), BrondCount = c(),
+                 NeishabouriCount = c())
 }
 \arguments{
   \item{HASIB.algo}{
@@ -32,10 +33,13 @@
     See \link{g.getmeta}
   }
   \item{zeroCrossingCount}{
-    Vector with zero crossing counts per epoch as required for Sadeh algortihm
+    Vector with zero crossing counts per epoch as required for count-based algorithms
   }
   \item{BrondCount}{
-    Vector with Brond counts per epoch to be used by the Sadeh algortihm
+    Vector with Brond counts per epoch to be used by the count-based algorithms
+  }
+  \item{NeishabouriCount}{
+    Vector with Neishabouri counts per epoch to be used by the count-based algorithms
   }
 }
 \value{
