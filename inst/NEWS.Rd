@@ -5,6 +5,7 @@
   \itemize{
     \item Changed POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
     \item Documentation: minor fix in ShellDoc2Vignette that affected the parameters vignette
+    \item Fixed time mismatch between metashort and activity log when the first day does not start at midnight
     }
 }
 \section{Changes in version 2.8-0 (release date:19-09-2022)}{
