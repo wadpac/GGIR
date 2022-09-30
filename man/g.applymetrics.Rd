@@ -74,7 +74,7 @@
   do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
   do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
   do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE, 
-  do.brondcounts=FALSE, do.actilifecounts=FALSE)
+  do.brondcounts=FALSE, do.neishabouricounts=FALSE)
   
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 }

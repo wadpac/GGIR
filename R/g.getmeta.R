@@ -67,7 +67,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.zcy = params_metrics[["do.zcy"]],
                           do.zcz = params_metrics[["do.zcz"]],
                           do.brondcounts = params_metrics[["do.brondcounts"]],
-                          do.actilifecounts = params_metrics[["do.actilifecounts"]],
+                          do.neishabouricounts = params_metrics[["do.neishabouricounts"]],
                           stringsAsFactors = TRUE)
   if (length(params_rawdata[["chunksize"]]) == 0) params_rawdata[["chunksize"]] = 1
   if (params_rawdata[["chunksize"]] > 1.5) params_rawdata[["chunksize"]] = 1.5
@@ -90,7 +90,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                    params_metrics[["do.bfz"]],
                    params_metrics[["do.zcx"]], params_metrics[["do.zcy"]],
                    params_metrics[["do.zcz"]], params_metrics[["do.brondcounts"]] * 3,
-                   params_metrics[["do.actilifecounts"]] * 4))
+                   params_metrics[["do.neishabouricounts"]] * 4))
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
@@ -534,7 +534,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         col_msi = 2
         # Add metric time series to metashort object
-        metnames = grep(pattern = "BrondCount|ActilifeCount", x = names(accmetrics), invert = TRUE, value = TRUE)
+        metnames = grep(pattern = "BrondCount|NeishabouriCount", x = names(accmetrics), invert = TRUE, value = TRUE)
         for (metnam in metnames) {
           dovalue = paste0("do.",tolower(metnam))
           dovalue = gsub(pattern = "angle_", replacement = "angle", x = dovalue)
@@ -550,13 +550,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           col_msi = col_msi + 3
           metnames = c(metnames, "BrondCount_x", "BrondCount_y", "BrondCount_z")
         }
-        if (params_metrics[["do.actilifecounts"]] == TRUE) {
-          metashort[count:(count - 1 + length(accmetrics$ActilifeCount_x)), col_msi] = accmetrics$ActilifeCount_x
-          metashort[count:(count - 1 + length(accmetrics$ActilifeCount_y)), col_msi + 1] = accmetrics$ActilifeCount_y
-          metashort[count:(count - 1 + length(accmetrics$ActilifeCount_z)), col_msi + 2] = accmetrics$ActilifeCount_z
-          metashort[count:(count - 1 + length(accmetrics$ActilifeCount_vm)), col_msi + 3] = accmetrics$ActilifeCount_vm
+        if (params_metrics[["do.neishabouricounts"]] == TRUE) {
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_x)), col_msi] = accmetrics$NeishabouriCount_x
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_y)), col_msi + 1] = accmetrics$NeishabouriCount_y
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_z)), col_msi + 2] = accmetrics$NeishabouriCount_z
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_vm)), col_msi + 3] = accmetrics$NeishabouriCount_vm
           col_msi = col_msi + 3
-          metnames = c(metnames, "ActilifeCount_x", "ActilifeCount_y", "ActilifeCount_z", "ActilifeCount_vm")
+          metnames = c(metnames, "NeishabouriCount_x", "NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm")
         }
         metnames = gsub(pattern = "angle_", replacement = "angle", x = metnames)
         if (length(myfun) != 0) { # if an external function is applied.

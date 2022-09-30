@@ -1,6 +1,6 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), 
-                 zeroCrossingCount = c(), BrondCount = c(), ActilifeCount = c()) {
+                 zeroCrossingCount = c(), BrondCount = c(), NeishabouriCount = c()) {
   epochsize = ws3 #epochsize in seconds
   sumPerWindow = function(x, epochsize, summingwindow = 60) {
     x2 = cumsum(c(0, x))
@@ -38,7 +38,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     return(sib_classification)
   }
   #===============================
-  Nvalues = max(length(anglez), length(zeroCrossingCount), length(BrondCount), length(ActilifeCount))
+  Nvalues = max(length(anglez), length(zeroCrossingCount), length(BrondCount), length(NeishabouriCount))
   if (HASIB.algo == "vanHees2015") { # default
     cnt = 1
     Ndefs = length(timethreshold) * length(anglethreshold)
@@ -79,7 +79,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     count_types = c()
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
-    if (length(ActilifeCount) > 0) count_types = c(count_types, "ActilifeCount")
+    if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
     sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
     cti = 1
     for (count_type in count_types) {
@@ -87,8 +87,8 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         Countpermin = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = 60)
       } else if (count_type == "BrondCount") {
         Countpermin = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = 60)
-      } else if (count_type == "ActilifeCount") {
-        Countpermin = sumPerWindow(ActilifeCount, epochsize = epochsize, summingwindow = 60)
+      } else if (count_type == "NeishabouriCount") {
+        Countpermin = sumPerWindow(NeishabouriCount, epochsize = epochsize, summingwindow = 60)
       }
       if (count_type != "zeroCrossingCount") {
         # because this is what ActiLife does for their counts
@@ -124,14 +124,14 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
                                                  current_epochsize = 60)
       if (count_type == "BrondCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Brond")
       if (count_type == "zeroCrossingCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_ZC")
-      if (count_type == "ActilifeCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Actilife")
+      if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
   } else if (HASIB.algo == "ColeKripke1992") {
     count_types = c()
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
-    if (length(ActilifeCount) > 0) count_types = c(count_types, "ActilifeCount")
+    if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
     sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
     
     if (epochsize <= 60) {
@@ -152,8 +152,8 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         CountperWindow = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = aggwindow)
       } else if (count_type == "BrondCount") {
         CountperWindow = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = aggwindow)
-      } else if (count_type == "ActilifeCount") {
-        CountperWindow = sumPerWindow(ActilifeCount, epochsize = epochsize, summingwindow = aggwindow)
+      } else if (count_type == "NeishabouriCount") {
+        CountperWindow = sumPerWindow(NeishabouriCount, epochsize = epochsize, summingwindow = aggwindow)
       }
       # Convert unit to counts per minute if aggwindow is not 60
       if (aggwindow != 60) CountperWindow = CountperWindow * (60/aggwindow)
@@ -179,14 +179,14 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
                                                  current_epochsize = 60)
       if (count_type == "BrondCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Brond")
       if (count_type == "zeroCrossingCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_ZC")
-      if (count_type == "ActilifeCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Actilife")
+      if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
   } else if (HASIB.algo == "Galland2012") {  
     count_types = c()
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
-    if (length(ActilifeCount) > 0) count_types = c(count_types, "ActilifeCount")
+    if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
     sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
     cti = 1
     for (count_type in count_types) {
@@ -195,8 +195,8 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         Countpermin = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = 60)
       } else if (count_type == "BrondCount") {
         Countpermin = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = 60)
-      } else if (count_type == "ActilifeCount") {
-        Countpermin = sumPerWindow(ActilifeCount, epochsize = epochsize, summingwindow = 60)
+      } else if (count_type == "NeishabouriCount") {
+        Countpermin = sumPerWindow(NeishabouriCount, epochsize = epochsize, summingwindow = 60)
       }
       mean_nonzero = mean(Countpermin[which(Countpermin != 0)])
       CountScaled = Countpermin / mean_nonzero
@@ -211,7 +211,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
                                                  current_epochsize = 60)
       if (count_type == "BrondCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Brond")
       if (count_type == "zeroCrossingCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_ZC")
-      if (count_type == "ActilifeCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Actilife")
+      if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
   }

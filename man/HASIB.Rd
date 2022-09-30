@@ -10,7 +10,7 @@
 \usage{
   HASIB(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c(), 
                  time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c(), BrondCount = c(),
-                 ActilifeCount = c())
+                 NeishabouriCount = c())
 }
 \arguments{
   \item{HASIB.algo}{
@@ -38,8 +38,8 @@
   \item{BrondCount}{
     Vector with Brond counts per epoch to be used by the count-based algorithms
   }
-  \item{ActilifeCount}{
-    Vector with Actilife counts per epoch to be used by the count-based algorithms
+  \item{NeishabouriCount}{
+    Vector with Neishabouri counts per epoch to be used by the count-based algorithms
   }
 }
 \value{

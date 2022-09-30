@@ -36,7 +36,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   do.zcy = metrics2do$do.zcy
   do.zcz = metrics2do$do.zcz
   do.brondcounts = metrics2do$do.brondcounts
-  do.actilifecounts = metrics2do$do.actilifecounts
+  do.neishabouricounts = metrics2do$do.neishabouricounts
   allmetrics = c()
   averagePerEpoch = function(x,sf,epochsize) {
     x2 = cumsum(c(0,x))
@@ -337,7 +337,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   }
   #================================================
   # Actilife Counts)
-  if (do.actilifecounts == TRUE) {
+  if (do.neishabouricounts == TRUE) {
     # I do not include actilifecounts as dependency to avoid overwritten methods
     # message from package signal (this package has not well defined the source 
     # package of their functions and we get an inoffensive but unwanted message 
@@ -353,10 +353,10 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     }
     # activityCount output is per second
     # aggregate to our epoch size:
-    allmetrics$ActilifeCount_x = mycounts[, 1]
-    allmetrics$ActilifeCount_y = mycounts[, 2]
-    allmetrics$ActilifeCount_z = mycounts[, 3]
-    allmetrics$ActilifeCount_vm = mycounts[, 4]
+    allmetrics$NeishabouriCount_x = mycounts[, 1]
+    allmetrics$NeishabouriCount_y = mycounts[, 2]
+    allmetrics$NeishabouriCount_z = mycounts[, 3]
+    allmetrics$NeishabouriCount_vm = mycounts[, 4]
   }
   return(allmetrics)
 } 

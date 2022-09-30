@@ -342,12 +342,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   varnum = c()
                 }
               }
-              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)) > 0
+              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount", invert = TRUE)) > 0
               UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
-                                     "ZCX", "ZCY", "ZCZ", "BrondCounts_x", "BrondCounts_y",
-                                     "BrondCounts_z")) {
+                                     "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
+                                     "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
+                                     "NeishabouriCount_z", "NeishabouriCount_vm")) {
                 collectfi = c()
                 for (winhr_value in params_247[["winhr"]]) { # Variable (column) names
                   # We are first defining location of variable names, before calculating
