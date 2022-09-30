@@ -115,7 +115,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
     fnames.ms2 = sort(dir(paste(metadatadir, "/meta/ms2.out", sep = "")))
     fnames.ms4 = sort(dir(paste(metadatadir, "/meta/ms4.out", sep = "")))
-
     nfeatures = 500
     ws3 = params_general[["windowsizes"]][1]
     ds_names = rep("",nfeatures)
@@ -124,7 +123,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
     }
-
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -592,7 +590,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           dsummary[di,fi] = length(which(ts$sibdetection[sse] == 1 &
                                                            ts$diur[sse] == 1)) / length(which(ts$diur[sse] == 1))
                           ds_names[fi] = "sleep_efficiency";      fi = fi + 1
-
                           #===============================================
                           # NAPS (estimation)
                           if (params_output[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) & length(params_sleep[["nap_model"]]) > 0) {
@@ -879,10 +876,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
                                                    replacement = "", x = tolower(fnames.ms3[i])),
                                               "_", j, ".", params_output[["save_ms5raw_format"]])
-
-
-
-
                     # save time series to csv files
                     if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
                       napNonwear_col = "nap1_nonwear2"
