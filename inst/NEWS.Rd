@@ -8,7 +8,8 @@
     \item Part 1: Added neishabouricounts metrics and dependency to actilifecounts package
     \item Part 2: Fixed time mismatch between metashort and activity log when the
     first day does not start at
-    \item Part4 report now also able to handle longitudinal studies with repeated
+    \item Part 2 report: Improving how f0 != 1 is handled when first recording has no data
+    \item Part 4 report: now also able to handle longitudinal studies with repeated
     measurement for the same ID
     \item Documentation: minor fix in ShellDoc2Vignette that affected the parameters
     vignette midnight
