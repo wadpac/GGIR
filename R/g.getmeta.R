@@ -67,6 +67,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.zcy = params_metrics[["do.zcy"]],
                           do.zcz = params_metrics[["do.zcz"]],
                           do.brondcounts = params_metrics[["do.brondcounts"]],
+                          do.neishabouricounts = params_metrics[["do.neishabouricounts"]],
                           stringsAsFactors = TRUE)
   if (length(params_rawdata[["chunksize"]]) == 0) params_rawdata[["chunksize"]] = 1
   if (params_rawdata[["chunksize"]] > 1.5) params_rawdata[["chunksize"]] = 1.5
@@ -88,7 +89,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                    params_metrics[["do.bfx"]], params_metrics[["do.bfy"]],
                    params_metrics[["do.bfz"]],
                    params_metrics[["do.zcx"]], params_metrics[["do.zcy"]],
-                   params_metrics[["do.zcz"]], params_metrics[["do.brondcounts"]] * 3))
+                   params_metrics[["do.zcz"]], params_metrics[["do.brondcounts"]] * 3,
+                   params_metrics[["do.neishabouricounts"]] * 4))
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
@@ -488,7 +490,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                     metrics2do = metrics2do,
                                     n = params_metrics[["n"]],
                                     lb = params_metrics[["lb"]],
-                                    hb = params_metrics[["hb"]])
+                                    hb = params_metrics[["hb"]],
+                                    zc.lb = params_metrics[["zc.lb"]],
+                                    zc.hb = params_metrics[["zc.hb"]],
+                                    zc.sb = params_metrics[["zc.sb"]],
+                                    zc.order = params_metrics[["zc.order"]],
+                                    actilife_LFE = params_metrics[["actilife_LFE"]])
         # round decimal places, because due to averaging we get a lot of information
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics, round, n_decimal_places)
@@ -527,7 +534,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         col_msi = 2
         # Add metric time series to metashort object
-        metnames = grep(pattern = "BrondCount", x = names(accmetrics), invert = TRUE, value = TRUE)
+        metnames = grep(pattern = "BrondCount|NeishabouriCount", x = names(accmetrics), invert = TRUE, value = TRUE)
         for (metnam in metnames) {
           dovalue = paste0("do.",tolower(metnam))
           dovalue = gsub(pattern = "angle_", replacement = "angle", x = dovalue)
@@ -542,6 +549,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           metashort[count:(count - 1 + length(accmetrics$BrondCount_z)), col_msi + 2] = accmetrics$BrondCount_z
           col_msi = col_msi + 3
           metnames = c(metnames, "BrondCount_x", "BrondCount_y", "BrondCount_z")
+        }
+        if (params_metrics[["do.neishabouricounts"]] == TRUE) {
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_x)), col_msi] = accmetrics$NeishabouriCount_x
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_y)), col_msi + 1] = accmetrics$NeishabouriCount_y
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_z)), col_msi + 2] = accmetrics$NeishabouriCount_z
+          metashort[count:(count - 1 + length(accmetrics$NeishabouriCount_vm)), col_msi + 3] = accmetrics$NeishabouriCount_vm
+          col_msi = col_msi + 3
+          metnames = c(metnames, "NeishabouriCount_x", "NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm")
         }
         metnames = gsub(pattern = "angle_", replacement = "angle", x = metnames)
         if (length(myfun) != 0) { # if an external function is applied.
@@ -695,11 +710,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             if (any(duplicated(gap_index))) { 
               # When 2 gap_index are within the same epoch (either short or long)
               # we would have a duplicated gap_index here, then combine information
-              dup_index = which(duplicated(gap_index))
-              to_combine = which(gap_index == gap_index[dup_index])
-              gap_index = gap_index[-dup_index] # remove from gap index
-              gapsize[to_combine[1]] = sum(gapsize[to_combine]) - 1 # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
-              gapsize = gapsize[-dup_index]
+              dup_index_tmp = which(duplicated(gap_index))
+              dup_index = gap_index[dup_index_tmp]
+              for (dup_index_i in dup_index) {
+                to_combine = which(gap_index == dup_index_i)
+                length_to_combine = length(to_combine) # In the unlikely event that a gap_index appears more than 2, this should be able to deal with it.
+                delete = to_combine[-1] # leave only the first index and remove duplicates
+                gap_index = gap_index[-delete] # remove from gap index
+                gapsize[to_combine[1]] = sum(gapsize[to_combine]) - (length_to_combine - 1) # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
+                gapsize = gapsize[-delete] 
+              }
             }
             if ("nonwearscore" %in% metnames) {
               timeseries[gap_index, which(metnames == "nonwearscore")]  = 3
@@ -723,13 +743,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             # metalong
             metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)) + 1, # plus 1 needed to count for current epoch
                                              timeseries = metalong,
-                                             gap_index = round(gaps_to_fill / (ws2 * sfold)) + count2 - 1, # minus 1 needed to account the diff index between short and long epoch
+                                             gap_index = floor(gaps_to_fill / (ws2 * sfold)) + count2, # Using floor so that the gap is filled in the epoch in which it is occurring
                                              metnames = metricnames_long)
             
             # metashort
             metashort = impute_at_epoch_level(gapsize = remaining_epochs[gaps_to_fill], # gapsize in epochs
                                               timeseries = metashort,
-                                              gap_index = round(gaps_to_fill / (ws3 * sfold)) + count,
+                                              gap_index = floor(gaps_to_fill / (ws3 * sfold)) + count, # Using floor so that the gap is filled in the epoch in which it is occurring
                                               metnames = c("timestamp", metnames)) # epoch level index of gap
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])

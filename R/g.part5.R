@@ -180,7 +180,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
         # note that this is imputed ACCELERATION because we use this for describing behaviour:
-        ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * 1000,
+        scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
+        ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                         guider = rep("unknown", nrow(IMP$metashort)),
                         angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])) )
         Nts = nrow(ts)
@@ -485,14 +486,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           # Add to dsummary output matrix
                           if (skiponset == FALSE) {
                             dsummary[di,fi] = onset
-                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[onseti]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
+                            dsummary[di,fi + 1] = as.character(strftime(format(time_POSIX[onseti]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
                           } else {
                             dsummary[di,fi:(fi + 1)] = rep(NA, 2)
                           }
                           ds_names[fi:(fi + 1)] = c("sleeponset", "sleeponset_ts");      fi = fi + 2
                           if (skipwake == FALSE) {
                             dsummary[di,fi] = wake
-                            dsummary[di,fi + 1] = as.character(strftime(as.character(time_POSIX[wakei]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
+                            dsummary[di,fi + 1] = as.character(strftime(format(time_POSIX[wakei]), tz = params_general[["desiredtz"]], format = "%H:%M:%S"))
                           } else {
                             dsummary[di,fi:(fi + 1)] = rep(NA, 2)
                           }
@@ -627,6 +628,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           ds_names[fi] = "ACC_day_mg";      fi = fi + 1
                           dsummary[di, fi] = mean(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
                           ds_names[fi] = "ACC_spt_mg";      fi = fi + 1
+                          dsummary[di, fi] = median(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
+                          ds_names[fi] = "ACC_spt_mg_median";      fi = fi + 1
+                          dsummary[di, fi] = sd(ts$ACC[sse[ts$diur[sse] == 1]], na.rm = TRUE)
+                          ds_names[fi] = "ACC_spt_mg_stdev";      fi = fi + 1
                           dsummary[di, fi] = mean(ts$ACC[sse], na.rm = TRUE)
                           ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
                           #===============================================
@@ -649,13 +654,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             if (ignore == FALSE) {
                               # Calculate running window variables
                               ACCrunwin = matrix(0, nwindow_f, 1)
-                              TIMErunwin= matrix("", nwindow_f, 1)
+                              TIMErunwin = matrix("", nwindow_f, 1)
                               for (hri in 0:floor((((endd - wini) * (60/reso)) - 1))) {
                                 e1 = (hri * reso * (60/ws3new)) + 1
                                 e2 = (hri + (wini * (60/reso))) * reso * (60/ws3new)
                                 if (e2 > length(sse)) e2 = length(sse)
                                 ACCrunwin[(hri + 1), 1] = mean(ts$ACC[sse[e1:e2]])
-                                TIMErunwin[(hri + 1), 1] = as.character(ts$time[sse[e1]])
+                                TIMErunwin[(hri + 1), 1] = format(ts$time[sse[e1]])
                               }
                               ACCrunwin = ACCrunwin[is.na(ACCrunwin) == F]
                               TIMErunwin = TIMErunwin[is.na(ACCrunwin) == F]
@@ -666,7 +671,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                 M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
                                 M5VALUE = max(ACCrunwin)
                                 if (lightpeak_available == TRUE) {
-                                  startM5 = which(ts$time == M5HOUR)
+                                  if (length(unlist(strsplit(M5HOUR, " "))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
+                                  startM5 = which(format(ts$time) == M5HOUR)
                                   M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                   M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                 }
@@ -702,8 +708,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             if (ignore == FALSE) {
                               # Add also numeric time
                               if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
-                                L5HOUR = as.character(iso8601chartime2POSIX(L5HOUR, tz = params_general[["desiredtz"]]))
-                                M5HOUR = as.character(iso8601chartime2POSIX(M5HOUR, tz = params_general[["desiredtz"]]))
+                                L5HOUR = format(iso8601chartime2POSIX(L5HOUR, tz = params_general[["desiredtz"]]))
+                                M5HOUR = format(iso8601chartime2POSIX(M5HOUR, tz = params_general[["desiredtz"]]))
                               }
                               if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
                               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")

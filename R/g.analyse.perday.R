@@ -163,7 +163,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         for (qwi in 1:(length(qwindowindices) - 1)) { #
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
-          if(startindex <= length(val) & endindex <= length(val)) {
+          if (startindex <= length(val) & endindex <= length(val)) {
             valq = val[(startindex + 1):endindex]
           } else if (startindex <= length(val) & endindex >= length(val)) {
             valq = val[(startindex + 1):length(val)]
@@ -326,6 +326,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 difference = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
                   varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  # readjust anwi indices in case that varnum has been imputed
+                  if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
+                    anwi_t0 = anwi_t0 + abs(difference)
+                    anwi_t1 = anwi_t1 + abs(difference)
+                    # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
+                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                  }
                 } else {
                   a56 = length(averageday[,(mi - 1)]) - abs(difference)
                   a57 = length(averageday[, (mi - 1)])
@@ -342,12 +349,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   varnum = c()
                 }
               }
-              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)) > 0
+              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount", invert = TRUE)) > 0
               UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
-                                     "ZCX", "ZCY", "ZCZ", "BrondCounts_x", "BrondCounts_y",
-                                     "BrondCounts_z")) {
+                                     "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
+                                     "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
+                                     "NeishabouriCount_z", "NeishabouriCount_vm")) {
                 collectfi = c()
                 for (winhr_value in params_247[["winhr"]]) { # Variable (column) names
                   # We are first defining location of variable names, before calculating

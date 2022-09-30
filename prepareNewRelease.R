@@ -31,7 +31,7 @@ prepareNewRelease = function(version = c()) {
     i = i + 1
   }
   # Check GGIR-package.Rd file
-  P = read.csv(file = "./man/GGIR-package.Rd",sep="\n")
+  P = read.csv(file = "./man/GGIR-package.Rd", sep = "\n")
   i = 1
   while (i <= nrow(P)) {
     tmp = as.character(unlist(strsplit(as.character(P[i,]),"[: \\]")))
@@ -50,14 +50,14 @@ prepareNewRelease = function(version = c()) {
     i = i + 1
   }
   # Check NEWs.rd file
-  NE = read.csv(file = "./inst/NEWS.Rd",sep="\n")
+  NE = read.table(file = "./inst/NEWS.Rd", sep = "\n", quote = "")
   i = 1
   versioninfile = dateinfile = c()
   while (i <= nrow(NE)) {
     tmp = as.character(unlist(strsplit(as.character(NE[3,]),"version ")))
     if (length(tmp) > 1) {
       tmp2 = as.character(unlist(strsplit(as.character(tmp[2])," ")))
-      versioninfile= tmp2[1]
+      versioninfile = tmp2[1]
       if (length(tmp2) > 2) {
         tmp3 = as.character(unlist(strsplit(as.character(tmp2[3]),":"))[2])
         dateinfile = as.character(unlist(strsplit(as.character(tmp3),"[)]"))[1])
@@ -74,7 +74,7 @@ prepareNewRelease = function(version = c()) {
       }
       break() # only check first date and version number
     }
-    i = i + 1
+        i = i + 1
   }
   if (errorfound == FALSE) cat(paste0("\nNo problem found. Package consistently uses version ",version," and release date ", dateReversed))
 }

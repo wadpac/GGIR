@@ -1,5 +1,8 @@
 g.applymetrics = function(data, sf, ws3, metrics2do,
-                          n = 4, lb = 0.2, hb = 15){
+                          n = 4, lb = 0.2, hb = 15,
+                          zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01,
+                          zc.order = 2, 
+                          actilife_LFE = FALSE){
   epochsize = ws3 #epochsize in seconds
   # data is a 3 column matrix with the x, y, and z acceleration
   do.bfen = metrics2do$do.bfen
@@ -33,6 +36,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   do.zcy = metrics2do$do.zcy
   do.zcz = metrics2do$do.zcz
   do.brondcounts = metrics2do$do.brondcounts
+  do.neishabouricounts = metrics2do$do.neishabouricounts
   allmetrics = c()
   averagePerEpoch = function(x,sf,epochsize) {
     x2 = cumsum(c(0,x))
@@ -172,7 +176,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     # Sadeh algorithm.
     # We use a second order filter because if it was an analog filter it was 
     # most likely not very steep filter.
-    data_processed = process_axes(data, filtertype = "pass", cut_point = c(0.25, 3), n = 2, sf)
+    data_processed = process_axes(data, filtertype = "pass", cut_point = c(zc.lb, zc.hb), n = zc.order, sf)
     zil = c()
     
     # 2) Sadeh reported to have used the y-axis but did not specify the orientation of
@@ -185,7 +189,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
       # 3) apply stop-band to minic sensitivity of 1980s and 1990s accelerometer
       # technology. Using a 0.01g threshold based on book by Tyron 
       # "Activity Measurementy in Psychology And Medicine"
-      smallvalues = which(abs(data_processed[,zi]) < 0.01)
+      smallvalues = which(abs(data_processed[,zi]) < zc.sb)
       if (length(smallvalues) > 0) {
         data_processed[smallvalues, zi] = 0
       }
@@ -208,6 +212,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         allmetrics$ZCZ = sumPerEpoch(zerocross(data_processed[,zi], Ndat), sf, epochsize)
       }
     }
+    
     # Note that this is per epoch, in GGIR part 3 we aggregate (sum) this per minute
     # to follow Sadeh. In Sadeh 1987 this resulted in values up to 280
     # 280 = 60 x 2 x frequency of movement which would mean near 2.33 Hertz average
@@ -251,7 +256,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     allmetrics$HFEN = averagePerEpoch(x = EuclideanNorm(data_processed), sf, epochsize)
   }
   #================================================
-  # Combined low-pass and high-pass filtering metric:
+  # Combined low-pass and high-pass filtering metric:)
   if (do.hfenplus == TRUE) { 
     # Note that we are using intentionally the lower boundary for the low pass filter
     data_processed = process_axes(data, filtertype = "low", cut_point = lb, n, sf)
@@ -315,7 +320,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     allmetrics$ENMOa = averagePerEpoch(x = ENMOa, sf, epochsize)
   }
   #================================================
-  # Brond Counts
+  # Brond Counts)
   if (do.brondcounts == TRUE) {
     if (ncol(data) > 3) data = data[,2:4]
     mycounts = activityCounts::counts(data = data, hertz = sf, 
@@ -329,6 +334,29 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     allmetrics$BrondCount_x = sumPerEpoch(mycounts[, 2], sf = 1, epochsize)
     allmetrics$BrondCount_y = sumPerEpoch(mycounts[, 3], sf = 1, epochsize)
     allmetrics$BrondCount_z = sumPerEpoch(mycounts[, 4], sf = 1, epochsize)
+  }
+  #================================================
+  # Actilife Counts)
+  if (do.neishabouricounts == TRUE) {
+    # I do not include actilifecounts as dependency to avoid overwritten methods
+    # message from package signal (this package has not well defined the source 
+    # package of their functions and we get an inoffensive but unwanted message 
+    # printed in the console).
+    # I followed suggestion in: https://bit.ly/3SaP69u
+    suppressMessages(requireNamespace("actilifecounts"))
+    if (ncol(data) > 3) data = data[,2:4]
+    mycounts = actilifecounts::get_counts(raw = data, sf = sf,
+                                          epoch = epochsize, lfe_select = actilife_LFE,
+                                          verbose = FALSE)
+    if (sf < 30) {
+      warning("\nNote: activityCounts not designed for handling sample frequencies below 30 Hertz")
+    }
+    # activityCount output is per second
+    # aggregate to our epoch size:
+    allmetrics$NeishabouriCount_x = mycounts[, 1]
+    allmetrics$NeishabouriCount_y = mycounts[, 2]
+    allmetrics$NeishabouriCount_z = mycounts[, 3]
+    allmetrics$NeishabouriCount_vm = mycounts[, 4]
   }
   return(allmetrics)
 } 

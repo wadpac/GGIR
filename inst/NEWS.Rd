@@ -1,12 +1,34 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.7-7 (GitHub-only-release date:0??-??-2022)}{
+\section{Changes in version 2.8-1 (release date:29-09-2022)}{
+  \itemize{
+    \item Changed POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
+    \item Part 1: Added neishabouricounts metrics and dependency to actilifecounts package
+    \item Documentation: minor fix in ShellDoc2Vignette that affected the parameters vignette
+    \item Fixed time mismatch between metashort and activity log when the first day does not start at midnight
+    \item Documentation: Added information on Neishabouri counts in help files and main vignette
+    }
+}
+\section{Changes in version 2.8-0 (release date:19-09-2022)}{
+  \itemize{
+    \item Documentation: New package vignette added for cut-points.
+    \item Documentation: New package vignette added for arguments
+    \item Documentation: GGIR function manual and parameter/argument vignette
+    auto-integrate default values to avoid inconsistencies.
+    \item Documentation: Main vignette sections on cut-points and input argument
+    shortened with reference to the new vignettes.
+    \item Documentation: Paragraph added on processing time.
+    }
+}
+\section{Changes in version 2.7-7 (GitHub-only-release date:17-09-2022)}{
   \itemize{
     \item Part 1: Long timegaps in ActiGraph data or ad-hoc .csv data as a result of idle sleep mode are now dealt with at metric level rather than raw data level.
-    \item Part 1: Speed up to code by changing how GENEActiv data converted to matrix and by changing how rolling median is derived. 
+    \item Part 1: Speed up to code by changing how GENEActiv data converted to matrix and by changing how rolling median is derived.
     \item Part 1" Deprecate option to read raw data from in RData files, which was connected to the selectdaysfile functionality as deprecated in previous release.
     \item Remove zenodo and .cff file to simplify package citation and avoid tracking by RSD (issue #636)
+    \item Part 1: Add extra arguments to modify zero-crossing count calculation.
+    \item Part 3: Adding ColeKripke sleep detection algorithm.
     }
 }
 \section{Changes in version 2.7-6 (GitHub-only-release date:02-09-2022)}{
@@ -14,7 +36,7 @@
     \item Part 1: Deprecated g.cwaread and internally replaced by GGIRread::readAxivity.
     \item Part 1: Deprecated g.binread and internally replaced by GGIRread::readGenea.
     \item Part 1: Deprecated resample and internally replaced by GGIRread::resample.
-    \item Part 1: Added temporary option to choose between using GENEAread or 
+    \item Part 1: Added temporary option to choose between using GENEAread or
       GGIRread::readGENEActiv for reading GENEActiv .bin files.
     \item Part 1 + 2: Deprecated selectdaysfile functionality.
     \item Deprecated function g.getidfromheaderobject, and functionality merged with g.extractheadervars
@@ -54,7 +76,6 @@
     set time window guider functionality correctly
     }
 }
-
 \section{Changes in version 2.7-2 (GitHub-only-release date:22-06-2022)}{
 \itemize{
     \item Part 4: Fixing timezone sensitivity for OSx in Pacific timezone for gloadlog function.
@@ -124,6 +145,7 @@
 }
 \section{Changes in version 2.6-2 (GitHub-only-release date:06-03-2022)}{
 \itemize{
+
     \item Part 1: Can now handle .gt3x produced by CentrePoint but for now user needs to change upercase file extension to lowercase
     \item Part 1: Fixed issue #520 with handling Movisens data
     \item Part 1: Fixed issue #523 with calibration of ActiGraph csv files
