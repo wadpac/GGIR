@@ -6,16 +6,17 @@
     \item Changed POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
     \item Part 1: Added neishabouricounts metrics and dependency to actilifecounts package
     \item Documentation: minor fix in ShellDoc2Vignette that affected the parameters vignette
+    \item Fixed time mismatch between metashort and activity log when the first day does not start at midnight
     \item Documentation: Added information on Neishabouri counts in help files and main vignette
-   }
+    }
 }
 \section{Changes in version 2.8-0 (release date:19-09-2022)}{
   \itemize{
     \item Documentation: New package vignette added for cut-points.
     \item Documentation: New package vignette added for arguments
-    \item Documentation: GGIR function manual and parameter/argument vignette 
+    \item Documentation: GGIR function manual and parameter/argument vignette
     auto-integrate default values to avoid inconsistencies.
-    \item Documentation: Main vignette sections on cut-points and input argument 
+    \item Documentation: Main vignette sections on cut-points and input argument
     shortened with reference to the new vignettes.
     \item Documentation: Paragraph added on processing time.
     }
@@ -35,7 +36,7 @@
     \item Part 1: Deprecated g.cwaread and internally replaced by GGIRread::readAxivity.
     \item Part 1: Deprecated g.binread and internally replaced by GGIRread::readGenea.
     \item Part 1: Deprecated resample and internally replaced by GGIRread::resample.
-    \item Part 1: Added temporary option to choose between using GENEAread or 
+    \item Part 1: Added temporary option to choose between using GENEAread or
       GGIRread::readGENEActiv for reading GENEActiv .bin files.
     \item Part 1 + 2: Deprecated selectdaysfile functionality.
     \item Deprecated function g.getidfromheaderobject, and functionality merged with g.extractheadervars
