@@ -139,6 +139,15 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
     }
+    if (params_metrics[["do.neishabouricounts"]] == TRUE) {
+      if ("actilifecounts" %in% rownames(utils::installed.packages()) == FALSE) {
+        stop("\nR package actilifecounts was not found and is required for deriving the neishabouricounts", call. = FALSE)
+      } else {
+        if (utils::packageVersion("actilifecounts") < "1.1.0") {
+          stop("\nPlease update R package actilifecounts to version 1.1.0 or higher", call. = FALSE)
+        }
+      }
+    }
     if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",

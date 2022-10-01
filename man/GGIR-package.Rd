@@ -22,7 +22,7 @@
   Package: \tab GGIR\cr
   Type: \tab Package\cr
   Version: \tab 2.8-1\cr
-  Date: \tab 2022-09-30\cr
+  Date: \tab 2022-10-01\cr
   License: \tab LGPL (>= 2.0, < 3)\cr
   Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
   }
