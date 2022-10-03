@@ -7,15 +7,15 @@ g.sib.plot = function(SLE,M,I,plottitle,nightsperpage=7,desiredtz="") { #IMP,
   nD = nrow(D)
   S = as.matrix(M$metalong)
   nS = nrow(S)
-  space = ifelse(length(unlist(strsplit(as.character(A$time[1])," "))) > 1,TRUE,FALSE)
-  temptime = as.character(unlist(A$time))
+  space = ifelse(length(unlist(strsplit(format(A$time[1])," "))) > 1,TRUE,FALSE)
+  temptime = format(unlist(A$time))
   if (space == FALSE) {
     time = as.POSIXlt(temptime,tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z")
     # timeL = as.POSIXlt(strftime(as.character(S[1:nS,1]),tz=desiredtz,format="%Y-%m-%dT%H:%M:%S%z"))
     timeL = iso8601chartime2POSIX(S[1:nS,1],tz=desiredtz)
   } else {
     time = as.POSIXlt(temptime,tz=desiredtz)
-    timeL = as.POSIXlt(as.character(S[1:nS,1]),tz=desiredtz)
+    timeL = as.POSIXlt(format(S[1:nS,1]),tz=desiredtz)
   }
   ws3 = M$windowsizes[1]
   ws2 = M$windowsizes[2]
@@ -73,8 +73,8 @@ g.sib.plot = function(SLE,M,I,plottitle,nightsperpage=7,desiredtz="") { #IMP,
     }
     qqq1 = which(night == i)[1]
     qqq2 = which(night == i)[length(which(night == i))]
-    qqq3 = which(as.character(timeL) == as.character(time[qqq1]))
-    qqq4 = which(as.character(timeL) == as.character(time[qqq2]))
+    qqq3 = which(format(timeL) == format(time[qqq1]))
+    qqq4 = which(format(timeL) == format(time[qqq2]))
     if (length(qqq3) == 0) qqq3 = round(qqq1 / (ws2/ws3))
     if (length(qqq4) == 0) qqq4 = round(qqq2 / (ws2/ws3))
     if (qqq3 == 0) qqq3 = 1
