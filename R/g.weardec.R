@@ -4,7 +4,7 @@ g.weardec = function(M,wearthreshold,ws2) {
   nsi = which(colnames(metalong) == "nonwearscore")
   csi = which(colnames(metalong) == "clippingscore")
   tsi = which(colnames(metalong) == "timestamp")
-  timeline = format(metalong[,tsi])
+  timeline = as.character(metalong[,tsi])
   clipsig = as.numeric(as.matrix(metalong[,csi]))
   #clipsig is a value between 0 and 1 for each 15 minutes indicated the ratio of datapoints > 7
   LC = length(which(clipsig > 0.05)) #fraction of 15 minute windows with potential clipping

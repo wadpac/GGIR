@@ -24,10 +24,10 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       minute_before = (sib_starts[sibi]-(60/epochlength)):(sib_starts[sibi]-1)
       minute_after = (sib_ends[sibi]+1):(sib_ends[sibi]+(60/epochlength))
       if (min(minute_before) > 1) {
-        sibreport$mean_acc_1min_before[sibi]  = round(mean(ts$ACC[dayind[minute_before]]), digits=3)
+        sibreport$mean_acc_1min_before[sibi]  = round(mean(ts$ACC[dayind[minute_before]]), digits = 3)
       }
       if (max(minute_after) < nrow(ts)) {
-        sibreport$mean_acc_1min_after[sibi]  = round(mean(ts$ACC[dayind[minute_after]]), digits=3)
+        sibreport$mean_acc_1min_after[sibi]  = round(mean(ts$ACC[dayind[minute_after]]), digits = 3)
       }
     }
   }
@@ -47,12 +47,12 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
             # only attempt if there are at least 2 timestamps to process
             nonempty = which(tmp[3:ncol(tmp)] != "")
             if (length(nonempty) > 1) {
-              date = as.Date(format(tmp[1,2]), format=dateformat)
+              date = as.Date(as.character(tmp[1,2]), format = dateformat)
               times = format(unlist(tmp[1,3:ncol(tmp)]))
               # ignore entries without start and/or end time
               t_to_remove = c()
               for (ji in 1:floor(length(times)/2)) {
-                check = ((ji*2)-1):(ji*2)
+                check = ((ji * 2) - 1):(ji * 2)
                 if (length(which(times[check] == "")) > 0) {
                   t_to_remove = c(t_to_remove, check)
                 }
