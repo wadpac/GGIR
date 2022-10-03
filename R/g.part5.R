@@ -664,7 +664,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                 M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
                                 M5VALUE = max(ACCrunwin)
                                 if (lightpeak_available == TRUE) {
-                                  if (length(unlist(strsplit(M5HOUR, " "))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
+                                  if (length(unlist(strsplit(M5HOUR, " |T"))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
                                   startM5 = which(format(ts$time) == M5HOUR)
                                   M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
                                   M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/ws3new)))], na.rm = TRUE), digits = 1)
