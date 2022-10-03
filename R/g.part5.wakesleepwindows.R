@@ -28,7 +28,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     
     
     # Load sleep onset and waking time from part 4 and convert them into timestamps
-    tt = unlist(strsplit(format(summarysleep_tmp2$calendar_date[k]),"/")) # calendar date
+    tt = unlist(strsplit(as.character(summarysleep_tmp2$calendar_date[k]),"/")) # calendar date
     # if sleep onset is not available in from acc and/or sleep then us the following default
     # in order to still have some beginning and end of the night, these days will be discared
     # anyway, because typically this coincides with a lot of non-wear time:
@@ -46,11 +46,11 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       defWA = summarysleep_tmp2$wakeup[k]
       defWA_ts = summarysleep_tmp2$wakeup_ts[k]
     }
-    w0[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ",format(defSO_ts), sep = "")
-    w1[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", format(defWA_ts), sep = "")
+    w0[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defSO_ts), sep = "")
+    w1[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defWA_ts), sep = "")
     # if time is beyond 24 then change the date
     if (defSO >= 24) { 
-      w0[k] = format(as.POSIXlt(w0[k],tz = desiredtz) + (24*3600))
+      w0[k] = as.character(as.POSIXlt(w0[k],tz = desiredtz) + (24*3600))
     }
     if (defWA >= 24 |
         (summarysleep_tmp2$daysleeper[k] == 1 & defWA < 18)) {
@@ -63,11 +63,11 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     
     if (length(s0) == 0) {
       w0c = paste0(w0c," 00:00:00")
-      s0 = which(format(ts$time) == w0c)[1]
+      s0 = which(as.character(ts$time) == w0c)[1]
     }
     if (length(s1) == 0) {
       w1c = paste0(w1c," 00:00:00")
-      s1 = which(format(ts$time) == w1c)[1]
+      s1 = which(as.character(ts$time) == w1c)[1]
     }
     timebb = format(ts$time) 
     if (is.ISO8601(timebb[1]) == TRUE) { # only do this for ISO8601 format
@@ -76,23 +76,23 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       s1 = which(format(timebb) == w1c)[1]
       if (length(s0) == 0) {
         w0c = paste0(w0c," 00:00:00")
-        s0 = which(format(timebb) == w0c)[1]
+        s0 = which(as.character(timebb) == w0c)[1]
       }
       if (length(s1) == 0) {
         w1c = paste0(w1c," 00:00:00")
-        s1 = which(format(timebb) == w1c)[1]
+        s1 = which(as.character(timebb) == w1c)[1]
       }
     }
     if (is.na(s0) == TRUE) {
       s0 = which(timebb == paste(w0c, " 00:00:00", sep = ""))[1]
       if (is.na(s0) == TRUE) {
-        s0 = which(format(timebb) == paste(w0c, " 00:00:00", sep = ""))[1]
+        s0 = which(as.character(timebb) == paste(w0c, " 00:00:00", sep = ""))[1]
       }
     }
     if (is.na(s1) == TRUE) {
       s1 = which(timebb == paste(w1c, " 00:00:00", sep = ""))[1]
       if (is.na(s1) == TRUE) {
-        s1 = which(format(timebb) == paste(w1c, " 00:00:00", sep = ""))[1]
+        s1 = which(as.character(timebb) == paste(w1c, " 00:00:00", sep = ""))[1]
       }
     }
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
