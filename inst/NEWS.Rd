@@ -4,7 +4,8 @@
 \section{Changes in version 2.8-2 (release date:03-10-2022)}{
   \itemize{
     \item Part5: Fix #655 (unable to handle when M5HOUR falls on midnight exactly).
-    }
+    \item Reports: Fix #672 (improved speed of reports generation).
+   }
 }
 \section{Changes in version 2.8-1 (release date:01-10-2022)}{
   \itemize{
