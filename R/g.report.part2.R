@@ -198,9 +198,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           SUMMARY_clean = tidyup_df(SUMMARY)
           daySUMMARY_clean = tidyup_df(daySUMMARY)
           #store matrix temporarily to keep track of process
-          write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-          write.csv(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
-          write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
+          data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F, na = "")
+          data.table::fwrite(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F, na = "")
+          data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F, na = "")
         }
         pdfpagecount = pdfpagecount + 1
       }
@@ -216,14 +216,14 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       
       #===============================================================================
       # store final matrices again
-      write.csv(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F)
-      write.csv(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F)
+      data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F, na = "")
+      data.table::fwrite(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F, na = "")
       if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
         df = g.convert.part2.long(daySUMMARY)
         df_clean = tidyup_df(df)
-        write.csv(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F)
+        data.table::fwrite(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F, na = "")
       }
-      write.csv(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F)
+      data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F, na = "")
     }
   }
 }
