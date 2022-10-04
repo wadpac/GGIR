@@ -23,7 +23,7 @@ test_that("Part 1 can run with all metrics", {
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 12)
-  expect_true(nrow(M$metashort) > 16000)
+  expect_true(nrow(M$metashort) > 11280)
   expect_equal(mean(M$metashort$BFEN[1:11280]),  0.04581394, tolerance = 4)
   expect_equal(mean(M$metashort$LFENMO[1:11280]),  0.04465999, tolerance = 4)
   expect_equal(mean(M$metashort$HFENplus[1:11280]),  0.09142312, tolerance = 4)
