@@ -5,6 +5,7 @@
   \itemize{
     \item Part 5: Fix #655 (unable to handle when M5HOUR falls on midnight exactly).
     \item Part 1: Deprecate brondcounts due to issues in activityCounts package
+    \item Reports: Fix #672 (improved speed of reports generation).
     }
 }
 \section{Changes in version 2.8-1 (release date:01-10-2022)}{
