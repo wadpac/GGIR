@@ -146,8 +146,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         print("report not stored, because no results available")
       } else {
         nightsummary_clean = tidyup_df(nightsummary)
-        write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                   sep = ""), row.names = FALSE)
+        data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
+                                                   sep = ""), row.names = FALSE, na = "")
         nightsummary_bu = nightsummary
       }
       ####
@@ -501,15 +501,15 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
           nightsummary_clean = tidyup_df(nightsummary)
           personSummary_clean = tidyup_df(personSummary)
           if (dotwice == 1) {
-            write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                       sep = ""), row.names = FALSE)
-            write.csv(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
-                                                        sep = ""), row.names = FALSE)
+            data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
+                                                       sep = ""), row.names = FALSE, na = "")
+            data.table::fwrite(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
+                                                        sep = ""), row.names = FALSE, na = "")
           } else {
-            write.csv(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
-                                                       sep = ""), row.names = FALSE)
-            write.csv(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
-                                                        sep = ""), row.names = FALSE)
+            data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
+                                                       sep = ""), row.names = FALSE, na = "")
+            data.table::fwrite(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
+                                                        sep = ""), row.names = FALSE, na = "")
           }
         }
       }
