@@ -49,10 +49,11 @@ g.convert.part2.long = function(daySUMMARY) {
     return(x4)
   }
   
-  getvar = function(x) {
-    tmp = unlist(strsplit(as.character(x),"_"))
-    return(paste0(tmp[1:(length(tmp)-1)],collapse="_"))
-  }
+  # getvar = function(x) {
+    # tmp = unlist(strsplit(as.character(x),"_"))
+    # return(paste0(tmp[1:(length(tmp)-1)],collapse="_"))
+  # }
+  
   gettimeseg = function(x) {
     tmp = unlist(strsplit(as.character(x),"_"))
     tmp2 = unlist(strsplit(tmp[length(tmp)],"[.]"))[1]
@@ -65,16 +66,18 @@ g.convert.part2.long = function(daySUMMARY) {
   cn = names(daySUMMARY)
   # extract windowsegment specification from variable name
   tt = sapply(cn, FUN = extractlastpart)
-  id.vars = colnames(tt[,which(tt[2,] == "")]) # identify other varibales, including ID
+  id.vars = colnames(tt[,which(tt[2,] == "")]) # identify other variables, including ID
   daySUMMARY = data.table::as.data.table(daySUMMARY)
   # turn into long format with melt, this will make it too long, so further
   # down we will move key variables to wide again
   daySUMMARY2 = data.table::melt(daySUMMARY, id.vars = id.vars, 
-                                 measure.vars = colnames(tt)[which(tt[2,]!= "")])
+                                 measure.vars = colnames(tt)[which(tt[2,] != "")])
   # extract variable names
-  daySUMMARY2$variable2 = sapply(daySUMMARY2$variable, FUN = getvar)
+  # daySUMMARY2$variable2 = sapply(daySUMMARY2$variable, FUN = getvar)
+  daySUMMARY2$variable2 = sub("_[^_]+$", "", daySUMMARY2$variable)
   # extract time segment names
-  daySUMMARY2$timesegment2 = sapply(daySUMMARY2$variable, FUN = gettimeseg)
+  # daySUMMARY2$timesegment2 = sapply(daySUMMARY2$variable, FUN = gettimeseg)
+  daySUMMARY2$timesegment2 = sub("^.*_", "", daySUMMARY2$variable)
   daySUMMARY2 = as.data.frame(daySUMMARY2)
   # tidy up
   rem = which(colnames(daySUMMARY2) == "variable")
