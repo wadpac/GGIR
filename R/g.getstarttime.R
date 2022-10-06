@@ -11,12 +11,12 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     starttime = c()
     #It seems that Axivity does not store timestamp in a consistent position
     # therefore, we need to search for it in the data:
-    starttime = as.character(header[which(rownames(header) == "ICMTzTime"),1])
+    starttime = format(header[which(rownames(header) == "ICMTzTime"),1])
     rn = rownames(header)
     vl = header$value
     if (length(starttime) == 0) {
       if (length(which(rn == "Start")) > 0) {
-        starttime = as.character(header$value[which(rn == "Start")])
+        starttime = format(header$value[which(rn == "Start")])
         #in one of the files starttime is hidden in rowname
         if (length(starttime) == 0) starttime = rownames(header)[2]
       }
@@ -26,12 +26,12 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
       }
     }
     if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
-    if (length(P$timestamp) == 0) starttime = as.character(P$hvalues[which(P$hnames == "Start")])
+    if (length(P$timestamp) == 0) starttime = format(P$hvalues[which(P$hnames == "Start")])
   } else if (mon == 2 & dformat == 1) {
     if ("page.timestamps" %in% names(P)) { # GENEAread
       if (length(desiredtz) > 0) {
         starttime = POSIXtime2iso8601(P$page.timestamps[1], tz = desiredtz)
-        if (length(unlist(strsplit(as.character(starttime),":"))) < 2) {
+        if (length(unlist(strsplit(format(starttime),":"))) < 2) {
           #needed for MaM study where first timestamp does not have clock time in it
           starttime = POSIXtime2iso8601(P$page.timestamps[2], tz = desiredtz)
         }
@@ -43,35 +43,35 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
       starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
     }
   } else if (dformat == 2 & mon == 2) {
-    starttime = as.character(P[1,1])
+    starttime = format(P[1,1])
     starttime = as.POSIXlt(starttime)
   } else if (dformat == 2 & (mon == 3 | mon == 4 | mon == 6)) {
     if (mon == 3 | mon == 6) {
       tmph = read.csv(datafile, nrow = 8, skip = 1)
       tmphi = 1
       while (tmphi < 10) {
-        if (length(unlist(strsplit(as.character(tmph[tmphi,1]),"Start Time"))) > 1) {
+        if (length(unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))) > 1) {
           break
         }
         tmphi = tmphi + 1
       }
-      starttime = unlist(strsplit(as.character(tmph[tmphi,1]),"Start Time"))[2]
+      starttime = unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))[2]
       #-------------------------------
       tmphi = 1
       while (tmphi < 10) {
-        if (length(unlist(strsplit(as.character(tmph[tmphi,1]),"Start Date"))) > 1) {
+        if (length(unlist(strsplit(format(tmph[tmphi,1]),"Start Date"))) > 1) {
           break
         }
         tmphi = tmphi + 1
       }
-      startdate = unlist(strsplit(as.character(tmph[tmphi,1]), "Start Date"))[2]
-      startdate = as.character(unlist(strsplit(as.character(startdate)," ")))
-      starttime = as.character(unlist(strsplit(as.character(starttime)," ")))
+      startdate = unlist(strsplit(format(tmph[tmphi,1]), "Start Date"))[2]
+      startdate = as.character(unlist(strsplit(format(startdate)," ")))
+      starttime = as.character(unlist(strsplit(format(starttime)," ")))
     }
     if (mon == 4) {
       starttime = P[1,1]
       starttime = as.POSIXlt(starttime,tz = desiredtz,origin = "1970-01-01")
-      startdate = unlist(strsplit(as.character(starttime), " "))[1]
+      startdate = unlist(strsplit(format(starttime), " "))[1]
     } else {
       #-----------------------------------------
       #remove possible spaces in date or time
@@ -175,7 +175,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     starttime = unisensR::readUnisensStartTime(dirname(datafile))
   } else if (dformat == 6 & mon == 3) {
     if (is.null(configtz)) configtz = desiredtz
-    starttime = as.POSIXct(as.character(P[1, 1]), tz = configtz)
+    starttime = as.POSIXct(format(P[1, 1]), tz = configtz)
     if (configtz != desiredtz) {
       attr(starttime, "tzone") <- desiredtz
     }

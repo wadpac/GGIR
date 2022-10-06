@@ -11,7 +11,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   # Person identification number
   filesummary[vi] = ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
-  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCounts|ZCX|ZCY", invert = TRUE)]
+  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|NeishabouriCount", invert = TRUE)]
   
   # Serial number
   if (snloc == 1) {

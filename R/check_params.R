@@ -131,6 +131,24 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       " Note that this option will be deprecated in the next CRAN release."))
     }
   }
+  if (length(params_metrics) > 0) {
+    if (params_metrics[["do.brondcounts"]] == TRUE) {
+      stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",
+                  "activityCounts package. We will reinsert brondcounts ",
+                  "once the issues are resolved. Consider using argument do.neishabouricounts, ",
+                  "for more information see package documentation."), call. = FALSE)
+    }
+    if (params_metrics[["do.neishabouricounts"]] == TRUE) {
+      if ("actilifecounts" %in% rownames(utils::installed.packages()) == FALSE) {
+        stop("\nR package actilifecounts was not found and is required for deriving the neishabouricounts", call. = FALSE)
+      } else {
+        if (utils::packageVersion("actilifecounts") < "1.1.0") {
+          stop("\nPlease update R package actilifecounts to version 1.1.0 or higher", call. = FALSE)
+        }
+      }
+    }
+  }
+  
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
       if (params_sleep[["HASPT.algo"]] != "HorAngle") {

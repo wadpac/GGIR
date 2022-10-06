@@ -131,9 +131,18 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       } else {
         BrondCount = c()
       }
+      # optionally add NeishabouriCounts for comparison
+      NeishabouriCount_colname = paste0("NeishabouriCount_", tolower(params_sleep[["Sadeh_axis"]]))
+      if (NeishabouriCount_colname %in% colnames(IMP$metashort)) {
+        NeishabouriCount =  IMP$metashort[, NeishabouriCount_colname]
+        NeishabouriCount = fix_NA_invector(NeishabouriCount)
+      } else {
+        NeishabouriCount = c()
+      }
     } else {
       zeroCrossingCount = c()
       BrondCount = c()
+      NeishabouriCount = c()
     }
     #==================================================================
     # 'sleep' detection if sleep is not provided by external function.
@@ -151,7 +160,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                     anglethreshold = params_sleep[["anglethreshold"]], 
                     time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
-                    BrondCount = BrondCount)
+                    BrondCount = BrondCount,
+                    NeishabouriCount = NeishabouriCount)
     } else { # getSleepFromExternalFunction == TRUE
       # Code now uses the sleep estimates from the external function
       # So, the assumption is that the external function provides a 

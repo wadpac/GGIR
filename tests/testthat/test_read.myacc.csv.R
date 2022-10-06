@@ -7,7 +7,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   N = 30
   sf = 30
   timestamps = as.POSIXlt(Sys.time() + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
-  testfile = matrix("", 6, 1)
+  testfile = matrix("", 7, 1)
   set.seed(100)
   accx = rnorm(N)
   set.seed(200)
@@ -88,7 +88,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   zb = sample(x = 1:(2^bits), size = N_withgap, replace = TRUE)
   set.seed(400)
   temp2 = rnorm(N_withgap)
-  S7 = as.matrix(data.frame(x = xb, time = timestamps_gap, y = yb, z = zb, 
+  S7 = S8 = as.matrix(data.frame(x = xb, time = timestamps_gap, y = yb, z = zb, 
                             temp = temp2 + 20, stringsAsFactors = TRUE))
   hd_NR = 10
   hd = matrix("",hd_NR + 1,ncol(S5))
@@ -102,6 +102,18 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   colnames(S7) = NULL
   testfile[6] = "testcsv7.csv"
   write.table(S7, file = testfile[6], col.names = FALSE, row.names = FALSE)
+  
+  hd2 = matrix("",hd_NR + 1,ncol(S5))
+  hd2[1, 1:2] = c("ID: 12345", "")
+  hd2[2, 1:2] = c("sample_rate: 30", "")
+  hd2[3, 1:2] = c("serial_number: 30", "")
+  hd2[4, 1:2] = c("bit: 8", "")
+  hd2[5, 1:2] = c("dynamic_range: 6", "")
+  S8 = rbind(hd2,S8)
+  S8[hd_NR + 1,] = colnames(S8)
+  colnames(S8) = NULL
+  testfile[7] = "testcsv8.csv"
+  write.table(S8, file = testfile[7], col.names = FALSE, row.names = FALSE)
   
   #------------------------
   # Try to read each of these files
@@ -174,15 +186,17 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.desiredtz = "Europe/London", rmc.sf = 100,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
-                      rmc.headername.recordingid = "ID", rmc.bit = "bit",
+                      rmc.headername.recordingid = "ID", rmc.bitrate = "bit",
                       rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c())
   expect_that(nrow(D5$data),equals(20))
   expect_that(ncol(D5$data),equals(5))
   expect_that(nrow(D5$header),equals(5))
   expect_that(ncol(D5$header),equals(1))
+  # header in two columns
   D7 = read.myacc.csv(rmc.file = testfile[6], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
+                      rmc.header.length = 5,
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
                       rmc.col.time = 2,
                       rmc.unit.acc = "bit", rmc.unit.temp = "C",
@@ -199,11 +213,39 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_equal(mean(D7$data[,3]), -0.62, tolerance = 2)
   expect_equal(mean(D7$data[,4]), -0.36, tolerance = 1)
   expect_equal(mean(D7$data[,5]), 20.1, tolerance = 1)
-  expect_equal(D7$data[2,2], 5.578, tolerance  = 3)
+  expect_equal(D7$data[2,2], 0.9768219, tolerance  = 3)
   expect_equal(ncol(D7$data), 5)
   expect_equal(nrow(D7$header),5)
   expect_equal(ncol(D7$header), 1)
-    
+  expect_equal(as.numeric(D7$header[1,]), 12345)
+  expect_equal(as.numeric(D7$header[2,]), 30)
+  # header in one column
+  D8 = read.myacc.csv(rmc.file = testfile[7], rmc.nrow = 20, rmc.dec = ".",
+                      rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
+                      rmc.header.length = 5,
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
+                      rmc.col.time = 2,
+                      rmc.unit.acc = "bit", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.headername.sf = "sample_rate",
+                      rmc.headername.sn = "serial_number",
+                      rmc.headername.recordingid = "ID", 
+                      rmc.bitrate = "bit", rmc.dynamic_range = "dynamic_range",
+                      rmc.header.structure = ":",rmc.check4timegaps = TRUE)
+  
+  expect_equal(mean(D8$data[,2]), 0.761, tolerance = 3)
+  expect_equal(mean(D8$data[,3]), -0.62, tolerance = 2)
+  expect_equal(mean(D8$data[,4]), -0.36, tolerance = 1)
+  expect_equal(mean(D8$data[,5]), 20.1, tolerance = 1)
+  expect_equal(D8$data[2,2], 0.9768219, tolerance  = 3)
+  expect_equal(ncol(D8$data), 5)
+  expect_equal(nrow(D8$header),5)
+  expect_equal(ncol(D8$header), 1)
+  expect_equal(as.numeric(D8$header[1,]), 12345)
+  expect_equal(as.numeric(D8$header[2,]), 30)
+  
   for (i in 1:length(testfile)) {
     expect_true(file.exists(testfile[i]))
     if (file.exists(testfile[i])) file.remove(testfile[i])

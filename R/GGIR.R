@@ -218,8 +218,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (length(which(do.report == 2)) > 0) {
     print_console_header("Report part 2")
     N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
-    if (N.files.ms2.out < f0) f0 = 1
-    if (N.files.ms2.out < f1) f1 = N.files.ms2.out
+    # if (N.files.ms2.out < f0) f0 = 1
+    # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
+    if (length(f0) == 0) f0 = 1
     if (f1 == 0) f1 = N.files.ms2.out
     if (length(params_247[["qwindow"]]) > 2 | is.character(params_247[["qwindow"]])) {
       store.long = TRUE

@@ -350,11 +350,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
           # is a nightworker onset
-          tmp1 = as.character(guider.df2$sleeponset[1])
+          tmp1 = format(guider.df2$sleeponset[1])
           tmp2 = unlist(strsplit(tmp1, ":"))
           SptOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
           # wake
-          tmp4 = as.character(guider.df2$sleepwake[1])
+          tmp4 = format(guider.df2$sleepwake[1])
           tmp5 = unlist(strsplit(tmp4, ":"))
           SptWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
           # Assess whether it is a daysleeper or a nightsleeper
