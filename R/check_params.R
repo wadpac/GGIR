@@ -134,8 +134,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_metrics) > 0) {
     if (params_metrics[["do.brondcounts"]] == TRUE) {
       stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",
-                  "following issues with the activityCounts package. We will reinsert brondcounts ",
-                  "once the issues are resolved."), call. = FALSE)
+                  "activityCounts package. We will reinsert brondcounts ",
+                  "once the issues are resolved. Consider using argument do.neishabouricounts, ",
+                  "for more information see package documentation."), call. = FALSE)
     }
     if (params_metrics[["do.neishabouricounts"]] == TRUE) {
       if ("actilifecounts" %in% rownames(utils::installed.packages()) == FALSE) {
