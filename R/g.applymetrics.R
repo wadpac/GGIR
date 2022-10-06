@@ -322,18 +322,21 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   #================================================
   # Brond Counts)
   if (do.brondcounts == TRUE) {
-    if (ncol(data) > 3) data = data[,2:4]
-    mycounts = activityCounts::counts(data = data, hertz = sf, 
-                                      x_axis = 1, y_axis = 2, z_axis = 3,
-                                      start_time = Sys.time()) # ignoring timestamps, because GGIR has its own timestamps
-    if (sf < 30) {
-      warning("\nNote: activityCounts not designed for handling sample frequencies below 30 Hertz")
-    }
-    # activityCount output is per second
-    # aggregate to our epoch size:
-    allmetrics$BrondCount_x = sumPerEpoch(mycounts[, 2], sf = 1, epochsize)
-    allmetrics$BrondCount_y = sumPerEpoch(mycounts[, 3], sf = 1, epochsize)
-    allmetrics$BrondCount_z = sumPerEpoch(mycounts[, 4], sf = 1, epochsize)
+    stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",
+                "following issues with the activityCounts package. We will reinsert brondcounts ",
+                "once the issues are resolved."), call. = FALSE)
+    # if (ncol(data) > 3) data = data[,2:4]
+    # mycounts = activityCounts::counts(data = data, hertz = sf, 
+    #                                   x_axis = 1, y_axis = 2, z_axis = 3,
+    #                                   start_time = Sys.time()) # ignoring timestamps, because GGIR has its own timestamps
+    # if (sf < 30) {
+    #   warning("\nNote: activityCounts not designed for handling sample frequencies below 30 Hertz")
+    # }
+    # # activityCount output is per second
+    # # aggregate to our epoch size:
+    # allmetrics$BrondCount_x = sumPerEpoch(mycounts[, 2], sf = 1, epochsize)
+    # allmetrics$BrondCount_y = sumPerEpoch(mycounts[, 3], sf = 1, epochsize)
+    # allmetrics$BrondCount_z = sumPerEpoch(mycounts[, 4], sf = 1, epochsize)
   }
   #================================================
   # Actilife Counts)

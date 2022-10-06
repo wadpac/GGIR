@@ -6,8 +6,8 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
       A[which(A$invalid==1), which(colnames(A) %in% c("time", "night") == FALSE)] = 0
     }
   }
-  space = ifelse(length(unlist(strsplit(as.character(A$time[1])," "))) > 1,TRUE,FALSE)
-  time = as.character(unlist(A$time))
+  space = ifelse(length(unlist(strsplit(format(A$time[1])," "))) > 1,TRUE,FALSE)
+  time = format(unlist(A$time))
   #time stored as iso8601 what makes it sensitive to daylight saving days.
   if (space == TRUE) {
     time = POSIXtime2iso8601(as.POSIXlt(time, tz = desiredtz), tz = desiredtz)
@@ -60,7 +60,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
             if (nsleepperiods == 0) {
               sib.cla.sum[cnt, 1] = i #night
               sib.cla.sum[cnt, 2] = colnames(sleep.t)[j] #definition
-              sib.cla.sum[cnt, 3] = as.character(time.t[1])
+              sib.cla.sum[cnt, 3] = format(time.t[1])
               sib.cla.sum[cnt, 4] = nsleepperiods #number of sleep periods
               sib.cla.sum[cnt, 5] = 0 #total sleep duration
               sib.cla.sum[cnt, 6] = fraction.night.invalid #length(invalid.t)
@@ -71,7 +71,7 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
               for (spi in 1:nsleepperiods) {
                 sib.cla.sum[cnt, 1] = i #night
                 sib.cla.sum[cnt, 2] = colnames(sleep.t)[j] #definition
-                sib.cla.sum[cnt, 3] = as.character(time.t[1])
+                sib.cla.sum[cnt, 3] = format(time.t[1])
                 sib.cla.sum[cnt, 4] = nsleepperiods #number of sleep periods
                 sleep_sp = sleep.t[start_sp[spi]:end_sp[spi],j]
                 time_sp = time.t[start_sp[spi]:end_sp[spi]]
@@ -80,8 +80,8 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
                 sib.cla.sum[cnt, 5] = sleep_dur/60 #total sleep duration
                 sib.cla.sum[cnt, 6] = fraction.night.invalid #length(invalid.t)
                 sib.cla.sum[cnt, 7] = spi
-                sib.cla.sum[cnt, 8] = as.character(time_sp[which(sleep_sp == 1)[1]])
-                sib.cla.sum[cnt, 9] = as.character(time_sp[length(sleep_sp)])
+                sib.cla.sum[cnt, 8] = format(time_sp[which(sleep_sp == 1)[1]])
+                sib.cla.sum[cnt, 9] = format(time_sp[length(sleep_sp)])
                 cnt = cnt + 1
               }
             }

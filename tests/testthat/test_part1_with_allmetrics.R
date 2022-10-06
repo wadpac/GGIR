@@ -17,13 +17,13 @@ test_that("Part 1 can run with all metrics", {
           # We are not doing all the metrics, because Travis-CI cannot allocate enough memory
           do.enmo = TRUE,do.lfenmo = TRUE,
           do.bfen = TRUE, do.hfenplus = TRUE,
-          do.mad = TRUE, do.zcx = TRUE, do.brondcounts = TRUE,
+          do.mad = TRUE, do.zcx = TRUE, #do.brondcounts = TRUE,
    windowsizes = c(15,3600,3600), do.parallel = FALSE,
-   minimumFileSizeMB = 0)
+   minimumFileSizeMB = 0, expand_tail_max_hours = 2)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_equal(ncol(M$metashort), 12)
-  expect_equal(nrow(M$metashort), 11280)
+  expect_equal(ncol(M$metashort), 9)
+  expect_true(nrow(M$metashort) > 11280)
   expect_equal(mean(M$metashort$BFEN),  0.0458, tolerance = 4)
   expect_equal(mean(M$metashort$LFENMO),  0.0447, tolerance = 4)
   expect_equal(mean(M$metashort$HFENplus),  0.0914, tolerance = 4)
@@ -31,8 +31,8 @@ test_that("Part 1 can run with all metrics", {
   expect_equal(mean(M$metashort$anglex),  57.4683, tolerance = 4)
   expect_equal(mean(M$metashort$anglez),  0.3522, tolerance = 4)
   expect_equal(mean(M$metashort$ZCX),  14.94, tolerance = 2)
-  expect_equal(sum(M$metashort$BrondCount_x), 17690)
-  expect_equal(sum(M$metashort$BrondCount_y), 60971)
-  expect_equal(sum(M$metashort$BrondCount_z), 957584)
+  # expect_equal(sum(M$metashort$BrondCount_x), 17690)
+  # expect_equal(sum(M$metashort$BrondCount_y), 60971)
+  # expect_equal(sum(M$metashort$BrondCount_z), 957584)
   if (file.exists(fn)) file.remove(fn)
 })

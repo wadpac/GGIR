@@ -1285,6 +1285,7 @@ original publications.
 Given the uncertainties surrounding the older sleep algorithm we encourage GGIR
 users to evaluate and help optimise the algorithms. Here, we have the following
 suggestions:
+
 - For ActiGraph users, when comparing GGIR Cole-Kripke estimates with ActiLife Cole
 Kripke estimate be aware that ActiLife may have adopted a different Cole-Kripke
 algorithm as the original publication presented four algorithms. Further, ActiLife
@@ -1298,7 +1299,9 @@ To aid research in exploring count type algorithms, we also implemented the
 `brondcounts` as proposed by Br&#248;nd and Brondeel and available via R package
 activityCounts, as well as the `neishabouricounts` that follows the algorithm implemented
 in the close-source software ActiLife by ActiGraph and is available in the R package
-actilifecounts. 
+actilifecounts. DISCLAIMER: the brondcounts option has been deprecated as of 
+October2022 due to issues with the activityCounts package it relies on. We will 
+reactivate brondcounts once the issues are resolved.
 To extract these metrics in addition to the zero crossing count,
 specify `do.brondcounts = TRUE` and/or `do.neishabouricounts = TRUE` which is used 
 in GGIR part 1 and uses R packages activityCounts and actilifecounts in the background. 
