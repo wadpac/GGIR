@@ -1285,6 +1285,7 @@ original publications.
 Given the uncertainties surrounding the older sleep algorithm we encourage GGIR
 users to evaluate and help optimise the algorithms. Here, we have the following
 suggestions:
+
 - For ActiGraph users, when comparing GGIR Cole-Kripke estimates with ActiLife Cole
 Kripke estimate be aware that ActiLife may have adopted a different Cole-Kripke
 algorithm as the original publication presented four algorithms. Further, ActiLife

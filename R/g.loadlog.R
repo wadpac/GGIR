@@ -58,6 +58,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       # - empty columns if relevant to make sleeplog match accelerometer recording, make sure coln1 argument is used
       # - onset and wakup times of sleeplog, for this extract dates from sleeplog to check for missing days
       newsleeplog = matrix("", nrow(S), max(c(nnights*2, 100)) + 1)
+      
       naplog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       nonwearlog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       napcnt = 1

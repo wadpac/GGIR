@@ -23,7 +23,7 @@ g.detecmidnight = function(time,desiredtz,dayborder) {
     midnights = time[length(time)]
     midnightsi = length(time)
   } else {
-    midnights = as.character(time[midn])
+    midnights = format(time[midn])
     midnightsi = midn
   }
   if (length(midn) == 0) { # measurement with no midnights, use last timestamp as dummy midnight for g.analyse() to work

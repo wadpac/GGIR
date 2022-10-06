@@ -50,42 +50,36 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       if (length(header_tmp) == 1) { # one header item
         header_tmp = as.matrix(unlist(strsplit(as.character(header_tmp[,1]), rmc.header.structure)))
       } else { # multiple header items
-        if (ncol(header_tmp) > 1) {
-          # collapse columns to one
-          for (i in 1:length(header_tmp)) { # "remove quotes in character"
-            header_tmp[i] = gsub(pattern = "\"",replacement = "",x = header_tmp[i])
-          }
-          header_tmp = do.call(paste0, header_tmp)
-        }
         mysplit = function(x){
           tmp = strsplit(as.character(x), rmc.header.structure)
           tmp = unlist(tmp)
           return(tmp)
         }
         header_tmp0 = header_tmp
-        header_tmp = unlist(lapply(header_tmp, FUN = mysplit))
+        header_tmp = unlist(lapply(header_tmp[,1], FUN = mysplit))
         if (length(header_tmp) > 2) {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow=nrow(header_tmp0), byrow=T), stringsAsFactors = TRUE)
+          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = nrow(header_tmp0), byrow = T), stringsAsFactors = TRUE)
+          colnames(header_tmp) = NULL
         } else {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow=1, byrow=T), stringsAsFactors = TRUE)
+          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = 1, byrow = T), stringsAsFactors = TRUE)
           colnames(header_tmp) = NULL
         }
       }
       if (ncol(header_tmp) == 1) header_tmp = t(header_tmp)
-      header_tmp2 = data.frame(a = header_tmp[,2], stringsAsFactors = TRUE)
-      colnames(header_tmp2) = NULL
+      header_tmp2 = as.data.frame(as.character(unlist(header_tmp[,2])), stringsAsFactors = FALSE)
       row.names(header_tmp2) = header_tmp[,1] 
+      colnames(header_tmp2) = NULL
       header = header_tmp2
     } else { # column 1 is header name, column 2 is header value
       colnames(header_tmp) = NULL
       validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
       header_tmp = header_tmp[validrows,1:2]
-      header_tmp2 = as.data.frame(header_tmp[,2], stringsAsFactors = TRUE)
+      header_tmp2 = as.data.frame(header_tmp[,2], stringsAsFactors = FALSE)
       row.names(header_tmp2) = header_tmp[,1]
       colnames(header_tmp2) = NULL
       header = header_tmp2
     }
-    skip = rmc.firstrow.acc-1
+    skip = rmc.firstrow.acc - 1
     freadheader = TRUE
     # assess whether accelerometer data conversion is needed
     if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
