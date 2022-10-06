@@ -616,6 +616,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{do.brondcounts}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.brondcounts"]])}).
+        THIS OPTION HAS BEEN DEPRECATED (October2022) DUE TO ISSUES WITH THE ACTIVITYCOUNTS PACKAGE,
+        WE WILL ADD THIS BACK IN ONCE THE ISSUES WITH THE ACTIVITYCOUNTS PACKAGE ARE ADDRESSED.
         If TRUE, calculates the metric via R package activityCounts.
         We call them BrondCounts because there are large number of acitivty counts in
         the physical activity and sleep research field. By calling them _brondcounts_

@@ -4,6 +4,7 @@
 \section{Changes in version 2.8-2 (release date:03-10-2022)}{
   \itemize{
     \item Timestamp conversion functions tidied up #661.
+    \item Part 1: Deprecate brondcounts due to issues in activityCounts package
     \item Part 5: Fix #655 (unable to handle when M5HOUR falls on midnight exactly).
     \item Part 5: Additional updates that I missed in 2.8-1 in POSIXlt to character
      conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)
