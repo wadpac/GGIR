@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-2 (release date:03-10-2022)}{
+\section{Changes in version 2.8-2 (release date:06-10-2022)}{
   \itemize{
     \item Timestamp conversion functions tidied up #661.
     \item Part 1: Deprecate brondcounts due to issues in activityCounts package
