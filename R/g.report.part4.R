@@ -112,6 +112,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         }
       }
       # merge in variable
+      nightsummary2$night = gsub(" ", "", nightsummary2$night)
       nightsummary2 = base::merge(nightsummary2, outputp5, by = c("ID", "night"), all.x = TRUE)
       if (remove_oldID == TRUE) {
         nightsummary2$ID = nightsummary2$ID_old
