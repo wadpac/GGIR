@@ -96,7 +96,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
                                          decn = ".", dayborder = dayborder, ws = 3,
                                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA)
   expect_equal(cwa_read$P$header$blocks, 145)
-  expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 4.1133)
+  expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 0)
   
   expect_equal(nrow(genea_read$P$header), 18)
   expect_equal(sum(genea_read$P$rawxyz[20,]), 1000)
