@@ -63,7 +63,7 @@ test_that("chainof5parts", {
           idloc = 2, desiredtz = desiredtz,
           strategy = 1,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, qM5L5 = c(0.2,0.4), winhr = c(3,10),
-          do.parallel = do.parallel, myfun = c())
+          do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9), cosinor = TRUE)
   g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -76,10 +76,13 @@ test_that("chainof5parts", {
   expect_that(nrow(IMP$metashort), equals(11280))
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.02911, tolerance = 3)
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(1.95833))
-  expect_that(ncol(SUM$daysummary), equals(32))
+  expect_that(ncol(SUM$daysummary), equals(34))
+  expect_equal(SUM$daysummary$`p50_ENMO_mg_0-24hr`, c("17.15", "33",  "0"))
+  expect_equal(round(as.numeric(SUM$daysummary$`p90_ENMO_mg_0-24hr`)), c(44, 54, 41), tolerance = 0)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), 89.26, tolerance = 3)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), 37.383, tolerance = 3)
-
+  expect_equal(as.numeric(SUM$summary$cosinor_acrophase), 3.260855, tolerance = 3)
+  expect_equal(as.numeric(SUM$summary$cosinorExt_beta), 109.618, tolerance = 2)
   #--------------------------------------------
   # part 3
   g.part3(metadatadir = metadatadir, f0 = 1, f1 = 1, anglethreshold = 5, desiredtz = desiredtz,
@@ -115,25 +118,32 @@ test_that("chainof5parts", {
   #part 5
   g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
           strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
-                     loglocation = sleeplog_fn,
-                     overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
-          # frag.classes.day = c("day_IN_bts", "day_IN_unbt"),  frag.classes.spt = "spt_sleep",
-          frag.metrics = "all", save_ms5rawlevels = TRUE)
+          loglocation = sleeplog_fn,
+          overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
+          frag.metrics = "all", save_ms5rawlevels = TRUE,  sleeplogidnum = FALSE,
+          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr")
+  sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
+  expect_true(dir.exists(sibreport_dirname))
+  expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile.csv.RData_T5A5.csv")))
+  
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
+  
+  dirname = "output_test/meta/ms5.out/"
+  
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(152))
-  expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(35.9958))
+  expect_that(ncol(output),equals(154))
+  expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
-  expect_that(nrow(TSFILE),equals(4601))
-  expect_equal(ncol(TSFILE), 10)
-  expect_equal(length(unique(TSFILE$class_id)), 10)
+  expect_that(nrow(TSFILE),equals(1150))
+  expect_equal(ncol(TSFILE), 11) # 11 columns now because of nap_nonwear classification
+  expect_equal(length(unique(TSFILE$class_id)), 11)
  #--------------------------------------------
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),

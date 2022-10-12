@@ -77,4 +77,17 @@ prepareNewRelease = function(version = c()) {
         i = i + 1
   }
   if (errorfound == FALSE) cat(paste0("\nNo problem found. Package consistently uses version ",version," and release date ", dateReversed))
+  
+  Q1 = menu(c("Yes", "No"), title = paste0("\nDo you want to check the package with manual, remote and incoming?"))
+  if (Q1 == 1) {
+    devtools::check(
+      manual = TRUE,
+      remote = TRUE,
+      incoming = TRUE
+    )
+  }
+  Q2 = menu(c("Yes", "No"), title = paste0("\nDo you want to build the package for CRAN including manual?"))
+  if (Q2 == 1) {
+    devtools::build(manual = TRUE)
+  }
 }

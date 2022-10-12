@@ -7,7 +7,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     return(sum(x2))
   }
   w0 = w1 = rep(0,length(summarysleep_tmp2$calendar_date))
-  for (k in 1:length(summarysleep_tmp2$calendar_date)){ # loop through nights from part 4
+  for (k in 1:length(summarysleep_tmp2$calendar_date)) { # loop through nights from part 4
     # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
     round_seconds_to_ws3new = function(x, ws3new) {
       temp = as.numeric(unlist(strsplit(x,":")))
@@ -46,20 +46,20 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       defWA = summarysleep_tmp2$wakeup[k]
       defWA_ts = summarysleep_tmp2$wakeup_ts[k]
     }
-    w0[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(defSO_ts),sep="")
-    w1[k] = paste(tt[3],"-",tt[2],"-",tt[1]," ",as.character(defWA_ts),sep="")
+    w0[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defSO_ts), sep = "")
+    w1[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defWA_ts), sep = "")
     # if time is beyond 24 then change the date
     if (defSO >= 24) { 
-      w0[k] = as.character(as.POSIXlt(w0[k],tz=desiredtz) + (24*3600))
+      w0[k] = as.character(as.POSIXlt(w0[k],tz = desiredtz) + (24*3600))
     }
     if (defWA >= 24 |
         (summarysleep_tmp2$daysleeper[k] == 1 & defWA < 18)) {
-      w1[k] = as.character(as.POSIXlt(w1[k],tz=desiredtz) + (24*3600))
+      w1[k] = format(as.POSIXlt(w1[k], tz = desiredtz) + (24*3600))
     }
-    w0c = as.character(as.POSIXlt(w0[k],tz=desiredtz))
-    w1c = as.character(as.POSIXlt(w1[k],tz=desiredtz))
-    s0 = which(as.character(ts$time) == w0c)[1]
-    s1 = which(as.character(ts$time) == w1c)[1]
+    w0c = format(as.POSIXlt(w0[k], tz = desiredtz))
+    w1c = format(as.POSIXlt(w1[k], tz = desiredtz))
+    s0 = which(format(ts$time) == w0c)[1]
+    s1 = which(format(ts$time) == w1c)[1]
     
     if (length(s0) == 0) {
       w0c = paste0(w0c," 00:00:00")
@@ -69,11 +69,11 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       w1c = paste0(w1c," 00:00:00")
       s1 = which(as.character(ts$time) == w1c)[1]
     }
-    timebb = as.character(ts$time) 
+    timebb = format(ts$time) 
     if (is.ISO8601(timebb[1]) == TRUE) { # only do this for ISO8601 format
-      timebb = iso8601chartime2POSIX(timebb,tz=desiredtz)
-      s0 = which(as.character(timebb) == w0c)[1]
-      s1 = which(as.character(timebb) == w1c)[1]
+      timebb = iso8601chartime2POSIX(timebb, tz = desiredtz)
+      s0 = which(format(timebb) == w0c)[1]
+      s1 = which(format(timebb) == w1c)[1]
       if (length(s0) == 0) {
         w0c = paste0(w0c," 00:00:00")
         s0 = which(as.character(timebb) == w0c)[1]
@@ -84,23 +84,23 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       }
     }
     if (is.na(s0) == TRUE) {
-      s0 = which(timebb == paste(w0c," 00:00:00",sep=""))[1]
+      s0 = which(timebb == paste(w0c, " 00:00:00", sep = ""))[1]
       if (is.na(s0) == TRUE) {
-        s0 = which(as.character(timebb) == paste(w0c," 00:00:00",sep=""))[1]
+        s0 = which(as.character(timebb) == paste(w0c, " 00:00:00", sep = ""))[1]
       }
     }
     if (is.na(s1) == TRUE) {
-      s1 = which(timebb == paste(w1c," 00:00:00",sep=""))[1]
+      s1 = which(timebb == paste(w1c, " 00:00:00", sep = ""))[1]
       if (is.na(s1) == TRUE) {
-        s1 = which(as.character(timebb) == paste(w1c," 00:00:00",sep=""))[1]
+        s1 = which(as.character(timebb) == paste(w1c, " 00:00:00", sep = ""))[1]
       }
     }
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
       distance2midnight = abs(nightsi - s1) + abs(nightsi - s0)
       closestmidnighti = which.min(distance2midnight)
       closestmidnight = nightsi[closestmidnighti]
-      noon0 = closestmidnight - (12* (60/ws3new) * 60)
-      noon1 = closestmidnight + (12* (60/ws3new) * 60)
+      noon0 = closestmidnight - (12 * (60/ws3new) * 60)
+      noon1 = closestmidnight + (12 * (60/ws3new) * 60)
       
       if (noon0 < 1) noon0 = 1
       if (noon1 > Nts) noon1 = Nts
@@ -115,7 +115,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
             # ... and if there is sleeplog data for the relevant night
             # rely on sleeplog for defining the start and end of the night
             sleeplogonset_hr = clock2numtime(sleeplogonset)
-            sleeplogwake_hr= clock2numtime(sleeplogwake)
+            sleeplogwake_hr = clock2numtime(sleeplogwake)
             # express hour relative to midnight within the noon-noon:
             if (sleeplogonset_hr > 12) {
               sleeplogonset_hr = sleeplogonset_hr - 24
@@ -138,7 +138,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
           }
         }
       }
-      ts$diur[s0:(s1-1)] = 1
+      ts$diur[s0:(s1 - 1)] = 1
     }
   }
   return(ts)

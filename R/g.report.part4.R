@@ -112,6 +112,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         }
       }
       # merge in variable
+      nightsummary2$night = gsub(" ", "", nightsummary2$night)
       nightsummary2 = base::merge(nightsummary2, outputp5, by = c("ID", "night"), all.x = TRUE)
       if (remove_oldID == TRUE) {
         nightsummary2$ID = nightsummary2$ID_old
@@ -146,8 +147,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         print("report not stored, because no results available")
       } else {
         nightsummary_clean = tidyup_df(nightsummary)
-        write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                   sep = ""), row.names = FALSE)
+        data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
+                                                   sep = ""), row.names = FALSE, na = "")
         nightsummary_bu = nightsummary
       }
       ####
@@ -183,7 +184,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
           if (length(coldel) > 0)
             nightsummary = nightsummary[, -coldel]
         }
-        NIDS = length(unique(nightsummary$ID))
+        NIDS = max(c(length(unique(nightsummary$filename)), length(unique(nightsummary$ID))))
         NDEF = length(unique(nightsummary$sleepparam))
         uuu = unique(nightsummary$sleepparam)
         rem = which(uuu == 0 | uuu == "0" | is.na(uuu) == TRUE)
@@ -501,15 +502,15 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
           nightsummary_clean = tidyup_df(nightsummary)
           personSummary_clean = tidyup_df(personSummary)
           if (dotwice == 1) {
-            write.csv(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                       sep = ""), row.names = FALSE)
-            write.csv(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
-                                                        sep = ""), row.names = FALSE)
+            data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
+                                                       sep = ""), row.names = FALSE, na = "")
+            data.table::fwrite(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
+                                                        sep = ""), row.names = FALSE, na = "")
           } else {
-            write.csv(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
-                                                       sep = ""), row.names = FALSE)
-            write.csv(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
-                                                        sep = ""), row.names = FALSE)
+            data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
+                                                       sep = ""), row.names = FALSE, na = "")
+            data.table::fwrite(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
+                                                        sep = ""), row.names = FALSE, na = "")
           }
         }
       }

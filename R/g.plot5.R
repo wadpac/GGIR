@@ -192,21 +192,21 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
           # not sure why I had to change x to 0 (from 1) in the following line:
           text(x = 0,y = (max(YXLIM)*0.95),labels = vars[3],pos = 4,font = 2,cex = 1.2)
           #Sleep efficiency
-          YXLIM = c(0,120)
-          B5 = barplot(as.matrix(f06),names.arg = days_SLEEP,beside = TRUE,#axes = FALSE,
-                       ylim = YXLIM,cex.names = CEXN,las = 0,col = CLS_B,density = 20) #,density = 20
-          abline(h = 60,lty = 2,lwd = 2)
-          abline(h = 100,lty = 3,lwd = 1)
-          topp = mean(as.matrix(round(f06)))*0.1
+          YXLIM = c(0, 120)
+          B5 = barplot(as.matrix(f06),names.arg=days_SLEEP,beside=TRUE,#axes=FALSE,
+                       ylim=YXLIM,cex.names=CEXN,las=0,col=CLS_B,density = 20) #,density = 20
+          abline(h = 60, lty = 2, lwd = 2)
+          abline(h = 100,lty = 3, lwd = 1)
+          topp = mean(as.matrix(round(f06))) * 0.1
           text(y = as.matrix(round(f06)) + topp, x = B5, labels = as.character(as.matrix(round(f06))), xpd = TRUE,cex = 1)
-          text(x = 1,y = (max(YXLIM) - 10),labels = vars[4],pos = 4,font = 2,cex = 1.2)
+          text(x = 1, y = (max(YXLIM) - 10), labels = vars[4], pos = 4, font = 2, cex = 1.2)
           #-----------------------------------------------------------------------------------
-          mtext(paste("Activity and sleep report: ",fnamesmeta[i],sep = ""), side = 3, line = 0, outer = TRUE,font = 2,cex = 0.7)
+          mtext(paste("Activity and sleep report: ",fnamesmeta[i], sep = ""), side = 3, line = 0, outer = TRUE,font=2,cex=0.7)
         }
         LWDX = 2.5 #linewidth for coloured lines
         LWDA = 0.2
         BLX = 0.6
-        # == == == == == == == == == == == == == == == == == == == == == == == == = 
+        # == == == == == == == == == == == == == == == == == == == == == == == == =
         # Next pages with day specific graphs
         #get variables - activity:
         ACC = as.numeric(as.matrix(M$metashort[,metric])) * 1000
@@ -214,8 +214,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         time = as.character(M$metashort[,1])
         nw_time = as.character(M$metalong[,1])
         if (length(unlist(strsplit(time[1],"T"))) > 1) { # ISO timestamp format
-          time = as.character(iso8601chartime2POSIX(time,desiredtz))
-          nw_time = as.character(iso8601chartime2POSIX(nw_time,desiredtz))
+          time = format(iso8601chartime2POSIX(time,desiredtz))
+          nw_time = format(iso8601chartime2POSIX(nw_time,desiredtz))
         }
         time_unclassed = unclass(as.POSIXlt(time,desiredtz)) # Updated by by VvH: now doing this step once, and re-using the output
         sec = time_unclassed$sec
@@ -306,13 +306,20 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         for (j in 1:max(unique(S$night))) { #nights #length(unique(S$night)
           tmp = S[which(S$night == j),]
           for (h in 1:nrow(tmp)) { # sleep periods
-            s0 = which(time == as.character(tmp$sib.onset.time[h]))[1]
-            s1 = which(time == as.character(tmp$sib.end.time[h]))[1]
+            s0 = which(time == format(tmp$sib.onset.time[h]))[1]
+            s1 = which(time == format(tmp$sib.end.time[h]))[1]
             if (length(s0) == 0 | is.na(s0) == TRUE) {
+<<<<<<< HEAD
               s0 = which(time == paste(as.character(tmp$sib.onset.time[h])," 00:00:00",sep = ""))[1]
             }
             if (length(s1) == 0 | is.na(s1) == TRUE) {
               s1 = which(time == paste(as.character(tmp$sib.end.time[h])," 00:00:00",sep = ""))[1]
+=======
+              s0 = which(time == paste(format(tmp$sib.onset.time[h])," 00:00:00",sep = ""))[1]
+            }
+            if (length(s1) == 0 | is.na(s1) == TRUE) {
+              s1 = which(time == paste(format(tmp$sib.end.time[h]), " 00:00:00", sep = ""))[1]
+>>>>>>> master
             }
             if (is.na(s0) == FALSE & is.na(s1) == FALSE) { #new on 18 May 2015
               detection[s0:s1] = 1 #new on 18 May 2015
@@ -376,13 +383,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
             annot_mat[,4] <- LIGPA[t0:t1]              # light pa
             annot_mat[,5] <- MODPA[t0:t1]              # moderate pa
             annot_mat[,6] <- VIGPA[t0:t1]              # vigorous pa
-            # check to see if there are any sleep onset or wake annotations on this day 
+            # check to see if there are any sleep onset or wake annotations on this day
             sleeponset_loc = 0
             wake_loc = 0
             if (viewingwindow == 1) {  # use different search coefficients for noon or midnight centered plots
-              sw_coefs = c(0,24)  
+              sw_coefs = c(0,24)
             } else if (viewingwindow == 2) {
-              sw_coefs = c(12,36)  
+              sw_coefs = c(12,36)
             }
             # check for sleeponset & wake time that is logged on this day before midnight
             curr_date = as.Date(substr(time[t0],start = 1,stop = 10),format = '%Y-%m-%d', origin = "1970-1-1")  # what day is it?
@@ -402,7 +409,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
                 if (sleeponset_min == 60) sleeponset_min = 0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
-                if (!is.na(sleeponset_locations[1])) { 
+                if (!is.na(sleeponset_locations[1])) {
                   sleeponset_loc = sleeponset_locations[1]
                 }
               }
@@ -441,7 +448,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                   }
                 }
               }
-              # new way 
+              # new way
               sleeponset_time = summarysleep_tmp$sleeponset[check_date]
               if (sleeponset_time >= sw_coefs[2]) {
                 sleeponset_hour = trunc(sleeponset_time) - 24
@@ -450,10 +457,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                 if (sleeponset_loc > 0) {
                   if (!is.na(sleeponset_locations[1])) {
-                    sleeponset_loc[2] = sleeponset_locations[1]  
+                    sleeponset_loc[2] = sleeponset_locations[1]
                   }
                 } else if (sleeponset_loc == 0) {
-                  if (!is.na(sleeponset_locations[1])) { 
+                  if (!is.na(sleeponset_locations[1])) {
                     sleeponset_loc = sleeponset_locations[1]
                   }
                 }
