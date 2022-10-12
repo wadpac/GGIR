@@ -5,6 +5,7 @@
   \itemize{
     \item Reports: storing nonwear in part4 reports fixed when number of nights >= 10.
     \item Fixed test for battery voltage in cwa file #678
+    \item Reports: nonwear_perc_spt does only appear in reports from part4 when WW windows are available
   }
 }
 \section{Changes in version 2.8-2 (release date:06-10-2022)}{
