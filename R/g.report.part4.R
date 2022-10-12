@@ -69,7 +69,13 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
       if (length(dir(paste(metadatadir, ms5.out, sep = ""))) == 0) {
         try.add.part5.variable = FALSE  #do not run this function if there is no milestone data from g.part5
       } else {
-        try.add.part5.variable = TRUE
+        # check WW windows are calculated in the first file
+        load(dir(paste(metadatadir, ms5.out, sep = ""), full.names = T)[1])
+        if ("WW" %in% output$window) { 
+          try.add.part5.variable = TRUE
+        } else {
+          try.add.part5.variable = FALSE #do not run this function if WW windows are not calculated
+        }
       }
     } else {
       try.add.part5.variable = FALSE  #do not run this function if there is no milestone data from g.part5
@@ -86,7 +92,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
         if (length(cut) > 0 & length(cut) < nrow(output)) {
           output = output[-cut, which(colnames(output) != "")]
         }
-        out = as.matrix(output[, which(colnames(output) %in% c("ID", "nonwear_perc_spt", "night_number"))])
+        WW = which(output[, "window"] == "WW")
+        out = as.matrix(output[WW, which(colnames(output) %in% c("ID", "nonwear_perc_spt", "night_number", "window"))])
       }
       outputp5 = as.data.frame(do.call(rbind, lapply(fnames.ms5[f0:f1], myfun5)), stringsAsFactors = FALSE)
       dupl = which(duplicated(outputp5[, c("ID", "night_number")]) == TRUE)
