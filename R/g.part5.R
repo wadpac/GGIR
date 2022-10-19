@@ -329,10 +329,43 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
+          
               # nap/sib/nonwear overlap analysis
               
-             # TO DO
-              
+              # account for possibility that some of these categories do not exis
+              #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
+              #	calculate for all five categories number, total duration, mean duration
+              if (length(sibreport) > 0) {
+                sibs = which(sibreport$type == "sib")
+                if (length(sibs) > 0) {
+                  
+                  sibreport$start = as.POSIXlt(sibreport$start, tz = params_general[["desiredtz"]])
+                  sibreport$end = as.POSIXlt(sibreport$end, tz = params_general[["desiredtz"]])
+                  
+                  classes = unique(sibreport$type)
+                  selfreport = which(sibreport$type == "nonwear" | sibreport$type == "nap")
+                  sibreport$overlapNonwear = 0
+                  sibreport$overlapNap = 0
+                  if (length(selfreport) > 0) {
+                    for (si in sibs) {
+                      for (sr in 1:length(selfreport)) {
+                        if (sibreport$start[si] < sibreport$end[selfreport[sr]] &
+                            sibreport$end[si] > sibreport$start[selfreport[sr]]) {
+                          end_overlap = as.numeric(pmin(sibreport$end[si], sibreport$end[selfreport[sr]]))
+                          start_overlap = as.numeric(pmax(sibreport$start[si], sibreport$start[selfreport[sr]]))
+                          duration_overlap = end_overlap - start_overlap
+                          duration_sib = as.numeric(sibreport$end[si]) - as.numeric(sibreport$start[si])
+                          if (sibreport$type[selfreport[sr]] == "nonwear") {
+                            sibreport$overlapNonwear[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                          } else if (sibreport$type[selfreport[sr]] == "nap") {
+                            sibreport$overlapNap[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              } 
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
                   params_sleep[["HASIB.algo"]] != "vanHees2015") {
