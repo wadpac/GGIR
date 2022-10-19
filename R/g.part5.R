@@ -62,7 +62,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
-
+  
   fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -314,7 +314,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
-            if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
+            if (params_output[["do.sibreport"]]  == TRUE) {
               if (params_sleep[["sleeplogidnum"]] == TRUE) {
                 IDtmp = as.numeric(ID)
               } else {
@@ -329,90 +329,56 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
-          
-              # nap/sib/nonwear overlap analysis
               
-              # account for possibility that some of these categories do not exis
-              #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
-              #	calculate for all five categories number, total duration, mean duration
-              if (length(sibreport) > 0) {
-                sibs = which(sibreport$type == "sib")
-                if (length(sibs) > 0) {
-                  
-                  sibreport$start = as.POSIXlt(sibreport$start, tz = params_general[["desiredtz"]])
-                  sibreport$end = as.POSIXlt(sibreport$end, tz = params_general[["desiredtz"]])
-                  
-                  classes = unique(sibreport$type)
-                  selfreport = which(sibreport$type == "nonwear" | sibreport$type == "nap")
-                  sibreport$overlapNonwear = 0
-                  sibreport$overlapNap = 0
-                  if (length(selfreport) > 0) {
-                    for (si in sibs) {
-                      for (sr in 1:length(selfreport)) {
-                        if (sibreport$start[si] < sibreport$end[selfreport[sr]] &
-                            sibreport$end[si] > sibreport$start[selfreport[sr]]) {
-                          end_overlap = as.numeric(pmin(sibreport$end[si], sibreport$end[selfreport[sr]]))
-                          start_overlap = as.numeric(pmax(sibreport$start[si], sibreport$start[selfreport[sr]]))
-                          duration_overlap = end_overlap - start_overlap
-                          duration_sib = as.numeric(sibreport$end[si]) - as.numeric(sibreport$start[si])
-                          if (sibreport$type[selfreport[sr]] == "nonwear") {
-                            sibreport$overlapNonwear[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
-                          } else if (sibreport$type[selfreport[sr]] == "nap") {
-                            sibreport$overlapNap[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
-                          }
+              if (length(params_sleep[["nap_model"]]) > 0) {
+                # nap detection
+                if (params_general[["acc.metric"]] != "ENMO" |
+                    params_sleep[["HASIB.algo"]] != "vanHees2015") {
+                  warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
+                }
+                naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
+                                                    desiredtz = params_general[["desiredtz"]],
+                                                    possible_nap_window = params_sleep[["possible_nap_window"]],
+                                                    possible_nap_dur = params_sleep[["possible_nap_dur"]],
+                                                    nap_model = params_sleep[["nap_model"]],
+                                                    HASIB.algo = params_sleep[["HASIB.algo"]])
+                # store in ts object, such that it is exported in as time series
+                ts$nap1_nonwear2 = 0
+                # napsindices = which(naps_nonwear$probability_nap == 1)
+                # if (length(napsindices) > 0) {
+                if (length(naps_nonwear) > 0) {
+                  for (nni in 1:nrow(naps_nonwear)) {
+                    nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                    if (length(nnc_window) > 0) {
+                      if (naps_nonwear$probability_nap[nni] == 1) {
+                        ts$nap1_nonwear2[nnc_window] = 1 # nap
+                      } else if (naps_nonwear$probability_nap[nni] == 0) {
+                        ts$nap1_nonwear2[nnc_window] = 2 # nonwear
+                      }
+                    }
+                  }
+                }
+                # impute non-naps episodes (non-wear)
+                nonwearindices = which(naps_nonwear$probability_nap == 0)
+                if (length(nonwearindices) > 0) {
+                  for (nni in nonwearindices) {
+                    nwwindow_start = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                    if (length(nwwindow_start) > 0) {
+                      Nepochsin24Hours =  (60/ws3new) * 60 * 24
+                      if (nwwindow_start[1] > Nepochsin24Hours) {
+                        nwwindow = nwwindow_start - Nepochsin24Hours # impute time series with preceding day
+                        if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
+                          # if there is also a lot of overlap with non-wear there then do next day
+                          nwwindow = nwwindow_start + Nepochsin24Hours
                         }
+                      } else {
+                        nwwindow = nwwindow_start + Nepochsin24Hours # if there is not preceding day use next day
                       }
-                    }
-                  }
-                }
-              } 
-              # nap detection
-              if (params_general[["acc.metric"]] != "ENMO" |
-                  params_sleep[["HASIB.algo"]] != "vanHees2015") {
-                warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
-              }
-              naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
-                                                  desiredtz = params_general[["desiredtz"]],
-                                                  possible_nap_window = params_sleep[["possible_nap_window"]],
-                                                  possible_nap_dur = params_sleep[["possible_nap_dur"]],
-                                                  nap_model = params_sleep[["nap_model"]],
-                                                  HASIB.algo = params_sleep[["HASIB.algo"]])
-              # store in ts object, such that it is exported in as time series
-              ts$nap1_nonwear2 = 0
-              # napsindices = which(naps_nonwear$probability_nap == 1)
-              # if (length(napsindices) > 0) {
-              if (length(naps_nonwear) > 0) {
-                for (nni in 1:nrow(naps_nonwear)) {
-                  nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                  if (length(nnc_window) > 0) {
-                    if (naps_nonwear$probability_nap[nni] == 1) {
-                      ts$nap1_nonwear2[nnc_window] = 1 # nap
-                    } else if (naps_nonwear$probability_nap[nni] == 0) {
-                      ts$nap1_nonwear2[nnc_window] = 2 # nonwear
-                    }
-                  }
-                }
-              }
-              # impute non-naps episodes (non-wear)
-              nonwearindices = which(naps_nonwear$probability_nap == 0)
-              if (length(nonwearindices) > 0) {
-                for (nni in nonwearindices) {
-                  nwwindow_start = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                  if (length(nwwindow_start) > 0) {
-                    Nepochsin24Hours =  (60/ws3new) * 60 * 24
-                    if (nwwindow_start[1] > Nepochsin24Hours) {
-                      nwwindow = nwwindow_start - Nepochsin24Hours # impute time series with preceding day
-                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
-                        # if there is also a lot of overlap with non-wear there then do next day
-                        nwwindow = nwwindow_start + Nepochsin24Hours
-                      }
-                    } else {
-                      nwwindow = nwwindow_start + Nepochsin24Hours # if there is not preceding day use next day
-                    }
-                    if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
-                      # check again that there is not a lot of overlap with non-wear
-                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
-                        ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
+                      if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
+                        # check again that there is not a lot of overlap with non-wear
+                        if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
+                          ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
+                        }
                       }
                     }
                   }
@@ -887,6 +853,124 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                               fi = fi + length(luxperseg$values)
                             }
                           }
+                          #=======================================================
+                          # nap/sib/nonwear overlap analysis
+                          #=======================================================
+                          if (params_output[["do.sibreport"]]  == TRUE)  {
+                            srep_tmp = sibreport[which(sibreport$start > min(ts$time[sse]) &
+                                                         sibreport$end < max(ts$time[sse])),]
+                            # account for possibility that some of these categories do not exis
+                            #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
+                            #	calculate for all five categories number, total duration, mean duration
+                            if (nrow(srep_tmp) > 0) {
+                              sibs = which(srep_tmp$type == "sib")
+                              srep_tmp$overlapNonwear = 0
+                              srep_tmp$overlapNap = 0
+                              if (length(sibs) > 0) {
+                                
+                                srep_tmp$start = as.POSIXlt(srep_tmp$start, tz = params_general[["desiredtz"]])
+                                srep_tmp$end = as.POSIXlt(srep_tmp$end, tz = params_general[["desiredtz"]])
+                                
+                                classes = unique(srep_tmp$type)
+                                selfreport = which(srep_tmp$type == "nonwear" | srep_tmp$type == "nap")
+                                
+                                if (length(selfreport) > 0) {
+                                  for (si in sibs) {
+                                    for (sr in 1:length(selfreport)) {
+                                      if (srep_tmp$start[si] < srep_tmp$end[selfreport[sr]] &
+                                          srep_tmp$end[si] > srep_tmp$start[selfreport[sr]]) {
+                                        end_overlap = as.numeric(pmin(srep_tmp$end[si], srep_tmp$end[selfreport[sr]]))
+                                        start_overlap = as.numeric(pmax(srep_tmp$start[si], srep_tmp$start[selfreport[sr]]))
+                                        duration_overlap = end_overlap - start_overlap
+                                        duration_sib = as.numeric(srep_tmp$end[si]) - as.numeric(srep_tmp$start[si])
+                                        if (srep_tmp$type[selfreport[sr]] == "nonwear") {
+                                          srep_tmp$overlapNonwear[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                                        } else if (srep_tmp$type[selfreport[sr]] == "nap") {
+                                          srep_tmp$overlapNap[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              sibs_indices = which(srep_tmp$type == "sib")
+                              nap_indices = which(srep_tmp$type == "nap")
+                              nonwear_indices = which(srep_tmp$type == "nonwear")
+                              overlapNap_indices = which(srep_tmp$overlapNap != 0)
+                              overlapNonwear_indices = which(srep_tmp$overlapNonwear != 0)
+                              dsummary[di,fi:(fi + 4)] = c(length(sibs_indices),
+                                                           length(nap_indices),
+                                                           length(nonwear_indices),
+                                                           length(overlapNap_indices),
+                                                           length(overlapNonwear_indices))
+                              
+                              ds_names[fi:(fi + 4)] = c("Nsib", "Nsrnap", "Nsrnonw",
+                                                        "Noverl_sib_srnap", "Noverl_sib_srnonw")
+                              fi = fi + 5
+                              if (length(sibs_indices) > 0) {
+                                dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[sibs_indices]),
+                                                             sum(srep_tmp$duration[sibs_indices]))
+                              } else {
+                                dsummary[di,fi:(fi + 1)] = c(0, 0)
+                              }
+                              ds_names[fi:(fi + 1)] = c("mdur_sib", "tdur_sib")
+                              fi = fi + 2
+                              
+                              if (length(nap_indices) > 0) {
+                                srep_tmp$duration[nap_indices] = (as.numeric(srep_tmp$end[nap_indices]) - 
+                                                                    as.numeric(srep_tmp$start[nap_indices])) / 60
+                                dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nap_indices]),
+                                                             sum(srep_tmp$duration[nap_indices]))
+                              } else {
+                                dsummary[di,fi:(fi + 1)] = c(0, 0)
+                              }
+                              ds_names[fi:(fi + 1)] = c("mdur_srnap", "tdur_srnap")
+                              fi = fi + 2
+                              
+                              if (length(nonwear_indices) > 0) {
+                                dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nonwear_indices]),
+                                                             sum(srep_tmp$duration[nonwear_indices]))
+                              } else {
+                                dsummary[di,fi:(fi + 1)] = c(0, 0)
+                              }
+                              ds_names[fi:(fi + 1)] = c("mdur_srnonw", "tdur_srnonw")
+                              fi = fi + 2
+                              
+                              
+                              calcOverlapPercentage = function(overlap, duration) {
+                                return(sum(overlap * duration) / sum(duration))
+                              }
+                              if (length(overlapNap_indices) > 0) {
+                                overlap_perc = calcOverlapPercentage(overlap = srep_tmp$overlapNap[overlapNap_indices],
+                                                                     duration = srep_tmp$duration[overlapNap_indices])
+                                dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[overlapNap_indices]),
+                                                             sum(srep_tmp$duration[overlapNap_indices]),
+                                                             overlap_perc)
+                              } else {
+                                dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
+                              }
+                              ds_names[fi:(fi + 2)] = c("mdur_overl_srnap", "tdur_overl_srnap", "perc_overl_srnap")
+                              fi = fi + 3
+                              
+                              if (length(overlapNonwear_indices) > 0) {
+                                calcOverlapPercentage(overlap = srep_tmp$overlapNap[overlapNonwear_indices],
+                                                      duration = srep_tmp$duration[overlapNonwear_indices])
+                                dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[overlapNonwear_indices]),
+                                                             sum(srep_tmp$duration[overlapNonwear_indices]),
+                                                             mean(srep_tmp$overlapNonwear[overlapNonwear_indices]),
+                                                             overlap_perc)
+                              } else {
+                                dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
+                              }
+                              ds_names[fi:(fi + 2)] = c("mdur_overl_srnonw", "tdur_overl_srnonw", "perc_overl_srnonw")
+                              fi = fi + 3
+                              rm(srep_tmp)
+                            } else {
+                              fi  =  fi + 17
+                            }
+                          }
+                          
+                          
                           #===============================================
                           # FOLDER STRUCTURE
                           if (params_output[["storefolderstructure"]] == TRUE) {
@@ -943,7 +1027,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-         if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
+        if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
           output$window_number = as.numeric(output$window_number)
           cells2exclude = c(which(output$window_number == min(output$window_number,na.rm = TRUE)),
                             which(output$window_number == max(output$window_number,na.rm = TRUE)))
@@ -990,7 +1074,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (length(output) > 0) {
             if (nrow(output) > 0) {
               save(output, tail_expansion_log, file = paste(metadatadir,
-                                        ms5.out, "/", fnames.ms3[i], sep = ""))
+                                                            ms5.out, "/", fnames.ms3[i], sep = ""))
             }
           }
         }
