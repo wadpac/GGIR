@@ -1,8 +1,8 @@
-g.part5.classifyNaps = function(sibreport=c(), desiredtz="", 
+g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
                               possible_nap_window = c(9, 18), possible_nap_dur = c(15, 240),
                               nap_model = "hip3yr",
                               HASIB.algo = "vanHees2015") {
-  
+
   # possible_nap_window: window of clock hours during which naps are assumed to take place
   # possible_nap_dur: mininum and maximum nap duration in minutes
   if (length(sibreport) > 0 & nap_model %in% "hip3yr" & HASIB.algo %in% "vanHees2015") {
@@ -33,14 +33,14 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
       endH = as.numeric(format(sibreport$end, "%H"))
       sibreport = sibreport[which(startH > possible_nap_window[1] & startH < possible_nap_window[2] &
                                     endH > possible_nap_window[1] & endH < possible_nap_window[2] &
-                        sibreport$duration >= possible_nap_dur[1] & sibreport$duration < possible_nap_dur[2]),] 
+                        sibreport$duration >= possible_nap_dur[1] & sibreport$duration < possible_nap_dur[2]),]
       sibreport$date = as.Date(sibreport$start)
       sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
       # Calculate probability
       sibreport$probability_nap = rep(0, nrow(sibreport))
       if (nap_model == "hip3yr" & HASIB.algo == "vanHees2015") {
         sibreport$probability_nonwear = 1/(1 +  exp(-(-3.56347023 + (0.04303106 * sibreport$acc_edge))))
-        
+
         sibreport$probability_nap[which(sibreport$probability_nonwear <  0.0688203077670859)] = 1
       } else {
         sibreport = c()
