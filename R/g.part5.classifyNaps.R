@@ -6,14 +6,15 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
   # possible_nap_window: window of clock hours during which naps are assumed to take place
   # possible_nap_dur: mininum and maximum nap duration in minutes
   if (length(sibreport) > 0 & nap_model %in% "hip3yr" & HASIB.algo %in% "vanHees2015") {
-    sibs = which(sibreport$type == "sib")
+    sibs = which(as.character(sibreport$type) == "sib")
     if (length(sibs) > 1) {
       sibreport = sibreport[sibs,]
       sibreport$start = as.POSIXlt(sibreport$start, tz = desiredtz)
       sibreport$end = as.POSIXlt(sibreport$end, tz = desiredtz)
       # remove all short gaps between SIBs
       sibreport$gap2next = NA
-      sibreport$gap2next[sibs[1:(length(sibs) - 1)]] = as.numeric(sibreport$start[sibs[2:length(sibs)]]) - as.numeric(sibreport$end[sibs[1:(length(sibs) - 1)]])
+      Nrow = nrow(sibreport)
+      sibreport$gap2next[1:(Nrow - 1)] = as.numeric(sibreport$start[2:Nrow]) - as.numeric(sibreport$end[1:(Nrow - 1)])
       iter = 1
       while (iter < nrow(sibreport)) {
         if (sibreport$gap2next[iter] < 300 & sibreport$type[iter] == "sib" & sibreport$type[iter + 1] == "sib") {
