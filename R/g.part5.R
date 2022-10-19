@@ -857,8 +857,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           # nap/sib/nonwear overlap analysis
                           #=======================================================
                           if (params_output[["do.sibreport"]]  == TRUE)  {
-                            srep_tmp = sibreport[which(sibreport$start > min(ts$time[sse]) &
-                                                         sibreport$end < max(ts$time[sse])),]
+                            srep_tmp = sibreport[which(sibreport$start > min(ts$time[sse[ts$diur[sse] == 0]]) &
+                                                         sibreport$end < max(ts$time[sse[ts$diur[sse] == 0]])),]
                             # account for possibility that some of these categories do not exis
                             #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
                             #	calculate for all five categories number, total duration, mean duration
