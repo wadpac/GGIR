@@ -329,7 +329,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
-              
+              sibreport_backup = sibreport
               if (length(params_sleep[["nap_model"]]) > 0) {
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
@@ -857,120 +857,119 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           # nap/sib/nonwear overlap analysis
                           #=======================================================
                           if (params_output[["do.sibreport"]]  == TRUE)  {
-                            srep_tmp = sibreport[which(sibreport$start > min(ts$time[sse[ts$diur[sse] == 0]]) &
-                                                         sibreport$end < max(ts$time[sse[ts$diur[sse] == 0]])),]
-                            # account for possibility that some of these categories do not exis
-                            #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
-                            #	calculate for all five categories number, total duration, mean duration
-                            if (nrow(srep_tmp) > 0) {
-                              sibs = which(srep_tmp$type == "sib")
-                              srep_tmp$overlapNonwear = 0
-                              srep_tmp$overlapNap = 0
-                              if (length(sibs) > 0) {
-                                
+                            longboutsi = which(sibreport$duration >= 15)
+                            sibreport = sibreport_backup
+                            if (length(longboutsi) > 0) {
+                              sibreport = sibreport[longboutsi,]
+                              srep_tmp = sibreport[which(sibreport$start > min(ts$time[sse[ts$diur[sse] == 0]]) &
+                                                           sibreport$end < max(ts$time[sse[ts$diur[sse] == 0]])),]
+                              # account for possibility that some of these categories do not exis
+                              #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
+                              #	calculate for all five categories number, total duration, mean duration
+                              if (nrow(srep_tmp) > 0) {
+                                sibs = which(srep_tmp$type == "sib")
+                                srep_tmp$overlapNonwear = 0
+                                srep_tmp$overlapNap = 0
                                 srep_tmp$start = as.POSIXlt(srep_tmp$start, tz = params_general[["desiredtz"]])
                                 srep_tmp$end = as.POSIXlt(srep_tmp$end, tz = params_general[["desiredtz"]])
-                                
-                                classes = unique(srep_tmp$type)
-                                selfreport = which(srep_tmp$type == "nonwear" | srep_tmp$type == "nap")
-                                
-                                if (length(selfreport) > 0) {
-                                  for (si in sibs) {
-                                    for (sr in 1:length(selfreport)) {
-                                      if (srep_tmp$start[si] < srep_tmp$end[selfreport[sr]] &
-                                          srep_tmp$end[si] > srep_tmp$start[selfreport[sr]]) {
-                                        end_overlap = as.numeric(pmin(srep_tmp$end[si], srep_tmp$end[selfreport[sr]]))
-                                        start_overlap = as.numeric(pmax(srep_tmp$start[si], srep_tmp$start[selfreport[sr]]))
-                                        duration_overlap = end_overlap - start_overlap
-                                        duration_sib = as.numeric(srep_tmp$end[si]) - as.numeric(srep_tmp$start[si])
-                                        if (srep_tmp$type[selfreport[sr]] == "nonwear") {
-                                          srep_tmp$overlapNonwear[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
-                                        } else if (srep_tmp$type[selfreport[sr]] == "nap") {
-                                          srep_tmp$overlapNap[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                                if (length(sibs) > 0) {
+                                  classes = unique(srep_tmp$type)
+                                  selfreport = which(srep_tmp$type == "nonwear" | srep_tmp$type == "nap")
+                                  if (length(selfreport) > 0) {
+                                    for (si in sibs) {
+                                      for (sr in 1:length(selfreport)) {
+                                        if (srep_tmp$start[si] < srep_tmp$end[selfreport[sr]] &
+                                            srep_tmp$end[si] > srep_tmp$start[selfreport[sr]]) {
+                                          end_overlap = as.numeric(pmin(srep_tmp$end[si], srep_tmp$end[selfreport[sr]]))
+                                          start_overlap = as.numeric(pmax(srep_tmp$start[si], srep_tmp$start[selfreport[sr]]))
+                                          duration_overlap = end_overlap - start_overlap
+                                          duration_sib = as.numeric(srep_tmp$end[si]) - as.numeric(srep_tmp$start[si])
+                                          if (srep_tmp$type[selfreport[sr]] == "nonwear") {
+                                            srep_tmp$overlapNonwear[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                                          } else if (srep_tmp$type[selfreport[sr]] == "nap") {
+                                            srep_tmp$overlapNap[si] = round(100 * (duration_overlap / duration_sib), digits = 1)
+                                          }
                                         }
                                       }
                                     }
                                   }
                                 }
-                              }
-                              sibs_indices = which(srep_tmp$type == "sib")
-                              nap_indices = which(srep_tmp$type == "nap")
-                              nonwear_indices = which(srep_tmp$type == "nonwear")
-                              overlapNap_indices = which(srep_tmp$overlapNap != 0)
-                              overlapNonwear_indices = which(srep_tmp$overlapNonwear != 0)
-                              dsummary[di,fi:(fi + 4)] = c(length(sibs_indices),
-                                                           length(nap_indices),
-                                                           length(nonwear_indices),
-                                                           length(overlapNap_indices),
-                                                           length(overlapNonwear_indices))
-                              
-                              ds_names[fi:(fi + 4)] = c("Nsib", "Nsrnap", "Nsrnonw",
-                                                        "Noverl_sib_srnap", "Noverl_sib_srnonw")
-                              fi = fi + 5
-                              if (length(sibs_indices) > 0) {
-                                dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[sibs_indices]),
-                                                             sum(srep_tmp$duration[sibs_indices]))
+                                
+                                sibs_indices = which(srep_tmp$type == "sib")
+                                nap_indices = which(srep_tmp$type == "nap")
+                                nonwear_indices = which(srep_tmp$type == "nonwear")
+                                overlapNap_indices = which(srep_tmp$overlapNap != 0)
+                                overlapNonwear_indices = which(srep_tmp$overlapNonwear != 0)
+                                dsummary[di,fi:(fi + 4)] = c(length(sibs_indices),
+                                                             length(nap_indices),
+                                                             length(nonwear_indices),
+                                                             length(overlapNap_indices),
+                                                             length(overlapNonwear_indices))
+                                
+                                ds_names[fi:(fi + 4)] = c("nbouts_day_sib", "nbouts_day_srnap", "nbouts_day_srnonw",
+                                                          "noverl_sib_srnap", "noverl_sib_srnonw")
+                                fi = fi + 5
+                                if (length(sibs_indices) > 0) {
+                                  dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[sibs_indices]),
+                                                               sum(srep_tmp$duration[sibs_indices]))
+                                } else {
+                                  dsummary[di,fi:(fi + 1)] = c(0, 0)
+                                }
+                                ds_names[fi:(fi + 1)] = c("frag_mean_dur_sib_day", "dur_day_sib_min")
+                                fi = fi + 2
+                                if (length(nap_indices) > 0) {
+                                  srep_tmp$duration[nap_indices] = (as.numeric(srep_tmp$end[nap_indices]) - 
+                                                                      as.numeric(srep_tmp$start[nap_indices])) / 60
+                                  dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nap_indices]),
+                                                               sum(srep_tmp$duration[nap_indices]))
+                                } else {
+                                  dsummary[di,fi:(fi + 1)] = c(0, 0)
+                                }
+                                ds_names[fi:(fi + 1)] = c("frag_mean_dur_srnap_day", "dur_day_srnap_min")
+                                fi = fi + 2
+                                
+                                if (length(nonwear_indices) > 0) {
+                                  dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nonwear_indices]),
+                                                               sum(srep_tmp$duration[nonwear_indices]))
+                                } else {
+                                  dsummary[di,fi:(fi + 1)] = c(0, 0)
+                                }
+                                ds_names[fi:(fi + 1)] = c("frag_mean_dur_srnonw_day", "dur_day_srnonw_min")
+                                fi = fi + 2
+                                
+                                calcOverlapPercentage = function(overlap, duration) {
+                                  return(sum(overlap * duration) / sum(duration))
+                                }
+                                if (length(overlapNap_indices) > 0) {
+                                  overlap_perc = calcOverlapPercentage(overlap = srep_tmp$overlapNap[overlapNap_indices],
+                                                                       duration = srep_tmp$duration[overlapNap_indices])
+                                  dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[overlapNap_indices]),
+                                                               sum(srep_tmp$duration[overlapNap_indices]),
+                                                               overlap_perc)
+                                } else {
+                                  dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
+                                }
+                                ds_names[fi:(fi + 2)] = c("mdur_overl_srnap", "tdur_overl_srnap", "perc_overl_srnap")
+                                fi = fi + 3
+                                
+                                if (length(overlapNonwear_indices) > 0) {
+                                  calcOverlapPercentage(overlap = srep_tmp$overlapNap[overlapNonwear_indices],
+                                                        duration = srep_tmp$duration[overlapNonwear_indices])
+                                  dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[overlapNonwear_indices]),
+                                                               sum(srep_tmp$duration[overlapNonwear_indices]),
+                                                               mean(srep_tmp$overlapNonwear[overlapNonwear_indices]),
+                                                               overlap_perc)
+                                } else {
+                                  dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
+                                }
+                                ds_names[fi:(fi + 2)] = c("mdur_overl_srnonw", "tdur_overl_srnonw", "perc_overl_srnonw")
+                                fi = fi + 3
+                                rm(srep_tmp)
                               } else {
-                                dsummary[di,fi:(fi + 1)] = c(0, 0)
+                                fi  =  fi + 17
                               }
-                              ds_names[fi:(fi + 1)] = c("mdur_sib", "tdur_sib")
-                              fi = fi + 2
-                              
-                              if (length(nap_indices) > 0) {
-                                srep_tmp$duration[nap_indices] = (as.numeric(srep_tmp$end[nap_indices]) - 
-                                                                    as.numeric(srep_tmp$start[nap_indices])) / 60
-                                dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nap_indices]),
-                                                             sum(srep_tmp$duration[nap_indices]))
-                              } else {
-                                dsummary[di,fi:(fi + 1)] = c(0, 0)
-                              }
-                              ds_names[fi:(fi + 1)] = c("mdur_srnap", "tdur_srnap")
-                              fi = fi + 2
-                              
-                              if (length(nonwear_indices) > 0) {
-                                dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nonwear_indices]),
-                                                             sum(srep_tmp$duration[nonwear_indices]))
-                              } else {
-                                dsummary[di,fi:(fi + 1)] = c(0, 0)
-                              }
-                              ds_names[fi:(fi + 1)] = c("mdur_srnonw", "tdur_srnonw")
-                              fi = fi + 2
-                              
-                              
-                              calcOverlapPercentage = function(overlap, duration) {
-                                return(sum(overlap * duration) / sum(duration))
-                              }
-                              if (length(overlapNap_indices) > 0) {
-                                overlap_perc = calcOverlapPercentage(overlap = srep_tmp$overlapNap[overlapNap_indices],
-                                                                     duration = srep_tmp$duration[overlapNap_indices])
-                                dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[overlapNap_indices]),
-                                                             sum(srep_tmp$duration[overlapNap_indices]),
-                                                             overlap_perc)
-                              } else {
-                                dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
-                              }
-                              ds_names[fi:(fi + 2)] = c("mdur_overl_srnap", "tdur_overl_srnap", "perc_overl_srnap")
-                              fi = fi + 3
-                              
-                              if (length(overlapNonwear_indices) > 0) {
-                                calcOverlapPercentage(overlap = srep_tmp$overlapNap[overlapNonwear_indices],
-                                                      duration = srep_tmp$duration[overlapNonwear_indices])
-                                dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[overlapNonwear_indices]),
-                                                             sum(srep_tmp$duration[overlapNonwear_indices]),
-                                                             mean(srep_tmp$overlapNonwear[overlapNonwear_indices]),
-                                                             overlap_perc)
-                              } else {
-                                dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
-                              }
-                              ds_names[fi:(fi + 2)] = c("mdur_overl_srnonw", "tdur_overl_srnonw", "perc_overl_srnonw")
-                              fi = fi + 3
-                              rm(srep_tmp)
-                            } else {
-                              fi  =  fi + 17
                             }
                           }
-                          
-                          
                           #===============================================
                           # FOLDER STRUCTURE
                           if (params_output[["storefolderstructure"]] == TRUE) {
