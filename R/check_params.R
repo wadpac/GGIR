@@ -233,11 +233,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
   }
-  if (length(params_output) > 0) {
-    if (!("WW" %in% params_output[["timewindow"]])) {
-      warning("\nNote: the part4 report will only include variable nonwear_perc_spt if argument timewindow is set to 'WW' or c('MM', 'WW').", call. = FALSE)
-    }
-  }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,
