@@ -194,7 +194,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
-                          "GGIRversion") == FALSE)]
+                          "GGIRversion",  "dupArgValues") == FALSE)]
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
