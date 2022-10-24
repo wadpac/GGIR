@@ -6,6 +6,7 @@
     \item Reports: storing nonwear in part4 reports fixed when number of nights >= 10.
     \item Fixed test for battery voltage in cwa file #678
     \item Reports: nonwear_perc_spt does only appear in reports from part4 when WW windows are available
+    \item Vignettes: main vignette revised for undesired spaces and extended with the handling of nonwear_perc_spt in part 4 reports
   }
 }
 \section{Changes in version 2.8-2 (release date:06-10-2022)}{
