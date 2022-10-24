@@ -36,6 +36,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     nonwearlog = logs_diaries$nonwearlog
     naplog = logs_diaries$naplog
     dateformat = logs_diaries$dateformat
+
     extract_logs = function(log, ID, logname) {
       logreport = c()
       if (length(log) > 0) {
@@ -45,10 +46,11 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
           for (i in 1:nrow(log)) { # loop over lines (days)
             tmp = log[i,] # convert into timestamps
             # only attempt if there are at least 2 timestamps to process
-            nonempty = which(tmp[3:ncol(tmp)] != "")
+            nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
               date = as.Date(as.character(tmp[1,2]), format = dateformat)
               times = format(unlist(tmp[1,3:ncol(tmp)]))
+              times = times[which(times %in% c("", "NA") == FALSE)]
               # ignore entries without start and/or end time
               t_to_remove = c()
               for (ji in 1:floor(length(times)/2)) {
@@ -72,11 +74,11 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                   logreport_tmp$start[bi]  = format(timestamps[(bi*2)-1])
                   logreport_tmp$end[bi] = format(timestamps[(bi*2)])
                 }
-                if (length(logreport) == 0) {
-                  logreport = logreport_tmp
-                } else {
-                  logreport = rbind(logreport, logreport_tmp)
-                }
+              }
+              if (length(logreport) == 0) {
+                logreport = logreport_tmp
+              } else {
+                logreport = rbind(logreport, logreport_tmp)
               }
             }
           }
@@ -85,7 +87,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       return(logreport)
     }
     naplogreport = extract_logs(naplog, ID, logname="nap")
-    nonwearlogreport = extract_logs(nonwearlog, ID, logname="nonwear")  
+    nonwearlogreport = extract_logs(nonwearlog, ID, logname="nonwear")
     logreport = sibreport
     # append all together in one output data.frame
     if (length(logreport) > 0 & length(naplogreport) > 0) {

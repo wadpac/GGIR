@@ -329,6 +329,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
+              # nap/sib/nonwear overlap analysis
+              
+             # TO DO
+              
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
                   params_sleep[["HASIB.algo"]] != "vanHees2015") {
