@@ -71,7 +71,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   configfile_csv = c()
   ex = "csv"
   if (length(configfile) > 0) { # Get extension of file
-    ex = unlist(strsplit(basename(configfile), split ="\\."))
+    ex = unlist(strsplit(basename(configfile), split = "\\."))
     ex = ex[length(ex)]
   }
   if (ex == "csv") { # at a later point there may also be other file extensions
@@ -163,7 +163,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart3 == TRUE) {
     print_console_header("Part 3")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
+    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic", sep = "")))
     g.part3(metadatadir = metadatadir, f0 = f0, f1 = f1, myfun = myfun,
             params_sleep = params_sleep, params_output = params_output,
             params_metrics = params_metrics,
@@ -171,7 +171,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart4 == TRUE) {
     print_console_header("Part 4")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
+    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out", sep = "")))
     g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_sleep = params_sleep, params_metrics = params_metrics,
             params_general = params_general, params_output = params_output,
@@ -194,7 +194,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
-                          "GGIRversion") == FALSE)]
+                          "GGIRversion", "dupArgValues") == FALSE)]
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
