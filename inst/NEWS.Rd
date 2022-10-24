@@ -1,10 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-3 (release date:?-?-2022)}{
+\section{Changes in version 2.8-3 (release date:25-10-2022)}{
   \itemize{
     \item Reports: storing nonwear in part4 reports fixed when number of nights >= 10.
     \item Fixed test for battery voltage in cwa file #678
+    \item Part 4: Fixed bug #686 causing last sleeplog night to be ignored when a sleeplog night is missing
   }
 }
 \section{Changes in version 2.8-2 (release date:06-10-2022)}{
