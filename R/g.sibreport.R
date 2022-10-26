@@ -73,10 +73,14 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                 logreport_tmp = data.frame(ID = rep(ID, Nevents),
                                            type = rep(logname, Nevents),
                                            start = rep("", Nevents),
-                                           end = rep("", Nevents), stringsAsFactors = FALSE)
+                                           end = rep("", Nevents),
+                                           duration = rep(0, Nevents), stringsAsFactors = FALSE)
                 for (bi in 1:Nevents) {
-                  logreport_tmp$start[bi]  = format(timestamps[(bi * 2) - 1])
-                  logreport_tmp$end[bi] = format(timestamps[(bi * 2)])
+                  tt1 = as.POSIXlt(timestamps[(bi * 2) - 1], tz = desiredtz)
+                  tt2 = as.POSIXlt(timestamps[(bi * 2)], tz = desiredtz)
+                  logreport_tmp$start[bi]  = format(tt1)
+                  logreport_tmp$end[bi] = format(tt2)
+                  logreport_tmp$duration[bi] = abs(as.numeric(difftime(time1 = tt1, time2 = tt2, units = "mins")))
                 }
               }
               if (length(logreport) == 0) {
@@ -95,16 +99,15 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     logreport = sibreport
     # append all together in one output data.frame
     if (length(logreport) > 0 & length(naplogreport) > 0) {
-      logreport = merge(logreport, naplogreport, by = c("ID", "type", "start", "end"), all = TRUE)
+      logreport = merge(logreport, naplogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
     } else if (length(logreport) == 0 & length(naplogreport) > 0) {
       logreport = naplogreport
     }
     if (length(logreport) > 0 & length(nonwearlogreport) > 0) {
-      logreport = merge(logreport, nonwearlogreport, by = c("ID", "type", "start", "end"), all = TRUE)
+      logreport = merge(logreport, nonwearlogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
     } else if (length(logreport) == 0 & length(nonwearlogreport) > 0) {
       logreport = nonwearlogreport
     }
-    
   } else {
     logreport = sibreport
   }
