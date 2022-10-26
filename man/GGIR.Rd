@@ -221,7 +221,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         averages. Using argument \code{expand_tail_max_hours} implies the assumption that the
         participant fell asleep at or before the end of the recording if the recording
         ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
-        always hold true and should be used with caution.
+        always hold true and should be used with caution. As such, this function is only available for 
+        recordings ending at 7PM or later.
       }
     }
   }

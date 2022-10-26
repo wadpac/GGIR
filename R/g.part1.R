@@ -339,7 +339,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                as.numeric(format(last_ts[wsi], "%M")) * 60  +
                as.numeric(format(last_ts[wsi], "%S")))
         }
-        if (secs_to_midnight[1] <= refhour * 3600) {
+        # only expand if recording ends at 19PM or later
+        max_expand_time = (refhour - (19 - params_general[["dayborder"]])) * 3600
+        if (secs_to_midnight[1] <= max_expand_time) {
           # If yes, expand data
           N_long_epochs_expand = ceiling(secs_to_midnight[1] / ws2) + 1
           N_short_epochs_expand = ceiling(secs_to_midnight[2] / ws3) + 1
@@ -367,6 +369,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           NR = nrow(M$metalong)
           metalong_expand = M$metalong[NR,]
           metalong_expand[, grep(pattern = "timestamp", x = names(metalong_expand), invert = TRUE, value = FALSE)] = 0
+          metalong_expand[, "nonwearscore"] = -1
           metalong_expand$en = tail(M$metalong$en, n = 1)
           expand_indices = (NR + 1):(NR + N_long_epochs_expand)
           expand_tsPOSIX = seq(last_ts[1] + ws2, last_ts[1] + (N_long_epochs_expand * ws2), by = ws2)

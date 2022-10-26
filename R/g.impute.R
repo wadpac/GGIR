@@ -184,8 +184,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   }
   #========================================================================================
   # Impute ws3 second data based on ws2 minute estimates of non-wear time
+  browser()
   r5 = r1 + r2 + r3 + r4
   r5[which(r5 > 1) ] = 1
+  r5[which(metalong$nonwearscore == -1) ] = -1 # expanded data with expand_tail_max_hours
   r5long = matrix(0,length(r5),(ws2/ws3)) #r5long is the same as r5, but with more values per period of time
   r5long = replace(r5long,1:length(r5long),r5)
   r5long = t(r5long)
@@ -206,7 +208,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     # The average day is used for imputation and defined relative to the starttime of the measurement
     # irrespective of dayborder as used in other parts of GGIR
     metrimp = metr = as.numeric(as.matrix(metashort[, mi]))
-    is.na(metr[which(r5long == 1)]) = T #turn all values of metr to na if r5long is 1
+    is.na(metr[which(r5long != 0)]) = T #turn all values of metr to na if r5long is different to 0 (it now turns to NA also the expanded time with expand_tail_max)
     imp = matrix(NA,wpd,ceiling(length(metr)/wpd)) #matrix used for imputation of seconds
     ndays = ncol(imp) #number of days (rounded upwards)
     nvalidsec = matrix(0,wpd,1)

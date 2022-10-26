@@ -128,7 +128,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_rawdata) > 0) {
     if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
       warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
-      " Note that this option will be deprecated in the next CRAN release."))
+                     " Note that this option will be deprecated in the next CRAN release."))
     }
   }
   if (length(params_metrics) > 0) {
@@ -230,6 +230,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
+      }
+    }
+  }
+  if (length(params_general) > 0) {
+    if (length(params_general[["expand_tail_max_hours"]]) > 0) {
+      if (params_general[["expand_tail_max_hours"]] > 5) {
+        params_general[["expand_tail_max_hours"]] = 5
+        warning("\nAuto-updating expand_tail_max_hours to 5. Expansions of data are only allowed when the recording ends at 7pm or later (see documentation)", call. = FALSE)
       }
     }
   }
