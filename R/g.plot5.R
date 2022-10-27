@@ -1,48 +1,48 @@
-g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f1=c(),overwrite=FALSE,
-                   metric="ENMO",desiredtz = "Europe/London",threshold.lig=30,threshold.mod=100,threshold.vig=400) {
-  if (file.exists(paste(metadatadir,"/results/file summary reports",sep=""))) {
-    fnames.fsr = sort(dir(paste(metadatadir,"/results/file summary reports",sep="")))
+g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0 = c(), f1 = c(), overwrite = FALSE,
+                   metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30, threshold.mod = 100, threshold.vig = 400) {
+  if (file.exists(paste(metadatadir,"/results/file summary reports", sep = ""))) {
+    fnames.fsr = sort(dir(paste(metadatadir,"/results/file summary reports", sep = "")))
     ffdone = fnames.fsr #ffdone is now a list of files that have already been processed by g.part5
   } else {
-    dir.create(file.path(paste(metadatadir,"/results",sep=""),"file summary reports"))
+    dir.create(file.path(paste(metadatadir,"/results", sep = ""),"file summary reports"))
     ffdone = c()
   }
-  N_milestone_data_p3 = length(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
+  N_milestone_data_p3 = length(dir(paste(metadatadir,"/meta/ms3.out", sep = "")))
   if (f1 > N_milestone_data_p3) f1 = N_milestone_data_p3 # this is intentionally ms3 and not ms4, do not change!
   if (f1 == 0) f1 = N_milestone_data_p3
   # directories
   tail_expansion_log = NULL
-  meta = paste(metadatadir,"/meta/basic",sep="")
-  metasleep = paste(metadatadir,"/meta/ms3.out",sep="")
-  ms4 = paste(metadatadir,"/meta/ms4.out",sep="")
-  results = paste(metadatadir,"/results",sep="")
+  meta = paste(metadatadir,"/meta/basic", sep = "")
+  metasleep = paste(metadatadir,"/meta/ms3.out", sep = "")
+  ms4 = paste(metadatadir,"/meta/ms4.out", sep = "")
+  results = paste(metadatadir,"/results", sep = "")
   # get list of filenames
   fname_m = dir(meta)
   fname_ms = dir(metasleep)
   fname_ms4 = dir(ms4)
   cave = function(x) as.character(unlist(strsplit(x,".RDa")))[1]
   x = as.matrix(as.character(fname_m))
-  temp1 = apply(x,MARGIN=c(1),FUN=cave)
+  temp1 = apply(x,MARGIN=c(1), FUN = cave)
   cave2 = function(x) as.character(unlist(strsplit(x,"eta_")))[2]
   x = as.matrix(as.character(temp1))
-  fnamesmeta = apply(x,MARGIN=c(1),FUN=cave2)
+  fnamesmeta = apply(x,MARGIN=c(1), FUN = cave2)
   x = as.matrix(as.character(fname_ms))
-  fnamesmetasleep = apply(x,MARGIN=c(1),FUN=cave)
+  fnamesmetasleep = apply(x,MARGIN=c(1), FUN = cave)
   # create list of day names
   wdaynames = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   # load summary spreadsheets for this study
-  if (file.exists(paste(results,"/part2_daysummary.csv",sep=""))) {
+  if (file.exists(paste(results,"/part2_daysummary.csv", sep = ""))) {
   } else {
     stop("Warning: File daysummary.csv not generated yet")
   }
-  daysummary = read.csv(paste(results,"/part2_daysummary.csv",sep=""))
-  summary = read.csv(paste(results,"/part2_summary.csv",sep=""))
+  daysummary = read.csv(paste(results,"/part2_daysummary.csv", sep = ""))
+  summary = read.csv(paste(results,"/part2_summary.csv", sep = ""))
   checkfiles = dir(results)
   M = c()
   # loop through files
   for (i in f0:f1) {  #1:length(fnamesmeta)
     if (length(ffdone) > 0) {
-      if (length(which(ffdone == paste("Report_",fnamesmeta[i],".pdf",sep=""))) > 0) {
+      if (length(which(ffdone == paste("Report_",fnamesmeta[i],".pdf", sep = ""))) > 0) {
         skip = 1 #skip this file because it was analysed before")
       } else {
         skip = 0 #do not skip this file
@@ -57,19 +57,19 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         ms4_file_index = which(fname_ms4 == fname_ms[i])
         if (length(ms4_file_index) == 1){
           nightsummary = c()
-          ms4_filepath = paste(ms4,"/",fname_ms4[ms4_file_index],sep="")
+          ms4_filepath = paste(ms4,"/",fname_ms4[ms4_file_index], sep = "")
           load(ms4_filepath) #to load summary sleep
           summarysleep_tmp = nightsummary
         } else {
           warning(paste0("\nVisual report not generated for ",fnamesmeta[i]," because part 4 output was not available."))
           next()
         }
-        pdf(paste(metadatadir,"/results/file summary reports/Report_",fnamesmeta[i],".pdf",sep=""),
+        pdf(paste(metadatadir,"/results/file summary reports/Report_",fnamesmeta[i],".pdf", sep = ""),
             paper="a4",width = 0, height = 0)
-        print(paste("File ",fnamesmeta[i],sep=""))
+        print(paste("File ",fnamesmeta[i], sep = ""))
         sib.cla.sum = c()
-        load(paste(metasleep,"/",fname_ms[sel],sep=""))
-        load(paste(meta,"/",fname_m[i],sep=""))
+        load(paste(metasleep,"/",fname_ms[sel], sep = ""))
+        load(paste(meta,"/",fname_m[i], sep = ""))
         ws3 = M$windowsizes[1]
         ws2 = M$windowsizes[2]
         daysummary_tmp = daysummary[which(daysummary$filename == fnamesmeta[i]),]
@@ -154,11 +154,11 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           CLS_A[which(days_PA == "SUN" | days_PA == "SAT")] = CLS[2]
           CLS_B[which(days_SLEEP == "SUN" | days_SLEEP == "SAT")] = CLS[2]
           # headers
-          vars = c(paste("Time spent in moderate or vigorous activity (average is ",round(mean(f01,na.rm=TRUE))," minutes per day)",sep=""),
-                   paste("Total physical activity (average per day is ",round(mean(f02,na.rm=TRUE))," mg)",sep=""),
-                   paste("Sleep period time (average is ",round(mean(f05_2,na.rm=TRUE),digits=1)," hours per night)",sep=""),
-                   paste("Sleep efficiency (average is ",round(mean(f06,na.rm=TRUE)),"% per night)",sep=""),
-                   paste("Duration monitor worn (hours per day)",sep="")) #(mean = ",round(mean(f07))," hours)
+          vars = c(paste("Time spent in moderate or vigorous activity (average is ",round(mean(f01,na.rm=TRUE))," minutes per day)", sep = ""),
+                   paste("Total physical activity (average per day is ",round(mean(f02,na.rm=TRUE))," mg)", sep = ""),
+                   paste("Sleep period time (average is ",round(mean(f05_2,na.rm=TRUE),digits=1)," hours per night)", sep = ""),
+                   paste("Sleep efficiency (average is ",round(mean(f06,na.rm=TRUE)),"% per night)", sep = ""),
+                   paste("Duration monitor worn (hours per day)", sep = "")) #(mean = ",round(mean(f07))," hours)
           # plot data
           CEXN = 0.9
           par(mfrow=c(5,1),omi=c(0,0,0.2,0),mar=c(3,2,2,2)+0.1)
@@ -705,7 +705,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
                      lty=c(1,1),col=c(night_sleep_col,night_wake_col,inactive_col,light_pa_col,mod_pa_col,vig_pa_col,nonwear_col),
                      lwd=c(LWDX,LWDX,LWDX),bg="white",cex=0.6,ncol=7,box.lwd=BLX)
               if (daycount==1 | ((daycount-1)/NGPP) == (round((daycount-1)/NGPP))) {
-                mtext(paste("Filename: ",fnamesmeta[i],sep=""),side = 3,line=0,outer=TRUE,font=2,cex=0.6)
+                mtext(paste("Filename: ",fnamesmeta[i], sep = ""),side = 3,line=0,outer=TRUE,font=2,cex=0.6)
               }
             }
             daycount = daycount + 1
