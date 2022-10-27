@@ -15,7 +15,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider=params_sleep[["relyonsleeplog"]]
+  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider = params_sleep[["relyonsleeplog"]]
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
   nnpp = 40 # number of nights to be displayed in the report (hard-coded not a critical parameter for most scenarios)
@@ -442,6 +442,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 spocum = rbind(spocum, dummyspo)
               }
               spocumi = spocumi + 1
+              cleaningcode = 3
+              acc_available = FALSE
+            } else if (length(tail_expansion_log) != 0 & sumi == max(nnightlist)) { 
+              # so that we skip the visualization of last night when data has been expanded
+              # also, cleaningcode is more realistic as acc data is not available for this night
               cleaningcode = 3
               acc_available = FALSE
             } else {
