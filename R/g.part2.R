@@ -165,8 +165,11 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         myfun = myfun,
                         acc.metric = params_general[["acc.metric"]])
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
-        # reset M and IMP so that they include the expanded time
-        M = M_bu; IMP = IMP_bu
+        # reset M and IMP so that they include the expanded time (needed for sleep detection in parts 3 and 4)
+        if (length(tail_expansion_log) != 0) {
+          M = M_bu
+          IMP = IMP_bu
+        }
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
             write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", name, ".csv"), row.names = FALSE)

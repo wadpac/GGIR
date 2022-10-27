@@ -280,7 +280,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           } else {
             nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
           }
-          if (nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
+          # include last window if has been expanded and not present in ts
+          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) 
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
           S2 = S[S$definition == j,] # simplify to one definition
@@ -327,7 +328,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               } else {
                 nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
               }
-              if (nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
+              if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
               Nts = nrow(ts)
             }
             # if ("angle" %in% colnames(ts)) {
