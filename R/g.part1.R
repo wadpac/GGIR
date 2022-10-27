@@ -340,7 +340,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                as.numeric(format(last_ts[wsi], "%S")))
         }
         # only expand if recording ends at 19PM or later
-        max_expand_time = (refhour - (19 - params_general[["dayborder"]])) * 3600
+        max_expand_time = (refhour - (params_general[["expand_tail_max_hours"]] - params_general[["dayborder"]])) * 3600
         if (secs_to_midnight[1] <= max_expand_time) {
           # If yes, expand data
           N_long_epochs_expand = ceiling(secs_to_midnight[1] / ws2) + 1

@@ -233,14 +233,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
   }
-  if (length(params_general) > 0) {
-    if (length(params_general[["expand_tail_max_hours"]]) > 0) {
-      if (params_general[["expand_tail_max_hours"]] > 5) {
-        params_general[["expand_tail_max_hours"]] = 5
-        warning("\nAuto-updating expand_tail_max_hours to 5. Expansions of data are only allowed when the recording ends at 7pm or later (see documentation)", call. = FALSE)
-      }
-    }
-  }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,
