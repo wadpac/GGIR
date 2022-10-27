@@ -184,7 +184,6 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   }
   #========================================================================================
   # Impute ws3 second data based on ws2 minute estimates of non-wear time
-  browser()
   r5 = r1 + r2 + r3 + r4
   r5[which(r5 > 1) ] = 1
   r5[which(metalong$nonwearscore == -1) ] = -1 # expanded data with expand_tail_max_hours
