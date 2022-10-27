@@ -207,7 +207,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     # The average day is used for imputation and defined relative to the starttime of the measurement
     # irrespective of dayborder as used in other parts of GGIR
     metrimp = metr = as.numeric(as.matrix(metashort[, mi]))
-    is.na(metr[which(r5long != 0)]) = T #turn all values of metr to na if r5long is different to 0 (it now turns to NA also the expanded time with expand_tail_max)
+    is.na(metr[which(r5long != 0)]) = T #turn all values of metr to na if r5long is different to 0 (it now leaves the expanded time with expand_tail_max out of the averageday calculation)
     imp = matrix(NA,wpd,ceiling(length(metr)/wpd)) #matrix used for imputation of seconds
     ndays = ncol(imp) #number of days (rounded upwards)
     nvalidsec = matrix(0,wpd,1)
@@ -237,8 +237,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         }
       }
       dim(imp) = c(length(imp),1)
-      #      imp = imp[-c(which(is.na(as.numeric(as.character(imp))) == T))] 
-      metashort[,mi] = as.numeric(imp[1:nrow(metashort)]) #to cut off the latter part of the last day used as a dummy data
+      #      imp = imp[-c(which(is.na(as.numeric(as.character(imp))) == T))]
+      toimpute = which(r5long != -1)       # do not impute the expanded time with expand_tail_max_hours
+      metashort[toimpute, mi] = as.numeric(imp[toimpute]) #to cut off the latter part of the last day used as a dummy data
     } else {
       dcomplscore = length(which(r5long == 0))/wpd
     }
@@ -247,7 +248,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   
   metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
-  invisible(list(metashort = metashort, rout = rout, dcomplscore = dcomplscore, 
+  invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore, 
                  averageday = averageday, windowsizes = windowsizes, strategy = params_cleaning[["strategy"]],
                  LC = LC, LC2 = LC2, hrs.del.start = params_cleaning[["hrs.del.start"]], hrs.del.end = params_cleaning[["hrs.del.end"]],
                  maxdur = params_cleaning[["maxdur"]]))
