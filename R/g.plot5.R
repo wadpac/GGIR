@@ -11,6 +11,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
   if (f1 > N_milestone_data_p3) f1 = N_milestone_data_p3 # this is intentionally ms3 and not ms4, do not change!
   if (f1 == 0) f1 = N_milestone_data_p3
   # directories
+  tail_expansion_log = NULL
   meta = paste(metadatadir,"/meta/basic",sep="")
   metasleep = paste(metadatadir,"/meta/ms3.out",sep="")
   ms4 = paste(metadatadir,"/meta/ms4.out",sep="")
@@ -92,6 +93,14 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
           daysummary_tmp = daysummary_tmp[-d2exclude,] #ignore days with non-wear
           d2exclude = d2excludeb
         }
+        
+        if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
+          lastnight = max(summarysleep_tmp$night)
+          if (lastnight %in% n2exclude) {
+            n2excludeb = n2exclude = n2exclude[-which(n2exclude == lastnight)]
+          }
+        }
+        
         if (length(n2exclude) > 0) {
           n2excludeb = summarysleep_tmp$night[n2exclude]
           summarysleep_tmp = summarysleep_tmp[-n2exclude,]
@@ -229,7 +238,7 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
         rm(time_unclassed)
         # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
         if (sum(which(nonwearscore > 1))) {
-          nonwear_elements = which(nonwearscore > 1)
+          nonwear_elements = which(nonwearscore > 1 | nonwearscore == -1) # it now includes the expanded time
           for (j in 1:length(nonwear_elements)) {
             # could add try/catch in here in case 'which' fails..
             match_loc = which(nw_time[nonwear_elements[j]]==time)
@@ -366,8 +375,15 @@ g.plot5 = function(metadatadir=c(),dofirstpage=FALSE, viewingwindow = 1,f0=c(),f
               t1 = t1 + (60*60/ws3)
             }
             # Initialize daily 'what we think you did' vectors:
+            if (length(tail_expansion_log) != 0) {
+              from = length(ACC) - tail_expansion_log$short + 1
+              to = length(ACC)
+              ACC[from:to] = NA; angle[from:to] = NA
+            }
             acc = abs(ACC[t0:t1])
             ang = angle[t0:t1]
+            # if only expanded data in this day, then no plot
+            if (all(is.na(acc)) & all(is.na(ang))) next
             non_wear <- NONWEAR[t0:t1]
             annot_mat = matrix(NA,nrow=length(acc),ncol=6)
             annot_mat[,1] <- detection[t0:t1]          # night sleep

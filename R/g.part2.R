@@ -145,7 +145,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           # IMP$metalong = M$metalong
         }
         # do not use expanded time with expand_tail_max_hours in summary reports
-        if (tail_expansion_log$short > 0) {
+        if (length(tail_expansion_log) != 0) {
           M_bu = M; IMP_bu = IMP # back up to be reversed later on
           expanded_time_short = which(IMP$r5long == -1)
           expanded_time_long = which(IMP$rout$r5 == -1)
