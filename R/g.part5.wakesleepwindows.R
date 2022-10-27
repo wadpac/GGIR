@@ -93,6 +93,10 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       s1 = which(timebb == paste(w1c, " 00:00:00", sep = ""))[1]
       if (is.na(s1) == TRUE) {
         s1 = which(as.character(timebb) == paste(w1c, " 00:00:00", sep = ""))[1]
+        if (is.na(s1) == TRUE) { # might still be NA if the timestamps is not in ts (expanded time from expand_tail)
+          # if so, we assume the participant is sleeping at the end of the recording, this night will be disregarded later on
+          s1 = nrow(ts)
+        }
       }
     }
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
