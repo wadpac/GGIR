@@ -11,7 +11,8 @@
 }
 \usage{
   g.impute(M, I, params_cleaning = c(),
-  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), ...)
+  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), 
+  Invalid2Zero = FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,6 +36,10 @@
     and acceleration metrics to be imputed by zeros. The data.frame is expected
     to contain two columns named windowstart and windowend, with the start- and end
     time of the time segment in POSIXlt class.
+  }
+  \item{Invalid2Zero}{
+    If TRUE, then the detected invalid time (either nonwear or clipping) will be
+    set to 0 for all metrics, except for EN that will be set to 1.
   }
   \item{...}{
      Any argument used in the previous version of g.impute, which will now

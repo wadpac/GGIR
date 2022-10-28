@@ -1,5 +1,5 @@
 g.impute = function(M, I, params_cleaning = c(), desiredtz = "", 
-                    dayborder = 0, TimeSegments2Zero = c(), ...) {
+                    dayborder = 0, TimeSegments2Zero = c(), Invalid2Zero = FALSE, ...) {
   
   #get input variables
   input = list(...)
@@ -232,7 +232,12 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       for (j in 1:ndays) { 
         missing = which(is.na(imp[,j]) == T)
         if (length(missing) > 0) {
-          imp[missing,j] = imp3[missing]
+          if (Invalid2Zero) { # If Invalid2Zero = TRUE, Only advisable when the accelerometer has not been worn during sleep.
+            if (colnames(metashort)[mi] != "EN") imp[missing,j] = 0
+            if (colnames(metashort)[mi] == "EN") imp[missing,j] = 1
+          } else {
+            imp[missing,j] = imp3[missing] 
+          }
         }
       }
       dim(imp) = c(length(imp),1)

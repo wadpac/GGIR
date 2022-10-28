@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8-4 (GitHub-only-release date:?-?-2022)}{
+  \itemize{
+    \item Part 2: Added functionality to impute invalid time segments by zero.
+  }
+}
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
   \itemize{
     \item Reports: storing nonwear in part4 reports fixed when number of nights >= 10.

@@ -91,6 +91,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            hrs.del.start = 0, hrs.del.end = 0,
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,
+                           Invalid2Zero = FALSE,
                            data_cleaning_file = c(), minimum_MM_length.part5 = 23,
                            excludefirstlast = FALSE, #<= to cleaning
                            includenightcrit = 16, #<= to cleaning
