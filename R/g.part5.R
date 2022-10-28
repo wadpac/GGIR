@@ -62,7 +62,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
-
+  
   fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -331,7 +331,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
               # nap/sib/nonwear overlap analysis
               
-             # TO DO
+              # TO DO
               
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
@@ -910,14 +910,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-         if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
-          output$window_number = as.numeric(output$window_number)
-          cells2exclude = c(which(output$window_number == min(output$window_number,na.rm = TRUE)),
-                            which(output$window_number == max(output$window_number,na.rm = TRUE)))
-          if (length(cells2exclude) > 0) {
-            output = output[-cells2exclude,]
-          }
-        }
+        
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW
@@ -957,7 +950,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (length(output) > 0) {
             if (nrow(output) > 0) {
               save(output, tail_expansion_log, file = paste(metadatadir,
-                                        ms5.out, "/", fnames.ms3[i], sep = ""))
+                                                            ms5.out, "/", fnames.ms3[i], sep = ""))
             }
           }
         }
