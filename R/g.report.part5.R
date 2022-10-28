@@ -48,9 +48,17 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     # exclude first and last window?
     if (excludefirstlast.part5 == TRUE) {
       x$window_number = as.numeric(x$window_number)
-      indices2 = which(x$window_number > min(x$window_number, na.rm = TRUE) & 
-                         x$window_number < max(x$window_number, na.rm = TRUE))
-      indices = intersect(indices, indices2)
+      # identify first and last day per file
+      first_days = aggregate(window_number ~ filename, data = x, FUN = min, na.rm = TRUE)
+      last_days = aggregate(window_number ~ filename, data = x, FUN = max, na.rm = TRUE)
+      
+      # match first and last days with the output dataframe
+      exclude_firsts = which(paste(x$filename, x$window_number) %in% paste(first_days$filename, first_days$window_number))
+      exclude_lasts = which(paste(x$filename, x$window_number) %in% paste(last_days$filename, last_days$window_number))
+      
+      # keep only indices that do not match with first and last days
+      indices2exclude = which(indices %in% c(exclude_firsts, exclude_lasts))
+      if (length(indices2exclude) > 0) indices = indices[-indices2exclude]
     }
     return(indices)
   }
