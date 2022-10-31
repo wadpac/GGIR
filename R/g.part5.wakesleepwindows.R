@@ -105,7 +105,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       if (noon0 < 1) noon0 = 1
       if (noon1 > Nts) noon1 = Nts
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])
-      if (length(sleeplog) > 0 & nonwearpercentage > 0.33) {
+      if ((length(sleeplog) > 0 & (nonwearpercentage > 0.33) | summarysleep_tmp2$sleeponset_ts[k] == "")) { # added condition to detect nights that are not detected in part 4
         
         # If non-wear is high for this day and if sleeplog is available
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
