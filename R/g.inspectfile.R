@@ -366,46 +366,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
     }
-  } else if (dformat == 3) { #wav data
-    header = c()
-    try(expr = {header = rownames(read.csv(datafile, nrow = 15, header = TRUE))}, silent = TRUE)
-    if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "WINDOWS-1252"))
-    }
-    if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "UTF-8"))
-    }
-    if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "latin1"))
-    }
-    if (length(which(header %in% paste0(1:15, sep = "") == TRUE)) == 15) { #
-      header = read.csv(datafile, skipNul = TRUE, nrow = 15, skip = 1, header = FALSE)
-      if (ncol(header) == 2) {
-        ii = which(is.na(header[,2]) == FALSE)
-        if (length(ii) > 0) header = header[-ii,]
-        header = header[,-2]
-      }
-    }
-    if (length(header) <= 5) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE))
-    }
-    H = sapply(header,function(x) {
-      tmp = as.character(unlist(strsplit(as.character(x), ": ")))
-      if (length(tmp) == 1) {
-        tmp = c(tmp, NA)
-      }
-      tmp
-    })
-    if (is.list(H) == TRUE) {
-      conv = c()
-      for (jj in 1:length(H)) {
-        conv = rbind(conv,H[[jj]], stringsAsFactors = TRUE)
-      }
-      H = as.data.frame(conv, stringsAsFactors = TRUE)
-    } else {
-      H = as.data.frame(t(H), stringsAsFactors = TRUE)
-    }
-    names(H) = c("hnames","hvalues")
+  } else if (dformat == 3) {
+    PP = GGIRread::readWav(datafile, start = 1, end = 2, units = "seconds")
+    H = PP$header
   } else if (dformat == 4) { #cwa data
     PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
