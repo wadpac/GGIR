@@ -16,7 +16,7 @@
 }
 \usage{
   g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
-            quantiletype = 7, includedaycrit = 16, 
+            params_cleaning = c(), quantiletype = 7, includedaycrit = 16, 
             idloc = 1, snloc = 1, 
             dayborder=0,  desiredtz = "", myfun=c(), acc.metric = c(), ...)
 }
@@ -37,6 +37,9 @@
     See \link{g.part2}
   }
   \item{params_phyact}{
+    See \link{g.part2}
+  }
+  \item{params_cleaning}{
     See \link{g.part2}
   }
   \item{quantiletype}{

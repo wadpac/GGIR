@@ -6,6 +6,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             mvpanames, wdaycode, ID,
                             deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
                             params_247 = c(), params_phyact = c(),
+                            params_cleaning = c(),
                             ...) {
   #get input variables
   input = list(...)
@@ -320,12 +321,17 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
+              if (isTRUE(params_cleaning[["exclude_nonwear"]])) {
+                varnum[which(val != 0)] = NA
+              } 
               # # if this is the first or last day and it has more than includedaycrit number of days then expand it
               # Comment out the following 10 lines if you want to include only the actual data
-              if (NRV != length(averageday[, (mi - 1)])) {
+              if (NRV < length(averageday[, (mi - 1)])) { # modified to avoid imputing time in the daylight saving days (25-h long, then they meet the condition NRV != nrow(averageday))
                 difference = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
-                  varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  # varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h 
+                  
                   # readjust anwi indices in case that varnum has been imputed
                   if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                     anwi_t0 = anwi_t0 + abs(difference)
@@ -420,7 +426,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
                 if (anwindices[1] == 1 & length(anwindices) > 6*60*(60/ws3)) { # only derive if 1-6am falls within window
                   fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", colnames(metashort)[mi], "_mg_1-6am"))
-                  daysummary[di,fi] = mean(varnum[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * UnitReScale #from 1am to 6am
+                  daysummary[di,fi] = mean(varnum[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))], na.rm = TRUE) * UnitReScale #from 1am to 6am
                   ds_names[fi] = paste0("mean_",colnames(metashort)[mi],"_mg_1-6am"); fi = fi + 1
                 }
                 if (anwi_nameindices[anwi_index] == "") { # for consistency with previous GGIR version
@@ -430,7 +436,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", cn_metashort[mi], "_mg",
                                                                    anwi_nameindices[anwi_index]))
                 if (length(varnum) > 0) {
-                  daysummary[di,fi] = mean(varnum) * UnitReScale
+                  daysummary[di,fi] = mean(varnum, na.rm = TRUE) * UnitReScale
                 } else {
                   daysummary[di,fi] = ""
                 }
@@ -508,7 +514,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       # METHOD 1: time spent above threhold based on 5 sec epoch
                       mvpa[1] = length(which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai])) / (60/ws3) #time spent MVPA in minutes
                       # METHOD 2: time spent above threshold based on 1minute epoch
-                      varnum2 = cumsum(c(0, varnum))
+                      varnum_NA2zero = replace(varnum, which(is.na(varnum)), 0)
+                      varnum2 = cumsum(c(0, varnum_NA2zero))
                       select = seq(1, length(varnum2), by = 60/ws3)
                       varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
                       mvpa[2] = length(which(varnum3 * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai])) #time spent MVPA in minutes

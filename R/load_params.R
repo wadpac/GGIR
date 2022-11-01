@@ -96,7 +96,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            excludefirstlast = FALSE, #<= to cleaning
                            includenightcrit = 16, #<= to cleaning
                            excludefirst.part4 = FALSE, # => to cleaning
-                           excludelast.part4 = FALSE, max_calendar_days = 0)
+                           excludelast.part4 = FALSE, max_calendar_days = 0,
+                           exclude_nonwear = FALSE)
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,

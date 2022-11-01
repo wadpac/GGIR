@@ -688,10 +688,15 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         time of the time segment in POSIXlt class.}
         
       \item{Invalid2Zero}{
-        Data frame (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["Invalid2Zero"]])}).
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["Invalid2Zero"]])}).
         If TRUE, then the detected invalid time (either nonwear or clipping) will be
         set to 0 for all metrics, except for EN that will be set to 1. If FALSE, then the standard imputation
         in GGIR (average of the rest of the days for the same time interval) is performed.}
+        
+      \item{exclude_nonwear}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["exclude_nonwear"]])}).
+        If TRUE, then the detected invalid time (either nonwear or clipping) will be
+        not be included in the reports from GGIR (for now it is only implemented in the part 2 reports).}
 
       \item{data_cleaning_file}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["data_cleaning_file"]])}).

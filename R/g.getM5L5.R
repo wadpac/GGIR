@@ -3,7 +3,7 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
   #diurnal pattern features extracted only meaningful if more than 16 hours
   # note: acceleration 1-6am removed from this function and
   # placed in g.analyse because it is not related to M5L5 analyse (23-7-2019)
-  meanVarnum = mean(varnum)
+  meanVarnum = mean(varnum, na.rm = TRUE)
   do.M5L5 = meanVarnum > 0 # & length(varnum) > 1440*(60/ws3)
   if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE) do.M5L5 = FALSE
   if (do.M5L5 == TRUE) { # only do the analysis if varnum has values other than zero
@@ -21,7 +21,7 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
       } else { #allow for analyses beyond end of day 
         einclude = c(1:(e2-length(varnum)),e1:length(varnum))
       }
-      DAYrunav5[((hri-(t0_LFMF*(60/reso)))+1),1] = mean(varnum[einclude])
+      DAYrunav5[((hri-(t0_LFMF*(60/reso)))+1),1] = mean(varnum[einclude], na.rm = T)
     }
     valid = which(is.na(DAYrunav5) == F)
     DAYL5HOUR = ((which(DAYrunav5 == min(DAYrunav5[valid], na.rm = T) &
