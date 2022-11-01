@@ -57,7 +57,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
       }
     }
   } else if (dformat == 3) {
-    try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)
+    try(expr = {deci = GGIRread::readWav(filename = inputfile, start = 1, end = 10)}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .wav file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {
