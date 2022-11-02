@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-4 (GitHub-only-release date:?-?-2022)}{
   \itemize{
-    \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow when nonwear is high
+    \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
   }
 }
