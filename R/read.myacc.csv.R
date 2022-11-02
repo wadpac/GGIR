@@ -141,6 +141,53 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
       P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.desiredtz, format = rmc.format.time)
+      
+      checkdec = function(x) {
+        # function to check whether timestamp has decimal places
+        return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
+      }
+      checkMissingDecPlaces = unlist(lapply(P$timestamp[1:pmin(nrow(P), 1000)], FUN = checkdec))
+      if (all(checkMissingDecPlaces) & !is.null(rmc.sf)) {
+        # decimal places are not present, so insert them
+        #-----
+        # dummy data, to test the following code:
+        # ttt = as.POSIXlt("2022-11-02 14:46:50", tz = "Europe/Amsterdam")
+        # rmc.sf = 10
+        # P = data.frame(timestamps = c(rep(ttt - 1, 3), rep(ttt, 10), rep(ttt + 1, 9), rep(ttt + 2, 10), rep(ttt + 3, 4)))
+        #------
+        trans = unique(c(1, which(diff(P$timestamp) > 0), nrow(P)))
+        sf_tmp = diff(trans)
+        
+        # All seconds with exactly the sample frequency
+        trans_1 = trans[which(sf_tmp == rmc.sf)]
+        indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:rmc.sf)})))
+        P$timestamp[indices_1] =  P$timestamp[indices_1] + rep(seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf), length(trans_1))
+        
+        # First second
+        if (sf_tmp[1] != rmc.sf) {
+          indices_2 = 1:trans[2]
+          P$timestamp[indices_2] = P$timestamp[indices_2] + seq(1 - (trans[2]/rmc.sf), 1 - (1/rmc.sf), by = 1/rmc.sf)
+        }
+        # Last second
+        if (sf_tmp[length(sf_tmp)] != rmc.sf) {
+          indices_3 = (trans[length(trans)-1] + 1):trans[length(trans)]
+          P$timestamp[indices_3] = P$timestamp[indices_3] + seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf)[1:length(indices_3)]
+        }
+        # All seconds with other sample frequency and not the first or last second
+        if (length(trans) > 4) {
+          trans_cut = trans[2:(length(trans)-1)]
+          sf_tmp_cut = sf_tmp[2:(length(sf_tmp)-1)]
+          sf_tmp_odd = unique(sf_tmp_cut[which(sf_tmp_cut != rmc.sf)])
+          if (length(sf_tmp_odd) > 0) {
+            for (ji in 1:length(sf_tmp_odd)) {
+              sf2 = sf_tmp_odd[ji]
+              trans_4 = trans_cut[which(sf_tmp_cut == sf2)]
+              indices_4 = sort(unlist(lapply(trans_4, FUN = function(x){x + (1:sf2)})))
+              P$timestamp[indices_4] =  P$timestamp[indices_4] + rep(seq(0, 1 - (1/sf2), by = 1/sf2), length(trans_4))
+            }
+          }
+        }
+      }
     } else if (rmc.unit.time == "character") {
       P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = rmc.desiredtz)
     } else if (rmc.unit.time == "UNIXsec") {

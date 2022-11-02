@@ -2,11 +2,13 @@ library(GGIR)
 context("read.myacc.csv")
 test_that("read.myacc.csv can read a variety of csv file formats", {
   skip_on_cran()
-  
+  old_options = options()
   # create test files
   N = 30
   sf = 30
-  timestamps = as.POSIXlt(Sys.time() + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  options(digits.secs = 4)
+  t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
+  timestamps = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 7, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -100,7 +102,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   S7 = rbind(hd,S7)
   S7[hd_NR + 1,] = colnames(S7)
   colnames(S7) = NULL
-  testfile[6] = "testcsv7.csv"
+  testfile[6] = "testcsv6.csv"
   write.table(S7, file = testfile[6], col.names = FALSE, row.names = FALSE)
   
   hd2 = matrix("",hd_NR + 1,ncol(S5))
@@ -112,8 +114,14 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   S8 = rbind(hd2,S8)
   S8[hd_NR + 1,] = colnames(S8)
   colnames(S8) = NULL
-  testfile[7] = "testcsv8.csv"
+  testfile[7] = "testcsv7.csv"
   write.table(S8, file = testfile[7], col.names = FALSE, row.names = FALSE)
+  
+  # Test file 8, same as one but with decimal places in seconds removed
+  testfile[8] = "testcsv8.csv"
+  
+  S1$time = round(S1$time)
+  write.csv(S1, file = testfile[8], row.names = FALSE)
   
   #------------------------
   # Try to read each of these files
@@ -122,12 +130,18 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
-  expect_that(nrow(D1$data),equals(20))
-  expect_that(ncol(D1$data),equals(5))
+  expect_equal(nrow(D1$data), 20)
+  expect_equal(ncol(D1$data), 5)
+  expect_equal(as.character(strftime(D1$data$timestamp[1:5], '%Y-%m-%d %H:%M:%OS2')), 
+               c("2022-11-02 13:01:16.00",
+                 "2022-11-02 13:01:16.03",
+                 "2022-11-02 13:01:16.06",
+                 "2022-11-02 13:01:16.09",
+                 "2022-11-02 13:01:16.13"))
   expect_that(D1$header,equals("no header"))
   D2 = read.myacc.csv(rmc.file = testfile[2], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
@@ -137,7 +151,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       rmc.desiredtz = "Europe/London", 
-                      rmc.sf = 100,
+                      rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
@@ -151,7 +165,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.unit.acc = "g", rmc.unit.temp = "C", 
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID",
@@ -167,7 +181,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       rmc.desiredtz = "Europe/London", 
-                      rmc.sf = 100,
+                      rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
@@ -183,7 +197,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.unit.acc = "bit", rmc.unit.temp = "C", 
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID", rmc.bitrate = "bit",
@@ -194,7 +208,7 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_that(nrow(D5$header),equals(5))
   expect_that(ncol(D5$header),equals(1))
   # header in two columns
-  D7 = read.myacc.csv(rmc.file = testfile[6], rmc.nrow = 20, rmc.dec = ".",
+  D6 = read.myacc.csv(rmc.file = testfile[6], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
                       rmc.header.length = 5,
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
@@ -202,12 +216,38 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
                       rmc.unit.acc = "bit", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
+                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID", 
                       rmc.bitrate = "bit", rmc.dynamic_range = "dynamic_range",
                       rmc.header.structure = c(), rmc.check4timegaps = TRUE)
+  
+  expect_equal(mean(D6$data[,2]), 0.761, tolerance = 3)
+  expect_equal(mean(D6$data[,3]), -0.62, tolerance = 2)
+  expect_equal(mean(D6$data[,4]), -0.36, tolerance = 1)
+  expect_equal(mean(D6$data[,5]), 20.1, tolerance = 1)
+  expect_equal(D6$data[2,2], 0.9768219, tolerance  = 3)
+  expect_equal(ncol(D6$data), 5)
+  expect_equal(nrow(D6$header),5)
+  expect_equal(ncol(D6$header), 1)
+  expect_equal(as.numeric(D6$header[1,]), 12345)
+  expect_equal(as.numeric(D6$header[2,]), 30)
+  # header in one column
+  D7 = read.myacc.csv(rmc.file = testfile[7], rmc.nrow = 20, rmc.dec = ".",
+                      rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
+                      rmc.header.length = 5,
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
+                      rmc.col.time = 2,
+                      rmc.unit.acc = "bit", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      rmc.headername.sf = "sample_rate",
+                      rmc.headername.sn = "serial_number",
+                      rmc.headername.recordingid = "ID", 
+                      rmc.bitrate = "bit", rmc.dynamic_range = "dynamic_range",
+                      rmc.header.structure = ":",rmc.check4timegaps = TRUE)
   
   expect_equal(mean(D7$data[,2]), 0.761, tolerance = 3)
   expect_equal(mean(D7$data[,3]), -0.62, tolerance = 2)
@@ -219,35 +259,30 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_equal(ncol(D7$header), 1)
   expect_equal(as.numeric(D7$header[1,]), 12345)
   expect_equal(as.numeric(D7$header[2,]), 30)
-  # header in one column
-  D8 = read.myacc.csv(rmc.file = testfile[7], rmc.nrow = 20, rmc.dec = ".",
-                      rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
-                      rmc.header.length = 5,
-                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, 
-                      rmc.col.time = 2,
-                      rmc.unit.acc = "bit", rmc.unit.temp = "C",
-                      rmc.format.time = "%Y-%m-%d %H:%M:%OS",
-                      rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = 100,
-                      rmc.headername.sf = "sample_rate",
-                      rmc.headername.sn = "serial_number",
-                      rmc.headername.recordingid = "ID", 
-                      rmc.bitrate = "bit", rmc.dynamic_range = "dynamic_range",
-                      rmc.header.structure = ":",rmc.check4timegaps = TRUE)
   
-  expect_equal(mean(D8$data[,2]), 0.761, tolerance = 3)
-  expect_equal(mean(D8$data[,3]), -0.62, tolerance = 2)
-  expect_equal(mean(D8$data[,4]), -0.36, tolerance = 1)
-  expect_equal(mean(D8$data[,5]), 20.1, tolerance = 1)
-  expect_equal(D8$data[2,2], 0.9768219, tolerance  = 3)
+  
+  # File 8
+  D8 = read.myacc.csv(rmc.file = testfile[8], rmc.nrow = 20, rmc.dec = ".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                      rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                      rmc.origin = "1970-01-01",
+                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      rmc.headername.sf = "sample_frequency",
+                      rmc.headername.sn = "serial_number",
+                      rmc.headername.recordingid = "ID")
+  expect_equal(nrow(D8$data), 20)
   expect_equal(ncol(D8$data), 5)
-  expect_equal(nrow(D8$header),5)
-  expect_equal(ncol(D8$header), 1)
-  expect_equal(as.numeric(D8$header[1,]), 12345)
-  expect_equal(as.numeric(D8$header[2,]), 30)
+  expect_equal(as.character(strftime(D8$data$timestamp[1:5], 
+                                     '%Y-%m-%d %H:%M:%OS2')),
+               c("2022-11-02 13:01:16.50", "2022-11-02 13:01:16.53",
+                 "2022-11-02 13:01:16.56", "2022-11-02 13:01:16.59",
+                 "2022-11-02 13:01:16.63"))
+  expect_that(D8$header,equals("no header"))
   
   for (i in 1:length(testfile)) {
     expect_true(file.exists(testfile[i]))
     if (file.exists(testfile[i])) file.remove(testfile[i])
   }
+   options(old_options)
 })
