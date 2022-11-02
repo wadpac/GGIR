@@ -189,7 +189,7 @@ g.getbout = function(x, boutduration, boutcriter = 0.8, closedbout = FALSE, bout
       }
       p = p[which(p != 0)]
       # now mark all epochs that are covered by the remaining windows
-      for (gi in 1:boutduration) {
+      for (gi in 1:(boutduration - 1)) { # if 1:boutduration, then it goes 1 epoch beyond the period of interest marked with refe
         inde = p-half1+gi
         xt[inde[which(inde > 0 & inde < length(xt))]] = 2
       }
