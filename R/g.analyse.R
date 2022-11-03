@@ -1,12 +1,13 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
-                      params_cleaning = c(),
+                      params_cleaning = c(), params_general = c(),
                       quantiletype = 7, includedaycrit = 16, 
                       idloc = 1, snloc = 1, dayborder = 0,  desiredtz = "", 
                       myfun = c(), acc.metric = c(), ...) {
   
   #get input variables
   input = list(...)
-  expectedArgs = c("I", "C", "M", "IMP", "params_247", "params_phyact", "params_cleaning",
+  expectedArgs = c("I", "C", "M", "IMP", "params_247", 
+                   "params_phyact", "params_cleaning", "params_general",
                    "quantiletype", "includedaycrit", 
                    "idloc", "snloc", "dayborder", 
                    "desiredtz", "myfun")
@@ -22,6 +23,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     params_247 = params$params_247
     params_phyact = params$params_phyact
     params_cleaning = params$params_cleaning
+    params_general = params$params_general
   }
   params_247[["L5M5window"]] = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
@@ -271,7 +273,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      doquan = doquan,  ExtFunColsi = ExtFunColsi,
                                      myfun = myfun, desiredtz = desiredtz,
                                      params_247 = params_247, params_phyact = params_phyact,
-                                     params_cleaning = params_cleaning)
+                                     params_cleaning = params_cleaning, params_general = params_general)
     daysummary = output_perday$daysummary
     ds_names = output_perday$ds_names
     windowsummary = output_perday$windowsummary

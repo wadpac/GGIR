@@ -6,12 +6,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             mvpanames, wdaycode, ID,
                             deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
                             params_247 = c(), params_phyact = c(),
-                            params_cleaning = c(),
+                            params_cleaning = c(), params_general = c(),
                             ...) {
   #get input variables
   input = list(...)
   
-  expectedArgs = c("params_247", "params_phyact", 
+  expectedArgs = c("params_247", "params_phyact", "params_cleaning", "params_general",
                    "ndays", "firstmidnighti", "time", "nfeatures", 
                    "midnightsi", "metashort", "averageday",
                    "doiglevels", "nfulldays","lastmidnight", "ws3", "ws2", "qcheck",
@@ -29,6 +29,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             input = input) # load default parameters
     params_247 = params$params_247
     params_phyact = params$params_phyact
+    params_cleaning = params$params_cleaning
+    params_general = params$params_general
   }
   
   startatmidnight = endatmidnight = 0
@@ -596,7 +598,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # we consider all the recorded time to be awake time (except nonwear)
                 # and we can calculate sedentary and light bouts without misclassifying
                 # sleep as inactivity
-                if (isFALSE(params_cleaning[["WornDuringSleep"]])) {
+                if (isFALSE(params_general[["WornDuringSleep"]])) {
                   ts = data.frame(time = vari2[,1], 
                                   ACC = varnum * UnitReScale,
                                   diur = 0, # consider all recorded time as awake (except nonwear)

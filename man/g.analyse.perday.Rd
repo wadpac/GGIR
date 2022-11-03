@@ -16,7 +16,7 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
                 mvpanames, wdaycode, ID,
                 deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
                 params_247 = c(), params_phyact = c(),
-                params_cleaning = c(),
+                params_cleaning = c(), params_general = c(),
                 ...)
 }
 \arguments{
@@ -60,6 +60,9 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
     See \link{g.part2}
   }
   \item{params_cleaning}{
+    See \link{g.part2}
+  }
+  \item{params_general}{
     See \link{g.part2}
   }
   \item{...}{
