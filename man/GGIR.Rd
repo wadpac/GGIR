@@ -206,11 +206,15 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{expand_tail_max_hours}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
+        This parameter has been replaced for \code{recordingEndSleepHour}. 
+      }
+      \item{recordingEndSleepHour}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]]}).
         Time (in hours) at which the recording should end (or later) to expand the  
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
-        Using argument \code{expand_tail_max_hours} implies the assumption that the
+        Using argument \code{recordingEndSleepHour} implies the assumption that the
         participant fell asleep at or before the end of the recording if the recording
-        ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
+        ended less than \code{recordingEndSleepHour} before midnight. This assumption may not
         always hold true and should be used with caution. 
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.

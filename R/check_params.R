@@ -233,6 +233,24 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
   }
+  if (!is.null(params_general[["expand_tail_max_hours"]])) {
+    if (is.null(params_general[["recordingEndSleepHour"]])) {
+      params_general[["recordingEndSleepHour"]] = params_general[["expand_tail_max_hours"]] # redefine the argument
+      params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
+      # stop if expand_tail_max_hours was defined before 7pm
+      if (params_general[["recordingEndSleepHour"]] < 19) {
+        stop("\nThe argument expand_tail_max_hours has been replaced for recordingEndSleepHour. Please, see the documentation and replace this argument in your function call.")    
+      } 
+    } else {
+      params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
+      stop("\nBoth expand_tail_max_hours and recordingEndSleepHour are defined. This is not possible. recordingEndSleepHour replaces expand_tail_max_hours, please, see the documentation.")
+    }
+  }
+  if (!is.null(params_general[["recordingEndSleepHour"]])) {
+    if (params_general[["recordingEndSleepHour"]] < 19) {
+      warning(paste0("\nrecordingEndSleepHour expects the earliest time at which the participant is expected to fall asleep. recordingEndSleepHour has been defined as ", params_general[["recordingEndSleepHour"]], ", you might want to set this later in the day."))
+    }
+  }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,
