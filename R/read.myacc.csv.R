@@ -194,11 +194,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
               trans_4 = trans_cut[which(sf_tmp_cut == sf2)]
               indices_4 = sort(unlist(lapply(trans_4, FUN = function(x){x + (1:sf2)})))
               if (length(timeIncrement) > sf2) {
-                timeIncrement = timeIncrement[1:sf2]
+                timeIncrement2 = timeIncrement[1:sf2]
               } else if (length(timeIncrement) < sf2) {
-                timeIncrement = c(timeIncrement, rep(timeIncrement[rmc.sf], sf2 - rmc.sf))
+                timeIncrement2 = c(timeIncrement, rep(timeIncrement[rmc.sf], sf2 - rmc.sf))
               }
-              P$timestamp[indices_4] =  P$timestamp[indices_4] + rep(timeIncrement, length(trans_4))
+              P$timestamp[indices_4] =  P$timestamp[indices_4] + rep(timeIncrement2, length(trans_4))
             }
           }
         }
