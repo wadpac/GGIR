@@ -257,8 +257,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           hour = tempp$hour
           if (params_general[["dayborder"]] == 0) {
             nightsi = which(sec == 0 & min == 0 & hour == 0)
+            nightsi2 = nightsi # nightsi2 will be used in g.part5.wakesleepwindows
           } else {
             nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+            nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
@@ -271,7 +273,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
             # Add defenition of wake and sleep windows in diur column of data.frame ts
-            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi,
+            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi2,
                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
             # Add first waking up time, if it is missing:
             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
