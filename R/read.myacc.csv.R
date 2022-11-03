@@ -146,9 +146,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # function to check whether timestamp has decimal places
         return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
       }
-      checkMissingDecPlaces = unlist(lapply(P$timestamp[1:pmin(nrow(P), 1000)], FUN = checkdec))
-      if (all(checkMissingDecPlaces) & !is.null(rmc.sf)) {
-        # decimal places are not present, so insert them
+      first_chunk_time = P$timestamp[1:pmin(nrow(P), 1000)]
+      checkMissingDecPlaces = unlist(lapply(first_chunk_time, FUN = checkdec))
+      if (all(checkMissingDecPlaces) &
+          !is.null(rmc.sf) &
+          length(which(duplicated(first_chunk_time) == TRUE)) > 0) {
+        # decimal places are not present and there are duplicated timestamps,
+        # so insert decimal places
         #-----
         # dummy data, to test the following code:
         # ttt = as.POSIXlt("2022-11-02 14:46:50", tz = "Europe/Amsterdam")
@@ -157,11 +161,12 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         #------
         trans = unique(c(1, which(diff(P$timestamp) > 0), nrow(P)))
         sf_tmp = diff(trans)
+        timeIncrement = seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf) # expected time increment per second
         
         # All seconds with exactly the sample frequency
         trans_1 = trans[which(sf_tmp == rmc.sf)]
         indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:rmc.sf)})))
-        P$timestamp[indices_1] =  P$timestamp[indices_1] + rep(seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf), length(trans_1))
+        P$timestamp[indices_1] =  P$timestamp[indices_1] + rep(timeIncrement, length(trans_1))
         
         # First second
         if (sf_tmp[1] != rmc.sf) {
@@ -171,9 +176,14 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # Last second
         if (sf_tmp[length(sf_tmp)] != rmc.sf) {
           indices_3 = (trans[length(trans)-1] + 1):trans[length(trans)]
-          P$timestamp[indices_3] = P$timestamp[indices_3] + seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf)[1:length(indices_3)]
+          P$timestamp[indices_3] = P$timestamp[indices_3] + timeIncrement[1:length(indices_3)]
         }
         # All seconds with other sample frequency and not the first or last second
+        # This code now assumes that most samples in the second were sampled
+        # at the correct rate but that some samples were dropped or doubled
+        # as a result of which the sample rate appears different
+        # It seems that this may be a safer assumption than the assumption
+        # that the entire second had a different sample rate
         if (length(trans) > 4) {
           trans_cut = trans[2:(length(trans)-1)]
           sf_tmp_cut = sf_tmp[2:(length(sf_tmp)-1)]
@@ -183,10 +193,16 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
               sf2 = sf_tmp_odd[ji]
               trans_4 = trans_cut[which(sf_tmp_cut == sf2)]
               indices_4 = sort(unlist(lapply(trans_4, FUN = function(x){x + (1:sf2)})))
-              P$timestamp[indices_4] =  P$timestamp[indices_4] + rep(seq(0, 1 - (1/sf2), by = 1/sf2), length(trans_4))
+              if (length(timeIncrement) > sf2) {
+                timeIncrement = timeIncrement[1:sf2]
+              } else if (length(timeIncrement) < sf2) {
+                timeIncrement = c(timeIncrement, rep(timeIncrement[rmc.sf], sf2 - rmc.sf))
+              }
+              P$timestamp[indices_4] =  P$timestamp[indices_4] + rep(timeIncrement, length(trans_4))
             }
           }
         }
+        # print(diff(P$timestamp))
       }
     } else if (rmc.unit.time == "character") {
       P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = rmc.desiredtz)
