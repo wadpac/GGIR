@@ -654,13 +654,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           # Fill matrix 'nightsummary' with key sleep parameters
           if (length(spocum) > 0 & class(spocum)[1] == "data.frame" & length(calendar_date) >= j) {
-            if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendar_date[j] != "") {
+            if (nrow(spocum) > 0 & ncol(spocum) >= 5 & calendar_date[j] != "") {
               undef = unique(spocum$def)
               for (defi in undef) {
                 #------------------------------------------------------------------------
                 # nightsummary
                 rowswithdefi = which(spocum$def == defi)
-                if (length(rowswithdefi) > 1) {
+                if (length(rowswithdefi) > 0) {
                   # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi, ]
                   # in DST it can be that a double hour is not recognized as part of the SPT
