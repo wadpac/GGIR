@@ -62,7 +62,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
-  
+
   fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -257,8 +257,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           hour = tempp$hour
           if (params_general[["dayborder"]] == 0) {
             nightsi = which(sec == 0 & min == 0 & hour == 0)
+            nightsi2 = nightsi # nightsi2 will be used in g.part5.wakesleepwindows
           } else {
             nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+            nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
@@ -271,7 +273,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
             # Add defenition of wake and sleep windows in diur column of data.frame ts
-            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi,
+            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi2,
                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
             # Add first waking up time, if it is missing:
             ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
@@ -923,14 +925,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-        if (params_cleaning[["excludefirstlast.part5"]] == TRUE) {
-          output$window_number = as.numeric(output$window_number)
-          cells2exclude = c(which(output$window_number == min(output$window_number,na.rm = TRUE)),
-                            which(output$window_number == max(output$window_number,na.rm = TRUE)))
-          if (length(cells2exclude) > 0) {
-            output = output[-cells2exclude,]
-          }
-        }
+
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW
