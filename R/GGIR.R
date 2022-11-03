@@ -257,7 +257,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
                    minimum_MM_length.part5 = params_cleaning[["minimum_MM_length.part5"]],
                    week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
-                   LUX_day_segments = params_247[["LUX_day_segments"]])
+                   LUX_day_segments = params_247[["LUX_day_segments"]],
+                   excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]])
   }
   if (params_output[["visualreport"]] == TRUE) {
     print_console_header("Generate visual reports")
