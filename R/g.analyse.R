@@ -12,7 +12,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                    "idloc", "snloc", "dayborder", 
                    "desiredtz", "myfun")
   if (any(names(input) %in% expectedArgs == FALSE) |
-      !all(expectedArgs %in% ls())) {
+      !all(expectedArgs %in% ls()) | 
+      any(is.null(params_247), is.null(params_cleaning), is.null(params_general))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
