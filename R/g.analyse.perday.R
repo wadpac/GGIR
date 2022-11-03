@@ -9,7 +9,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             ...) {
   #get input variables
   input = list(...)
-
+  
   expectedArgs = c("params_247", "params_phyact",
                    "ndays", "firstmidnighti", "time", "nfeatures",
                    "midnightsi", "metashort", "averageday",
@@ -29,7 +29,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     params_247 = params$params_247
     params_phyact = params$params_phyact
   }
-
+  
   startatmidnight = endatmidnight = 0
   if (nfulldays >= 1) {
     if (firstmidnighti == 1) {  #if measurement starts at midnight
@@ -43,7 +43,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       cat("measurement ends at midnight or there is no midnight")
     }
   }
-
+  
   daysummary = matrix("",ceiling(ndays),nfeatures)
   ds_names = rep("",nfeatures)
   windowsummary = ws_names = c()
@@ -159,7 +159,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
-
+        
         for (qwi in 1:(length(qwindowindices) - 1)) { #
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
@@ -180,14 +180,14 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       }
     }
-
+    
     val = as.numeric(val)
     nvalidhours = length(which(val == 0)) / (3600 / ws3) #valid hours per day (or half a day)
     nhours = length(val) / (3600 / ws3) #valid hours per day (or half a day)
     #start collecting information about the day
     fi = 1
-
-
+    
+    
     check_daysummary_size = function(daysummary, ds_names, fi) {
       if (fi > ncol(daysummary) - 1000) {
         expand = fi - (ncol(daysummary) - 1000)
@@ -312,7 +312,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
           new = check_daysummary_size(daysummary, ds_names, fi)
           daysummary = new$daysummary
           ds_names = new$ds_names
-
+          
           L5M5window_name = anwi_nameindices[anwi_index]
           anwindices = anwi_t0[anwi_index]:anwi_t1[anwi_index] # indices of varnum corresponding to a segment
           if (length(anwindices) > 0) {
@@ -413,7 +413,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       t0_LFMF =  1 #start
                       # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       t1_LFMF = length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60))
-
+                      
                       ML5 = g.getM5L5(varnum, ws3, t0_LFMF, t1_LFMF, params_247[["M5L5res"]], winhr_value, qM5L5 = params_247[["qM5L5"]],
                                       iglevels = params_247[["iglevels"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
                       ML5colna = colnames(ML5)
@@ -547,7 +547,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                              closedbout = params_phyact[["closedbout"]],
                                              bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
                       mvpa[4] = length(which(getboutout$x == 1)) / (60/ws3) #time spent MVPA in minutes
-
+                      
                       # METHOD 5: time spent above threshold 5 minutes
                       boutduration = params_phyact[["mvpadur"]][2] * (60/ws3) #per five minutes
                       rr1 = matrix(0, length(varnum), 1)
@@ -582,74 +582,25 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     }
                   }
                 }
-
-                # Step bout detection is done for evry acceleration metric
+                
+                
                 if (length(ExtFunColsi) > 0) { # If events are detected with external function
                   if (myfun$reporttype == "event") {
-                    if ("ebout.dur" %in% names(myfun) == FALSE) myfun$ebout.dur = c(1, 5, 10)
-                    if ("ebout.th.cad" %in% names(myfun) == FALSE) myfun$ebout.th.cad = 30
-                    if ("ebout.th.acc" %in% names(myfun) == FALSE) myfun$ebout.th.acc = 50
-                    if ("ebout.criter" %in% names(myfun) == FALSE) myfun$ebout.criter = 0.8
-                    if ("ebout.condition" %in% names(myfun) == FALSE) myfun$ebout.condition = "AND"
-
-                    # varnum = metashort[anwindices, mi]
-                    cadence = varnum_event * (60/ws3)
-                    # Event bouts
-                    for (boutdur in myfun$ebout.dur) {
-                      boutduration = boutdur * (60/ws3) # per minute
-                      rr1 = matrix(0, length(varnum), 1)
-                      if (myfun$ebout.condition == "AND") {
-                        p = which(varnum * UnitReScale >= myfun$ebout.th.acc &
-                                    cadence >= myfun$ebout.th.cad); rr1[p] = 1
-                      } else if (myfun$ebout.condition == "OR") {
-                        p = which(varnum * UnitReScale >= myfun$ebout.th.acc |
-                                    cadence >= myfun$ebout.th.cad); rr1[p] = 1
-                      }
-                      getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = myfun$ebout.criter,
-                                             bout.metric = 6, ws3 = ws3)
-                      # time spent in bouts in minutes
-                      eventbout = length(which(getboutout$x == 1)) / (60/ws3)
-                      eboutname = paste0("ExtFunEvent_Bout_totdur_E", ws3, "S_B", boutdur,
-                                         "M", (myfun$ebout.criter  * 100),
-                                         "%_cadT",myfun$ebout.th.cad,"_",
-                                         myfun$ebout.condition,
-                                         "_accT", myfun$ebout.th.acc)
-                      ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
-                      fi = correct_fi(di, ds_names, fi, varname = ebout_varname)
-                      daysummary[di,fi] = eventbout # total time in ebouts
-                      ds_names[fi] = ebout_varname;
-                      fi = fi + 1
-                      # number of bouts
-                      rle_bout = rle(as.numeric(getboutout$x))
-                      rle_bout1 = which(rle_bout$values == 1)
-                      number_of_bouts = length(rle_bout1)
-
-                      eboutname = paste0("ExtFunEvent_Bout_number_E", ws3, "S_B", boutdur,
-                                         "M", (myfun$ebout.criter  * 100),
-                                         "%_cadT",myfun$ebout.th.cad,"_",
-                                         myfun$ebout.condition,
-                                         "_accT", myfun$ebout.th.acc)
-                      ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
-                      daysummary[di,fi] = number_of_bouts
-                      ds_names[fi] = ebout_varname;
-                      fi = fi + 1
-                      # average bout duration in minutes
-                      if (number_of_bouts > 0) {
-                        mn_dur_bouts = mean(rle_bout$lengths[which(rle_bout$values == 1)]) / (60/ws3)
-                      } else {
-                        mn_dur_bouts = 0
-                      }
-                      eboutname = paste0("ExtFunEvent_Bout_meandur_E", ws3, "S_B", boutdur,
-                                         "M", (myfun$ebout.criter  * 100),
-                                         "%_cadT",myfun$ebout.th.cad,"_",
-                                         myfun$ebout.condition,
-                                         "_accT", myfun$ebout.th.acc)
-                      ebout_varname = paste0(eboutname, "_", cn_metashort[mi], anwi_nameindices[anwi_index])
-                      daysummary[di,fi] = mn_dur_bouts
-                      ds_names[fi] = ebout_varname;
-                      fi = fi + 1
-                    }
+                    # Step bout detection
+                    eventBouts = detectEventBouts(myfun, varnum_event = varnum_event,
+                                                  varnum = varnum, 
+                                                  UnitReScale = UnitReScale,
+                                                  daysummary = daysummary,
+                                                  ds_names = ds_names,
+                                                  di = di, fi = fi,
+                                                  ws3 = ws3,
+                                                  boutnameEnding = paste0(cn_metashort[mi],
+                                                                          anwi_nameindices[anwi_index]))
+                    
+                    daysummary = eventBouts$daysummary
+                    ds_names = eventBouts$ds_names
+                    di = eventBouts$di
+                    fi = eventBouts$fi
                   }
                 }
               }
