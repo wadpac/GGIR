@@ -91,13 +91,13 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            hrs.del.start = 0, hrs.del.end = 0,
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,
-                           Invalid2Zero = FALSE,
+                           part2ImpWithZero = FALSE,
                            data_cleaning_file = c(), minimum_MM_length.part5 = 23,
                            excludefirstlast = FALSE, #<= to cleaning
                            includenightcrit = 16, #<= to cleaning
                            excludefirst.part4 = FALSE, # => to cleaning
                            excludelast.part4 = FALSE, max_calendar_days = 0,
-                           exclude_nonwear = FALSE)
+                           part2ExcludeNonwear = FALSE)
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
@@ -116,7 +116,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           desiredtz = "", configtz = c(), idloc = 1, dayborder = 0,
                           part5_agg2_60seconds = FALSE,
                           sensor.location = "wrist",
-                          expand_tail_max_hours = 0)
+                          expand_tail_max_hours = 0,
+                          WornDuringSleep = TRUE)
   }
   # }
   invisible(list(params_sleep = params_sleep,

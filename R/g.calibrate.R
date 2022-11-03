@@ -341,7 +341,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
                            abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       meta_temp = meta_temp[nomovement,]
-      dup = which(rowSums(meta_temp[1:(nrow(meta_temp) - 1), 2:7] == meta_temp[2:nrow(meta_temp), 2:7]) == 3) # remove duplicated values
+      dup = which(rowSums(round(meta_temp[1:(nrow(meta_temp) - 1), 2:7], digits = 3) == round(meta_temp[2:nrow(meta_temp), 2:7], digits = 3)) == 3) # remove duplicated values
       if (length(dup) > 0) meta_temp = meta_temp[-dup,]
       rm(nomovement, dup)
       if (min(dim(meta_temp)) > 1) {

@@ -12,7 +12,7 @@
 \usage{
   g.impute(M, I, params_cleaning = c(),
   desiredtz="", dayborder= 0, TimeSegments2Zero =c(), 
-  Invalid2Zero = FALSE,...)
+  part2ImpWithZero = FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,7 +37,7 @@
     to contain two columns named windowstart and windowend, with the start- and end
     time of the time segment in POSIXlt class.
   }
-  \item{Invalid2Zero}{
+  \item{part2ImpWithZero}{
     If TRUE, then the detected invalid time (either nonwear or clipping) will be
     set to 0 for all metrics, except for EN that will be set to 1.
   }

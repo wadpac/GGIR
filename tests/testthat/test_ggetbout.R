@@ -67,25 +67,25 @@ test_that("g.getbout produces expected output", {
                   closedbout=FALSE,bout.metric=6,ws3=60)
   bm6Ex = c(rep(0,27), rep(1,10), rep(0,20))
   bm6Eboutcount = c(rep(0,27), rep(1,10), rep(0,20))
-  expect_that(sum(bm6$x),equals(10))
+  expect_that(sum(bm6$x),equals(9))
   # Metric 6 - ability to detect even length bout
   set.seed(300)
   xtest = x = c(rep(1, 4), rep(0, 3), rep(1, 6),rep(0, 3), rep(1, 10), 0 , rep(1, 9))
   bm6b = g.getbout(x=xtest,boutduration = 10, boutcriter=1,
                   closedbout=FALSE,bout.metric=6,ws3=60)
-  expect_that(sum(bm6b$x),equals(10))
-  expect_that(sum(bm6b$boutcount),equals(10))
+  expect_that(sum(bm6b$x),equals(9))
+  expect_that(sum(bm6b$boutcount),equals(9))
   
   # Metric 6 - ability to detect odd length bouts
   set.seed(300)
   xtest = x = c(rep(0, 20), rep(1, 9), rep(0, 20))
   bm6c = g.getbout(x=xtest,boutduration =9, boutcriter=1,
                    closedbout=FALSE,bout.metric=6,ws3=60)
-  expect_that(sum(bm6c$x),equals(9))
+  expect_that(sum(bm6c$x),equals(8))
   # Metric 6 - ability to detect bouts with grace periods
   xtest = c(rep(0,15), rep(1,6), 0, rep(1,10),rep(0,20))
   bm6 = g.getbout(x=xtest,boutduration = 10, boutcriter=0.9,
                   closedbout=FALSE,bout.metric=6,ws3=60)
-  expect_that(sum(bm6$x),equals(17))
+  expect_that(sum(bm6$x),equals(16))
   
 })

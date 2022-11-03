@@ -323,7 +323,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
               vari2 = vari #vari2 is used in identify_levels
-              if (isTRUE(params_cleaning[["exclude_nonwear"]])) {
+              if (isTRUE(params_cleaning[["part2ExcludeNonwear"]])) {
                 varnum[which(val != 0)] = NA
               } 
               # # if this is the first or last day and it has more than includedaycrit number of days then expand it
@@ -338,6 +338,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
                   colnames(vari2) = colnames(vari)
                   ts1 = iso8601chartime2POSIX(vari[1,1], tz = desiredtz)
+                  if (is.na(ts1)) {
+                    ts1 = as.POSIXct(vari[1,1], tz = desiredtz)
+                  }
                   ts0 = ts1 - abs(difference)*ws3
                   ts = seq(ts0, ts1, by = ws3)
                   ts = ts[-length(ts)] #this timestamp is already in vari
@@ -356,7 +359,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
                   colnames(vari2) = colnames(vari)
                   ts0 = iso8601chartime2POSIX(vari[nrow(vari),1], tz = desiredtz)
-                  ts1 = ts1 + abs(difference)*ws3
+                  if (is.na(ts0)) {
+                    ts0 = as.POSIXct(vari[nrow(vari),1], tz = desiredtz)
+                  }
+                  ts1 = ts0 + abs(difference)*ws3
                   ts = seq(ts0, ts1, by = ws3)
                   ts = ts[-1] #this timestamp is already in vari
                   vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
@@ -584,52 +590,59 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     }
                   }
                 }
+                #=========================================
                 # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
-                ts = data.frame(time = vari2[,1], 
-                                ACC = varnum * UnitReScale,
-                                diur = 0, # consider all recorded time as awake
-                                sibdetection = 0) # consider all recorded time as awake
-                TRLi = params_phyact[["threshold.lig"]]
-                TRMi = params_phyact[["threshold.mod"]]
-                TRVi = params_phyact[["threshold.vig"]]
-                params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
-                params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
-                params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
-                
-                levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
-                                         ws3 = ws3, params_phyact = params_phyact)
-                LEVELS = levels$LEVELS
-                OLEVELS = levels$OLEVELS
-                Lnames = levels$Lnames
-                bc.mvpa = levels$bc.mvpa
-                bc.lig = levels$bc.lig
-                bc.in = levels$bc.in
-                ts = levels$ts
-                
-                # match LEVELS to nonwear
-                # set_to_zero = which(LEVELS > 0 & is.na(ts$ACC)) # expected to be 1, last epoch detected in levels > 0
-                # if (length(set_to_zero) > 0) LEVELS[set_to_zero] = 0
-                # set_to_zero = which(OLEVELS > 0 & is.na(ts$ACC)) 
-                # if (length(set_to_zero) > 0) OLEVELS[set_to_zero] = 0
-                
-                # remove nonwear from LEVELS
-                spt_levels = max(grep("^spt", Lnames)) - 1 # minus 1 bc first LEVEL is 0
-                LEVELS = LEVELS[which(LEVELS > spt_levels)] # remove nonwear from levels
-                OLEVELS = OLEVELS[which(OLEVELS > 0)] # remove nonwear from levels
-
-                # add levels to daysummary
-                for (levelsc in 0:(length(Lnames) - 1)) { 
-                  daysummary[di,fi] = (length(which(LEVELS == levelsc)) * ws3) / 60
-                  ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
+                # this only runs when the sensor has not been worn during sleep, then
+                # we consider all the recorded time to be awake time (except nonwear)
+                # and we can calculate sedentary and light bouts without misclassifying
+                # sleep as inactivity
+                if (isFALSE(params_cleaning[["WornDuringSleep"]])) {
+                  ts = data.frame(time = vari2[,1], 
+                                  ACC = varnum * UnitReScale,
+                                  diur = 0, # consider all recorded time as awake (except nonwear)
+                                  sibdetection = 0)
+                  TRLi = params_phyact[["threshold.lig"]]
+                  TRMi = params_phyact[["threshold.mod"]]
+                  TRVi = params_phyact[["threshold.vig"]]
+                  params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
+                  params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
+                  params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
+                  
+                  levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
+                                           ws3 = ws3, params_phyact = params_phyact)
+                  LEVELS = levels$LEVELS
+                  OLEVELS = levels$OLEVELS
+                  Lnames = levels$Lnames
+                  bc.mvpa = levels$bc.mvpa
+                  bc.lig = levels$bc.lig
+                  bc.in = levels$bc.in
+                  ts = levels$ts
+                  
+                  # match LEVELS to nonwear
+                  # set_to_zero = which(LEVELS > 0 & is.na(ts$ACC)) # expected to be 1, last epoch detected in levels > 0
+                  # if (length(set_to_zero) > 0) LEVELS[set_to_zero] = 0
+                  # set_to_zero = which(OLEVELS > 0 & is.na(ts$ACC)) 
+                  # if (length(set_to_zero) > 0) OLEVELS[set_to_zero] = 0
+                  
+                  # remove nonwear from LEVELS
+                  spt_levels = max(grep("^spt", Lnames)) - 1 # minus 1 bc first LEVEL is 0
+                  LEVELS = LEVELS[which(LEVELS > spt_levels)] # remove nonwear from levels
+                  OLEVELS = OLEVELS[which(OLEVELS > 0)] # remove nonwear from levels
+                  
+                  # add levels to daysummary
+                  for (levelsc in 0:(length(Lnames) - 1)) { 
+                    daysummary[di,fi] = (length(which(LEVELS == levelsc)) * ws3) / 60
+                    ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
+                  }
+                  for (g in 1:4) {
+                    daysummary[di, (fi + (g - 1))] = (length(which(OLEVELS == g)) * ws3) / 60
+                  }
+                  ds_names[fi:(fi + 3)] = c("dur_day_total_IN_min",
+                                            "dur_day_total_LIG_min",
+                                            "dur_day_total_MOD_min",
+                                            "dur_day_total_VIG_min")
+                  fi = fi + 4
                 }
-                for (g in 1:4) {
-                  daysummary[di, (fi + (g - 1))] = (length(which(OLEVELS == g)) * ws3) / 60
-                }
-                ds_names[fi:(fi + 3)] = c("dur_day_total_IN_min",
-                                          "dur_day_total_LIG_min",
-                                          "dur_day_total_MOD_min",
-                                          "dur_day_total_VIG_min")
-                fi = fi + 4
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
@@ -655,8 +668,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
   }
   # before returning the levels, remove spt variables since they are not detected in part 2
   delete = grep("spt_", ds_names)
-  daysummary = daysummary[, -delete]
-  ds_names = ds_names[-delete]
+  if (length(delete) > 0) {
+    daysummary = daysummary[, -delete]
+    ds_names = ds_names[-delete]
+  }
   invisible(list(daysummary = daysummary, ds_names = ds_names,
                  windowsummary = windowsummary, ws_names = ws_names))
 }

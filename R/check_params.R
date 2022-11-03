@@ -233,6 +233,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
   }
+  if (isFALSE(params_general[["WornDuringSleep"]])) {
+    if (isFALSE(params_cleaning[["part2ImpWithZero"]])) {
+      params_cleaning[["part2ImpWithZero"]] = TRUE
+      warning("\nSetting argument part2ImpWithZero to TRUE to avoid a biased imputation beacuse the device was not worn during sleep.")
+    }
+    if (isFALSE(params_cleaning[["part2ExcludeNonwear"]])) {
+      params_cleaning[["part2ExcludeNonwear"]] = TRUE
+      warning("\nSetting argument part2ExcludeNonwear to TRUE to ignore nonwear periods in part 2 reports since the device was not worn during sleep.")
+    }
+  }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

@@ -223,6 +223,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
         always hold true and should be used with caution.
       }
+    \item{WornDuringSleep}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["WornDuringSleep"]]}).
+        Whether the sensor was worn during sleep hours. If it is FALSE, then the invalid time is imputed by 0 at the epoch level,
+        instead of the standard imputation carried out in GGIR (i.e., by means of the acceleration metric in the same time interval from
+        the rest days of the measurement)
+      }
     }
   }
 
@@ -687,14 +693,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         to contain two columns named windowstart and windowend, with the start- and end
         time of the time segment in POSIXlt class.}
         
-      \item{Invalid2Zero}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["Invalid2Zero"]])}).
+      \item{part2ImpWithZero}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["part2ImpWithZero"]])}).
         If TRUE, then the detected invalid time (either nonwear or clipping) will be
         set to 0 for all metrics, except for EN that will be set to 1. If FALSE, then the standard imputation
         in GGIR (average of the rest of the days for the same time interval) is performed.}
         
-      \item{exclude_nonwear}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["exclude_nonwear"]])}).
+      \item{part2ExcludeNonwear}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["part2ExcludeNonwear"]])}).
         If TRUE, then the detected invalid time (either nonwear or clipping) will be
         not be included in the reports from GGIR (for now it is only implemented in the part 2 reports).}
 
