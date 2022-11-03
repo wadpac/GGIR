@@ -14,7 +14,8 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
                           includedaycrit.part5=2/3,
                           minimum_MM_length.part5=23,
                           week_weekend_aggregate.part5=FALSE,
-                          LUX_day_segments=c())
+                          LUX_day_segments=c(), 
+                          excludefirstlast.part5=c())
 }
 \arguments{
   \item{metadatadir}{
@@ -58,6 +59,9 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
    \item{LUX_day_segments}{
    see \link{g.part5}
    }
+   \item{excludefirstlast.part5}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
+        If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in \link{g.part5}.}
 }
 \value{
 Function does not produce data, but only writes reports
