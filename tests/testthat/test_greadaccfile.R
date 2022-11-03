@@ -48,13 +48,13 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   
   cat("\nAxivity .wav")
   # axivity .wav
-  Iwav = expect_warning(g.inspectfile(wavfile, desiredtz = desiredtz))
+  Iwav = g.inspectfile(wavfile, desiredtz = desiredtz)
   expect_equal(Iwav$monc,4)
   expect_equal(Iwav$dformc,3)
   expect_equal(Iwav$sf,100)
   EHV = g.extractheadervars(Iwav)
-  expect_equal(EHV$deviceSerialNumber,"37727")
-  Mwav = expect_warning(g.getmeta(wavfile, desiredtz = desiredtz, windowsize = c(1,300,300)))
+  expect_equal(EHV$deviceSerialNumber,"not extracted")
+  Mwav = g.getmeta(wavfile, desiredtz = desiredtz, windowsize = c(1,300,300))
   expect_true(Mwav$filetooshort)
   expect_false(Mwav$filecorrupt)
   
@@ -74,7 +74,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat = 4, mon = 4, desiredtz = desiredtz)
   expect_equal(decn,".")
-  decn =  expect_warning(g.dotorcomma(wavfile, dformat = 3, mon = 4, desiredtz = desiredtz))
+  decn =  g.dotorcomma(wavfile, dformat = 3, mon = 4, desiredtz = desiredtz)
   expect_equal(decn,".")
   decn =  g.dotorcomma(GAfile, dformat = 1, mon = 2, desiredtz = desiredtz, loadGENEActiv = "GGIRread")
   expect_equal(decn,".")
@@ -88,10 +88,10 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   genea_read = g.readaccfile(binfile, blocksize = 10, blocknumber = 1, filequality = filequality,
                            decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, PreviousEndPage = 1,
                            inspectfileobject = Igenea)
-  wav_read = expect_warning(g.readaccfile(wavfile, blocksize = 2, blocknumber = 1, 
-                                          filequality = filequality, 
-                                          decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
-                                          PreviousEndPage = 1, inspectfileobject = Iwav))
+  wav_read = g.readaccfile(wavfile, blocksize = 2, blocknumber = 1, 
+                           filequality = filequality, 
+                           decn = ".", dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           PreviousEndPage = 1, inspectfileobject = Iwav)
   GA_read = g.readaccfile(GAfile, blocksize = 2, blocknumber = 1, filequality = filequality,
                                          decn = ".", dayborder = dayborder, ws = 3,
                                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA)
