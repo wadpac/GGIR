@@ -3,7 +3,12 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-4 (GitHub-only-release date:?-?-2022)}{
   \itemize{
+    \item Minor fix to g.getbout because it included one epoch beyond the period of interest in the identified bout.
     \item Part 2: Added functionality to impute invalid time segments by zero.
+    \item Part 2: Added functionality to exclude non-wear time from part 2 reports.
+    \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the devices are not worn during sleep (no need to define the SPT in parts 3 & 4).
+    \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow.
+    \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
