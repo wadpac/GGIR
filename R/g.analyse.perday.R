@@ -347,14 +347,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   ts = seq(ts0, ts1, by = ws3)
                   ts = ts[-length(ts)] #this timestamp is already in vari
                   vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
-                  
-                  # readjust anwi indices in case that varnum has been imputed
-                  if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
-                    anwi_t0 = anwi_t0 + abs(difference)
-                    anwi_t1 = anwi_t1 + abs(difference)
-                    # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
-                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
-                  }
+                  vari2 = rbind(vari2, vari)
                 } else {
                   varnum = c(varnum, rep(NA, abs(difference)))
                   # impute vari timestamp as well
@@ -368,6 +361,14 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   ts = seq(ts0, ts1, by = ws3)
                   ts = ts[-1] #this timestamp is already in vari
                   vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
+                  vari2 = rbind(vari, vari2)
+                }
+                # readjust anwi indices in case that varnum has been imputed
+                if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
+                  anwi_t0 = anwi_t0 + abs(difference)
+                  anwi_t1 = anwi_t1 + abs(difference)
+                  # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
+                  anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
                 }
               }
               if (anwi_index != 1) {
