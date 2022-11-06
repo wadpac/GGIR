@@ -5,7 +5,8 @@
   \itemize{
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
-  }
+    \item Part 2: seconds in activitylog timestamps are now handled by g.conv.actlog
+ }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
   \itemize{
