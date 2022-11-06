@@ -1,4 +1,4 @@
-g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
+g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", ws3 = 5) {
   # Function to read activity log and convert it into data.frame
   # that has for each ID and date a different qwindow vector
   # local functions:
@@ -6,7 +6,8 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
     x = unlist(x)
     c2t = function(x2) {
       tmp = as.numeric(unlist(strsplit(as.character(x2),":")))
-      hourinday = tmp[1] + (tmp[2]/60)
+      if (length(tmp) == 2) hourinday = tmp[1] + (tmp[2]/60)
+      if (length(tmp) == 3) hourinday = tmp[1] + (tmp[2]/60) + (tmp[3]/60/60)
       return(hourinday)
     }
     out = as.numeric(sapply(x,c2t))
@@ -105,6 +106,18 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y") {
           actlog_tmp = actlog[i,(datei[j]+1):(datei[j+1]-1)]
           actlog_tmp = actlog_tmp[which(is.na(actlog_tmp) == FALSE & actlog_tmp != "")]
           qwindow$qwindow_times[k] = list(actlog_tmp) # list of times for that day
+          # make sure that seconds are multiple of ws3
+          seconds = data.table::second(strptime(qwindow$qwindow_times[[k]], format = "%H:%M:%S"))
+          to_next_epoch = which(seconds %% ws3 != 0)
+          if (length(to_next_epoch) > 0) {
+            timechar = qwindow$qwindow_times[[k]][to_next_epoch]
+            time = strptime(timechar, format = "%H:%M:%S")
+            seconds2sum = ws3 - seconds[to_next_epoch] %% ws3
+            time = time + seconds2sum
+            timechar_new = as.character(time)
+            time_new = strsplit(timechar_new, " ", fixed = T)[[1]][2]
+            qwindow$qwindow_times[[k]][to_next_epoch] = time_new
+          }
           qwindow$qwindow_values[k] = list(time2numeric(qwindow$qwindow_times[k]))
           qwindow$qwindow_names[k] = list(extract_names(qwindow$qwindow_times[k]))
           unlisted_qv = unlist(qwindow$qwindow_values[k])

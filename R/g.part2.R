@@ -20,7 +20,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) {
-    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["qwindow_dateformat"]])
+    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["qwindow_dateformat"]], ws3 = params_general[["windowsizes"]][1])
     # This will be an object with numeric qwindow values for all individuals and days
   }
   #---------------------------------
