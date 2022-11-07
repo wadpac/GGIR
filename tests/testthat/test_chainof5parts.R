@@ -143,7 +143,7 @@ test_that("chainof5parts", {
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(1150))
   expect_equal(ncol(TSFILE), 11) # 11 columns now because of nap_nonwear classification
-  expect_equal(length(unique(TSFILE$class_id)), 11)
+  expect_equal(length(unique(TSFILE$class_id)), 10)
  #--------------------------------------------
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
