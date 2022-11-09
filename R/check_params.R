@@ -242,8 +242,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         stop("\nThe argument expand_tail_max_hours has been replaced for recordingEndSleepHour. Please, see the documentation and replace this argument in your function call.")    
       } 
     } else {
+      # If both are defined, this is probably because expand_tail_max_hours is 
+      # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
-      stop("\nBoth expand_tail_max_hours and recordingEndSleepHour are defined. This is not possible. recordingEndSleepHour replaces expand_tail_max_hours, please, see the documentation.")
+      warning("\nBoth expand_tail_max_hours and recordingEndSleepHour are defined. GGIR will only use recordingEndSleepHour.")
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {

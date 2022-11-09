@@ -23,7 +23,7 @@ test_that("recordingEndSleepHour works as expected", {
             overwrite = TRUE, 
             expand_tail_max_hours = 5)
   )
-  expect_error( # error from using both expand_tail_max_hour and recordingEndSleepHour
+  expect_warning( # warning from using both expand_tail_max_hour and recordingEndSleepHour
     g.part1(datadir = fn, outputdir = getwd(), 
             overwrite = TRUE, 
             expand_tail_max_hours = 5, recordingEndSleepHour = 8)
