@@ -53,7 +53,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(Iwav$dformc,3)
   expect_equal(Iwav$sf,100)
   EHV = g.extractheadervars(Iwav)
-  expect_equal(EHV$deviceSerialNumber,"not extracted")
+  expect_equal(EHV$deviceSerialNumber,"37727")
   Mwav = g.getmeta(wavfile, desiredtz = desiredtz, windowsize = c(1,300,300))
   expect_true(Mwav$filetooshort)
   expect_false(Mwav$filecorrupt)
