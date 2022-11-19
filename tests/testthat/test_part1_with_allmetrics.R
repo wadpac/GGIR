@@ -12,21 +12,19 @@ test_that("Part 1 can run with all metrics", {
   desiredtz = "Europe/London"
   dn = "output_test"
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
-  expect_warning( # warning from recordingEndSleepHour being too early
-    g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1, overwrite = TRUE, desiredtz = desiredtz,
-            studyname = "test", do.cal = FALSE, do.anglex = TRUE,
-            # We are not doing all the metrics, because Travis-CI cannot allocate enough memory
-            do.enmo = TRUE,do.lfenmo = TRUE,
-            do.bfen = TRUE, do.hfenplus = TRUE,
-            do.mad = TRUE, do.zcx = TRUE, #do.brondcounts = TRUE,
-            windowsizes = c(15,3600,3600), do.parallel = FALSE,
-            minimumFileSizeMB = 0, recordingEndSleepHour = 8)
-  )
+  g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1, overwrite = TRUE, desiredtz = desiredtz,
+          studyname = "test", do.cal = FALSE, do.anglex = TRUE,
+          # We are not doing all the metrics, because Travis-CI cannot allocate enough memory
+          do.enmo = TRUE,do.lfenmo = TRUE,
+          do.bfen = TRUE, do.hfenplus = TRUE,
+          do.mad = TRUE, do.zcx = TRUE, #do.brondcounts = TRUE,
+          windowsizes = c(15,3600,3600), do.parallel = FALSE,
+          minimumFileSizeMB = 0)
   
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 9)
-  expect_true(nrow(M$metashort) > 11280)
+  expect_true(nrow(M$metashort) == 11280)
   expect_equal(mean(M$metashort$BFEN),  0.0458, tolerance = 4)
   expect_equal(mean(M$metashort$LFENMO),  0.0447, tolerance = 4)
   expect_equal(mean(M$metashort$HFENplus),  0.0914, tolerance = 4)
