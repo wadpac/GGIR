@@ -7,6 +7,8 @@
     \item Part 2: Added functionality to impute invalid time segments by zero.
     \item Part 2: Added functionality to exclude non-wear time from part 2 reports.
     \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the devices are not worn during sleep (no need to define the SPT in parts 3 & 4).
+    \item Revised bout detection in bout.metric = 6
+    \item Improved test for g.getbout when bout.metric = 6
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow.
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5.
   }
