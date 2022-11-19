@@ -7,39 +7,39 @@ test_that("recordingEndSleepHour works as expected", {
   fn = "123A_testaccfile.csv"
   
   # this should NOT trigger data expansion
-  g.part1(datadir = fn, outputdir = getwd(), 
-          f0 = 1, f1 = 1, studyname = "test",
-          overwrite = TRUE, 
-          recordingEndSleepHour = 21)
+  GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
+       studyname = "test", overwrite = TRUE, 
+       recordingEndSleepHour = 21,
+       visualreport = FALSE, do.report = c())
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   nrow(M$metashort)
-  expect_true(nrow(M$metashort) == 43020)
+  expect_true(nrow(M$metashort) == 43020 )
   
   # errors and warnings work properly
   expect_error( # error from using expand_tail_max_hour instead of new argument
-    g.part1(datadir = fn, outputdir = getwd(), 
-            f0 = 1, f1 = 1, studyname = "test",
-            overwrite = TRUE, 
-            expand_tail_max_hours = 5)
+    GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
+         studyname = "test", overwrite = TRUE, 
+         expand_tail_max_hours = 5, recordingEndSleepHour = NULL,
+         visualreport = FALSE, do.report = c())
   )
   expect_warning( # warning from using both expand_tail_max_hour and recordingEndSleepHour
-    g.part1(datadir = fn, outputdir = getwd(), 
-            overwrite = TRUE, 
-            expand_tail_max_hours = 5, recordingEndSleepHour = 8)
+    GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
+         studyname = "test", overwrite = TRUE, 
+         expand_tail_max_hours = 5, recordingEndSleepHour = 8,
+         visualreport = FALSE, do.report = c())
   )
   
   expect_warning( # warning from recordingEndSleepHour being too early
     # this should trigger data expansion
-    GGIR(datadir = fn, outputdir = getwd(), 
-       f0 = 1, f1 = 1, studyname = "test",
-       overwrite = TRUE, 
-       recordingEndSleepHour = 6,
-       minimum_MM_length.part5 = 15)
+    GGIR(datadir = fn, outputdir = getwd(),
+         studyname = "test", overwrite = TRUE, 
+         recordingEndSleepHour = 6,
+         minimum_MM_length.part5 = 15)
   )
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
-  expect_true(nrow(M$metashort) > 43020) # metashort is expanded
+  expect_true(nrow(M$metashort) > 43020 ) # metashort is expanded
   
   # expanded time is not reports
   p2 = read.csv("output_test/results/part2_daysummary.csv")
