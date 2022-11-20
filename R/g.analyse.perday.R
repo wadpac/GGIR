@@ -472,7 +472,14 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
                 if (doquan == TRUE) {
                   q46 = c()
-                  q46 = quantile(varnum, probs = params_247[["qlevels"]], na.rm = T, type = quantiletype) * UnitReScale
+                  if (isFALSE(params_general[["WornDuringSleep"]])) {
+                    # if not worn during sleep, NAs to 0 to keep consistency 
+                    # in the window length for percentiles
+                    varnum_NA2zero = replace(varnum, which(is.na(varnum)), 0)
+                    q46 = quantile(varnum_NA2zero, probs = params_247[["qlevels"]], na.rm = T, type = quantiletype) * UnitReScale
+                  } else {
+                    q46 = quantile(varnum, probs = params_247[["qlevels"]], na.rm = T, type = quantiletype) * UnitReScale
+                  }
                   keepindex_46[mi - 1,] = c(fi,(fi + (length(params_247[["qlevels"]]) - 1)))
                   namesq46 = rep(0,length(rownames(as.matrix(q46))))
                   for (rq46i in 1:length(rownames(as.matrix(q46)))) {
