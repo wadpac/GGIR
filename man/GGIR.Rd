@@ -214,18 +214,22 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
         Using argument \code{recordingEndSleepHour} implies the assumption that the
         participant fell asleep at or before the end of the recording if the recording
-        ended less than \code{recordingEndSleepHour} before midnight. This assumption may not
+        ended at or after \code{recordingEndSleepHour} hour of the last day. This assumption may not
         always hold true and should be used with caution. 
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
         the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}.
         To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in
-        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, and \link{g.part4} to \link{g.part5}.
-        In \link{g.part5} it is then included as an additional variable in the csv-reports.
-        In the \link{g.part4} report the last nigth is omitted, because we know that sleep
-        estimates from the last night will not be trustworthy. Similarly, the synthetic data are ignored
-        in the the rest of reports and visualizations to avoid biased output. 
+        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, 
+        and \link{g.part4} to \link{g.part5}. In \link{g.part5} the tail expansion 
+        size is included as an additional variable in the csv-reports.
+        In the \link{g.part4} csv-report the last nigth is omitted, because we know
+        that sleep estimates from the last night will not be trustworthy. Similarly, 
+        in the \link{g.part5} output columns related to the sleep assessment will 
+        be omitted for the last window to avoid biassing the averages Further, 
+        the synthetic data are also ignored in the visualizations and time series 
+        output to avoid biased output.
       }
     }
   }
