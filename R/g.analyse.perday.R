@@ -611,47 +611,57 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                   ACC = varnum * UnitReScale,
                                   diur = 0, # consider all recorded time as awake (except nonwear)
                                   sibdetection = 0)
-                  TRLi = params_phyact[["threshold.lig"]]
-                  TRMi = params_phyact[["threshold.mod"]]
-                  TRVi = params_phyact[["threshold.vig"]]
-                  params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
-                  params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
-                  params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
-                  
-                  levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
-                                           ws3 = ws3, params_phyact = params_phyact)
-                  LEVELS = levels$LEVELS
-                  OLEVELS = levels$OLEVELS
-                  Lnames = levels$Lnames
-                  bc.mvpa = levels$bc.mvpa
-                  bc.lig = levels$bc.lig
-                  bc.in = levels$bc.in
-                  ts = levels$ts
-                  
-                  # match LEVELS to nonwear
-                  # set_to_zero = which(LEVELS > 0 & is.na(ts$ACC)) # expected to be 1, last epoch detected in levels > 0
-                  # if (length(set_to_zero) > 0) LEVELS[set_to_zero] = 0
-                  # set_to_zero = which(OLEVELS > 0 & is.na(ts$ACC)) 
-                  # if (length(set_to_zero) > 0) OLEVELS[set_to_zero] = 0
-                  
-                  # remove nonwear from LEVELS
-                  spt_levels = max(grep("^spt", Lnames)) - 1 # minus 1 bc first LEVEL is 0
-                  LEVELS = LEVELS[which(LEVELS > spt_levels)] # remove nonwear from levels
-                  OLEVELS = OLEVELS[which(OLEVELS > 0)] # remove nonwear from levels
-                  
-                  # add levels to daysummary
-                  for (levelsc in 0:(length(Lnames) - 1)) { 
-                    daysummary[di,fi] = (length(which(LEVELS == levelsc)) * ws3) / 60
-                    ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
+                  for (TRLi in params_phyact[["threshold.lig"]]) {
+                    for (TRMi in params_phyact[["threshold.mod"]]) {
+                      for (TRVi in params_phyact[["threshold.vig"]]) {
+                        TRnames = paste0("_L", TRLi, "_M", TRMi, "_V", TRVi)
+                        params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
+                        params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
+                        params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
+                        
+                        levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
+                                                 ws3 = ws3, params_phyact = params_phyact)
+                        LEVELS = levels$LEVELS
+                        OLEVELS = levels$OLEVELS
+                        Lnames = levels$Lnames
+                        bc.mvpa = levels$bc.mvpa
+                        bc.lig = levels$bc.lig
+                        bc.in = levels$bc.in
+                        ts = levels$ts
+                        
+                        # match LEVELS to nonwear
+                        # set_to_zero = which(LEVELS > 0 & is.na(ts$ACC)) # expected to be 1, last epoch detected in levels > 0
+                        # if (length(set_to_zero) > 0) LEVELS[set_to_zero] = 0
+                        # set_to_zero = which(OLEVELS > 0 & is.na(ts$ACC)) 
+                        # if (length(set_to_zero) > 0) OLEVELS[set_to_zero] = 0
+                        
+                        # remove nonwear from LEVELS
+                        spt_levels = max(grep("^spt", Lnames)) - 1 # minus 1 bc first LEVEL is 0
+                        LEVELS = LEVELS[which(LEVELS > spt_levels)] # remove nonwear from levels
+                        OLEVELS = OLEVELS[which(OLEVELS > 0)] # remove nonwear from levels
+                        
+                        # add levels to daysummary
+                        for (levelsc in 0:(length(Lnames) - 1)) { 
+                          daysummary[di,fi] = (length(which(LEVELS == levelsc)) * ws3) / 60
+                          ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min_", colnames(metashort)[mi], 
+                                                TRnames, anwi_nameindices[anwi_index])
+                          fi = fi + 1
+                        }
+                        for (g in 1:4) {
+                          daysummary[di, (fi + (g - 1))] = (length(which(OLEVELS == g)) * ws3) / 60
+                        }
+                        ds_names[fi:(fi + 3)] = c(paste0("dur_day_total_IN_min_", colnames(metashort)[mi], 
+                                                         TRnames, anwi_nameindices[anwi_index]),
+                                                  paste0("dur_day_total_LIG_min_", colnames(metashort)[mi], 
+                                                         TRnames, anwi_nameindices[anwi_index]),
+                                                  paste0("dur_day_total_MOD_min_", colnames(metashort)[mi], 
+                                                         TRnames, anwi_nameindices[anwi_index]),
+                                                  paste0("dur_day_total_VIG_min_", colnames(metashort)[mi], 
+                                                         TRnames, anwi_nameindices[anwi_index]))
+                        fi = fi + 4
+                      }
+                    }
                   }
-                  for (g in 1:4) {
-                    daysummary[di, (fi + (g - 1))] = (length(which(OLEVELS == g)) * ws3) / 60
-                  }
-                  ds_names[fi:(fi + 3)] = c("dur_day_total_IN_min",
-                                            "dur_day_total_LIG_min",
-                                            "dur_day_total_MOD_min",
-                                            "dur_day_total_VIG_min")
-                  fi = fi + 4
                 }
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
