@@ -335,7 +335,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (di == 1) {
                   # varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
                   varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h 
-                  
                   # impute vari timestamp as well
                   vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
                   colnames(vari2) = colnames(vari)
@@ -377,6 +376,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     anwindices = anwindices[which(anwindices <= length(varnum))]
                   }
                   varnum = as.numeric(varnum[anwindices]) #cut short varnum to match day segment of interest
+                  vari2 = vari2[anwindices,] #cut short vari2 (used in identify_levels) to match day segment of interest
                 } else {
                   varnum = c()
                 }

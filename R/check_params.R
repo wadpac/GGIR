@@ -98,7 +98,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit", "max_calendar_days")
-    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
+    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4",
+                       "part2ExcludeNonwear", "part2ImpWithZero")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")
@@ -116,7 +117,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder", "expand_tail_max_hours")
-    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
+    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds", "WornDuringSleep")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
