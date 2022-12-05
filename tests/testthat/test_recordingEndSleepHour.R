@@ -15,6 +15,7 @@ test_that("recordingEndSleepHour works as expected", {
   load(rn[1])
   nrow(M$metashort)
   expect_true(nrow(M$metashort) == 43020 )
+  expect_true(M$metashort$timestamp[nrow(M$metashort)] == "2016-06-25T20:44:55+0200")
   
   # errors and warnings work properly
   expect_error( # error from using expand_tail_max_hour instead of new argument
@@ -26,17 +27,24 @@ test_that("recordingEndSleepHour works as expected", {
   expect_warning( # warning from using both expand_tail_max_hour and recordingEndSleepHour
     GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
          studyname = "test", overwrite = TRUE, 
-         expand_tail_max_hours = 5, recordingEndSleepHour = 8,
+         expand_tail_max_hours = 5, recordingEndSleepHour = 20,
          visualreport = FALSE, do.report = c())
   )
   
-  expect_warning( # warning from recordingEndSleepHour being too early
-    # this should trigger data expansion
+  expect_error( # error from recordingEndSleepHour being too early,
+    # this should not produce any output
     GGIR(datadir = fn, outputdir = getwd(),
          studyname = "test", overwrite = TRUE, 
          recordingEndSleepHour = 6,
          minimum_MM_length.part5 = 15)
   )
+  
+  
+  # No warning, this should work
+  GGIR(datadir = fn, outputdir = getwd(),
+         studyname = "test", overwrite = TRUE, 
+         recordingEndSleepHour = 20,
+         minimum_MM_length.part5 = 15)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_true(nrow(M$metashort) > 43020 ) # metashort is expanded
@@ -53,6 +61,7 @@ test_that("recordingEndSleepHour works as expected", {
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv") 
   expect_equal(nrow(p5), 3) # expanded day appears in MM report
   expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
+  
   
   if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
   if (file.exists(fn)) file.remove(fn)
