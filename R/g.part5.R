@@ -173,6 +173,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
+        # remove expanded time so that it is not used for behavioral classification 
+        if (length(tail_expansion_log) != 0) {
+          expanded_short = which(IMP$r5long == -1)
+          expanded_long = which(IMP$rout$r5 == -1)
+          IMP$metashort = IMP$metashort[-expanded_short,]
+          IMP$rout = IMP$rout[-expanded_long,]
+          M$metashort = M$metashort[-expanded_short,]
+          M$metalong = M$metalong[-expanded_long,]
+        }
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
         # note that this is imputed ACCELERATION because we use this for describing behaviour:
         scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
@@ -241,6 +250,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         if (length(pko) > 0) {
           summarysleep_tmp = summarysleep_tmp[-pko,]
         }
+        # if expanded time with expand_tail_max_hours, then latest wakeup might not be in data
+        # reset latest wakeup to latest observed timestamp
+        if (length(tail_expansion_log) != 0) {
+          last_night = S[which(S$night == max(S$night)),]
+          last_wakeup = last_night$sib.end.time[which(last_night$sib.period == max(last_night$sib.period))]
+          if (!(last_wakeup %in% ts$time)) {
+            replaceLastWakeup = which(S$sib.end.time == last_wakeup)
+            S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
+          } 
+        }
+        
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
@@ -262,6 +282,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
             nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
+          # include last window if has been expanded and not present in ts
+          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) 
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
           S2 = S[S$definition == j,] # simplify to one definition
@@ -308,6 +330,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               } else {
                 nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
               }
+              if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
               Nts = nrow(ts)
             }
             # if ("angle" %in% colnames(ts)) {
