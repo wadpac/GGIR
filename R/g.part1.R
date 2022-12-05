@@ -339,9 +339,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         cat("\n")
         last_ts[1] = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
         last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
-        cat(last_ts[1] )
+        cat(format(last_ts[1]))
         cat("\n")
-        cat(last_ts[2] )
+        cat(format(last_ts[2]))
         cat("\n")
         
         refhour = 24 + params_general[["dayborder"]]
@@ -351,9 +351,12 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                as.numeric(format(last_ts[wsi], "%M")) * 60  +
                as.numeric(format(last_ts[wsi], "%S")))
         }
+        cat(paste0("\n", secs_to_midnight))
         # only expand if recording ends at 19PM or later
         max_expand_time = (refhour - (params_general[["recordingEndSleepHour"]] - params_general[["dayborder"]])) * 3600
+        cat(paste0("\n", max_expand_time))
         if (secs_to_midnight[1] <= max_expand_time) {
+          cat("\nCondition met, now expanding time series...\n")
           # If yes, expand data
           secs_to_midnight = secs_to_midnight + (8 * 3600) # also add 8 hour till the morning
           N_long_epochs_expand = ceiling(secs_to_midnight[1] / ws2) + 1
