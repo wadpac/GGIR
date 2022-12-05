@@ -48,13 +48,6 @@ test_that("recordingEndSleepHour works as expected", {
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
   expect_true(nrow(M$metashort) > 43020) # metashort is expanded
-  cat("\n")
-  cat(head(M$metashort$timestamp, n = 3))
-  cat("\n")
-  cat(tail(M$metashort$timestamp, n = 3))
-  cat("\n")
-  cat(length(M$metashort$timestamp))
-  cat("\n")
   
   # expanded time is not reports
   p2 = read.csv("output_test/results/part2_daysummary.csv")
