@@ -31,8 +31,8 @@ test_that("recordingEndSleepHour works as expected", {
          visualreport = FALSE, do.report = c())
   )
   
-  expect_error( # warning from recordingEndSleepHour being too early
-    # this should trigger data expansion
+  expect_error( # error from recordingEndSleepHour being too early,
+    # this should not produce any output
     GGIR(datadir = fn, outputdir = getwd(),
          studyname = "test", overwrite = TRUE, 
          recordingEndSleepHour = 6,
