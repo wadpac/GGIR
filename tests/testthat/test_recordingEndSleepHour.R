@@ -5,11 +5,11 @@ test_that("recordingEndSleepHour works as expected", {
   #=======================
   create_test_acc_csv(Nmin = 2.5 * 1440) # ends at 20:45
   fn = "123A_testaccfile.csv"
-  tz = "Europe/Amsterdam"
+  # tz = "Europe/Amsterdam"
   # this should NOT trigger data expansion
   GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
        studyname = "test", overwrite = TRUE, 
-       recordingEndSleepHour = 21, desiredtz = tz,
+       recordingEndSleepHour = 21, #desiredtz = tz,
        visualreport = FALSE, do.report = c())
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
@@ -20,13 +20,13 @@ test_that("recordingEndSleepHour works as expected", {
   # errors and warnings work properly
   expect_error( # error from using expand_tail_max_hour instead of new argument
     GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
-         studyname = "test", overwrite = TRUE,  desiredtz = tz,
+         studyname = "test", overwrite = TRUE,  #desiredtz = tz,
          expand_tail_max_hours = 5, recordingEndSleepHour = NULL,
          visualreport = FALSE, do.report = c())
   )
   expect_warning( # warning from using both expand_tail_max_hour and recordingEndSleepHour
     GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
-         studyname = "test", overwrite = TRUE, desiredtz = tz,
+         studyname = "test", overwrite = TRUE, #desiredtz = tz,
          expand_tail_max_hours = 5, recordingEndSleepHour = 20,
          visualreport = FALSE, do.report = c())
   )
@@ -34,7 +34,7 @@ test_that("recordingEndSleepHour works as expected", {
   expect_error( # error from recordingEndSleepHour being too early,
     # this should not produce any output
     GGIR(datadir = fn, outputdir = getwd(),
-         studyname = "test", overwrite = TRUE, desiredtz = tz,
+         studyname = "test", overwrite = TRUE, #desiredtz = tz,
          recordingEndSleepHour = 6,
          minimum_MM_length.part5 = 15)
   )
@@ -42,7 +42,7 @@ test_that("recordingEndSleepHour works as expected", {
   
   # No warning, this should work
   GGIR(datadir = fn, outputdir = getwd(),
-         studyname = "test", overwrite = TRUE, desiredtz = tz,
+         studyname = "test", overwrite = TRUE, #desiredtz = tz,
          recordingEndSleepHour = 20,
          minimum_MM_length.part5 = 15)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
