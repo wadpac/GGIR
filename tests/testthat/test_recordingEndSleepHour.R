@@ -45,9 +45,9 @@ test_that("recordingEndSleepHour works as expected", {
          studyname = "test", overwrite = TRUE, desiredtz = tz,
          recordingEndSleepHour = 20,
          minimum_MM_length.part5 = 6)
-  rn = dir("output_test/meta/basic/",full.names = TRUE)
+  rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
-  expect_true(nrow(M$metashort) > 43020 ) # metashort is expanded
+  expect_true(nrow(M$metashort) > 43020) # metashort is expanded
   cat("\n")
   cat(head(M$metashort$timestamp, n = 3))
   cat("\n")

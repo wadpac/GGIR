@@ -332,8 +332,17 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         # Check whether gap is less then criteria
         last_ts = c(Sys.time(), Sys.time())
         secs_to_midnight = c(0, 0)
+        cat("\ngpart1 test\n")
+        cat(tail(M$metalong$timestamp, n = 1))
+        cat("\n")
+        
         last_ts[1] = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
         last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
+        cat(last_ts[1] )
+        cat("\n")
+        cat(last_ts[2] )
+        cat("\n")
+        
         refhour = 24 + params_general[["dayborder"]]
         for (wsi in 1:2) {
           secs_to_midnight[wsi] = (refhour * 3600) -
