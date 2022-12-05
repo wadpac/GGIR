@@ -144,6 +144,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   }
   fnames = sort(fnames)
   fnamesfull = sort(fnamesfull)
+  
+
   #=========================================================
   # Declare core functionality, which at the end of this g.part1 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -332,7 +334,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         secs_to_midnight = c(0, 0)
         last_ts[1] = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
         last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
-        refhour = (24 + 8 + params_general[["dayborder"]])
+        refhour = 24 + params_general[["dayborder"]]
         for (wsi in 1:2) {
           secs_to_midnight[wsi] = (refhour * 3600) -
             (as.numeric(format(last_ts[wsi], "%H")) * 3600 +
@@ -343,6 +345,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         max_expand_time = (refhour - (params_general[["recordingEndSleepHour"]] - params_general[["dayborder"]])) * 3600
         if (secs_to_midnight[1] <= max_expand_time) {
           # If yes, expand data
+          secs_to_midnight = secs_to_midnight + (8 * 3600) # also add 8 hour till the morning
           N_long_epochs_expand = ceiling(secs_to_midnight[1] / ws2) + 1
           N_short_epochs_expand = ceiling(secs_to_midnight[2] / ws3) + 1
           if (N_short_epochs_expand / (ws2 / ws3) < N_long_epochs_expand) {
@@ -362,7 +365,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           M$metashort$timestamp[expand_indices] = POSIXtime2iso8601(expand_tsPOSIX, tz = params_general[["desiredtz"]])
           anglecol = grep(pattern = "angle", x = names(metashort_expand), value = FALSE)
           if (length(anglecol) > 0) {
-            M$metashort[expand_indices,anglecol] = round(sin((1:length(expand_indices)) / (900/ws3))) * 15
+            M$metashort[expand_indices,anglecol] = round(sin((1:length(expand_indices)) / (ws2/ws3))) * 15
           }
           tail_expansion_log = list(short = length(expand_indices))
           # Expand metalong
