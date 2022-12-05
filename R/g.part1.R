@@ -335,7 +335,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         cat("\ngpart1 test\n")
         cat(tail(M$metalong$timestamp, n = 1))
         cat("\n")
-        
+        cat(params_general[["desiredtz"]])
+        cat("\n")
         last_ts[1] = iso8601chartime2POSIX(tail(M$metalong$timestamp, n = 1), tz = params_general[["desiredtz"]])
         last_ts[2] = iso8601chartime2POSIX(tail(M$metashort$timestamp, n = 1), tz = params_general[["desiredtz"]])
         cat(last_ts[1] )
