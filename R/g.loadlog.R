@@ -1,5 +1,6 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
-                     sleeplogidnum=TRUE,  sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
+                     # sleeplogidnum=TRUE,  
+                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
   dateformat_correct = "%Y-%m-%d" # set default value
   deltadate = 0
@@ -20,9 +21,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
-      if (sleeplogidnum == TRUE) {
-        startdates$ID = as.numeric(startdates$ID)
-      }
+      # if (sleeplogidnum == TRUE) {
+      #   startdates$ID = as.numeric(startdates$ID)
+      # }
     } else {
       warning("\nArgument meta.sleep.folder has not been specified")
     }
@@ -152,7 +153,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         warning(paste0("\nNone of the IDs in the accelerometer data could be matched with",
                        " the ID numbers in the sleeplog. You may want to check that the ID",
                        " format in your sleeplog is consistent with the ID column in the GGIR part2 csv-report,", 
-                       " and that arguments coldid and sleeplogidnum are correctly set."), call. = FALSE)
+                       " and that argument coldid is correctly set."), call. = FALSE)
       }
       # remove empty rows and columns:
       remove_empty_rows_cols = function(logmatrix, name) {
@@ -196,9 +197,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         S = as.data.frame(newsleeplog)
         coln1 = 2
         colid = 1
-        if (sleeplogidnum == TRUE) {
-          S[,1] = as.numeric(as.character(S[,1]))
-        }
+        # if (sleeplogidnum == TRUE) {
+        #   S[,1] = as.numeric(as.character(S[,1]))
+        # }
       }
     }
   }
@@ -234,11 +235,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         dur = 0
         is.na(dur) =  TRUE
       }
-      if (sleeplogidnum == TRUE) {
-        sleeplog[cnt,1] = round(S[j,colid])
-      } else {
-        sleeplog[cnt,1] = as.character(S[j,colid])
-      }
+      # if (sleeplogidnum == TRUE) {
+      #   sleeplog[cnt,1] = round(S[j,colid])
+      # } else {
+      #   sleeplog[cnt,1] = as.character(S[j,colid])
+      # }
+      sleeplog[cnt,1] = as.character(S[j,colid])
       sleeplog[cnt,2] = i #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
       sleeplog[cnt,3] = dur
       sleeplog_times[cnt,1] = SL[j]
