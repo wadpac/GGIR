@@ -3,14 +3,14 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
   # check that myfun is a list:
   if (is.list(myfun) == F) {
     status = 1
-    stop("Object myfun is not a list.", call. = FALSE) 
+    stop("Object myfun is not a list.", call. = FALSE)
   }
   # check that there are no foreign object:
-  foreignElements = which(names(myfun) %in% c("FUN", "parameters", "expected_sample_rate", 
-                                              "expected_unit", "colnames", 
-                                              "minlength", "outputres", 
+  foreignElements = which(names(myfun) %in% c("FUN", "parameters", "expected_sample_rate",
+                                              "expected_unit", "colnames",
+                                              "minlength", "outputres",
                                               "outputtype", "aggfunction",
-                                              "timestamp","reporttype", 
+                                              "timestamp","reporttype",
                                               "clevels", "ilevels", "qlevels",
                                               "ebout.dur", "ebout.th.cad", "ebout.th.acc",
                                               "ebout.criter", "ebout.condition") == FALSE)
@@ -19,8 +19,8 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
     stop("Object myfun has unexpected elements.", call. = FALSE)
   }
   # check that essential objects are included:
-  expectedElements = c("FUN", "parameters", "expected_sample_rate", "expected_unit", 
-                       "colnames", "minlength", "outputres") 
+  expectedElements = c("FUN", "parameters", "expected_sample_rate", "expected_unit",
+                       "colnames", "minlength", "outputres")
   missingElements = which(expectedElements %in% names(myfun) == FALSE)
   if (length(missingElements) != 0) {
     status = 1
@@ -88,14 +88,14 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
   if ("outputtype" %in% names(myfun)) { # If outputtype is available:
     if (is.character(myfun$outputtype) == F) {
       status = 1
-      stop(paste0("Element outputtype is expexted to be a character",
-                  " specifying the ouput type"), call. = FALSE)
+      stop(paste0("Error in check_myfun.R: Element outputtype is expexted to be a",
+                  " character specifying the ouput type"), call. = FALSE)
     }
   }
   if ("aggfunction" %in% names(myfun)) { # If aggfunction is available:
     if (is.function(myfun$aggfunction) == F) {
       status = 1
-      stop("Element aggfunction is not a function object.", call. = FALSE)
+      stop("Error in check_myfun.R: Element aggfunction is not a function object.", call. = FALSE)
     }
   }
 

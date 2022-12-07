@@ -543,29 +543,23 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       rr1 = matrix(0, length(varnum), 1)
                       p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = params_phyact[["boutcriter"]],
-                                             closedbout = params_phyact[["closedbout"]],
-                                             bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-                      mvpa[4] = length(which(getboutout$x == 1)) / (60/ws3) #time spent MVPA in minutes
+                                             boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
+                      mvpa[4] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
                       
                       # METHOD 5: time spent above threshold 5 minutes
                       boutduration = params_phyact[["mvpadur"]][2] * (60/ws3) #per five minutes
                       rr1 = matrix(0, length(varnum), 1)
                       p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = params_phyact[["boutcriter"]],
-                                             closedbout = params_phyact[["closedbout"]],
-                                             bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-                      mvpa[5] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
+                                             boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
+                      mvpa[5] = length(which(getboutout == 1))   / (60/ws3) #time spent MVPA in minutes
                       # METHOD 6: time spent above threshold 10 minutes
                       boutduration = params_phyact[["mvpadur"]][3] * (60/ws3) # per ten minutes
                       rr1 = matrix(0,length(varnum),1)
                       p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = params_phyact[["boutcriter"]],
-                                             closedbout = params_phyact[["closedbout"]],
-                                             bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-                      mvpa[6] = length(which(getboutout$x == 1)) / (60/ws3) #time spent MVPA in minutes
+                                             boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
+                      mvpa[6] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
                     }
                     if (length(which(is.nan(mvpa) == TRUE)) > 0) mvpa[which(is.nan(mvpa) == TRUE)] = 0
                     mvpanames[,mvpai] = c( paste0("MVPA_E", ws3, "S_T", params_phyact[["mvpathreshold"]][mvpai]),

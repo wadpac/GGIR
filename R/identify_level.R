@@ -50,11 +50,11 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
   for (BL in 1:NBL) { # needs to be flexible to varibale number of bout lengths
     rr1 = rep(0, LN)
     p = which(ts$ACC >= TRMi & refe == 0 & ts$diur == 0); rr1[p] = 1
-    out1 = g.getbout(x = rr1, boutduration = boutduration[BL], boutcriter = params_phyact[["boutcriter.mvpa"]],
-                     closedbout = FALSE, bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-    LEVELS[ts$diur == 0 & out1$x == 1] = CL
-    bc.mvpa = rbind(bc.mvpa,out1$boutcount)
-    refe = refe + out1$x
+    out1 = g.getbout(x = rr1, boutduration = boutduration[BL],
+                     boutcriter = params_phyact[["boutcriter.mvpa"]], ws3 = ws3)
+    LEVELS[ts$diur == 0 & out1 == 1] = CL
+    bc.mvpa = rbind(bc.mvpa,out1)
+    refe = refe + out1
     if (BL == 1) {
       Lnames = c(Lnames,paste0("day_MVPA_bts_", params_phyact[["boutdur.mvpa"]][BL]))
     } else {
@@ -72,11 +72,11 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
   for (BL in 1:NBL) {
     rr1 = rep(0, LN)
     p = which(ts$ACC < TRLi & refe == 0 & ts$diur == 0); rr1[p] = 1
-    out1 = g.getbout(x = rr1, boutduration = boutduration[BL], boutcriter = params_phyact[["boutcriter.in"]],
-                     closedbout = FALSE, bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-    LEVELS[ts$diur == 0 & out1$x == 1] = CL
-    bc.in = rbind(bc.in, out1$boutcount)
-    refe = refe + out1$x
+    out1 = g.getbout(x = rr1, boutduration = boutduration[BL],
+                     boutcriter = params_phyact[["boutcriter.in"]], ws3 = ws3)
+    LEVELS[ts$diur == 0 & out1 == 1] = CL
+    bc.in = rbind(bc.in, out1)
+    refe = refe + out1
     if (BL == 1) {
       Lnames = c(Lnames,paste0("day_IN_bts_", params_phyact[["boutdur.in"]][BL]))
     } else {
@@ -94,11 +94,11 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
   for (BL in 1:NBL) {
     rr1 = rep(0, LN)
     p = which(ts$ACC >= TRLi & refe == 0 & ts$ACC < TRMi & ts$diur == 0); rr1[p] = 1
-    out1 = g.getbout(x = rr1, boutduration = boutduration[BL], boutcriter = params_phyact[["boutcriter.lig"]],
-                     closedbout = FALSE, bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)                    
-    LEVELS[ts$diur == 0 & out1$x == 1] = CL
-    bc.lig = rbind(bc.lig,out1$boutcount)
-    refe = refe + out1$x
+    out1 = g.getbout(x = rr1, boutduration = boutduration[BL],
+                     boutcriter = params_phyact[["boutcriter.lig"]], ws3 = ws3)                    
+    LEVELS[ts$diur == 0 & out1 == 1] = CL
+    bc.lig = rbind(bc.lig,out1)
+    refe = refe + out1
     if (BL == 1) {
       Lnames = c(Lnames,paste0("day_LIG_bts_",params_phyact[["boutdur.lig"]][BL]))
     } else {
