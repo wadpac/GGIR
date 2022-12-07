@@ -4,8 +4,8 @@ test_that("Detect bouts in events", {
   skip_on_cran()
   
   # create dummy test data
-  metashort = data.frame(ENMO = c(rep(0, 24), rep(0.12, 36), rep(0, 24)),
-                         step_count = c(rep(0, 24), rep(5, 36), rep(0, 24)))
+  metashort = data.frame(ENMO = c(rep(0, 24), rep(0.12, 42), rep(0, 24)),
+                         step_count = c(rep(0, 24), rep(5, 42), rep(0, 24)))
   cn_metashort = colnames(metashort)
   anwindices = 1:84
   anwi_index = 1
@@ -38,11 +38,7 @@ test_that("Detect bouts in events", {
                                 boutnameEnding = "_anyRandomText")
   
   
-  expect_equal(eventBouts$daysummary[1], "3")
-  expect_equal(eventBouts$daysummary[2], "1")
-  expect_equal(eventBouts$daysummary[3], "3")
-  expect_equal(eventBouts$daysummary[4], "0")
-  expect_equal(eventBouts$daysummary[5], "0")
+  expect_equal(as.numeric(eventBouts$daysummary)[1:5], c(3.5, 1, 3.5, 0, 0))
   expect_equal(eventBouts$ds_names[5], "ExtFunEvent_Bout_number_E5S_B5M100%_cadT30_AND_accT50__anyRandomText")
   
 })

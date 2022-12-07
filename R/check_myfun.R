@@ -13,7 +13,7 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
                                               "timestamp","reporttype",
                                               "clevels", "ilevels", "qlevels",
                                               "ebout.dur", "ebout.th.cad", "ebout.th.acc",
-                                              "ebout.criter", "ebout.condition") == FALSE)
+                                              "ebout.criter", "ebout.condition", "name") == FALSE)
   if (length(foreignElements) != 0) {
     status = 1
     stop("Object myfun has unexpected elements.", call. = FALSE)

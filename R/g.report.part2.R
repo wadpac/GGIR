@@ -1,5 +1,5 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          store.long = FALSE, do.part2.pdf = TRUE) {
+                          store.long = FALSE, do.part2.pdf = TRUE, myfun = c()) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -216,6 +216,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     ds_names = names(daySUMMARY)
     EventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE)
     NotEventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE, invert = TRUE)
+    eventName = "event"
+    if (length(myfun) > 0) {
+      if ("name" %in% names(myfun)) {
+        eventName =  myfun$name
+      }
+    }
     if (length(EventVars) > 0) {
       dayEVENTSUMMARY = daySUMMARY[ , c("ID", "filename", "calendar_date",
                                         "N valid hours", "N hours", "weekday",
@@ -223,7 +229,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(dayEVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(dayEVENTSUMMARY))
       daySUMMARY = daySUMMARY[,NotEventVars]
       dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
-      write.csv(x = dayEVENTSUMMARY_clean, paste0(metadatadir, "/results/part2_dayeventsummary.csv"), row.names = F)
+      data.table::fwrite(x = dayEVENTSUMMARY_clean,
+                file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
+                row.names = F, na = "")
     }
     # split SUMMARY in two files and reoder EventVariable names if they exist
     s_names = names(SUMMARY)
@@ -236,7 +244,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
       SUMMARY = SUMMARY[,NotEventVars]
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
-      data.table::fwrite(x = EVENTSUMMARY_clean, paste0(metadatadir, "/results/part2_eventsummary.csv"), row.names = F, na = "")
+      data.table::fwrite(x = EVENTSUMMARY_clean,
+                         file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
+                         row.names = F, na = "")
     }
     #-----------------------------
     # tidy up data.frames

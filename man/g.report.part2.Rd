@@ -9,7 +9,7 @@ Creates report from milestone data produced by \link{g.part2}. Not intended
 }
 \usage{
 g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0,
-              store.long=FALSE, do.part2.pdf = TRUE)
+              store.long=FALSE, do.part2.pdf = TRUE, myfun = c())
 }
 \arguments{
   \item{metadatadir}{
@@ -35,6 +35,11 @@ g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0,
   }
   \item{do.part2.pdf}{
     Boolean, see \link{g.part2}
+  }
+  \item{myfun}{
+   (Optional) List as documented in \link{GGIR}. g.report.part2 uses this object
+   to extract the name of the external function being used, such that this
+   can be reused in the output filenames.
   }
 }
 \value{
