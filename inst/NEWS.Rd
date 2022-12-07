@@ -10,7 +10,7 @@
     simplified to a single algorithm.
     \item Part 2 and 5: Bout detection improved such that it can now detect bouts that
     equal the epoch length, and it no longer overestimates bout length by 1 epoch when
-    epoch length is less than 30 seconds and boutcriter is less than 0.9.
+    epoch length is less than 30 seconds and boutcriter is less than 1.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{

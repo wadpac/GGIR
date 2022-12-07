@@ -251,7 +251,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
       warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
-              " are defined. GGIR will only use recordingEndSleepHour and will set to NULL.")
+              " are defined. GGIR will only use recordingEndSleepHour and will be set to NULL.")
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
