@@ -11,6 +11,7 @@
     simplified to a single algorithm.
     \item Part 2 and 5: Bout detection fixed such that it can now detect bouts that
     equal the epoch length, and for epochs less than 30 seconds do no overestimate bout length by 1 epoch.
+    \item Part 4: argument sleeplogidnum deprecated.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
