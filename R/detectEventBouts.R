@@ -22,9 +22,9 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     }
     getboutout = g.getbout(x = rr1, boutduration = boutduration,
                            boutcriter = myfun$ebout.criter,
-                           bout.metric = 6, ws3 = ws3)
+                           ws3 = ws3)
     # time spent in bouts in minutes
-    eventbout = length(which(getboutout$x == 1)) / (60/ws3)
+    eventbout = length(which(getboutout == 1)) / (60/ws3)
     eboutname = paste0("ExtFunEvent_Bout_totdur_E", ws3, "S_B", boutdur,
                        "M", (myfun$ebout.criter  * 100),
                        "%_cadT",myfun$ebout.th.cad,"_",
@@ -36,7 +36,7 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     ds_names[fi] = ebout_varname;
     fi = fi + 1
     # number of bouts
-    rle_bout = rle(as.numeric(getboutout$x))
+    rle_bout = rle(as.numeric(getboutout))
     rle_bout1 = which(rle_bout$values == 1)
     number_of_bouts = length(rle_bout1)
     
