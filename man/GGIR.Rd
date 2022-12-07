@@ -463,20 +463,20 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{do.anglex}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
         If TRUE, calculates the angle of the X axis relative to the horizontal:
-        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} +
-        acc_{rollmedian(z)}}}) * 180/\pi}}
+        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{(acc_{rollmedian(y)})^2 +
+        (acc_{rollmedian(z)})^2}}) * 180/\pi}}
 
       \item{do.angley}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
         If TRUE, calculates the angle of the Y axis relative to the horizontal:
-        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} +
-        acc_{rollmedian(z)}}}) * 180/\pi}}
+        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{(acc_{rollmedian(x)})^2 +
+        (acc_{rollmedian(z)})^2}}) * 180/\pi}}
 
       \item{do.anglez}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
         If TRUE, calculates the angle of the Z axis relative to the horizontal:
-        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} +
-        acc_{rollmedian(y)}}}) * 180/\pi}}
+        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{(acc_{rollmedian(x)})^2 +
+        (acc_{rollmedian(y)})^2}}) * 180/\pi}}
 
       \item{do.zcx}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcx"]]}).
