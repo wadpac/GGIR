@@ -125,17 +125,17 @@ test_that("chainof5parts", {
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile.csv.RData_T5A5.csv")))
-  
+
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-  
+
   dirname = "output_test/meta/ms5.out/"
-  
+
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output), equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(181))
+  expect_that(ncol(output),equals(180))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
@@ -143,7 +143,7 @@ test_that("chainof5parts", {
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(1150))
   expect_equal(ncol(TSFILE), 11) # 11 columns now because of nap_nonwear classification
-  expect_equal(length(unique(TSFILE$class_id)), 11)
+  expect_equal(length(unique(TSFILE$class_id)), 10)
  #--------------------------------------------
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
@@ -160,7 +160,7 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
-  
+
   #=======================
   # Different variations on part 4:
   #--------------------------------------------

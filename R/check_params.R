@@ -89,10 +89,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("mvpathreshold", "boutcriter", "mvpadur", 
                        "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa", 
                        "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa", 
-                       "boutdur.in", "boutdur.lig", "bout.metric")
-    boolean_params = "closedbout"
+                       "boutdur.in", "boutdur.lig")
     check_class("phyact", params = params_phyact, parnames = numeric_params, parclass = "numeric")
-    check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
+    # check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
     check_class("phyact", params = params_phyact, parnames = "frag.metrics", parclass = "character")
   }
   if (length(params_cleaning) > 0) {
@@ -212,6 +211,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
   }
   if (length(params_phyact) > 0) {
+    if (length(params_phyact[["bout.metric"]]) > 0 |
+        length(params_phyact[["closedbout"]]) > 0) {
+      warning(paste0("\nArguments bout.metric and closedbout are no longer used",
+                     " by GGIR, we now use one piece of code stored in",
+                     " function g.getbout."), call. = FALSE)
+    }
     if (length(params_phyact[["mvpadur"]]) != 3) {
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)

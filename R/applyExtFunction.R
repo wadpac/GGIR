@@ -17,7 +17,7 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
                    " because the timestamp can only be added in the g.getmeta function",
                    " from which applyExtFunction is called. However,",
                    " you can provide a numeric value to indicate",
-                   " start time in seconds since 1-1-1970"))
+                   " start time in seconds since 1-1-1970"), call. = FALSE)
   }
   # sample rate correction
   if (sf != myfun$expected_sample_rate) {
