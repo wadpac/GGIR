@@ -7,6 +7,10 @@
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
     \item Included test for recordingEndSleepHour
+    \item Part 2 and 5: arguments bout.metric or closedbout deprecated, g.getbout function
+    simplified to a single algorithm.
+    \item Part 2 and 5: Bout detection fixed such that it can now detect bouts that
+    equal the epoch length, and for epochs less than 30 seconds do no overestimate bout length by 1 epoch.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{

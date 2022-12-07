@@ -814,15 +814,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           ds_names[fi:(fi + 3)] = c("Nblocks_day_total_IN", "Nblocks_day_total_LIG",
                                                     "Nblocks_day_total_MOD", "Nblocks_day_total_VIG")
                           fi = fi + 4
-                          dsummary[di, fi:(fi + 6)] = c(params_phyact[["boutcriter.in"]],
+                          dsummary[di, fi:(fi + 5)] = c(params_phyact[["boutcriter.in"]],
                                                         params_phyact[["boutcriter.lig"]],
                                                         params_phyact[["boutcriter.mvpa"]],
                                                         paste(params_phyact[["boutdur.in"]], collapse = "_"),
                                                         paste(params_phyact[["boutdur.lig"]], collapse = "_"),
-                                                        paste(params_phyact[["boutdur.mvpa"]], collapse = "_"),
-                                                        params_phyact[["bout.metric"]])
-                          ds_names[fi:(fi + 6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
-                                                    "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
+                                                        paste(params_phyact[["boutdur.mvpa"]], collapse = "_"))
+                          ds_names[fi:(fi + 5)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
+                                                    "boutdur.in",  "boutdur.lig", "boutdur.mvpa"); fi = fi + 6
                           #===========================
                           # Intensity gradient over waking hours
                           if (length(params_247[["iglevels"]]) > 0) {
@@ -953,7 +952,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # tidy up output data frame, because it may have a lot of empty rows and columns
         emptyrows = which(output[,1] == "" & output[,2] == "")
         if (length(emptyrows) > 0) output = output[-emptyrows,]
-        lastcolumn = which(colnames(output) == "bout.metric")
+        lastcolumn = which(colnames(output) == "boutdur.mvpa")
         if (length(lastcolumn) > 0) {
           if (ncol(output) > lastcolumn) {
             emptycols = sapply(output, function(x)all(x == ""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")

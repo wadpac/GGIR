@@ -56,7 +56,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
         varName = as.character(config[ci, 1])
         if (varName %in% c(argNames, "") == FALSE) {
           # only use config file values if argument is not provided as argument to g.shell.GGIR and if no empty
-
+          
           # establish variable class
           conv2logical = conv2num = c()
           suppressWarnings(try(expr = {conv2num = as.numeric(config[ci,2])},silent = TRUE))
@@ -101,14 +101,18 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
           }
           
           # Ignore arguments that are irrelevant or related to deprecated code
+          # Note VvH 7 Dec 2022: I have added closedbout and boutmetric 
+          # because for the time being many groups may still have this in 
+          # their config.csv files. Eventuallythese can be removed here, which will
+          # trigger an error for anyone who still uses config file with those arguments.
           ArgNames2Ignore = c("f0", "f1", "studyname", "datadir", 
-            "outputdir", "do.report", "R_version",
-            "GGIR_version", "GGIRversion", "config_file", "mode",
-            "config_file_in_outputdir", "imputeTimegaps",
-            "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
-            "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
-            "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
-            "sleeplogidnum")
+                              "outputdir", "do.report", "R_version",
+                              "GGIR_version", "GGIRversion", "config_file", "mode",
+                              "config_file_in_outputdir", "imputeTimegaps",
+                              "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
+                              "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
+                              "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
+                              "closedbout", "bout.metric", "sleeplogidnum")
           # Find argument in the various parameter objects
           if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {
@@ -203,7 +207,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   if (!"cleaning" %in% params2check) params_cleaning = c()
   if (!"output" %in% params2check) params_output = c()
   if (!"general" %in% params2check) params_general = c()
-
+  
   params = check_params(params_sleep = params_sleep, params_metrics = params_metrics, 
                         params_rawdata = params_rawdata, params_247 = params_247,
                         params_phyact = params_phyact, params_cleaning = params_cleaning,
