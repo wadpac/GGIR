@@ -99,16 +99,20 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
               }
             }
           }
-          
+
           # Ignore arguments that are irrelevant or related to deprecated code
-          ArgNames2Ignore = c("f0", "f1", "studyname", "datadir", 
+          # Note VvH 7 Dec 2022: I have added closedbout and boutmetric
+          # because for the time being many groups may still have this in
+          # their config.csv files. Eventuallythese can be removed here, which will
+          # trigger an error for anyone who still uses config file with those arguments.
+          ArgNames2Ignore = c("f0", "f1", "studyname", "datadir",
             "outputdir", "do.report", "R_version",
             "GGIR_version", "GGIRversion", "config_file", "mode",
             "config_file_in_outputdir", "imputeTimegaps",
-            "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
-            "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
-            "isna", "tmp", "vecchar", "dupi", "GGIRread_version", 
-            "closedbout", "bout.metric") #closedbout and bout.metric are no long used
+            "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex",
+            "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i",
+            "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
+            "closedbout", "bout.metric")
           # Find argument in the various parameter objects
           if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {
@@ -193,7 +197,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Check that all parameter values have expect data class
   # and perform some checks on reasonable parameter combinations
-  
+
   # prevent checking of parameters that are not used in GGIR part
   if (!"sleep" %in% params2check) params_sleep = c()
   if (!"metrics" %in% params2check) params_metrics = c()
@@ -204,7 +208,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   if (!"output" %in% params2check) params_output = c()
   if (!"general" %in% params2check) params_general = c()
 
-  params = check_params(params_sleep = params_sleep, params_metrics = params_metrics, 
+  params = check_params(params_sleep = params_sleep, params_metrics = params_metrics,
                         params_rawdata = params_rawdata, params_247 = params_247,
                         params_phyact = params_phyact, params_cleaning = params_cleaning,
                         params_output = params_output, params_general = params_general)
