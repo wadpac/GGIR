@@ -1,5 +1,4 @@
-g.part4_extractid = function(idloc, fname, dolog,
-                             sleeplog, accid = c()) {
+g.part4_extractid = function(idloc, fname, dolog, sleeplog, accid = c()) {
   if (length(accid) == 0) {
     #------------------------------------------------------
     # extract the identifier from accelerometer data if it was not found in the GGIR part 3 milestone data
@@ -32,18 +31,33 @@ g.part4_extractid = function(idloc, fname, dolog,
     }
   }
   # get matching identifier from sleeplog
-  if (dolog == TRUE) {
-    accid_num = suppressWarnings(as.numeric(accid))
-    # if (sleeplogidnum == FALSE) {
+  if (dolog == TRUE) { # since now we do not have sleeplogidnum, we only need to check the last letter of accid, if sleeplog is available
+    if (suppressWarnings(!is.na(as.numeric(sleeplog$ID[1]))) & # sleeplog id is numeric 
+        suppressWarnings(is.na(as.numeric(accid)))) {          # but accid is not
+      # remove last character (in some studies numeric id is followed by character)
+      accid_bu = accid
+      getLastCharacterValue = function(x) {
+        tmp = as.character(unlist(strsplit(x,"")))
+        return(tmp[length(tmp)])
+      }
+      letter = apply(as.matrix(accid), MARGIN = c(1), FUN = getLastCharacterValue)
+      for (h in 1:length(accid)) {
+        options(warn = -1)
+        numletter = as.numeric(letter[h])
+        options(warn = 0)
+        if (is.na(numletter) == TRUE) { # do not remove latest character if it is a number
+          accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
+        }
+      }
+      accid = suppressWarnings(as.numeric(accid))
+      #catch for files with only id in filename and for whom the above attempt to extract the id failed:
+      if (is.na(accid) == TRUE) accid = accid_bu
+    }
     # remove spaces in ID, to ease matching, because some accelerometer brands at several spaces behind ID
-    sleeplog$ID = as.character(sleeplog$ID)  
     sleeplog$ID = gsub(pattern = " ", replacement = "", x = as.character(sleeplog$ID))
     accid = gsub(pattern = " ", replacement = "", x = as.character(accid))
     # attempt to match
     matching_indices_sleeplog = which(as.character(sleeplog$ID) == as.character(accid))
-    if (length(matching_indices_sleeplog) == 0) {
-      matching_indices_sleeplog_alternative = which(sleeplog$ID == accid_num)
-    }
   } else {
     matching_indices_sleeplog = 1
   }
