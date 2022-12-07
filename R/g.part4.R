@@ -42,7 +42,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
-                             nnights = params_sleep[["nnights"]], #sleeplogidnum= params_sleep[["sleeplogidnum"]],
+                             nnights = params_sleep[["nnights"]], 
                              sleeplogsep = params_sleep[["sleeplogsep"]], meta.sleep.folder = meta.sleep.folder, 
                              desiredtz = params_general[["desiredtz"]])
     sleeplog = logs_diaries$sleeplog
@@ -204,7 +204,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = params_general[["desiredtz"]])
         # extract the identifier from accelerometer data and matching indices of sleeplog:
         idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i],
-                                 dolog, #params_sleep[["sleeplogidnum"]], 
+                                 dolog, 
                                  sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
