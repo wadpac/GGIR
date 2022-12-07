@@ -10,15 +10,15 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             ...) {
   #get input variables
   input = list(...)
-  
+
   expectedArgs = c("params_247", "params_phyact", "params_cleaning", "params_general",
-                   "ndays", "firstmidnighti", "time", "nfeatures", 
+                   "ndays", "firstmidnighti", "time", "nfeatures",
                    "midnightsi", "metashort", "averageday",
                    "doiglevels", "nfulldays","lastmidnight", "ws3", "ws2", "qcheck",
                    "fname", "idloc", "sensor.location", "wdayname", "tooshort", "includedaycrit",
                    "doquan", "quantiletype", "doilevels", "domvpa",
                    "mvpanames", "wdaycode", "ID",
-                   "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz") 
+                   "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz")
   if (any(names(input) %in% expectedArgs == FALSE) |
       all(!(expectedArgs %in% ls()))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
@@ -32,7 +32,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     params_cleaning = params$params_cleaning
     params_general = params$params_general
   }
-  
+
   startatmidnight = endatmidnight = 0
   if (nfulldays >= 1) {
     if (firstmidnighti == 1) {  #if measurement starts at midnight
@@ -46,7 +46,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       cat("measurement ends at midnight or there is no midnight")
     }
   }
-  
+
   daysummary = matrix("",ceiling(ndays),nfeatures)
   ds_names = rep("",nfeatures)
   windowsummary = ws_names = c()
@@ -55,7 +55,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
   qwindow_names = qwindowbackup = params_247[["qwindow"]]
   qwindow_actlog = FALSE
   if (is.data.frame(params_247[["qwindow"]]) == TRUE) {
-    qwindow_actlog = TRUE  
+    qwindow_actlog = TRUE
   }
   unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time),
                                                                            by = (3600/ws2) * 12),
@@ -77,7 +77,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         qwindow_times = c("00:00","24:00")
         qwindow_names = c("daystart","dayend")
         params_247[["qwindow"]] = qwindow_values_backup = c(0, 24)
-      } 
+      }
     } else {
       if (length(params_247[["qwindow"]]) == 0) {
         params_247[["qwindow"]] = c(0, 24)
@@ -162,7 +162,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
-        
+
         for (qwi in 1:(length(qwindowindices) - 1)) { #
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
@@ -183,14 +183,14 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       }
     }
-    
+
     val = as.numeric(val)
     nvalidhours = length(which(val == 0)) / (3600 / ws3) #valid hours per day (or half a day)
     nhours = length(val) / (3600 / ws3) #valid hours per day (or half a day)
     #start collecting information about the day
     fi = 1
-    
-    
+
+
     check_daysummary_size = function(daysummary, ds_names, fi) {
       if (fi > ncol(daysummary) - 1000) {
         expand = fi - (ncol(daysummary) - 1000)
@@ -316,7 +316,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
           new = check_daysummary_size(daysummary, ds_names, fi)
           daysummary = new$daysummary
           ds_names = new$ds_names
-          
+
           L5M5window_name = anwi_nameindices[anwi_index]
           anwindices = anwi_t0[anwi_index]:anwi_t1[anwi_index] # indices of varnum corresponding to a segment
           if (length(anwindices) > 0) {
@@ -327,14 +327,14 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               vari2 = vari #vari2 is used in identify_levels
               if (isTRUE(params_cleaning[["part2ExcludeNonwear"]])) {
                 varnum[which(val != 0)] = NA
-              } 
+              }
               # # if this is the first or last day and it has more than includedaycrit number of days then expand it
               # Comment out the following 10 lines if you want to include only the actual data
               if (NRV < length(averageday[, (mi - 1)])) { # modified to avoid imputing time in the daylight saving days (25-h long, then they meet the condition NRV != nrow(averageday))
                 difference = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
                   # varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
-                  varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h 
+                  varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h
                   # impute vari timestamp as well
                   vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
                   colnames(vari2) = colnames(vari)
@@ -386,13 +386,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
                                      "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
-                                     "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
+                                     "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
                                      "NeishabouriCount_z", "NeishabouriCount_vm")) {
                 collectfi = c()
                 for (winhr_value in params_247[["winhr"]]) { # Variable (column) names
                   # We are first defining location of variable names, before calculating
                   # variables
-                  ML5colna = c(paste0("L",winhr_value,"hr"), paste0("L",winhr_value), 
+                  ML5colna = c(paste0("L",winhr_value,"hr"), paste0("L",winhr_value),
                                paste0("M",winhr_value,"hr"), paste0("M",winhr_value))
                   if (length(params_247[["iglevels"]]) > 0 & length(params_247[["MX.ig.min.dur"]]) == 1) { # intensity gradient (as described by Alex Rowlands 2018)
                     if (winhr_value >= params_247[["MX.ig.min.dur"]]) {
@@ -404,13 +404,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                   if (length(params_247[["qM5L5"]]) > 0) {
                     ML5colna = c(ML5colna,
-                                 paste0("L", winhr_value, "_q", round(params_247[["qM5L5"]] * 100)), 
+                                 paste0("L", winhr_value, "_q", round(params_247[["qM5L5"]] * 100)),
                                  paste0("M", winhr_value, "_q", round(params_247[["qM5L5"]] * 100)))
                   }
                   # add metric name and timewindow name
                   fi = correct_fi(di, ds_names, fi, varname = paste0(ML5colna[1],"_", colnames(metashort)[mi], "_mg",
                                                                      L5M5window_name))
-                  ds_names[fi:(fi - 1 + length(ML5colna))] = paste0(ML5colna, "_", colnames(metashort)[mi], "_mg", 
+                  ds_names[fi:(fi - 1 + length(ML5colna))] = paste0(ML5colna, "_", colnames(metashort)[mi], "_mg",
                                                                     L5M5window_name)
                   collectfi = c(collectfi, fi)
                   fi = fi + length(ML5colna)
@@ -423,8 +423,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       t0_LFMF =  1 #start
                       # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       t1_LFMF = length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60))
-                      
-                      ML5 = g.getM5L5(varnum, ws3, t0_LFMF, t1_LFMF, params_247[["M5L5res"]], winhr_value, qM5L5 = params_247[["qM5L5"]], 
+
+                      ML5 = g.getM5L5(varnum, ws3, t0_LFMF, t1_LFMF, params_247[["M5L5res"]], winhr_value, qM5L5 = params_247[["qM5L5"]],
                                       iglevels = params_247[["iglevels"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
                       ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
@@ -445,7 +445,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     }
                     # (Below) 4 is the length of ML5 and then 2 extra variables for every qM5L5 value
                     # winhr is not considered because we are in the winhr loop:
-                    exfi = exfi + 4 + (length(params_247[["qM5L5"]]) * 2) 
+                    exfi = exfi + 4 + (length(params_247[["qM5L5"]]) * 2)
                   }
                 } else {
                   daysummary[di,collectfi] = ""
@@ -473,7 +473,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (doquan == TRUE) {
                   q46 = c()
                   if (isFALSE(params_general[["WornDuringSleep"]])) {
-                    # if not worn during sleep, NAs to 0 to keep consistency 
+                    # if not worn during sleep, NAs to 0 to keep consistency
                     # in the window length for percentiles
                     varnum_NA2zero = replace(varnum, which(is.na(varnum)), 0)
                     q46 = quantile(varnum_NA2zero, probs = params_247[["qlevels"]], na.rm = T, type = quantiletype) * UnitReScale
@@ -561,29 +561,23 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       rr1 = matrix(0, length(varnum), 1)
                       p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = params_phyact[["boutcriter"]],
-                                             closedbout = FALSE, # to match part5 bout calculation
-                                             bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-                      mvpa[4] = length(which(getboutout$x == 1)) / (60/ws3) #time spent MVPA in minutes
-                      
+                                             boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
+                      mvpa[4] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
+
                       # METHOD 5: time spent above threshold 5 minutes
                       boutduration = params_phyact[["mvpadur"]][2] * (60/ws3) #per five minutes
                       rr1 = matrix(0, length(varnum), 1)
                       p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = params_phyact[["boutcriter"]],
-                                             closedbout = FALSE, # to match part5 bout calculation
-                                             bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-                      mvpa[5] = length(which(getboutout$x == 1))   / (60/ws3) #time spent MVPA in minutes
+                                             boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
+                      mvpa[5] = length(which(getboutout == 1))   / (60/ws3) #time spent MVPA in minutes
                       # METHOD 6: time spent above threshold 10 minutes
                       boutduration = params_phyact[["mvpadur"]][3] * (60/ws3) # per ten minutes
                       rr1 = matrix(0,length(varnum),1)
                       p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
-                                             boutcriter = params_phyact[["boutcriter"]],
-                                             closedbout = FALSE, # to match part5 bout calculation
-                                             bout.metric = params_phyact[["bout.metric"]], ws3 = ws3)
-                      mvpa[6] = length(which(getboutout$x == 1)) / (60/ws3) #time spent MVPA in minutes
+                                             boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
+                      mvpa[6] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
                     }
                     if (length(which(is.nan(mvpa) == TRUE)) > 0) mvpa[which(is.nan(mvpa) == TRUE)] = 0
                     mvpanames[,mvpai] = c( paste0("MVPA_E", ws3, "S_T", params_phyact[["mvpathreshold"]][mvpai]),
@@ -607,7 +601,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # and we can calculate sedentary and light bouts without misclassifying
                 # sleep as inactivity
                 if (isFALSE(params_general[["WornDuringSleep"]])) {
-                  ts = data.frame(time = vari2[,1], 
+                  ts = data.frame(time = vari2[,1],
                                   ACC = varnum * UnitReScale,
                                   diur = 0, # consider all recorded time as awake (except nonwear)
                                   sibdetection = 0)
@@ -618,7 +612,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                         params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
                         params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
                         params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
-                        
+
                         levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
                                                  ws3 = ws3, params_phyact = params_phyact)
                         LEVELS = levels$LEVELS
@@ -628,35 +622,35 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                         bc.lig = levels$bc.lig
                         bc.in = levels$bc.in
                         ts = levels$ts
-                        
+
                         # match LEVELS to nonwear
                         # set_to_zero = which(LEVELS > 0 & is.na(ts$ACC)) # expected to be 1, last epoch detected in levels > 0
                         # if (length(set_to_zero) > 0) LEVELS[set_to_zero] = 0
-                        # set_to_zero = which(OLEVELS > 0 & is.na(ts$ACC)) 
+                        # set_to_zero = which(OLEVELS > 0 & is.na(ts$ACC))
                         # if (length(set_to_zero) > 0) OLEVELS[set_to_zero] = 0
-                        
+
                         # remove nonwear from LEVELS
                         spt_levels = max(grep("^spt", Lnames)) - 1 # minus 1 bc first LEVEL is 0
                         LEVELS = LEVELS[which(LEVELS > spt_levels)] # remove nonwear from levels
                         OLEVELS = OLEVELS[which(OLEVELS > 0)] # remove nonwear from levels
-                        
+
                         # add levels to daysummary
-                        for (levelsc in 0:(length(Lnames) - 1)) { 
+                        for (levelsc in 0:(length(Lnames) - 1)) {
                           daysummary[di,fi] = (length(which(LEVELS == levelsc)) * ws3) / 60
-                          ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min_", colnames(metashort)[mi], 
+                          ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min_", colnames(metashort)[mi],
                                                 TRnames, anwi_nameindices[anwi_index])
                           fi = fi + 1
                         }
                         for (g in 1:4) {
                           daysummary[di, (fi + (g - 1))] = (length(which(OLEVELS == g)) * ws3) / 60
                         }
-                        ds_names[fi:(fi + 3)] = c(paste0("dur_day_total_IN_min_", colnames(metashort)[mi], 
+                        ds_names[fi:(fi + 3)] = c(paste0("dur_day_total_IN_min_", colnames(metashort)[mi],
                                                          TRnames, anwi_nameindices[anwi_index]),
-                                                  paste0("dur_day_total_LIG_min_", colnames(metashort)[mi], 
+                                                  paste0("dur_day_total_LIG_min_", colnames(metashort)[mi],
                                                          TRnames, anwi_nameindices[anwi_index]),
-                                                  paste0("dur_day_total_MOD_min_", colnames(metashort)[mi], 
+                                                  paste0("dur_day_total_MOD_min_", colnames(metashort)[mi],
                                                          TRnames, anwi_nameindices[anwi_index]),
-                                                  paste0("dur_day_total_VIG_min_", colnames(metashort)[mi], 
+                                                  paste0("dur_day_total_VIG_min_", colnames(metashort)[mi],
                                                          TRnames, anwi_nameindices[anwi_index]))
                         fi = fi + 4
                       }
@@ -675,7 +669,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   fi = correct_fi(di, ds_names, fi, varname = varnamescalar)
                   daysummary[di,fi] = mean(varnum)
                   ds_names[fi] = varnamescalar; fi = fi + 1
-                } else if (myfun$reporttype == "type") { # For type we calculate time spent in each class 
+                } else if (myfun$reporttype == "type") { # For type we calculate time spent in each class
                   # Not implemented yet
                 }
               }
