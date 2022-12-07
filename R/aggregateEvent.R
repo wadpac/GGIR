@@ -75,11 +75,11 @@ aggregateEvent = function(metric_name, varnum,
     # define cadence level
     if (ti < length(cadence.thresholds)) {
       cadence_level_name = paste0(cadence.thresholds[ti], "-", cadence.thresholds[ti + 1], "spm")
-      whereCadenceLevel = which(cadence >= (cadence.thresholds[ti]/1000) &
-                                  cadence < (cadence.thresholds[ti + 1]/1000))
+      whereCadenceLevel = which(cadence >= cadence.thresholds[ti] &
+                                  cadence < cadence.thresholds[ti + 1])
     } else {
       cadence_level_name = paste0("atleast", cadence.thresholds[ti], "spm")
-      whereCadenceLevel = which(cadence >= (cadence.thresholds[ti]/1000))
+      whereCadenceLevel = which(cadence >= cadence.thresholds[ti])
     }
     # cadence per cadence level
     varnameevent = paste0("ExtFunEvent_mn_cad_cad", cadence_level_name, anwi_nameindices[anwi_index])
