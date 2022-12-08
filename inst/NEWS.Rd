@@ -11,12 +11,12 @@
     simplified to a single algorithm.
     \item Part 2 and 5: Bout detection fixed such that it can now detect bouts that
     equal the epoch length, and for epochs less than 30 seconds do no overestimate bout length by 1 epoch.
-    \item Minor fix to g.getbout because it included one epoch beyond the period of interest in the identified bout.
-    \item Part 2: Added functionality to impute invalid time segments by zero.
-    \item Part 2: Added functionality to exclude non-wear time from part 2 reports.
-    \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the devices are not worn during sleep (no need to define the SPT in parts 3 & 4).
-    \item Revised bout detection in bout.metric = 6
-    \item Improved test for g.getbout when bout.metric = 6
+    \item Part 2: Added functionality to impute invalid time segments by zero (argument 
+    part2ImpWithZero).
+    \item Part 2: Added functionality to exclude non-wear time from part 2 reports (argument 
+    part2ExcludeNonwear).
+    \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the 
+    devices are not worn during sleep (no need to define the SPT in parts 3 & 4). Argument WornDuringSleep.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
