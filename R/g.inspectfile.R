@@ -266,7 +266,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       # If this causes problems then update GGIRread with:
       # H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
       # sf = H$sample.rate
-      H = GGIRread::readWav(datafile, start = 1, end = 20)
+      H = GGIRread::readWav(datafile, start = 1, end = 20, units = "seconds")
       sf = as.numeric(as.character(H$header$hvalues[which(H$header$hnames == "Config-A")]))
     } else if (dformat == 4) { # cwa
       PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
