@@ -48,6 +48,9 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   
   cat("\nAxivity .wav")
   # axivity .wav
+  # rawout = GGIRread::readWav(filename = wavfile, start = 1, end = 2)
+  # expect_equal(length(rawout), 3)
+  # expect_equal(nrow(rawout$rawxyz), 6000)
   Iwav = g.inspectfile(wavfile, desiredtz = desiredtz)
   expect_equal(Iwav$monc,4)
   expect_equal(Iwav$dformc,3)
