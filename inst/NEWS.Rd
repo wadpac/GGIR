@@ -4,6 +4,7 @@
 \section{Changes in version 2.8-4 (GitHub-only-release date:?-?-2022)}{
   \itemize{
     \item Part1: Improved handling of the expand_tail_max_hours functionality. Expanded time is now ignored in reports and visualizations.
+    \item Part 1: Function g.wavread migrated to R package GGIRread and renamed as readWav
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
     \item Included test for recordingEndSleepHour
