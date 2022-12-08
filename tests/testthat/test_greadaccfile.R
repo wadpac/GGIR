@@ -6,7 +6,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
   binfile  = system.file("testfiles/genea_testfile.bin", package = "GGIRread")[1]
-  wavfile  = system.file("testfiles/ax3test.wav", package = "GGIR")[1]
+  wavfile  = system.file("testfiles/ax3test.wav", package = "GGIRread")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
   
@@ -112,6 +112,6 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   #also test one small other function:
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
-  expect_equal(length(fnames$fnames), 2)
-  expect_equal(length(fnames$fnamesfull), 2)
+  expect_equal(length(fnames$fnames), 1)
+  expect_equal(length(fnames$fnamesfull), 1)
 })
