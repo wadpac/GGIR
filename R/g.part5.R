@@ -412,6 +412,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
+            #===============================================================
+            # Cosinor analyses based on only the data used for GGIR part5
+            
+            
+            
+            
+            
+            #===============================================================
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
