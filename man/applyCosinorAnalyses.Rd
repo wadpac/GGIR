@@ -8,7 +8,7 @@
   before applying the cosinorAnlayses
 }
 \usage{
-  applyCosinorAnalyses(ts, qcheck, midnightsi, shortEpoch, longEpoch)
+  applyCosinorAnalyses(ts, qcheck, midnightsi, epochsizes)
 }
 \arguments{
   \item{ts}{
@@ -21,12 +21,8 @@
   \item{midnightsi}{
     Indices for midnights in the time series
   }
-  \item{shortEpoch}{
-    First element of argument windowsizes, the resolution of the ts and qcheck values.
-  }
-  \item{longEpoch}{
-    Second element of argument windowsizes, the resolution of the midnightsi 
-    values in seconds.
+  \item{epochsizes}{
+    Epoch seiz for ts and qcheck respectively
   }
 }
 \author{

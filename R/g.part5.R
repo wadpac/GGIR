@@ -332,6 +332,24 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
               Nts = nrow(ts)
+            } else {
+              ts$time = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
+              ws3new = ws3 # change because below it is used to decide how many epochs are there in
+              # extract nightsi again
+              tempp = unclass(ts$time)
+              if (is.na(tempp$sec[1]) == TRUE) {
+                tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
+              }
+              sec = tempp$sec
+              min = tempp$min
+              hour = tempp$hour
+              if (params_general[["dayborder"]] == 0) {
+                nightsi = which(sec == 0 & min == 0 & hour == 0)
+              } else {
+                nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+              }
+              if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
+              Nts = nrow(ts)
             }
             # if ("angle" %in% colnames(ts)) {
             #   ts = ts[, -which(colnames(ts) == "angle")]
@@ -412,14 +430,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
-            #===============================================================
-            # Cosinor analyses based on only the data used for GGIR part5
-            
-            
-            
-            
-            
-            #===============================================================
+           
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
@@ -930,6 +941,18 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 }
               }
             }
+            #===============================================================
+            # Cosinor analyses based on only the data used for GGIR part5
+            if (params_247[["cosinor"]] == TRUE) {
+              cosinor_coef = applyCosinorAnalyses(ts = ts[, c("time", "ACC")],
+                                                  qcheck = ts$nonwear,
+                                                  midnightsi = nightsi,
+                                                  epochsizes = c(ws3, ws3))
+            } else {
+              cosinor_coef = c()
+            }
+            
+            #===============================================================
           }
         }
         if ("angle" %in% colnames(ts)) {
