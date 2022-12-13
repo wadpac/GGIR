@@ -1,12 +1,12 @@
-applyCosinorAnalyses = function(ts, qcheck, midnightsi, shortEpoch, longEpoch) {
+applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
   # qcheck - vector of length ts to indicate invalid values
-  ws2 = longEpoch
-  ws3 = shortEpoch
+  ws2 = epochsizes[2]
+  ws3 = epochsizes[1]
   # Re-derive Xi but this time include entire time series
   # Here, we ignore duplicated values (when clock moves backward due to DST)
   handleDST = !duplicated(ts)
   qcheck = qcheck[handleDST]
-  Xi = ts[handleDST, which(colnames(ts) %in% "timestamp" == FALSE)]
+  Xi = ts[handleDST, grep(pattern = "time", x = colnames(ts), invert = TRUE)]
   Nlong_epochs_day =  (1440 * 60) / ws2 # this is 96 by default
   dstgap = which(diff(midnightsi) != Nlong_epochs_day)
   if (length(dstgap) > 0) {
