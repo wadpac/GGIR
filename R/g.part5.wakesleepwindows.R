@@ -93,6 +93,10 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       s1 = which(timebb == paste(w1c, " 00:00:00", sep = ""))[1]
       if (is.na(s1) == TRUE) {
         s1 = which(as.character(timebb) == paste(w1c, " 00:00:00", sep = ""))[1]
+        if (is.na(s1) == TRUE) { # might still be NA if the timestamps is not in ts (expanded time from expand_tail)
+          # if so, we assume the participant is sleeping at the end of the recording, this night will be disregarded later on
+          s1 = nrow(ts)
+        }
       }
     }
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
@@ -105,7 +109,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       if (noon0 < 1) noon0 = 1
       if (noon1 > Nts) noon1 = Nts
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])
-      if (length(sleeplog) > 0 & nonwearpercentage > 0.33) {
+      if ((length(sleeplog) > 0 & (nonwearpercentage > 0.33) | summarysleep_tmp2$sleeponset_ts[k] == "")) { # added condition to detect nights that are not detected in part 4
         
         # If non-wear is high for this day and if sleeplog is available
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
