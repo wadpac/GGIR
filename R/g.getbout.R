@@ -39,7 +39,7 @@ g.getbout = function(x, boutduration, boutcriter = 0.8, ws3 = 5) {
       # find start of bout
       start_found = FALSE
       adjust = 0
-      while (isFALSE(start_found)) {
+      while (start_found == FALSE) {
         start = min(bout) - half1 + adjust
         if (start < 1) {
           adjust = adjust + 1

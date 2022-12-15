@@ -274,7 +274,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
       if (length(params_rawdata[["backup.cal.coef"]]) > 0 & check.backup.cal.coef == TRUE) {
         bcc.data = read.csv(params_rawdata[["backup.cal.coef"]])
-        if (isTRUE(params_rawdata[["do.cal"]])) cat("\nRetrieving previously derived calibration coefficients")
+        if (params_rawdata[["do.cal"]] == TRUE) cat("\nRetrieving previously derived calibration coefficients")
         bcc.data$filename = as.character(bcc.data$filename)
         for (nri in 1:nrow(bcc.data)) {
           tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
