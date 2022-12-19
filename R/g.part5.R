@@ -948,6 +948,39 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   qcheck = ts$nonwear,
                                                   midnightsi = nightsi,
                                                   epochsizes = c(ws3, ws3))
+              if (length(cosinor_coef) > 0) {
+                # assign same value to all rows to ease creating reports
+                dsummary[,fi]  = c(cosinor_coef$timeOffsetHours)
+                ds_names[fi]  = c("cosinor_timeOffsetHours")
+                fi = fi + 1
+                try(expr = {dsummary[, fi:(fi + 4)]  = as.numeric(c(cosinor_coef$coef$params$mes,
+                                                                     cosinor_coef$coef$params$amp,
+                                                                     cosinor_coef$coef$params$acr,
+                                                                     cosinor_coef$coef$params$acrotime,
+                                                                     cosinor_coef$coef$params$ndays))}, silent = TRUE)
+                ds_names[fi:(fi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                                         "cosinor_acrotime", "cosinor_ndays")
+                fi = fi + 5
+                try(expr = {dsummary[, fi:(fi + 9)]  = c(cosinor_coef$coefext$params$minimum,
+                                                          cosinor_coef$coefext$params$amp,
+                                                          cosinor_coef$coefext$params$alpha,
+                                                          cosinor_coef$coefext$params$beta,
+                                                          cosinor_coef$coefext$params$acrotime,
+                                                          cosinor_coef$coefext$params$UpMesor,
+                                                          cosinor_coef$coefext$params$DownMesor,
+                                                          cosinor_coef$coefext$params$MESOR,
+                                                          cosinor_coef$coefext$params$ndays,
+                                                          cosinor_coef$coefext$params$F_pseudo)}, silent = TRUE)
+                ds_names[fi:(fi + 9)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                         "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                         "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                         "cosinorExt_ndays", "cosinorExt_F_pseudo")
+                fi = fi + 10
+                dsummary[fi:(fi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
+                                              cosinor_coef$IVIS$IntradailyVariability)
+                ds_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
+                fi = fi + 2
+              }
             } else {
               cosinor_coef = c()
             }
