@@ -65,7 +65,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   colnamesnightsummary = c("ID", "night", "sleeponset", "wakeup", "SptDuration", "sleepparam", "guider_onset",
                            "guider_wakeup", "guider_SptDuration", "error_onset", "error_wake", "error_dur", "fraction_night_invalid",
                            "SleepDurationInSpt", "WASO", "duration_sib_wakinghours", "number_sib_sleepperiod", "number_of_awakenings",
-                           "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
+                           "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
+                           "meandur_sib_wakinghours_atleast15min",
+                           "number_sib_wakinghours_atleast15min",
+                           "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
                            "guider_wakeup_ts", "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
                            "filename", "cleaningcode", "sleeplog_used", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
                            "longitudinal_axis")
@@ -676,7 +679,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
                   spocum.t$dur = correct01010pattern(spocum.t$dur)
-                  
+
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night
@@ -850,18 +853,19 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   # ======================================================================================================
                   sibds_atleast15min = 0
+                  spocum.t.dur_sibd = 0
+                  spocum.t.dur_sibd_atleast15min = 0
+                  spocum.m.dur_sibd_atleast15min = 0
+                  spocum.n.dur_sibd_atleast15min = 0
                   if (length(sibds) > 0) {
                     spocum.t.dur_sibd = sum(sibds)
                     atleast15min = which(sibds >= 1/4)
                     if (length(atleast15min) > 0) {
                       sibds_atleast15min = sibds[atleast15min]
                       spocum.t.dur_sibd_atleast15min = sum(sibds_atleast15min)
-                    } else {
-                      spocum.t.dur_sibd_atleast15min = 0
-                    }
-                  } else {
-                    spocum.t.dur_sibd = 0
-                    spocum.t.dur_sibd_atleast15min = 0
+                      spocum.m.dur_sibd_atleast15min = mean(sibds_atleast15min, na.rm = TRUE)
+                      spocum.n.dur_sibd_atleast15min = length(sibds_atleast15min)
+                    } 
                   }
                   nightsummary[sumi, 14] = spocum.t.dur.noc  #total nocturnalsleep /accumulated sleep duration
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
@@ -870,6 +874,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[sumi, 18] = nightsummary[sumi, 17] - 1  #number of awakenings
                   nightsummary[sumi, 19] = length(which(spocum.t$dur == 0))  #number of sib (sustained inactivty bout) during wakinghours
                   nightsummary[sumi, 20] = as.numeric(spocum.t.dur_sibd_atleast15min)  #total sib (sustained inactivty bout) duration during wakinghours of at least 5 minutes
+                  nightsummary[sumi, 21] = as.numeric(spocum.m.dur_sibd_atleast15min)
+                  nightsummary[sumi, 22] = as.numeric(spocum.n.dur_sibd_atleast15min)
                   #-------------------------------------------------------
                   # Also report timestamps in non-numeric format:
                   acc_onset = nightsummary[sumi, 3]
@@ -880,24 +886,24 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # convert into clocktime
                   acc_onsetTS = convertHRsinceprevMN2Clocktime(acc_onset)
                   acc_wakeTS = convertHRsinceprevMN2Clocktime(acc_wake)
-                  nightsummary[sumi, 21] = acc_onsetTS
-                  nightsummary[sumi, 22] = acc_wakeTS
+                  nightsummary[sumi, 23] = acc_onsetTS
+                  nightsummary[sumi, 24] = acc_wakeTS
                   #----------------------------------------------
-                  nightsummary[sumi, 23] = tmp1  #guider_onset_ts
-                  nightsummary[sumi, 24] = tmp4  #guider_onset_ts 
+                  nightsummary[sumi, 25] = tmp1  #guider_onset_ts
+                  nightsummary[sumi, 26] = tmp4  #guider_onset_ts 
                   if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
                     # If guider isa sleeplog and if the sleeplog recorded time in bed then
                     # calculate: sleep latency:
-                    nightsummary[sumi, 25] = round(nightsummary[sumi, 3] - nightsummary[sumi, 7],
+                    nightsummary[sumi, 27] = round(nightsummary[sumi, 3] - nightsummary[sumi, 7],
                                                    digits = 7)  #sleeponset - guider_onset 
                     # sleep efficiency:
-                    nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/nightsummary[sumi, 9], digits = 5)  #accumulated nocturnal sleep / guider
+                    nightsummary[sumi, 28] = round(nightsummary[sumi, 14]/nightsummary[sumi, 9], digits = 5)  #accumulated nocturnal sleep / guider
                   }
-                  nightsummary[sumi, 27] = pagei
-                  nightsummary[sumi, 28] = daysleeper[j]
-                  nightsummary[sumi, 29] = wdayname[j]
-                  nightsummary[sumi, 30] = calendar_date[j]
-                  nightsummary[sumi, 31] = fnames[i]
+                  nightsummary[sumi, 29] = pagei
+                  nightsummary[sumi, 30] = daysleeper[j]
+                  nightsummary[sumi, 31] = wdayname[j]
+                  nightsummary[sumi, 32] = calendar_date[j]
+                  nightsummary[sumi, 33] = fnames[i]
                   # nightsummary
                   #------------------------------------------------------------------------
                   # PLOT
@@ -974,12 +980,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   # PLOT
                   #------------------------------------------------------------------------
-                  nightsummary[sumi, 32] = cleaningcode
-                  nightsummary[sumi, 33] = sleeplog_used
-                  nightsummary[sumi, 34] = acc_available
-                  nightsummary[sumi, 35] = guider
+                  nightsummary[sumi, 34] = cleaningcode
+                  nightsummary[sumi, 35] = sleeplog_used
+                  nightsummary[sumi, 36] = acc_available
+                  nightsummary[sumi, 37] = guider
                   # Extract SRI for this night
-                  nightsummary[sumi, 36:37] = NA
+                  nightsummary[sumi, 38:39] = NA
                   if (!exists("SleepRegularityIndex")) {
                     SleepRegularityIndex = NA
                   }
@@ -989,18 +995,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     calendar_date_reformat = as.character(format(x = calendar_date_asDate, format = "%d/%m/%Y"))
                     SRIindex = which(SRI$date == calendar_date_reformat & SRI$frac_valid > (params_cleaning[["includenightcrit"]]/24))
                     if (length(SRIindex) > 0) {
-                      nightsummary[sumi, 36] = SRI$SleepRegularityIndex[SRIindex[1]]
-                      nightsummary[sumi, 37] = SRI$frac_valid[SRIindex[1]]
+                      nightsummary[sumi, 38] = SRI$SleepRegularityIndex[SRIindex[1]]
+                      nightsummary[sumi, 39] = SRI$frac_valid[SRIindex[1]]
                     }
                   }
                   if (length(longitudinal_axis) == 0) {
-                    nightsummary[sumi, 38] = NA
+                    nightsummary[sumi, 40] = NA
                   } else {
-                    nightsummary[sumi, 38] = longitudinal_axis
+                    nightsummary[sumi, 40] = longitudinal_axis
                   }
                   if (params_output[["storefolderstructure"]] == TRUE) {
-                    nightsummary[sumi, 39] = ffd[i]  #full filename structure
-                    nightsummary[sumi, 40] = ffp[i]  #use the lowest foldername as foldername name
+                    nightsummary[sumi, 41] = ffd[i]  #full filename structure
+                    nightsummary[sumi, 42] = ffp[i]  #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 }  #run through definitions
@@ -1033,13 +1039,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         if (length(nnights.list) == 0) {
           # if there were no nights to analyse
           nightsummary[sumi, 1:2] = c(accid, 0)
-          nightsummary[sumi, 3:30] = NA
-          nightsummary[sumi, 31] = fnames[i]
-          nightsummary[sumi, 32] = 4  #cleaningcode = 4 (no nights of accelerometer available)
-          nightsummary[sumi, 33:34] = c(FALSE, TRUE)  #sleeplog_used acc_available
-          nightsummary[sumi, 35:38] = NA
+          nightsummary[sumi, 3:32] = NA
+          nightsummary[sumi, 33] = fnames[i]
+          nightsummary[sumi, 34] = 4  #cleaningcode = 4 (no nights of accelerometer available)
+          nightsummary[sumi, 35:36] = c(FALSE, TRUE)  #sleeplog_used acc_available
+          nightsummary[sumi, 37:40] = NA
           if (params_output[["storefolderstructure"]] == TRUE) {
-            nightsummary[sumi, 39:40] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi, 41:42] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }
