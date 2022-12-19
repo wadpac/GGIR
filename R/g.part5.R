@@ -947,7 +947,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               cosinor_coef = applyCosinorAnalyses(ts = ts[, c("time", "ACC")],
                                                   qcheck = ts$nonwear,
                                                   midnightsi = nightsi,
-                                                  epochsizes = c(ws3, ws3))
+                                                  epochsizes = c(ws3new, ws3new))
               if (length(cosinor_coef) > 0) {
                 # assign same value to all rows to ease creating reports
                 dsummary[,fi]  = c(cosinor_coef$timeOffsetHours)
@@ -1084,7 +1084,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
-                           "extract_params", "load_params", "check_params")
+                           "extract_params", "load_params", "check_params", "cosinorAnalyses",
+                           "applyCosinorAnalyses")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
