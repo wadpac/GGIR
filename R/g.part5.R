@@ -950,43 +950,52 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   epochsizes = c(ws3new, ws3new))
               if (length(cosinor_coef) > 0) {
                 # assign same value to all rows to ease creating reports
-                dsummary[,fi]  = c(cosinor_coef$timeOffsetHours)
+                dsummary[1:di, fi]  = c(cosinor_coef$timeOffsetHours)
                 ds_names[fi]  = c("cosinor_timeOffsetHours")
                 fi = fi + 1
-                try(expr = {dsummary[, fi:(fi + 4)]  = as.numeric(c(cosinor_coef$coef$params$mes,
-                                                                     cosinor_coef$coef$params$amp,
-                                                                     cosinor_coef$coef$params$acr,
-                                                                     cosinor_coef$coef$params$acrotime,
-                                                                     cosinor_coef$coef$params$ndays))}, silent = TRUE)
-                ds_names[fi:(fi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
-                                         "cosinor_acrotime", "cosinor_ndays")
-                fi = fi + 5
-                try(expr = {dsummary[, fi:(fi + 9)]  = c(cosinor_coef$coefext$params$minimum,
-                                                          cosinor_coef$coefext$params$amp,
-                                                          cosinor_coef$coefext$params$alpha,
-                                                          cosinor_coef$coefext$params$beta,
-                                                          cosinor_coef$coefext$params$acrotime,
-                                                          cosinor_coef$coefext$params$UpMesor,
-                                                          cosinor_coef$coefext$params$DownMesor,
-                                                          cosinor_coef$coefext$params$MESOR,
-                                                          cosinor_coef$coefext$params$ndays,
-                                                          cosinor_coef$coefext$params$F_pseudo)}, silent = TRUE)
-                ds_names[fi:(fi + 9)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
-                                         "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
-                                         "cosinorExt_DownMesor", "cosinorExt_MESOR",
-                                         "cosinorExt_ndays", "cosinorExt_F_pseudo")
-                fi = fi + 10
-                dsummary[fi:(fi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
-                                              cosinor_coef$IVIS$IntradailyVariability)
+                try(expr = {dsummary[1:di, fi:(fi + 5)]  = matrix(rep(as.numeric(c(cosinor_coef$coef$params$mes,
+                                                                    cosinor_coef$coef$params$amp,
+                                                                    cosinor_coef$coef$params$acr,
+                                                                    cosinor_coef$coef$params$acrotime,
+                                                                    cosinor_coef$coef$params$ndays,
+                                                                    cosinor_coef$coef$params$R2)), times = di), nrow = di, byrow = TRUE)},
+                    silent = TRUE)
+                
+                ds_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                                          "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
+                fi = fi + 6
+                try(expr = {dsummary[1:di, fi:(fi + 10)]  = matrix(rep(c(cosinor_coef$coefext$params$minimum,
+                                                         cosinor_coef$coefext$params$amp,
+                                                         cosinor_coef$coefext$params$alpha,
+                                                         cosinor_coef$coefext$params$beta,
+                                                         cosinor_coef$coefext$params$acrotime,
+                                                         cosinor_coef$coefext$params$UpMesor,
+                                                         cosinor_coef$coefext$params$DownMesor,
+                                                         cosinor_coef$coefext$params$MESOR,
+                                                         cosinor_coef$coefext$params$ndays,
+                                                         cosinor_coef$coefext$params$F_pseudo,
+                                                         cosinor_coef$coefext$params$R2), times = di), nrow = di, byrow = TRUE)},
+                    silent = TRUE)
+                ds_names[fi:(fi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                          "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                          "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                          "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
+                fi = fi + 11
+                dsummary[1:di, fi:(fi + 1)]  = matrix(rep(c(cosinor_coef$IVIS$InterdailyStability,
+                                              cosinor_coef$IVIS$IntradailyVariability), times = di), nrow = di)
                 ds_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
                 fi = fi + 2
+              } else {
+                cosinor_coef = c()
+                fi = fi + 20
               }
             } else {
               cosinor_coef = c()
+              fi = fi + 20
             }
-            
             #===============================================================
           }
+          
         }
         if ("angle" %in% colnames(ts)) {
           ts = ts[, -which(colnames(ts) == "angle")]
@@ -998,7 +1007,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-        
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW

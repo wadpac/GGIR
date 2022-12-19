@@ -30,5 +30,16 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
                 IVIS_acc_threshold = log(20 + 1),
                 IVIS_per_daypair = TRUE) # take log, because Xi is logtransformed with offset of 1
   
+  coefext$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedYext)^2
+  coef$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedY)^2
+  
+  # # this should equal: https://en.wikipedia.org/wiki/Coefficient_of_determination
+  # yi = coefext$cosinor_ts$original
+  # fi = coefext$cosinor_ts$fittedY
+  # meanY = mean(coefext$cosinor_ts$original)
+  # SSres = sum((yi - fi)^2)
+  # SStot = sum((y - meanY)^2)
+  # R2 = 1 - (SSres / SStot)
+  
   invisible(list(coef = coef, coefext = coefext, IVIS = IVIS))
 }

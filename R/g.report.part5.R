@@ -174,7 +174,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                     uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
                                     "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "")
                 # store all summaries in csv files with cleaning criteria
-                validdaysi = getValidDayIndices(OF3,includedaycrit.part5, excludefirstlast.part5, window = uwi[j])
+                validdaysi = getValidDayIndices(OF3, includedaycrit.part5, excludefirstlast.part5, window = uwi[j])
                 data.table::fwrite(x = OF3_clean[validdaysi, colsWithoutCosinor],
                                    file = paste(metadatadir, "/results/part5_daysummary_",
                                                  uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V",
