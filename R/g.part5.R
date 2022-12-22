@@ -430,7 +430,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
-           
+            backup_cosinor_MM = backup_cosinor_WW = NULL
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
@@ -911,7 +911,78 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         }
                       }
                     }
+                    
+                    #===============================================================
+                    # Cosinor analyses based on only the data used for GGIR part5
+                    if (params_247[["cosinor"]] == TRUE) {
+                      if ((timewindowi == "MM" & length(backup_cosinor_MM) == 0) |
+                          (timewindowi == "WW" & length(backup_cosinor_WW) == 0)) {
+                        # avoid computing same parameter twice because this part of the code is
+                        # not dependent on the lig, mod, vig thresholds
+                        cosinor_coef = applyCosinorAnalyses(ts = ts[which(ts$window != 0), c("time", "ACC")],
+                                                            qcheck = ts$nonwear[which(ts$window != 0)],
+                                                            midnightsi = nightsi,
+                                                            epochsizes = c(ws3new, ws3new))
+                        if (timewindowi == "MM") {
+                          backup_cosinor_MM = cosinor_coef
+                        } else if (timewindowi == "WW") {
+                          backup_cosinor_WW = cosinor_coef
+                        }
+                      } else {
+                        if (timewindowi == "MM") {
+                          cosinor_coef = backup_cosinor_MM
+                        } else if (timewindowi == "WW") {
+                          cosinor_coef = backup_cosinor_WW
+                        }
+                      }
+                      if (length(cosinor_coef) > 0) {
+                        # assign same value to all rows to ease creating reports
+                        dsummary[1:di, fi]  = c(cosinor_coef$timeOffsetHours)
+                        ds_names[fi]  = c("cosinor_timeOffsetHours")
+                        fi = fi + 1
+                        try(expr = {dsummary[1:di, fi:(fi + 5)]  = matrix(rep(as.numeric(c(cosinor_coef$coef$params$mes,
+                                                                                           cosinor_coef$coef$params$amp,
+                                                                                           cosinor_coef$coef$params$acr,
+                                                                                           cosinor_coef$coef$params$acrotime,
+                                                                                           cosinor_coef$coef$params$ndays,
+                                                                                           cosinor_coef$coef$params$R2)), times = di), nrow = di, byrow = TRUE)},
+                            silent = TRUE)
+                        
+                        ds_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
+                        fi = fi + 6
+                        try(expr = {dsummary[1:di, fi:(fi + 10)]  = matrix(rep(c(cosinor_coef$coefext$params$minimum,
+                                                                                 cosinor_coef$coefext$params$amp,
+                                                                                 cosinor_coef$coefext$params$alpha,
+                                                                                 cosinor_coef$coefext$params$beta,
+                                                                                 cosinor_coef$coefext$params$acrotime,
+                                                                                 cosinor_coef$coefext$params$UpMesor,
+                                                                                 cosinor_coef$coefext$params$DownMesor,
+                                                                                 cosinor_coef$coefext$params$MESOR,
+                                                                                 cosinor_coef$coefext$params$ndays,
+                                                                                 cosinor_coef$coefext$params$F_pseudo,
+                                                                                 cosinor_coef$coefext$params$R2), times = di), nrow = di, byrow = TRUE)},
+                            silent = TRUE)
+                        ds_names[fi:(fi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                                   "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
+                        fi = fi + 11
+                        dsummary[1:di, fi:(fi + 1)]  = matrix(rep(c(cosinor_coef$IVIS$InterdailyStability,
+                                                                    cosinor_coef$IVIS$IntradailyVariability), times = di), nrow = di)
+                        ds_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
+                        fi = fi + 2
+                      } else {
+                        cosinor_coef = c()
+                        fi = fi + 20
+                      }
+                    } else {
+                      cosinor_coef = c()
+                      fi = fi + 20
+                    }
+                    
                   }
+                  
                   if (params_output[["save_ms5rawlevels"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
@@ -941,58 +1012,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 }
               }
             }
-            #===============================================================
-            # Cosinor analyses based on only the data used for GGIR part5
-            if (params_247[["cosinor"]] == TRUE) {
-              cosinor_coef = applyCosinorAnalyses(ts = ts[, c("time", "ACC")],
-                                                  qcheck = ts$nonwear,
-                                                  midnightsi = nightsi,
-                                                  epochsizes = c(ws3new, ws3new))
-              if (length(cosinor_coef) > 0) {
-                # assign same value to all rows to ease creating reports
-                dsummary[1:di, fi]  = c(cosinor_coef$timeOffsetHours)
-                ds_names[fi]  = c("cosinor_timeOffsetHours")
-                fi = fi + 1
-                try(expr = {dsummary[1:di, fi:(fi + 5)]  = matrix(rep(as.numeric(c(cosinor_coef$coef$params$mes,
-                                                                    cosinor_coef$coef$params$amp,
-                                                                    cosinor_coef$coef$params$acr,
-                                                                    cosinor_coef$coef$params$acrotime,
-                                                                    cosinor_coef$coef$params$ndays,
-                                                                    cosinor_coef$coef$params$R2)), times = di), nrow = di, byrow = TRUE)},
-                    silent = TRUE)
-                
-                ds_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
-                                          "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
-                fi = fi + 6
-                try(expr = {dsummary[1:di, fi:(fi + 10)]  = matrix(rep(c(cosinor_coef$coefext$params$minimum,
-                                                         cosinor_coef$coefext$params$amp,
-                                                         cosinor_coef$coefext$params$alpha,
-                                                         cosinor_coef$coefext$params$beta,
-                                                         cosinor_coef$coefext$params$acrotime,
-                                                         cosinor_coef$coefext$params$UpMesor,
-                                                         cosinor_coef$coefext$params$DownMesor,
-                                                         cosinor_coef$coefext$params$MESOR,
-                                                         cosinor_coef$coefext$params$ndays,
-                                                         cosinor_coef$coefext$params$F_pseudo,
-                                                         cosinor_coef$coefext$params$R2), times = di), nrow = di, byrow = TRUE)},
-                    silent = TRUE)
-                ds_names[fi:(fi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
-                                          "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
-                                          "cosinorExt_DownMesor", "cosinorExt_MESOR",
-                                          "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
-                fi = fi + 11
-                dsummary[1:di, fi:(fi + 1)]  = matrix(rep(c(cosinor_coef$IVIS$InterdailyStability,
-                                              cosinor_coef$IVIS$IntradailyVariability), times = di), nrow = di)
-                ds_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
-                fi = fi + 2
-              } else {
-                cosinor_coef = c()
-                fi = fi + 20
-              }
-            } else {
-              cosinor_coef = c()
-              fi = fi + 20
-            }
+           
             #===============================================================
           }
           
@@ -1093,7 +1113,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
                            "extract_params", "load_params", "check_params", "cosinorAnalyses",
-                           "applyCosinorAnalyses")
+                           "applyCosinorAnalyses", "g.IVIS")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
