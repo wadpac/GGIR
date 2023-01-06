@@ -32,25 +32,23 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplog, accid = c()) {
   }
   # get matching identifier from sleeplog
   if (dolog == TRUE) { 
-    # backup version
-    accid_bu = accid
     
     # convert to character
     logid = as.character(sleeplog$ID)
-    accid = as.character(accid)
+    accid2 = as.character(accid)
     
     # remove spaces in ID, to ease matching, because some accelerometer brands at several spaces behind ID
     logid = gsub(pattern = " ", replacement = "", x = as.character(logid))
-    accid = gsub(pattern = " ", replacement = "", x = as.character(accid))
+    accid2 = gsub(pattern = " ", replacement = "", x = as.character(accid2))
     
     # attempt to match 1 - works if both IDs are identical
-    matching_indices_sleeplog = which(logid == accid)
+    matching_indices_sleeplog = which(logid == accid2)
     matched = length(matching_indices_sleeplog)
     matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
     
     # attempt to match 2 - ignore case
     if (matched == 0) {
-      matching_indices_sleeplog = which(tolower(logid) == tolower(accid))
+      matching_indices_sleeplog = which(tolower(logid) == tolower(accid2))
       matched = length(matching_indices_sleeplog)
       matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
     } 
@@ -58,9 +56,9 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplog, accid = c()) {
     # attempt to match 3 - get rid of letters
     if (matched == 0) {
       # remove all letters
-      accid = gsub("[^0-9.-]", "", accid)
+      accid2 = gsub("[^0-9.-]", "", accid2)
       logid = gsub("[^0-9.-]", "", sleeplog$ID)
-      matching_indices_sleeplog = which(logid == accid)
+      matching_indices_sleeplog = which(logid == accid2)
       matched = length(matching_indices_sleeplog)
       matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
     }
@@ -68,9 +66,9 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplog, accid = c()) {
     # attempt to match 4 - get rid of extra leading 0s
     if (matched == 0) {
       # remove leading zeros
-      accid = gsub("^0+", "", accid)
+      accid2 = gsub("^0+", "", accid2)
       logid = gsub("^0+", "", logid)
-      matching_indices_sleeplog = which(logid == accid)
+      matching_indices_sleeplog = which(logid == accid2)
       matched = length(matching_indices_sleeplog)
       matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
     }
