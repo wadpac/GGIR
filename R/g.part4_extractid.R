@@ -75,9 +75,10 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplog, accid = c()) {
     
     # if matched to more than one entrance in sleeplog, warn the user
     if (length(matched_unique) > 1) {
-      warning(paste0("\n", as.character(accid_bu), " matched to more than one entrance ",
+      warning(paste0("\n", as.character(accid), " matched to more than one entrance ",
                      "in the sleeplog (i.e., ", paste(as.character(matched_unique), collapse = ", "), 
-                     ").\nPlease revise the IDs in your sleeplog"))
+                     ").\nPlease revise the IDs in your sleeplog. ", matched_unique[1], " used."))
+      matching_indices_sleeplog = which(sleeplog$ID == matched_unique[1])
     }
   } else if (dolog == FALSE) { 
     matching_indices_sleeplog = 1

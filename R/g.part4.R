@@ -190,7 +190,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
       accid = c()
-      logid = c()  # keep track of what log id matched to accid
+      logid = NA  # keep track of what log id matched to accid
       if (length(ID) > 0) {
         if (!is.na(ID)) {
           # continue with same ID as extracted in GGIR parts 1-3:
@@ -209,7 +209,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                  sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
-        logid = sleeplog$ID[wi][1]
+        if (dolog == TRUE) logid = sleeplog$ID[wi][1]
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
         if (length(params_sleep[["nnights"]]) == 0) {
