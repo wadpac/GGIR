@@ -359,7 +359,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
                   vari2 = rbind(vari2, vari)
                 } else {
-                  varnum = c(varnum, rep(NA, abs(difference)))
+                  a56 = length(averageday[,(mi - 1)]) - abs(difference)
+                  a57 = length(averageday[, (mi - 1)])
+                  varnum = c(varnum,averageday[a56:a57, (mi - 1)])
                   # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
                   if (abs(difference) > 0) recorded = 1:abs(difference)
                   # impute vari timestamp as well
