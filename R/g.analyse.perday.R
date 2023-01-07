@@ -120,7 +120,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     }
     if (qqq2 > nrow(metashort)) qqq2 = nrow(metashort)
     vari = as.matrix(metashort[qqq1:qqq2, ])
-    vari2 = vari #vari2 is used in identify_levels when WornDuringSleep = FALSE
     val = qcheck[qqq1:qqq2]
     nvalidhours_qwindow = rep(0, length(params_247[["qwindow"]]) - 1)
     nhours_qwindow = rep(0, length(params_247[["qwindow"]]) - 1)
@@ -325,6 +324,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
+              vari2 = vari #vari2 is used in identify_levels when WornDuringSleep = FALSE, need to redefine here in every loop to account for qwindows
+              # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
+              recorded = 1:length(varnum) # this is redefined for first and last day
               if (isTRUE(params_cleaning[["part2ExcludeNonwear"]])) {
                 varnum[which(val != 0)] = NA
               }
@@ -333,8 +335,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               if (NRV < length(averageday[, (mi - 1)])) { # modified to avoid imputing time in the daylight saving days (25-h long, then they meet the condition NRV != nrow(averageday))
                 difference = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
-                  # varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
-                  varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h
+                  varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
+                  if (abs(difference) > 0) recorded = abs(difference):length(varnum)
+                  # varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h
                   # readjust anwi indices in case that varnum has been imputed
                   if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                     anwi_t0 = anwi_t0 + abs(difference)
@@ -356,6 +360,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   vari2 = rbind(vari2, vari)
                 } else {
                   varnum = c(varnum, rep(NA, abs(difference)))
+                  # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
+                  if (abs(difference) > 0) recorded = 1:abs(difference)
                   # impute vari timestamp as well
                   vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
                   colnames(vari2) = colnames(vari)
@@ -500,7 +506,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (doilevels == TRUE) {
                   q48 = c()
                   #times 1000 to convert to mg only if it g-unit metric
-                  q47 = cut((varnum * UnitReScale), breaks = params_247[["ilevels"]], right = FALSE)
+                  q47 = cut((varnum[recorded] * UnitReScale), breaks = params_247[["ilevels"]], right = FALSE)
                   q47 = table(q47)
                   q48  = (as.numeric(q47) * ws3) / 60 #converting to minutes
                   keepindex_48[mi - 1,] = c(fi, (fi + (length(q48) - 1)))
@@ -545,9 +551,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       mvpa[1:6] = 0
                     } else {
                       # METHOD 1: time spent above threhold based on 5 sec epoch
-                      mvpa[1] = length(which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai])) / (60/ws3) #time spent MVPA in minutes
+                      mvpa[1] = length(which(varnum[recorded] * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai])) / (60/ws3) #time spent MVPA in minutes
                       # METHOD 2: time spent above threshold based on 1minute epoch
-                      varnum_NA2zero = replace(varnum, which(is.na(varnum)), 0)
+                      varnum_NA2zero = replace(varnum[recorded], which(is.na(varnum[recorded])), 0)
                       varnum2 = cumsum(c(0, varnum_NA2zero))
                       select = seq(1, length(varnum2), by = 60/ws3)
                       varnum3 = diff(varnum2[round(select)]) / abs(diff(round(select)))
@@ -558,23 +564,23 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       mvpa[3] = length(which(varnum3 * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai])) * 5 #time spent MVPA in minutes
                       # METHOD 4: time spent above threshold
                       boutduration = params_phyact[["mvpadur"]][1] * (60/ws3) # per minute
-                      rr1 = matrix(0, length(varnum), 1)
-                      p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
+                      rr1 = matrix(0, length(varnum[recorded]), 1)
+                      p = which(varnum[recorded] * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
                                              boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
                       mvpa[4] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
                       
                       # METHOD 5: time spent above threshold 5 minutes
                       boutduration = params_phyact[["mvpadur"]][2] * (60/ws3) #per five minutes
-                      rr1 = matrix(0, length(varnum), 1)
-                      p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
+                      rr1 = matrix(0, length(varnum[recorded]), 1)
+                      p = which(varnum[recorded] * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
                                              boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
                       mvpa[5] = length(which(getboutout == 1))   / (60/ws3) #time spent MVPA in minutes
                       # METHOD 6: time spent above threshold 10 minutes
                       boutduration = params_phyact[["mvpadur"]][3] * (60/ws3) # per ten minutes
-                      rr1 = matrix(0,length(varnum),1)
-                      p = which(varnum * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
+                      rr1 = matrix(0,length(varnum[recorded]),1)
+                      p = which(varnum[recorded] * UnitReScale >= params_phyact[["mvpathreshold"]][mvpai]); rr1[p] = 1
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
                                              boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
                       mvpa[6] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
@@ -602,7 +608,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # sleep as inactivity
                 if (isFALSE(params_general[["WornDuringSleep"]])) {
                   ts = data.frame(time = vari2[,1],
-                                  ACC = varnum * UnitReScale,
+                                  ACC = vari2[,mi] * UnitReScale,
                                   diur = 0, # consider all recorded time as awake (except nonwear)
                                   sibdetection = 0)
                   for (TRLi in params_phyact[["threshold.lig"]]) {
