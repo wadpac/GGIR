@@ -233,9 +233,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       }
     \item{AskedToWear247}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["AskedToWear247"]]}).
-        Whether the sensor was worn during sleep hours. If it is FALSE, then the invalid time is imputed by 0 at the epoch level,
-        instead of the standard imputation carried out in GGIR (i.e., by means of the acceleration metric in the same time interval from
-        the rest days of the measurement)
+        Whether the sensor was worn during sleep hours. If it is FALSE, then the invalid time 
+        is imputed by 0 at the epoch level, instead of the standard imputation carried out in 
+        GGIR (i.e., by means of the acceleration metric in the same time interval from the rest 
+        days of the measurement). See section 2.3.7 in the main vignette: 
+        https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html
       }
     }
   }
@@ -707,14 +709,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         set to 0 for all metrics, except for EN that will be set to 1. If FALSE, then the standard imputation
         in GGIR (average of the rest of the days for the same time interval) is performed. Only recommended
         when long periods of non-wear are expected so that they could bias the data imputation, 
-        e.g., when participants were told not to wear the device during sleep.}
+        e.g., when participants were told not to wear the device during sleep. See section 2.3.7 in
+        the main vignette: https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html}
         
       \item{part2ExcludeNonwear}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["part2ExcludeNonwear"]])}).
         If TRUE, then the detected invalid time (either nonwear or clipping) will be
         not be included in the reports from GGIR (only implemented in the part 2 reports). Only recommended
         when long periods of non-wear are expected so that they could bias the data imputation, 
-        e.g., when participants were told not to wear the device during sleep.}
+        e.g., when participants were told not to wear the device during sleep. See section 2.3.7 in
+        the main vignette: https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html}
 
       \item{data_cleaning_file}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_cleaning"]][["data_cleaning_file"]])}).
