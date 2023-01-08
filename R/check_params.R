@@ -116,7 +116,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder", "expand_tail_max_hours")
-    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds", "WornDuringSleep")
+    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds", "AskedToWear247")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
@@ -239,7 +239,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
   }
-  if (isFALSE(params_general[["WornDuringSleep"]])) {
+  if (isFALSE(params_general[["AskedToWear247"]])) {
     if (isFALSE(params_cleaning[["part2ImpWithZero"]])) {
       params_cleaning[["part2ImpWithZero"]] = TRUE
       warning("\nSetting argument part2ImpWithZero to TRUE to avoid a biased imputation beacuse the device was not worn during sleep.")

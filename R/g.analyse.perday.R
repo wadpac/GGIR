@@ -324,7 +324,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
-              vari2 = vari #vari2 is used in identify_levels when WornDuringSleep = FALSE, need to redefine here in every loop to account for qwindows
+              vari2 = vari #vari2 is used in identify_levels when AskedToWear247 = FALSE, need to redefine here in every loop to account for qwindows
               # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
               recorded = 1:length(varnum) # this is redefined for first and last day
               if (isTRUE(params_cleaning[["part2ExcludeNonwear"]])) {
@@ -480,7 +480,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
                 if (doquan == TRUE) {
                   q46 = c()
-                  if (isFALSE(params_general[["WornDuringSleep"]])) {
+                  if (isFALSE(params_general[["AskedToWear247"]])) {
                     # if not worn during sleep, NAs to 0 to keep consistency
                     # in the window length for percentiles
                     varnum_NA2zero = replace(varnum, which(is.na(varnum)), 0)
@@ -608,7 +608,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # we consider all the recorded time to be awake time (except nonwear)
                 # and we can calculate sedentary and light bouts without misclassifying
                 # sleep as inactivity
-                if (isFALSE(params_general[["WornDuringSleep"]])) {
+                if (isFALSE(params_general[["AskedToWear247"]])) {
                   ts = data.frame(time = vari2[,1],
                                   ACC = vari2[,mi] * UnitReScale,
                                   diur = 0, # consider all recorded time as awake (except nonwear)

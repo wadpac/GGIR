@@ -231,8 +231,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series 
         output to avoid biased output.
       }
-    \item{WornDuringSleep}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["WornDuringSleep"]]}).
+    \item{AskedToWear247}{
+        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["AskedToWear247"]]}).
         Whether the sensor was worn during sleep hours. If it is FALSE, then the invalid time is imputed by 0 at the epoch level,
         instead of the standard imputation carried out in GGIR (i.e., by means of the acceleration metric in the same time interval from
         the rest days of the measurement)
