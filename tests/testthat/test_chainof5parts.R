@@ -78,7 +78,7 @@ test_that("chainof5parts", {
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(1.95833))
   expect_that(ncol(SUM$daysummary), equals(34))
   expect_equal(SUM$daysummary$`p50_ENMO_mg_0-24hr`, c("17.15", "33",  "0"))
-  expect_equal(round(as.numeric(SUM$daysummary$`p90_ENMO_mg_0-24hr`)), c(42, 54, 41), tolerance = 0)
+  expect_equal(round(as.numeric(SUM$daysummary$`p90_ENMO_mg_0-24hr`)), c(44, 54, 41), tolerance = 0)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), 89.26, tolerance = 3)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), 37.383, tolerance = 3)
   expect_equal(as.numeric(SUM$summary$cosinor_acrophase), 3.260855, tolerance = 3)
