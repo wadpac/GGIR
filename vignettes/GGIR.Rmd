@@ -286,14 +286,6 @@ for that.
     re-running parts of the pipeline.
 -   `idloc` - tells GGIR where to find the participant ID (default:
     inside file header)
--   `strategy` - informs GGIR how to consider the design of the
-    experiment.
-    -   If `strategy` is set to value 1, then check out arguments
-        `hrs.del.start` and `hrs.del.end`.
-    -   If `strategy` is set to value 3, then check out arguments
-        `ndayswindow`.
--   `maxdur` - maximum number of days you expect in a data file based on
-    the study protocol.
 -   `desiredtz` - time zone of the experiment.
 -   `chunksize` - a way to tell GGIR to use less memory, which can be
     useful on machines with limited memory.
@@ -531,6 +523,39 @@ file in the root of the output folder will be overwritten every time you
 use `GGIR`. So, if you would like to add annotations in the file, e.g.
 in the fourth column, then you will need to store it somewhere outside
 the output folder and explicitly point to it with `configfile` argument.
+
+### Tailoring GGIR to study protocol
+
+Usual study protocols to collect multiday accelerometer raw data last one
+week, either asking participants to wear accelerometers allday long (i.e., 24/7)
+or only the time they are awake. GGIR includes a number of arguments to 
+facilitate the processing of files collected with different study protocols. 
+For example:
+
+-   `strategy` - informs GGIR how to consider the design of the
+    experiment.
+    -   If `strategy` is set to value 1, then check out arguments
+        `hrs.del.start` and `hrs.del.end`.
+    -   If `strategy` is set to value 2, then GGIR will use the data
+        available between the first and the last midnight.
+    -   If `strategy` is set to value 3, then check out arguments
+        `ndayswindow`.
+    -   If `strategy` is set to value 4, then GGIR will use the data
+        from the first midnight until the very end of the file.
+-   `maxdur` - maximum number of days you expect in a data file based on
+    the study protocol.
+-   `AskedToWear247` - whether participants were instructed to wear the devices
+    during awake and sleep time or not. If `AskedToWear247 == FALSE`, then check
+    out arguments `part2ImpWithZero` and `part2ExcludeNonwear`.
+-   `part2ImpWithZero` - If `AskedToWear247 == FALSE`, this will be automatically set to 
+    `TRUE` by GGIR. Then, the acceleration metric of interest during nonwear time 
+    will be imputed by 0 to avoid bias from the imputation of long nonwear periods.
+-   `part2ExcludeNonwear` - If `AskedToWear247 == FALSE`, this will be automatically set to 
+    `TRUE` by GGIR. Then, the detected nonwear time will be excluded from the 
+    analysis to avoid the overestimation of activities characterized by low
+    acceleration values.
+
+
 
 # Time for action: How to run your analysis?
 

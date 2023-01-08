@@ -17,6 +17,7 @@
     part2ExcludeNonwear).
     \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the 
     devices are not worn during sleep (no need to define the SPT in parts 3 & 4). Argument WornDuringSleep.
+    \item Vignettes: main vignette now includes paragraph on handling study protocol.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
