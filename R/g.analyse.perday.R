@@ -385,6 +385,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                   varnum = as.numeric(varnum[anwindices]) #cut short varnum to match day segment of interest
                   vari2 = vari2[anwindices,] #cut short vari2 (used in identify_levels) to match day segment of interest
+                  recorded = which(anwindices %in% recorded)
                 } else {
                   varnum = c()
                 }
@@ -549,7 +550,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (domvpa == TRUE) {
                   for (mvpai in 1:length(params_phyact[["mvpathreshold"]])) {
                     mvpa = rep(0,6)
-                    if (length(varnum) < 100) {
+                    if (length(varnum) < max(params_phyact[["mvpadur"]]) * (60/ws3)) { # 2023-01-17: changed to be at leats 1 * longest bout duration defined
                       mvpa[1:6] = 0
                     } else {
                       # METHOD 1: time spent above threhold based on 5 sec epoch
