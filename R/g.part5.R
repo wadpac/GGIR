@@ -206,6 +206,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # Check if temperature and light are availble
         if (lightpeak_available == TRUE) {
           luz = M$metalong$lightpeak
+          # turn to numeric in case it is a factor
+          if (is.factor(luz)) {
+            luz = as.numeric(as.character(luz))
+          }
           if (length(params_247[["LUX_cal_constant"]]) > 0 &
               length(params_247[["LUX_cal_exponent"]]) > 0) { # re-calibrate light
             luz = params_247[["LUX_cal_constant"]] * exp(params_247[["LUX_cal_exponent"]] * luz)
