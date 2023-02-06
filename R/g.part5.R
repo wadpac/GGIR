@@ -919,10 +919,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           (timewindowi == "WW" & length(backup_cosinor_WW) == 0)) {
                         # avoid computing same parameter twice because this part of the code is
                         # not dependent on the lig, mod, vig thresholds
-                        cosinor_coef = applyCosinorAnalyses(ts = ts[which(ts$window != 0), c("time", "ACC")],
+                        acc4cos = ts[which(ts$window != 0), c("time", "ACC")]
+                        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
+                        cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
                                                             qcheck = ts$nonwear[which(ts$window != 0)],
                                                             midnightsi = nightsi,
                                                             epochsizes = c(ws3new, ws3new))
+                        rm(acc4cos)
                         if (timewindowi == "MM") {
                           backup_cosinor_MM = cosinor_coef
                         } else if (timewindowi == "WW") {
