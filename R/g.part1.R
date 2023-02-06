@@ -462,7 +462,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                            "g.getstarttime", "POSIXtime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                           "g.extractheadervars", "g.imputeTimegaps", "parseGT3Xggir")
+                           "g.extractheadervars", "g.imputeTimegaps")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.
