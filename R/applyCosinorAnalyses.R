@@ -37,7 +37,7 @@ applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
     midnightsi_ws3 = (midnightsi - 1) * (ws2 / ws3)
     timeOffsetHours = (midnightsi_ws3[which(midnightsi_ws3 >= firstvalid - 1)[1]] - (firstvalid - 1)) / (3600 / ws3)
     if (ws3 < 60) {
-      # If epochsize < 1 minute then aggregate to 1 minute by taking maximum value
+      # If epochsize < 1 minute then aggregate to 1 minute by taking average value
       # but keep NA values
       XTtime = rep(1:length(Xi), each = 60 / ws3)
       XT = data.frame(Xi = Xi, time = XTtime[1:length(Xi)])
@@ -54,18 +54,15 @@ applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
       if (length(which(is.nan(XT$Xi) == TRUE)) > 0) {
         is.na(XT$Xi[which(is.nan(XT$Xi) == TRUE)]) = TRUE
       }
-      # experimental: clip all peaks above Xth percentile?
-      # Q9 = quantile(x = XT$Xi, probs = 0.75, na.rm = TRUE)
-      # XT$Xi[which(XT$Xi >= Q9)] = Q9
-      
-      # log transform of data in millig
-      notna = !is.na(XT$Xi)
-      XT$Xi[notna] = log((XT$Xi[notna]*1000) + 1) 
       Xi = XT$Xi
       epochsize = 60
     } else {
       epochsize = ws3
     }
+    # log transform of data in millig
+    notna = !is.na(Xi)
+    Xi[notna] = log((Xi[notna]*1000) + 1)
+  
     cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, timeOffsetHours = timeOffsetHours) 
     cosinor_coef$timeOffsetHours = timeOffsetHours
   } else {
