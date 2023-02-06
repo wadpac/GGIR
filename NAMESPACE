@@ -48,7 +48,7 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv",
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed", "na.pass",
-            "residuals", "fitted")
+            "residuals", "fitted", "cor")
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help")
