@@ -407,7 +407,6 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
                                                     na.rm = TRUE)
                   personSummarynames = c(personSummarynames, paste("number_sib_wakinghours_", TW, "_", udefn[j],
                                                                    "_mn", sep = ""), paste("number_sib_wakinghours_", TW, "_", udefn[j], "_sd", sep = ""))
-                  
                   personSummary[i, (cnt + 15)] = mean(nightsummary.tmp$duration_sib_wakinghours_atleast15min[indexUdef],
                                                       na.rm = TRUE)
                   personSummary[i, (cnt + 16)] = sd(nightsummary.tmp$duration_sib_wakinghours_atleast15min[indexUdef],
@@ -443,8 +442,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
                                                                    udefn[j], "_mn", sep = ""), paste("average_dur_sib_wakinghours_", TW, "_", udefn[j],
                                                                                                      "_sd", sep = ""))
                   NDAYsibd = length(which(nightsummary.tmp$number_sib_wakinghours[indexUdef] > 0))
-                  if (length(NDAYsibd) == 0)
-                    NDAYsibd = 0
+                  if (length(NDAYsibd) == 0) NDAYsibd = 0
                   personSummary[i, (cnt + 23)] = NDAYsibd
                   personSummarynames = c(personSummarynames, paste("n_days_w_sib_wakinghours_", TW, "_",
                                                                    udefn[j], sep = ""))
@@ -465,7 +463,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(), f
                   personSummary[i, (cnt + 31)] = sd(nightsummary.tmp$SriFractionValid[indexUdef], na.rm = TRUE)
                   personSummarynames = c(personSummarynames, paste("SriFractionValid_", TW, "_", udefn[j],
                                                                    "_mn", sep = ""), paste("SriFractionValid_", TW, "_", udefn[j], "_sd", sep = ""))
-                  cnt = cnt + 27
+                  cnt = cnt + 31
                   if (sleepwindowType == "TimeInBed") {
                     personSummary[i, (cnt + 1)] = mean(nightsummary.tmp$sleepefficiency[indexUdef], na.rm = TRUE)
                     personSummary[i, (cnt + 2)] = sd(nightsummary.tmp$sleepefficiency[indexUdef], na.rm = TRUE)
