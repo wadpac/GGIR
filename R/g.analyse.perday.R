@@ -318,25 +318,51 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
           if (length(anwindices) > 0) {
             minames = colnames(metashort)
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
+              #=======================================
+              # Check amount of data in a day and standardise it to 24 hours
+              # such that time spent in intensity levels calculated with the
+              # ilevels argument always adds up to 24 hours
+              
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
-              varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
-              # # if this is the first or last day and it has more than includedaycrit number of days then expand it
-              # Comment out the following 10 lines if you want to include only the actual data
-              if (NRV != length(averageday[, (mi - 1)])) {
-                difference = NRV - length(averageday[, (mi - 1)])
+              # Note: vari equals the imputed time series (metahsort) data from one day
+              varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              deltaLength = NRV - length(averageday[, (mi - 1)])
+              # if this is the first or last day and it has more than includedaycrit number of hours then expand it
+              deltaLength = NRV - length(averageday[, (mi - 1)])
+              if (deltaLength < 0) {
+                # Less than 24 hours append data from averageday
+                deltaLength = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
-                  varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  # On first day of recording append the average day to the start
+                  varnum = c(averageday[1:abs(deltaLength), (mi - 1)], varnum)
                   # readjust anwi indices in case that varnum has been imputed
                   if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
-                    anwi_t0 = anwi_t0 + abs(difference)
-                    anwi_t1 = anwi_t1 + abs(difference)
+                    anwi_t0 = anwi_t0 + abs(deltaLength)
+                    anwi_t1 = anwi_t1 + abs(deltaLength)
                     # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
                     anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
                   }
                 } else {
-                  a56 = length(averageday[,(mi - 1)]) - abs(difference)
-                  a57 = length(averageday[, (mi - 1)])
-                  varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                  # When it is not the first day of recording append the average day to the end
+                  # This would apply to last day of the recording or if day has 23 hours
+                  if (NRV == 23) { # day has 23 hours (assuming DST)
+                    startMissingHour = 2 * 60 * (60/ws3) + 1
+                    enMissingHour = 3 * 60 * (60/ws3)
+                    varnum = c(varnum[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, (mi - 1)],
+                               varnum[startMissingHour, length(varnum)])
+                  } else { # day has less than 24 hours for another reason
+                    a56 = length(averageday[,(mi - 1)]) - abs(deltaLength) + 1
+                    a57 = length(averageday[, (mi - 1)])
+                    varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                  }
+                }
+              } else if (deltaLength > 0) { # 25 hour days, assuming DST
+                # If there is more than 24 hours in a day then clock must 
+                # have moved backward, remove the double hour.
+                startDoubleHour = 2 * 60 * (60/ws3) + 1
+                endDoubleHour = 3 * 60 * (60/ws3)
+                if (length(varnum) > endDoubleHour) {
+                  varnum = varnum[-c(startDoubleHour:endDoubleHour)]
                 }
               }
               if (anwi_index != 1) {
