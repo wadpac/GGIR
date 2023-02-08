@@ -322,12 +322,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # Motivation on the code below:
               # Standardise the number of hours in a day as an attempt to create a
               # fair comparison between days in terms of day length. For example, to
-              # compare time spent in intensity levels of MVPA if days are not of
-              # equal length, such as the first day when a recording starts in 
+              # compare time spent in intensity levels or MVPA if days are not of
+              # equal length, such as when a recording starts in 
               # the middle of the day.
               # To do this we impute the missing part based on the average day
-              # (literarily called averageday in the code).
-              # Note: We only do this here in part 2 and not in part 5. 
+              # (literally called averageday in the code).
+              # Note: We only do this here in part 2 and not in part 5, and it has
+              # been this way since the early days of GGIR.
               # In part 2, GGIR aims to use as much data as possible to provide 
               # estimates of behaviour on each recording day, even for the 
               # incomplete first and last recording day. As a result, it is 
