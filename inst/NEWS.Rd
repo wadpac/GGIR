@@ -1,9 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
+  \itemize{
+    \item Part 2: Improved account for 25 hour days in part 2 day level analyses #728.
+  }
+}
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
   \itemize{
-    \item Part1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
+    \item Part 1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
     \item Part 2 and 5: arguments bout.metric or closedbout deprecated, g.getbout function
