@@ -319,23 +319,21 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             minames = colnames(metashort)
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               #=======================================
-              # Check amount of data in a day and standardise it to 24 hours
-              # such that time spent in intensity levels calculated with the
-              # ilevels argument always adds up to 24 hours
-              # standardise the number of hours in a day as an attempt to create a
+              # Motivation on the code below:
+              # Standardise the number of hours in a day as an attempt to create a
               # fair comparison between days in terms of day length. For example, to
               # compare time spent in intensity levels of MVPA if days are not of
-              # equal length.
-              # To do this we impute incomplete days (first, last, or DST days) 
-              # with the average day (literarily called averageday in the code).
+              # equal length, such as the first day when a recording starts in 
+              # the middle of the day.
+              # To do this we impute the missing part based on the average day
+              # (literarily called averageday in the code).
               # Note: We only do this here in part 2 and not in part 5. 
               # In part 2, GGIR aims to use as much data as possible to provide 
-              # estimates of behaviour, and where possible it also uses the first 
-              # and last recording day when they are incomplete.
-              # As a result, it is important to account for imbalance in day length.
+              # estimates of behaviour on each recording day, even for the 
+              # incomplete first and last recording day. As a result, it is 
+              # important to account for imbalance in day length, which we do below.
               # In part 5, however, GGIR forces the user to only work with complete 
-              # days and as a result the day length is less of a problem.
-              
+              # days and by that the day length is less of a problem and not accounted for.
               
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               # Note: vari equals the imputed time series (metahsort) data from one day
