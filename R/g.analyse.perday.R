@@ -326,12 +326,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               # Note: vari equals the imputed time series (metahsort) data from one day
               varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
-              deltaLength = NRV - length(averageday[, (mi - 1)])
               # if this is the first or last day and it has more than includedaycrit number of hours then expand it
               deltaLength = NRV - length(averageday[, (mi - 1)])
               if (deltaLength < 0) {
                 # Less than 24 hours append data from averageday
-                deltaLength = NRV - length(averageday[, (mi - 1)])
                 if (di == 1) {
                   # On first day of recording append the average day to the start
                   varnum = c(averageday[1:abs(deltaLength), (mi - 1)], varnum)
@@ -343,14 +341,15 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
                   }
                 } else {
-                  # When it is not the first day of recording append the average day to the end
-                  # This would apply to last day of the recording or if day has 23 hours
+                  # When it is not the first day of recording 
                   if (NRV == 23) { # day has 23 hours (assuming DST)
+                    # append data after 2nd hour
                     startMissingHour = 2 * 60 * (60/ws3) + 1
                     enMissingHour = 3 * 60 * (60/ws3)
                     varnum = c(varnum[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, (mi - 1)],
                                varnum[startMissingHour, length(varnum)])
                   } else { # day has less than 24 hours for another reason
+                    # append the average day to the end
                     a56 = length(averageday[,(mi - 1)]) - abs(deltaLength) + 1
                     a57 = length(averageday[, (mi - 1)])
                     varnum = c(varnum,averageday[a56:a57, (mi - 1)])
