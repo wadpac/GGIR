@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
   \itemize{
-    \item Part 2: Improved account for 25 hour days in part 2 day level analyses #728.
+    \item Part 2: Bug fixes in accounting for 25 hour days in part 2 day level analyses #728.
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
