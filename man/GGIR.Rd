@@ -206,22 +206,30 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{expand_tail_max_hours}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
-        Number hours to expand the
+        This parameter has been replaced for \code{recordingEndSleepHour}. 
+      }
+      \item{recordingEndSleepHour}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]]}).
+        Time (in hours) at which the recording should end (or later) to expand the  
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
+        Using argument \code{recordingEndSleepHour} implies the assumption that the
+        participant fell asleep at or before the end of the recording if the recording
+        ended at or after \code{recordingEndSleepHour} hour of the last day. This assumption may not
+        always hold true and should be used with caution. 
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
         the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}.
         To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in
-        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, and \link{g.part4} to \link{g.part5}.
-        In \link{g.part5} it is then included as an additional variable in the csv-reports.
-        In the \link{g.part4} report the last nigth is omitted, because we know that sleep
-        estimates from the last night will not be trustworthy. In the \link{g.part5} output most
-        columns related to the sleep assessment will be omitted for the last window to avoid biassing the
-        averages. Using argument \code{expand_tail_max_hours} implies the assumption that the
-        participant fell asleep at or before the end of the recording if the recording
-        ended less than \code{expand_tail_max_hours} before midnight. This assumption may not
-        always hold true and should be used with caution.
+        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, 
+        and \link{g.part4} to \link{g.part5}. In \link{g.part5} the tail expansion 
+        size is included as an additional variable in the csv-reports.
+        In the \link{g.part4} csv-report the last nigth is omitted, because we know
+        that sleep estimates from the last night will not be trustworthy. Similarly, 
+        in the \link{g.part5} output columns related to the sleep assessment will 
+        be omitted for the last window to avoid biassing the averages Further, 
+        the synthetic data are also ignored in the visualizations and time series 
+        output to avoid biased output.
       }
     }
   }
@@ -824,38 +832,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         entered then analysis will be repliced for each combination of threshold values.
         Threshold is applied to the first metric in the milestone data, so if you
         have only specified \code{do.enmo = TRUE} then it will be applied to ENMO.}
-
-        \item{bout.metric}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["bout.metric"]]}).
-        Specify a metric for bout detection (recommended setting is \code{bout.metric = 6} since
-        it is the most updated version of the bout calculation in GGIR).
-        If \code{bout.metric = 1} the code uses the MVPA bout definition as has
-        been available since 2014 (see papers by Sabia AJE 2014 and da Silva IJE 2014).
-        Here, the algorithm looks for 10 minute windows in which more than XX percent
-        of the epochs are above mvpathreshold, and then counts the entire window as mvpa.
-        If \code{bout.metric = 2} the code looks for groups of epochs with a bout.metric above
-        mvpathreshold that span a time window of at least mvpadur minutes in  which
-        more than boutcriter percent of the epochs are above the threshold. The motivation
-        for the defition 1 was: A person who spends 10 minutes in MVPA with a 2 minute
-        break in the middle is equally active as a person who spends 8 minutes in MVPA
-        without taking a break. Therefore, both should be counted equal and counted as
-        10 minute MVPA bout. The motivation for the definition 2 is: not counting breaks
-        towards MVPA may simplify interpretation and still counts the two persons in
-        the example as each others equal.
-        If \code{bout.metric = 3}, using sliding window across the
-        data to test bout criteria per window and do not allow for breaks larger than 1 minute
-        and with fraction of time larger than the boutcriter threshold.
-        If \code{bout.metric = 4}, same as 3 but also requires the first and last epoch to
-        meet the threshold criteria.
-        If \code{bout.metric = 5}, same as 4, but now looks for breaks larger
-        than a minute such that 1 minute breaks are allowe, and the fraction of time that meets
-        the threshold should be equal than or greater than the \code{bout.criter} threshold.
-        If \code{bout.metric = 6}, algorithm improved (2021) to check for first and last epoch.}
-
-      \item{closedbout}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["closedbout"]]}).
-        TRUE if you want breaks in bouts to be counted towards
-        time spent in bouts (argument only active for bout.metric 1 and 2).}
 
       \item{boutdur.mvpa}{
         Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.mvpa"]],

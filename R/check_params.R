@@ -89,10 +89,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("mvpathreshold", "boutcriter", "mvpadur", 
                        "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa", 
                        "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa", 
-                       "boutdur.in", "boutdur.lig", "bout.metric")
-    boolean_params = "closedbout"
+                       "boutdur.in", "boutdur.lig")
     check_class("phyact", params = params_phyact, parnames = numeric_params, parclass = "numeric")
-    check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
+    # check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
     check_class("phyact", params = params_phyact, parnames = "frag.metrics", parclass = "character")
   }
   if (length(params_cleaning) > 0) {
@@ -128,7 +127,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_rawdata) > 0) {
     if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
       warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
-      " Note that this option will be deprecated in the next CRAN release."))
+                     " Note that this option will be deprecated in the next CRAN release."))
     }
   }
   if (length(params_metrics) > 0) {
@@ -212,6 +211,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
   }
   if (length(params_phyact) > 0) {
+    if (length(params_phyact[["bout.metric"]]) > 0 |
+        length(params_phyact[["closedbout"]]) > 0) {
+      warning(paste0("\nArguments bout.metric and closedbout are no longer used",
+                     " by GGIR, we now use one piece of code stored in",
+                     " function g.getbout."), call. = FALSE)
+    }
     if (length(params_phyact[["mvpadur"]]) != 3) {
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
@@ -231,6 +236,34 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
+    }
+  }
+  if (!is.null(params_general[["expand_tail_max_hours"]])) {
+    if (is.null(params_general[["recordingEndSleepHour"]]) & params_general[["expand_tail_max_hours"]] != 0) {
+      params_general[["recordingEndSleepHour"]] = 24 - params_general[["expand_tail_max_hours"]] # redefine the argument
+      params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
+      stop("\nThe argument expand_tail_max_hours has been replaced by",
+           " recordingEndSleepHour which has a different definition. Please",
+           " see the documentation for further details and replace",
+           " expand_tail_max_hour in your function call and config.csv file.")
+    } else {
+      # If both are defined, this is probably because expand_tail_max_hours is 
+      # in the config file from a previous run
+      params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
+      warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
+              " are defined. GGIR will only use recordingEndSleepHour",
+              " and expand_tail_max_hours will be set to NULL.")
+    }
+  }
+  if (!is.null(params_general[["recordingEndSleepHour"]])) {
+    # stop if expand_tail_max_hours was defined before 7pm
+    if (params_general[["recordingEndSleepHour"]] < 19) {
+      stop(paste0("\nrecordingEndSleepHour expects the latest time at which",
+                     " the participant is expected to fall asleep. recordingEndSleepHour",
+                     " has been defined as ", params_general[["recordingEndSleepHour"]],
+                     ", which does not look plausible, please specify time at or later than 19:00",
+                  " . Please note that it is your responsibility as user to verify that the
+                  assumption is credible."))
     }
   }
   invisible(list(params_sleep = params_sleep,
