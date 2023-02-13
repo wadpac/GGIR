@@ -31,7 +31,7 @@
   \item{qwindow_dateformat}{
     Character specifying the date format used in the activity log.
   }
-  \item{ws3}{
+  \item{epochSize}{
     Short epoch size (first value of windowsizes in \link{g.getmeta}).
   }
 }
