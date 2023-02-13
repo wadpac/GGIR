@@ -164,7 +164,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         includedaycrit = params_cleaning[["includedaycrit"]],
                         myfun = myfun,
                         acc.metric = params_general[["acc.metric"]])
-        name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
+        RDname = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         # reset M and IMP so that they include the expanded time (needed for sleep detection in parts 3 and 4)
         if (length(tail_expansion_log) != 0) {
           M = M_bu
@@ -182,14 +182,16 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             cnt78 = 2
           }
         }
-        if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
-          filename = paste0(name,".RData")
+        
+        NumberRDinFilename = length(unlist(strsplit(RDname,"[.]RD")))
+        if (NumberRDinFilename == 1) { # to avoid getting .RData.RData
+          RDname = paste0(name,".RData")
         }
         if (params_output[["storefolderstructure"]] == TRUE) { # newly added 20-2-2019
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
