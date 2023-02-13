@@ -29,7 +29,7 @@ test_that("g.conv.actlog loads activity log and puts it in data.frame", {
   expect_equal(length(LOG$qwindow_names[[4]]), 7)
   expect_equal(LOG$qwindow_names[[3]], c("daystart", "work", "travelhome", "home", "dayend"))
   expect_equal(LOG$qwindow_values[[2]], c(0.00, 7.75, 17.00, 17.50, 24.00))
-  expect_equal(as.character(LOG$qwindow_times[[1]]), c("00:00", "7:45:00", "17:00:00", "17:30:00", "24:00"))
+  expect_equal(as.character(LOG$qwindow_times[[1]]), c("00:00", "7:45:00", "17:00:00", "17:30:00", "24:00:00"))
   
   expect_true(file.exists(fn))
   if (file.exists(fn)) file.remove(fn)
@@ -61,7 +61,7 @@ test_that("g.conv.actlog loads activity log and puts it in data.frame", {
   expect_equal(length(LOG$qwindow_names[[4]]), 7)
   expect_equal(LOG$qwindow_names[[3]], c("daystart", "work", "travelhome", "home", "dayend"))
   expect_equal(LOG$qwindow_values[[2]], c(0.00, 7.75, 17.00, 17.50, 24.00))
-  expect_equal(as.character(LOG$qwindow_times[[1]]), c("00:00", "7:45:00", "17:00:00", "17:30:00", "24:00"))
+  expect_equal(as.character(LOG$qwindow_times[[1]]), c("00:00", "7:45:00", "17:00:00", "17:30:00", "24:00:00"))
   
   expect_true(file.exists(fn))
   if (file.exists(fn)) file.remove(fn)
