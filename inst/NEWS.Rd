@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
+  \itemize{
+    \item Part 2: seconds in activitylog timestamps are now handled by g.conv.actlog
+  }
+}
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
   \itemize{
     \item Part1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
