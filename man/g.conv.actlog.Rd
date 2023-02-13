@@ -8,7 +8,7 @@
  that has for each ID and date a different qwindow vector.
 }
 \usage{
-  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y", ws3 = 5)	
+  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y", epochSize = 5)	
 }
 \arguments{
   \item{qwindow}{

@@ -1,4 +1,4 @@
-g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", ws3 = 5) {
+g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) {
   # Function to read activity log and convert it into data.frame
   # that has for each ID and date a different qwindow vector
   # local functions:
@@ -58,6 +58,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", ws3 = 5) {
   } else {
     exampledates = c()
   }
+  
   Nhyphen = length(grep(pattern = "-", x = actlog[, datecols]))
   Ndash = length(grep(pattern = "/", x = actlog[, datecols]))
   if (Nhyphen > 0 & Ndash > 0) {
@@ -106,13 +107,13 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", ws3 = 5) {
           actlog_tmp = actlog[i,(datei[j]+1):(datei[j+1]-1)]
           actlog_tmp = actlog_tmp[which(is.na(actlog_tmp) == FALSE & actlog_tmp != "")]
           qwindow$qwindow_times[k] = list(actlog_tmp) # list of times for that day
-          # make sure that seconds are multiple of ws3
+          # make sure that seconds are multiple of epochSize
           seconds = data.table::second(strptime(qwindow$qwindow_times[[k]], format = "%H:%M:%S"))
-          to_next_epoch = which(seconds %% ws3 != 0)
+          to_next_epoch = which(seconds %% epochSize != 0)
           if (length(to_next_epoch) > 0) {
             timechar = qwindow$qwindow_times[[k]][to_next_epoch]
             time = strptime(timechar, format = "%H:%M:%S")
-            seconds2sum = ws3 - seconds[to_next_epoch] %% ws3
+            seconds2sum = epochSize - seconds[to_next_epoch] %% epochSize
             time = time + seconds2sum
             timechar_new = as.character(time)
             time_new = strsplit(timechar_new, " ", fixed = T)[[1]][2]
@@ -132,7 +133,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", ws3 = 5) {
             }
             if (max(unlisted_qv, na.rm = TRUE) < 24) {
               qwindow$qwindow_values[k] = list(c(unlist(qwindow$qwindow_values[k]), 24))
-              qwindow$qwindow_times[k] = list(c(unlist(qwindow$qwindow_times[k]), "24:00"))
+              qwindow$qwindow_times[k] = list(c(unlist(qwindow$qwindow_times[k]), "24:00:00"))
               qwindow$qwindow_names[k] = list(c(unlist(qwindow$qwindow_names[k]),"dayend"))
             }
           }
@@ -148,17 +149,17 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", ws3 = 5) {
   
   # When testing the code it seemed sometimes not to recognise the date.
   # The following lines should hopefully help to catch any errors people may encounter.
-  if (is.na(as.Date(qwindow$date[1],format="%y-%m-%d")) == FALSE) {
-    qwindow$date =  as.Date(qwindow$date,format="%y-%m-%d")  
+  if (is.na(as.Date(qwindow$date[1], format = "%y-%m-%d")) == FALSE) {
+    qwindow$date =  as.Date(qwindow$date, format = "%y-%m-%d")
   } else {
-    qwindow$date =  as.Date(qwindow$date)  
+    qwindow$date =  as.Date(qwindow$date)
   }
   if (is.na(qwindow$date[1]) == TRUE | !is(qwindow$date[1], "Date")) {
     if (length(exampledates) > 0) {
       warning(paste0("\n Date not recognised in activity diary. We expect format ", 
                      qwindow_dateformat, " because that is what you specified in ",
                      "argument qwindow_dateformat, but we see ",
-                     paste0(head(exampledates), collapse=" "),
+                     paste0(head(exampledates), collapse = " "), 
                      ". You need to update the qwindow_dateformat argument, and check",
                      " that dates are in a consistent format."))
     } else {
