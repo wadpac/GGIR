@@ -97,6 +97,24 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       filefoldername = c()
       file2read = paste0(path,fnames[i])
       load(file2read) #reading RData-file
+      # convert to character/numeric if stored as factor in metashort
+      if (is.factor(M$metashort$timestamp)) {
+        M$metashort$timestamp = as.character(M$metashort$timestamp)
+      }
+      for (column in 2:ncol(M$metashort)) {
+        if (is.factor(M$metashort[, column])) {
+          M$metashort[, column] = as.numeric(as.character(M$metashort[, column]))
+        }
+      }
+      # convert to character/numeric if stored as factor in metalong
+      if (is.factor(M$metalong$timestamp)) {
+        M$metalong$timestamp = as.character(M$metalong$timestamp)
+      }
+      for (column in 2:ncol(M$metalong)) {
+        if (is.factor(M$metalong[, column])) {
+          M$metalong[, column] = as.numeric(as.character(M$metalong[, column]))
+        }
+      }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
