@@ -189,7 +189,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                 "ID", "acc_available", "window_number",
                                 "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric",
                                 grep(pattern = "cosinor", x = names(df), ignore.case = TRUE, value = TRUE)) # skip cosinor variables
-                  print(ignorevar)
+                  # print(ignorevar)
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
