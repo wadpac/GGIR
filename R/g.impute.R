@@ -234,8 +234,15 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         missing = which(is.na(imp[,j]) == T)
         if (length(missing) > 0) {
           if (part2ImpWithZero) { # If part2ImpWithZero = TRUE, Only advisable when the accelerometer has not been worn during sleep.
-            if (colnames(metashort)[mi] != "EN") imp[missing,j] = 0
-            if (colnames(metashort)[mi] == "EN") imp[missing,j] = 1
+            if (grepl("angle|roll_med", colnames(metashort)[mi])) {
+              # do nothing (do not impute these angles or rolling med metrics)
+            } else if (colnames(metashort)[mi] == "EN") {
+              # impute EN with 1
+              imp[missing,j] = 1
+            } else {
+              # impute rest of metrics with 0
+              imp[missing,j] = 0
+            }
           } else {
             imp[missing,j] = imp3[missing] 
           }
