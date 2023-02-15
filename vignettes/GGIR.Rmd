@@ -526,9 +526,9 @@ the output folder and explicitly point to it with `configfile` argument.
 
 ### Tailoring GGIR to study protocol
 
-Usual study protocols to collect multiday accelerometer raw data last one
-week, either asking participants to wear accelerometers allday long (i.e., 24/7)
-or only the time they are awake. GGIR includes a number of arguments to 
+There is a large variation in the study protocols to collect accelerometer data
+nowadays (e.g., number of days that are recorded, wearing or not the device during 
+sleep, among others). GGIR includes a number of arguments to 
 facilitate the processing of files collected with different study protocols. 
 For example:
 
