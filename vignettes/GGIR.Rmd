@@ -550,6 +550,7 @@ For example:
 -   `part2ImpWithZero` - If `AskedToWear247 == FALSE`, this will be automatically set to 
     `TRUE` by GGIR. Then, the acceleration metric of interest during nonwear time 
     will be imputed by 0 to avoid bias from the imputation of long nonwear periods.
+    This only applies when `do.imp == TRUE` (default configuration).
 -   `part2ExcludeNonwear` - If `AskedToWear247 == FALSE`, this will be automatically set to 
     `TRUE` by GGIR. Then, the detected nonwear time will be excluded from the 
     analysis to avoid the overestimation of activities characterized by low
