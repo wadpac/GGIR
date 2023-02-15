@@ -346,7 +346,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
                     anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
                   }
-                  # impute vari timestamp as well
+                  #=========================================
+                  # Readjust also the vari timestamp in the first day.
+                  # In default settings this is not used and has not any effect on the output.
+                  # If device is not worn during sleep (AskedToWear247 == FALSE),
+                  # then, the vari matrix is used to derive the behavioral classes
+                  # with identify_levels(), and there the timestamp needs to be readjusted.
+                  # This is done in a new object (vari2), so that vari is never modified.
                   vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
                   colnames(vari2) = colnames(vari)
                   ts1 = iso8601chartime2POSIX(vari[1,1], tz = desiredtz)
