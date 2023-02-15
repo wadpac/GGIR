@@ -555,6 +555,9 @@ For example:
     `TRUE` by GGIR. Then, the detected nonwear time will be excluded from the 
     analysis to avoid the overestimation of activities characterized by low
     acceleration values.
+-   Other parameters - Please, see the [configuration parameters vignette](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html) 
+    for more information on parameters that facilitate handling with the study protocol
+    (e.g., `max_calendar_days`, `excludefirstlast`, `excludefirst.part4`, `excludelast.part4`, `excludefirstlast.part5`).
 
 
 
