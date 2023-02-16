@@ -66,7 +66,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   }
   #--------------------------------
   # Loop through all the files
-  fnames = sort(fnames)
+  # fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
   
@@ -174,7 +174,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
-            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", name, ".csv"), row.names = FALSE)
+            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"), row.names = FALSE)
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
@@ -187,7 +187,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         
         NumberRDinFilename = length(unlist(strsplit(RDname,"[.]RD")))
         if (NumberRDinFilename == 1) { # to avoid getting .RData.RData
-          RDname = paste0(name,".RData")
+          RDname = paste0(RDname,".RData")
         }
         if (params_output[["storefolderstructure"]] == TRUE) { # newly added 20-2-2019
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure

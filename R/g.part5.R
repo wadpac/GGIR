@@ -61,9 +61,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   nightsummary = M = IMP = sib.cla.sum = c() # declaring variable as otherwise R is confused where they come from, while in fact they are loaded as part of the load operations
   #======================================================================
   # compile lists of milestone data filenames
-  fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
+  fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
   
-  fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
+  fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
   if (file.exists(sleeplogRDA) == TRUE) {
@@ -82,7 +82,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
-  fnames.ms3 = sort(fnames.ms3)
+  # fnames.ms3 = sort(fnames.ms3)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
@@ -112,9 +112,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure, fullfilenames, foldernam) {
     tail_expansion_log =  NULL
-    fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
-    fnames.ms2 = sort(dir(paste(metadatadir, "/meta/ms2.out", sep = "")))
-    fnames.ms4 = sort(dir(paste(metadatadir, "/meta/ms4.out", sep = "")))
+    fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
+    fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
+    fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
     nfeatures = 500
     ws3 = params_general[["windowsizes"]][1]
     ds_names = rep("",nfeatures)
