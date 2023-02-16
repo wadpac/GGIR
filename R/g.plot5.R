@@ -68,7 +68,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         }
         pdf(paste(metadatadir,"/results/file summary reports/Report_",fnamesmeta[sel],".pdf", sep = ""),
             paper="a4",width = 0, height = 0)
-        print(paste("File ",fnamesmeta[sel], sep = ""))
+        # print(paste("File ",fnamesmeta[sel], sep = ""))
         sib.cla.sum = c()
         load(paste(metasleep,"/",fname_ms[i], sep = ""))
         load(paste(meta,"/",fname_m[sel], sep = ""))
