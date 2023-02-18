@@ -101,13 +101,18 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
           }
           
           # Ignore arguments that are irrelevant or related to deprecated code
+          # Note VvH 7 Dec 2022: I have added closedbout and boutmetric 
+          # because for the time being many groups may still have this in 
+          # their config.csv files. Eventuallythese can be removed here, which will
+          # trigger an error for anyone who still uses config file with those arguments.
           ArgNames2Ignore = c("f0", "f1", "studyname", "datadir", 
             "outputdir", "do.report", "R_version",
             "GGIR_version", "GGIRversion", "config_file", "mode",
             "config_file_in_outputdir", "imputeTimegaps",
             "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
             "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
-            "isna", "tmp", "vecchar", "dupi", "GGIRread_version")
+            "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
+            "closedbout", "bout.metric")
           # Find argument in the various parameter objects
           if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {

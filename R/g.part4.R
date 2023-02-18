@@ -15,7 +15,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider=params_sleep[["relyonsleeplog"]]
+  if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider = params_sleep[["relyonsleeplog"]]
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
   nnpp = 40 # number of nights to be displayed in the report (hard-coded not a critical parameter for most scenarios)
@@ -260,7 +260,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           if (length(wi) > 0) {
             wi2 = wi[which(sleeplog$night[wi] %in% guider.df$night)]
             guider.df[which(guider.df$night %in% sleeplog$night[wi2]),] = sleeplog[wi2,]
-            
           }
         }
         for (j in nnights.list) {
@@ -324,7 +323,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           if (dolog == TRUE) {
             #-----------------------------------------------------------
             # If sleep log is available and values are not missing
-            if (all(!is.na(guider.df[j, 4:5]))) {
+            if (all(!is.na(guider.df[which(guider.df$night == j), 4:5]))) {
               sleeplog_used = TRUE
             }
           }
@@ -332,7 +331,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             #-----------------------------------------------------------
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
-            guider.df[j, 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
+            guider.df[which(guider.df$night == j), 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
                                   convertHRsinceprevMN2Clocktime(defaultSptWake))
             cleaningcode = 1
           }
@@ -443,6 +442,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 spocum = rbind(spocum, dummyspo)
               }
               spocumi = spocumi + 1
+              cleaningcode = 3
+              acc_available = FALSE
+            } else if (length(tail_expansion_log) != 0 & sumi == max(nnightlist)) { 
+              # so that we skip the visualization of last night when data has been expanded
+              # also, cleaningcode is more realistic as acc data is not available for this night
               cleaningcode = 3
               acc_available = FALSE
             } else {
@@ -650,13 +654,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           # Fill matrix 'nightsummary' with key sleep parameters
           if (length(spocum) > 0 & class(spocum)[1] == "data.frame" & length(calendar_date) >= j) {
-            if (nrow(spocum) > 1 & ncol(spocum) >= 5 & calendar_date[j] != "") {
+            if (nrow(spocum) > 0 & ncol(spocum) >= 5 & calendar_date[j] != "") {
               undef = unique(spocum$def)
               for (defi in undef) {
                 #------------------------------------------------------------------------
                 # nightsummary
                 rowswithdefi = which(spocum$def == defi)
-                if (length(rowswithdefi) > 1) {
+                if (length(rowswithdefi) > 0) {
                   # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi, ]
                   # in DST it can be that a double hour is not recognized as part of the SPT

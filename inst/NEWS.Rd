@@ -1,10 +1,25 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-3 (release date:?-?-2022)}{
+\section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
+  \itemize{
+    \item Part1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
+    \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
+    \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
+    \item Part 2 and 5: arguments bout.metric or closedbout deprecated, g.getbout function
+    simplified to a single algorithm.
+    \item Part 2 and 5: Bout detection improved such that it can now detect bouts that
+    equal the epoch length, and it no longer overestimates bout length by 1 epoch when
+    epoch length is less than 30 seconds and boutcriter is less than 1.
+  }
+}
+\section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
   \itemize{
     \item Reports: storing nonwear in part4 reports fixed when number of nights >= 10.
     \item Fixed test for battery voltage in cwa file #678
+    \item Reports: nonwear_perc_spt does only appear in reports from part4 when WW windows are available
+    \item Vignettes: main vignette revised for undesired spaces and extended with the handling of nonwear_perc_spt in part 4 reports
+    \item Part 4: Fixed bug #686 causing last sleeplog night to be ignored when a sleeplog night is missing
   }
 }
 \section{Changes in version 2.8-2 (release date:06-10-2022)}{

@@ -18,12 +18,13 @@ test_that("Part 1 can run with all metrics", {
           do.enmo = TRUE,do.lfenmo = TRUE,
           do.bfen = TRUE, do.hfenplus = TRUE,
           do.mad = TRUE, do.zcx = TRUE, #do.brondcounts = TRUE,
-   windowsizes = c(15,3600,3600), do.parallel = FALSE,
-   minimumFileSizeMB = 0, expand_tail_max_hours = 2)
+          windowsizes = c(15,3600,3600), do.parallel = FALSE,
+          minimumFileSizeMB = 0)
+  
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 9)
-  expect_true(nrow(M$metashort) > 11280)
+  expect_true(nrow(M$metashort) == 11280)
   expect_equal(mean(M$metashort$BFEN),  0.0458, tolerance = 4)
   expect_equal(mean(M$metashort$LFENMO),  0.0447, tolerance = 4)
   expect_equal(mean(M$metashort$HFENplus),  0.0914, tolerance = 4)

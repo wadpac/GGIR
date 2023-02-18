@@ -114,7 +114,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
 
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
-            " user from specifying argument myfun as this poses a security risk.")
+            " user from specifying argument myfun as this poses a security risk.", call. = FALSE)
     check_myfun(myfun, params_general[["windowsizes"]])
   }
 
@@ -194,7 +194,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
-                          "GGIRversion") == FALSE)]
+                          "GGIRversion",  "dupArgValues") == FALSE)]
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
@@ -258,7 +258,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
                    minimum_MM_length.part5 = params_cleaning[["minimum_MM_length.part5"]],
                    week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
-                   LUX_day_segments = params_247[["LUX_day_segments"]])
+                   LUX_day_segments = params_247[["LUX_day_segments"]],
+                   excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]])
   }
   if (params_output[["visualreport"]] == TRUE) {
     print_console_header("Generate visual reports")

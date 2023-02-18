@@ -151,6 +151,17 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           IMP$metashort = M$metashort
           # IMP$metalong = M$metalong
         }
+        # do not use expanded time with expand_tail_max_hours in summary reports
+        if (length(tail_expansion_log) != 0) {
+          M_bu = M; IMP_bu = IMP # back up to be reversed later on
+          expanded_time_short = which(IMP$r5long == -1)
+          expanded_time_long = which(IMP$rout$r5 == -1)
+          M$metashort = M$metashort[-expanded_time_short,]
+          IMP$metashort = IMP$metashort[-expanded_time_short,]
+          M$metalong = M$metalong[-expanded_time_long,]
+          IMP$rout = IMP$rout[-expanded_time_long,]
+        }
+        
         SUM = g.analyse(I, C, M, IMP,
                         params_247 = params_247,
                         params_phyact = params_phyact,
@@ -161,6 +172,11 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         myfun = myfun,
                         acc.metric = params_general[["acc.metric"]])
         name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
+        # reset M and IMP so that they include the expanded time (needed for sleep detection in parts 3 and 4)
+        if (length(tail_expansion_log) != 0) {
+          M = M_bu
+          IMP = IMP_bu
+        }
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
             write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", name, ".csv"), row.names = FALSE)
