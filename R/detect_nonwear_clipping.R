@@ -10,8 +10,18 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
   CWav = NWav = rep(0, nmin)
   crit = ((window/window2)/2) + 1
   for (h in 1:nmin) { #number of windows
-    cliphoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window2 * 0.5 #does not use "window"
+    # clip detection based on window2 (do not use window)
+    cliphoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window2 * 0.5 
     cliphoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window2 * 0.5
+    # Flag nonwear based on window instead of window2 (2023-02-18)
+    if (nw_approach == "old") {
+      NWflag = h
+    } else if (nw_approach == "new"){
+      NWflag = (h - floor(crit/2)):(h + floor(crit/2))
+      if (NWflag[1] == 0) NWflag = NWflag[2:3]
+      if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
+    }
+    # ---
     if (h <= crit) {
       hoc1 = 1
       hoc2 = window
@@ -42,11 +52,11 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       if (is.numeric(absrange) == TRUE & is.numeric(sdwacc) == TRUE & is.na(sdwacc) == FALSE) {
         if (sdwacc < sdcriter) {
           if (absrange < racriter) {
-            NW[h,jj] = 1
+            NW[NWflag,jj] = 1
           }
         }
       } else {
-        NW[h,jj] = 1 # if sdwacc, maxwacc, or minwacc could not be derived then label as non-wear
+        NW[NWflag,jj] = 1 # if sdwacc, maxwacc, or minwacc could not be derived then label as non-wear
       }
     }
     CW = CW / (window2) #changed 30-1-2012, was window*sf
