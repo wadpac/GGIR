@@ -4,6 +4,7 @@
 \section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
   \itemize{
     \item Part 2: seconds in activitylog timestamps are now handled by g.conv.actlog
+    \item Part 2: fixed bug related to qwindows in the first recording day
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
