@@ -5,6 +5,7 @@
   \itemize{
     \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
     \item Part 2: Fixed #733 related to qwindows in the first recording day
+    \item Part 4: argument sleeplogidnum deprecated.
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
@@ -14,9 +15,8 @@
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
     \item Part 2 and 5: arguments bout.metric or closedbout deprecated, g.getbout function
     simplified to a single algorithm.
-    \item Part 2 and 5: Bout detection improved such that it can now detect bouts that
-    equal the epoch length, and it no longer overestimates bout length by 1 epoch when
-    epoch length is less than 30 seconds and boutcriter is less than 1.
+    \item Part 2 and 5: Bout detection fixed such that it can now detect bouts that
+    equal the epoch length, and for epochs less than 30 seconds do no overestimate bout length by 1 epoch.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{
