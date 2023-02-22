@@ -6,6 +6,13 @@
     \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
     \item Part 2: Fixed #733 related to qwindows in the first recording day
     \item Part 4: argument sleeplogidnum deprecated.
+    \item Part 1, 2, 4, 5: Fixes bug (#732 first half). Filenames are no longer 
+    ordered prior to processing which should make it more robust to work with
+    raw data stratified across multiple subdirectories.
+    \item Visual report: Now uses part 3 milestone data consistently as
+    reference to avoid inconsistencies when part 3 milestone data files were not
+    generated #732 (second half).
+    t
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
