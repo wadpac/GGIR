@@ -1,7 +1,19 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-4 (GitHub-only-release date:?-?-2022)}{
+\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
+  \itemize{
+    \item Part 2: Bug fixes in accounting for 25 hour days in part 2 day level analyses #728.
+    \item Part 2: Added functionality to impute invalid time segments by zero (argument 
+    part2ImpWithZero).
+    \item Part 2: Added functionality to exclude non-wear time from part 2 reports (argument 
+    part2ExcludeNonwear).
+    \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the 
+    devices are not worn during sleep (no need to define the SPT in parts 3 & 4). Argument WornDuringSleep.
+    \item Vignettes: main vignette now includes paragraph on handling study protocol.
+  }
+}
+\section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
   \itemize{
     \item Part1: Improved handling of the expand_tail_max_hours functionality. Expanded time is now ignored in reports and visualizations.
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
@@ -11,13 +23,6 @@
     simplified to a single algorithm.
     \item Part 2 and 5: Bout detection fixed such that it can now detect bouts that
     equal the epoch length, and for epochs less than 30 seconds do no overestimate bout length by 1 epoch.
-    \item Part 2: Added functionality to impute invalid time segments by zero (argument 
-    part2ImpWithZero).
-    \item Part 2: Added functionality to exclude non-wear time from part 2 reports (argument 
-    part2ExcludeNonwear).
-    \item Part 2: Added functionality derive inactivity and light PA bouts in part 2 when the 
-    devices are not worn during sleep (no need to define the SPT in parts 3 & 4). Argument WornDuringSleep.
-    \item Vignettes: main vignette now includes paragraph on handling study protocol.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{

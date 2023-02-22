@@ -324,74 +324,135 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
-              vari2 = vari #vari2 is used in identify_levels when AskedToWear247 = FALSE, need to redefine here in every loop to account for qwindows
-              # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
-              recorded = 1:length(varnum) # this is redefined for first and last day
+              if (isFALSE(params_general[["AskedToWear247"]])) { # avoid copying data if not needed
+                vari2 = vari #vari2 is used in identify_levels when AskedToWear247 = FALSE, need to redefine here in every loop to account for qwindows
+              }
               if (isTRUE(params_cleaning[["part2ExcludeNonwear"]])) {
                 varnum[which(val != 0)] = NA
               }
-              # # if this is the first or last day and it has more than includedaycrit number of days then expand it
-              # Comment out the following 10 lines if you want to include only the actual data
-              if (NRV < length(averageday[, (mi - 1)])) { # modified to avoid imputing time in the daylight saving days (25-h long, then they meet the condition NRV != nrow(averageday))
-                difference = NRV - length(averageday[, (mi - 1)])
+              
+              #======
+              # Function to aid in creating a copy of vari
+              # only used  for study protocols where participant is asked to take of the 
+              # acceelerometer during the night and with the assumption that the 
+              # accelerometer is not worn during the night.
+              createNewVari = function(deltaLength, vari, desiredtz, ws3, di) { 
+                # doing this inside function to avoid potential namespace clashes
+                vari2 = matrix(NA, nrow = abs(deltaLength), ncol = ncol(vari))
+                colnames(vari2) = colnames(vari)
                 if (di == 1) {
-                  varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
-                  # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
-                  if (abs(difference) > 0) recorded = abs(difference):length(varnum)
-                  # varnum = c(rep(NA, abs(difference)), varnum) # 2022-11-1: if day <24h, then the total time analised is also <24h
-                  # readjust anwi indices in case that varnum has been imputed
-                  if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
-                    anwi_t0 = anwi_t0 + abs(difference)
-                    anwi_t1 = anwi_t1 + abs(difference)
-                    # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
-                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
-                  }
-                  #=========================================
-                  # Readjust also the vari timestamp in the first day.
-                  # In default settings this is not used and has not any effect on the output.
-                  # If device is not worn during sleep (AskedToWear247 == FALSE),
-                  # then, the vari matrix is used to derive the behavioral classes
-                  # with identify_levels(), and there the timestamp needs to be readjusted.
-                  # This is done in a new object (vari2), so that vari is never modified.
-                  vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
-                  colnames(vari2) = colnames(vari)
                   ts1 = iso8601chartime2POSIX(vari[1,1], tz = desiredtz)
                   if (is.na(ts1)) {
                     ts1 = as.POSIXct(vari[1,1], tz = desiredtz)
                   }
-                  ts0 = ts1 - abs(difference)*ws3
-                  ts = seq(ts0, ts1, by = ws3)
-                  ts = ts[-length(ts)] #this timestamp is already in vari
-                  vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
-                  vari2 = rbind(vari2, vari)
+                  ts0 = ts1 - abs(deltaLength)*ws3
                 } else {
-                  a56 = length(averageday[,(mi - 1)]) - abs(difference)
-                  a57 = length(averageday[, (mi - 1)])
-                  varnum = c(varnum,averageday[a56:a57, (mi - 1)])
-                  # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
-                  if (abs(difference) > 0) recorded = 1:abs(difference)
-                  # impute vari timestamp as well
-                  vari2 = matrix(NA, nrow = abs(difference), ncol = ncol(vari))
-                  colnames(vari2) = colnames(vari)
-                  ts0 = iso8601chartime2POSIX(vari[nrow(vari),1], tz = desiredtz)
+                  ts0 = iso8601chartime2POSIX(vari[nrow(vari),1], tz = desiredtz) ##
                   if (is.na(ts0)) {
                     ts0 = as.POSIXct(vari[nrow(vari),1], tz = desiredtz)
                   }
-                  ts1 = ts0 + abs(difference)*ws3
-                  ts = seq(ts0, ts1, by = ws3)
+                  ts1 = ts0 + abs(deltaLength)*ws3
+                }
+                ts = seq(ts0, ts1, by = ws3)
+                if (di == 1) {
+                  ts = ts[-length(ts)] #this timestamp is already in vari
+                } else {
                   ts = ts[-1] #this timestamp is already in vari
-                  vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
+                }
+                vari2[, 1] = POSIXtime2iso8601(ts, tz = desiredtz)
+                if (di == 1) {
+                  vari2 = rbind(vari2, vari)
+                } else {
                   vari2 = rbind(vari, vari2)
                 }
+                return(vari2)
               }
+              
+              #=======================================
+              # Motivation on the code below:
+              # Standardise the number of hours in a day as an attempt to create a
+              # fair comparison between days in terms of day length. For example, to
+              # compare time spent in intensity levels or MVPA if days are not of
+              # equal length, such as when a recording starts in 
+              # the middle of the day.
+              # To do this we impute the missing part based on the average day
+              # (literally called averageday in the code).
+              # Note: We only do this here in part 2 and not in part 5, and it has
+              # been this way since the early days of GGIR.
+              # In part 2, GGIR aims to use as much data as possible to provide 
+              # estimates of behaviour on each recording day, even for the 
+              # incomplete first and last recording day. As a result, it is 
+              # important to account for imbalance in day length, which we do below.
+              # In part 5, however, GGIR forces the user to only work with complete 
+              # days and by that the day length is less of a problem and not accounted for.
+              NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
+              # Note: vari equals the imputed time series (metahsort) data from one day
+              varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              deltaLength = NRV - length(averageday[, (mi - 1)])
+              if (deltaLength < 0) {
+                # Less than 24 hours: Append data from averageday
+                if (di == 1) {
+                  # On first day of recording append the average day to the start
+                  varnum = c(averageday[1:abs(deltaLength), (mi - 1)], varnum)
+                  # readjust anwi indices in case that varnum has been imputed
+                  if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
+                    anwi_t0 = anwi_t0 + abs(deltaLength)
+                    anwi_t1 = anwi_t1 + abs(deltaLength)
+                    # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
+                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                  }
+                  
+                  #=========================================
+                  # If device is not worn during sleep (AskedToWear247 == FALSE),
+                  # then, the vari matrix is used to derive the behavioral classes
+                  # with identify_levels(), and there the timestamp needs to be readjusted.
+                  # This is done in a new object (vari2), so that vari is never modified.
+                  if (isFALSE(params_general[["AskedToWear247"]])) {
+                    vari2 = createNewVari(deltaLength, vari, desiredtz, ws3, di)
+                  }
+                } else {
+                  # When it is not the first day of recording 
+                  if (NRV == 23) { # day has 23 hours (assuming DST)
+                    # Append data after 2nd hour
+                    startMissingHour = 2 * 60 * (60/ws3) + 1
+                    enMissingHour = 3 * 60 * (60/ws3)
+                    varnum = c(varnum[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, (mi - 1)],
+                               varnum[startMissingHour, length(varnum)])
+                  } else { # day has less than 24 hours for another reason
+                    # Append the average day to the end
+                    a56 = length(averageday[,(mi - 1)]) - abs(deltaLength) + 1
+                    a57 = length(averageday[, (mi - 1)])
+                    varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                  }
+                  if (isFALSE(params_general[["AskedToWear247"]])) {
+                    vari2 = createNewVari(deltaLength, vari, desiredtz, ws3, di)
+                  }
+                }
+              } else if (deltaLength > 0) { # 25 hour days, assuming DST
+                # If there is more than 24 hours in a day then clock must 
+                # have moved backward, remove the double hour.
+                startDoubleHour = 2 * 60 * (60/ws3) + 1
+                endDoubleHour = 3 * 60 * (60/ws3)
+                if (length(varnum) > endDoubleHour) {
+                  varnum = varnum[-c(startDoubleHour:endDoubleHour)]
+                }
+              }
+              # At this point varnum should always be 24 hours
+              
+              #---------------
+              # indices to focus on for time-use variables (ilevels, recorded time, MVPA, ...)
+              recorded = 1:length(varnum) # this is redefined for first and last day
+              
               if (anwi_index != 1) {
                 if (length(anwindices) > 0) {
                   if (max(anwindices) > length(varnum)) {
                     anwindices = anwindices[which(anwindices <= length(varnum))]
                   }
                   varnum = as.numeric(varnum[anwindices]) #cut short varnum to match day segment of interest
-                  vari2 = vari2[anwindices,] #cut short vari2 (used in identify_levels) to match day segment of interest
-                  recorded = which(round(anwindices) %in% recorded) # round anwindices bc it may contain tiny decimals from calculation in lines 296:297 & 304:305
+                  if (isFALSE(params_general[["AskedToWear247"]])) {
+                    vari2 = vari2[anwindices,] #cut short vari2 (used in identify_levels) to match day segment of interest
+                    recorded = which(round(anwindices) %in% recorded) # round anwindices bc it may contain tiny decimals from calculation in lines 296:297 & 304:305
+                  }
                 } else {
                   varnum = c()
                 }
@@ -515,7 +576,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (doilevels == TRUE) {
                   q48 = c()
                   #times 1000 to convert to mg only if it g-unit metric
-                  q47 = cut((varnum[recorded] * UnitReScale), breaks = params_247[["ilevels"]], right = FALSE)
+                  q47 = cut((varnum * UnitReScale), breaks = params_247[["ilevels"]], right = FALSE)
                   q47 = table(q47)
                   q48  = (as.numeric(q47) * ws3) / 60 #converting to minutes
                   keepindex_48[mi - 1,] = c(fi, (fi + (length(q48) - 1)))

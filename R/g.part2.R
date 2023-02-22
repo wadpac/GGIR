@@ -233,7 +233,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       functions2passon = c("g.analyse", "g.impute", "g.weardec", "g.detecmidnight",
                            "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
                            "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
-                           "iso8601chartime2POSIX", "extract_params", "load_params", "check_params")
+                           "iso8601chartime2POSIX", "extract_params", "load_params", "check_params", 
+                           "POSIXtime2iso8601")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
