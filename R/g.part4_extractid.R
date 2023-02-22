@@ -1,4 +1,4 @@
-g.part4_extractid = function(idloc, fname, dolog, sleeplogidnum, sleeplog, accid = c()) {
+g.part4_extractid = function(idloc, fname, dolog, sleeplog, accid = c()) {
   if (length(accid) == 0) {
     #------------------------------------------------------
     # extract the identifier from accelerometer data if it was not found in the GGIR part 3 milestone data
@@ -30,58 +30,57 @@ g.part4_extractid = function(idloc, fname, dolog, sleeplogidnum, sleeplog, accid
       accid = newaccid[1]
     }
   }
-  if (sleeplogidnum == TRUE) {
-    # remove last character (in some studies numeric id is followed by character)
-    accid_bu = accid
-    getLastCharacterValue = function(x) {
-      tmp = as.character(unlist(strsplit(x,"")))
-      return(tmp[length(tmp)])
-    }
-    letter = apply(as.matrix(accid), MARGIN = c(1), FUN = getLastCharacterValue)
-    for (h in 1:length(accid)) {
-      options(warn = -1)
-      numletter = as.numeric(letter[h])
-      options(warn = 0)
-      if (is.na(numletter) == TRUE) { # do not remove latest character if it is a number
-        accid[h] = as.character(unlist(strsplit(accid[h],letter[h]))[1])
-      }
-    }
-    accid = suppressWarnings(as.numeric(accid))
-    #catch for files with only id in filename and for whom the above attempt to extract the id failed:
-    if (is.na(accid) == TRUE) accid = accid_bu
-  }
   # get matching identifier from sleeplog
-  if (dolog == TRUE) {
-    accid_num = suppressWarnings(as.numeric(accid))
-    if (sleeplogidnum == FALSE) {
-      # remove spaces in ID, to ease matching, because some accelerometer brands at several spaces behind ID
-      sleeplog$ID = gsub(pattern = " ", replacement = "", x = as.character(sleeplog$ID))
-      accid = gsub(pattern = " ", replacement = "", x = as.character(accid))
-      # attempt to match
-      matching_indices_sleeplog = which(as.character(sleeplog$ID) == as.character(accid))
-      if (length(matching_indices_sleeplog) == 0) {
-        matching_indices_sleeplog_alternative = which(sleeplog$ID == accid_num)
-        if (length(matching_indices_sleeplog_alternative) > 0) {
-          warning("\nArgument sleeplogidnum is set to FALSE, but it seems the identifiers are
-                    stored as numeric values, you may want to consider changing sleeplogidnum to TRUE")
-        }
-      }
-    } else {
-      matching_indices_sleeplog = which(sleeplog$ID == accid_num)
-      if (length(matching_indices_sleeplog) == 0) {
-        matching_indices_sleeplog_alternative = which(as.character(sleeplog$ID) == as.character(accid))
-        if (length(matching_indices_sleeplog_alternative) > 0) {
-          warning("\nArgument sleeplogidnum is set to TRUE, but it seems the identifiers are
-                    stored as character values, you may want to consider changing sleeplogidnum to TRUE")
-        } else {
-          if (is.na(accid_num) == TRUE) { # format probably incorrect
-            warning(paste0("\nSleeplog id is stored as format: ", as.character(sleeplog$ID[1]), ", while
-                           code expects format: ", as.character(accid[1])))
-          }
-        }
-      }
+  if (dolog == TRUE) { 
+    
+    # convert to character
+    logid = as.character(sleeplog$ID)
+    accid2 = as.character(accid)
+    
+    # remove spaces in ID, to ease matching, because some accelerometer brands at several spaces behind ID
+    logid = gsub(pattern = " ", replacement = "", x = as.character(logid))
+    accid2 = gsub(pattern = " ", replacement = "", x = as.character(accid2))
+    
+    # attempt to match 1 - works if both IDs are identical
+    matching_indices_sleeplog = which(logid == accid2)
+    matched = length(matching_indices_sleeplog)
+    matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
+    
+    # attempt to match 2 - ignore case
+    if (matched == 0) {
+      matching_indices_sleeplog = which(tolower(logid) == tolower(accid2))
+      matched = length(matching_indices_sleeplog)
+      matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
+    } 
+    
+    # attempt to match 3 - get rid of letters
+    if (matched == 0) {
+      # remove all letters
+      accid2 = gsub("[^0-9.-]", "", accid2)
+      logid = gsub("[^0-9.-]", "", sleeplog$ID)
+      matching_indices_sleeplog = which(logid == accid2)
+      matched = length(matching_indices_sleeplog)
+      matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
     }
-  } else {
+    
+    # attempt to match 4 - get rid of extra leading 0s
+    if (matched == 0) {
+      # remove leading zeros
+      accid2 = gsub("^0+", "", accid2)
+      logid = gsub("^0+", "", logid)
+      matching_indices_sleeplog = which(logid == accid2)
+      matched = length(matching_indices_sleeplog)
+      matched_unique = unique(sleeplog$ID[matching_indices_sleeplog])
+    }
+    
+    # if matched to more than one entrance in sleeplog, warn the user
+    if (length(matched_unique) > 1) {
+      warning(paste0("\n", as.character(accid), " matched to more than one entrance ",
+                     "in the sleeplog (i.e., ", paste(as.character(matched_unique), collapse = ", "), 
+                     ").\nPlease revise the IDs in your sleeplog. ", matched_unique[1], " used."))
+      matching_indices_sleeplog = which(sleeplog$ID == matched_unique[1])
+    }
+  } else if (dolog == FALSE) { 
     matching_indices_sleeplog = 1
   }
   invisible(list(accid = accid, matching_indices_sleeplog = matching_indices_sleeplog))

@@ -340,11 +340,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
             if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
-              if (params_sleep[["sleeplogidnum"]] == TRUE) {
-                IDtmp = as.numeric(ID)
-              } else {
-                IDtmp = as.character(ID)
-              }
+              IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
               # store in csv file:
