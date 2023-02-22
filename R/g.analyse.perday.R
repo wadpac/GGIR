@@ -130,8 +130,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         # interested in the non-imputed part. This is probably were the confusion came from.
         hours2delta = 24 - LENVAL_hours
         qw_select = which(params_247[["qwindow"]] > hours2delta)
-        if (qw_select[1] > 1) qw_select = c(qw_select[1] - 1, qw_select)
-        params_247[["qwindow"]] = params_247[["qwindow"]][qw_select]
+        # if (qw_select[1] > 1) qw_select = c(qw_select[1] - 1, qw_select)
+        # params_247[["qwindow"]] = params_247[["qwindow"]][qw_select]
+        # # qwindow_names = qwindow_names[qw_select]
         qwindowindices = params_247[["qwindow"]] - hours2delta # - LENVAL_hours # because 1 is now different
         if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
       } else if (di == ndays) {
@@ -160,10 +161,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
         
-        for (qwi in 1:(length(qwindowindices) - 1)) { #
+        for (qwi in 1:(length(qwindowindices) - 1)) {
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
-          if (startindex <= length(val) & endindex <= length(val)) {
+          if (startindex == endindex) { 
+            # inexistent qwindow (may occure in the first day if recording started later than first qwindow)
+            valq = c()
+          } else if (startindex <= length(val) & endindex <= length(val)) {
             valq = val[(startindex + 1):endindex]
           } else if (startindex <= length(val) & endindex >= length(val)) {
             valq = val[(startindex + 1):length(val)]
@@ -180,7 +184,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       }
     }
-    
     val = as.numeric(val)
     nvalidhours = length(which(val == 0)) / (3600 / ws3) #valid hours per day (or half a day)
     nhours = length(val) / (3600 / ws3) #valid hours per day (or half a day)
@@ -208,7 +211,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     daysummary[di,(fi + 3)] = nhours
     ds_names[fi:(fi + 3)] = c("calendar_date","bodylocation","N valid hours","N hours")
     fi = fi + 4
-    if (length(params_247[["qwindow"]] > 0)) {
+    if (length(params_247[["qwindow"]]) > 0) {
       if (length(params_247[["qwindow"]]) > 2 | params_247[["qwindow"]][1] != 0 | params_247[["qwindow"]][2] != 24) {
         for (qwi in 1:(length(qwindow_names) - 1)) {
           tmp_name = c(paste0("N_valid_hours_", qwindow_names[qwi], "-", qwindow_names[qwi + 1], "hr"),
@@ -315,7 +318,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
           
           L5M5window_name = anwi_nameindices[anwi_index]
           anwindices = anwi_t0[anwi_index]:anwi_t1[anwi_index] # indices of varnum corresponding to a segment
-          if (length(anwindices) > 0) {
+          if (length(anwindices) > 0 & all(diff(anwindices) > 0)) { # negative diff(anwindices) may occur in the first day if a qwindow is not within the recorded hours
             minames = colnames(metashort)
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
@@ -331,7 +334,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     anwi_t0 = anwi_t0 + abs(difference)
                     anwi_t1 = anwi_t1 + abs(difference)
                     # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
-                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                    # anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                    anwi_t0[1] = 1
                   }
                 } else {
                   a56 = length(averageday[,(mi - 1)]) - abs(difference)

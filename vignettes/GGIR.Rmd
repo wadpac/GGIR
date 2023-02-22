@@ -110,8 +110,7 @@ Our log of main changes to GGIR over time can be found
 [Download and install R](https://cran.r-project.org/)
 
 [Download and install
-RStudio](https://www.rstudio.com/products/rstudio/) (optional, but
-recommended)
+RStudio](https://posit.co/products/open-source/rstudio/)
 
 Install GGIR with its dependencies from CRAN. You can do this with one
 command from the console command line:

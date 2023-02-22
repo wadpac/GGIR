@@ -5,11 +5,10 @@
 }
 \description{
  Function to read activity log and convert it into data.frame
- that has for each ID and date a different qwindow vector
-  
+ that has for each ID and date a different qwindow vector.
 }
 \usage{
-  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y")	
+  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y", epochSize = 5)	
 }
 \arguments{
   \item{qwindow}{
@@ -25,10 +24,15 @@
     Leave missing values empty. If an activitylog is used then individuals who do 
     not appear in the activitylog will still be processed with value c(0,24).
     Dates with no activiy log data can be skipped, no need to have a column with the 
-    date followed by a column with the next date.
+    date followed by a column with the next date. If times in the activitylog are not multiple 
+    of the short window size (epoch length), the next epoch is considered (e.g., with epoch of 5 seconds, 
+    8:00:02 will be redefined as 8:00:05 in the activity log).
   }
   \item{qwindow_dateformat}{
     Character specifying the date format used in the activity log.
+  }
+  \item{epochSize}{
+    Short epoch size (first value of windowsizes in \link{g.getmeta}).
   }
 }
 \value{
