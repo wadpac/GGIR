@@ -171,24 +171,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           cat("Warning: Milestone data part 1 could not be retrieved")
         }
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
-        # convert to character/numeric if stored as factor in metashort
-        if (is.factor(M$metashort$timestamp)) {
-          M$metashort$timestamp = as.character(M$metashort$timestamp)
-        }
-        for (column in 2:ncol(M$metashort)) {
-          if (is.factor(M$metashort[, column])) {
-            M$metashort[, column] = as.numeric(as.character(M$metashort[, column]))
-          }
-        }
-        # convert to character/numeric if stored as factor in metalong
-        if (is.factor(M$metalong$timestamp)) {
-          M$metalong$timestamp = as.character(M$metalong$timestamp)
-        }
-        for (column in 2:ncol(M$metalong)) {
-          if (is.factor(M$metalong[, column])) {
-            M$metalong[, column] = as.numeric(as.character(M$metalong[, column]))
-          }
-        }
+        # convert to character/numeric if stored as factor in metashort and metalong
+        M$metashort = correctOlderMilestoneData(M$metashort)
+        M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
         # remove expanded time so that it is not used for behavioral classification 
@@ -224,10 +209,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # Check if temperature and light are availble
         if (lightpeak_available == TRUE) {
           luz = M$metalong$lightpeak
-          # turn to numeric in case it is a factor
-          if (is.factor(luz)) {
-            luz = as.numeric(as.character(luz))
-          }
+          # # turn to numeric in case it is a factor
+          # if (is.factor(luz)) {
+          #   luz = as.numeric(as.character(luz))
+          # }
           if (length(params_247[["LUX_cal_constant"]]) > 0 &
               length(params_247[["LUX_cal_exponent"]]) > 0) { # re-calibrate light
             luz = params_247[["LUX_cal_constant"]] * exp(params_247[["LUX_cal_exponent"]] * luz)
