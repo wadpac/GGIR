@@ -9,7 +9,7 @@ g.part5.handle_lux_extremes = function(lux) {
     if (length(w.pos) > 0) {
       result = c()
       for (w.pos_i in 1:length(w.pos)) {
-        result = w.pos[w.pos_i]:(w.pos[w.pos_i] + length(patrn) - 1)
+        result = c(result, w.pos[w.pos_i]:(w.pos[w.pos_i] + length(patrn) - 1))
       }
     } else {
       result = c()
