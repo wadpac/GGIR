@@ -14,13 +14,13 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
     cliphoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window2 * 0.5 
     cliphoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window2 * 0.5
     # Flag nonwear based on window instead of window2 (2023-02-18)
-    if (nw_approach == "old") {
-      NWflag = h
-    } else if (nw_approach == "new"){
+    # if (nw_approach == "old") {
+    #   NWflag = h
+    # } else if (nw_approach == "new"){
       NWflag = (h - floor(crit/2)):(h + floor(crit/2))
       if (NWflag[1] == 0) NWflag = NWflag[2:3]
       if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
-    }
+    # }
     # ---
     if (h <= crit) {
       hoc1 = 1
