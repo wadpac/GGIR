@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2023)}{
   \itemize{
     \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
     \item Part 2: Fixed #733 related to qwindows in the first recording day
