@@ -940,11 +940,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Numeric (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["coln1"]]}).
         Column number in the sleep log spreadsheet where the onset of the first night starts.}
 
-      \item{sleeplogidnum}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogidnum"]]}).
-        Should the participant identifier as stored in
-        the sleeplog be interpretted as a number (TRUE) or character (FALSE)?}
-
       \item{ignorenonwear}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["ignorenonwear"]]}).
         If TRUE then ignore detected monitor non-wear periods to avoid
@@ -1311,7 +1306,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        outliers.only = FALSE,
        criterror = 4,
        relyonguider = FALSE,
-       sleeplogidnum = TRUE,
        colid=1,
        coln1=2,
        do.visual = TRUE,

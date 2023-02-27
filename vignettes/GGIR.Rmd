@@ -389,13 +389,14 @@ comes with the following changes:
     calendar date. GGIR has been designed to recognise and handle any
     date format but assumes that you have used the same date format
     consistently through the sleeplog.
--   Per calendar date there is a column for wakeup time and followed by
-    a column for onset or in-bed time. Note that this is different from
-    the basic sleep log, where wakeup time follows the column for onset
-    or in-bed time. So, the advanced sleep log is calendar date
-    oriented. However, if the sleep onset time is at 2am, you should
-    still fill in the 02:00:00, even thought it is the 02:00:00 of the
-    next calendar date.
+-   Per calendar date there is a column for wakeup time and followed 
+    by a column for onset or in-bed time. Note that this is different 
+    from the basic sleep log, where wakeup time follows the column for 
+    onset or in-bed time. So, the advanced sleep log is calendar date 
+    oriented: asking the participant when they woke up and when the fell 
+    asleep on a certain date. However, if the sleep onset time is at 
+    2am, you should still fill in the 02:00:00, even though it is the 
+    02:00:00 of the next calendar date.
 -   You can add columns relating to napping time and nonwear time. These
     are not used for the sleep analysis in g.part3 and g.part4, but used
     in g.part5 to facilitate napping analysis, see argument
