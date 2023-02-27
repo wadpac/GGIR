@@ -12,7 +12,9 @@
     \item Visual report: Now uses part 3 milestone data consistently as
     reference to avoid inconsistencies when part 3 milestone data files were not
     generated #732 (second half).
-    t
+    \item Part 1: Expand timegap imputation functionality with also imputation of the timestamps #742
+    \item Part 1: Add configtz argument to function read.myacc.csv #740
+    \item Part 1: Interpolate timestamps that lack decimal places #705
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
