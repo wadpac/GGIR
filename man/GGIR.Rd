@@ -471,20 +471,20 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{do.anglex}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglex"]]}).
         If TRUE, calculates the angle of the X axis relative to the horizontal:
-        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{acc_{rollmedian(y)} +
-        acc_{rollmedian(z)}}}) * 180/\pi}}
+        \deqn{angleX = (\tan{^{-1}\frac{acc_{rollmedian(x)}}{(acc_{rollmedian(y)})^2 +
+        (acc_{rollmedian(z)})^2}}) * 180/\pi}}
 
       \item{do.angley}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.angley"]]}).
         If TRUE, calculates the angle of the Y axis relative to the horizontal:
-        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{acc_{rollmedian(x)} +
-        acc_{rollmedian(z)}}}) * 180/\pi}}
+        \deqn{angleY = (\tan{^{-1}\frac{acc_{rollmedian(y)}}{(acc_{rollmedian(x)})^2 +
+        (acc_{rollmedian(z)})^2}}) * 180/\pi}}
 
       \item{do.anglez}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.anglez"]]}).
         If TRUE, calculates the angle of the Z axis relative to the horizontal:
-        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{acc_{rollmedian(x)} +
-        acc_{rollmedian(y)}}}) * 180/\pi}}
+        \deqn{angleZ = (\tan{^{-1}\frac{acc_{rollmedian(z)}}{(acc_{rollmedian(x)})^2 +
+        (acc_{rollmedian(y)})^2}}) * 180/\pi}}
 
       \item{do.zcx}{
         Boolean (default = \Sexpr{format(GGIR::load_params()$params_metrics)[["do.zcx"]]}).
@@ -833,38 +833,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Threshold is applied to the first metric in the milestone data, so if you
         have only specified \code{do.enmo = TRUE} then it will be applied to ENMO.}
 
-        \item{bout.metric}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["bout.metric"]]}).
-        Specify a metric for bout detection (recommended setting is \code{bout.metric = 6} since
-        it is the most updated version of the bout calculation in GGIR).
-        If \code{bout.metric = 1} the code uses the MVPA bout definition as has
-        been available since 2014 (see papers by Sabia AJE 2014 and da Silva IJE 2014).
-        Here, the algorithm looks for 10 minute windows in which more than XX percent
-        of the epochs are above mvpathreshold, and then counts the entire window as mvpa.
-        If \code{bout.metric = 2} the code looks for groups of epochs with a bout.metric above
-        mvpathreshold that span a time window of at least mvpadur minutes in  which
-        more than boutcriter percent of the epochs are above the threshold. The motivation
-        for the defition 1 was: A person who spends 10 minutes in MVPA with a 2 minute
-        break in the middle is equally active as a person who spends 8 minutes in MVPA
-        without taking a break. Therefore, both should be counted equal and counted as
-        10 minute MVPA bout. The motivation for the definition 2 is: not counting breaks
-        towards MVPA may simplify interpretation and still counts the two persons in
-        the example as each others equal.
-        If \code{bout.metric = 3}, using sliding window across the
-        data to test bout criteria per window and do not allow for breaks larger than 1 minute
-        and with fraction of time larger than the boutcriter threshold.
-        If \code{bout.metric = 4}, same as 3 but also requires the first and last epoch to
-        meet the threshold criteria.
-        If \code{bout.metric = 5}, same as 4, but now looks for breaks larger
-        than a minute such that 1 minute breaks are allowe, and the fraction of time that meets
-        the threshold should be equal than or greater than the \code{bout.criter} threshold.
-        If \code{bout.metric = 6}, algorithm improved (2021) to check for first and last epoch.}
-
-      \item{closedbout}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_phyact"]][["closedbout"]]}).
-        TRUE if you want breaks in bouts to be counted towards
-        time spent in bouts (argument only active for bout.metric 1 and 2).}
-
       \item{boutdur.mvpa}{
         Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.mvpa"]],
         collapse = ", "), ")")}).
@@ -971,11 +939,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{coln1}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["coln1"]]}).
         Column number in the sleep log spreadsheet where the onset of the first night starts.}
-
-      \item{sleeplogidnum}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogidnum"]]}).
-        Should the participant identifier as stored in
-        the sleeplog be interpretted as a number (TRUE) or character (FALSE)?}
 
       \item{ignorenonwear}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_sleep"]][["ignorenonwear"]]}).
@@ -1085,7 +1048,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         continuing with activity types for next day. Leave missing values empty. If an
         activitylog is used then individuals who do not appear in the activitylog will still
         be processed with value \code{qwindow = c(0, 24)}. Dates with no activiy log data can be skipped,
-        no need to have a column with the date followed by a column with the next date.}
+        no need to have a column with the date followed by a column with the next date. If times in the 
+        activity diary are not multiple of the short window size (epoch length), the next epoch is 
+        considered (e.g., with epoch of 5 seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).}
 
       \item{qwindow_dateformat}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_247"]][["qwindow_dateformat"]]}").
@@ -1341,7 +1306,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        outliers.only = FALSE,
        criterror = 4,
        relyonguider = FALSE,
-       sleeplogidnum = TRUE,
        colid=1,
        coln1=2,
        do.visual = TRUE,

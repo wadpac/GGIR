@@ -11,7 +11,7 @@ test_that("gloadlog is able to load different log formats", {
   rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   cat(paste0("\nLocal timezone: ", Sys.timezone()))
-  logs1 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
+  logs1 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7,
                    sleeplogsep = ",", meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs1$sleeplog), 7)
   expect_equal(ncol(logs1$sleeplog), 5)
@@ -25,7 +25,7 @@ test_that("gloadlog is able to load different log formats", {
   # start of accelerometer recording 6 days earlier
   rec_starttime = format(as.POSIXct("2016-06-20 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
-  logs2 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
+  logs2 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7,
                    sleeplogsep = ",", meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs2$sleeplog), 7)
   expect_equal(ncol(logs2$sleeplog), 5)
@@ -39,7 +39,7 @@ test_that("gloadlog is able to load different log formats", {
   # start of accelerometer recording 3 days later
   rec_starttime = format(as.POSIXct("2016-06-29 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
-  logs3 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7, sleeplogidnum = FALSE,
+  logs3 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7,
                     sleeplogsep = ",", meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs3$sleeplog), 3)
   expect_equal(ncol(logs3$sleeplog), 5)

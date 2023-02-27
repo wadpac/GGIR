@@ -9,7 +9,7 @@
 }
 \usage{
   g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
-    sleeplogidnum=TRUE, sleeplogsep=",", meta.sleep.folder = c(),
+    sleeplogsep=",", meta.sleep.folder = c(),
   desiredtz="")
 }
 \arguments{
@@ -32,10 +32,6 @@
   is missing for certain nights then leave these blank
   
   }
-  \item{sleeplogidnum}{
-    Should the participant identifier as stored in the sleeplog be
-    interpretted as a number (TRUE=default) or a character (FALSE)?
-  }
   \item{sleeplogsep}{
     Value used as sep argument for reading sleeplog csv file, usually "," or ";".
   }
@@ -53,7 +49,7 @@
 \examples{
 \dontrun{
   sleeplog = g.loadlog(loglocation="C:/mysleeplog.csv",coln1=2,
-  colid=1,nnights=5,sleeplogidnum=TRUE)
+  colid=1,nnights=5)
 }
 }
 \author{

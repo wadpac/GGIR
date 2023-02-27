@@ -61,9 +61,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   nightsummary = M = IMP = sib.cla.sum = c() # declaring variable as otherwise R is confused where they come from, while in fact they are loaded as part of the load operations
   #======================================================================
   # compile lists of milestone data filenames
-  fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
+  fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
   
-  fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
+  fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
   if (file.exists(sleeplogRDA) == TRUE) {
@@ -82,7 +82,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
-  fnames.ms3 = sort(fnames.ms3)
+  # fnames.ms3 = sort(fnames.ms3)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
@@ -112,9 +112,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure, fullfilenames, foldernam) {
     tail_expansion_log =  NULL
-    fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
-    fnames.ms2 = sort(dir(paste(metadatadir, "/meta/ms2.out", sep = "")))
-    fnames.ms4 = sort(dir(paste(metadatadir, "/meta/ms4.out", sep = "")))
+    fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
+    fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
+    fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
     nfeatures = 500
     ws3 = params_general[["windowsizes"]][1]
     ds_names = rep("",nfeatures)
@@ -340,11 +340,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
             if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
-              if (params_sleep[["sleeplogidnum"]] == TRUE) {
-                IDtmp = as.numeric(ID)
-              } else {
-                IDtmp = as.character(ID)
-              }
+              IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
               # store in csv file:
@@ -818,15 +814,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           ds_names[fi:(fi + 3)] = c("Nblocks_day_total_IN", "Nblocks_day_total_LIG",
                                                     "Nblocks_day_total_MOD", "Nblocks_day_total_VIG")
                           fi = fi + 4
-                          dsummary[di, fi:(fi + 6)] = c(params_phyact[["boutcriter.in"]],
+                          dsummary[di, fi:(fi + 5)] = c(params_phyact[["boutcriter.in"]],
                                                         params_phyact[["boutcriter.lig"]],
                                                         params_phyact[["boutcriter.mvpa"]],
                                                         paste(params_phyact[["boutdur.in"]], collapse = "_"),
                                                         paste(params_phyact[["boutdur.lig"]], collapse = "_"),
-                                                        paste(params_phyact[["boutdur.mvpa"]], collapse = "_"),
-                                                        params_phyact[["bout.metric"]])
-                          ds_names[fi:(fi + 6)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
-                                                    "boutdur.in",  "boutdur.lig", "boutdur.mvpa", "bout.metric"); fi = fi + 7
+                                                        paste(params_phyact[["boutdur.mvpa"]], collapse = "_"))
+                          ds_names[fi:(fi + 5)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
+                                                    "boutdur.in",  "boutdur.lig", "boutdur.mvpa"); fi = fi + 6
                           #===========================
                           # Intensity gradient over waking hours
                           if (length(params_247[["iglevels"]]) > 0) {
@@ -957,7 +952,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # tidy up output data frame, because it may have a lot of empty rows and columns
         emptyrows = which(output[,1] == "" & output[,2] == "")
         if (length(emptyrows) > 0) output = output[-emptyrows,]
-        lastcolumn = which(colnames(output) == "bout.metric")
+        lastcolumn = which(colnames(output) == "boutdur.mvpa")
         if (length(lastcolumn) > 0) {
           if (ncol(output) > lastcolumn) {
             emptycols = sapply(output, function(x)all(x == ""))# Find columns filled with missing values which(output[1,] == "" & output[2,] == "")

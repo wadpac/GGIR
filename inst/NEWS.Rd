@@ -1,12 +1,29 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-4 (GitHub-only-release date:?-?-2022)}{
+\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
   \itemize{
-    \item Part1: Improved handling of the expand_tail_max_hours functionality. Expanded time is now ignored in reports and visualizations.
+    \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
+    \item Part 2: Fixed #733 related to qwindows in the first recording day
+    \item Part 4: argument sleeplogidnum deprecated.
+    \item Part 1, 2, 4, 5: Fixes bug (#732 first half). Filenames are no longer 
+    ordered prior to processing which should make it more robust to work with
+    raw data stratified across multiple subdirectories.
+    \item Visual report: Now uses part 3 milestone data consistently as
+    reference to avoid inconsistencies when part 3 milestone data files were not
+    generated #732 (second half).
+    t
+  }
+}
+\section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
+  \itemize{
+    \item Part1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
-    \item Included test for recordingEndSleepHour
+    \item Part 2 and 5: arguments bout.metric or closedbout deprecated, g.getbout function
+    simplified to a single algorithm.
+    \item Part 2 and 5: Bout detection fixed such that it can now detect bouts that
+    equal the epoch length, and for epochs less than 30 seconds do no overestimate bout length by 1 epoch.
   }
 }
 \section{Changes in version 2.8-3 (GitHub-only-release date:24-10-2022)}{

@@ -21,7 +21,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                         HASPT.ignore.invalid = FALSE,
                         loglocation = c(), colid = 1, coln1 = 2,
                         nnights = c(),
-                        relyonguider = FALSE, sleeplogidnum = TRUE,
+                        relyonguider = FALSE,
                         def.noc.sleep = 1,
                         sleeplogsep = ",", sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
@@ -78,12 +78,12 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   }
   if ("phyact" %in% group) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
-                         mvpadur = c(1,5,10), closedbout = FALSE,
+                         mvpadur = c(1,5,10),
                          boutcriter.in = 0.9, boutcriter.lig = 0.8,
                          boutcriter.mvpa = 0.8, threshold.lig = 40,
                          threshold.mod = 100, threshold.vig = 400,
                          boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
-                         boutdur.lig = c(1,5,10), frag.metrics = c(), bout.metric = 6)
+                         boutdur.lig = c(1,5,10), frag.metrics = c())
   }
   if ("cleaning" %in% group) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,

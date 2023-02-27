@@ -42,6 +42,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   dir2fn = datadir2fnames(datadir,filelist)
   fnames = dir2fn$fnames
   fnamesfull = dir2fn$fnamesfull
+  
   # check whether these are movisens files
   is.mv = ismovisens(datadir)
   if (filelist == FALSE & is.mv == TRUE) {
@@ -142,8 +143,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   } else {
     ffdone = c()
   }
-  fnames = sort(fnames)
-  fnamesfull = sort(fnamesfull)
+  # Following lines turned off because does not work when using subfolders
+  # It seems best to leave sorting efforts until the very end when reports are created
+  # fnames = sort(fnames) 
+  # fnamesfull = sort(fnamesfull)
   
 
   #=========================================================
