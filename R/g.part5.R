@@ -61,9 +61,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   nightsummary = M = IMP = sib.cla.sum = c() # declaring variable as otherwise R is confused where they come from, while in fact they are loaded as part of the load operations
   #======================================================================
   # compile lists of milestone data filenames
-  fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
+  fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
 
-  fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
+  fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
   if (file.exists(sleeplogRDA) == TRUE) {
@@ -82,7 +82,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
-  fnames.ms3 = sort(fnames.ms3)
+  # fnames.ms3 = sort(fnames.ms3)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
@@ -112,9 +112,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure, fullfilenames, foldernam) {
     tail_expansion_log =  NULL
-    fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
-    fnames.ms2 = sort(dir(paste(metadatadir, "/meta/ms2.out", sep = "")))
-    fnames.ms4 = sort(dir(paste(metadatadir, "/meta/ms4.out", sep = "")))
+    fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
+    fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
+    fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
     nfeatures = 500
     ws3 = params_general[["windowsizes"]][1]
     ds_names = rep("",nfeatures)
@@ -173,7 +173,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
-        # remove expanded time so that it is not used for behavioral classification 
+        # remove expanded time so that it is not used for behavioral classification
         if (length(tail_expansion_log) != 0) {
           expanded_short = which(IMP$r5long == -1)
           expanded_long = which(IMP$rout$r5 == -1)
@@ -258,9 +258,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (!(last_wakeup %in% ts$time)) {
             replaceLastWakeup = which(S$sib.end.time == last_wakeup)
             S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
-          } 
+          }
         }
-        
+
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
@@ -283,7 +283,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
           # include last window if has been expanded and not present in ts
-          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) 
+          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
           S2 = S[S$definition == j,] # simplify to one definition
@@ -339,12 +339,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
-            if (params_output[["do.sibreport"]]  == TRUE) {
-              if (params_sleep[["sleeplogidnum"]] == TRUE) {
-                IDtmp = as.numeric(ID)
-              } else {
-                IDtmp = as.character(ID)
-              }
+            if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
+              IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
               # store in csv file:
