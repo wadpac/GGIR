@@ -261,13 +261,14 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_equal(as.numeric(D7$header[2,]), 30)
   
   
-  # File 8
+  # File 8 - check timezone conversion and addition of decimal places
   D8 = read.myacc.csv(rmc.file = testfile[8], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      rmc.configtz = "America/Chicago",
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
@@ -275,9 +276,9 @@ test_that("read.myacc.csv can read a variety of csv file formats", {
   expect_equal(ncol(D8$data), 5)
   expect_equal(as.character(strftime(D8$data$timestamp[1:5], 
                                      '%Y-%m-%d %H:%M:%OS2')),
-               c("2022-11-02 13:01:16.50", "2022-11-02 13:01:16.53",
-                 "2022-11-02 13:01:16.56", "2022-11-02 13:01:16.59",
-                 "2022-11-02 13:01:16.63"))
+               c("2022-11-02 18:01:16.50", "2022-11-02 18:01:16.53",
+                 "2022-11-02 18:01:16.56", "2022-11-02 18:01:16.59",
+                 "2022-11-02 18:01:16.63"))
   expect_that(D8$header,equals("no header"))
   
   for (i in 1:length(testfile)) {

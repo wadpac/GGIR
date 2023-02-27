@@ -143,7 +143,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.configtz, format = rmc.format.time)
+      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = rmc.configtz, format = rmc.format.time)
       
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
