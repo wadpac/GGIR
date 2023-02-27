@@ -324,9 +324,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
-              if (isFALSE(params_general[["AskedToWear247"]])) { # avoid copying data if not needed
-                vari2 = vari #vari2 is used in identify_levels when AskedToWear247 = FALSE, need to redefine here in every loop to account for qwindows
-              }
+              # if (isFALSE(params_general[["AskedToWear247"]])) { # avoid copying data if not needed
+              #   vari2 = vari #vari2 is used in identify_levels when AskedToWear247 = FALSE, need to redefine here in every loop to account for qwindows
+              # }
               if (isTRUE(params_cleaning[["part2ExcludeNonwear"]])) {
                 varnum[which(val != 0)] = NA
               }
@@ -678,7 +678,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # sleep as inactivity
                 if (isFALSE(params_general[["AskedToWear247"]])) {
                   ts = data.frame(time = vari2[,1],
-                                  ACC = vari2[,mi] * UnitReScale,
+                                  ACC = as.numeric(vari2[,mi]) * UnitReScale,
                                   diur = 0, # consider all recorded time as awake (except nonwear)
                                   sibdetection = 0)
                   for (TRLi in params_phyact[["threshold.lig"]]) {
