@@ -20,7 +20,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) {
-    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]], params_247[["qwindow_dateformat"]])
+    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                            params_247[["qwindow_dateformat"]],
+                                            epochSize = params_general[["windowsizes"]][1])
     # This will be an object with numeric qwindow values for all individuals and days
   }
   #---------------------------------
@@ -64,7 +66,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   }
   #--------------------------------
   # Loop through all the files
-  fnames = sort(fnames)
+  # fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
   
@@ -97,6 +99,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       filefoldername = c()
       file2read = paste0(path,fnames[i])
       load(file2read) #reading RData-file
+      # convert to character/numeric if stored as factor in metashort and metalong
+      M$metashort = correctOlderMilestoneData(M$metashort)
+      M$metalong = correctOlderMilestoneData(M$metalong)
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
@@ -164,7 +169,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         includedaycrit = params_cleaning[["includedaycrit"]],
                         myfun = myfun,
                         acc.metric = params_general[["acc.metric"]])
-        name = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
+        RDname = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         # reset M and IMP so that they include the expanded time (needed for sleep detection in parts 3 and 4)
         if (length(tail_expansion_log) != 0) {
           M = M_bu
@@ -172,7 +177,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
-            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", name, ".csv"), row.names = FALSE)
+            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"), row.names = FALSE)
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
@@ -182,14 +187,16 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             cnt78 = 2
           }
         }
-        if (length(unlist(strsplit(name,"[.]RD"))) == 1) { # to avoid getting .RData.RData
-          filename = paste0(name,".RData")
+        
+        NumberRDinFilename = length(unlist(strsplit(RDname,"[.]RD")))
+        if (NumberRDinFilename == 1) { # to avoid getting .RData.RData
+          RDname = paste0(RDname,".RData")
         }
         if (params_output[["storefolderstructure"]] == TRUE) { # newly added 20-2-2019
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
           SUM$daysummary$foldername = foldername[i] #store the lowest foldername
         }
-        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", name)) #IMP is needed for g.plot in g.report.part2
+        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
