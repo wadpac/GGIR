@@ -99,6 +99,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       filefoldername = c()
       file2read = paste0(path,fnames[i])
       load(file2read) #reading RData-file
+      # convert to character/numeric if stored as factor in metashort and metalong
+      M$metashort = correctOlderMilestoneData(M$metashort)
+      M$metalong = correctOlderMilestoneData(M$metalong)
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
