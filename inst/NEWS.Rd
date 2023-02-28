@@ -13,7 +13,7 @@
     \item Visual report: Now uses part 3 milestone data consistently as
     reference to avoid inconsistencies when part 3 milestone data files were not
     generated #732 (second half).
-    t
+    \item Part 5: fixed minor bug when axivity light data is stored as factor in part 1.
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
