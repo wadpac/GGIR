@@ -5,7 +5,7 @@ correctOlderMilestoneData = function(x) {
   
   # timestamp is assumed to be always present and in character format
   if (is.factor(x$timestamp[1])) {
-    x$timestamp = as.character(x$timestamp)
+    x$timestamp = format(x$timestamp)
   }
   # temperature and light may not always be present
   # if present they are expected to be in numeric format
