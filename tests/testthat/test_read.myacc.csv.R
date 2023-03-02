@@ -8,7 +8,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   sf = 30
   options(digits.secs = 4)
   t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
-  timestamps = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  time = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 4, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -21,7 +21,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   wear = c(rep(TRUE,N/3),rep(FALSE,N/6),rep(TRUE,N/3),rep(TRUE,N/6))
   
   # No header, but otherwise normal
-  S1 = data.frame(x = accx, time = timestamps, 
+  S1 = data.frame(x = accx, time = time, 
                   y = accy, z = accz, temp = temp + 20, 
                   stringsAsFactors = TRUE)
   
@@ -34,7 +34,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   write.csv(S1, file = testfile[2], row.names = FALSE)
   
   # Without temperature
-  S2 = data.frame(x = accx, time = timestamps, y = accy, z = accz, stringsAsFactors = TRUE)
+  S2 = data.frame(x = accx, time = time, y = accy, z = accz, stringsAsFactors = TRUE)
   testfile[3] = "testcsv3.csv"
   write.csv(S2, file = testfile[3], row.names = FALSE)
   
@@ -56,7 +56,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   # Evaluate with decimal places in seconds
   expect_equal(nrow(D1$data), 20)
   expect_equal(ncol(D1$data), 5)
-  expect_equal(as.character(strftime(D1$data$timestamp[1:5], '%Y-%m-%d %H:%M:%OS2')), 
+  expect_equal(as.character(strftime(D1$data$time[1:5], '%Y-%m-%d %H:%M:%OS2')), 
                c("2022-11-02 13:01:16.00",
                  "2022-11-02 13:01:16.03",
                  "2022-11-02 13:01:16.06",
@@ -78,7 +78,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.headername.recordingid = "ID")
   expect_equal(nrow(D2$data), 20)
   expect_equal(ncol(D2$data), 5)
-  expect_equal(as.character(strftime(D2$data$timestamp[1:5], 
+  expect_equal(as.character(strftime(D2$data$time[1:5], 
                                      '%Y-%m-%d %H:%M:%OS2')),
                c("2022-11-02 18:01:16.50", "2022-11-02 18:01:16.53",
                  "2022-11-02 18:01:16.56", "2022-11-02 18:01:16.59",
@@ -133,7 +133,7 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
   sf = 30
   options(digits.secs = 4)
   t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
-  timestamps = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  time = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 3, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -147,7 +147,7 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
            rep(TRUE, N / 3), rep(TRUE, N / 6))
 
   # 1: With 2-column header, with temperature, with time
-  S1 = as.matrix(data.frame(x = accx, time = timestamps, y = accy,
+  S1 = as.matrix(data.frame(x = accx, time = time, y = accy,
                             z = accz, temp = temp + 20, stringsAsFactors = TRUE))
   hd_NR = 10
   hd = matrix("", hd_NR + 1, ncol(S1))
@@ -172,7 +172,7 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
   zb = sample(x = 1:(2^bits),size = N,replace = TRUE)
   set.seed(400)
   temp3 = rnorm(N)
-  S3 = S2 = as.matrix(data.frame(x = xb, time = timestamps, y = yb,
+  S3 = S2 = as.matrix(data.frame(x = xb, time = time, y = yb,
                             z = zb, temp = temp3 + 20, stringsAsFactors = TRUE))
   S2 = rbind(hd, S2)
   S2[hd_NR + 1, ] = colnames(S2)
@@ -273,7 +273,7 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
   sf = 30
   options(digits.secs = 4)
   t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
-  timestamps = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  time = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 1, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -287,10 +287,10 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
            rep(TRUE, N / 3), rep(TRUE, N / 6))
   
   # 1: With 2-column header, with temperature, with gap in time, variation in sample rate
-  timestamps_gap = timestamps
-  timestamps_gap[10:length(timestamps_gap)] = timestamps_gap[10:length(timestamps_gap)] + 5 # add gap of 5 seconds
-  timestamps_gap = timestamps_gap + rnorm(n = length(timestamps_gap), mean = 0, sd = 0.0001)
-  S1 = as.matrix(data.frame(x = accx, time = timestamps_gap, y = accy,
+  time_gap = time
+  time_gap[10:length(time_gap)] = time_gap[10:length(time_gap)] + 5 # add gap of 5 seconds
+  time_gap = time_gap + rnorm(n = length(time_gap), mean = 0, sd = 0.0001)
+  S1 = as.matrix(data.frame(x = accx, time = time_gap, y = accy,
                             z = accz, temp = temp + 20, stringsAsFactors = TRUE))
   hd_NR = 10
   hd = matrix("", hd_NR + 1, ncol(S1))

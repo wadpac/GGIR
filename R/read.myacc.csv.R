@@ -22,6 +22,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
                           epochsize = NULL) {
+
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -120,7 +121,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip = skip,
                                       dec = rmc.dec, showProgress = FALSE, header = freadheader),
                     stringsAsFactors = TRUE)
-  if (length(rmc.configtz) == 0) rmc.configtz = rmc.desiredtz
+  if (length(rmc.configtz) == 0) {
+    rmc.configtz = rmc.desiredtz
+  }
   if (length(rmc.col.wear) > 0) {
     wearIndicator = P[, rmc.col.wear] # keep wear channel seperately and reinsert at the end
   }
@@ -144,7 +147,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
       P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = rmc.configtz, format = rmc.format.time)
-      
+
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
         return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
@@ -225,11 +228,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     }
   }
   
-  
   if (rmc.configtz != rmc.desiredtz) {
     P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
                                  tz = rmc.desiredtz, origin = "1970-01-01")
   }
+  
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
     P$accx = P$accx * 1000
@@ -289,9 +292,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
+    P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
+                             tz = rmc.desiredtz, origin = "1970-01-01")
   }
-  
-
   return(list(data = P, header = header, 
               PreviousLastValue = PreviousLastValue,
               PreviousLastTime = PreviousLastTime))

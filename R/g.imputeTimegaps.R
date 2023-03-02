@@ -153,7 +153,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
           x$next_epoch_delay = round(x$next_epoch_delay)
           
           x = imputeRaw(x, sf)
-          
+
           imputation_done = TRUE
           # when imputing, the track of remaining_epochs has been repeated through the data frame
           # let's keep only the last record for the imputation later on
@@ -180,10 +180,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   }
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
-  # Note: Timestamps are not imputed because from here onward GGIR does not need them
-  # Any problems with sample rate should have been fixed during data loading
   if (remove_time_at_end == TRUE) {
     x = x[,-which(colnames(x) == "time")]
+  }
+  if (all(c("time", "timestamp") %in% colnames(x))) {
+    x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]
   }
   return(x)
 }
