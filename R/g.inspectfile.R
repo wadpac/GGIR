@@ -39,12 +39,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c();  isitagenea = c();  mon = c(); dformat = c() #generating empty variables
-    tmp1 = unlist(strsplit(tolower(filename),"[.]cs"))
-    tmp2 = unlist(strsplit(tolower(filename),"[.]b"))
-    tmp3 = unlist(strsplit(tolower(filename),"[.]w"))
-    tmp4 = unlist(strsplit(tolower(filename),"[.]r"))
-    tmp5 = unlist(strsplit(tolower(filename),"[.]cw"))
-    tmp6 = unlist(strsplit(tolower(filename),"[.]gt3"))
+    tmp1 = unlist(strsplit(filename,"[.]cs"))
+    tmp2 = unlist(strsplit(filename,"[.]b"))
+    tmp3 = unlist(strsplit(filename,"[.]w"))
+    tmp4 = unlist(strsplit(filename,"[.]r"))
+    tmp5 = unlist(strsplit(tolower(filename),"[.]cw")) # to lower to make this insensitive to case
+    tmp6 = unlist(strsplit(filename,"[.]gt3"))
     tmp7 = unlist(strsplit(filename,"[.]GT3"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
