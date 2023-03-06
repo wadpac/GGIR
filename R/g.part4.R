@@ -80,10 +80,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   ffdone = c()
   ms4.out = "/meta/ms4.out"
   fnames.ms4 = dir(paste0(metadatadir, ms4.out))
-  fnames.ms4 = sort(fnames.ms4)
+  # fnames.ms4 = sort(fnames.ms4)
   ffdone = fnames.ms4
   # ffdone a matrix with all the binary filenames that have been processed
-  fnames = sort(fnames)
+  # fnames = sort(fnames)
   #--------------------------------
   # get original file path of the accelerometer (some studies may like to keep track of original folder
   # structure if their study structure is embodied in folder structure)
