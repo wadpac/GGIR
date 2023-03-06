@@ -43,7 +43,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     tmp2 = unlist(strsplit(filename,"[.]b"))
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
-    tmp5 = unlist(strsplit(filename,"[.]cw"))
+    tmp5 = unlist(strsplit(tolower(filename),"[.]cw")) # to lower to make this insensitive to case
     tmp6 = unlist(strsplit(filename,"[.]gt3"))
     tmp7 = unlist(strsplit(filename,"[.]GT3"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file

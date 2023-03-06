@@ -3,6 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
   \itemize{
+    \item Part 1: cwa is now detected ignoring case in g.inspectfile
     \item Part 2: Bug fixes in accounting for 25 hour days in part 2 day level analyses #728.
     \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
     \item Part 2: Fixed #733 related to qwindows in the first recording day
