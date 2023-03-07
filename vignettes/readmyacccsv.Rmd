@@ -21,6 +21,9 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+See also complementary vignettes on:
+[General introduction to GGIR](https://cran.r-project.org/web/packages/GGIR/index.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), and [Embedding externalf unctions](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf).
+
 # Introduction
 
 GGIR can automatically read data from the most-frequently used accelerometer brands in the field:
