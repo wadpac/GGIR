@@ -4,8 +4,8 @@
 \section{Changes in version 2.8-6 (GitHub-only-release date:??-??-2022)}{
   \itemize{
     \item Part 2: Bug fixed that caused columns N valid week/weekend days to be omitted #747.
-    \item Vignettes: Add cross-references between vignettes to ease navigation and link R introuction tutorial #720.
-    \item Vignette: Section added on MX-metrics (thanks to Alex Rowlands + Ben Maylor for input) #723.
+    \item Vignettes: Add cross-references between vignettes to ease navigation and link R introduction tutorial #720.
+    \item Vignette: Section added on MX-metrics (thanks Alex Rowlands + Ben Maylor for input) #723.
   }
 }
 \section{Changes in version 2.8-5 (GitHub-only-release date:06-03-2022)}{
