@@ -75,8 +75,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
-    numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
-                       "IVIS_acc_threshold",
+    numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
+                       "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
     boolean_params = "cosinor"
@@ -96,8 +96,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
-                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit", "max_calendar_days")
-    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
+                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
+                       "includenightcrit", "max_calendar_days")
+    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", 
+                       "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")

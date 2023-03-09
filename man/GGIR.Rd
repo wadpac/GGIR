@@ -743,7 +743,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
         strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
-        strategy = 3 only selects the most active X days in the file where X is specified by argument \code{ndayswindow}.
+        strategy = 3 only selects the most active X days in the file where X is
+        specified by argument \code{ndayswindow}.
         strategy = 4 to only use the data after the first midnight.}
 
       \item{hrs.del.start}{
@@ -781,6 +782,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{max_calendar_days}{
       Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["max_calendar_days"]]}).
       The maximum number of calendar days to include (set to zero if unknown).}
+      
+      
+      \item{nonWearEdgeCorrection}{
+      Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["nonWearEdgeCorrection"]]}).
+        If TRUE then the edges are corrected following description in vanHees2013
+        as has been the default since then.
+      }
+      
     }
   }
 
