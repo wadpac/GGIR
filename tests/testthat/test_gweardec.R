@@ -27,7 +27,25 @@ test_that("g.weardec relabels data correctly", {
   expect_equal(sum(out$r3), 0)
   expect_equal(out$LC, 0)
   expect_equal(out$LC2, 0)
-    
+  
+  # Non-wear a few epoch in the first 3 hours, no clipping
+  metalong = data.frame(nonwearscore = c(rep(0, 3), rep(3, 2), rep(0, Ntotal - 5)),
+                        clippingscore = rep(0, Ntotal))
+  M = list(metalong = metalong)
+  out = g.weardec(M, wearthreshold, ws2)
+  expect_equal(sum(out$r1), 2)
+  expect_equal(sum(out$r3), 3)
+  expect_equal(sum(out$r1 + out$r3), 5)
+  
+  # Non-wear a few epoch in the last 3 hours, no clipping
+  metalong = data.frame(nonwearscore = c(rep(0, Ntotal - 5), rep(3, 2), rep(0, 3)),
+                        clippingscore = rep(0, Ntotal))
+  M = list(metalong = metalong)
+  out = g.weardec(M, wearthreshold, ws2)
+  expect_equal(sum(out$r1), 2)
+  expect_equal(sum(out$r3), 3)
+  expect_equal(sum(out$r1 + out$r3), 5)
+  
   # Non-wear 20 in middle + clipping
   metalong = data.frame(nonwearscore = createNW(Nnonwear = 20),
                         clippingscore = c(rep(0, Ntotal - 100), rep(1, 100)))
