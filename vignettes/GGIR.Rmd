@@ -1863,14 +1863,15 @@ a study then try to account for idle mode sleep usage in the statistical analyse
 
 ## MX metrics (minimum intensity of most active X minutes)
 
-The `qlevels` argument (the Xth percentile in the distribution of short epoch 
-metric value) can also be used to describe the accelerations that participants spent at 
-least “X” accumulated minutes a day above, described as the MX metrics
+The `qlevels` argument (the percentile in the distribution of short epoch 
+metric value) can be used to describe the accelerations that participants spend “X”
+accumulated minutes a day above, described as the MX metrics
 (e.g., [Rowlands et al](https://doi.org/10.1186/s40798-019-0225-9)).
 
-The MX metrics should not be confused with the most active continuous X hours (M5, M10) as
+The MX metrics should not be confused with the most active continuous X hours, e.g. M10, as
 used in circadian rhythm research that also can be derived with GGIR, see argument `winhr`.
 
+**Usage**
 To use the MX metrics as proposed by [Rowlands et al](https://doi.org/10.1186/s40798-019-0225-9),
 specify the durations of the 24h day that you wish to filter out the accelerations for.
 For example, to generate the minimum acceleration value for the most active 30 minutes
@@ -1880,6 +1881,12 @@ for example to call M60, M30 and M10, you can use argument:
 
 `qlevels = c(c(1380/1440),c(1410/1440),c(1430/1440)).`
 
+Note: if your qwindow is less than 24 h, e.g. the school day 
+(e.g. [Fairclough et al 2020](https://doi.org/10.1111/sms.13565)) 
+the denominator should be changed from 1440 (24h) accordingly, e.g. if an 8 h 
+window the denominator would be 480 rather than 1440.
+
+**Output**
 The output in part2 summary files will refer to this as a percentile of the day. 
 Thus, for a 24 h day, M30 will appear as “p 97.91666_ENMO_mg_0.24hr”. To graph 
 the radar plots of these MX metrics as first described by 
@@ -1887,12 +1894,6 @@ the radar plots of these MX metrics as first described by
 can access [this](https://github.com/Maylor8/RadarPlotGenerator) github repository
 which provides the R code and detailed instructions on how to make the radar 
 plots using your own data.
-
-Note: if your qwindow is less than 24 h, e.g. the school day 
-(e.g. [Fairclough et al 2020](https://doi.org/10.1111/sms.13565)) 
-the denominator should be changed from 1440 (24h) accordingly, e.g. if an 8 h 
-window the denominator would be 480 rather than 1440.
-
 
 # Other Resources
 
