@@ -30,4 +30,3 @@ Suggests: testthat, covr, knitr, rmarkdown, actilifecounts
 Imports: data.table, foreach, doParallel, signal, zoo, GENEAread, tuneR, unisensR, ineq, read.gt3x, ActCR, methods, GGIRread
 Depends: stats, utils, R (>= 3.5.0)
 VignetteBuilder: knitr
-

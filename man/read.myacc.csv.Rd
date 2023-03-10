@@ -22,6 +22,7 @@
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
                           rmc.desiredtz = "Europe/London",
+                          rmc.configtz = c(),
                           rmc.sf = c(),
                           rmc.headername.sf = c(),
                           rmc.headername.sn = c(),
@@ -105,10 +106,11 @@
     Origin of time when unit of time is UNIXsec, e.g. 1970-1-1
   }
   \item{rmc.desiredtz}{
-    Timezone in which device was configured and experiments took place.
-    If experiments took place in a different timezone, then use this
-    argument for the timezone in which the experiments took place and 
-    argument configtz to specify where the device was configured (not implemented yet).
+    Timezone in which device was worn.
+  }
+  \item{rmc.configtz}{
+    Timezone in which device was configured. If equal to rmc.desiredtz you can leave
+    this in its default value.
   }
   \item{rmc.sf}{
     Sample rate in Hertz, if this is stored in the file header then that will be used

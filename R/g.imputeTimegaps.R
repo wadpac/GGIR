@@ -22,6 +22,35 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     timeCol = "time"
     remove_time_at_end = TRUE
   }
+  
+  # define function to imputation at raw level
+  imputeRaw = function(x, sf) {
+    # impute raw timestamps because timestamps still need to be meaningul when
+    # resampling or when plotting
+    gapp = which(x$gap != 1)
+    if (length(gapp) > 0) {
+      if (gapp[1] > 1) {
+        newTime = x$timestamp[1:(gapp[1] - 1)]
+      } else {
+        newTime = NULL
+      }
+      for (g in 1:length(gapp)) {
+        newTime = c(newTime, x$timestamp[gapp[g]] + seq(0, (x$gap[gapp[g]] - 1) / sf, by = 1/sf))
+        if (g < length(gapp)) {
+          newTime = c(newTime, x$timestamp[(gapp[g] + 1):(gapp[g + 1] - 1)])
+        }
+      }
+      newTime =  c(newTime, x$time[(gapp[g] + 1):length(x$timestamp)])
+    }
+    x <- as.data.frame(lapply(x, rep, x$gap))
+    
+    if (length(gapp) > 0) {
+      x$timestamp = newTime[1:nrow(x)]
+    }
+    x = x[, which(colnames(x) != "gap")]
+    return(x)
+  }
+  
   # find zeros and remove them from dataset
   zeros = which(x[,xyzCol[1]] == 0 & x[,xyzCol[2]] == 0 & x[,xyzCol[3]] == 0)
   if (length(zeros) > 0) {
@@ -122,7 +151,9 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
           }
           x$gap = round(x$gap) # to make sure that small decimals do not mess up the imputation in next line
           x$next_epoch_delay = round(x$next_epoch_delay)
-          x <- as.data.frame(lapply(x, rep, x$gap))
+          
+          x = imputeRaw(x, sf)
+
           imputation_done = TRUE
           # when imputing, the track of remaining_epochs has been repeated through the data frame
           # let's keep only the last record for the imputation later on
@@ -140,15 +171,8 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
         }
       }
       if (imputation_done == FALSE) {
-        x <- as.data.frame(lapply(x, rep, x$gap))
+        x = imputeRaw(x, sf)
       }
-      # print("N days we have here")
-      # print(nrow(x)/(sf * 3600 * 24))
-      # print("N days to impute later at epoch level in g.getmeta")
-      # print((sum(x$remaining_epochs[which(x$remaining_epochs != 1)])) / (12*1440))
-      
-      # cleanup x, we only need remaining epochs
-      x = x[, which(colnames(x) != "gap")]
     }
   } else if (isFALSE(impute)) {
     if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
@@ -156,10 +180,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   }
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
-  # Note: Timestamps are not imputed because from here onward GGIR does not need them
-  # Any problems with sample rate should have been fixed during data loading
   if (remove_time_at_end == TRUE) {
     x = x[,-which(colnames(x) == "time")]
+  }
+  if (all(c("time", "timestamp") %in% colnames(x))) {
+    x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]
   }
   return(x)
 }
