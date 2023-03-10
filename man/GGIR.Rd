@@ -407,10 +407,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{rmc.desiredtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone).
-        Timezone in which device was configured and experiments took place.
-        If experiments took place in a different timezone, then use this
-        argument for the timezone in which the experiments took place and
-        argument configtz to specify where the device was configured (not implemented yet).
+        Timezone in which experiments took place. Value should be a timezone database name
+        See also https://en.wikipedia.org/wiki/Zone.tab}
+
+      \item{rmc.configtz}{
+        Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.configtz"]]}", i.e., system timezone).
+        Timezone in which device was configured. Value should be a timezone database name
         See also https://en.wikipedia.org/wiki/Zone.tab}
 
       \item{rmc.sf}{

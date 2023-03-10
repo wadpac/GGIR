@@ -62,7 +62,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc", 
                          "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
-                         "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
+                         "rmc.origin", "rmc.desiredtz", "rmc.configtz", "rmc.headername.sf", 
                          "rmc.headername.sn", "rmc.headername.recordingid", 
                          "rmc.header.structure", "loadGENEActiv")
     if (is.logical(params_rawdata[["rmc.noise"]])) {
