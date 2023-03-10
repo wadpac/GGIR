@@ -1071,8 +1071,10 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Array of percentiles for which value needs to be extracted.
         These need to be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75).
         There is no limit to the number of percentiles. If left empty then percentiles will not be
-        extracted. Distribution will be derived from short epoch metric data.}
-
+        extracted. Distribution will be derived from short epoch metric data. Argument
+        qlevels can for example be used for the MX-metrics (e.g. Rowlands et al) as
+        discussed in the \href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{main package vignette}}
+        
       \item{ilevels}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}).
         Levels for acceleration value frequency distribution in m\emph{g}, e.g., \code{ilevels = c(0,100,200)}.
