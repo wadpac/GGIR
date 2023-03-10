@@ -64,7 +64,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                          "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
                          "rmc.origin", "rmc.desiredtz", "rmc.configtz", "rmc.headername.sf", 
                          "rmc.headername.sn", "rmc.headername.recordingid", 
-                         "rmc.header.structure", "loadGENEActiv")
+                         "rmc.header.structure")
     if (is.logical(params_rawdata[["rmc.noise"]])) {
       # Older config files used this, so overwrite with NULL value
       params_rawdata[["rmc.noise"]] = c() 
@@ -126,12 +126,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
-  if (length(params_rawdata) > 0) {
-    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-      warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
-                     " Note that this option will be deprecated in the next CRAN release."))
-    }
-  }
   if (length(params_metrics) > 0) {
     if (params_metrics[["do.brondcounts"]] == TRUE) {
       stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",

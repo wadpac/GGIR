@@ -76,9 +76,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   expect_equal(decn,".")
   decn =  expect_warning(g.dotorcomma(wavfile, dformat = 3, mon = 4, desiredtz = desiredtz))
   expect_equal(decn,".")
-  decn =  g.dotorcomma(GAfile, dformat = 1, mon = 2, desiredtz = desiredtz, loadGENEActiv = "GGIRread")
-  expect_equal(decn,".")
-  decn =  expect_warning(g.dotorcomma(GAfile, dformat = 1, mon = 2, desiredtz = desiredtz, loadGENEActiv = "GENEAread"))
+  decn =  g.dotorcomma(GAfile, dformat = 1, mon = 2, desiredtz = desiredtz)
   expect_equal(decn,".")
   filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
   dayborder = 0

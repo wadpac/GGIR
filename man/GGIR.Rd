@@ -169,7 +169,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{configtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone).
-        Only functional for AX3 cwa and ActiGraph .gt3x data at the moment.
+        At the moment only functional for GENEActiv .bin, AX3 cwa, ActiGraph .gt3x,
+        and ad-hoc csv file format at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
         place are different. See also https://en.wikipedia.org/wiki/Zone.tab}
@@ -459,10 +460,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
       
-      \item{loadGENEActiv}{
-      Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["loadGENEActiv"]])}).
-      To indicate which package should be used to read
-      GENEActiv .bin files: either GENEAread or GGIRread}
     }
   }
 
