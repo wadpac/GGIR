@@ -5,7 +5,7 @@
   \itemize{
    \item Part 1: Deprecating dependency on GENEAread package, from now onward only
    GGIRread is used for reading GENEActiv binary data #627
-   \item Part 2: Argument nonWearEdgeCorrection added to control whether this part 
+   \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
    of the nonwear detection algorithm is used #749.
    \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
   }
