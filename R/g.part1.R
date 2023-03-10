@@ -183,6 +183,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     if (length(withoutRD) > 1) {
       fnames_without = withoutRD[1]
     }
+    
     if (length(ffdone) > 0) {
       ffdone_without = 1:length(ffdone) #dummy variable
       for (index in 1:length(ffdone)) {
@@ -465,7 +466,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                            "g.getstarttime", "POSIXtime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                           "g.extractheadervars", "g.imputeTimegaps", "parseGT3Xggir")
+                           "g.extractheadervars", "g.imputeTimegaps", "extract_params", "load_params",
+                           "check_params")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.
@@ -477,7 +479,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                                                 "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
                                                 "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
                                                 "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
-                                                "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")]))
+                                                "do.bfx", "do.bfy", "do.bfz", "do.brondcounts",
+                                                "do.neishabouricounts")]))
     if (Nmetrics2calc > 4) { #Only give warning when user wants more than 4 metrics.
       warning(paste0("\nExtracting many metrics puts higher demands on memory. Please consider",
                      " reducing the value for argument chunksize or setting do.parallel to FALSE"))
@@ -488,6 +491,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
     }
 
+    
     cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
     `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,

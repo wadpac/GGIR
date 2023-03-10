@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8-6 (GitHub-only-release date:??-??-2022)}{
+  \itemize{
+   \item Part 1: Expand timegap imputation functionality with also imputation of the timestamps #742
+   \item Part 1: Add configtz argument to function read.myacc.csv #740
+   \item Part 1: Interpolate timestamps that lack decimal places #705
+   \item Part 5: fixed minor bug when axivity light data is stored as factor in part 1.
+  }
+}
 \section{Changes in version 2.8-5 (GitHub-only-release date:06-03-2022)}{
   \itemize{
     \item Part 1: cwa is now detected ignoring case in g.inspectfile
@@ -14,7 +22,6 @@
     \item Visual report: Now uses part 3 milestone data consistently as
     reference to avoid inconsistencies when part 3 milestone data files were not
     generated #732 (second half).
-    \item Part 5: fixed minor bug when axivity light data is stored as factor in part 1.
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{

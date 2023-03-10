@@ -8,7 +8,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.bitrate = c(), rmc.dynamic_range = c(),
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
-                          rmc.desiredtz = "Europe/London", rmc.sf = c(),
+                          rmc.desiredtz = "Europe/London",
+                          rmc.configtz = c(),
+                          rmc.sf = c(),
                           rmc.headername.sf = c(),
                           rmc.headername.sn = c(),
                           rmc.headername.recordingid = c(),
@@ -20,6 +22,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
                           epochsize = NULL) {
+
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -40,7 +43,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     
     options(warn = -1) # fread complains about quote in first row for some file types
     header_tmp = as.data.frame(data.table::fread(file = rmc.file,
-                                                 nrow = rmc.header.length, 
+                                                 nrows = rmc.header.length, 
                                                  skip = rmc.firstrow.header - 1,
                                                  dec = rmc.dec, showProgress = FALSE, header = FALSE,
                                                  stringsAsFactors = TRUE,
@@ -118,6 +121,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip = skip,
                                       dec = rmc.dec, showProgress = FALSE, header = freadheader),
                     stringsAsFactors = TRUE)
+  if (length(rmc.configtz) == 0) {
+    rmc.configtz = rmc.desiredtz
+  }
   if (length(rmc.col.wear) > 0) {
     wearIndicator = P[, rmc.col.wear] # keep wear channel seperately and reinsert at the end
   }
@@ -140,11 +146,74 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.desiredtz, format = rmc.format.time)
+      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = rmc.configtz, format = rmc.format.time)
+
+      checkdec = function(x) {
+        # function to check whether timestamp has decimal places
+        return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
+      }
+      first_chunk_time = P$timestamp[1:pmin(nrow(P), 1000)]
+      checkMissingDecPlaces = unlist(lapply(first_chunk_time, FUN = checkdec))
+      if (all(checkMissingDecPlaces) &
+          !is.null(rmc.sf) &
+          length(which(duplicated(first_chunk_time) == TRUE)) > 0) {
+        # decimal places are not present and there are duplicated timestamps,
+        # so insert decimal places
+        #-----
+        # dummy data, to test the following code:
+        # ttt = as.POSIXlt("2022-11-02 14:46:50", tz = "Europe/Amsterdam")
+        # rmc.sf = 10
+        # P = data.frame(timestamps = c(rep(ttt - 1, 3), rep(ttt, 10), rep(ttt + 1, 9), rep(ttt + 2, 10), rep(ttt + 3, 4)))
+        #------
+        trans = unique(c(1, which(diff(P$timestamp) > 0), nrow(P)))
+        sf_tmp = diff(trans)
+        timeIncrement = seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf) # expected time increment per second
+        
+        # All seconds with exactly the sample frequency
+        trans_1 = trans[which(sf_tmp == rmc.sf)]
+        indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:rmc.sf)})))
+        P$timestamp[indices_1] =  P$timestamp[indices_1] + rep(timeIncrement, length(trans_1))
+        
+        # First second
+        if (sf_tmp[1] != rmc.sf) {
+          indices_2 = 1:trans[2]
+          P$timestamp[indices_2] = P$timestamp[indices_2] + seq(1 - (trans[2]/rmc.sf), 1 - (1/rmc.sf), by = 1/rmc.sf)
+        }
+        # Last second
+        if (sf_tmp[length(sf_tmp)] != rmc.sf) {
+          indices_3 = (trans[length(trans)-1] + 1):trans[length(trans)]
+          P$timestamp[indices_3] = P$timestamp[indices_3] + timeIncrement[1:length(indices_3)]
+        }
+        # All seconds with other sample frequency and not the first or last second
+        # This code now assumes that most samples in the second were sampled
+        # at the correct rate but that some samples were dropped or doubled
+        # as a result of which the sample rate appears different
+        # It seems that this may be a safer assumption than the assumption
+        # that the entire second had a different sample rate
+        if (length(trans) > 4) {
+          trans_cut = trans[2:(length(trans)-1)]
+          sf_tmp_cut = sf_tmp[2:(length(sf_tmp)-1)]
+          sf_tmp_odd = unique(sf_tmp_cut[which(sf_tmp_cut != rmc.sf)])
+          if (length(sf_tmp_odd) > 0) {
+            for (ji in 1:length(sf_tmp_odd)) {
+              sf2 = sf_tmp_odd[ji]
+              trans_4 = trans_cut[which(sf_tmp_cut == sf2)]
+              indices_4 = sort(unlist(lapply(trans_4, FUN = function(x){x + (1:sf2)})))
+              if (length(timeIncrement) > sf2) {
+                timeIncrement2 = timeIncrement[1:sf2]
+              } else if (length(timeIncrement) < sf2) {
+                timeIncrement2 = c(timeIncrement, rep(timeIncrement[rmc.sf], sf2 - rmc.sf))
+              }
+              P$timestamp[indices_4] =  P$timestamp[indices_4] + rep(timeIncrement2, length(trans_4))
+            }
+          }
+        }
+        # print(diff(P$timestamp))
+      }
     } else if (rmc.unit.time == "character") {
-      P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = rmc.desiredtz)
+      P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = rmc.configtz)
     } else if (rmc.unit.time == "UNIXsec") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.desiredtz)
+      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.configtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
       rmc.origin = "1899-12-30"
@@ -152,12 +221,18 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       tmp2 = P$timestamp - round(P$timestamp)
       timecode = ((tmp2 * 10^10) * 8.64) / 1000000
       numerictime = datecode + timecode
-      P$timestamp = as.POSIXlt(numerictime, origin = rmc.origin, tz = rmc.desiredtz)
+      P$timestamp = as.POSIXlt(numerictime, origin = rmc.origin, tz = rmc.configtz)
     }
     if (length(which(is.na(P$timestamp) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
     }
   }
+  
+  if (rmc.configtz != rmc.desiredtz) {
+    P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
+                                 tz = rmc.desiredtz, origin = "1970-01-01")
+  }
+  
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
     P$accx = P$accx * 1000
@@ -197,11 +272,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
     PreviousLastValue = as.numeric(P[nrow(P), c("accx", "accy", "accz")])
     PreviousLastTime = as.POSIXct(P[nrow(P), "timestamp"])
-
   }
   if (rmc.doresample == TRUE) { #resample
     rawTime = vector(mode = "numeric", nrow(P))
-    rawTime = as.numeric(as.POSIXlt(P$timestamp,tz = rmc.desiredtz))
+    rawTime = as.numeric(as.POSIXlt(P$timestamp,tz = rmc.configtz))
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "timestamp"))])
     step = 1/sf
     start = rawTime[1]
@@ -213,11 +287,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     rawLast = nrow(rawAccel)
     accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
-    timeRes = as.POSIXlt(timeRes, origin = rmc.origin, tz = rmc.desiredtz)
+    timeRes = as.POSIXlt(timeRes, origin = rmc.origin, tz = rmc.configtz)
     P = as.data.frame(accelRes, stringsAsFactors = TRUE)
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
+    P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
+                             tz = rmc.desiredtz, origin = "1970-01-01")
   }
   return(list(data = P, header = header, 
               PreviousLastValue = PreviousLastValue,
