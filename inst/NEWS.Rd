@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-6 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2022)}{
   \itemize{
    \item Part 2: Bug fixed that caused columns N valid week/weekend days to be omitted #747.
    \item Vignettes: Add cross-references between vignettes to ease navigation and link R introduction tutorial #720.
