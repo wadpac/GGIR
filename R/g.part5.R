@@ -171,6 +171,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           cat("Warning: Milestone data part 1 could not be retrieved")
         }
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
+        # convert to character/numeric if stored as factor in metashort and metalong
+        M$metashort = correctOlderMilestoneData(M$metashort)
+        M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
         # remove expanded time so that it is not used for behavioral classification
@@ -1029,7 +1032,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
-                           "extract_params", "load_params", "check_params")
+                           "extract_params", "load_params", "check_params",
+                           "correctOlderMilestoneData")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

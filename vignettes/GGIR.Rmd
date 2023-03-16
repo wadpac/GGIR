@@ -24,6 +24,9 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+You are now in the main GGIR vignette. See also the complementary vignettes on: [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+
 # Introduction
 
 ## What is GGIR?
@@ -90,13 +93,14 @@ If you need dedicated support with the use of GGIR or need someone to
 adapt GGIR to your needs then Vincent van Hees is available as
 [independent consultant](https://www.accelting.com/).
 
-**GGIR training** We offer frequent online GGIR training courses, both
-standard training on GGIR (3 x 3 hours) and private training to focus on
-your outstanding issues (3 x 2 hours). Check our dedicated training
+**Training in R essentials and GGIR** We offer frequent online GGIR training courses. Check our dedicated training
 [website](https://www.accelting.com/ggir-training/) with more details and
-the option to book your training . Do you have questions about the
+the option to book your training. Do you have questions about the
 training or the booking process? Do not hesitate to contact us via:
 [training\@accelting.com](mailto:training@accelting.com){.email}.
+
+Also of interest may be the brief [free R introduction tutorial](https://www.accelting.com/updates/short-r-tutorial/).
+
 
 **Change log**
 
@@ -240,7 +244,7 @@ sleep_params object:
 
 ```{R,eval=FALSE}
 library(GGIR)
-print(load_params()$params_sleep[["HASPT.algo"]])
+print(load_params()$params_sleep[["HASIB.algo"]])
 ```
 
 Documentation for all arguments in the parameter objects can be found the vignette:
@@ -1714,7 +1718,7 @@ brands, so the abbreviation has lost its functional meaning.
 
 ### MXLX
 
-Detection of the least active (LX) and most active (MX) X hours, where X
+Detection of the continuous least (LX) and most (MX) active X hours in a day, where X
 is defined by argument `winhr`. For both GGIR calculates the average
 acceleration, the start time, and if argument `iglevels` is specified
 also the intensity gradient. If argument `winhr` is a vector then
@@ -1723,6 +1727,11 @@ Within GGIR part 2 MXLX is calculated per calendar day and, if argument
 `qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX
 is calculated per window, and if used in combination with the GENEActiv
 accelerometer brand LUX estimates per LX and MX are included.
+
+The MX metric describe here should not be confused by the MX metrics as proposed
+by [Rowlands et al.](https://doi.org/10.1186/s40798-019-0225-9) which looks at
+accumulated most active time which may not always be continuous in time.
+The MX metrics by Rowlands et all are discussed further down.
 
 ### Cosinor analysis and Extended Cosinor analysis
 
@@ -1851,6 +1860,40 @@ raw data accelerometry, because the data collection process has involved proprie
 pre-processing steps which violate the core principle of raw data collection.
 - Report whether 'idle sleep mode' was used. If the choice was not consistent within
 a study then try to account for idle mode sleep usage in the statistical analyses.
+
+## MX metrics (minimum intensity of most active X minutes)
+
+The `qlevels` argument (the percentile in the distribution of short epoch 
+metric value) can be used to describe the accelerations that participants spend “X”
+accumulated minutes a day above, described as the MX metrics
+(e.g., [Rowlands et al](https://doi.org/10.1186/s40798-019-0225-9)).
+
+The MX metrics should not be confused with the most active continuous X hours, e.g. M10, as
+used in circadian rhythm research that also can be derived with GGIR, see argument `winhr`.
+
+**Usage**
+To use the MX metrics as proposed by [Rowlands et al](https://doi.org/10.1186/s40798-019-0225-9),
+specify the durations of the 24h day that you wish to filter out the accelerations for.
+For example, to generate the minimum acceleration value for the most active 30 minutes
+you can call qlevels = (1410/1440), which will filter out the lowest 1410 minutes 
+of the day. This can also be used as a nested term to generate multiple metrics, 
+for example to call M60, M30 and M10, you can use argument:
+
+`qlevels = c(c(1380/1440),c(1410/1440),c(1430/1440)).`
+
+Note: if your qwindow is less than 24 h, e.g. the school day 
+(e.g. [Fairclough et al 2020](https://doi.org/10.1111/sms.13565)) 
+the denominator should be changed from 1440 (24h) accordingly, e.g. if an 8 h 
+window the denominator would be 480 rather than 1440.
+
+**Output**
+The output in part2 summary files will refer to this as a percentile of the day. 
+Thus, for a 24 h day, M30 will appear as “p 97.91666_ENMO_mg_0.24hr”. To graph 
+the radar plots of these MX metrics as first described by 
+[Rowlands et al](https://doi.org/10.1186/s40798-019-0225-9), you 
+can access [this](https://github.com/Maylor8/RadarPlotGenerator) github repository
+which provides the R code and detailed instructions on how to make the radar 
+plots using your own data.
 
 # Other Resources
 

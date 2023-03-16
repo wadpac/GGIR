@@ -45,6 +45,9 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 0.417)
+  expect_equal(SUM$summary$`N valid WEdays`, "1")
+  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
