@@ -92,10 +92,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   } else {
     stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
   }
-  f16 = function(X) {
-    out = unlist(strsplit(X,"/"))
-    f16 = out[length(out)]
-  }
   f17 = function(X) {
     out = unlist(strsplit(X, "/"))
     f17 = out[(length(out) - 1)]
@@ -103,7 +99,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   tmp5 = tmp6 = rep(0, length(fnamesfull))
   if (length(fnamesfull) > 0) {
     if (is.mv == FALSE) {
-      fnamesshort = apply(X = as.matrix(fnamesfull),MARGIN = 1, FUN = f16)
+      fnamesshort = basename(fnamesfull)
       phase = apply(X = as.matrix(fnamesfull), MARGIN = 1, FUN = f17)
       for (i in 1:length(fnames)) {
         ff = unlist(strsplit(fnames[i], "/"))
@@ -399,7 +395,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       } else {
         filename = fnames[i]
       }
-      filename_dir = tmp5[i]; filefoldername = tmp6[i]
+      filefoldername = filename_dir = fnames[i] # not used elsewhere in GGIR, but just keeping it for consistency
       if (length(unlist(strsplit(fnames[1], "[.]RD"))) == 1) { # to avoid getting .RData.RData
         filename = paste0(filename,".RData")
       }
