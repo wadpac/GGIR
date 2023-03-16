@@ -1,14 +1,14 @@
 \name{GGIR}
 \alias{GGIR}
 \title{
-Shell function for analysing an accelerometer dataset.
+  Shell function for analysing an accelerometer dataset.
 }
 \description{
-This function is designed to help users operate all steps of the
-analysis. It helps to generate and structure milestone data,
-and produces user-friendly reports. The function acts as a shell with
-calls to \link{g.part1}, \link{g.part2}, \link{g.part3},
-\link{g.part4} and \link{g.part5}.
+  This function is designed to help users operate all steps of the
+  analysis. It helps to generate and structure milestone data,
+  and produces user-friendly reports. The function acts as a shell with
+  calls to \link{g.part1}, \link{g.part2}, \link{g.part3},
+  \link{g.part4} and \link{g.part5}.
 }
 \usage{
 GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
@@ -169,7 +169,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{configtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_general"]][["configtz"]]}", i.e., system timezone).
-        Only functional for AX3 cwa and ActiGraph .gt3x data at the moment.
+        At the moment only functional for GENEActiv .bin, AX3 cwa, ActiGraph .gt3x,
+        and ad-hoc csv file format at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
         place are different. See also https://en.wikipedia.org/wiki/Zone.tab}
@@ -459,10 +460,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
       
-      \item{loadGENEActiv}{
-      Character (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["loadGENEActiv"]])}).
-      To indicate which package should be used to read
-      GENEActiv .bin files: either GENEAread or GGIRread}
     }
   }
 
@@ -745,7 +742,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
         strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
-        strategy = 3 only selects the most active X days in the file where X is specified by argument \code{ndayswindow}.
+        strategy = 3 only selects the most active X days in the file where X is
+        specified by argument \code{ndayswindow}.
         strategy = 4 to only use the data after the first midnight.}
 
       \item{hrs.del.start}{
@@ -783,6 +781,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{max_calendar_days}{
       Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["max_calendar_days"]]}).
       The maximum number of calendar days to include (set to zero if unknown).}
+      
+      
+      \item{nonWearEdgeCorrection}{
+      Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["nonWearEdgeCorrection"]]}).
+        If TRUE then the non-wear detection around the edges of the recording (first
+        and last 3 hours) are corrected following description in vanHees2013 as 
+        has been the default since then. This functionality is advisable when working with
+        sleep clinic or exercise lab data typically lasting less than a day.
+      }
+      
     }
   }
 
