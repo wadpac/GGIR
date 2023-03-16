@@ -122,9 +122,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
 
   #-----------------------------------------------------------
   # Print GGIR header to console
-  GGIRversion = as.character(utils::packageVersion("GGIR"))
-  if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
-  if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+  GGIRversion = "could not extract version"
+  if (is.element('GGIR', installed.packages()[,1])) {
+    GGIRversion = as.character(utils::packageVersion("GGIR"))
+    if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+  }
 
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
@@ -198,7 +200,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
                           "GGIRversion",  "dupArgValues") == FALSE)]
   config.parameters = mget(LS)
-  config.matrix = as.data.frame(createConfigFile(config.parameters))
+  config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
     write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)

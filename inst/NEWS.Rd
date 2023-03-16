@@ -3,7 +3,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-7 (GitHub-only-release date:??-03-2022)}{
   \itemize{
-   \item Added functionality to handle Windows-friendly double backward slash filepaths for datadir, outputdir, qwindow, loglocation and data_cleaning_file arguments.
+    \item Added functionality to handle Windows-friendly double backward slash filepaths for datadir, outputdir, qwindow, loglocation and data_cleaning_file arguments.
+    \item For developers: GGIR can now be tested from source without GGIR needing to be installed
   }
 }
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2022)}{
