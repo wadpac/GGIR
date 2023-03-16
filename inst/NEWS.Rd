@@ -1,16 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-7 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.8-7 (GitHub-only-release date:??-??-2023)}{
   \itemize{
    \item Part 1: Deprecating dependency on GENEAread package, from now onward only
    GGIRread is used for reading GENEActiv binary data #627
    \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
    of the nonwear detection algorithm is used #749.
    \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
+   \item Reports: GGIR now skips the csv and visualreport generation if required milestone
+   data is not available.
   }
 }
-\section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2022)}{
+\section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{
   \itemize{
    \item Part 2: Bug fixed that caused columns N valid week/weekend days to be omitted #747.
    \item Vignettes: Add cross-references between vignettes to ease navigation and link R introduction tutorial #720.
@@ -21,7 +23,7 @@
    \item Part 5: fixed minor bug when axivity light data is stored as factor in part 1.
   }
 }
-\section{Changes in version 2.8-5 (GitHub-only-release date:06-03-2022)}{
+\section{Changes in version 2.8-5 (GitHub-only-release date:06-03-2023)}{
   \itemize{
     \item Part 1: cwa is now detected ignoring case in file extension in g.inspectfile #731
     \item Part 2: Bug fixes in accounting for 25 hour days in part 2 day level analyses #728.
