@@ -3,8 +3,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-7 (GitHub-only-release date:??-??-2023)}{
   \itemize{
-   \item Reports: GGIR now skips the report generation if there is no milestone
-   data available.
+   \item Reports: GGIR now skips the csv and visualreport generation if required milestone
+   data is not available.
   }
 }
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{

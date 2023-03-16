@@ -1,7 +1,7 @@
 GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
-                        studyname = c(), f0 = 1, f1 = 0,
-                        do.report = c(2, 4, 5), configfile = c(),
-                        myfun = c(), ...) {
+                studyname = c(), f0 = 1, f1 = 0,
+                do.report = c(2, 4, 5), configfile = c(),
+                myfun = c(), ...) {
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -21,7 +21,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  
   #===========================
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
@@ -52,7 +52,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
-
+  
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
@@ -66,7 +66,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-
+  
   # Configuration file - check whether it exists or auto-load
   configfile_csv = c()
   ex = "csv"
@@ -95,7 +95,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
   params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
@@ -107,23 +107,23 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
+  
   if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE) {
     params_metrics[["do.anglez"]] = TRUE
   }
-
+  
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
             " user from specifying argument myfun as this poses a security risk.", call. = FALSE)
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-
+  
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = as.character(utils::packageVersion("GGIR"))
   if (length(GGIRversion) == 0) GGIRversion = "could not extract version"
   if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
-
+  
   cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
   cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
   cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
@@ -137,7 +137,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
   cat("\n     (6) How you post-processed / cleaned GGIR output")
   cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
-
+  
   #-----------------------------------------------------------
   # Now run GGIR parts 1-5
   print_console_header = function(headerTitle) {
@@ -222,8 +222,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # -----  
   if (length(which(do.report == 2)) > 0) {
     N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
+    print_console_header("Report part 2")
     if (N.files.ms2.out > 0) {
-      print_console_header("Report part 2")
       # if (N.files.ms2.out < f0) f0 = 1
       # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
       if (length(f0) == 0) f0 = 1
@@ -237,12 +237,14 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      maxdur = params_cleaning[["maxdur"]],
                      selectdaysfile = params_cleaning[["selectdaysfile"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]]) 
+    } else {
+      cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 4)) > 0) {
     N.files.ms4.out = length(dir(paste0(metadatadir, "/meta/ms4.out")))
+    print_console_header("Report part 4")
     if (N.files.ms4.out > 0) {
-      print_console_header("Report part 4")
       if (N.files.ms4.out < f0) f0 = 1
       if (N.files.ms4.out < f1) f1 = N.files.ms4.out
       if (f1 == 0) f1 = N.files.ms4.out
@@ -251,12 +253,14 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]]) 
+    } else {
+      cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 5)) > 0) {
     N.files.ms5.out = length(dir(paste0(metadatadir, "/meta/ms5.out")))
+    print_console_header("Report part 5")
     if (N.files.ms5.out > 0) {
-      print_console_header("Report part 5")
       if (N.files.ms5.out < f0) f0 = 1
       if (N.files.ms5.out < f1) f1 = N.files.ms5.out
       if (f1 == 0) f1 = N.files.ms5.out
@@ -270,6 +274,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]])
+    } else {
+      cat("\nSkipped because no milestone data available")
     }
   }
   if (params_output[["visualreport"]] == TRUE) {
@@ -279,8 +285,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.ms4.out = dir(paste0(metadatadir, "/meta/ms4.out"))
     # at least one metafile from the same recording in each folder
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
+    print_console_header("Generate visual reports")
     if (length(files.available) > 0) {
-      print_console_header("Generate visual reports")
+      
       g.plot5(metadatadir = metadatadir, f0 = f0, f1 = f1,
               dofirstpage = params_output[["dofirstpage"]],
               viewingwindow = params_output[["viewingwindow"]],
@@ -290,6 +297,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               threshold.lig = params_phyact[["threshold.lig"]],
               threshold.mod = params_phyact[["threshold.mod"]],
               threshold.vig = params_phyact[["threshold.vig"]])
+    } else {
+      cat("\nSkipped because no milestone data available")
     }
+    
   }
 }
