@@ -14,7 +14,7 @@
   g.part2(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         myfun = c(), params_cleaning = c(), params_247 = c(),
         params_phyact = c(), params_output = c(), params_general = c(),
-        verbose = FALSE, ...)
+        verbose = TRUE, ...)
 }
 \arguments{
   \item{datadir}{

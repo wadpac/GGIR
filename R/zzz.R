@@ -8,6 +8,6 @@
     if (behind_cran) {
       msg <- paste0("A newer version of GGIR is available with bug fixes and new features. [", local_version," --> ", cran_version, "]")
       packageStartupMessage(msg)
-    }   
+    }
   }
 }

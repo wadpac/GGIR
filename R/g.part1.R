@@ -42,7 +42,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   dir2fn = datadir2fnames(datadir,filelist)
   fnames = dir2fn$fnames
   fnamesfull = dir2fn$fnamesfull
-  
+
   # check whether these are movisens files
   is.mv = ismovisens(datadir)
   if (filelist == FALSE & is.mv == TRUE) {
@@ -53,7 +53,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
   fnamesfull = fnamesfull[bigEnough]
   fnames = fnames[bigEnough]
-  
+
   # create output directory if it does not exist
   if (filelist == TRUE) {
     if (length(studyname) == 0) {
@@ -141,9 +141,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   }
   # Following lines turned off because does not work when using subfolders
   # It seems best to leave sorting efforts until the very end when reports are created
-  # fnames = sort(fnames) 
+  # fnames = sort(fnames)
   # fnamesfull = sort(fnamesfull)
-  
+
 
   #=========================================================
   # Declare core functionality, which at the end of this g.part1 is either
@@ -179,7 +179,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     if (length(withoutRD) > 1) {
       fnames_without = withoutRD[1]
     }
-    
+
     if (length(ffdone) > 0) {
       ffdone_without = 1:length(ffdone) #dummy variable
       for (index in 1:length(ffdone)) {
@@ -493,7 +493,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       params_rawdata[["chunksize"]] = 0.4 # put limit to chunksize, because when processing in parallel memory is more limited
     }
 
-    
+
     if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
     `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,

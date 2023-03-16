@@ -64,7 +64,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
       rmc.check4timegaps = FALSE,  rmc.noise = 13,
       rmc.col.wear = c(), rmc.doresample = FALSE,
       interpolationType = 1,
-      imputeTimegaps = TRUE, loadGENEActiv = "GGIRread")
+      imputeTimegaps = TRUE)
   }
   if ("247" %in% group) {
     params_247 = list(qwindow = c(0,24), qlevels = c(),
@@ -95,7 +95,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            excludefirstlast = FALSE, #<= to cleaning
                            includenightcrit = 16, #<= to cleaning
                            excludefirst.part4 = FALSE, # => to cleaning
-                           excludelast.part4 = FALSE, max_calendar_days = 0)
+                           excludelast.part4 = FALSE, max_calendar_days = 0,
+                           nonWearEdgeCorrection = TRUE)
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
