@@ -1,14 +1,14 @@
 \name{GGIR}
 \alias{GGIR}
 \title{
-Shell function for analysing an accelerometer dataset.
+  Shell function for analysing an accelerometer dataset.
 }
 \description{
-This function is designed to help users operate all steps of the
-analysis. It helps to generate and structure milestone data,
-and produces user-friendly reports. The function acts as a shell with
-calls to \link{g.part1}, \link{g.part2}, \link{g.part3},
-\link{g.part4} and \link{g.part5}.
+  This function is designed to help users operate all steps of the
+  analysis. It helps to generate and structure milestone data,
+  and produces user-friendly reports. The function acts as a shell with
+  calls to \link{g.part1}, \link{g.part2}, \link{g.part3},
+  \link{g.part4} and \link{g.part5}.
 }
 \usage{
 GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
@@ -785,8 +785,10 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       
       \item{nonWearEdgeCorrection}{
       Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["nonWearEdgeCorrection"]]}).
-        If TRUE then the edges are corrected following description in vanHees2013
-        as has been the default since then.
+        If TRUE then the non-wear detection around the edges of the recording (first
+        and last 3 hours) are corrected following description in vanHees2013 as 
+        has been the default since then. This functionality is advisable when working with
+        sleep clinic or exercise lab data typically lasting less than a day.
       }
       
     }
