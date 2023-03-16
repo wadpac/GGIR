@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8-7 (GitHub-only-release date:??-03-2022)}{
+  \itemize{
+    \item For developers: GGIR can now be tested from source without GGIR needing to be installed
+  }
+}
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2022)}{
   \itemize{
    \item Part 2: Bug fixed that caused columns N valid week/weekend days to be omitted #747.
