@@ -62,7 +62,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
-  
+
   fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -171,9 +171,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           cat("Warning: Milestone data part 1 could not be retrieved")
         }
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
+        # convert to character/numeric if stored as factor in metashort and metalong
+        M$metashort = correctOlderMilestoneData(M$metashort)
+        M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
-        # remove expanded time so that it is not used for behavioral classification 
+        # remove expanded time so that it is not used for behavioral classification
         if (length(tail_expansion_log) != 0) {
           expanded_short = which(IMP$r5long == -1)
           expanded_long = which(IMP$rout$r5 == -1)
@@ -258,9 +261,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (!(last_wakeup %in% ts$time)) {
             replaceLastWakeup = which(S$sib.end.time == last_wakeup)
             S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
-          } 
+          }
         }
-        
+
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
@@ -283,7 +286,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
           # include last window if has been expanded and not present in ts
-          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) 
+          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
           S2 = S[S$definition == j,] # simplify to one definition
@@ -369,9 +372,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
               # nap/sib/nonwear overlap analysis
-              
+
               # TO DO
-              
+
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
                   params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -907,7 +910,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         }
                       }
                     }
-                    
+
                     #===============================================================
                     # Cosinor analyses based on only the data used for GGIR part5
                     if (params_247[["cosinor"]] == TRUE) {
@@ -946,7 +949,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                                                            cosinor_coef$coef$params$ndays,
                                                                                            cosinor_coef$coef$params$R2)), times = di), nrow = di, byrow = TRUE)},
                             silent = TRUE)
-                        
+
                         ds_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                                                   "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
                         fi = fi + 6
@@ -979,9 +982,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       cosinor_coef = c()
                       fi = fi + 20
                     }
-                    
+
                   }
-                  
+
                   if (params_output[["save_ms5rawlevels"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
@@ -1011,10 +1014,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 }
               }
             }
-           
+
             #===============================================================
           }
-          
+
         }
         if ("angle" %in% colnames(ts)) {
           ts = ts[, -which(colnames(ts) == "angle")]
@@ -1112,7 +1115,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
                            "extract_params", "load_params", "check_params", "cosinorAnalyses",
-                           "applyCosinorAnalyses", "g.IVIS")
+                           "applyCosinorAnalyses", "g.IVIS", "correctOlderMilestoneData")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

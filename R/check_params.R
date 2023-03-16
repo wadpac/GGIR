@@ -62,9 +62,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc", 
                          "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
-                         "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
+                         "rmc.origin", "rmc.desiredtz", "rmc.configtz", "rmc.headername.sf", 
                          "rmc.headername.sn", "rmc.headername.recordingid", 
-                         "rmc.header.structure", "loadGENEActiv")
+                         "rmc.header.structure")
     if (is.logical(params_rawdata[["rmc.noise"]])) {
       # Older config files used this, so overwrite with NULL value
       params_rawdata[["rmc.noise"]] = c() 
@@ -75,8 +75,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
-    numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
-                       "IVIS_acc_threshold",
+    numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
+                       "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
     boolean_params = "cosinor"
@@ -96,8 +96,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
-                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit", "max_calendar_days")
-    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
+                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
+                       "includenightcrit", "max_calendar_days")
+    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", 
+                       "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")
@@ -124,12 +126,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
-  if (length(params_rawdata) > 0) {
-    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-      warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
-                     " Note that this option will be deprecated in the next CRAN release."))
-    }
-  }
   if (length(params_metrics) > 0) {
     if (params_metrics[["do.brondcounts"]] == TRUE) {
       stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",

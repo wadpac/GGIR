@@ -1,23 +1,46 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-5 (GitHub-only-release date:??-??-2022)}{
+\section{Changes in version 2.8-7 (GitHub-only-release date:??-??-2023)}{
   \itemize{
+   \item Part 1: Deprecating dependency on GENEAread package, from now onward only
+   GGIRread is used for reading GENEActiv binary data #627
+   \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
+   of the nonwear detection algorithm is used #749.
+   \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
+   \item Reports: GGIR now skips the csv and visualreport generation if required milestone
+   data is not available.
+  }
+}
+\section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{
+  \itemize{
+   \item Part 2: Bug fixed that caused columns N valid week/weekend days to be omitted #747.
+   \item Vignettes: Add cross-references between vignettes to ease navigation and link R introduction tutorial #720.
+   \item Vignette: Section added on MX-metrics (thanks Alex Rowlands + Ben Maylor for input) #723.
+   \item Part 1: Expand timegap imputation functionality with also imputation of the timestamps #742
+   \item Part 1: Add configtz argument to function read.myacc.csv #740
+   \item Part 1: Interpolate timestamps that lack decimal places #705
+   \item Part 5: fixed minor bug when axivity light data is stored as factor in part 1.
+  }
+}
+\section{Changes in version 2.8-5 (GitHub-only-release date:06-03-2023)}{
+  \itemize{
+    \item Part 1: cwa is now detected ignoring case in file extension in g.inspectfile #731
+    \item Part 2: Bug fixes in accounting for 25 hour days in part 2 day level analyses #728.
     \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
     \item Part 2: Fixed #733 related to qwindows in the first recording day
-    \item Part 4: argument sleeplogidnum deprecated.
-    \item Part 1, 2, 4, 5: Fixes bug (#732 first half). Filenames are no longer 
+    \item Part 4: argument sleeplogidnum deprecated, ID class now auto-detected.
+    \item Part 1, 2, 4, 5: Fixes bug (#732 first half). Filenames are no longer
     ordered prior to processing which should make it more robust to work with
     raw data stratified across multiple subdirectories.
     \item Visual report: Now uses part 3 milestone data consistently as
     reference to avoid inconsistencies when part 3 milestone data files were not
     generated #732 (second half).
-    t
   }
 }
 \section{Changes in version 2.8-4 (GitHub-only-release date:20-12-2022)}{
   \itemize{
-    \item Part1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
+    \item Part 1: Improved handling of the expand_tail_max_hours functionality and replacing by argument recordingEndSleepHour. Further, the expanded time is now ignored in reports and visualizations.
     \item Part 5: dayborder != 0 is now handled in g.part5.wakesleepwindow
     \item Part 5: excludefirstlast.part5 is now applied per window type in g.report.part5
     \item Part 2 and 5: arguments bout.metric or closedbout deprecated, g.getbout function

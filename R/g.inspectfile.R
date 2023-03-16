@@ -43,7 +43,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     tmp2 = unlist(strsplit(filename,"[.]b"))
     tmp3 = unlist(strsplit(filename,"[.]w"))
     tmp4 = unlist(strsplit(filename,"[.]r"))
-    tmp5 = unlist(strsplit(filename,"[.]cw"))
+    tmp5 = unlist(strsplit(tolower(filename),"[.]cw")) # to lower to make this insensitive to case
     tmp6 = unlist(strsplit(filename,"[.]gt3"))
     tmp7 = unlist(strsplit(filename,"[.]GT3"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
@@ -89,145 +89,72 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       header = "no header"
     }
     if (dformat == 1 & is.mv == FALSE) { # .bin and not movisens
-      if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-        # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-        suppressWarnings(try(expr = {isitageneactive = GENEAread::header.info(binfile = datafile, more = F)}, silent = TRUE))
-        # try read the file as if it is a genea and store output in variable 'isitagenea'
-        try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
-        #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
-        if (length(isitagenea) > 1) {
-          mon = 1 #mon = 1 is code for saying that it is a genea
-          H = isitagenea$header
-          tmp = strsplit(H[which(H[,1] == "Sample_Rate"),2],"Hz")
-          tmp2 = unlist(strsplit(as.character(tmp[1]),","))
+      # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
+      isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
+      # try read the file as if it is a genea and store output in variable 'isitagenea'
+      try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
+      #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
+      if (length(isitagenea) > 1) {
+        mon = 1 #mon = 1 is code for saying that it is a genea
+        H = isitagenea$header
+        tmp = strsplit(H[which(H[,1] == "Sample_Rate"),2],"Hz")
+        tmp2 = unlist(strsplit(as.character(tmp[1]),","))
+        if (length(tmp2) > 1) { #decimals seperated by comma
+          sf = as.numeric(tmp2[1])
+          sf = sf + (as.numeric(tmp2[2])) / 10
+        } else { #decimals seperated by dot
+          sf = as.numeric(tmp[1])
+        }
+        if (sf == 0 | is.na(sf) == T) {
+          skip = 1 #reconsider decision to analyse this file as it is possibly corrupt
+          print("Possibibly corrupt genea File")
+        }
+      } else if (length(isitageneactive) >= 1 & length(isitagenea) == 0) {
+        if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
+          mon = 2 #mon = 2 is code for saying that it is a geneactive
+          H = isitageneactive$header
+          tmp = unlist(strsplit(unlist(as.character(H$SampleRate))," "))
+          tmp2 = unlist(strsplit(as.character(tmp[1]), ","))
           if (length(tmp2) > 1) { #decimals seperated by comma
             sf = as.numeric(tmp2[1])
-            sf = sf + (as.numeric(tmp2[2])) / 10
+            sf = sf + (as.numeric(tmp2[2]))/10
           } else { #decimals seperated by dot
             sf = as.numeric(tmp[1])
           }
-          if (sf == 0 | is.na(sf) == T) {
-            skip = 1 #reconsider decision to analyse this file as it is possibly corrupt
-            print("Possibibly corrupt genea File")
-          }
-        } else if (length(as.matrix(isitageneactive)) >= 1 & length(isitagenea) == 0) {
-          ppp = unlist(isitageneactive)
-          if (ppp[2] != "NA:NA") {
-            mon = 2 #mon = 1 is code for saying that it is a geneactive
-            H = isitageneactive
-            tmp = unlist(strsplit(unlist(H[2,1])," "))
-            tmp2 = unlist(strsplit(as.character(tmp[1]), ","))
-            if (length(tmp2) > 1) { #decimals seperated by comma
-              sf = as.numeric(tmp2[1])
-              sf = sf + (as.numeric(tmp2[2]))/10
-            } else { #decimals seperated by dot
-              sf = as.numeric(tmp[1])
+          #also try to read sf from first page header
+          sf_r = sf
+          csvr = c()
+          suppressWarnings(expr = {
+            try(expr = {csvr = as.matrix(read.csv(datafile, nrow = 10,
+                                                  skip = 200, sep = ""))
+            }, silent = TRUE)
+          })
+          if (length(csvr) > 1) {
+            for (ii in 1:nrow(csvr)) {
+              tmp3 = unlist(strsplit(as.character(csvr[ii,1]),"quency:")) #part of 'frequency'
+              if (length(tmp3) > 1) {
+                sf_r = tmp3[2]#a s.numeric(tmp3[2]) + as.numeric(csvr[ii,]/10) #sample frequency from the page header
+              }
             }
-            #also try to read sf from first page header
-            sf_r = sf
-            csvr = c()
-            suppressWarnings(expr = {
-              try(expr = {csvr = as.matrix(read.csv(datafile, nrow = 10,
-                                                    skip = 200, sep = ""))
-              }, silent = TRUE)
-            })
-            if (length(csvr) > 1) {
-              for (ii in 1:nrow(csvr)) {
-                tmp3 = unlist(strsplit(as.character(csvr[ii,1]),"quency:")) #part of 'frequency'
-                if (length(tmp3) > 1) {
-                  sf_r = tmp3[2]#a s.numeric(tmp3[2]) + as.numeric(csvr[ii,]/10) #sample frequency from the page header
-                }
-              }
-              #check whether it is comma separated
-              tmp4 = unlist(strsplit(as.character(sf_r),","))
-              if (length(tmp4) > 1) { #comma
-                sf_r = as.numeric(tmp4[1]) + as.numeric(tmp4[2]) / 10
-              } else { #dot
-                sf_r = as.numeric(sf_r)
-              }
-              if (length(sf_r) > 0) {
-                if (is.na(sf_r) == FALSE) {
-                  if (sf_r != sf & abs(sf_r - sf) > 5) { #use pageheader sample frequency if it is not the same as header sample frequency
-                    sf = sf_r
-                    print(paste("sample frequency used from page header: ", sf, " Hz", sep = ""))
-                  }
+            #check whether it is comma separated
+            tmp4 = unlist(strsplit(as.character(sf_r),","))
+            if (length(tmp4) > 1) { #comma
+              sf_r = as.numeric(tmp4[1]) + as.numeric(tmp4[2]) / 10
+            } else { #dot
+              sf_r = as.numeric(sf_r)
+            }
+            if (length(sf_r) > 0) {
+              if (is.na(sf_r) == FALSE) {
+                if (sf_r != sf & abs(sf_r - sf) > 5) { #use pageheader sample frequency if it is not the same as header sample frequency
+                  sf = sf_r
+                  print(paste("sample frequency used from page header: ", sf, " Hz", sep = ""))
                 }
               }
             }
-          } else {
-            print("Possibibly corrupt geneactive File")
           }
-        }
-      } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
-        # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-        
-        isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
-        # try read the file as if it is a genea and store output in variable 'isitagenea'
-        try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
-        #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
-        if (length(isitagenea) > 1) {
-          mon = 1 #mon = 1 is code for saying that it is a genea
-          H = isitagenea$header
-          tmp = strsplit(H[which(H[,1] == "Sample_Rate"),2],"Hz")
-          tmp2 = unlist(strsplit(as.character(tmp[1]),","))
-          if (length(tmp2) > 1) { #decimals seperated by comma
-            sf = as.numeric(tmp2[1])
-            sf = sf + (as.numeric(tmp2[2])) / 10
-          } else { #decimals seperated by dot
-            sf = as.numeric(tmp[1])
-          }
-          if (sf == 0 | is.na(sf) == T) {
-            skip = 1 #reconsider decision to analyse this file as it is possibly corrupt
-            print("Possibibly corrupt genea File")
-          }
-        } else if (length(isitageneactive) >= 1 & length(isitagenea) == 0) {
-          if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
-            mon = 2 #mon = 2 is code for saying that it is a geneactive
-            H = isitageneactive$header
-            tmp = unlist(strsplit(unlist(as.character(H$SampleRate))," "))
-            tmp2 = unlist(strsplit(as.character(tmp[1]), ","))
-            if (length(tmp2) > 1) { #decimals seperated by comma
-              sf = as.numeric(tmp2[1])
-              sf = sf + (as.numeric(tmp2[2]))/10
-            } else { #decimals seperated by dot
-              sf = as.numeric(tmp[1])
-            }
-            #also try to read sf from first page header
-            sf_r = sf
-            csvr = c()
-            suppressWarnings(expr = {
-              try(expr = {csvr = as.matrix(read.csv(datafile, nrow = 10,
-                                                    skip = 200, sep = ""))
-              }, silent = TRUE)
-            })
-            if (length(csvr) > 1) {
-              for (ii in 1:nrow(csvr)) {
-                tmp3 = unlist(strsplit(as.character(csvr[ii,1]),"quency:")) #part of 'frequency'
-                if (length(tmp3) > 1) {
-                  sf_r = tmp3[2]#a s.numeric(tmp3[2]) + as.numeric(csvr[ii,]/10) #sample frequency from the page header
-                }
-              }
-              #check whether it is comma separated
-              tmp4 = unlist(strsplit(as.character(sf_r),","))
-              if (length(tmp4) > 1) { #comma
-                sf_r = as.numeric(tmp4[1]) + as.numeric(tmp4[2]) / 10
-              } else { #dot
-                sf_r = as.numeric(sf_r)
-              }
-              if (length(sf_r) > 0) {
-                if (is.na(sf_r) == FALSE) {
-                  if (sf_r != sf & abs(sf_r - sf) > 5) { #use pageheader sample frequency if it is not the same as header sample frequency
-                    sf = sf_r
-                    print(paste("sample frequency used from page header: ", sf, " Hz", sep = ""))
-                  }
-                }
-              }
-            }
-          } else {
-            print("Possibibly corrupt geneactive File")
-          } 
-          
-        }
+        } else {
+          print("Possibibly corrupt geneactive File")
+        } 
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
       if (mon == 2) {
@@ -330,11 +257,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       genea = GGIRread::readGenea(filename = datafile, start = 0,end = 1)
       H = genea$header
     } else if (mon == 2) { #geneactive
-      if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-        H = GENEAread::header.info(binfile = datafile, more = F)
-      } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
-        H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
-      }
+      H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
       xmlfile = paste0(dirname(datafile), "/unisens.xml")

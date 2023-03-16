@@ -1,7 +1,7 @@
 ---
 title: "Embedding external functions in GGIR"
 author: "Vincent van Hees"
-date: "January 27 2021"
+date: "March 7 2023"
 output:
   pdf_document:
     toc: true
@@ -27,6 +27,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+See also complementary vignettes on:
+[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
 # Introduction
 

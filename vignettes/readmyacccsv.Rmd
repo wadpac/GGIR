@@ -21,6 +21,9 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+See also complementary vignettes on:
+[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), and [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf).
+
 # Introduction
 
 GGIR can automatically read data from the most-frequently used accelerometer brands in the field:
@@ -45,6 +48,7 @@ As for the rest of GGIR functions, `read.myacc.csv` is intended to be used withi
 
 As the `read.myacc.csv` function tries to read csv files with a wide variety of formats, the key arguments to specify depend on the characteristics of the csv file to process. Overall, if an argument is not relevant, it should be left in default setting (e.g., if the csv file does not contain temperature data, the arguments related to temperature settings should be left in default values).
 
+Below we present a summary of the available input arguments. Please see the [parameters vignette](https://cran.r-project.org/package=GGIR/vignettes/GGIRParameters.html) for a more elaborate description of these input arguments. Further, the arguments are also covered by the function documentation for the `read.myacc.csv` function. 
 
 ### General arguments
 
@@ -54,7 +58,8 @@ As the `read.myacc.csv` function tries to read csv files with a wide variety of 
 - `rmc.dec` - Decimal separator used for numbers, same as dec argument in \link[utils]{read.csv} and in data.table::\link[data.table]{fread}. If not "." (default) then usually ",".
 - `rmc.firstrow.acc` - First row (number) of the acceleration data.
 - `rmc.unit.acc` - Character with unit of acceleration values: "g", "mg", or "bit".
-- `rmc.desiredtz` - Timezone in which device was configured and experiments took place. If experiments took place in a different timezone, then use this argument for the timezone in which the experiments took place and argument configtz to specify where the device was configured (not implemented yet).
+- `rmc.desiredtz` - Timezone in which device was worn.
+- `rmc.confgitz` - Timezone in which device was configured.
 - `rmc.sf` - Sample rate in Hertz, if this is stored in the file header then that will be used instead.
 
 ### Arguments for files containing a header {#header}

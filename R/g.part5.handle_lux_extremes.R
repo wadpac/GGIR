@@ -7,7 +7,10 @@ g.part5.handle_lux_extremes = function(lux) {
     w = embed(x,length(patrn))
     w.pos <- which(apply(w,1,function(r) all(r == patrn.rev)))
     if (length(w.pos) > 0) {
-      result = w.pos:(w.pos+length(patrn)-1)
+      result = c()
+      for (w.pos_i in 1:length(w.pos)) {
+        result = c(result, w.pos[w.pos_i]:(w.pos[w.pos_i] + length(patrn) - 1))
+      }
     } else {
       result = c()
     }
