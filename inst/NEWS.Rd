@@ -3,6 +3,11 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8-7 (GitHub-only-release date:??-??-2023)}{
   \itemize{
+   \item Part 1: Deprecating dependency on GENEAread package, from now onward only
+   GGIRread is used for reading GENEActiv binary data #627
+   \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
+   of the nonwear detection algorithm is used #749.
+   \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
    \item Reports: GGIR now skips the csv and visualreport generation if required milestone
    data is not available.
   }
@@ -20,11 +25,11 @@
 }
 \section{Changes in version 2.8-5 (GitHub-only-release date:06-03-2023)}{
   \itemize{
-    \item Part 1: cwa is now detected ignoring case in g.inspectfile
+    \item Part 1: cwa is now detected ignoring case in file extension in g.inspectfile #731
     \item Part 2: Bug fixes in accounting for 25 hour days in part 2 day level analyses #728.
     \item Part 2: Seconds in activitylog timestamps are now handled by g.conv.actlog
     \item Part 2: Fixed #733 related to qwindows in the first recording day
-    \item Part 4: argument sleeplogidnum deprecated.
+    \item Part 4: argument sleeplogidnum deprecated, ID class now auto-detected.
     \item Part 1, 2, 4, 5: Fixes bug (#732 first half). Filenames are no longer
     ordered prior to processing which should make it more robust to work with
     raw data stratified across multiple subdirectories.

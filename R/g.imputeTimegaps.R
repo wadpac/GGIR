@@ -11,7 +11,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   if (length(timeCol) == 1) {
     if (!(timeCol %in% colnames(x))) dummyTime = TRUE
   }
-  if (length(timeCol) == 0 | isTRUE(dummyTime)) { 
+  if (length(timeCol) == 0 | dummyTime == TRUE) { 
     dummytime = Sys.time()
     adhoc_time = seq(dummytime, dummytime + (nrow(x) - 1) * (1/sf), by = 1/sf)
     if (length(adhoc_time) < nrow(x)) { 
@@ -73,7 +73,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (length(zeros) > 0) x = x[-zeros,]
   }
   # find missing timestamps (timegaps)
-  if (isTRUE(impute)) { # this is default, in g.calibrate this is set to FALSE
+  if (impute == TRUE) { # this is default, in g.calibrate this is set to FALSE
     if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
       k = 2/sf
     }
@@ -174,9 +174,9 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
         x = imputeRaw(x, sf)
       }
     }
-  } else if (isFALSE(impute)) {
-    if (isTRUE(FirstRowZeros)) x = x[-1,] # since zeros[1] was removed in line 21
-    if (isTRUE(imputelast)) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
+  } else if (impute == FALSE) {
+    if (FirstRowZeros == TRUE) x = x[-1,] # since zeros[1] was removed in line 21
+    if (imputelast == TRUE) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
   }
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]

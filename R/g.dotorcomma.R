@@ -45,16 +45,10 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
       try(expr = {deci = GGIRread::readGenea(inputfile,0,2)}, silent = TRUE)
       if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T) decn = ","
     } else if (mon == 2 ) {
-      if (loadGENEActiv == "GENEAread") {
-        try(expr = {deci = GENEAread::read.bin(binfile = inputfile, start = 1,end = 3,mmap.load = FALSE, calibrate = TRUE)}, silent = TRUE)
-        if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
-        if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
-      } else if (loadGENEActiv == "GGIRread") {
-        try(expr = {deci = GGIRread::readGENEActiv(filename = inputfile,
-                                                   start = 1, end = 3)}, silent = TRUE)
-        if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
-        if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
-      }
+      try(expr = {deci = GGIRread::readGENEActiv(filename = inputfile,
+                                                 start = 1, end = 3)}, silent = TRUE)
+      if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
+      if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == 3) {
     try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)

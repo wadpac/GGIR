@@ -82,7 +82,8 @@ createConfigFile = function(config.parameters = c()) {
   SI = sessionInfo()
   
   GGIRversion =  as.character(utils::packageVersion("GGIR"))
-  GGIRread_version =  as.character(utils::packageVersion("GGIRread"))
+  GGIRread_version =  c()
+  try(expr = {GGIRread_version = as.character(utils::packageVersion("GGIRread"))}, silent = TRUE)
   if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
   if (length(GGIRread_version) == 0) GGIRread_version = "Could not retrieve GGIRread version"
   if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
