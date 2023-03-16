@@ -1,7 +1,7 @@
 GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                         studyname = c(), f0 = 1, f1 = 0,
                         do.report = c(2, 4, 5), configfile = c(),
-                        myfun = c(), ...) {
+                        myfun = c(), verbose = TRUE, ...) {
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -127,21 +127,21 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     GGIRversion = as.character(utils::packageVersion("GGIR"))
     if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
   }
-
-  cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
-  cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
-  cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
-  cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir")
-  cat("\n")
-  cat("\n   To make your research reproducible and interpretable always report:")
-  cat("\n     (1) Accelerometer brand and product name")
-  cat("\n     (2) How you configured the accelerometer")
-  cat("\n     (3) Study protocol and wear instructions given to the participants")
-  cat("\n     (4) GGIR version")
-  cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
-  cat("\n     (6) How you post-processed / cleaned GGIR output")
-  cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
-
+  if (verbose == TRUE) {
+    cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
+    cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
+    cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
+    cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir")
+    cat("\n")
+    cat("\n   To make your research reproducible and interpretable always report:")
+    cat("\n     (1) Accelerometer brand and product name")
+    cat("\n     (2) How you configured the accelerometer")
+    cat("\n     (3) Study protocol and wear instructions given to the participants")
+    cat("\n     (4) GGIR version")
+    cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
+    cat("\n     (6) How you post-processed / cleaned GGIR output")
+    cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
+  }
   #-----------------------------------------------------------
   # Now run GGIR parts 1-5
   print_console_header = function(headerTitle) {
@@ -150,45 +150,50 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     cat("\n",headerTitle,"\n")
   }
   if (dopart1 == TRUE) {
-    print_console_header("Part 1")
+    if (verbose == TRUE) print_console_header("Part 1")
     g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
             studyname = studyname, myfun = myfun,
             params_rawdata = params_rawdata, params_metrics = params_metrics,
-            params_cleaning = params_cleaning, params_general = params_general)
+            params_cleaning = params_cleaning, params_general = params_general,
+            verbose = verbose)
   }
   if (dopart2 == TRUE) {
-    print_console_header("Part 2")
+    if (verbose == TRUE) print_console_header("Part 2")
     if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/basic")))
     g.part2(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             myfun = myfun, params_cleaning = params_cleaning,
             params_247 = params_247, params_phyact = params_phyact,
             params_output = params_output,
-            params_general = params_general)
+            params_general = params_general,
+            verbose = verbose)
   }
   if (dopart3 == TRUE) {
-    print_console_header("Part 3")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/basic",sep="")))
+    if (verbose == TRUE) print_console_header("Part 3")
+    if (f1 == 0) f1 = length(dir(paste0(metadatadir,"/meta/basic")))
     g.part3(metadatadir = metadatadir, f0 = f0, f1 = f1, myfun = myfun,
             params_sleep = params_sleep, params_output = params_output,
             params_metrics = params_metrics,
-            params_general = params_general)
+            params_general = params_general,
+            verbose = verbose)
   }
   if (dopart4 == TRUE) {
-    print_console_header("Part 4")
-    if (f1 == 0) f1 = length(dir(paste(metadatadir,"/meta/ms3.out",sep="")))
+    if (verbose == TRUE) print_console_header("Part 4")
+    if (f1 == 0) f1 = length(dir(paste0(metadatadir,"/meta/ms3.out")))
     g.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_sleep = params_sleep, params_metrics = params_metrics,
             params_general = params_general, params_output = params_output,
-            params_cleaning = params_cleaning)
+            params_cleaning = params_cleaning,
+            verbose = verbose)
   }
   if (dopart5 == TRUE) {
-    print_console_header("Part 5")
+    if (verbose == TRUE) print_console_header("Part 5")
     if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/ms3.out"))) # this is intentionally ms3 and not ms4, do not change!
     g.part5(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_sleep = params_sleep, params_metrics = params_metrics,
             params_general = params_general, params_output = params_output,
             params_cleaning = params_cleaning, params_247 = params_247,
-            params_phyact = params_phyact)
+            params_phyact = params_phyact,
+            verbose = verbose)
   }
   #--------------------------------------------------
   # Store configuration parameters in config file
@@ -198,7 +203,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
-                          "GGIRversion",  "dupArgValues") == FALSE)]
+                          "GGIRversion",  "dupArgValues", "verbose") == FALSE)]
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
@@ -213,14 +218,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Report generation:
   # check a few basic assumptions before continuing
   if (length(which(do.report == 4 | do.report == 5)) > 0 | params_output[["visualreport"]] == TRUE) {
-    if (file.exists(paste0(metadatadir,"/meta/ms4.out"))) {
-    } else {
-      cat("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data\n")
-      cat("before you can use argument visualreport or create a report for part 4\n")
+    if (!file.exists(paste0(metadatadir,"/meta/ms4.out"))) {
+      warning(paste0("Warning: First run g.shell.GGIR with mode = 4 to generate required milestone data ",
+                     "before you can use argument visualreport or create a report for part 4\n"))
     }
   }
   if (length(which(do.report == 2)) > 0) {
-    print_console_header("Report part 2")
+    if (verbose == TRUE) print_console_header("Report part 2")
     N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
     # if (N.files.ms2.out < f0) f0 = 1
     # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
@@ -234,10 +238,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                    maxdur = params_cleaning[["maxdur"]],
                    selectdaysfile = params_cleaning[["selectdaysfile"]],
-                   store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]])
+                   store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
+                   verbose = verbose)
   }
   if (length(which(do.report == 4)) > 0) {
-    print_console_header("Report part 4")
+    if (verbose == TRUE) print_console_header("Report part 4")
     N.files.ms4.out = length(dir(paste0(metadatadir, "/meta/ms4.out")))
     if (N.files.ms4.out < f0) f0 = 1
     if (N.files.ms4.out < f1) f1 = N.files.ms4.out
@@ -246,10 +251,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    loglocation = params_sleep[["loglocation"]],
                    storefolderstructure = params_output[["storefolderstructure"]],
                    data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                   sleepwindowType = params_sleep[["sleepwindowType"]])
+                   sleepwindowType = params_sleep[["sleepwindowType"]],
+                   verbose = verbose)
   }
   if (length(which(do.report == 5)) > 0) {
-    print_console_header("Report part 5")
+    if (verbose == TRUE) print_console_header("Report part 5")
     N.files.ms5.out = length(dir(paste0(metadatadir, "/meta/ms5.out")))
     if (N.files.ms5.out < f0) f0 = 1
     if (N.files.ms5.out < f1) f1 = N.files.ms5.out
@@ -263,10 +269,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    minimum_MM_length.part5 = params_cleaning[["minimum_MM_length.part5"]],
                    week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                    LUX_day_segments = params_247[["LUX_day_segments"]],
-                   excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]])
+                   excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
+                   verbose = verbose)
   }
   if (params_output[["visualreport"]] == TRUE) {
-    print_console_header("Generate visual reports")
+    if (verbose == TRUE) print_console_header("Generate visual reports")
     g.plot5(metadatadir = metadatadir, f0 = f0, f1 = f1,
             dofirstpage = params_output[["dofirstpage"]],
             viewingwindow = params_output[["viewingwindow"]],

@@ -1,7 +1,7 @@
 g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                    studyname = c(), myfun = c(),
                    params_metrics = c(), params_rawdata = c(),
-                   params_cleaning = c(), params_general = c(), ...) {
+                   params_cleaning = c(), params_general = c(), verbose = TRUE, ...) {
 
   #----------------------------------------------------------
   # Extract and check parameters
@@ -27,7 +27,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }
   }
 
-  if (f1 == 0) cat("\nWarning: f1 = 0 is not a meaningful value")
+  if (f1 == 0) warning("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (filelist == FALSE) {
     if (dir.exists(datadir) == FALSE) {
@@ -81,14 +81,14 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   # check access permissions
   Nfile_without_readpermission = length(which(file.access(paste0(fnamesfull), mode = 4) == -1)) #datadir,"/",
   if (Nfile_without_readpermission > 0) {
-    cat("\nChecking that user has read access permission for all files in data directory: No")
+    if (verbose == TRUE) cat("\nChecking that user has read access permission for all files in data directory: No")
     warning(paste0("\nThere are/is ", Nfile_without_readpermission,
                    " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
   } else {
-    cat("\nChecking that user has read access permission for all files in data directory: Yes")
+    if (verbose == TRUE) cat("\nChecking that user has read access permission for all files in data directory: Yes")
   }
   if (file.access(outputdir, mode = 2) == 0) {
-    cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
+    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
   } else {
     stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
   }
@@ -151,9 +151,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   main_part1 = function(i, params_metrics, params_rawdata,
                         params_cleaning, params_general, datadir, fnames, fnamesfull,
                         outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
-                        use.temp, daylimit, path3, outputfolder, is.mv) {
+                        use.temp, daylimit, path3, outputfolder, is.mv, verbose) {
     tail_expansion_log = NULL
-    if (params_general[["print.filename"]] == TRUE) {
+    if (params_general[["print.filename"]] == TRUE & verbose == TRUE) {
       cat(paste0("\nFile name: ",fnames[i]))
     }
     # if (filelist == TRUE) {
@@ -202,7 +202,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     options(warn = 0) #turn on warnings
     if (params_general[["overwrite"]] == TRUE) skip = 0
     if (skip == 0) { #if skip = 1 then skip the analysis as you already processed this file
-      cat(paste0("\nP1 file ",i))
+      if (verbose == TRUE) cat(paste0("\nP1 file ",i))
       turn.do.cal.back.on = FALSE
       if (params_rawdata[["do.cal"]] == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
         params_rawdata[["do.cal"]] = FALSE
@@ -229,8 +229,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       #--------------------------------------
       if (params_rawdata[["do.cal"]] == TRUE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
         # cat(paste0("\n",rep('-',options()$width),collapse=''))
-        cat("\n")
-        cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+        if (verbose == TRUE) cat("\n")
+        if (verbose == TRUE) cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
         C = g.calibrate(datafile,
                         params_rawdata = params_rawdata,
                         params_general = params_general,
@@ -274,7 +274,9 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
       if (length(params_rawdata[["backup.cal.coef"]]) > 0 & check.backup.cal.coef == TRUE) {
         bcc.data = read.csv(params_rawdata[["backup.cal.coef"]])
-        if (isTRUE(params_rawdata[["do.cal"]])) cat("\nRetrieving previously derived calibration coefficients")
+        if (isTRUE(params_rawdata[["do.cal"]]) & verbose == TRUE) {
+          cat("\nRetrieving previously derived calibration coefficients")
+        }
         bcc.data$filename = as.character(bcc.data$filename)
         for (nri in 1:nrow(bcc.data)) {
           tmp = unlist(strsplit(as.character(bcc.data$filename[nri]),"meta_"))
@@ -293,18 +295,22 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
           C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
           C$tempoffset =  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
-          cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
-          cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
-          cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
-          cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
-          cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
-          cat("\n")
+          if (verbose == TRUE) {
+            cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
+            cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
+            cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
+            cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
+            cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
+            cat("\n")
+          }
         } else {
           # cat("\nNo matching filename found in backup.cal.coef\n")
           # cat(paste0("\nCheck that filename ",fnames[i]," exists in the csv-file\n"))
           if (params_rawdata[["do.cal"]] == TRUE) { # If no matching filename could be found, then try to derive the calibration coeficients in the normal way
-            cat("\n")
-            cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+            if (verbose == TRUE) {
+              cat("\n")
+              cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
+            }
             C = g.calibrate(datafile,
                             params_rawdata = params_rawdata,
                             params_general = params_general,
@@ -313,7 +319,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         }
       }
       #------------------------------------------------
-      cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
+      if (verbose == TRUE) cat("\nExtract signal features (metrics) with the g.getmeta function:\n")
       M = g.getmeta(datafile,
                     params_metrics = params_metrics,
                     params_rawdata = params_rawdata,
@@ -387,7 +393,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         }
       }
       #------------------------------------------------
-      cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
+      if (verbose == TRUE) cat("\nSave .RData-file with: calibration report, file inspection report and all signal features...\n")
       # remove directory in filename if present
       filename = unlist(strsplit(fnames[i],"/"))
       if (length(filename) > 0) {
@@ -442,7 +448,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         params_general[["do.parallel"]] = FALSE
       }
     } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      if (verbose == TRUE) cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
   }
@@ -488,7 +494,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }
 
     
-    cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
+    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
     `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
@@ -496,24 +502,24 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                                        main_part1(i, params_metrics, params_rawdata,
                                                   params_cleaning, params_general, datadir, fnames, fnamesfull,
                                                   outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
-                                                  use.temp, daylimit, path3, outputfolder, is.mv)
+                                                  use.temp, daylimit, path3, outputfolder, is.mv, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ",fnames[oli]))
+        if (verbose == TRUE) cat(paste0("\nErrors and warnings for ",fnames[oli]))
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
   } else { # simple loop to process files serially file by file
     for (i in f0:f1) {
-      cat(paste0(i, " "))
+      if (verbose == TRUE) cat(paste0(i, " "))
       main_part1(i, params_metrics, params_rawdata,
                  params_cleaning, params_general, datadir, fnames, fnamesfull,
                  outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
-                 use.temp, daylimit, path3, outputfolder, is.mv)
+                 use.temp, daylimit, path3, outputfolder, is.mv, verbose)
 
     }
   }

@@ -1,7 +1,7 @@
 g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                    params_sleep = c(), params_metrics = c(),
                    params_cleaning = c(), params_output = c(),
-                   params_general = c(), ...) {
+                   params_general = c(), verbose = TRUE, ...) {
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -22,9 +22,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   #------------------------------------------------
   # check whether milestone 3 data exists, if not give warning
   ms3.out = "/meta/ms3.out"
-  if (file.exists(paste0(metadatadir,ms3.out))) {
-  } else {
-    cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
+  if (!file.exists(paste0(metadatadir,ms3.out))) {
+    if (verbose == TRUE) cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
   }
   # check whether milestone 4 data exists, if no create folder
   ms4.out = "/meta/ms4.out"
@@ -160,7 +159,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
       }
     }
     if (skip == 0) {
-      cat(paste0(" ", i))
+      if (verbose == TRUE) cat(paste0(" ", i))
       addlegend = FALSE
       if (cnt67 == 1) {
         # only create new pdf if there is actually new plots to be generated keep pdf for QC
@@ -629,7 +628,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # PLOTTING related
           if (params_output[["do.visual"]] == TRUE) {
             if (cnt == (nnpp + 1)) {
-              cat(" NEW ")
+              if (verbose == TRUE) cat(" NEW ")
               pagei = pagei + 1
               # add y-axis before starting new page
               if (length(idlabels) < nnpp) {
@@ -911,7 +910,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                         if (abs(nightsummary$error_onset[sumi]) > params_output[["criterror"]] | abs(nightsummary$error_wake[sumi]) >
                             params_output[["criterror"]] | abs(nightsummary$error_dur[sumi]) > (params_output[["criterror"]] * 2)) {
                           doplot = TRUE
-                          cat(" PLOT ")
+                          if (verbose == TRUE) cat(" PLOT ")
                         } else {
                           doplot = FALSE
                         }

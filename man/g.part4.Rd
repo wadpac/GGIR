@@ -12,7 +12,7 @@
 \usage{
  g.part4(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1, params_sleep = c(), 
     params_metrics = c(),  params_cleaning = c(), params_output = c(),
-                   params_general = c(), ...)
+                   params_general = c(), verbose = TRUE, ...)
 }
 \arguments{
   \item{datadir}{
@@ -49,6 +49,9 @@
   }
   \item{params_general}{
    See details in \link{GGIR}.
+  }
+  \item{verbose}{
+    See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,

@@ -1,5 +1,6 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE) {
+                          selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE,
+                          verbose = TRUE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -35,7 +36,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
-      cat(paste0(" ",i))
+      if (verbose == TRUE) cat(paste0(" ",i))
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
@@ -50,12 +51,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       fname2read = paste0(path, fnames[i])
       try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
       if (length(M) == 0) {
-        cat(paste0("Error in g.report2: Struggling to read: ",fname2read)) #fnames[i]
+        warning(paste0("g.report2: Struggling to read: ",fname2read)) #fnames[i]
       }
       fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
       selp = which(fnames.ms2 == fname)
       if (length(selp) == 0 ) {
-        cat(paste0("File ",fname," not available in part 2"))
+        if (verbose == TRUE) cat(paste0("File ",fname," not available in part 2"))
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
         # Load part 2 data
@@ -63,7 +64,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
         try(expr = {load(file = fname2read)}, silent = TRUE)
         if (length(IMP) == 0) {
-          cat(paste0("Error in g.report2: Struggling to read: ",fname2read))
+          warning(paste0("g.report2: Struggling to read: ",fname2read))
         }
         if (do.part2.pdf == TRUE & length(IMP) > 0) {
           Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
