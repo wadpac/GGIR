@@ -178,7 +178,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["Sadeh_axis"]] = "" # not used
     }
     if (length(params_sleep[["loglocation"]]) == 1) {
-      if (params_sleep[["loglocation"]] == "") params_sleep[["loglocation"]] = c() #inserted because some users mistakingly use this
+      if (params_sleep[["loglocation"]] == "") {
+        params_sleep[["loglocation"]] = c() #inserted because some users mistakingly use this
+      } else {
+        # Convert paths from Windows specific slashed to generic slashes
+        params_sleep[["loglocation"]] = gsub(pattern = "\\\\", replacement = "/", x = params_sleep[["loglocation"]])
+      }
     }
     if (length(params_sleep[["loglocation"]]) > 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
       warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
@@ -209,6 +214,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"), call. = FALSE)
     }
+    
+    
+    if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
+      # Convert paths from Windows specific slashed to generic slashes
+      params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
+                                                     replacement = "/", x = params_cleaning[["data_cleaning_file"]])
+    }
   }
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["bout.metric"]]) > 0 |
@@ -228,6 +240,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["iglevels"]] = c(seq(0, 4000, by = 25), 8000) # to introduce option to just say TRUE
       }
     }
+    if (length(params_247[["qwindow"]]) > 0) {
+      if (is.character(params_247[["qwindow"]])) {
+        # Convert paths from Windows specific slashed to generic slashes
+        params_247[["qwindow"]] = gsub(pattern = "\\\\", replacement = "/", x = params_247[["qwindow"]])
+      }
+    }
+    
     if (length(params_247[["LUX_day_segments"]]) > 0) {
       params_247[["LUX_day_segments"]] = sort(unique(round(params_247[["LUX_day_segments"]])))
       if (params_247[["LUX_day_segments"]][1] != 0) {

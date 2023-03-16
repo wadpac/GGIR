@@ -21,7 +21,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  # Convert paths from Windows specific slashed to generic slashes
+  outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
+  datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
   #===========================
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
