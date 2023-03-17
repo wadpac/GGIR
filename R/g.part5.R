@@ -471,6 +471,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           fi = 1
                           # START STORING BASIC INFORMATION
+                          if (di > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
                           dsummary[di,fi:(fi + 2)] = c(ID, fnames.ms3[i], wi)
                           ds_names[fi:(fi + 2)] = c("ID", "filename", "window_number"); fi = fi + 3
                           if (timewindowi == "WW") {
