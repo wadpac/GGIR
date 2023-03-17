@@ -11,6 +11,7 @@
    \item Reports: GGIR now skips the csv and visualreport generation if required milestone
    data is not available.
    \item Part 5: Speed improvements to functions g.part5.addsib and g.part5.wakesleepwindow
+   \item Part 5: Bug fixed in relation to long recordings with many days with non-wear data      in part 5 #727
   }
 }
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{
