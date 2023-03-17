@@ -17,7 +17,7 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
   if (nrow(S2) > 0) {
     gik.ons = format(S2$sib.onset.time)
     gik.end = format(S2$sib.end.time)
-    timeChar = format(ts$time[pr0:pr1])
+    timeChar = format(ts$time)
     if (is.ISO8601(timeChar[1]) == FALSE) { # only do this for POSIX format
       timeChar = POSIXtime2iso8601(timeChar, tz = desiredtz)
     }
