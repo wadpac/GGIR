@@ -224,7 +224,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (length(which(do.report == 2)) > 0) {
     if (verbose == TRUE) print_console_header("Report part 2")
     N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
-    print_console_header("Report part 2")
     if (N.files.ms2.out > 0) {
       # if (N.files.ms2.out < f0) f0 = 1
       # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
@@ -247,7 +246,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (length(which(do.report == 4)) > 0) {
     if (verbose == TRUE) print_console_header("Report part 4")
     N.files.ms4.out = length(dir(paste0(metadatadir, "/meta/ms4.out")))
-    print_console_header("Report part 4")
     if (N.files.ms4.out > 0) {
       if (N.files.ms4.out < f0) f0 = 1
       if (N.files.ms4.out < f1) f1 = N.files.ms4.out
@@ -256,7 +254,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      loglocation = params_sleep[["loglocation"]],
                      storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                     sleepwindowType = params_sleep[["sleepwindowType"]])
+                     sleepwindowType = params_sleep[["sleepwindowType"]],
+                     verbose = verbose)
     } else {
       cat("\nSkipped because no milestone data available")
     }
