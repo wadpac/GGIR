@@ -18,7 +18,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
      f0 = \Sexpr{format(formals(GGIR::GGIR)[["f0"]])}, f1 = \Sexpr{format(formals(GGIR::GGIR)[["f1"]])},
      do.report = \Sexpr{format(formals(GGIR::GGIR)[["do.report"]])},
      configfile = \Sexpr{format(formals(GGIR::GGIR)[["configfile"]])},
-     myfun = \Sexpr{format(formals(GGIR::GGIR)[["myfun"]])}, ...)
+     myfun = \Sexpr{format(formals(GGIR::GGIR)[["myfun"]])},
+     verbose = \Sexpr{format(formals(GGIR::GGIR)[["verbose"]])}, ...)
 }
 \arguments{
   \item{mode}{
@@ -72,6 +73,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
     External function object to be applied to raw data. See package vignette for detailed tutorial with
     examples on how to use the function embedding:
     https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf
+  }
+  \item{verbose}{
+    Booelean (default = \Sexpr{format(formals(GGIR::GGIR)[["verbose"]])}).
+    to indicate whether console message should be printed. Note that warnings and error are
+    always printed and can be suppressed with suppressWarning() or suppressMessages().
   }
   \item{...}{
     Any of the parameters used GGIR. Given the large number of parameters used in GGIR
