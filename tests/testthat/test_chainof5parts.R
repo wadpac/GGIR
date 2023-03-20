@@ -200,7 +200,7 @@ test_that("chainof5parts", {
           criterror = 0, includenightcrit = 0, nnights = 7,
           colid = 1, coln1 = 2, relyonguider = TRUE,
           desiredtz = desiredtz, storefolderstructure = TRUE,
-          overwrite = TRUE, verbose = FALSE, verbose = FALSE)
+          overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
