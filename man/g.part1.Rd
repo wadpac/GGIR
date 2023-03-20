@@ -20,7 +20,7 @@
 \usage{
   g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
           studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),
-          params_cleaning = c(), params_general = c(), ...)
+          params_cleaning = c(), params_general = c(), verbose = TRUE, ...)
 }
 
 \arguments{
@@ -61,6 +61,9 @@
   }
   \item{params_general}{
    See details in \link{GGIR}.
+  }
+  \item{verbose}{
+    See details in \link{GGIR}.
   }
   \item{...}{
     If you are working with a non-standard csv formatted files, \link{g.part1} also takes any input

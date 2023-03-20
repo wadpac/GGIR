@@ -1,15 +1,15 @@
 \name{g.report.part2}
 \alias{g.report.part2}
 \title{
-Generate report from milestone data produced by \link{g.part2}
+  Generate report from milestone data produced by \link{g.part2}
 }
 \description{
-Creates report from milestone data produced by \link{g.part2}. Not intended
-  for direct use by package user
+  Creates report from milestone data produced by \link{g.part2}. Not intended
+    for direct use by package user
 }
 \usage{
-g.report.part2(metadatadir=c(), f0=c(), f1=c(), maxdur = 0,
-selectdaysfile=c(), store.long=FALSE, do.part2.pdf = TRUE)
+  g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
+  selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE, verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -38,6 +38,9 @@ selectdaysfile=c(), store.long=FALSE, do.part2.pdf = TRUE)
   }
   \item{do.part2.pdf}{
     Boolean, see \link{g.part2}
+  }
+  \item{verbose}{
+    See details in \link{GGIR}.
   }
 }
 \value{

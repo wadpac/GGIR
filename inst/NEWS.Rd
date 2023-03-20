@@ -1,15 +1,18 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-7 (GitHub-only-release date:??-??-2023)}{
+\section{Changes in version 2.8-7 (GitHub-only-release date:??-03-2022)}{
   \itemize{
-   \item Part 1: Deprecating dependency on GENEAread package, from now onward only
-   GGIRread is used for reading GENEActiv binary data #627
-   \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
-   of the nonwear detection algorithm is used #749.
-   \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
-   \item Reports: GGIR now skips the csv and visualreport generation if required milestone
-   data is not available.
+    \item Now able to handle Windows-friendly double backward slash filepaths for datadir, outputdir, qwindow, loglocation and data_cleaning_file arguments #570.
+    \item For developers: GGIR can now be tested from source without GGIR needing to be installed #704
+    \item verbose argument added to allow for turning off console message #652
+    \item Part 1: Deprecating dependency on GENEAread package, from now onward only
+    GGIRread is used for reading GENEActiv binary data #627
+    \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
+    of the nonwear detection algorithm is used #749.
+    \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
+    \item Reports: GGIR now skips the csv and visualreport generation if required milestone
+    data is not available.
   }
 }
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{
