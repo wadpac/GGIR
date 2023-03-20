@@ -152,8 +152,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{acc.metric}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
-        Which one of the metrics do you want to consider to analyze L5.
-        The metric of interest need to be calculated in M (see \link{g.part1}).}
+        Which one of the metrics do you want to consider for the threshold-based physical activity 
+        intensity classification? For example: "ENMO", "LFENMO", "MAD", "NeishabouriCount_y",
+        "NeishabouriCount_vm". The metric of interest needs to be calculated in M (see \link{g.part1}).}
 
       \item{part5_agg2_60seconds}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
@@ -642,9 +643,13 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.neishabouricounts"]])}).
         If TRUE, calculates the metric via R package actilifecounts, which is an implementation
         of the algorithm used in the closed-source software ActiLife by ActiGraph (methods published in doi: 
-        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the paper and
-        call them NeishabouriCount under the uncertainty that ActiLife will implement this same
-        algorithm over time.}
+        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the 
+        paper and call them NeishabouriCount under the uncertainty that ActiLife will implement this same
+        algorithm over time. To use the Neishabouri counts for the physical activity intensity classification
+        in part 5 (i.e., metric over the threshold.lig, threshold.mod, and threshold.vig would be applied),
+        the \code{acc.metric} argument needs to be set as one of the following: "NeishabouriCount_x", 
+        "NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm" to use the counts in the x-, 
+        y-, z-axis or vector magnitude, respectively.}
 
       \item{lb}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}).
