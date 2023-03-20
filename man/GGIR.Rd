@@ -152,9 +152,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{acc.metric}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
-        Which one of the metrics do you want to consider for the threshold-based physical activity 
-        intensity classification? For example: "ENMO", "LFENMO", "MAD", "NeishabouriCount_y",
-        "NeishabouriCount_vm". The metric of interest needs to be calculated in M (see \link{g.part1}).}
+        Which one of the acceleration metrics do you want to use for all acceleration magnitude 
+        analyses in GGIR part 5 and the visual report? For example: "ENMO", "LFENMO", "MAD", 
+        "NeishabouriCount_y", or "NeishabouriCount_vm". Only one acceleration metric can be specified 
+        and the selected metric needs to have been calculated in part 1 (see \link{g.part1}) 
+        via arguments such as \code{do.enmo = TRUE} or \code{do.mad = TRUE}.}
 
       \item{part5_agg2_60seconds}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
