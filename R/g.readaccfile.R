@@ -108,33 +108,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-      try(expr = {P = GENEAread::read.bin(binfile = filename, start = startpage,
-                                          end = endpage, calibrate = TRUE, do.temp = TRUE,
-                                          mmap.load = FALSE)}, silent = TRUE)
-    } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
-      try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
-                                              end = endpage, desiredtz = params_general[["desiredtz"]],
-                                              configtz = params_general[["configtz"]])}, silent = TRUE)
-    }
     
-    if (length(P) <= 2) {
-      if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-        #try again but now with mmap.load turned on
-        options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
-        
-        try(expr = {
-          P = GENEAread::read.bin(binfile = filename, start = startpage,
-                                  end = endpage, calibrate = TRUE, do.temp = TRUE, mmap.load = TRUE)
-        }, silent = TRUE)
-        options(warn = 0) # to ignore GENEAread warnings
-        if (length(P) != 0) {
-          if (sf != P$freq) sf = P$freq
-        } else {
-          switchoffLD = 1
-        }
-      }
-    }
+    try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
+                                            end = endpage, desiredtz = params_general[["desiredtz"]],
+                                            configtz = params_general[["configtz"]])}, silent = TRUE)
+    
     if (length(P) > 0) {
       if (nrow(P$data.out) < (blocksize*300)) {
         switchoffLD = 1 #last block
@@ -143,16 +121,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     if (length(P) == 0) { #if first block doens't read then probably corrupt
       if (blocknumber == 1) {
         #try to read without specifying blocks (file too short)
-        if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-          try(expr = {
-            P = GENEAread::read.bin(binfile = filename, calibrate = TRUE, do.temp = TRUE, mmap.load = FALSE)
-          }, silent = TRUE)
-        } else if (params_rawdata[["loadGENEActiv"]] == "GGIRread") {
-          try(expr = {
-            P = GGIRread::readGENEActiv(filename = filename, desiredtz = params_general[["desiredtz"]],
-                                        configtz = params_general[["configtz"]])
-          }, silent = TRUE)
-        }
+        try(expr = {
+          P = GGIRread::readGENEActiv(filename = filename, desiredtz = params_general[["desiredtz"]],
+                                      configtz = params_general[["configtz"]])
+        }, silent = TRUE)
         if (length(P) == 0) {
           warning('\nFile possibly corrupt\n')
           P = c(); switchoffLD = 1
@@ -409,6 +381,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
                                    rmc.origin = params_rawdata[["rmc.origin"]],
                                    rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                                   rmc.configtz = params_rawdata[["rmc.configtz"]],
                                    rmc.sf = params_rawdata[["rmc.sf"]],
                                    rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
                                    rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],

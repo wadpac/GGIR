@@ -159,7 +159,12 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = P$data
         }
       } else if (dformat == 5) {
-        data = P$data
+        if (ncol(P$data) >= 4 & mon == 0) {
+          columns_to_use = params_rawdata[["rmc.col.acc"]]
+        } else {
+          columns_to_use = 1:3
+        }
+        data = P$data[, columns_to_use]
       } else if (dformat == 6) {
         data = as.matrix(P[,2:4])
       }
@@ -215,11 +220,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = TRUE
           } else if (mon == 0 & dformat == 5 & length(params_rawdata[["rmc.col.temp"]]) > 0) { # ad-hoc format csv with temperature
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
             temperature = as.numeric(data[, params_rawdata[["rmc.col.temp"]]])
             use.temp = TRUE
           } else if (mon == 0 & dformat == 5 & length(params_rawdata[["rmc.col.temp"]]) == 0) { # ad-hoc format csv without temperature
-            Gx = as.numeric(data[,2]); Gy = as.numeric(data[,3]); Gz = as.numeric(data[,4])
+            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
             use.temp = FALSE
           } else if (dformat == 2 & mon != 4) { # csv and not AX (so, GENEAcitv)
             data2 = matrix(NA,nrow(data),3)

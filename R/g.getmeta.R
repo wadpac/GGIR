@@ -391,11 +391,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         #--------------------------------------------
         if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
           if (mon == 2) {
-            if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-              temperaturecolumn = 7; lightcolumn = 5
-            } else {
-              temperaturecolumn = 6; lightcolumn = 5
-            }
+            temperaturecolumn = 6; lightcolumn = 5
           } else if (mon == 4) {
             temperaturecolumn = 5; lightcolumn = 7
             if (gyro_available == TRUE) {

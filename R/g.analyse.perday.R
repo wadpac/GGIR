@@ -130,8 +130,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         # interested in the non-imputed part. This is probably were the confusion came from.
         hours2delta = 24 - LENVAL_hours
         qw_select = which(params_247[["qwindow"]] > hours2delta)
-        if (qw_select[1] > 1) qw_select = c(qw_select[1] - 1, qw_select)
-        params_247[["qwindow"]] = params_247[["qwindow"]][qw_select]
+        # if (qw_select[1] > 1) qw_select = c(qw_select[1] - 1, qw_select)
+        # params_247[["qwindow"]] = params_247[["qwindow"]][qw_select]
+        # # qwindow_names = qwindow_names[qw_select]
         qwindowindices = params_247[["qwindow"]] - hours2delta # - LENVAL_hours # because 1 is now different
         if (length(which(qwindowindices < 0)) > 0) qwindowindices[which(qwindowindices < 0)] = 0
       } else if (di == ndays) {
@@ -160,10 +161,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
         
-        for (qwi in 1:(length(qwindowindices) - 1)) { #
+        for (qwi in 1:(length(qwindowindices) - 1)) {
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
-          if (startindex <= length(val) & endindex <= length(val)) {
+          if (startindex == endindex) { 
+            # inexistent qwindow (may occure in the first day if recording started later than first qwindow)
+            valq = c()
+          } else if (startindex <= length(val) & endindex <= length(val)) {
             valq = val[(startindex + 1):endindex]
           } else if (startindex <= length(val) & endindex >= length(val)) {
             valq = val[(startindex + 1):length(val)]
@@ -180,7 +184,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       }
     }
-    
     val = as.numeric(val)
     nvalidhours = length(which(val == 0)) / (3600 / ws3) #valid hours per day (or half a day)
     nhours = length(val) / (3600 / ws3) #valid hours per day (or half a day)
@@ -208,7 +211,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     daysummary[di,(fi + 3)] = nhours
     ds_names[fi:(fi + 3)] = c("calendar_date","bodylocation","N valid hours","N hours")
     fi = fi + 4
-    if (length(params_247[["qwindow"]] > 0)) {
+    if (length(params_247[["qwindow"]]) > 0) {
       if (length(params_247[["qwindow"]]) > 2 | params_247[["qwindow"]][1] != 0 | params_247[["qwindow"]][2] != 24) {
         for (qwi in 1:(length(qwindow_names) - 1)) {
           tmp_name = c(paste0("N_valid_hours_", qwindow_names[qwi], "-", qwindow_names[qwi + 1], "hr"),
@@ -315,28 +318,66 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
           
           L5M5window_name = anwi_nameindices[anwi_index]
           anwindices = anwi_t0[anwi_index]:anwi_t1[anwi_index] # indices of varnum corresponding to a segment
-          if (length(anwindices) > 0) {
+          if (length(anwindices) > 0 & all(diff(anwindices) > 0)) { # negative diff(anwindices) may occur in the first day if a qwindow is not within the recorded hours
             minames = colnames(metashort)
             for (mi in 2:ncol(metashort)) { #run through metrics (for features based on single metrics)
+              #=======================================
+              # Motivation on the code below:
+              # Standardise the number of hours in a day as an attempt to create a
+              # fair comparison between days in terms of day length. For example, to
+              # compare time spent in intensity levels or MVPA if days are not of
+              # equal length, such as when a recording starts in 
+              # the middle of the day.
+              # To do this we impute the missing part based on the average day
+              # (literally called averageday in the code).
+              # Note: We only do this here in part 2 and not in part 5, and it has
+              # been this way since the early days of GGIR.
+              # In part 2, GGIR aims to use as much data as possible to provide 
+              # estimates of behaviour on each recording day, even for the 
+              # incomplete first and last recording day. As a result, it is 
+              # important to account for imbalance in day length, which we do below.
+              # In part 5, however, GGIR forces the user to only work with complete 
+              # days and by that the day length is less of a problem and not accounted for.
+              
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
-              varnum = as.numeric(as.matrix(vari[,mi])) #varnum is one column of vari
-              # # if this is the first or last day and it has more than includedaycrit number of days then expand it
-              # Comment out the following 10 lines if you want to include only the actual data
-              if (NRV != length(averageday[, (mi - 1)])) {
-                difference = NRV - length(averageday[, (mi - 1)])
+              # Note: vari equals the imputed time series (metahsort) data from one day
+              varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              deltaLength = NRV - length(averageday[, (mi - 1)])
+              if (deltaLength < 0) {
+                # Less than 24 hours: Append data from averageday
                 if (di == 1) {
-                  varnum = c(averageday[1:abs(difference), (mi - 1)], varnum)
+                  # On first day of recording append the average day to the start
+                  varnum = c(averageday[1:abs(deltaLength), (mi - 1)], varnum)
                   # readjust anwi indices in case that varnum has been imputed
                   if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
-                    anwi_t0 = anwi_t0 + abs(difference)
-                    anwi_t1 = anwi_t1 + abs(difference)
+                    anwi_t0 = anwi_t0 + abs(deltaLength)
+                    anwi_t1 = anwi_t1 + abs(deltaLength)
                     # then, we reset the minimum anwi_t0 to 1 to consider the imputed varnum
-                    anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                    # anwi_t0[which(anwi_t0 == min(anwi_t0))] = 1
+                    anwi_t0[1] = 1
                   }
                 } else {
-                  a56 = length(averageday[,(mi - 1)]) - abs(difference)
-                  a57 = length(averageday[, (mi - 1)])
-                  varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                  # When it is not the first day of recording 
+                  if (NRV == 23) { # day has 23 hours (assuming DST)
+                    # Append data after 2nd hour
+                    startMissingHour = 2 * 60 * (60/ws3) + 1
+                    enMissingHour = 3 * 60 * (60/ws3)
+                    varnum = c(varnum[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, (mi - 1)],
+                               varnum[startMissingHour, length(varnum)])
+                  } else { # day has less than 24 hours for another reason
+                    # Append the average day to the end
+                    a56 = length(averageday[,(mi - 1)]) - abs(deltaLength) + 1
+                    a57 = length(averageday[, (mi - 1)])
+                    varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                  }
+                }
+              } else if (deltaLength > 0) { # 25 hour days, assuming DST
+                # If there is more than 24 hours in a day then clock must 
+                # have moved backward, remove the double hour.
+                startDoubleHour = 2 * 60 * (60/ws3) + 1
+                endDoubleHour = 3 * 60 * (60/ws3)
+                if (length(varnum) > endDoubleHour) {
+                  varnum = varnum[-c(startDoubleHour:endDoubleHour)]
                 }
               }
               if (anwi_index != 1) {
