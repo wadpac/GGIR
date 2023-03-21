@@ -60,22 +60,22 @@ some of the acceleration metrics that has been previously used for the
 calibration of cut-points and how to define them to be used in the physical 
 activity intensity classification with cut-points.
 
-+--------------+-------------------------------+--------------------------------------+
-| Metric       | To derive metric              | Define metric for cut-points         |
-+==============+:==============================+:=====================================+
-| ENMO         | `do.enmo = TRUE`              | `acc.metric = "ENMO"`                |
-+--------------+-------------------------------+--------------------------------------+
-| ENMOa        | `do.enmoa = TRUE`             | `acc.metric = "ENMOa"`               |
-+--------------+-------------------------------+--------------------------------------+
-| LFENMO       | `do.lfenmo = TRUE`            | `acc.metric = "LFENMO"`              |
-+--------------+-------------------------------+--------------------------------------+
-| MAD          | `do.mad = TRUE`               | `acc.metric = "MAD"`                 |
-+--------------+-------------------------------+--------------------------------------+
-| Neishabouri\ | `do.neishabouricounts = TRUE` | `acc.metric = "NeishabouriCount_x"`  |
-| counts       |                               | `acc.metric = "NeishabouriCount_y"`  |
-|              |                               | `acc.metric = "NeishabouriCount_z"`  |
-|              |                               | `acc.metric = "NeishabouriCount_vm"` |
-+--------------+-------------------------------+--------------------------------------+
++--------------+-------------------------------+---------------------------------------+
+| Metric       | To derive metric              | Define metric for cut-points          |
++==============+:==============================+:======================================+
+| ENMO         | `do.enmo = TRUE`              | `acc.metric = "ENMO"`                 |
++--------------+-------------------------------+---------------------------------------+
+| ENMOa        | `do.enmoa = TRUE`             | `acc.metric = "ENMOa"`                |
++--------------+-------------------------------+---------------------------------------+
+| LFENMO       | `do.lfenmo = TRUE`            | `acc.metric = "LFENMO"`               |
++--------------+-------------------------------+---------------------------------------+
+| MAD          | `do.mad = TRUE`               | `acc.metric = "MAD"`                  |
++--------------+-------------------------------+---------------------------------------+
+| Neishabouri\ | `do.neishabouricounts = TRUE` | `acc.metric = "NeishabouriCount_x"`\  |
+| counts       |                               | `acc.metric = "NeishabouriCount_y"`\  |
+|              |                               | `acc.metric = "NeishabouriCount_z"`\  |
+|              |                               | `acc.metric = "NeishabouriCount_vm"`  |
++--------------+-------------------------------+---------------------------------------+
 
 
 # Summary of published cut-points
