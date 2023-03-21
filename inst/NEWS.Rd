@@ -6,6 +6,24 @@
    \item Documentation: improved documentation for the use of acceleration metrics
   }
 }
+\section{Changes in version 2.8-7 (GitHub-only-release date:20-03-2022)}{
+  \itemize{
+   \item Part 1: Deprecating dependency on GENEAread package, from now onward only
+   GGIRread is used for reading GENEActiv binary data #627
+   \item Part 2: Argument nonWearEdgeCorrection added to control whether this part
+   of the nonwear detection algorithm is used #749.
+   \item Minor edits to make GGIR code backward compatible with R version 3.3 again.
+   \item Reports: GGIR now skips the csv and visualreport generation if required milestone
+   data is not available.
+   \item Part 5: Speed improvements to functions g.part5.addsib and g.part5.wakesleepwindow
+   \item Part 5: Bug fixed in relation to long recordings with many days with non-wear data      in part 5 #727
+   \item Now able to handle OS Windows-friendly double backward slash filepaths for
+    datadir, outputdir, qwindow, loglocation and data_cleaning_file arguments #570.
+   \item verbose argument added to allow for turning off console message #652
+   \item Relevant for GGIR developers only: GGIR can now be tested from source without
+    GGIR needing to be installed #704      
+  }
+}
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{
   \itemize{
    \item Part 2: Bug fixed that caused columns N valid week/weekend days to be omitted #747.
