@@ -151,7 +151,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         process (whichever is lower), but this argument allows you to set a lower maximum.}
 
       \item{acc.metric}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
         Which one of the acceleration metrics do you want to use for all acceleration magnitude 
         analyses in GGIR part 5 and the visual report? For example: "ENMO", "LFENMO", "MAD", 
         "NeishabouriCount_y", or "NeishabouriCount_vm". Only one acceleration metric can be specified 
