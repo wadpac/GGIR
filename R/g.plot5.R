@@ -67,7 +67,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
           next()
         }
         pdf(paste(metadatadir,"/results/file summary reports/Report_",fnamesmeta[sel],".pdf", sep = ""),
-            paper="a4",width = 0, height = 0)
+            paper = "a4", width = 0, height = 0)
         # print(paste("File ",fnamesmeta[sel], sep = ""))
         sib.cla.sum = c()
         load(paste(metasleep,"/",fname_ms[i], sep = ""))
@@ -583,7 +583,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
               # loop through each annotation and update data frames accordingly
               if (first_day_adjust != 0) {
                 prev_loc = first_day_adjust  # start at adjusted start point on day one
-                if (first_day_adjust > sleep_wake_mat[1,1]) print('ERROR: sleep/wake annotation is before the recording begins')
+                if (first_day_adjust > sleep_wake_mat[1,1]) warning('ERROR: sleep/wake annotation is before the recording begins')
               } else {
                 prev_loc = 1  # otherwise, start from first sample
               }

@@ -1,6 +1,7 @@
 g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    myfun=c(), params_cleaning = c(), params_247 = c(),
-                   params_phyact = c(), params_output = c(), params_general = c(), ...) {
+                   params_phyact = c(), params_output = c(), params_general = c(),
+                   verbose = TRUE, ...) {
   
   #----------------------------------------------------------
   # Extract and check parameters
@@ -81,7 +82,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         myfun=c(), params_cleaning = c(), params_247 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
-                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78) {
+                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose) {
     tail_expansion_log =  NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
@@ -226,12 +227,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         params_general[["do.parallel"]] = FALSE
       }
     } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      if (verbose == TRUE) cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
   }
   if (params_general[["do.parallel"]] == TRUE) {
-    cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
+    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', metadatadir, ms2.out, ' for progress\n'))
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
@@ -258,7 +259,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                   params_phyact, params_output, params_general,
                                                   path, ms2.out, foldername, fullfilenames,
                                                   folderstructure, referencefnames,
-                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
+                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose)
                                        
                                      })
                                      return(tryCatchResult)
@@ -266,19 +267,19 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ",fnames[oli]))
+        if (verbose == TRUE) cat(paste0("\nErrors and warnings for ",fnames[oli]))
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
   } else {
     for (i in f0:f1) {
-      cat(paste0(i, " "))
+      if (verbose == TRUE) cat(paste0(i, " "))
       main_part2(i, ffdone, fnames, metadatadir,
                  myfun, params_cleaning, params_247,
                  params_phyact, params_output, params_general,
                  path, ms2.out, foldername, fullfilenames,
                  folderstructure, referencefnames,
-                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78)
+                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose)
     }
   }
 }
