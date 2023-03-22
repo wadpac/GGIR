@@ -106,6 +106,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
               if (length(ind) > 0) {
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
+                if (is.na(nextdatecol)) nextdatecol = ncol(S) + 1
                 onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
                 # if (ni < (length(expected_dates) - 1)) {
                 wakeupi = wakecols[which(wakecols > nextdatecol)[1]]
