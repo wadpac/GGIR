@@ -1768,21 +1768,20 @@ The implementation within GGIR part 2 is as follows:
 
 #### IV and IS - Default
 
-The default calculation uses IVIS.activity.metric = 1 which uses the
+The original implementation (argument IVIS.activity.metric = 1) uses the
 continuous numeric acceleration values. However, as we later realised
 this is not compatible with the original approach by van Someren and
 colleagues, which uses a binary distinction between active and inactive.
-Therefore, a second option has been added (IVIS.activity.metric = 2),
+Therefore, a second option was added (argument IVIS.activity.metric = 2),
 which needs to be used in combination with accelerometer metric ENMO,
 and collapses the acceleration values into a binary score of rest versus
-active.
-
-Further, the IV algorithm by van Someren has been modified in GGIR to
-ignore transitions between the epoch at the end of each day and the
-following epoch at the start of the next day, because technically these
-transitions do not relate to intradaily variability.
+active. This is the current default.
 
 #### IV and IS - Cosinor analysis compatible
+
+Disclaimer: The following has been implemented 2022, but is currently 
+undergoing critical evaluation. As a result, we may update this algorithm 
+during the course of 2023.
 
 IS is sometimes used as a measure of behavioural robustness when
 conducting Cosinor analysis. However, to work with the combination of
@@ -1847,7 +1846,7 @@ and if so, how it was accounted for in the data processing.
 Especially, the insertion of zero strings is problematic as raw data accelerometers
 should always measure the gravitational component when not moving.
 This directly impacts metrics that rely on the presence of a gravitational
-component such as ENMO, EN, ENMOAa, SVMgs, and angles. Further, also other metrics may
+component such as ENMO, EN, ENMOa, SVMgs, and angles. Further, also other metrics may
 be affected as the sudden disappearance of gravitational acceleration will cause a
 spike at the start and end of the idle sleep mode period. More
 generally speaking, we advise ActiGraph users to:
