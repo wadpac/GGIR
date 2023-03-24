@@ -20,7 +20,7 @@ test_that("chainof5parts", {
           overwrite = TRUE, desiredtz = desiredtz,
           studyname = "test", do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
           windowsizes = c(15,3600,3600), do.parallel = do.parallel,
-          minimumFileSizeMB = minimumFileSizeMB)
+          minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE)
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
@@ -53,7 +53,7 @@ test_that("chainof5parts", {
           idloc = 2, desiredtz = desiredtz,
           strategy = 2,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels = TRUE,
-          do.parallel = do.parallel, myfun = c(), winhr = 16, MX.ig.min.dur = 14)
+          do.parallel = do.parallel, myfun = c(), winhr = 16, MX.ig.min.dur = 14, verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -66,7 +66,8 @@ test_that("chainof5parts", {
           idloc = 2, desiredtz = desiredtz,
           strategy = 1,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, qM5L5 = c(0.2,0.4), winhr = c(3,10),
-          do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9), cosinor = TRUE)
+          do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9),
+          cosinor = TRUE, verbose = FALSE)
   g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -155,7 +156,7 @@ test_that("chainof5parts", {
   suppressWarnings(GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
                         f0 = 1, f1 = 1,
                         do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
-                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))
+                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE))
   expect_true(file.exists("output_test/results/part2_daysummary.csv"))
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
@@ -172,7 +173,7 @@ test_that("chainof5parts", {
           excludefirstlast = FALSE, criterror = 1, includenightcrit = 0,
           nnights = 7, colid = 1, coln1 = 2,
           relyonguider = FALSE, desiredtz = desiredtz,
-          storefolderstructure = TRUE, overwrite = TRUE)
+          storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE)
   
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -199,7 +200,7 @@ test_that("chainof5parts", {
           criterror = 0, includenightcrit = 0, nnights = 7,
           colid = 1, coln1 = 2, relyonguider = TRUE,
           desiredtz = desiredtz, storefolderstructure = TRUE,
-          overwrite = TRUE)
+          overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -230,7 +231,7 @@ test_that("chainof5parts", {
           outliers.only = FALSE, excludefirstlast = FALSE, criterror = 0,
           includenightcrit = 0, nnights = 7, colid = 1, coln1 = 2,
           relyonguider = TRUE, desiredtz = desiredtz,
-          storefolderstructure = TRUE, overwrite = TRUE)
+          storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -258,7 +259,7 @@ test_that("chainof5parts", {
           criterror = 0, includenightcrit = 0, nnights = 7,
           colid = 1, coln1 = 2, relyonguider = FALSE,
           desiredtz = desiredtz, storefolderstructure = TRUE,
-          overwrite = TRUE)
+          overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -302,7 +303,7 @@ test_that("chainof5parts", {
           do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen = TRUE,
           do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen = TRUE,
-          do.enmoa = TRUE, selectdaysfile = selectdaysfile)
+          do.enmoa = TRUE, selectdaysfile = selectdaysfile, verbose = FALSE)
   
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])

@@ -11,8 +11,9 @@
   Typical users should work with function GGIR only.
 }
 \usage{
-g.part3(metadatadir=c(), f0, f1, myfun=c(), 
-  params_sleep = c(), params_metrics = c(), params_output = c(), params_general = c(),
+g.part3(metadatadir = c(), f0, f1, myfun = c(), 
+  params_sleep = c(), params_metrics = c(), params_output = c(), 
+  params_general = c(), verbose = TRUE,
   ...)
 }
 \arguments{
@@ -44,6 +45,9 @@ g.part3(metadatadir=c(), f0, f1, myfun=c(),
   }
   \item{params_general}{
    See details in \link{GGIR}.
+  }
+  \item{verbose}{
+    See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,

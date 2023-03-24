@@ -20,7 +20,8 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 See also complementary vignettes on:
 [General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
-# Summary of published cut-points
+
+# Considerations
 
 In this vignette we have compiled a list of published cut-points with
 instructions on how to use them with GGIR. As newer cut-points are frequently
@@ -41,6 +42,43 @@ makes the cut-point sample frequency and epoch length dependent, which complicat
 comparisons and harmonisation of literature. The explained variance and accuracy
 remains identical because we are only multiplying with a constant, so no 
 information will be lost.
+
+# Relevant arguments to use cut-points in GGIR
+
+The argument `mvpathreshold` is used in **part 2** to quantify the time
+accumulated over a user-specified threshold over which the
+moderate-to-vigorous intensity is expected to occur. The `mvpathreshold`
+is applied over all the metrics extracted in part 1 with the arguments
+*do.metric* (e.g., `do.enmo`, `do.mad`, `do.neishabouricounts`).
+
+In **part 5**, `threshold.lig`, `threshold.mod`, and `threshold.vig` are
+used to indicate the thresholds to separate inactivity from light, light
+from moderate, and moderate from vigorous, respectively.These thresholds
+are applied over the metric defined with `acc.metric` (default =
+"ENMO"). Here a summary table for the parameters definition to calculate
+some of the acceleration metrics that has been previously used for the
+calibration of cut-points and how to define them to be used in the physical 
+activity intensity classification with cut-points.
+
++--------------+-------------------------------+---------------------------------------+
+| Metric       | To derive metric              | Define metric for cut-points          |
++==============+:==============================+:======================================+
+| ENMO         | `do.enmo = TRUE`              | `acc.metric = "ENMO"`                 |
++--------------+-------------------------------+---------------------------------------+
+| ENMOa        | `do.enmoa = TRUE`             | `acc.metric = "ENMOa"`                |
++--------------+-------------------------------+---------------------------------------+
+| LFENMO       | `do.lfenmo = TRUE`            | `acc.metric = "LFENMO"`               |
++--------------+-------------------------------+---------------------------------------+
+| MAD          | `do.mad = TRUE`               | `acc.metric = "MAD"`                  |
++--------------+-------------------------------+---------------------------------------+
+| Neishabouri\ | `do.neishabouricounts = TRUE` | `acc.metric = "NeishabouriCount_x"`\  |
+| counts       |                               | `acc.metric = "NeishabouriCount_y"`\  |
+|              |                               | `acc.metric = "NeishabouriCount_z"`\  |
+|              |                               | `acc.metric = "NeishabouriCount_vm"`  |
++--------------+-------------------------------+---------------------------------------+
+
+
+# Summary of published cut-points
 
 ## Cut-points for preschoolers
 

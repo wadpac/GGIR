@@ -18,7 +18,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
      f0 = \Sexpr{format(formals(GGIR::GGIR)[["f0"]])}, f1 = \Sexpr{format(formals(GGIR::GGIR)[["f1"]])},
      do.report = \Sexpr{format(formals(GGIR::GGIR)[["do.report"]])},
      configfile = \Sexpr{format(formals(GGIR::GGIR)[["configfile"]])},
-     myfun = \Sexpr{format(formals(GGIR::GGIR)[["myfun"]])}, ...)
+     myfun = \Sexpr{format(formals(GGIR::GGIR)[["myfun"]])},
+     verbose = \Sexpr{format(formals(GGIR::GGIR)[["verbose"]])}, ...)
 }
 \arguments{
   \item{mode}{
@@ -72,6 +73,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
     External function object to be applied to raw data. See package vignette for detailed tutorial with
     examples on how to use the function embedding:
     https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf
+  }
+  \item{verbose}{
+    Booelean (default = \Sexpr{format(formals(GGIR::GGIR)[["verbose"]])}).
+    to indicate whether console message should be printed. Note that warnings and error are
+    always printed and can be suppressed with suppressWarning() or suppressMessages().
   }
   \item{...}{
     Any of the parameters used GGIR. Given the large number of parameters used in GGIR
@@ -145,9 +151,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         process (whichever is lower), but this argument allows you to set a lower maximum.}
 
       \item{acc.metric}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
-        Which one of the metrics do you want to consider to analyze L5.
-        The metric of interest need to be calculated in M (see \link{g.part1}).}
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
+        Which one of the acceleration metrics do you want to use for all acceleration magnitude 
+        analyses in GGIR part 5 and the visual report? For example: "ENMO", "LFENMO", "MAD", 
+        "NeishabouriCount_y", or "NeishabouriCount_vm". Only one acceleration metric can be specified 
+        and the selected metric needs to have been calculated in part 1 (see \link{g.part1}) 
+        via arguments such as \code{do.enmo = TRUE} or \code{do.mad = TRUE}.}
 
       \item{part5_agg2_60seconds}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_general"]][["part5_agg2_60seconds"]]}).
@@ -636,9 +645,13 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.neishabouricounts"]])}).
         If TRUE, calculates the metric via R package actilifecounts, which is an implementation
         of the algorithm used in the closed-source software ActiLife by ActiGraph (methods published in doi: 
-        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the paper and
-        call them NeishabouriCount under the uncertainty that ActiLife will implement this same
-        algorithm over time.}
+        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the 
+        paper and call them NeishabouriCount under the uncertainty that ActiLife will implement this same
+        algorithm over time. To use the Neishabouri counts for the physical activity intensity classification
+        in part 5 (i.e., metric over the threshold.lig, threshold.mod, and threshold.vig would be applied),
+        the \code{acc.metric} argument needs to be set as one of the following: "NeishabouriCount_x", 
+        "NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm" to use the counts in the x-, 
+        y-, z-axis or vector magnitude, respectively.}
 
       \item{lb}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["lb"]])}).
