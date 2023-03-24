@@ -1,7 +1,7 @@
 g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                    params_sleep = c(), params_metrics = c(),
                    params_output = c(),
-                   params_general = c(), ...) {
+                   params_general = c(), verbose = TRUE, ...) {
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -47,14 +47,16 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   main_part3 = function(i, metadatadir = c(), f0, f1, myfun = c(),
                         params_sleep = c(), params_metrics = c(),
                         params_output = c(),
-                        params_general = c(), fnames, ffdone) {
+                        params_general = c(), fnames, ffdone, verbose) {
     tail_expansion_log =  NULL
     nightsperpage = 7
     FI = file.info(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
     if (is.na(FI$size) == TRUE) FI$size = 0
     if (FI$size == 0 | is.na(FI$size) == TRUE | length(FI$size) == 0) {
-      cat(paste("P3 file ", fnames[i], sep = ""))
-      cat("Filename not recognised")
+      if (verbose == TRUE) {
+        cat(paste("P3 file ", fnames[i], sep = ""))
+        cat("Filename not recognised")
+      }
     }
     fname = unlist(strsplit(fnames[i], ".RData"))[1]
     #=========================================================
@@ -135,12 +137,12 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         params_general[["do.parallel"]] = FALSE
       }
     } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      if (verbose == TRUE) cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
   }
   if (params_general[["do.parallel"]] == TRUE) {
-    cat(paste0('\n Busy processing ... see ', metadatadir,'/meta/ms3.out', ' for progress\n'))
+    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', metadatadir,'/meta/ms3.out', ' for progress\n'))
     # check whether we are indevelopment mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
@@ -163,7 +165,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                        main_part3(i, metadatadir, f0, f1, myfun,
                                                   params_sleep, params_metrics,
                                                   params_output,
-                                                  params_general, fnames, ffdone)
+                                                  params_general, fnames, ffdone, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -171,17 +173,17 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ", fnames[oli]))
+        if (verbose == TRUE) cat(paste0("\nErrors and warnings for ", fnames[oli]))
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
   } else {
     for (i in f0:f1) {
-      cat(paste0(i, " "))
+      if (verbose == TRUE) cat(paste0(i, " "))
       main_part3(i, metadatadir, f0, f1, myfun,
                  params_sleep, params_metrics,
                  params_output,
-                 params_general, fnames, ffdone)
+                 params_general, fnames, ffdone, verbose)
     }
   }
 }
