@@ -6,6 +6,7 @@
    \item Sleep log: fixed bug related to reading last day in advanced sleeplog.
    \item Reports: nights in part 4 reports are now correctly ordered.
    \item Documentation: improved documentation for the use of acceleration metrics
+   \item Part 2: Functionality for storefolderstructure now consistent with part 5
   }
 }
 \section{Changes in version 2.8-7 (GitHub-only-release date:20-03-2023)}{
