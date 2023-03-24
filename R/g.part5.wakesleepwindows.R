@@ -2,30 +2,47 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
                                     Nepochsinhour) {
   #========================================================
   # DIURNAL BINARY CLASSIFICATION INTO NIGHT (onset-wake) OR DAY (wake-onset) PERIOD 
+  
+  findIndex = function(timeChar = NULL, wc = NULL) {
+    wc_withzerotime = paste0(wc," 00:00:00")
+    if (length(grep(pattern = " ", x = wc)) == 0) {
+      wc = wc_withzerotime
+    }
+    index = which(timeChar == wc)[1]
+    if (is.na(index) == TRUE) {
+      index = which(timeChar == wc_withzerotime)[1]
+    }
+    return(index)
+  }
   clock2numtime = function(x) { # function used for converting sleeplog times to hour times
     x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
     return(sum(x2))
   }
   w0 = w1 = rep(0,length(summarysleep_tmp2$calendar_date))
-  for (k in 1:length(summarysleep_tmp2$calendar_date)) { # loop through nights from part 4
-    # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
-    round_seconds_to_ws3new = function(x, ws3new) {
-      temp = as.numeric(unlist(strsplit(x,":")))
-      if (length(temp) == 3) {
-        if (temp[3] / ws3new != round(temp[3] / ws3new)) {
-          x = paste0(temp[1],":",temp[2],":",round(temp[3] / ws3new)*ws3new)
-        }
-      } else {
-        x = ""
+  # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
+  round_seconds_to_ws3new = function(x, ws3new) {
+    temp = as.numeric(unlist(strsplit(x,":")))
+    if (length(temp) == 3) {
+      if (temp[3] / ws3new != round(temp[3] / ws3new)) {
+        x = paste0(temp[1],":",temp[2],":",round(temp[3] / ws3new)*ws3new)
       }
-      return(x)
+    } else {
+      x = ""
     }
+    return(x)
+  }
+  # standardise time series to character without iso8601 respresentation
+  timeChar = format(ts$time) 
+  if (is.ISO8601(timeChar[1]) == TRUE) { # only do this for ISO8601 format
+    timeChar = format(iso8601chartime2POSIX(timeChar, tz = desiredtz))
+  }
+  
+  for (k in 1:length(summarysleep_tmp2$calendar_date)) { # loop through nights from part 4
     summarysleep_tmp2$wakeup_ts[k] = round_seconds_to_ws3new(summarysleep_tmp2$wakeup_ts[k], ws3new)
     summarysleep_tmp2$sleeponset_ts[k] = round_seconds_to_ws3new(summarysleep_tmp2$sleeponset_ts[k], ws3new)
     
     summarysleep_tmp2$sleeponset[k] = (round((summarysleep_tmp2$sleeponset[k]*3600) / ws3new) * ws3new) / 3600
     summarysleep_tmp2$wakeup[k] = (round((summarysleep_tmp2$wakeup[k]*3600) / ws3new) * ws3new) / 3600
-    
     
     # Load sleep onset and waking time from part 4 and convert them into timestamps
     tt = unlist(strsplit(as.character(summarysleep_tmp2$calendar_date[k]),"/")) # calendar date
@@ -56,49 +73,18 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
         (summarysleep_tmp2$daysleeper[k] == 1 & defWA < 18)) {
       w1[k] = format(as.POSIXlt(w1[k], tz = desiredtz) + (24*3600))
     }
-    w0c = format(as.POSIXlt(w0[k], tz = desiredtz))
-    w1c = format(as.POSIXlt(w1[k], tz = desiredtz))
-    s0 = which(format(ts$time) == w0c)[1]
-    s1 = which(format(ts$time) == w1c)[1]
+    s0 = findIndex(timeChar, wc = format(as.POSIXlt(w0[k], tz = desiredtz)))
+    s1 = findIndex(timeChar, wc = format(as.POSIXlt(w1[k], tz = desiredtz)))
     
-    if (length(s0) == 0) {
-      w0c = paste0(w0c," 00:00:00")
-      s0 = which(as.character(ts$time) == w0c)[1]
-    }
-    if (length(s1) == 0) {
-      w1c = paste0(w1c," 00:00:00")
-      s1 = which(as.character(ts$time) == w1c)[1]
-    }
-    timebb = format(ts$time) 
-    if (is.ISO8601(timebb[1]) == TRUE) { # only do this for ISO8601 format
-      timebb = iso8601chartime2POSIX(timebb, tz = desiredtz)
-      s0 = which(format(timebb) == w0c)[1]
-      s1 = which(format(timebb) == w1c)[1]
-      if (length(s0) == 0) {
-        w0c = paste0(w0c," 00:00:00")
-        s0 = which(as.character(timebb) == w0c)[1]
-      }
-      if (length(s1) == 0) {
-        w1c = paste0(w1c," 00:00:00")
-        s1 = which(as.character(timebb) == w1c)[1]
-      }
-    }
     if (is.na(s0) == TRUE) {
-      s0 = which(timebb == paste(w0c, " 00:00:00", sep = ""))[1]
-      if (is.na(s0) == TRUE) {
-        s0 = which(as.character(timebb) == paste(w0c, " 00:00:00", sep = ""))[1]
-      }
+      s0 = 1
     }
     if (is.na(s1) == TRUE) {
-      s1 = which(timebb == paste(w1c, " 00:00:00", sep = ""))[1]
-      if (is.na(s1) == TRUE) {
-        s1 = which(as.character(timebb) == paste(w1c, " 00:00:00", sep = ""))[1]
-        if (is.na(s1) == TRUE) { # might still be NA if the timestamps is not in ts (expanded time from expand_tail)
-          # if so, we assume the participant is sleeping at the end of the recording, this night will be disregarded later on
-          s1 = nrow(ts)
-        }
-      }
+      # might still be NA if the timestamps is not in ts (expanded time from expand_tail)
+      # if so, we assume the participant is sleeping at the end of the recording, this night will be disregarded later on
+      s1 = nrow(ts)
     }
+    
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
       distance2midnight = abs(nightsi - s1) + abs(nightsi - s0)
       closestmidnighti = which.min(distance2midnight)

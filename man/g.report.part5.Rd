@@ -1,21 +1,21 @@
 \name{g.report.part5}
 \alias{g.report.part5}
 \title{
-Generate report from milestone data produced by \link{g.part5}
+  Generate report from milestone data produced by \link{g.part5}
 }
 \description{
-Creates report from milestone data produced by \link{g.part5}. Not intended
+  Creates report from milestone data produced by \link{g.part5}. Not intended
   for direct use by package user
 }
 \usage{
-g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
-                          includenightcrit=c(),includedaycrit=c(),
-                          data_cleaning_file=c(),
-                          includedaycrit.part5=2/3,
-                          minimum_MM_length.part5=23,
-                          week_weekend_aggregate.part5=FALSE,
-                          LUX_day_segments=c(), 
-                          excludefirstlast.part5=c())
+  g.report.part5(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
+                          includenightcrit = c(),includedaycrit = c(),
+                          data_cleaning_file = c(),
+                          includedaycrit.part5 = 2/3,
+                          minimum_MM_length.part5 = 23,
+                          week_weekend_aggregate.part5 = FALSE,
+                          LUX_day_segments = c(), 
+                          excludefirstlast.part5 = c(), verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -62,21 +62,24 @@ g.report.part5(metadatadir=c(),f0=c(),f1=c(),loglocation=c(),
    \item{excludefirstlast.part5}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
         If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in \link{g.part5}.}
+  \item{verbose}{
+    See details in \link{GGIR}.
+  }
 }
 \value{
-Function does not produce data, but only writes reports
-in csv format
-
-The following files are stored in the root of the results folder:
-part5_daysummary_*
-part5_personsummary_*
-
-The following files are stored in the folder results/QC:
-part5_daysummary_full_*
-
-See package vignette paragraph "Waking-waking or 24 hour time-use analysis"
-and "Output part 5" for a more elaborative description of
-the full day time-use and analysis and reporting.
+  Function does not produce data, but only writes reports
+  in csv format
+  
+  The following files are stored in the root of the results folder:
+  part5_daysummary_*
+  part5_personsummary_*
+  
+  The following files are stored in the folder results/QC:
+  part5_daysummary_full_*
+  
+  See package vignette paragraph "Waking-waking or 24 hour time-use analysis"
+  and "Output part 5" for a more elaborative description of
+  the full day time-use and analysis and reporting.
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
