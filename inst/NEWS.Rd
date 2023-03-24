@@ -1,12 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.8-8 (GitHub-only-release date:?-?-2022)}{
+\section{Changes in version 2.9-0 (GitHub-only-release date:24-03-2023)}{
   \itemize{
+   \item Sleep log: fixed bug related to reading last day in advanced sleeplog.
+   \item Reports: nights in part 4 reports are now correctly ordered.
    \item Documentation: improved documentation for the use of acceleration metrics
   }
 }
-\section{Changes in version 2.8-7 (GitHub-only-release date:20-03-2022)}{
+\section{Changes in version 2.8-7 (GitHub-only-release date:20-03-2023)}{
   \itemize{
    \item Part 1: Deprecating dependency on GENEAread package, from now onward only
    GGIRread is used for reading GENEActiv binary data #627
@@ -21,7 +23,7 @@
     datadir, outputdir, qwindow, loglocation and data_cleaning_file arguments #570.
    \item verbose argument added to allow for turning off console message #652
    \item Relevant for GGIR developers only: GGIR can now be tested from source without
-    GGIR needing to be installed #704      
+    GGIR needing to be installed #704
   }
 }
 \section{Changes in version 2.8-6 (GitHub-only-release date:10-03-2023)}{
