@@ -396,7 +396,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               if (minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
                                      "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
-                                     "NeishabouriCount_z", "NeishabouriCount_vm")) {
+                                     "NeishabouriCount_z", "NeishabouriCount_vm", "extAct")) {
                 collectfi = c()
                 for (winhr_value in params_247[["winhr"]]) { # Variable (column) names
                   # We are first defining location of variable names, before calculating

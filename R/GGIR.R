@@ -1,7 +1,8 @@
 GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 studyname = c(), f0 = 1, f1 = 0,
                 do.report = c(2, 4, 5), configfile = c(),
-                myfun = c(), verbose = TRUE, ...) {
+                myfun = c(), verbose = TRUE, dataFormat = "raw",
+                ...) {
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -73,7 +74,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   configfile_csv = c()
   ex = "csv"
   if (length(configfile) > 0) { # Get extension of file
-    ex = unlist(strsplit(basename(configfile), split ="\\."))
+    ex = unlist(strsplit(basename(configfile), split = "\\."))
     ex = ex[length(ex)]
   }
   if (ex == "csv") { # at a later point there may also be other file extensions
@@ -151,11 +152,21 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
-    g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
-            studyname = studyname, myfun = myfun,
-            params_rawdata = params_rawdata, params_metrics = params_metrics,
-            params_cleaning = params_cleaning, params_general = params_general,
-            verbose = verbose)
+    if (dataFormat == "raw") {
+      g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
+              studyname = studyname, myfun = myfun,
+              params_rawdata = params_rawdata, params_metrics = params_metrics,
+              params_cleaning = params_cleaning, params_general = params_general,
+              verbose = verbose)
+    } else {
+      convertEpochData(datadir = datadir,
+                       studyname = studyname,
+                       outputdir = outputdir,
+                       data_format = dataFormat,
+                       overwrite = params_general[["overwrite"]],
+                       tz = params_general[["desiredtz"]],
+                       windowsizes = params_general[["windowsizes"]])
+    }
   }
   if (dopart2 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 2")
@@ -236,7 +247,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
-                     selectdaysfile = params_cleaning[["selectdaysfile"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
                      verbose = verbose)
     } else {
