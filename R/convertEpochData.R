@@ -155,10 +155,10 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           # ! Assumptions about columns names
           colnames(D) = gsub(pattern = "datum|date", replacement = "date", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "tijd|time", replacement = "time", x = colnames(D), ignore.case = TRUE)
-          colnames(D) = gsub(pattern = "activiteit|activity", replacement = "extAct", x = colnames(D), ignore.case = TRUE)
+          colnames(D) = gsub(pattern = "activiteit|activity", replacement = "ZCY", x = colnames(D), ignore.case = TRUE)
           
           timestamp_POSIX = as.POSIXct(x = paste(D$date[1], D$time[1], sep = " "), format = "%d-%m-%Y %H:%M:%S", tz = tz)
-          D = D[, "extAct"]
+          D = D[, "ZCY"]
         }
       }
       Sys.setlocale("LC_TIME", "C") # set language to English
