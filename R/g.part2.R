@@ -57,11 +57,11 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (params_output[["storefolderstructure"]] == TRUE) {
     extractfilenames = function(x) {
       x2 = as.character(unlist(strsplit(x,".RDa"))[1])
-      x3 = as.character(unlist(strsplit(x2,"eta_"))[2])
+      x3 = unlist(strsplit(x2,"eta_"))[2]
       return(x3)
     }
-    referencefnames = sapply(fnames,extractfilenames)
-    folderstructure = getfolderstructure(datadir,referencefnames)
+    referencefnames = as.character(sapply(fnames, extractfilenames))
+    folderstructure = getfolderstructure(datadir, referencefnames)
     fullfilenames = folderstructure$fullfilenames
     foldername = folderstructure$foldername
   }
@@ -193,9 +193,11 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (NumberRDinFilename == 1) { # to avoid getting .RData.RData
           RDname = paste0(RDname,".RData")
         }
-        if (params_output[["storefolderstructure"]] == TRUE) { # newly added 20-2-2019
+        if (params_output[["storefolderstructure"]] == TRUE) {
           SUM$daysummary$filename_dir = fullfilenames[i] #full filename structure
-          SUM$daysummary$foldername = foldername[i] #store the lowest foldername
+          SUM$daysummary$foldername = foldername[i] #lowest foldername
+          SUM$summary$filename_dir = fullfilenames[i]
+          SUM$summary$foldername = foldername[i]
         }
         save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }

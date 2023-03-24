@@ -15,7 +15,7 @@ correctOlderMilestoneData = function(x) {
               "NeishabouriCount_z", "NeishabouriCount_vm", 
               "anglex", "angley", "anglez", "temperature", "light")
   pattern = paste(metrics, collapse = "|")
-  columns2check = grep(pattern = pattern, x= names(x),value = FALSE)
+  columns2check = grep(pattern = pattern, x = names(x), value = FALSE)
   if (length(columns2check) > 0) {
     for (column in columns2check) {
       if (is.factor(x[1, column])) {
