@@ -13,7 +13,8 @@
 \usage{
   g.part2(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         myfun = c(), params_cleaning = c(), params_247 = c(),
-        params_phyact = c(), params_output = c(), params_general = c(), ...)
+        params_phyact = c(), params_output = c(), params_general = c(),
+        verbose = TRUE, ...)
 }
 \arguments{
   \item{datadir}{
@@ -52,6 +53,9 @@
   }
   \item{params_general}{
    See details in \link{GGIR}.
+  }
+  \item{verbose}{
+    See details in \link{GGIR}.
   }
   \item{...}{
     To ensure compatibility with R scripts written for older GGIR versions,

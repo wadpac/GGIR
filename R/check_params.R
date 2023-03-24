@@ -62,9 +62,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc", 
                          "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
-                         "rmc.origin", "rmc.desiredtz", "rmc.headername.sf", 
+                         "rmc.origin", "rmc.desiredtz", "rmc.configtz", "rmc.headername.sf", 
                          "rmc.headername.sn", "rmc.headername.recordingid", 
-                         "rmc.header.structure", "loadGENEActiv")
+                         "rmc.header.structure")
     if (is.logical(params_rawdata[["rmc.noise"]])) {
       # Older config files used this, so overwrite with NULL value
       params_rawdata[["rmc.noise"]] = c() 
@@ -75,8 +75,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
-    numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "IVIS.activity.metric", 
-                       "IVIS_acc_threshold",
+    numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
+                       "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
     boolean_params = "cosinor"
@@ -96,8 +96,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
-                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5", "includenightcrit", "max_calendar_days")
-    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", "excludefirst.part4", "excludelast.part4")
+                       "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
+                       "includenightcrit", "max_calendar_days")
+    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", 
+                       "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")
@@ -124,12 +126,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
-  if (length(params_rawdata) > 0) {
-    if (params_rawdata[["loadGENEActiv"]] == "GENEAread") {
-      warning(paste0("\nYou asked GGIR to use package GENEAread instead of GGIRread for reading GENEActiv .bin files.",
-                     " Note that this option will be deprecated in the next CRAN release."))
-    }
-  }
   if (length(params_metrics) > 0) {
     if (params_metrics[["do.brondcounts"]] == TRUE) {
       stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",
@@ -178,7 +174,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["Sadeh_axis"]] = "" # not used
     }
     if (length(params_sleep[["loglocation"]]) == 1) {
-      if (params_sleep[["loglocation"]] == "") params_sleep[["loglocation"]] = c() #inserted because some users mistakingly use this
+      if (params_sleep[["loglocation"]] == "") {
+        params_sleep[["loglocation"]] = c() #inserted because some users mistakingly use this
+      } else {
+        # Convert paths from Windows specific slashed to generic slashes
+        params_sleep[["loglocation"]] = gsub(pattern = "\\\\", replacement = "/", x = params_sleep[["loglocation"]])
+      }
     }
     if (length(params_sleep[["loglocation"]]) > 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
       warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
@@ -209,6 +210,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"), call. = FALSE)
     }
+    
+    
+    if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
+      # Convert paths from Windows specific slashed to generic slashes
+      params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
+                                                     replacement = "/", x = params_cleaning[["data_cleaning_file"]])
+    }
   }
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["bout.metric"]]) > 0 |
@@ -228,6 +236,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["iglevels"]] = c(seq(0, 4000, by = 25), 8000) # to introduce option to just say TRUE
       }
     }
+    if (length(params_247[["qwindow"]]) > 0) {
+      if (is.character(params_247[["qwindow"]])) {
+        # Convert paths from Windows specific slashed to generic slashes
+        params_247[["qwindow"]] = gsub(pattern = "\\\\", replacement = "/", x = params_247[["qwindow"]])
+      }
+    }
+    
     if (length(params_247[["LUX_day_segments"]]) > 0) {
       params_247[["LUX_day_segments"]] = sort(unique(round(params_247[["LUX_day_segments"]])))
       if (params_247[["LUX_day_segments"]][1] != 0) {
@@ -239,19 +254,20 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
-    if (is.null(params_general[["recordingEndSleepHour"]])) {
-      
-      params_general[["recordingEndSleepHour"]] = params_general[["expand_tail_max_hours"]] # redefine the argument
+    if (is.null(params_general[["recordingEndSleepHour"]]) & params_general[["expand_tail_max_hours"]] != 0) {
+      params_general[["recordingEndSleepHour"]] = 24 - params_general[["expand_tail_max_hours"]] # redefine the argument
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
-      stop("\nThe argument expand_tail_max_hours has been replaced for",
-           " recordingEndSleepHour. Please, see the documentation and replace",
-           " this argument in your function call.")
+      stop("\nThe argument expand_tail_max_hours has been replaced by",
+           " recordingEndSleepHour which has a different definition. Please",
+           " see the documentation for further details and replace",
+           " expand_tail_max_hour in your function call and config.csv file.")
     } else {
       # If both are defined, this is probably because expand_tail_max_hours is 
       # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
       warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
-              " are defined. GGIR will only use recordingEndSleepHour.")
+              " are defined. GGIR will only use recordingEndSleepHour",
+              " and expand_tail_max_hours will be set to NULL.")
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {

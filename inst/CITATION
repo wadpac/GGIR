@@ -28,13 +28,12 @@ bibentry(bibtype = "Article",
                   person("Tom","White"),
                   person("Nicholas J","Wareham"),
                   person("Soren","Brage")),
-        doi = "10.1152/japplphysiol.00421.2014",
         journal = "Journal of Applied Physiology",
         volume    =  117,
         number    =  7,
         pages     = "738--744",
         year      =  2014,
-        url       = "https://journals.physiology.org/doi/10.1152/japplphysiol.00421.2014")
+        url       = "https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014")
         
         
 bibentry(bibtype = "Article",

@@ -86,7 +86,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                 if (grepl("c\\(", config[ci,2])) { # vector
                   tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
                   tmp = unlist(strsplit(tmp, ","))
-                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp[1]))},silent=TRUE))
+                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp[1]))}, silent = TRUE))
                   if (length(isna) == 0) isna = FALSE
                   if (isna == TRUE) {
                     newValue = tmp # vector of characters
@@ -106,13 +106,13 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
           # their config.csv files. Eventuallythese can be removed here, which will
           # trigger an error for anyone who still uses config file with those arguments.
           ArgNames2Ignore = c("f0", "f1", "studyname", "datadir",
-            "outputdir", "do.report", "R_version",
-            "GGIR_version", "GGIRversion", "config_file", "mode",
-            "config_file_in_outputdir", "imputeTimegaps",
-            "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex",
-            "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i",
-            "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
-            "closedbout", "bout.metric")
+                              "outputdir", "do.report", "R_version",
+                              "GGIR_version", "GGIRversion", "config_file", "mode",
+                              "config_file_in_outputdir", "imputeTimegaps",
+                              "argNames", "dupArgNames", "do.sgAccEN", "do.sgAnglex",
+                              "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i",
+                              "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
+                              "closedbout", "bout.metric", "sleeplogidnum")
           # Find argument in the various parameter objects
           if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {
@@ -139,7 +139,8 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                           if (varName %in% names(params_cleaning)) {
                             params_247[[varName]] = newValue
                           } else {
-                            warning("\nNot able to use variable ", varName, " from configuration file")
+                            warning("\nNot able to use argument/parameter ", varName,
+                                    " from configuration file and ignored.")
                           }
                         }
                       }

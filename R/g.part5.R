@@ -2,7 +2,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_sleep = c(), params_metrics = c(),
                    params_247 = c(), params_phyact = c(),
                    params_cleaning = c(), params_output = c(),
-                   params_general = c(), ...) {
+                   params_general = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to English
   # description: function called by g.shell.GGIR
@@ -61,9 +61,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   nightsummary = M = IMP = sib.cla.sum = c() # declaring variable as otherwise R is confused where they come from, while in fact they are loaded as part of the load operations
   #======================================================================
   # compile lists of milestone data filenames
-  fnames.ms3 = sort(dir(paste(metadatadir, "/meta/ms3.out", sep = "")))
+  fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
   
-  fnames.ms5 = sort(dir(paste(metadatadir, "/meta/ms5.out", sep = "")))
+  fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
   if (file.exists(sleeplogRDA) == TRUE) {
@@ -82,7 +82,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
-  fnames.ms3 = sort(fnames.ms3)
+  # fnames.ms3 = sort(fnames.ms3)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
@@ -110,11 +110,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
-                        extractfilenames, referencefnames, folderstructure, fullfilenames, foldernam) {
+                        extractfilenames, referencefnames, folderstructure, 
+                        fullfilenames, foldernam, verbose) {
     tail_expansion_log =  NULL
-    fnames.ms1 = sort(dir(paste(metadatadir, "/meta/basic", sep = "")))
-    fnames.ms2 = sort(dir(paste(metadatadir, "/meta/ms2.out", sep = "")))
-    fnames.ms4 = sort(dir(paste(metadatadir, "/meta/ms4.out", sep = "")))
+    fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
+    fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
+    fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
     nfeatures = 500
     ws3 = params_general[["windowsizes"]][1]
     ds_names = rep("",nfeatures)
@@ -168,9 +169,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # load output g.part1
         selp = which(fnames.ms1 == paste0("meta_", fnames.ms3[i]))
         if (length(selp) != 1) {
-          cat("Warning: Milestone data part 1 could not be retrieved")
+          if (verbose == TRUE) cat("Warning: Milestone data part 1 could not be retrieved")
         }
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
+        # convert to character/numeric if stored as factor in metashort and metalong
+        M$metashort = correctOlderMilestoneData(M$metashort)
+        M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
         # remove expanded time so that it is not used for behavioral classification 
@@ -189,7 +193,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         guider = rep("unknown", nrow(IMP$metashort)),
                         angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])) )
         Nts = nrow(ts)
-        if (length(which(names(IMP$metashort) == "anglez")) == 0) {
+        if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
           cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
         }
         # add non-wear column
@@ -340,11 +344,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
             if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
-              if (params_sleep[["sleeplogidnum"]] == TRUE) {
-                IDtmp = as.numeric(ID)
-              } else {
-                IDtmp = as.character(ID)
-              }
+              IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
               # store in csv file:
@@ -472,6 +472,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           fi = 1
                           # START STORING BASIC INFORMATION
+                          if (di > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
                           dsummary[di,fi:(fi + 2)] = c(ID, fnames.ms3[i], wi)
                           ds_names[fi:(fi + 2)] = c("ID", "filename", "window_number"); fi = fi + 3
                           if (timewindowi == "WW") {
@@ -999,12 +1000,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         params_general[["do.parallel"]] = FALSE
       }
     } else {
-      cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      if (verbose == TRUE) cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
       params_general[["do.parallel"]] = FALSE
     }
   }
   if (params_general[["do.parallel"]] == TRUE) {
-    cat(paste0('\n Busy processing ... see ', metadatadir, ms5.out, ' for progress\n'))
+    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', metadatadir, ms5.out, ' for progress\n'))
     # check whether we are in development mode:
     GGIRinstalled = is.element('GGIR', installed.packages()[,1])
     packages2passon = functions2passon = NULL
@@ -1020,7 +1021,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
-                           "extract_params", "load_params", "check_params")
+                           "extract_params", "load_params", "check_params",
+                           "correctOlderMilestoneData")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
@@ -1035,20 +1037,20 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
                                                   extractfilenames, referencefnames, folderstructure,
-                                                  fullfilenames, foldername)
+                                                  fullfilenames, foldername, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
-        cat(paste0("\nErrors and warnings for ", fnames.ms3[oli]))
+        if (verbose == TRUE) cat(paste0("\nErrors and warnings for ", fnames.ms3[oli]))
         print(unlist(output_list[oli])) # print any error and warnings observed
       }
     }
   } else {
     for (i in f0:f1) {
-      cat(paste0(i, " "))
+      if (verbose == TRUE) cat(paste0(i, " "))
       main_part5(i, metadatadir, f0, f1,
                  params_sleep, params_metrics,
                  params_247, params_phyact,
@@ -1056,7 +1058,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                  params_general, ms5.out, ms5.outraw,
                  fnames.ms3, sleeplog, logs_diaries,
                  extractfilenames, referencefnames, folderstructure,
-                 fullfilenames, foldername)
+                 fullfilenames, foldername, verbose)
     }
   }
 }

@@ -1,8 +1,8 @@
-createConfigFile = function(config.parameters = c()) {
+createConfigFile = function(config.parameters = c(), GGIRversion = "") {
   if (length(config.parameters) == 0) {
     stop("Configuration parameters not be found.")
   }
-  out = matrix("",length(config.parameters)+2,3)
+  out = matrix("", length(config.parameters) + 2, 3)
   possible_params_objectnames = c("params_247", "params_cleaning", "params_general",
                                   "params_metrics", "params_output",
                                   "params_phyact", "params_rawdata", "params_sleep")
@@ -47,10 +47,10 @@ createConfigFile = function(config.parameters = c()) {
       }
       if (NM %in% c("windowsizes", "chunksize",
                     "minloadcrit", "do.enmo", "do.lfenmo", "do.en", "do.bfen", "do.hfen",
-                    "do.hfenplus", "do.mad", "do.anglex", "do.angley", "do.anglez", 
+                    "do.hfenplus", "do.mad", "do.anglex", "do.angley", "do.anglez",
                     "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
                     "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
-                    "do.enmoa", "printsummary", "do.cal", "print.filename", 
+                    "do.enmoa", "printsummary", "do.cal", "print.filename",
                     "backup.cal.coef", "dayborder", "dynrange",
                     "configtz", "do.lfen", "hb", "lb", "n", "myfun") ==  TRUE) {
         out[i,3] = "Calibration, Feature extraction, Epoch size, Time zone"
@@ -70,8 +70,8 @@ createConfigFile = function(config.parameters = c()) {
                            "relyonsleeplog", "sleeplogidnum", "def.noc.sleep", "do.visual") ==  TRUE) {
         out[i,3] = "Parameters sleep period time detection with or wihout sleeplog"
       } else if (NM %in% c("excludefirstlast.part5", "windowsizes", "boutcriter.in",
-                           "boutcriter.lig", "boutcriter.mvpa", "threshold.lig", "threshold.mod", 
-                           "threshold.vig", "timewindow", "boutdur.mvpa", 
+                           "boutcriter.lig", "boutcriter.mvpa", "threshold.lig", "threshold.mod",
+                           "threshold.vig", "timewindow", "boutdur.mvpa",
                            "boutdur.in", "boutdur.lig", "save_ms5rawlevels") ==  TRUE) {
         out[i,3] = "Parameters time-use variables"
       } else if (NM %in% c("viewingwindow", "visualreport", "dofirstpage") ==  TRUE) {
@@ -80,13 +80,12 @@ createConfigFile = function(config.parameters = c()) {
     }
   }
   SI = sessionInfo()
-  
-  GGIRversion =  as.character(utils::packageVersion("GGIR"))
-  GGIRread_version =  as.character(utils::packageVersion("GGIRread"))
-  if (length(GGIRversion) == 0) GGIRversion = "Could not retrieve GGIR version"
-  if (length(GGIRread_version) == 0) GGIRread_version = "Could not retrieve GGIRread version"
-  if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
-  
+  GGIRread_version = "could not extract version"
+  if (is.element('GGIRread', installed.packages()[,1])) {
+    GGIRread_version = as.character(utils::packageVersion("GGIRread"))
+    if (length(GGIRread_version) != 1) GGIRread_version = sessionInfo()$otherPkgs$GGIRread$Version
+  }
+
   out[nrow(out) - 2,] = c("GGIRread_version", GGIRread_version, "not applicable")
   out[nrow(out) - 1,] = c("GGIRversion", GGIRversion, "not applicable")
   out[nrow(out),] = c("R_version", SI$R.version$version.string, "not applicable")

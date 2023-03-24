@@ -2,7 +2,7 @@ library(GGIR)
 context("Chainof5parts")
 test_that("chainof5parts", {
   skip_on_cran()
-
+  
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
   create_test_sleeplog_csv(advanced = FALSE)
@@ -20,7 +20,7 @@ test_that("chainof5parts", {
           overwrite = TRUE, desiredtz = desiredtz,
           studyname = "test", do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
           windowsizes = c(15,3600,3600), do.parallel = do.parallel,
-          minimumFileSizeMB = minimumFileSizeMB)
+          minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE)
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
@@ -45,12 +45,15 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 0.417)
+  expect_equal(SUM$summary$`N valid WEdays`, "1")
+  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
           strategy = 2,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels = TRUE,
-          do.parallel = do.parallel, myfun = c(), winhr = 16, MX.ig.min.dur = 14)
+          do.parallel = do.parallel, myfun = c(), winhr = 16, MX.ig.min.dur = 14, verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -63,7 +66,8 @@ test_that("chainof5parts", {
           idloc = 2, desiredtz = desiredtz,
           strategy = 1,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, qM5L5 = c(0.2,0.4), winhr = c(3,10),
-          do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9), cosinor = TRUE)
+          do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9),
+          cosinor = TRUE, verbose = FALSE)
   g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -91,17 +95,17 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms3.out/"
   rn3 = dir(dirname,full.names = TRUE)
   load(rn3[1])
-
+  
   expect_true(dir.exists(dirname))
   expect_that(round(sum(sib.cla.sum[,4:7]), digits = 0), equals(2957))
-
+  
   #--------------------------------------------
   # part 4
-  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
           excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, nnights = 7,
           colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
-          storefolderstructure = FALSE, overwrite = TRUE))
+          storefolderstructure = FALSE, overwrite = TRUE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -113,14 +117,14 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
-
+  
   #--------------------------------------------
   #part 5
   g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
           strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
-          frag.metrics = "all", save_ms5rawlevels = TRUE,  sleeplogidnum = FALSE,
+          frag.metrics = "all", save_ms5rawlevels = TRUE,
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr")
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
@@ -144,16 +148,15 @@ test_that("chainof5parts", {
   expect_that(nrow(TSFILE),equals(1150))
   expect_equal(ncol(TSFILE), 11) # 11 columns now because of nap_nonwear classification
   expect_equal(length(unique(TSFILE$class_id)), 10)
- #--------------------------------------------
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
-                                studyname = "test", f0 = 1, f1 = 1,
-                          do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
-                          do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))
+                        studyname = "test", f0 = 1, f1 = 1,
+                        do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
+                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))
   suppressWarnings(GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
-                                f0 = 1, f1 = 1,
-                                do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
-                                do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))
+                        f0 = 1, f1 = 1,
+                        do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
+                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE))
   expect_true(file.exists("output_test/results/part2_daysummary.csv"))
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
@@ -166,12 +169,12 @@ test_that("chainof5parts", {
   #--------------------------------------------
   # part 4 without sleeplog
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-                         idloc = 2, loglocation = c(), do.visual = TRUE, outliers.only = FALSE,
-                         excludefirstlast = FALSE, criterror = 1, includenightcrit = 0,
-                         nnights = 7, colid = 1, coln1 = 2,
-                         relyonguider = FALSE, desiredtz = desiredtz,
-                         storefolderstructure = TRUE, overwrite = TRUE)
-
+          idloc = 2, loglocation = c(), do.visual = TRUE, outliers.only = FALSE,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0,
+          nnights = 7, colid = 1, coln1 = 2,
+          relyonguider = FALSE, desiredtz = desiredtz,
+          storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE)
+  
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -179,7 +182,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(18.075))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
-
+  
   #----------------------------------------------------------------------
   # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonguider=TRUE
   SPTE_end = c(37, 37) # turn into midday
@@ -191,18 +194,18 @@ test_that("chainof5parts", {
   sib.cla.sum = sib.cla.sum[order(sib.cla.sum$sib.onset.time),]
   sib.cla.sum$sib.period[1:11] = 1:11
   save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
-  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-                         idloc = 2, loglocation = c(), do.visual = TRUE,
-                         outliers.only = FALSE, excludefirstlast = FALSE,
-                         criterror = 0, includenightcrit = 0, nnights = 7,
-                         colid = 1, coln1 = 2, relyonguider = TRUE,
-                         desiredtz = desiredtz, storefolderstructure = TRUE,
-                         overwrite = TRUE))
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = c(), do.visual = TRUE,
+          outliers.only = FALSE, excludefirstlast = FALSE,
+          criterror = 0, includenightcrit = 0, nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = TRUE,
+          desiredtz = desiredtz, storefolderstructure = TRUE,
+          overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-
+  
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(0))
@@ -223,19 +226,19 @@ test_that("chainof5parts", {
   sib.cla.sum$sib.onset.time = changetime(sib.cla.sum$sib.onset.time)
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
   save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
-  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-                         idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE,
-                         outliers.only = FALSE, excludefirstlast = FALSE, criterror = 0,
-                         includenightcrit = 0, nnights = 7, colid = 1, coln1 = 2,
-                         relyonguider = TRUE, desiredtz = desiredtz,
-                         storefolderstructure = TRUE, overwrite = TRUE))
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE,
+          outliers.only = FALSE, excludefirstlast = FALSE, criterror = 0,
+          includenightcrit = 0, nnights = 7, colid = 1, coln1 = 2,
+          relyonguider = TRUE, desiredtz = desiredtz,
+          storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(10))
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(7))
-
+  
   #----------------------------------------------------------------------
   # Part 4 - DST-1
   load(rn3[1])
@@ -250,13 +253,13 @@ test_that("chainof5parts", {
   sib.cla.sum$sib.onset.time  = changetime(sib.cla.sum$sib.onset.time)
   sib.cla.sum$sib.end.time = changetime(sib.cla.sum$sib.end.time)
   save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
-  expect_warning(g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-                         idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE,
-                         outliers.only = FALSE, excludefirstlast = FALSE,
-                         criterror = 0, includenightcrit = 0, nnights = 7,
-                         colid = 1, coln1 = 2, relyonguider = FALSE,
-                         desiredtz = desiredtz, storefolderstructure = TRUE,
-                         overwrite = TRUE))
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE,
+          outliers.only = FALSE, excludefirstlast = FALSE,
+          criterror = 0, includenightcrit = 0, nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = FALSE,
+          desiredtz = desiredtz, storefolderstructure = TRUE,
+          overwrite = TRUE, verbose = FALSE)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -288,8 +291,8 @@ test_that("chainof5parts", {
   colnames(SDF) = c("Monitor", "Day1", "Day2")
   selectdaysfile = "selectdaysfile.csv"
   write.csv(SDF, file = selectdaysfile)
-
-
+  
+  
   g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
           do.parallel = do.parallel, myfun = myfun,
@@ -300,8 +303,8 @@ test_that("chainof5parts", {
           do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen = TRUE,
           do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen = TRUE,
-          do.enmoa = TRUE, selectdaysfile = selectdaysfile)
-
+          do.enmoa = TRUE, selectdaysfile = selectdaysfile, verbose = FALSE)
+  
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 24)
@@ -313,8 +316,8 @@ test_that("chainof5parts", {
   expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
-
-
+  
+  
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) file.remove(fn)

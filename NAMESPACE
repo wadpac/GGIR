@@ -36,7 +36,8 @@ export(g.analyse, g.calibrate,
        check_params, extract_params,
        g.imputeTimegaps, g.part5.classifyNaps,
        tidyup_df, cosinorAnalyses,
-       ShellDoc2Vignette, parametersVignette)
+       ShellDoc2Vignette, parametersVignette,
+       correctOlderMilestoneData)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",

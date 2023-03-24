@@ -39,7 +39,7 @@ g.getbout = function(x, boutduration, boutcriter = 0.8, ws3 = 5) {
       # find start of bout
       start_found = FALSE
       adjust = 0
-      while (isFALSE(start_found)) {
+      while (start_found == FALSE) {
         start = min(bout) - half1 + adjust
         if (start < 1) {
           adjust = adjust + 1
@@ -63,7 +63,7 @@ g.getbout = function(x, boutduration, boutcriter = 0.8, ws3 = 5) {
       # find end of bout
       end_found = FALSE
       adjust = 0
-      while (isFALSE(end_found)) {
+      while (end_found == FALSE) {
         end = max(bout) + half1 - adjust
         if (end > length(xt)) {
           adjust = adjust + 1

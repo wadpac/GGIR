@@ -8,6 +8,12 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   filesummary = matrix(" ", 1, 150) #matrix to be stored with summary per participant
   s_names = rep(" ", ncol(filesummary))
   vi = 1
+  # tidy up daysummary
+  cut = which(ds_names == " " | ds_names == "" | is.na(ds_names) == T)
+  if (length(cut > 0)) {
+    ds_names = ds_names[-cut]
+    daysummary = daysummary[,-cut]
+  }
   # Person identification number
   filesummary[vi] = ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
@@ -219,11 +225,11 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     filesummary[(vi + 4)] = windowsizes[1]
     filesummary[(vi + 5)] = longitudinal_axis_id
     #get GGIR version
-    SI = sessionInfo()
-    
-    GGIRversion =  as.character(utils::packageVersion("GGIR"))
-    if (length(GGIRversion) == 0) GGIRversion = "GGIR not used"
-    if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+    GGIRversion = "GGIR not used"
+    if (is.element('GGIR', installed.packages()[,1])) {
+      GGIRversion = as.character(utils::packageVersion("GGIR"))
+      if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+    }
     filesummary[(vi + 6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
     s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
                                                  " value=2, ignore all data before the first midnight and",
@@ -242,11 +248,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   if (length(mw) > 0) {
     daysummary[mw] = " "
   }
-  cut = which(ds_names == " " | ds_names == "" | is.na(ds_names) == T)
-  if (length(cut > 0)) {
-    ds_names = ds_names[-cut]
-    daysummary = daysummary[,-cut]
-  }
+  
   if (min(dim(as.matrix(daysummary))) == 1) {
     if (nrow(as.matrix(daysummary)) != 1) {
       daysummary = t(daysummary) #if there is only one day of data
@@ -290,8 +292,8 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
                       grep(pattern = "^WD_", x = names(filesummary), value = T),
                       grep(pattern = "^WE_", x = names(filesummary), value = T),
                       grep(pattern = "^WWD_", x = names(filesummary), value = T),
-                      grep(pattern = "^WWE_", x = names(filesummary), value = T),
-                      names(filesummary)[(columns2order[length(columns2order)] + 1):ncol(filesummary)])
+                      grep(pattern = "^WWE_", x = names(filesummary), value = T))
+    selectcolumns = c(selectcolumns, names(filesummary)[which(names(filesummary) %in% selectcolumns == FALSE)])
   } else {
     selectcolumns = names(filesummary)
   }

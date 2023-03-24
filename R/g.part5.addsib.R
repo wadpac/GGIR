@@ -17,25 +17,25 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
   if (nrow(S2) > 0) {
     gik.ons = format(S2$sib.onset.time)
     gik.end = format(S2$sib.end.time)
+    timeChar = format(ts$time)
+    if (is.ISO8601(timeChar[1]) == FALSE) { # only do this for POSIX format
+      timeChar = POSIXtime2iso8601(timeChar, tz = desiredtz)
+    }
+    if (timeChar[1] != as.character(timeChar[1])) {
+      #not s0 because s0 does not exist yet if classes differ
+      timeChar = as.character(timeChar)
+    }
     for (g in 1:nrow(S2)) { # sustained inactivity bouts
       lastpr0 = pr0
       pr1 = pr0 + ((60/ws3)*1440*6)
       if (pr1 > pr2) pr1 = pr2
       if (pr0 > pr1) pr0 = pr1
       #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
-      timebb = format(ts$time[pr0:pr1])
-      if (is.ISO8601(timebb[1]) == FALSE) { # only do this for POSIX format
-        timebb = POSIXtime2iso8601(timebb,tz=desiredtz)
-      }
-      s0 = which(timebb == gik.ons[g])[1]
-      s1 = which(timebb == gik.end[g])[1]
-      if ( timebb[1] != as.character(timebb[1])){ #not s0 because s0 does not exist yet if classes differ
-        timebb = as.character(timebb)
-        s0 = which(timebb == gik.ons[g])[1]
-        s1 = which(timebb == gik.end[g])[1]
-      }
-      if (is.na(s0) == TRUE) s0 = which(timebb == paste(gik.ons[g]," 00:00:00",sep=""))[1]
-      if (is.na(s1) == TRUE) s1 = which(timebb == paste(gik.end[g]," 00:00:00",sep=""))[1]
+      timeChar_tmp = timeChar[pr0:pr1]
+      s0 = which(timeChar_tmp == gik.ons[g])[1]
+      s1 = which(timeChar_tmp == gik.end[g])[1]
+      if (is.na(s0) == TRUE) s0 = which(timeChar_tmp == paste0(gik.ons[g], " 00:00:00"))[1]
+      if (is.na(s1) == TRUE) s1 = which(timeChar_tmp == paste0(gik.end[g], " 00:00:00"))[1]
       # add pr0 to make s0 and s1 be relative to the start of the recording
       s0 = s0 + pr0 - 1
       s1 = s1 + pr0 - 1
@@ -48,7 +48,6 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     }
   }
   ts$sibdetection[s0s1] = 1
-  
   if (length(grep(pattern = "A", j)) > 0 & length(grep(pattern = "T", j)) > 0) {
     #=========
     # If excludefirstlast was set to TRUE in part 4 then 

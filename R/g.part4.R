@@ -1,7 +1,7 @@
 g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                    params_sleep = c(), params_metrics = c(),
                    params_cleaning = c(), params_output = c(),
-                   params_general = c(), ...) {
+                   params_general = c(), verbose = TRUE, ...) {
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -22,9 +22,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   #------------------------------------------------
   # check whether milestone 3 data exists, if not give warning
   ms3.out = "/meta/ms3.out"
-  if (file.exists(paste0(metadatadir,ms3.out))) {
-  } else {
-    cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
+  if (!file.exists(paste0(metadatadir,ms3.out))) {
+    if (verbose == TRUE) cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
   }
   # check whether milestone 4 data exists, if no create folder
   ms4.out = "/meta/ms4.out"
@@ -42,7 +41,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
-                             nnights = params_sleep[["nnights"]], sleeplogidnum= params_sleep[["sleeplogidnum"]],
+                             nnights = params_sleep[["nnights"]], 
                              sleeplogsep = params_sleep[["sleeplogsep"]], meta.sleep.folder = meta.sleep.folder, 
                              desiredtz = params_general[["desiredtz"]])
     sleeplog = logs_diaries$sleeplog
@@ -67,7 +66,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                            "SleepDurationInSpt", "WASO", "duration_sib_wakinghours", "number_sib_sleepperiod", "number_of_awakenings",
                            "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
                            "guider_wakeup_ts", "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
-                           "filename", "cleaningcode", "sleeplog_used", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
+                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
                            "longitudinal_axis")
   if (params_output[["storefolderstructure"]] == TRUE) {
     colnamesnightsummary = c(colnamesnightsummary, "filename_dir", "foldername")
@@ -80,10 +79,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   ffdone = c()
   ms4.out = "/meta/ms4.out"
   fnames.ms4 = dir(paste0(metadatadir, ms4.out))
-  fnames.ms4 = sort(fnames.ms4)
+  # fnames.ms4 = sort(fnames.ms4)
   ffdone = fnames.ms4
   # ffdone a matrix with all the binary filenames that have been processed
-  fnames = sort(fnames)
+  # fnames = sort(fnames)
   #--------------------------------
   # get original file path of the accelerometer (some studies may like to keep track of original folder
   # structure if their study structure is embodied in folder structure)
@@ -160,7 +159,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
       }
     }
     if (skip == 0) {
-      cat(paste0(" ", i))
+      if (verbose == TRUE) cat(paste0(" ", i))
       addlegend = FALSE
       if (cnt67 == 1) {
         # only create new pdf if there is actually new plots to be generated keep pdf for QC
@@ -190,6 +189,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
       accid = c()
+      logid = NA  # keep track of what log id matched to accid
       if (length(ID) > 0) {
         if (!is.na(ID)) {
           # continue with same ID as extracted in GGIR parts 1-3:
@@ -204,9 +204,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         sib.cla.sum$sib.end.time = iso8601chartime2POSIX(sib.cla.sum$sib.end.time, tz = params_general[["desiredtz"]])
         # extract the identifier from accelerometer data and matching indices of sleeplog:
         idwi = g.part4_extractid(params_general[["idloc"]], fname = fnames[i],
-                                 dolog, params_sleep[["sleeplogidnum"]], sleeplog, accid = accid)
+                                 dolog, 
+                                 sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
+        if (dolog == TRUE) logid = sleeplog$ID[wi][1]
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
         if (length(params_sleep[["nnights"]]) == 0) {
@@ -626,7 +628,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # PLOTTING related
           if (params_output[["do.visual"]] == TRUE) {
             if (cnt == (nnpp + 1)) {
-              cat(" NEW ")
+              if (verbose == TRUE) cat(" NEW ")
               pagei = pagei + 1
               # add y-axis before starting new page
               if (length(idlabels) < nnpp) {
@@ -908,7 +910,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                         if (abs(nightsummary$error_onset[sumi]) > params_output[["criterror"]] | abs(nightsummary$error_wake[sumi]) >
                             params_output[["criterror"]] | abs(nightsummary$error_dur[sumi]) > (params_output[["criterror"]] * 2)) {
                           doplot = TRUE
-                          cat(" PLOT ")
+                          if (verbose == TRUE) cat(" PLOT ")
                         } else {
                           doplot = FALSE
                         }
@@ -976,10 +978,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   #------------------------------------------------------------------------
                   nightsummary[sumi, 32] = cleaningcode
                   nightsummary[sumi, 33] = sleeplog_used
-                  nightsummary[sumi, 34] = acc_available
-                  nightsummary[sumi, 35] = guider
+                  nightsummary[sumi, 34] = logid
+                  nightsummary[sumi, 35] = acc_available
+                  nightsummary[sumi, 36] = guider
                   # Extract SRI for this night
-                  nightsummary[sumi, 36:37] = NA
+                  nightsummary[sumi, 37:38] = NA
                   if (!exists("SleepRegularityIndex")) {
                     SleepRegularityIndex = NA
                   }
@@ -989,18 +992,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     calendar_date_reformat = as.character(format(x = calendar_date_asDate, format = "%d/%m/%Y"))
                     SRIindex = which(SRI$date == calendar_date_reformat & SRI$frac_valid > (params_cleaning[["includenightcrit"]]/24))
                     if (length(SRIindex) > 0) {
-                      nightsummary[sumi, 36] = SRI$SleepRegularityIndex[SRIindex[1]]
-                      nightsummary[sumi, 37] = SRI$frac_valid[SRIindex[1]]
+                      nightsummary[sumi, 37] = SRI$SleepRegularityIndex[SRIindex[1]]
+                      nightsummary[sumi, 38] = SRI$frac_valid[SRIindex[1]]
                     }
                   }
                   if (length(longitudinal_axis) == 0) {
-                    nightsummary[sumi, 38] = NA
+                    nightsummary[sumi, 39] = NA
                   } else {
-                    nightsummary[sumi, 38] = longitudinal_axis
+                    nightsummary[sumi, 39] = longitudinal_axis
                   }
                   if (params_output[["storefolderstructure"]] == TRUE) {
-                    nightsummary[sumi, 39] = ffd[i]  #full filename structure
-                    nightsummary[sumi, 40] = ffp[i]  #use the lowest foldername as foldername name
+                    nightsummary[sumi, 40] = ffd[i]  #full filename structure
+                    nightsummary[sumi, 41] = ffp[i]  #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 }  #run through definitions
@@ -1036,10 +1039,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           nightsummary[sumi, 3:30] = NA
           nightsummary[sumi, 31] = fnames[i]
           nightsummary[sumi, 32] = 4  #cleaningcode = 4 (no nights of accelerometer available)
-          nightsummary[sumi, 33:34] = c(FALSE, TRUE)  #sleeplog_used acc_available
-          nightsummary[sumi, 35:38] = NA
+          nightsummary[sumi, c(33,35)] = c(FALSE, TRUE)  #sleeplog_used acc_available
+          nightsummary[sumi, 36:39] = NA
           if (params_output[["storefolderstructure"]] == TRUE) {
-            nightsummary[sumi, 39:40] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi, 40:41] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }
