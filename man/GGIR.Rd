@@ -241,6 +241,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series 
         output to avoid biased output.
       }
+       \item{dataFormat}{
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
+        to indicate what the format is of the data in datadir.
+        Current alternatives: ukbiobank_csv actiwatch_csv.
+      }
     }
   }
 

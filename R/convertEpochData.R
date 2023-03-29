@@ -1,9 +1,11 @@
 convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
-                            overwrite = TRUE,
-                            data_format = "raw", 
-                            tz = "", windowsizes = c()) {
-  epSizeShort = windowsizes[1]
-  epSizeLong = windowsizes[2]
+                            params_general = c()) {
+  
+  overwrite = params_general[["overwrite"]]
+  tz = params_general[["desiredtz"]]
+  
+  epSizeShort = params_general[["windowsizes"]][1]
+  epSizeLong = params_general[["windowsizes"]][2]
   fnames = dir(datadir,full.names = TRUE,pattern = "[.]csv")
   chartime2iso8601 = function(x,tz){
     POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz)), origin = "1970-1-1", tz)
@@ -41,7 +43,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
   outputdir = paste0(outputdir, outputfolder) #where is output stored?
   
   #============
-  if (data_format == "ukbiobank_csv") {
+  if (params_general[["dataFormat"]] == "ukbiobank_csv") {
     deviceName = "Axivity"
     monn = "axivity"
     monc = 4
@@ -49,7 +51,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     dformn = "cwa"
     sf = 100
     epSizeShort = 5
-  } else if (length(grep(pattern = "actiwatch", x = data_format, ignore.case = TRUE)) > 0) {
+  } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
     deviceName = "Actiwatch"
     monn = "actiwatch"
     monc = 99
@@ -81,7 +83,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                                   ENMO = rep(0, 3)), 
            wday = 0,
            wdayname = "Sunday",
-           windowsizes = windowsizes,
+           windowsizes = params_general[["windowsizes"]],
            bsc_qc = data.frame(A = 1:3,
                                B = 1:3))
   
@@ -122,7 +124,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     if (skip == FALSE) {
       I$filename = filename_dir = fname
       
-      if (data_format == "ukbiobank_csv") {
+      if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
         D = utils::read.table(file = fnames[i],
                               header = TRUE,
@@ -135,8 +137,8 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         # like in the default GGIR version
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz)
         
-      } else if (length(grep(pattern = "actiwatch", x = data_format, ignore.case = TRUE)) > 0) {
-        if (data_format == "actiwatch_csv") {
+      } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
+        if (params_general[["dataFormat"]] == "actiwatch_csv") {
           # ! Assumptions that timeseries start before line 150
           ind = 150
           testraw = data.table::fread(input = fnames[i],
@@ -191,24 +193,24 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       M$metashort = data.frame(timestamp = time_shortEp_8601,ENMO = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       
       LML = length(time_longEp_8601)
-      if (data_format == "ukbiobank_csv") {
+      if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         #Collapse second column of input data to use as non-wear score
         imp = D[, 2]
         M$metashort$ENMO = M$metashort$ENMO/1000
-      } else if (length(grep(pattern = "actiwatch", x = data_format, ignore.case = TRUE)) > 0) {
+      } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         imp = unlist(D[, 1])
       }
       navalues = which(is.na(imp) == TRUE)
       if (length(navalues) > 0) imp[navalues] = 1
       
       
-      if (data_format == "ukbiobank_csv") {
+      if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
         imp2 = cumsum(imp)
         imp3 = diff(imp2[seq(1, length(imp2),
                              by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
         imp4 = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
-      } else if (length(grep(pattern = "actiwatch", x = data_format, ignore.case = TRUE)) > 0) {
+      } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         # Using rolling 60 minute sum to indicate whether it is nonwear
         imp2 = zoo::rollapply(imp, width = 3600 / epSizeShort, FUN = sum, fill = 0)
         imp4 = imp2

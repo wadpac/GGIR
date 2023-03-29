@@ -189,13 +189,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
         # note that this is imputed ACCELERATION because we use this for describing behaviour:
         scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
+        if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
+          cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
+        }
         ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                         guider = rep("unknown", nrow(IMP$metashort)),
                         angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])) )
         Nts = nrow(ts)
-        if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
-          cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
-        }
         # add non-wear column
         nonwear = IMP$rout[,5]
         nonwear = rep(nonwear, each = (IMP$windowsizes[2]/IMP$windowsizes[1]))

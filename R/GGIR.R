@@ -1,7 +1,7 @@
 GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 studyname = c(), f0 = 1, f1 = 0,
                 do.report = c(2, 4, 5), configfile = c(),
-                myfun = c(), verbose = TRUE, dataFormat = "raw",
+                myfun = c(), verbose = TRUE,
                 ...) {
   #get input variables
   input = list(...)
@@ -121,6 +121,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     check_myfun(myfun, params_general[["windowsizes"]])
   }
   
+  if (dopart5 == TRUE & params_general[["dataFormat"]] != "raw") {
+    mode = mode[which(mode != 5)]
+    dopart5 = FALSE
+    warning(paste0("When dataFormat is not raw then mode cannot have value 5",
+                   " as GGIR part 5 only works for raw data at the moment"), call. = FALSE)
+  }
+  
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -152,7 +159,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
-    if (dataFormat == "raw") {
+    if (params_general[["dataFormat"]] == "raw") {
       g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
               studyname = studyname, myfun = myfun,
               params_rawdata = params_rawdata, params_metrics = params_metrics,
@@ -162,10 +169,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       convertEpochData(datadir = datadir,
                        studyname = studyname,
                        outputdir = outputdir,
-                       data_format = dataFormat,
-                       overwrite = params_general[["overwrite"]],
-                       tz = params_general[["desiredtz"]],
-                       windowsizes = params_general[["windowsizes"]])
+                       params_general = params_general)
     }
   }
   if (dopart2 == TRUE) {
