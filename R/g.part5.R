@@ -352,7 +352,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
-              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
+              shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
+              
+              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
               # nap/sib/nonwear overlap analysis
               

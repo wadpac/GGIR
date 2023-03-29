@@ -308,7 +308,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       cat("No midnights found")
       detection.failed = TRUE
     }
-    metatmp = data.frame(time, invalid, night = night, sleep = sleep[,1], stringsAsFactors = T)
+
+    metatmp = data.frame(time, invalid, night = night, sleep = sleep, stringsAsFactors = T)
   } else {
     metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = c()
     detection.failed = TRUE

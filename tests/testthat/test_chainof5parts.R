@@ -128,7 +128,7 @@ test_that("chainof5parts", {
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr")
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
-  expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile.csv.RData_T5A5.csv")))
+  expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
   
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)

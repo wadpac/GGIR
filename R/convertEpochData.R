@@ -212,7 +212,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         imp4 = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         # Using rolling 60 minute sum to indicate whether it is nonwear
-        imp2 = zoo::rollapply(imp, width = 3600 / epSizeShort, FUN = sum, fill = 0)
+        imp2 = zoo::rollapply(imp, width = (1*3600) / epSizeShort, FUN = sum, fill = 0)
         imp4 = imp2
         imp4[which(imp2 > 0)] = 0
         imp4[which(imp2 == 0)] = 3 # If rolling average is zero then consider it nonwear

@@ -121,7 +121,7 @@ g.plot = function(IMP, M, I, durplot) {
   select = seq(1,length(accel2), by = ws2 / ws3)
   Acceleration = diff(accel2[round(select)]) / abs(diff(round(select[1:(length(select))])))
   if (length(timeline) > length(Acceleration)) {
-    Acceleration = c(Acceleration, rep(0, length(Acceleration) - length(timeline)))
+    Acceleration = c(Acceleration, rep(0, abs(length(Acceleration) - length(timeline))))
   } else if (length(timeline) < length(Acceleration)) {
     Acceleration = Acceleration[1:length(timeline)]
   }
@@ -130,10 +130,13 @@ g.plot = function(IMP, M, I, durplot) {
   ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
   # creating plot functions to avoid duplicated code
   plot_acc = function(timeline, Acceleration, durplot, ticks, metricName) {
-    if (metricName %in% c("ZCX", "ZCY", "ZCX") == TRUE) {
-      ylabel = metricName
+    if (metricName %in% c("ZCX", "ZCY", "ZCX") == TRUE | 
+        length(grep(pattern = "count", x = metricName, ignore.case = TRUE)) > 0) {
+      # Metric is not on a G scale
+      ylabel = paste0(metricName, " (counts)")
       YLIM = c(0, max(Acceleration, na.rm = TRUE) * 1.05)
-      YTICKS = round(c(0, YLIM[2] * 0.5, YLIM[2] * 0.95))
+      YTICKS = round(c(0, YLIM[2] * 0.3, YLIM[2] * 0.65, YLIM[2] * 0.95))
+      YTICKS = unique(round(YTICKS/10) * 10) # round to nearest ten and remove possible duplicates
     } else {
       ylabel = expression(paste("Acceleration (", italic("g"), ")"))
       YLIM = c(0, 0.6)
