@@ -121,11 +121,14 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     check_myfun(myfun, params_general[["windowsizes"]])
   }
   
-  if (dopart5 == TRUE & params_general[["dataFormat"]] != "raw") {
+  if ((dopart5 == TRUE | 5 %in% do.report | params_output[["visualreport"]] == TRUE) &
+      params_general[["dataFormat"]] != "raw") {
     mode = mode[which(mode != 5)]
     dopart5 = FALSE
-    warning(paste0("When dataFormat is not raw then mode cannot have value 5",
-                   " as GGIR part 5 only works for raw data at the moment"), call. = FALSE)
+    params_output[["visualreport"]] == FALSE
+    do.report = do.report[which(do.report != 5)]
+    warning(paste0("Turning off part 5 and visualreport generation because",
+                   " dataFormat is not raw."), call. = FALSE)
   }
   
   #-----------------------------------------------------------
