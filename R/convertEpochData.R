@@ -159,10 +159,19 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           colnames(D) = gsub(pattern = "tijd|time", replacement = "time", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "activiteit|activity", replacement = "ZCY", x = colnames(D), ignore.case = TRUE)
           
-          timestamp_POSIX = as.POSIXct(x = paste(D$date[1], D$time[1], sep = " "), format = "%d-%m-%Y %H:%M:%S", tz = tz)
+          timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "), format = "%d-%m-%Y %H:%M:%S", tz = tz)
+          epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
+          if (epSizeShort != params_general[["windowsizes"]][1]) {
+            stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
+                 params_general[["windowsizes"]][1],
+                 " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
+                 " seconds). Please correct.", call. = FALSE)
+          }
+          timestamp_POSIX = timestamp_POSIX[1]
           D = D[, "ZCY"]
         }
       }
+      
       Sys.setlocale("LC_TIME", "C") # set language to English
       quartlystart = (ceiling(as.numeric(timestamp_POSIX) / epSizeLong)) * epSizeLong
       
