@@ -570,6 +570,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # MODULE 2 - non-wear time & clipping
         NWCW = detect_nonwear_clipping(data = data, windowsizes = c(ws3, ws2, ws), sf = sfold,
                                        clipthres = clipthres, sdcriter = sdcriter, racriter = racriter,
+                                       nonwear_approach = params_general[["nonwear_approach"]],
                                        params_rawdata = params_rawdata)
         NWav = NWCW$NWav; CWav = NWCW$CWav; nmin = NWCW$nmin
         # metalong

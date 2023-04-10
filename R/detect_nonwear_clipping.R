@@ -1,6 +1,7 @@
 detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
                                    clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
-                                   params_rawdata = params_rawdata) {
+                                   nonwear_approach = "old",
+                                   params_rawdata = c()) {
   ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]
   window3 = ws3 * sf #window size in samples
   window2 = ws2 * sf #window size in samples
@@ -9,29 +10,37 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
   CW = NW = matrix(0,nmin,3) #CW is clipping, NW is non-wear
   CWav = NWav = rep(0, nmin)
   crit = ((window/window2)/2) + 1
+  # define windows to check:
   for (h in 1:nmin) { #number of windows
+    # if (any(NW == 1)) browser()
     # clip detection based on window2 (do not use window)
     cliphoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window2 * 0.5 
     cliphoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window2 * 0.5
     # Flag nonwear based on window instead of window2 (2023-02-18)
-    # if (nw_approach == "old") {
-    #   NWflag = h
-    # } else if (nw_approach == "new"){
-      NWflag = (h - floor(crit/2)):(h + floor(crit/2))
-      if (NWflag[1] == 0) NWflag = NWflag[2:3]
+    if (nonwear_approach == "old") {
+      NWflag = h
+      if (h <= crit) {
+        hoc1 = 1
+        hoc2 = window
+      } else if (h >= (nmin - crit)) {
+        hoc1 = (nmin - crit)*window2
+        hoc2 = nmin*window2 #end of data
+      } else if (h > crit & h < (nmin - crit)) {
+        hoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window * 0.5
+        hoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window * 0.5
+      }
+    } else if (nonwear_approach == "new") {
+      # long-epoch windows to flag (nonwear)
+      NWflag = h:(h + window/window2 - 1)
       if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
-    # }
-    # ---
-    if (h <= crit) {
-      hoc1 = 1
-      hoc2 = window
-    } else if (h >= (nmin - crit)) {
-      hoc1 = (nmin - crit)*window2
-      hoc2 = nmin*window2 #end of data
-    } else if (h > crit & h < (nmin - crit)) {
-      hoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window * 0.5
-      hoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window * 0.5
+      # window to check (not aggregated values)
+      hoc1 = h*window2 - window2 + 1
+      hoc2 = hoc1 + window - 1
+      if (hoc2 > nrow(data)) {
+        hoc2 = nrow(data)
+      }
     }
+    # ---
     if (length(params_rawdata[["rmc.col.wear"]]) > 0) {
       wearcol = as.character(data[, which(colnames(data) == "wear")])
       suppressWarnings(storage.mode(wearcol) <- "logical")
@@ -39,15 +48,17 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       NWav[h] = as.logical(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
     }
     for (jj in  1:3) {
+      # Clipping
+      CW[h,jj] = length(which(abs(as.numeric(data[(1 + cliphoc1):cliphoc2,jj])) > clipthres))
+      if (length(which(abs(as.numeric(data[(1 + cliphoc1):cliphoc2,jj])) > clipthres*1.5)) > 0) {
+        CW[h,jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
+      }
+      # Non-wear
       #hoc1 & hoc2 = edges of windows
       #window is bigger& window2 is smaller one
       sdwacc = sd(as.numeric(data[(1 + hoc1):hoc2,jj]), na.rm = TRUE)
       maxwacc = max(as.numeric(data[(1 + hoc1):hoc2,jj]), na.rm = TRUE)
       minwacc = min(as.numeric(data[(1 + hoc1):hoc2,jj]), na.rm = TRUE)
-      CW[h,jj] = length(which(abs(as.numeric(data[(1 + cliphoc1):cliphoc2,jj])) > clipthres))
-      if (length(which(abs(as.numeric(data[(1 + cliphoc1):cliphoc2,jj])) > clipthres*1.5)) > 0) {
-        CW[h,jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
-      }
       absrange = abs(maxwacc - minwacc)
       if (is.numeric(absrange) == TRUE & is.numeric(sdwacc) == TRUE & is.na(sdwacc) == FALSE) {
         if (sdwacc < sdcriter) {
