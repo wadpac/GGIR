@@ -11,6 +11,7 @@ of the accelerometer.
 \usage{
 detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
                         clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
+                        nonwear_approach = "old",
                         params_rawdata = params_rawdata)
 }
 \arguments{
@@ -35,6 +36,14 @@ detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
   Absolute criteria below which the absolute range of the accelerations
   should be to define non-wear time.
 }
+ \item{nonwear_approach}{
+  Whether to use the traditional version of the non-wear detection algorithm
+  (nonwear_approach = "old", default) or the new version (nonwear_approach = "new). 
+  The old version would use the longsize window (windowsizes[3], one hour as default)
+  to check the conditions for nonwear identification and would flag as nonwear the
+  mediumsize window (windowsizes[2], 15 min as default) in the middle. The new 
+  version differs in which it would flag as nonwear the full longsize window.
+ }
  \item{params_rawdata}{
   See details in \link{GGIR}.
 }
@@ -51,7 +60,8 @@ detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
 \examples{
 \dontrun{
     detect_nonwear_clipping(data = data, windowsizes = c(900, 3600), sf = sf,
-                            clipthres = clipthres, sdcriter = sdcriter, racriter = racriter)
+                            clipthres = clipthres, sdcriter = sdcriter, 
+                            racriter = racriter, nonwear_approach = "old")
   }
 }
 \author{
