@@ -131,14 +131,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             }
           }
         }
-        #------------
-        # extend the detection on nonwear by checking the transitions from valid to invalid windows
-        # r5long = extend_invalid_detection(M, I,
-        #                                   params_cleaning = params_cleaning,
-        #                                   dayborder = params_general[["dayborder"]],
-        #                                   desiredtz = params_general[["desiredtz"]],
-        #                                   TimeSegments2Zero = TimeSegments2Zero)
-        #------------
         if (length(myfun) > 0) {
           if (myfun$outputtype == "character") {
             # At the moment we do not have a strategy in place on how to impute categorical variables
