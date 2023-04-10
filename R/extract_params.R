@@ -86,7 +86,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                 if (grepl("c\\(", config[ci,2])) { # vector
                   tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
                   tmp = unlist(strsplit(tmp, ","))
-                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp[1]))},silent=TRUE))
+                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp[1]))}, silent = TRUE))
                   if (length(isna) == 0) isna = FALSE
                   if (isna == TRUE) {
                     newValue = tmp # vector of characters
@@ -139,7 +139,8 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                           if (varName %in% names(params_cleaning)) {
                             params_247[[varName]] = newValue
                           } else {
-                            warning("\nNot able to use variable ", varName, " from configuration file")
+                            warning("\nNot able to use argument/parameter ", varName,
+                                    " from configuration file and ignored.")
                           }
                         }
                       }
