@@ -12,7 +12,7 @@ of the accelerometer.
 detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
                         clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
                         nonwear_approach = "old",
-                        params_rawdata = params_rawdata)
+                        params_rawdata = c())
 }
 \arguments{
   \item{data}{
