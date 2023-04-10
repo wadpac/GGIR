@@ -241,6 +241,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series 
         output to avoid biased output.
       }
+      \item{nonwear_approach}{
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["nonwear_approach"]]}).
+        Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "old")
+        or the new version (nonwear_approach = "new). The old version would use the longsize window (windowsizes[3], 
+        one hour as default) to check the conditions for nonwear identification and would flag as nonwear the 
+        mediumsize window (windowsizes[2], 15 min as default) in the middle. The new version differs in which it 
+        would flag as nonwear the full longsize window.
+      }
     }
   }
 
