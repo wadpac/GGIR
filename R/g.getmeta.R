@@ -1,7 +1,7 @@
 g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), daylimit = FALSE, 
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-                     meantempcal = c(), myfun = c(), ...) {
+                     meantempcal = c(), myfun = c(), verbose = TRUE, ...) {
   
   #get input variables
   input = list(...)
@@ -99,7 +99,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   }
   
   if (length(nmetrics) == 0) {
-    cat("\nWARNING: No metrics selected\n")
+    if (verbose == TRUE) cat("\nWARNING: No metrics selected\n")
   }
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
@@ -107,15 +107,19 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]  #window sizes
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * ceiling(ws2/60))
-    cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
-    cat(paste0("\nlong windowsize has now been automatically adjusted to: ", ws2, " seconds in order to meet this criteria.\n"))
+    if (verbose == TRUE) {
+      cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
+      cat(paste0("\nlong windowsize has now been automatically adjusted to: ", ws2, " seconds in order to meet this criteria.\n"))
+    }
   }
   if ((ws2/ws3) != round(ws2/ws3)) {
     def = c(1,5,10,15,20,30,60)
     def2 = abs(def - ws3)
     ws3 = as.numeric(def[which(def2 == min(def2))])
-    cat("\nWARNING: The long windowsize needs to be a multitude of short windowsize. The \n")
-    cat(paste0("\nshort windowsize has now been automatically adjusted to: ", ws3, " seconds in order to meet this criteria.\n"))
+    if (verbose == TRUE) {
+      cat("\nWARNING: The long windowsize needs to be a multitude of short windowsize. The \n")
+      cat(paste0("\nshort windowsize has now been automatically adjusted to: ", ws3, " seconds in order to meet this criteria.\n"))
+    }
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
@@ -209,11 +213,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   sforiginal = sf
   while (LD > 1) {
     P = c()
-    if (i  == 1) {
-      cat(paste0("\nLoading chunk: ", i))
-    } else {
-      cat(paste0(" ", i))
+    if (verbose == TRUE) {
+      if (i  == 1) {
+        cat(paste0("\nLoading chunk: ", i))
+      } else {
+        cat(paste0(" ", i))
+      }
     }
+    
     options(warn = -1) #turn off warnings (code complains about unequal rowlengths
     
     if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
@@ -526,7 +533,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           metashort = rbind(metashort,extension)
           extension2 = matrix(" ", ((3600/ws2) * 24)  + (totalgap * (ws2/ws3)), ncol(metalong)) #add another day to metashort once you reach the end of it
           metalong = rbind(metalong, extension2)
-          cat("\nvariable metashort extended\n")
+          if (verbose == TRUE) cat("\nvariable metashort extended\n")
         }
         col_msi = 2
         # Add metric time series to metashort object
@@ -689,7 +696,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (ceiling(daylimit) != FALSE) {
       if (i == ceiling(daylimit)) { #to speed up testing only read first 'i' blocks of data
         LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
-        cat(paste0("\nstopped reading data because this analysis is limited to ", ceiling(daylimit), " days\n"))
+        if (verbose == TRUE) cat(paste0("\nstopped reading data because this analysis is limited to ", ceiling(daylimit), " days\n"))
       }
     }
     i = i + 1 #go to next block

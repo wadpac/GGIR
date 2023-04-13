@@ -1,6 +1,7 @@
 g.calibrate = function(datafile, params_rawdata = c(),
                        params_general = c(),
                        params_cleaning = c(),
+                       verbose = TRUE, 
                        ...) {
   
   #get input variables
@@ -117,10 +118,12 @@ g.calibrate = function(datafile, params_rawdata = c(),
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
   while (LD > 1) {
     P = c()
-    if (i  == 1) {
-      cat(paste("\nLoading chunk: ",i,sep=""))
-    } else {
-      cat(paste(" ",i,sep=""))
+    if (verbose == TRUE) {
+      if (i  == 1) {
+        cat(paste("\nLoading chunk: ",i,sep=""))
+      } else {
+        cat(paste(" ",i,sep=""))
+      }
     }
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
@@ -262,10 +265,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
             # GENEACTIV \ AX cwa \ Movisense \ ad-hoc monitor
             #also ignore temperature for GENEActive/movisens if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
-              cat("\ntemperature is NA\n")
+              if (verbose == TRUE) cat("\ntemperature is NA\n")
               use.temp = FALSE
             } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 120)) > 0) {
-              cat("\ntemperature is too high\n")
+              if (verbose == TRUE) cat("\ntemperature is too high\n")
               use.temp = FALSE
             }
           }
@@ -292,7 +295,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           if (count > (nrow(meta) - (2.5 * (3600/ws4) * 24))) {
             extension = matrix(99999, ((3600/ws4) * 24), ncol(meta))
             meta = rbind(meta,extension)
-            cat("\nvariabel meta extended\n")
+            if (verbose == TRUE) cat("\nvariabel meta extended\n")
           }
           #storing in output matrix
           meta[count:(count - 1 + length(EN2)), 1] = EN2
@@ -368,7 +371,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           QC = "recalibration not done because not enough points on all sides of the sphere"
         }
       } else {
-        cat(" No non-movement found\n")
+        if (verbose == TRUE) cat(" No non-movement found\n")
         QC = "recalibration not done because no non-movement data available"
         meta_temp = c()
       }
@@ -402,7 +405,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           scale(inputtemp, center = F, scale = 1/tempoffset)}, silent = TRUE)
         if (length(curr) == 0) {
           # set coefficients to default, because it did not work.
-          cat("\nObject curr has length zero.")
+          if (verbose == TRUE) cat("\nObject curr has length zero.")
           break
         }
         closestpoint = curr / sqrt(rowSums(curr^2))
@@ -468,8 +471,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
       } else {
         #continue loading data
         if (nhoursused > params_rawdata[["minloadcrit"]]) {
-          cat(paste0("\nnew calibration error: ",cal.error.end, " g"))
-          cat(paste0("\nnpoints around sphere: ", npoints))
+          if (verbose == TRUE) {
+            cat(paste0("\nnew calibration error: ",cal.error.end, " g"))
+            cat(paste0("\nnpoints around sphere: ", npoints)) 
+          }
         }
         QC = "recalibration attempted with all available data, but possibly not good enough: Check calibration error variable to varify this"
       }
@@ -493,7 +498,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   }
   rm(meta_temp)
   QCmessage = QC
-  if (params_rawdata[["printsummary"]] == TRUE) {
+  if (params_rawdata[["printsummary"]] == TRUE & verbose == TRUE) {
     cat("\nSummary of autocalibration procedure:")
     cat("\n")
     cat(paste0("\nStatus: ",QCmessage))

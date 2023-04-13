@@ -234,7 +234,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         C = g.calibrate(datafile,
                         params_rawdata = params_rawdata,
                         params_general = params_general,
-                        params_cleaning = params_cleaning)
+                        params_cleaning = params_cleaning,
+                        verbose = verbose)
       } else {
         C = list(cal.error.end = 0, cal.error.start = 0)
         C$scale = c(1,1,1)
@@ -329,7 +330,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     meantempcal = C$meantempcal,
                     outputdir = outputdir,
                     outputfolder = outputfolder,
-                    myfun = myfun)
+                    myfun = myfun, 
+                    verbose = verbose)
 
       if (!is.null(params_general[["recordingEndSleepHour"]])) {
         # Identify gap between last timestamp and following midnight
