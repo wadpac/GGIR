@@ -141,6 +141,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           }
         }
         IMP = g.impute(M, I,
+                       acc.metric = params_general[["acc.metric"]],
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],

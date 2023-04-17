@@ -1,4 +1,4 @@
-g.impute = function(M, I, params_cleaning = c(), desiredtz = "", 
+g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz = "", 
                     dayborder = 0, TimeSegments2Zero = c(), ...) {
   
   #get input variables
@@ -39,7 +39,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   # Generating time variable
   timeline = seq(0, ceiling(nrow(metalong)/n_ws2_perday), by = 1/n_ws2_perday)	
   timeline = timeline[1:nrow(metalong)]
- 
+  
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
   out = g.weardec(M, wearthreshold, ws2, nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]])
@@ -58,7 +58,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   # but wants to use imputation for the rest of the day.
   # So, those time windows should not be imputed.
   # and acceleration metrics should have value zero during these windows.
-    if (length(TimeSegments2Zero) > 0) {
+  if (length(TimeSegments2Zero) > 0) {
     r1long = matrix(0,length(r1),(ws2/ws3)) #r5long is the same as r5, but with more values per period of time
     r1long = replace(r1long,1:length(r1long),r1)
     r1long = t(r1long)
@@ -78,7 +78,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r1 = diff(r1longc[round(select)]) / abs(diff(round(select)))
     r1 = round(r1)
   }
-
+  
   #======================================
   # detect first and last midnight and all midnights
   tooshort = 0
@@ -115,86 +115,78 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
     r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
   } else if (params_cleaning[["strategy"]] == 3) { #select X most active days
+    # browser()
     #==========================================
     # Look out for X most active days and use this to define window of interest
-    if (FALSE) {
-      atest = as.numeric(as.matrix(M$metashort[,3]))
-      ws3 = M$windowsizes[1]
-      ws2 = M$windowsizes[2]
-      ws = M$windowsizes[3]
-      r2tempe = rep(r2, each = (ws2/ws3))
-      r1tempe = rep(r1, each = (ws2/ws3))
-      atest[which(r2tempe == 1 | r1tempe == 1)] = 0
-      NDAYS = length(atest) / ((60/ws3)*60*24)
-      sliding_window = (ws/ws3)
-      avg_window = params_cleaning[["ndayswindow"]]*24*60*(60/ws3)
-      from = seq(1, length(atest), by = sliding_window)
-      to = from + avg_window - 1
-      from = from[-which(to > length(atest))]
-      to = to[-which(to > length(atest))]
-      # pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * 4)
-      # if (pend < 1) pend = 1
-      atestlist = rep(0, length(from))
-      for (ati in 1:length(from)) { #40 x quarter a day
-        p0 = from[ati]
-        p1 = to[ati]
-        if ((p1 - p0) > 1000) {
-          atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
-        } else {
-          atestlist[ati] = 0
-        }
-      }
-      atik = which(atestlist == max(atestlist))
-      params_cleaning[["hrs.del.start"]] = atik # turn to hours
-      params_cleaning[["maxdur"]] = params_cleaning[["ndayswindow"]] + atik/24
+    if (acc.metric %in% colnames(M$metashort)) {
+      atest = as.numeric(as.matrix(M$metashort[,acc.metric]))
     } else {
-      browser()
-      atest = as.numeric(as.matrix(M$metalong$en))
-      ws3 = M$windowsizes[1]
-      ws2 = M$windowsizes[2]
-      ws = M$windowsizes[3]
-      atest[which(r2 == 1 | r1 == 1)] = 0
-      NDAYS = length(atest) / ((60/ws2)*60*24)
-      sliding_window = (ws/ws2)
-      avg_window = params_cleaning[["ndayswindow"]]*24*60*(60/ws)
-      from = seq(1, length(atest), by = sliding_window)
-      to = from + avg_window - 1
-      from = from[-which(to > length(atest))]
-      to = to[-which(to > length(atest))]
-      # pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * 4)
-      # if (pend < 1) pend = 1
-      atestlist = rep(0, length(from))
-      for (ati in 1:length(from)) { #40 x quarter a day
-        p0 = from[ati]
-        p1 = to[ati]
+      acc.metric = grep("timestamp|angle", colnames(M$metashort), 
+                        value = TRUE, invert = TRUE)[1]
+      atest = as.numeric(as.matrix(M$metashort[,acc.metric]))
+    }
+    ws3 = M$windowsizes[1]
+    ws2 = M$windowsizes[2]
+    ws = M$windowsizes[3]
+    r2tempe = rep(r2, each = (ws2/ws3))
+    r1tempe = rep(r1, each = (ws2/ws3))
+    atest[which(r2tempe == 1 | r1tempe == 1)] = 0
+    if (FALSE) {
+      # Proposal 1 for strategy 3 (rolling by windowsizes[3])
+      NDAYS = length(atest) / ((60/ws3)*60*24)
+      pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * (24/(ws/60/60)))
+      if (pend < 1) pend = 1
+      atestlist = rep(0, pend)
+      for (ati in 1:pend) { #40 x quarter a day
+        p0 = (((ati - 1)*60/ws3*60*(ws/60/60)) + 1)
+        p1 = (ati + (params_cleaning[["ndayswindow"]]*(24/(ws/60/60))))*60/ws3*60*(ws/60/60)  #ndayswindow x quarter of a day = 1 week
+        if (p0 > length(atest)) p0 = length(atest)
+        if (p1 > length(atest)) p1 = length(atest)
         if ((p1 - p0) > 1000) {
           atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
         } else {
           atestlist[ati] = 0
         }
+        print(paste0(M$metashort[p0,"timestamp"], " to ", M$metashort[p1,"timestamp"]))
+      }
+      # browser()
+      atik = which(atestlist == max(atestlist))
+      params_cleaning[["hrs.del.start"]] = atik * (ws/60/60)
+      params_cleaning[["maxdur"]] = (atik/(24/(ws/60/60))) + params_cleaning[["ndayswindow"]]
+      if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
+      # now calculate r4    
+      if (params_cleaning[["hrs.del.start"]] > 0) {
+        r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
+      }
+      if (params_cleaning[["hrs.del.end"]] > 0) {
+        if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
+          r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
+        } else {
+          r4[1:length(r4)] = 1
+        }
+      }
+      if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
+        r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
+      }
+      if (LD < 1440) {
+        r4 = r4[1:floor(LD/(ws2/60))]
+      }
+    } else {
+      # Proposal 1 for strategy 3 (calendar days)
+      atestlist = c()
+      for (ati in 1:length(midnightsi)) {
+        p0 = ((midnightsi[ati] * ws2/ws3) - ws2/ws3) + 1
+        p1 = ((midnightsi[ati + params_cleaning[["ndayswindow"]]] * ws2/ws3) - ws2/ws3)
+        if (is.na(p1)) break
+        if (p1 > length(atest)) break
+        atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
+        print(paste0(M$metashort[p0,"timestamp"], " to ", M$metashort[p1,"timestamp"]))
       }
       atik = which(atestlist == max(atestlist))
-      params_cleaning[["hrs.del.start"]] = atik # turn to hours
-      params_cleaning[["maxdur"]] = params_cleaning[["ndayswindow"]] + atik/24
-    }
-    
-    if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
-    # now calculate r4    
-    if (params_cleaning[["hrs.del.start"]] > 0) {
-      r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
-    }
-    if (params_cleaning[["hrs.del.end"]] > 0) {
-      if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
-        r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
-      } else {
-        r4[1:length(r4)] = 1
+      if (firstmidnighti != 1) { #ignore everything before the first midnight
+        r4[1:(midnightsi[atik] - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
       }
-    }
-    if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
-      r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
-    }
-    if (LD < 1440) {
-      r4 = r4[1:floor(LD/(ws2/60))]
+      r4[(midnightsi[atik + params_cleaning[["ndayswindow"]]]):length(r4)] = 1  #ignore everything after the last midnight
     }
     starttimei = 1
     endtimei = length(r4)
@@ -229,7 +221,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   r5long = replace(r5long,1:length(r5long),r5)
   r5long = t(r5long)
   dim(r5long) = c((length(r5)*(ws2/ws3)),1)
-
+  
   #------------------------------
   # detect which features have been calculated in part 1 and in what column they have ended up
   ENi = which(colnames(metashort) == "en")
