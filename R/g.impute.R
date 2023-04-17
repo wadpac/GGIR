@@ -117,29 +117,67 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   } else if (params_cleaning[["strategy"]] == 3) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
-    atest = as.numeric(as.matrix(M$metashort[,2]))
-    ws3 = M$windowsizes[1]
-    ws2 = M$windowsizes[2]
-    r2tempe = rep(r2,each = (ws2/ws3))
-    atest[which(r2tempe == 1)] = 0
-    NDAYS = length(atest) / (12*60*24)
-    pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * 4)
-    if (pend < 1) pend = 1
-    atestlist = rep(0,pend)
-    for (ati in 1:pend) { #40 x quarter a day
-      p0 = (((ati - 1)*12*60*6) + 1)
-      p1 = (ati + (params_cleaning[["ndayswindow"]]*4))*12*60*6  #ndayswindow x quarter of a day = 1 week
-      if (p0 > length(atest)) p0 = length(atest)
-      if (p1 > length(atest)) p1 = length(atest)
-      if ((p1 - p0) > 1000) {
-        atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
-      } else {
-        atestlist[ati] = 0
+    if (FALSE) {
+      atest = as.numeric(as.matrix(M$metashort[,3]))
+      ws3 = M$windowsizes[1]
+      ws2 = M$windowsizes[2]
+      ws = M$windowsizes[3]
+      r2tempe = rep(r2, each = (ws2/ws3))
+      r1tempe = rep(r1, each = (ws2/ws3))
+      atest[which(r2tempe == 1 | r1tempe == 1)] = 0
+      NDAYS = length(atest) / ((60/ws3)*60*24)
+      sliding_window = (ws/ws3)
+      avg_window = params_cleaning[["ndayswindow"]]*24*60*(60/ws3)
+      from = seq(1, length(atest), by = sliding_window)
+      to = from + avg_window - 1
+      from = from[-which(to > length(atest))]
+      to = to[-which(to > length(atest))]
+      # pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * 4)
+      # if (pend < 1) pend = 1
+      atestlist = rep(0, length(from))
+      for (ati in 1:length(from)) { #40 x quarter a day
+        p0 = from[ati]
+        p1 = to[ati]
+        if ((p1 - p0) > 1000) {
+          atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
+        } else {
+          atestlist[ati] = 0
+        }
       }
+      atik = which(atestlist == max(atestlist))
+      params_cleaning[["hrs.del.start"]] = atik # turn to hours
+      params_cleaning[["maxdur"]] = params_cleaning[["ndayswindow"]] + atik/24
+    } else {
+      browser()
+      atest = as.numeric(as.matrix(M$metalong$en))
+      ws3 = M$windowsizes[1]
+      ws2 = M$windowsizes[2]
+      ws = M$windowsizes[3]
+      atest[which(r2 == 1 | r1 == 1)] = 0
+      NDAYS = length(atest) / ((60/ws2)*60*24)
+      sliding_window = (ws/ws2)
+      avg_window = params_cleaning[["ndayswindow"]]*24*60*(60/ws)
+      from = seq(1, length(atest), by = sliding_window)
+      to = from + avg_window - 1
+      from = from[-which(to > length(atest))]
+      to = to[-which(to > length(atest))]
+      # pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * 4)
+      # if (pend < 1) pend = 1
+      atestlist = rep(0, length(from))
+      for (ati in 1:length(from)) { #40 x quarter a day
+        p0 = from[ati]
+        p1 = to[ati]
+        if ((p1 - p0) > 1000) {
+          atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
+        } else {
+          atestlist[ati] = 0
+        }
+      }
+      atik = which(atestlist == max(atestlist))
+      params_cleaning[["hrs.del.start"]] = atik # turn to hours
+      params_cleaning[["maxdur"]] = params_cleaning[["ndayswindow"]] + atik/24
     }
-    atik = which(atestlist == max(atestlist))
-    params_cleaning[["hrs.del.start"]] = atik * 6
-    params_cleaning[["maxdur"]] = (atik/4) + params_cleaning[["ndayswindow"]]
+    
     if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
     # now calculate r4    
     if (params_cleaning[["hrs.del.start"]] > 0) {
