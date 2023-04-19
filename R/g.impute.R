@@ -172,7 +172,7 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
         r4 = r4[1:floor(LD/(ws2/60))]
       }
     } else {
-      # Proposal 1 for strategy 3 (calendar days)
+      # Proposal 2 for strategy 3 (calendar days)
       atestlist = c()
       for (ati in 1:length(midnightsi)) {
         p0 = ((midnightsi[ati] * ws2/ws3) - ws2/ws3) + 1
