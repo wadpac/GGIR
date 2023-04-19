@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9-1 (release date:?-?-2023)}{
+  \itemize{
+   \item General: rmc.desiredtz and rmc.configtz scheduled to be deprecated.
+  }
+}
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{
   \itemize{
    \item Sleep log: fixed bug related to reading last day in advanced sleeplog.
