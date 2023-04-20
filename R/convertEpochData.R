@@ -6,7 +6,17 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
   
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
-  fnames = dir(datadir,full.names = TRUE,pattern = "[.]csv")
+  fnames_csv = dir(datadir,full.names = TRUE,pattern = "[.]csv")
+  fnames_awd = dir(datadir,full.names = TRUE,pattern = "[.]awd|[.]AWD")
+  if (length(fnames_csv) > 0 & length(fnames_awd) > 0) {
+    stop("Do not mix csv and awd files in the same data directory")
+  } else {
+    if (length(fnames_awd) > 0) {
+      fnames = fnames_awd
+    } else {
+      fnames = fnames_csv
+    }
+  }
   chartime2iso8601 = function(x,tz){
     POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz)), origin = "1970-1-1", tz)
     POStimeISO = strftime(POStime, format = "%Y-%m-%dT%H:%M:%S%z")
@@ -169,6 +179,40 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           }
           timestamp_POSIX = timestamp_POSIX[1]
           D = D[, "ZCY"]
+        } else if (params_general[["dataFormat"]] == "actiwatch_awd") {
+          # ! Assumption that first data row equals the first row with 3 columns
+          ind = 0
+          NC = 1
+          while (NC >= 3) {
+            testraw = data.table::fread(input = fnames[i],
+                                      header = FALSE, sep = ",", skip = ind,
+                                      nrows = 1, data.table = TRUE)
+            NC = ncol(testraw)
+            if (NC >= 3) {
+              break()
+            } else {
+              ind = ind + 1
+            }
+          }
+          D = data.table::fread(input = fnames[i],
+                                header = FALSE, sep = ",", skip = ind)
+          D = D[,1]
+          colnames(D)[1] = "ZCY"
+          header = data.table::fread(input = fnames[i],
+                                header = FALSE, sep = ",", nrows =  7)
+          # Get epoch size
+          optionalEpochs = data.frame(code = c("1", "2", "4", "8", "20", "81", "C1", "C2"),
+                                      size = c(15, 30, 60, 120, 300, 2, 5, 10))
+          epSizeShort = optionalEpochs$size[which(optionalEpochs$code == as.character(header[4]))]
+          # Get starttime 
+          timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
+                                       format = "%d-%b-%Y %H:%M", tz = tz)
+          if (epSizeShort != params_general[["windowsizes"]][1]) {
+            stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
+                        params_general[["windowsizes"]][1],
+                        " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
+                 " seconds). Please correct.", call. = FALSE)
+          }
         }
       }
       
