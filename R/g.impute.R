@@ -114,8 +114,7 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
       r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
     }
     r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
-  } else if (params_cleaning[["strategy"]] == 3) { #select X most active days
-    # browser()
+  } else if (params_cleaning[["strategy"]] %in% c(3, 5)) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
     if (acc.metric %in% colnames(M$metashort)) {
@@ -131,8 +130,8 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
     r2tempe = rep(r2, each = (ws2/ws3))
     r1tempe = rep(r1, each = (ws2/ws3))
     atest[which(r2tempe == 1 | r1tempe == 1)] = 0
-    if (FALSE) {
-      # Proposal 1 for strategy 3 (rolling by windowsizes[3])
+    if (params_cleaning[["strategy"]] == 3) { 
+      # Select the most active 24-h blocks by a rolling window of windowsizes[3]
       NDAYS = length(atest) / ((60/ws3)*60*24)
       pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * (24/(ws/60/60)))
       if (pend < 1) pend = 1
@@ -147,9 +146,7 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
         } else {
           atestlist[ati] = 0
         }
-        print(paste0(M$metashort[p0,"timestamp"], " to ", M$metashort[p1,"timestamp"]))
       }
-      # browser()
       atik = which(atestlist == max(atestlist))
       params_cleaning[["hrs.del.start"]] = atik * (ws/60/60)
       params_cleaning[["maxdur"]] = (atik/(24/(ws/60/60))) + params_cleaning[["ndayswindow"]]
@@ -171,8 +168,8 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
       if (LD < 1440) {
         r4 = r4[1:floor(LD/(ws2/60))]
       }
-    } else {
-      # Proposal 2 for strategy 3 (calendar days)
+    } else if (params_cleaning[["strategy"]] == 5) {
+      # Select the most active calendar days
       atestlist = c()
       for (ati in 1:length(midnightsi)) {
         p0 = ((midnightsi[ati] * ws2/ws3) - ws2/ws3) + 1
@@ -180,7 +177,6 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
         if (is.na(p1)) break
         if (p1 > length(atest)) break
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
-        print(paste0(M$metashort[p0,"timestamp"], " to ", M$metashort[p1,"timestamp"]))
       }
       atik = which(atestlist == max(atestlist))
       if (firstmidnighti != 1) { #ignore everything before the first midnight
@@ -197,8 +193,6 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
     if (firstmidnighti != 1) { #ignore everything before the first midnight
       r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
     }
-    
-    
   }
   # Mask data based on maxdur
   if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
