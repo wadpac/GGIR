@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9-1 (release date:?-?-2023)}{
+  \itemize{
+   \item Part 2: strategy = 5 implemented (allows to select most active X calendar days).
+   \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest.
+  }
+}
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{
   \itemize{
    \item Sleep log: fixed bug related to reading last day in advanced sleeplog.
