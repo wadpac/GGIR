@@ -20,12 +20,20 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
   metalong = M$metalong
   ws3 = windowsizes[1]
   ws2 = windowsizes[2]
+  ws = windowsizes[3]
   # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
   wearthreshold = 2 #needs to be 0, 1 or 2
+  # windows per day
+  n_ws_perday = (1440*60) / ws
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
+  # windows per minute
+  n_ws3_permin = 60/ws3
+  # windows per hour
+  n_ws3_perhour = 3600/ws3
+  n_ws_perhour = 3600/ws
   #check that matrices match
-  if (((nrow(metalong)/((1440*60)/ws2)*10) - (nrow(metashort)/((60/ws3)*1440)) * 10) > 1) {
+  if (((nrow(metalong)/(n_ws2_perday)*10) - (nrow(metashort)/n_ws3_perday) * 10) > 1) {
     print("Matrices 'metalong' and 'metashort' are not compatible")
   }  
   tmi = which(colnames(metalong) == "timestamp")
@@ -124,21 +132,20 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
                         value = TRUE, invert = TRUE)[1]
       atest = as.numeric(as.matrix(M$metashort[,acc.metric]))
     }
-    ws3 = M$windowsizes[1]
-    ws2 = M$windowsizes[2]
-    ws = M$windowsizes[3]
     r2tempe = rep(r2, each = (ws2/ws3))
     r1tempe = rep(r1, each = (ws2/ws3))
     atest[which(r2tempe == 1 | r1tempe == 1)] = 0
     if (params_cleaning[["strategy"]] == 3) { 
       # Select the most active 24-h blocks by a rolling window of windowsizes[3]
-      NDAYS = length(atest) / ((60/ws3)*60*24)
-      pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * (24/(ws/60/60)))
+      NDAYS = length(atest) / n_ws3_perday
+      # rolling window in ws3
+      rolling_window = n_ws3_perhour * n_ws_perhour
+      pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * n_ws_perday)
       if (pend < 1) pend = 1
       atestlist = rep(0, pend)
-      for (ati in 1:pend) { #40 x quarter a day
-        p0 = (((ati - 1)*60/ws3*60*(ws/60/60)) + 1)
-        p1 = (ati + (params_cleaning[["ndayswindow"]]*(24/(ws/60/60))))*60/ws3*60*(ws/60/60)  #ndayswindow x quarter of a day = 1 week
+      for (ati in 1:pend) { 
+        p0 = (((ati - 1)*rolling_window) + 1)
+        p1 = (ati + (params_cleaning[["ndayswindow"]]*n_ws_perday)) * rolling_window  #ndayswindow x quarter of a day = 1 week
         if (p0 > length(atest)) p0 = length(atest)
         if (p1 > length(atest)) p1 = length(atest)
         if ((p1 - p0) > 1000) {
@@ -148,8 +155,8 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
         }
       }
       atik = which(atestlist == max(atestlist))
-      params_cleaning[["hrs.del.start"]] = atik * (ws/60/60)
-      params_cleaning[["maxdur"]] = (atik/(24/(ws/60/60))) + params_cleaning[["ndayswindow"]]
+      params_cleaning[["hrs.del.start"]] = atik * n_ws_perhour
+      params_cleaning[["maxdur"]] = (atik/n_ws_perday) + params_cleaning[["ndayswindow"]]
       if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
       # now calculate r4    
       if (params_cleaning[["hrs.del.start"]] > 0) {
@@ -224,7 +231,7 @@ g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz 
   if (nrow(metashort) > length(r5long)) {
     metashort = as.matrix(metashort[1:length(r5long),])
   }
-  wpd = 1440*(60/ws3) #windows per day
+  wpd = 1440*n_ws3_permin #windows per day
   averageday = matrix(0,wpd,(ncol(metashort) - 1))
   
   for (mi in 2:ncol(metashort)) {# generate 'average' day for each variable
