@@ -12,8 +12,14 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     stop("Do not mix csv and awd files in the same data directory")
   } else {
     if (length(fnames_awd) > 0) {
+      if (params_general[["dataFormat"]] != "actiwatch_awd") {
+        stop("Specified dataFormat does not match the data")
+      }
       fnames = fnames_awd
     } else {
+      if (params_general[["dataFormat"]] == "actiwatch_awd") {
+        stop("Specified dataFormat does not match the data")
+      }
       fnames = fnames_csv
     }
   }
