@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.9-1 (release date:?-?-2023)}{
   \itemize{
-   \item General: rmc.desiredtz and rmc.configtz scheduled to be deprecated.
+   \item General: warnings added to inform user that rmc.desiredtz and rmc.configtz will be deprecated #765.
   }
 }
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{
