@@ -34,7 +34,9 @@
                           interpolationType=1, 
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
-                          epochsize = NULL)	
+                          epochsize = NULL,
+                          desiredtz = NULL,
+                          configtz = NULL)	
 }
 \arguments{
   \item{rmc.file}{
@@ -106,11 +108,10 @@
     Origin of time when unit of time is UNIXsec, e.g. 1970-1-1
   }
   \item{rmc.desiredtz}{
-    Timezone in which device was worn.
+    Deprecated, please see \code{desiredtz}.
   }
   \item{rmc.configtz}{
-    Timezone in which device was configured. If equal to rmc.desiredtz you can leave
-    this in its default value.
+    Deprecated, please see \code{configtz}.
   }
   \item{rmc.sf}{
     Sample rate in Hertz, if this is stored in the file header then that will be used
@@ -158,6 +159,13 @@
   }
   \item{epochsize}{
     Numeric vector of length two, with short and long epoch sizes. Only used by GGIR internally.
+  }
+  \item{desiredtz}{
+    Timezone in which device was worn.
+  }
+  \item{configtz}{
+    Timezone in which device was configured. If equal to rmc.desiredtz you can leave
+    this in its default value.
   }
 }
 \details{
