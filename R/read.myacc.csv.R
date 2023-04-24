@@ -27,26 +27,31 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
 
   # check if rmc.desiredtz is provided by the user
   if (!is.null(rmc.desiredtz)) {
-    warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
-                   " in GGIR because its functionality overlaps with desiredtz.",
-                   " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
-    desiredtz = rmc.desiredtz
+    if (is.null(desiredtz)) { # if desiredtz is null, then overwrite and warning
+      warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
+                     " in GGIR because its functionality overlaps with desiredtz.",
+                     " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
+      desiredtz = rmc.desiredtz
+    } else if (!is.null(desiredtz)) { # then both provided --> error (cannot know which one to use)
+      stop("Please, provide argument desiredtz instead of rmc.desiredtz (deprecated).")
+    }
   }
   
-  # Same for rmc.configtz
+  # check if none of desiredtz and rmc.desiredtz are provided
+  if (is.null(desiredtz) & is.null(rmc.desiredtz)) {
+    stop("Please, provide argument desiredtz.")
+  }
+  
+  # check if rmc.configtz is provided by the user
   if (!is.null(rmc.configtz)) {
-    warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
-                   " in GGIR because its functionality overlaps with configtz.",
-                   " Please, use configtz instead of rmc.configtz."), call. = FALSE)
-    configtz = rmc.configtz
-  }
-  
-  # check that desiredtz is not NULL
-  if (is.null(desiredtz)) {
-    stop("Please, provide argument desiredtz instead of rmc.desiredtz (deprecated).")
-  }
-  if (!is.null(rmc.configtz) & is.null(configtz)) {
-    stop("Please, provide argument configtz instead of rmc.configtz (deprecated)")  
+    if (is.null(configtz)) { # if configtz is null, then overwrite and warning
+      warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
+                     " in GGIR because its functionality overlaps with configtz.",
+                     " Please, use configtz instead of rmc.configtz."), call. = FALSE)
+      configtz = rmc.configtz
+    } else if (!is.null(configtz)) { # then both provided --> error (cannot know which one to use)
+      stop("Please, provide argument configtz instead of rmc.configtz (deprecated).")
+    }
   }
   
   # bitrate should be or header item name as character, or the actual numeric bit rate
