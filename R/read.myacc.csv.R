@@ -32,8 +32,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                      " in GGIR because its functionality overlaps with desiredtz.",
                      " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
       desiredtz = rmc.desiredtz
-    } else if (!is.null(desiredtz)) { # then both provided --> error (cannot know which one to use)
-      stop("Please, provide argument desiredtz instead of rmc.desiredtz (deprecated).")
+    } else if (!is.null(desiredtz)) { # then both provided 
+      if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
+        stop("Please, provide argument desiredtz instead of rmc.desiredtz (deprecated).")
+      } else {
+        warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
+                       " in GGIR because its functionality overlaps with desiredtz.",
+                       " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)      }
     }
   }
   
@@ -49,8 +54,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                      " in GGIR because its functionality overlaps with configtz.",
                      " Please, use configtz instead of rmc.configtz."), call. = FALSE)
       configtz = rmc.configtz
-    } else if (!is.null(configtz)) { # then both provided --> error (cannot know which one to use)
-      stop("Please, provide argument configtz instead of rmc.configtz (deprecated).")
+    } else if (!is.null(configtz)) { # then both provided 
+      if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
+        stop("Please, provide argument configtz instead of rmc.configtz (deprecated).")
+      } else {
+        warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
+                       " in GGIR because its functionality overlaps with configtz.",
+                       " Please, use configtz instead of rmc.configtz."), call. = FALSE)      }
     }
   }
   
