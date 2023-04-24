@@ -3,7 +3,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.9-1 (release date:?-?-2023)}{
   \itemize{
-   \item Part 2: strategy = 5 implemented (allows to select most active X calendar days).
+   \item Part 2: strategy = 5 implemented as a variation of strategy 3 (it allows to select 
+   most active X calendar days).
    \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest.
    \item Part 5: intensity gradient is now also calculated for full window in part 5 and column names now indicate the window over the intensity gradient is calculated (i.e., "_day_" or "_day_spt_").
   }
