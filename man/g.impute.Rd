@@ -10,8 +10,8 @@
   protocol to label impute invalid time segments in the data.
 }
 \usage{
-  g.impute(M, I, acc.metric = "ENMO", params_cleaning = c(),
-  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), ...)
+  g.impute(M, I, params_cleaning = c(),
+  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,14 +20,6 @@
   }
   \item{I}{
     output from \link{g.inspectfile}
-  }
-  \item{acc.metric}{
-    Character (default = ENMO). Which one of the acceleration metrics do you want 
-    to use for all acceleration magnitude analyses in GGIR part 5 and the visual 
-    report? For example: "ENMO", "LFENMO", "MAD", "NeishabouriCount_y", or 
-    "NeishabouriCount_vm". Only one acceleration metric can be specified and the 
-    selected metric needs to have been calculated in part 1 (see g.part1) via 
-    arguments such as do.enmo = TRUE or do.mad = TRUE.
   }
   \item{params_cleaning}{
     See \link{g.part1}
@@ -43,6 +35,9 @@
     and acceleration metrics to be imputed by zeros. The data.frame is expected
     to contain two columns named windowstart and windowend, with the start- and end
     time of the time segment in POSIXlt class.
+  }
+  \item{acc.metric}{
+    See \link{GGIR}
   }
   \item{...}{
      Any argument used in the previous version of g.impute, which will now

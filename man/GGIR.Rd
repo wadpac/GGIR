@@ -756,8 +756,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
         strategy = 3 only selects the most active X days in the file where X is
-        specified by argument \code{ndayswindow}, where a day is a 24-h block starting 
-        any time in the day.
+        specified by argument \code{ndayswindow}, where the days are a series of 24-h blocks 
+        starting any time in the day.
         strategy = 4 to only use the data after the first midnight.
         strategy = 5 is similar to \code{strategy = 3}, but it selects X complete 
         calendar days where X is specified by argument \code{ndayswindow}.}

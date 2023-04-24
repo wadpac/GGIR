@@ -1,5 +1,5 @@
-g.impute = function(M, I, acc.metric = "ENMO", params_cleaning = c(), desiredtz = "", 
-                    dayborder = 0, TimeSegments2Zero = c(), ...) {
+g.impute = function(M, I, params_cleaning = c(), desiredtz = "", 
+                    dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", ...) {
   
   #get input variables
   input = list(...)
