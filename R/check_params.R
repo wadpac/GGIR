@@ -288,7 +288,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
           params_general[["desiredtz"]] = params_rawdata[["rmc.desiredtz"]]
           warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
                          " in GGIR because its functionality overlaps with desiredtz.",
-                         " Please, use desiredtz instead of rmc.desiredtz in the future."), call. = FALSE)
+                         " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
         }
       }
     }
@@ -300,13 +300,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
             params_general[["configtz"]] = params_rawdata[["rmc.configtz"]]
             warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
                            " in GGIR because its functionality overlaps with configtz.",
-                           " Please, use configtz instead of rmc.configtz in the future."), call. = FALSE)
+                           " Please, use configtz instead of rmc.configtz."), call. = FALSE)
           }
         } else {
           params_general[["configtz"]] = params_rawdata[["rmc.configtz"]]
           warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
                          " in GGIR because its functionality overlaps with configtz.",
-                         " Please, use configtz instead of rmc.configtz in the future."), call. = FALSE)
+                         " Please, use configtz instead of rmc.configtz."), call. = FALSE)
         }
       }
     }
