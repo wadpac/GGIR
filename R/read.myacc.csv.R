@@ -25,6 +25,30 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           desiredtz = NULL,
                           configtz = NULL) {
 
+  # check if rmc.desiredtz is provided by the user
+  if (!is.null(rmc.desiredtz)) {
+    warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
+                   " in GGIR because its functionality overlaps with desiredtz.",
+                   " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
+    desiredtz = rmc.desiredtz
+  }
+  
+  # Same for rmc.configtz
+  if (!is.null(rmc.configtz)) {
+    warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
+                   " in GGIR because its functionality overlaps with configtz.",
+                   " Please, use configtz instead of rmc.configtz."), call. = FALSE)
+    configtz = rmc.configtz
+  }
+  
+  # check that desiredtz is not NULL
+  if (is.null(desiredtz)) {
+    stop("Please, provide argument desiredtz instead of rmc.desiredtz (deprecated).")
+  }
+  if (!is.null(rmc.configtz) & is.null(configtz)) {
+    stop("Please, provide argument configtz instead of rmc.configtz (deprecated)")  
+  }
+  
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR

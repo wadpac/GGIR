@@ -281,36 +281,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   assumption is credible."), call. = FALSE)
     }
   }
-  if (length(params_rawdata) > 0) {
-    if (length(params_rawdata[["rmc.desiredtz"]]) > 0) {
-      if (params_rawdata[["rmc.desiredtz"]] != "") {
-        if (params_general[["desiredtz"]] != params_rawdata[["rmc.desiredtz"]]) {
-          params_general[["desiredtz"]] = params_rawdata[["rmc.desiredtz"]]
-          warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
-                         " in GGIR because its functionality overlaps with desiredtz.",
-                         " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
-        }
-      }
-    }
-    
-    if (length(params_rawdata[["rmc.configtz"]]) > 0) {
-      if (params_rawdata[["rmc.configtz"]] != "") {
-        if (length(params_general[["configtz"]]) > 0) {
-          if (params_general[["configtz"]] != params_rawdata[["rmc.configtz"]]) {
-            params_general[["configtz"]] = params_rawdata[["rmc.configtz"]]
-            warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
-                           " in GGIR because its functionality overlaps with configtz.",
-                           " Please, use configtz instead of rmc.configtz."), call. = FALSE)
-          }
-        } else {
-          params_general[["configtz"]] = params_rawdata[["rmc.configtz"]]
-          warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
-                         " in GGIR because its functionality overlaps with configtz.",
-                         " Please, use configtz instead of rmc.configtz."), call. = FALSE)
-        }
-      }
-    }
-  }
   
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

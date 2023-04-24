@@ -393,7 +393,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    interpolationType = params_rawdata[["interpolationType"]],
                                    PreviousLastValue = PreviousLastValue,
                                    PreviousLastTime = PreviousLastTime,
-                                   epochsize = params_general[["windowsizes"]][1:2])
+                                   epochsize = params_general[["windowsizes"]][1:2],
+                                   desiredtz = params_general[["desiredtz"]],
+                                   configtz = params_general[["configtz"]])
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
     if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv
