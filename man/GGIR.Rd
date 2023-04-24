@@ -418,12 +418,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{rmc.desiredtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone).
         Timezone in which experiments took place. This argument is scheduled to 
-        be deprecated and using \code{desiredtz} is preferred.}
+        be deprecated and is now used to overwrite \code{desiredtz} if not provided.}
 
       \item{rmc.configtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.configtz"]]}", i.e., system timezone).
         Timezone in which device was configured. This argument is scheduled to 
-        be deprecated and using \code{configtz} is preferred.}
+        be deprecated and is now used to overwrite \code{configtz} if not provided.}
 
       \item{rmc.sf}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.sf"]])}).
