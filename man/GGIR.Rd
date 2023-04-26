@@ -244,7 +244,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        \item{dataFormat}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
         to indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv actiwatch_csv.
+        Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
+        to the 5, 15 and 60 second epoch level provided by ukbiobank, actiwatch in csv format,
+        and actiwatch in awd format. For the Actiwatch data functionality has been
+        tested with example data from one research group. Let us know if you difficulty
+        using the functionality with your data and we can have a look whether it
+        can easily be addressed.
       }
     }
   }

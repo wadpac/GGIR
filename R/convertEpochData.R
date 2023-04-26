@@ -1,11 +1,10 @@
 convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                             params_general = c()) {
   
-  overwrite = params_general[["overwrite"]]
   tz = params_general[["desiredtz"]]
-  
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
+  # Identify input data file extensions
   fnames_csv = dir(datadir,full.names = TRUE,pattern = "[.]csv")
   fnames_awd = dir(datadir,full.names = TRUE,pattern = "[.]awd|[.]AWD")
   if (length(fnames_csv) > 0 & length(fnames_awd) > 0) {
@@ -24,7 +23,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     }
   }
   #-------------
-  # Create output folder:
+  # Create output folder, normally with raw data g.part1 would do this:
   filelist = isfilelist(datadir)
   # create output directory if it does not exist
   if (filelist == TRUE) {
@@ -49,6 +48,10 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
   outputdir = paste0(outputdir, outputfolder) #where is output stored?
   
   #============
+  # Based on knowledge about data format
+  # we can already assign monitor names and codes
+  # dataformat names and codes
+  # and sample rate
   if (params_general[["dataFormat"]] == "ukbiobank_csv") {
     deviceName = "Axivity"
     monn = "axivity"
@@ -65,8 +68,8 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     dformn = "epochdata"
     sf = 100 # <= EXTRACT FROM FILE?
   }
-  
-  # create generic template data
+  # Before we look inside the epoch files we can already create templates
+  # with dummy data
   C = list(cal.error.end = 0, cal.error.start = 0)
   C$scale = c(1, 1, 1)
   C$offset = c(0, 0, 0)
@@ -113,14 +116,14 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
   
   filefoldername = NA
   
-  for (i in 1:length(fnames)) { # loop over files
+  for (i in 1:length(fnames)) { # loop over all epoch files
     # filename
     fname = basename(fnames[i])
     
     outputFileName = paste0(outputdir, "/meta/basic/meta_", fname, ".RData")
     
     skip = TRUE
-    if (overwrite == TRUE) {
+    if (params_general[["overwrite"]] == TRUE) {
       skip = FALSE
     } else {
       if (!file.exists(outputFileName)) {
@@ -286,5 +289,4 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
            file = outputFileName)
     }
   }
-  # return(name = accMetricName)
 }

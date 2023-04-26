@@ -165,6 +165,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               params_cleaning = params_cleaning, params_general = params_general,
               verbose = verbose)
     } else {
+      # Skip g.part1, but instead convert epoch data to a format that
+      # looks as if it came out of g.part1
       convertEpochData(datadir = datadir,
                        studyname = studyname,
                        outputdir = outputdir,
