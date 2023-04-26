@@ -23,16 +23,6 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       fnames = fnames_csv
     }
   }
-  chartime2iso8601 = function(x,tz){
-    POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz)), origin = "1970-1-1", tz)
-    POStimeISO = strftime(POStime, format = "%Y-%m-%dT%H:%M:%S%z")
-    return(POStimeISO)
-  }
-  POSIXtime2iso8601 = function(x, tz) {
-    POStime = as.POSIXlt(x,tz) #turn to right timezone
-    POStime_z = chartime2iso8601(as.character(POStime),tz) #change format
-    return(POStime_z)
-  }
   #-------------
   # Create output folder:
   filelist = isfilelist(datadir)
@@ -152,7 +142,6 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         # define start time of the 15 minute intervals
         # like in the default GGIR version
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz)
-        
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         if (params_general[["dataFormat"]] == "actiwatch_csv") {
           # ! Assumptions that timeseries start before line 150
@@ -244,13 +233,12 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         time_shortEp_num = time_shortEp_num[1:(length(time_longEp_num) * (epSizeLong/epSizeShort))]
       }
       starttime = as.POSIXlt(time_longEp_num[1], origin = "1970-1-1", tz = tz)
-      time_shortEp_8601 = POSIXtime2iso8601(as.POSIXlt(time_shortEp_num, tz = tz,
+      time_shortEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_shortEp_num, tz = tz,
                                                                 origin = "1970-01-01"),
                                                      tz = tz)
-      time_longEp_8601 = POSIXtime2iso8601(as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
+      time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
                                                 tz = tz)
       M$metashort = data.frame(timestamp = time_shortEp_8601,ENMO = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
-      
       LML = length(time_longEp_8601)
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         #Collapse second column of input data to use as non-wear score
@@ -291,7 +279,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       
       # update weekday name and number based on actual data
       M$wdayname = weekdays(x = starttime, abbreviate = FALSE)
-      M$wday = as.POSIXlt(starttime)$wday
+      M$wday = as.POSIXlt(starttime)$wday + 1
       
       # Save these files as new meta-file
       save(M, C, I, filename_dir, filefoldername,
