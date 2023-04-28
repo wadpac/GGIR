@@ -68,7 +68,7 @@ ShellDoc2Vignette <- function(argument = "mode") {
   def = gsub(pattern = "^ *|(?<= ) | *$", replacement = "", x = def, perl = TRUE)
   
   # clean double quotes in def
-  def = gsub(pattern = "\"", replacement = "'", x = def)
+  # def = gsub(pattern = "\"", replacement = "'", x = def)
   
   # clean double underscore at the end
   def = gsub(pattern = "__", replacement = "", x = def)
