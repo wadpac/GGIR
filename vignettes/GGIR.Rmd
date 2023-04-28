@@ -293,7 +293,7 @@ for that.
     experiment.
     -   If `strategy` is set to value 1, then check out arguments
         `hrs.del.start` and `hrs.del.end`.
-    -   If `strategy` is set to value 3, then check out arguments
+    -   If `strategy` is set to value 3 or 5, then check out arguments
         `ndayswindow`.
 -   `maxdur` - maximum number of days you expect in a data file based on
     the study protocol.
@@ -918,6 +918,10 @@ vigorous activity:
 | L5TIME_num, M5TIME_num  | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.   |
 | L5VALUE     | Acceleration value for least active 5hrs       |
 | M5VALUE     | Acceleration value for most active 5hrs        |
+| `ig_`       | All variables related to intensity gradient analysis |
+| `_gradient`   | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
+| `_intercept`  | Intercept from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
+| `_rsquared`   | r squared from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
 | `FRAG_`     | All variables related to behavioural fragmentation analysis |
 | `TP_`       | Transition probability|
 | PA2IN       | Physical activity fragments followed by inactivity fragments|
