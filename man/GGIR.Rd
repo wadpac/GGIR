@@ -780,7 +780,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{ndayswindow}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["ndayswindow"]]}).
         If \code{strategy} is set to 3 or 5, then this is the size of the window as a 
-        number of days.}
+        number of days. For strategy 3 value can be fractional, e.g. 7.5, 
+        while for strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includedaycrit.part5"]], 3)}).
