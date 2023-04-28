@@ -293,7 +293,7 @@ for that.
     experiment.
     -   If `strategy` is set to value 1, then check out arguments
         `hrs.del.start` and `hrs.del.end`.
-    -   If `strategy` is set to value 3, then check out arguments
+    -   If `strategy` is set to value 3 or 5, then check out arguments
         `ndayswindow`.
 -   `maxdur` - maximum number of days you expect in a data file based on
     the study protocol.
