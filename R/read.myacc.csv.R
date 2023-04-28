@@ -34,13 +34,14 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       desiredtz = rmc.desiredtz
     } else if (!is.null(desiredtz)) { # then both provided 
       if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
-        stop("Please, provide argument desiredtz instead of rmc.desiredtz (deprecated).")
+        stop("\nArguments rmc.desiredtz and desiredtz have different values. Please, make sure 
+             they have the same value. \nrmc.desiredtz will be deprecated in the near future, please use desiredtz.")
       } else {
         warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
                        " in GGIR because its functionality overlaps with desiredtz.",
                        " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)      }
     }
-  }
+  } 
   
   # check if none of desiredtz and rmc.desiredtz are provided
   if (is.null(desiredtz) & is.null(rmc.desiredtz)) {
@@ -56,7 +57,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       configtz = rmc.configtz
     } else if (!is.null(configtz)) { # then both provided 
       if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
-        stop("Please, provide argument configtz instead of rmc.configtz (deprecated).")
+        stop("\nArguments rmc.configtz and configtz have different values. Please, make sure 
+             they have the same value. \nrmc.configtz will be deprecated in the near future, please use configtz.")
       } else {
         warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
                        " in GGIR because its functionality overlaps with configtz.",
