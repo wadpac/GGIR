@@ -21,8 +21,8 @@
                           rmc.bitrate = c(), rmc.dynamic_range = c(), 
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
-                          rmc.desiredtz = "Europe/London",
-                          rmc.configtz = c(),
+                          rmc.desiredtz = NULL,
+                          rmc.configtz = NULL,
                           rmc.sf = c(),
                           rmc.headername.sf = c(),
                           rmc.headername.sn = c(),
@@ -34,7 +34,9 @@
                           interpolationType=1, 
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
-                          epochsize = NULL)	
+                          epochsize = NULL,
+                          desiredtz = NULL,
+                          configtz = NULL)	
 }
 \arguments{
   \item{rmc.file}{
@@ -106,11 +108,10 @@
     Origin of time when unit of time is UNIXsec, e.g. 1970-1-1
   }
   \item{rmc.desiredtz}{
-    Timezone in which device was worn.
+    Deprecated, please see \code{desiredtz}.
   }
   \item{rmc.configtz}{
-    Timezone in which device was configured. If equal to rmc.desiredtz you can leave
-    this in its default value.
+    Deprecated, please see \code{configtz}.
   }
   \item{rmc.sf}{
     Sample rate in Hertz, if this is stored in the file header then that will be used
@@ -159,6 +160,13 @@
   \item{epochsize}{
     Numeric vector of length two, with short and long epoch sizes. Only used by GGIR internally.
   }
+  \item{desiredtz}{
+    Timezone in which device was worn.
+  }
+  \item{configtz}{
+    Timezone in which device was configured. If equal to desiredtz you can leave
+    this in its default value.
+  }
 }
 \details{
   To use this function in the context of GGIR use all arguments from this function,
@@ -169,18 +177,23 @@
   header if it was available in the orignal file.
 }
 \examples{
+
   # create test files: No header, with temperature, with time
   N = 30
   sf = 30
-  timestamps = as.POSIXlt(Sys.time()+((0:(N-1))/sf),origin="1970-1-1",tz = "Europe/London")
-  mydata = data.frame(x=rnorm(N), time=timestamps,y=rnorm(N),z=rnorm(N),temp=rnorm(N)+20)
+  x = Sys.time()+((0:(N-1))/sf)
+  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = "Europe/London")
+  mydata = data.frame(x = rnorm(N), time = timestamps, y = rnorm(N), z = rnorm(N),
+            temp = rnorm(N) + 20)
   testfile = "testcsv1.csv"
   write.csv(mydata, file= testfile, row.names = FALSE)
   loadedData = read.myacc.csv(rmc.file=testfile, rmc.nrow=20, rmc.dec=".",
                       rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                      desiredtz = "",
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   if (file.exists(testfile)) file.remove(testfile)
+  
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>

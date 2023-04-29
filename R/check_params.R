@@ -188,7 +188,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["def.noc.sleep"]] = 1
     }
     if (params_sleep[["HASPT.algo"]] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
-      warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed", call. = FALSE)
+      warning("\nHASPT.algo is set to HorAngle, therefore auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
@@ -267,14 +267,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop("\nThe argument expand_tail_max_hours has been replaced by",
            " recordingEndSleepHour which has a different definition. Please",
            " see the documentation for further details and replace",
-           " expand_tail_max_hour in your function call and config.csv file.")
+           " expand_tail_max_hour in your function call and config.csv file.", call. = FALSE)
     } else {
       # If both are defined, this is probably because expand_tail_max_hours is 
       # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
       warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
               " are defined. GGIR will only use recordingEndSleepHour",
-              " and expand_tail_max_hours will be set to NULL.")
+              " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
@@ -285,9 +285,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      " has been defined as ", params_general[["recordingEndSleepHour"]],
                      ", which does not look plausible, please specify time at or later than 19:00",
                   " . Please note that it is your responsibility as user to verify that the
-                  assumption is credible."))
+                  assumption is credible."), call. = FALSE)
     }
   }
+  
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,
