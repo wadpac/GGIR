@@ -417,13 +417,13 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{rmc.desiredtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone).
-        Timezone in which experiments took place. Value should be a timezone database name
-        See also https://en.wikipedia.org/wiki/Zone.tab}
+        Timezone in which experiments took place. This argument is scheduled to 
+        be deprecated and is now used to overwrite \code{desiredtz} if not provided.}
 
       \item{rmc.configtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.configtz"]]}", i.e., system timezone).
-        Timezone in which device was configured. Value should be a timezone database name
-        See also https://en.wikipedia.org/wiki/Zone.tab}
+        Timezone in which device was configured. This argument is scheduled to 
+        be deprecated and is now used to overwrite \code{configtz} if not provided.}
 
       \item{rmc.sf}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.sf"]])}).
@@ -756,8 +756,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
         strategy = 3 only selects the most active X days in the file where X is
-        specified by argument \code{ndayswindow}.
-        strategy = 4 to only use the data after the first midnight.}
+        specified by argument \code{ndayswindow}, where the days are a series of 24-h blocks 
+        starting any time in the day.
+        strategy = 4 to only use the data after the first midnight.
+        strategy = 5 is similar to \code{strategy = 3}, but it selects X complete 
+        calendar days where X is specified by argument \code{ndayswindow}.}
 
       \item{hrs.del.start}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.start"]]}).
@@ -776,7 +779,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{ndayswindow}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["ndayswindow"]]}).
-        If \code{strategy} is set to 3 then this is the size of the window as a number of days.}
+        If \code{strategy} is set to 3 or 5, then this is the size of the window as a 
+        number of days. For strategy 3 value can be fractional, e.g. 7.5, 
+        while for strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includedaycrit.part5"]], 3)}).
@@ -1279,31 +1284,31 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   GGIR(#-------------------------------
        # General parameters
        #-------------------------------
-       mode=mode,
-       datadir=datadir,
-       outputdir=outputdir,
-       studyname=studyname,
-       f0=f0,
-       f1=f1,
+       mode = mode,
+       datadir = datadir,
+       outputdir = outputdir,
+       studyname = studyname,
+       f0 = f0,
+       f1 = f1,
        overwrite = FALSE,
-       do.imp=TRUE,
-       idloc=1,
-       print.filename=FALSE,
+       do.imp = TRUE,
+       idloc = 1,
+       print.filename = FALSE,
        storefolderstructure = FALSE,
        #-------------------------------
        # Part 1 parameters:
        #-------------------------------
        windowsizes = c(5,900,3600),
-       do.cal=TRUE,
+       do.cal = TRUE,
        do.enmo = TRUE,
-       do.anglez=TRUE,
-       chunksize=1,
-       printsummary=TRUE,
+       do.anglez = TRUE,
+       chunksize = 1,
+       printsummary = TRUE,
        #-------------------------------
        # Part 2 parameters:
        #-------------------------------
        strategy = 1,
-       ndayswindow=7,
+       ndayswindow = 7,
        hrs.del.start = 1,
        hrs.del.end = 1,
        maxdur = 9,
@@ -1312,14 +1317,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        M5L5res = 10,
        winhr = c(5,10),
        qlevels = c(c(1380/1440),c(1410/1440)),
-       qwindow=c(0,24),
+       qwindow = c(0,24),
        ilevels = c(seq(0,400,by=50),8000),
-       mvpathreshold =c(100,120),
+       mvpathreshold = c(100,120),
        #-------------------------------
        # Part 3 parameters:
        #-------------------------------
-       timethreshold= c(5,10),
-       anglethreshold=5,
+       timethreshold = c(5,10),
+       anglethreshold = 5,
        ignorenonwear = TRUE,
        #-------------------------------
        # Part 4 parameters:
@@ -1327,12 +1332,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        excludefirstlast = FALSE,
        includenightcrit = 16,
        def.noc.sleep = 1,
-       loglocation= "D:/sleeplog.csv",
+       loglocation = "D:/sleeplog.csv",
        outliers.only = FALSE,
        criterror = 4,
        relyonguider = FALSE,
-       colid=1,
-       coln1=2,
+       colid = 1,
+       coln1 = 2,
        do.visual = TRUE,
        nnights = 9,
        #-------------------------------
@@ -1354,7 +1359,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        #-----------------------------------
        # Report generation
        #-------------------------------
-       do.report=c(2,4,5))
+       do.report = c(2,4,5))
   }
 }
 \author{

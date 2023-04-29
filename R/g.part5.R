@@ -836,7 +836,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
                             y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
                             dsummary[di,fi:(fi + 2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
-                            ds_names[fi:(fi + 2)] = c("ig_gradient", "ig_intercept", "ig_rsquared")
+                            ds_names[fi:(fi + 2)] = c("ig_day_gradient", "ig_day_intercept", "ig_day_rsquared")
+                            fi = fi + 3
+                          }
+                          #===========================
+                          # Intensity gradient over the full window (waking + spt)
+                          if (length(params_247[["iglevels"]]) > 0) {
+                            q55 = cut(ts$ACC[sse], breaks = params_247[["iglevels"]], right = FALSE)
+                            x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
+                            y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
+                            dsummary[di,fi:(fi + 2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
+                            ds_names[fi:(fi + 2)] = c("ig_day_spt_gradient", "ig_day_spt_intercept", "ig_day_spt_rsquared")
                             fi = fi + 3
                           }
                           #===============================================

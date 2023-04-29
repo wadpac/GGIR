@@ -11,7 +11,7 @@
 }
 \usage{
   g.impute(M, I, params_cleaning = c(),
-  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), ...)
+  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,6 +35,9 @@
     and acceleration metrics to be imputed by zeros. The data.frame is expected
     to contain two columns named windowstart and windowend, with the start- and end
     time of the time segment in POSIXlt class.
+  }
+  \item{acc.metric}{
+    See \link{GGIR}
   }
   \item{...}{
      Any argument used in the previous version of g.impute, which will now

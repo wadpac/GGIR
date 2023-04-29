@@ -144,7 +144,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
-                       TimeSegments2Zero = TimeSegments2Zero)
+                       TimeSegments2Zero = TimeSegments2Zero,
+                       acc.metric = params_general[["acc.metric"]])
         
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
