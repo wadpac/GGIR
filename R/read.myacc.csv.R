@@ -31,13 +31,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                    " and will be replaced by the existing arguments desiredtz and configtz, respectively.",
                    " Please start using these arguments."), call. = FALSE)
     # Check if both types of tz are provided:
-    if (!is.null(desiredtz)) {
+    if (!is.null(desiredtz) & !is.null(rmc.desiredtz)) {
       if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
         stop("\nPlease, specify only desiredtz and set ",
              "rmc.desiredtz to NULL to ensure it is no longer used.")
       }
     }
-    if (!is.null(configtz)) { # then both provided 
+    if (!is.null(configtz) & !is.null(rmc.configtz)) { # then both provided 
       if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
         stop("\nPlease, specify only configtz and set ",
              "rmc.configtz to NULL to ensure it is no longer used.")
