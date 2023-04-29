@@ -25,46 +25,36 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           desiredtz = NULL,
                           configtz = NULL) {
 
-  # check if rmc.desiredtz is provided by the user
-  if (!is.null(rmc.desiredtz)) {
-    if (is.null(desiredtz)) { # if desiredtz is null, then overwrite and warning
-      warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
-                     " in GGIR because its functionality overlaps with desiredtz.",
-                     " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)
-      desiredtz = rmc.desiredtz
-    } else if (!is.null(desiredtz)) { # then both provided 
+
+  if (!is.null(rmc.desiredtz) | !is.null(rmc.configtz)) {
+    warning(paste0("\nArgument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
+                   " and will be replaced by the existing arguments desiredtz and configtz, respectively.",
+                   " Please start using these arguments."), call. = FALSE)
+    # Check if both types of tz are provided:
+    if (!is.null(desiredtz)) {
       if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
-        stop("\nArguments rmc.desiredtz and desiredtz have different values. Please, make sure 
-             they have the same value. \nrmc.desiredtz will be deprecated in the near future, please use desiredtz.")
-      } else {
-        warning(paste0("\nArgument rmc.desiredtz is scheduled to be deprecated",
-                       " in GGIR because its functionality overlaps with desiredtz.",
-                       " Please, use desiredtz instead of rmc.desiredtz."), call. = FALSE)      }
+        stop("\nPlease, specify only desiredtz and set ",
+             "rmc.desiredtz to NULL to ensure it is no longer used.")
+      }
     }
-  } 
-  
+    if (!is.null(configtz)) { # then both provided 
+      if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
+        stop("\nPlease, specify only configtz and set ",
+             "rmc.configtz to NULL to ensure it is no longer used.")
+      }
+    }
+    # Until deprecation still allow rmc. to be used, 
+    # so us it to overwrite normal tz in this function:
+    if (is.null(desiredtz)) desiredtz = rmc.desiredtz 
+    if (is.null(configtz)) configtz = rmc.configtz
+   
+  }
   # check if none of desiredtz and rmc.desiredtz are provided
   if (is.null(desiredtz) & is.null(rmc.desiredtz)) {
-    stop("Please, provide argument desiredtz.")
+    stop(paste0("Timezone not specified, please provide at least desiredtz",
+                " and consider specifyin configtz."))
   }
   
-  # check if rmc.configtz is provided by the user
-  if (!is.null(rmc.configtz)) {
-    if (is.null(configtz)) { # if configtz is null, then overwrite and warning
-      warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
-                     " in GGIR because its functionality overlaps with configtz.",
-                     " Please, use configtz instead of rmc.configtz."), call. = FALSE)
-      configtz = rmc.configtz
-    } else if (!is.null(configtz)) { # then both provided 
-      if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
-        stop("\nArguments rmc.configtz and configtz have different values. Please, make sure 
-             they have the same value. \nrmc.configtz will be deprecated in the near future, please use configtz.")
-      } else {
-        warning(paste0("\nArgument rmc.configtz is scheduled to be deprecated",
-                       " in GGIR because its functionality overlaps with configtz.",
-                       " Please, use configtz instead of rmc.configtz."), call. = FALSE)      }
-    }
-  }
   
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
