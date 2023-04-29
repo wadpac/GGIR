@@ -8,8 +8,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.bitrate = c(), rmc.dynamic_range = c(),
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
-                          rmc.desiredtz = "Europe/London",
-                          rmc.configtz = c(),
+                          rmc.desiredtz = NULL,
+                          rmc.configtz = NULL,
                           rmc.sf = c(),
                           rmc.headername.sf = c(),
                           rmc.headername.sn = c(),
@@ -21,8 +21,41 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           interpolationType=1,
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
-                          epochsize = NULL) {
+                          epochsize = NULL,
+                          desiredtz = NULL,
+                          configtz = NULL) {
 
+
+  if (!is.null(rmc.desiredtz) | !is.null(rmc.configtz)) {
+    warning(paste0("\nArgument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
+                   " and will be replaced by the existing arguments desiredtz and configtz, respectively.",
+                   " Please start using these arguments."), call. = FALSE)
+    # Check if both types of tz are provided:
+    if (!is.null(desiredtz) & !is.null(rmc.desiredtz)) {
+      if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
+        stop("\nPlease, specify only desiredtz and set ",
+             "rmc.desiredtz to NULL to ensure it is no longer used.")
+      }
+    }
+    if (!is.null(configtz) & !is.null(rmc.configtz)) { # then both provided 
+      if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
+        stop("\nPlease, specify only configtz and set ",
+             "rmc.configtz to NULL to ensure it is no longer used.")
+      }
+    }
+    # Until deprecation still allow rmc. to be used, 
+    # so us it to overwrite normal tz in this function:
+    if (is.null(desiredtz)) desiredtz = rmc.desiredtz 
+    if (is.null(configtz)) configtz = rmc.configtz
+   
+  }
+  # check if none of desiredtz and rmc.desiredtz are provided
+  if (is.null(desiredtz) & is.null(rmc.desiredtz)) {
+    stop(paste0("Timezone not specified, please provide at least desiredtz",
+                " and consider specifying configtz."))
+  }
+  
+  
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
@@ -121,8 +154,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip = skip,
                                       dec = rmc.dec, showProgress = FALSE, header = freadheader),
                     stringsAsFactors = TRUE)
-  if (length(rmc.configtz) == 0) {
-    rmc.configtz = rmc.desiredtz
+  if (length(configtz) == 0) {
+    configtz = desiredtz
   }
   if (length(rmc.col.wear) > 0) {
     wearIndicator = P[, rmc.col.wear] # keep wear channel seperately and reinsert at the end
@@ -146,7 +179,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = rmc.configtz, format = rmc.format.time)
+      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
 
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
@@ -211,9 +244,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # print(diff(P$timestamp))
       }
     } else if (rmc.unit.time == "character") {
-      P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = rmc.configtz)
+      P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = configtz)
     } else if (rmc.unit.time == "UNIXsec") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = rmc.configtz)
+      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = configtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
       rmc.origin = "1899-12-30"
@@ -221,16 +254,16 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       tmp2 = P$timestamp - round(P$timestamp)
       timecode = ((tmp2 * 10^10) * 8.64) / 1000000
       numerictime = datecode + timecode
-      P$timestamp = as.POSIXlt(numerictime, origin = rmc.origin, tz = rmc.configtz)
+      P$timestamp = as.POSIXlt(numerictime, origin = rmc.origin, tz = configtz)
     }
     if (length(which(is.na(P$timestamp) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
     }
   }
   
-  if (rmc.configtz != rmc.desiredtz) {
+  if (configtz != desiredtz) {
     P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
-                                 tz = rmc.desiredtz, origin = "1970-01-01")
+                                 tz = desiredtz, origin = "1970-01-01")
   }
   
   # If acceleration is stored in mg units then convert to gravitational units
@@ -275,7 +308,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   if (rmc.doresample == TRUE) { #resample
     rawTime = vector(mode = "numeric", nrow(P))
-    rawTime = as.numeric(as.POSIXlt(P$timestamp,tz = rmc.configtz))
+    rawTime = as.numeric(as.POSIXlt(P$timestamp,tz = configtz))
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "timestamp"))])
     step = 1/sf
     start = rawTime[1]
@@ -287,13 +320,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     rawLast = nrow(rawAccel)
     accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
-    timeRes = as.POSIXlt(timeRes, origin = rmc.origin, tz = rmc.configtz)
+    timeRes = as.POSIXlt(timeRes, origin = rmc.origin, tz = configtz)
     P = as.data.frame(accelRes, stringsAsFactors = TRUE)
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
     P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
-                             tz = rmc.desiredtz, origin = "1970-01-01")
+                             tz = desiredtz, origin = "1970-01-01")
   }
   return(list(data = P, header = header, 
               PreviousLastValue = PreviousLastValue,

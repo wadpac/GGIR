@@ -49,10 +49,65 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
+  
+  #------------------------
+  # Warnings and errors related to desiredtz and configtz
+  # warning if desiredtz not provided but rmc.desiredtz provided:
+  expect_warning(read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
+                                rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                                rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                                rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                                rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                                rmc.origin = "1970-01-01",
+                                rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                                rmc.headername.sf = "sample_frequency",
+                                rmc.headername.sn = "serial_number",
+                                rmc.headername.recordingid = "ID"))
+  
+  # warning if desiredtz not provided but rmc.desiredtz provided:
+  expect_warning(read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
+                                rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                                rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                                rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                                rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                                rmc.origin = "1970-01-01",
+                                desiredtz = "Europe/London", 
+                                rmc.configtz = "Europe/Madrid",
+                                rmc.sf = sf,
+                                rmc.headername.sf = "sample_frequency",
+                                rmc.headername.sn = "serial_number",
+                                rmc.headername.recordingid = "ID"))
+  
+  # error if none of rmc.desiredtz and desiredtz are provided:
+  expect_error(read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
+                              rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                              rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                              rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                              rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                              rmc.origin = "1970-01-01",
+                              rmc.sf = sf,
+                              rmc.headername.sf = "sample_frequency",
+                              rmc.headername.sn = "serial_number",
+                              rmc.headername.recordingid = "ID"))
+  
+  # error if both rmc.desiredtz and desiredtz are provided:
+  expect_error(read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
+                              rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                              rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                              rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                              rmc.format.time = "%Y-%m-%d %H:%M:%OS",
+                              rmc.origin = "1970-01-01",
+                              desiredtz = "Europe/London", rmc.desiredtz = "Europe/Madrid",
+                              rmc.sf = sf,
+                              rmc.headername.sf = "sample_frequency",
+                              rmc.headername.sn = "serial_number",
+                              rmc.headername.recordingid = "ID"))
+  
+  
   # Evaluate with decimal places in seconds
   expect_equal(nrow(D1$data), 20)
   expect_equal(ncol(D1$data), 5)
@@ -71,8 +126,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
-                      rmc.configtz = "America/Chicago",
+                      desiredtz = "Europe/London", rmc.sf = sf,
+                      configtz = "America/Chicago",
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
@@ -92,7 +147,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.unit.acc = "g", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", 
+                      desiredtz = "Europe/London", 
                       rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
@@ -108,7 +163,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.unit.acc = "g", rmc.unit.temp = "C", 
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID",
@@ -203,7 +258,7 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
                       rmc.unit.acc = "g", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London",
+                      desiredtz = "Europe/London",
                       rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
@@ -220,7 +275,7 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
                       rmc.unit.acc = "bit", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID", rmc.bitrate = "bit",
@@ -240,7 +295,7 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
                       rmc.unit.acc = "bit", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London", rmc.sf = sf,
+                      desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID",
@@ -312,7 +367,7 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
                       rmc.unit.acc = "g", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London",
+                      desiredtz = "Europe/London",
                       rmc.sf = sf,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
@@ -329,7 +384,7 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
                       rmc.unit.acc = "g", rmc.unit.temp = "C",
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
-                      rmc.desiredtz = "Europe/London",
+                      desiredtz = "Europe/London",
                       rmc.sf = sf,
                       rmc.headername.sf = "sample_rate",
                       rmc.headername.sn = "serial_number",
