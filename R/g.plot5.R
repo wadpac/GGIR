@@ -68,7 +68,6 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         }
         pdf(paste(metadatadir,"/results/file summary reports/Report_",fnamesmeta[sel],".pdf", sep = ""),
             paper = "a4", width = 0, height = 0)
-        # print(paste("File ",fnamesmeta[sel], sep = ""))
         sib.cla.sum = c()
         load(paste(metasleep,"/",fname_ms[i], sep = ""))
         load(paste(meta,"/",fname_m[sel], sep = ""))
@@ -91,9 +90,22 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
                                        | summarysleep_tmp$SptDuration == 0)
         if (length(d2exclude) > 0) {
-          d2excludeb = daysummary_tmp$measurmentday[d2exclude]
+          d2excludeb = daysummary_tmp$measurementday[d2exclude]
           daysummary_tmp = daysummary_tmp[-d2exclude,] #ignore days with non-wear
           d2exclude = d2excludeb
+        }
+
+
+        if (length(n2exclude) > 0) {
+          n2excludeb = summarysleep_tmp$night[n2exclude]
+          summarysleep_tmp = summarysleep_tmp[-n2exclude,]
+          n2exclude = n2excludeb
+        }
+        # nights missing in sleep summary?
+        allnights = 1:max(summarysleep_tmp$night)
+        missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+        if (length(missingNights) > 0) {
+          n2excludeb = n2exclude = sort(unique(c(n2exclude, missingNights)))
         }
         
         if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
@@ -103,11 +115,6 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
           }
         }
         
-        if (length(n2exclude) > 0) {
-          n2excludeb = summarysleep_tmp$night[n2exclude]
-          summarysleep_tmp = summarysleep_tmp[-n2exclude,]
-          n2exclude = n2excludeb
-        }
         # detect which column is mvpa
         n45 = names(daysummary_tmp)
         varsVPA = grep(pattern = "VPA",x = n45)
@@ -356,7 +363,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                           "2am","4am","6am","8am","10am","noon")
         }
         if (length(nightsi) > 0) { # Do not attempt to create a plot when there is no midnight in the data, because calculation of t1 will be complicated.
-          nplots = length(nightsi)+1
+          if (viewingwindow == 2) {
+            nplots = min(c(length(nightsi)+1, max(summarysleep_tmp$night)))
+          } else {
+            nplots = min(c(length(nightsi)+1, max(daysummary_tmp$measurementday)))
+          }
           # plot
           npointsperday = (60/ws3)*1440
           x = 1:npointsperday
@@ -381,6 +392,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 skip = TRUE
               }
             }
+            
             if (((t1-t0) + 1) / (60*60/ws3) == 25) { # day with 25 hours, just pretend that 25th hour did not happen
               t1 = t1 - (60*60/ws3)
             }
@@ -497,7 +509,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
             first_day_adjust = 0 # hold adjustment amounts on first and last day plots
             last_day_adjust = 0
             if (((t1-t0)+1) != npointsperday & t0 == 1) {
-              extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              daySize = (t1-t0) - (floor(((t1-t0) / npointsperday)) * npointsperday)
+              extension = rep(NA,(npointsperday-(daySize+1)))
+              # extension = rep(NA,(npointsperday-((t1-t0)+1)))
               first_day_adjust = length(extension)
               acc = c(extension,acc)
               ang = c(extension,ang)
@@ -523,7 +537,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 }
               }
             } else if (((t1-t0)+1) != npointsperday & t1 == length(time)) {
-              extension = rep(NA,(npointsperday-((t1-t0)+1)))
+              daySize = (t1-t0) - (floor(((t1-t0) / npointsperday)) * npointsperday)
+              extension = rep(NA,(npointsperday-(daySize+1)))
               last_day_adjust = length(acc)
               acc = c(acc,extension)
               ang = c(ang,extension)
@@ -632,7 +647,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 # plot z-angle:
                 lines(x,ang, type="l",lwd=LWDA,bty="l",xlab="",ylab="",cex=0.3,lend=LJ)
               } else {
-                warning('\nplot5 error: index, acc and ang vectors are different lengths')
+                break()
+                # Following warning turned off because we expect condition not
+                # to be met when recording ends
+                # with many non-wear days
+                # warning('\nplot5 error: index, acc and ang vectors are different lengths') 
               }
               # add sleeponset time annotation to plot:
               arrow_line_length = length(x) * 0.01736 # make arrow line length adaptable to differnt short epochs
