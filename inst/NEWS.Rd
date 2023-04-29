@@ -4,7 +4,7 @@
 \section{Changes in version 2.9-1 (release date:?-?-2023)}{
   \itemize{
    \item Part 5: minor bug #775 fixed in the separation of the first and second day when 
-   more than one set of thresholds is defined and user extracts both MM and WW timewindow.
+   more than one set of thresholds is defined.
   }
 }
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{
