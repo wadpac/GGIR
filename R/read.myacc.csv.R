@@ -52,7 +52,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # check if none of desiredtz and rmc.desiredtz are provided
   if (is.null(desiredtz) & is.null(rmc.desiredtz)) {
     stop(paste0("Timezone not specified, please provide at least desiredtz",
-                " and consider specifyin configtz."))
+                " and consider specifying configtz."))
   }
   
   
