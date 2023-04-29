@@ -206,11 +206,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (params_cleaning[["strategy"]] != 3 & params_cleaning[["ndayswindow"]] != 7) {
+    if (!(params_cleaning[["strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
       warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"), call. = FALSE)
+                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when strategy = 3 or strategy = 5"), call. = FALSE)
     }
-    
+    if (params_cleaning[["strategy"]] == 5 &
+        params_cleaning[["ndayswindow"]] != round(params_cleaning[["ndayswindow"]])) {
+      newValue = round(params_cleaning[["ndayswindow"]])
+      warning(paste0("\nArgument ndayswindow has been rounded from ",
+                     params_cleaning[["ndayswindow"]], " to ", newValue, " days",
+                     "because when strategy == 5 we expect an integer value", call. = FALSE))
+      params_cleaning[["ndayswindow"]] = newValue
+    }
     
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       # Convert paths from Windows specific slashed to generic slashes
