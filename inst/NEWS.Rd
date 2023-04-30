@@ -4,7 +4,7 @@
 \section{Changes in version 2.9-1 (release date:?-?-2023)}{
   \itemize{
    \item Part 5: minor bug #775 fixed in the separation of the first and second day when
-   more than one set of thresholds is defined.
+   more than one set of thresholds is defined and both MM and WW timewindows are extracted.
    \item Part 2: strategy = 5 implemented as a variation of strategy 3 (it allows to select
    most active X calendar days) #768.
    \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest #768.
