@@ -7,10 +7,13 @@
     and column names now indicate the window over the intensity gradient is
     calculated (i.e., "_day_" or "_day_spt_").
    \item Part 1: Facilitate working with epoch level data produced by external software #756
+   \item Part 5: minor bug #775 fixed in the separation of the first and second day when
+   more than one set of thresholds is defined and both MM and WW timewindows are extracted.
    \item Part 2: strategy = 5 implemented as a variation of strategy 3 (it allows to select
    most active X calendar days) #768.
    \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest #768.
    \item Part 5: intensity gradient is now also calculated for full window in part 5 and column names now indicate the window over the intensity gradient is calculated (i.e., "_day_" or "_day_spt_") #763.
+   \item General: warnings added to inform user that rmc.desiredtz and rmc.configtz will be deprecated #765.
   }
 }
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{

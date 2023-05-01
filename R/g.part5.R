@@ -422,6 +422,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
+            # 2023-04-23 - backup of nightsi outside threshold look to avoid
+            # overwriting the backup after the first iteration 
+            nightsi_bu = nightsi
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
@@ -443,7 +446,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
                   FM = which(diff(ts$diur) == -1)
-                  nightsi_bu = nightsi
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
                     nightsi = nightsi_bu

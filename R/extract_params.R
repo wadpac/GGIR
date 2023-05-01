@@ -198,7 +198,6 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Check that all parameter values have expect data class
   # and perform some checks on reasonable parameter combinations
-  
   # prevent checking of parameters that are not used in GGIR part
   if (!"sleep" %in% params2check) params_sleep = c()
   if (!"metrics" %in% params2check) params_metrics = c()
