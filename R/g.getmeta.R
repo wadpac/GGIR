@@ -132,7 +132,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   options(warn = -1)
   INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
                        params_rawdata = params_rawdata,
-                       configtz = params_general[["configtz"]])
+                       configtz = params_general[["configtz"]],
+                       sep = params_general[["sep"]])
   options(warn = 0)
   mon = INFI$monc
   dformat = INFI$dformc
@@ -169,7 +170,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   options(warn = -1)
   decn = g.dotorcomma(datafile, dformat, mon = mon,
                       desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
-                      loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
+                      loadGENEActiv  = params_rawdata[["loadGENEActiv"]],
+                      sep = params_general[["sep"]])
   options(warn = 0)
   ID = hvars$ID
   
@@ -334,7 +336,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                                       data, 
                                                       P, header, desiredtz = params_general[["desiredtz"]],
                                                       sf, i, datafile,  ws2,
-                                                      starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
+                                                      starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]],
+                                                      sep = params_general[["sep"]])
       starttime = SWMT$starttime
       meantemp = SWMT$meantemp
       use.temp = SWMT$use.temp

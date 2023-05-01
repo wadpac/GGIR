@@ -23,7 +23,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                         nnights = c(),
                         relyonguider = FALSE,
                         def.noc.sleep = 1,
-                        sleeplogsep = ",", sleepwindowType = "SPT",
+                        sleeplogsep = NULL, sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
                         nap_model = c())
@@ -115,7 +115,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           desiredtz = "", configtz = c(), idloc = 1, dayborder = 0,
                           part5_agg2_60seconds = FALSE,
                           sensor.location = "wrist",
-                          expand_tail_max_hours = NULL, recordingEndSleepHour = NULL)
+                          expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
+                          sep = ",")
   }
   # }
   invisible(list(params_sleep = params_sleep,

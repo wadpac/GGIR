@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv = "GGIRread", ...) {
+g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv = "GGIRread", sep = ",", ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
@@ -26,7 +26,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
     # lot of zeros, which makes it impossible to detect decimal separator
     # "." will then be the default, which is not correct for "," systems.
     while (skiprows < 1000000) { #foundnonzero == FALSE & 
-      deci = as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10))
+      deci = as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10, sep = sep))
       skiprows = skiprows + 10000
       if (length(unlist(strsplit(as.character(deci[2,2]), ","))) > 1) {
         decn = ","
@@ -51,7 +51,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == 3) {
-    try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)
+    try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10, sep = sep)}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .wav file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {

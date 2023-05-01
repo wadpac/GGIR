@@ -1,4 +1,4 @@
-g.wavread = function(wavfile,start=1,end=100,units="minutes") {
+g.wavread = function(wavfile,start=1,end=100,units="minutes", sep = ",") {
   if (start == 0) start = 1
   #-----------------------------------------------------
   # get data
@@ -14,15 +14,15 @@ g.wavread = function(wavfile,start=1,end=100,units="minutes") {
          length(grep("Scale-2",header)) == 0 |
          length(grep("Scale-1",header)) == 0) { # as we do not know what header size is, search for it (needed in R version =< 3.1)
 
-    try(expr={header = rownames(read.csv(wavfile,nrow=Nlines,header=TRUE))},silent=TRUE)
+    try(expr={header = rownames(read.csv(wavfile,nrow=Nlines,header=TRUE, sep = sep))},silent=TRUE)
     if (length(header) == 0) {
-      header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="WINDOWS-1252"))
+      header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="WINDOWS-1252", sep = sep))
     }
     if (length(header) == 0) {
-      header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="UTF-8"))
+      header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="UTF-8", sep = sep))
     }
     if (length(header) == 0) {
-      header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="latin1"))
+      header = rownames(read.csv(wavfile,skipNul=TRUE,nrow=Nlines,header=TRUE,fileEncoding="latin1", sep = sep))
     }
 
     Nlines = Nlines - 1

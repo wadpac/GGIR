@@ -208,7 +208,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
-    write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
+    data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE, sep = params_general[["sep"]])
   } else {
     if (dir.exists(datadir) == FALSE) {
       warning("\nCould not write config file because studyname or datadir are not correctly specified.")
@@ -255,7 +255,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
-                     verbose = verbose)
+                     verbose = verbose, sep = params_general[["sep"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }
@@ -277,7 +277,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
-                     verbose = verbose)
+                     verbose = verbose, sep = params_general[["sep"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }
@@ -299,7 +299,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               metric = params_general[["acc.metric"]],
               threshold.lig = params_phyact[["threshold.lig"]],
               threshold.mod = params_phyact[["threshold.mod"]],
-              threshold.vig = params_phyact[["threshold.vig"]])
+              threshold.vig = params_phyact[["threshold.vig"]],
+              sep = params_general[["sep"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }

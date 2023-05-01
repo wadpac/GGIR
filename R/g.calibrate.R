@@ -66,7 +66,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
                        rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
                        rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
                        rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                       rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])  # Check which file type and monitor brand it is
+                       rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                       sep = params_general[["sep"]])  # Check which file type and monitor brand it is
   options(warn = 0) #turn on warnings
   mon = INFI$monc
   if (mon == 6) mon = 3
@@ -92,7 +93,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon, 
                                                desiredtz = params_general[["desiredtz"]],
                                                rmc.dec = params_rawdata[["rmc.dec"]],
-                                               loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
+                                               loadGENEActiv = params_rawdata[["loadGENEActiv"]],
+                                               sep = params_general[["sep"]])}) #detect dot or comma dataformat
   options(warn = 0) #turn on warnings
   #creating matrixes for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data

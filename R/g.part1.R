@@ -273,7 +273,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
       if (length(params_rawdata[["backup.cal.coef"]]) > 0 & check.backup.cal.coef == TRUE) {
-        bcc.data = read.csv(params_rawdata[["backup.cal.coef"]])
+        bcc.data = read.csv(params_rawdata[["backup.cal.coef"]], sep = params_general[["sep"]])
         if (isTRUE(params_rawdata[["do.cal"]]) & verbose == TRUE) {
           cat("\nRetrieving previously derived calibration coefficients")
         }

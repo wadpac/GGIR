@@ -241,6 +241,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series 
         output to avoid biased output.
       }
+      \item{sep}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["sep"]]}).
+        Value used as sep argument in \link[utils]{read.csv} for reading accelerometer raw csv files,
+        diaries (i.e., activity log, sleeplog), and data cleaning file. Usually "," or ";".
+      }
     }
   }
 
@@ -1006,8 +1011,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{sleeplogsep}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogsep"]]}").
-        Value used as sep argument in \link[utils]{read.csv} for reading sleeplog csv file,
-        usually "," or ";".}
+        Deprecated, please use \code{sep}. Value used as sep argument in \link[utils]{read.csv} for 
+        reading sleeplog csv file, usually "," or ";".}
 
       \item{nap_model}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["nap_model"]])}).

@@ -288,6 +288,15 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   assumption is credible."), call. = FALSE)
     }
   }
+  # if sleeplogsep is defined, use it to overwrite sep
+  if (!is.null(params_sleep[["sleeplogsep"]])) { # sleeplogsep defined by user (default = NULL)
+    if (params_sleep[["sleeplogsep"]] != params_sleep[["sep"]]) {
+      params_sleep[["sep"]] = params_sleep[["sleeplogsep"]]
+      warning(paste0("Parameter 'sleeplogsep' is deprecated, and now 'sep' is used to identify the separator",
+              "for all the csv files read and written by GGIR (this includes sleeplog, activitylog, ",
+              "data cleaning file, accelerometer files)"))
+    }
+  }
   
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

@@ -1,4 +1,4 @@
-g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz = NULL) { 
+g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz = NULL, sep = ",") { 
   #get input variables (relevant when read.myacc.csv is used)
   #------------------------------------------------------------
   if (mon  == 1 & dformat == 1) {
@@ -47,7 +47,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     starttime = as.POSIXlt(starttime)
   } else if (dformat == 2 & (mon == 3 | mon == 4 | mon == 6)) {
     if (mon == 3 | mon == 6) {
-      tmph = read.csv(datafile, nrow = 8, skip = 1)
+      tmph = read.csv(datafile, nrow = 8, skip = 1, sep = sep)
       tmphi = 1
       while (tmphi < 10) {
         if (length(unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))) > 1) {
@@ -101,7 +101,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     options(digits.secs = 3)
     if ((mon == 3 & dformat != 6) | mon == 6) {
       options(warn = -1)
-      topline = as.matrix(colnames(as.matrix(read.csv(datafile, nrow = 1, skip = 0))))
+      topline = as.matrix(colnames(as.matrix(read.csv(datafile, nrow = 1, skip = 0, sep = sep))))
       topline = topline[1]  #To avoid dots
       options(warn = 0)
       # Extraction of date format.
