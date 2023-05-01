@@ -110,7 +110,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
-                        extractfilenames, referencefnames, folderstructure, 
+                        extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldernam, verbose) {
     tail_expansion_log =  NULL
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
@@ -430,7 +430,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
+
             backup_cosinor_MM = backup_cosinor_WW = NULL
+            # 2023-04-23 - backup of nightsi outside threshold look to avoid
+            # overwriting the backup after the first iteration
+            nightsi_bu = nightsi
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
@@ -452,7 +456,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
                   FM = which(diff(ts$diur) == -1)
-                  nightsi_bu = nightsi
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
                     nightsi = nightsi_bu
