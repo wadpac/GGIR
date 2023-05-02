@@ -20,7 +20,7 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       cliphoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window2 * 0.5
       
       # Flag nonwear based on window instead of window2 (2023-02-18)
-      if (nonwear_approach == "old") {
+      if (nonwear_approach == "2013") {
         NWflag = h
         if (h <= crit) {
           hoc1 = 1
@@ -33,7 +33,7 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
           hoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window * 0.5
         }
       
-      } else if (nonwear_approach == "new") {
+      } else if (nonwear_approach == "2023") {
         # long-epoch windows to flag (nonwear)
         NWflag = h:(h + window/window2 - 1)
         if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
@@ -80,160 +80,7 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       }
       CWav[h] = max(c(CW[h,1],CW[h,2],CW[h,3])) #indicator of clipping
     }
-  } else if (nonwear_approach == "sapply") {
-    # clipping detection
-    getclipping = function(data, cliphoc, window, clipthres) {
-      # function to get criteria for nonwear for a single axis
-      # data: numeric vector with one-axis data for this chunk
-      # cliphoc: integer with starting points for windows
-      # window: window length (= window for clipping)
-      # clipthres: criteria for clipping
-      
-      sapply(cliphoc, function(cliphoc) {
-        sum(abs(data[cliphoc:(cliphoc + window - 1)])) > clipthres
-      })
-    }
-    
-    cliphoc = seq(1, nrow(data), by = window2)
-    CW = sapply(1:3, function(jj) cbind(
-      getclipping(data[, jj], cliphoc, window2, clipthres)))
-    CWav = apply(CW/window2, 1, max)
-    
-    # Nonwear detection --------
-    getnonwear = function(data, nwhoc, window, sdcriter, racriter) {
-      # function to get criteria for nonwear for a single axis
-      # data: numeric vector with one-axis data for this chunk
-      # nwhoc: integer with starting points for windows
-      # window: window length (= window for nonwear)
-      # sdcriter: criteria for standard deviation
-      # racriter: criteria for range of accelerations
-      
-      # get standard deviations below sdcriter
-      SDs = sapply(nwhoc, function(nwhoc) {
-        endpoint = nwhoc + window - 1
-        if (endpoint > length(data)) window = length(nwhoc:length(data))
-        sd(data[nwhoc:(nwhoc + window - 1)]) < sdcriter
-      })
-      
-      # get ranges below racriter
-      RAs = sapply(nwhoc, function(nwhoc) {
-        endpoint = nwhoc + window - 1
-        if (endpoint > length(data)) window = length(nwhoc:length(data))
-        diff(range(data[nwhoc:(nwhoc + window - 1)])) < racriter
-      })
-      
-      # Nonwear indicator
-      ifelse(SDs == TRUE & RAs == TRUE, 1, 0) 
-    }
-    
-    nwhoc = seq(1, nrow(data), by = window2)
-    NW = sapply(1:3, function(jj) cbind(
-      getnonwear(data[, jj], nwhoc, window, sdcriter, racriter)))
-    NWav = rowSums(NW)
-    
-  } else if (nonwear_approach == "vapply") {
-    # clipping detection
-    getclipping = function(data, cliphoc, window, clipthres) {
-      # function to get criteria for nonwear for a single axis
-      # data: numeric vector with one-axis data for this chunk
-      # cliphoc: integer with starting points for windows
-      # window: window length (= window for clipping)
-      # clipthres: criteria for clipping
-      
-      vapply(cliphoc, FUN.VALUE = numeric(length = 1), 
-             FUN = function(cliphoc) {
-               sum(abs(data[cliphoc:(cliphoc + window - 1)]) > clipthres) / window
-             })
-    }
-    
-    cliphoc = seq(1, nrow(data), by = window2)
-    CW = vapply(1:3, FUN.VALUE = numeric(length = length(cliphoc)), 
-                FUN = function(jj) cbind(
-                  getclipping(data[, jj], cliphoc, window2, clipthres)))
-    CWav = apply(CW, 1, max)
-    
-    # Nonwear detection --------
-    getnonwear = function(data, nwhoc, window, sdcriter, racriter) {
-      # function to get criteria for nonwear for a single axis
-      # data: numeric vector with one-axis data for this chunk
-      # nwhoc: integer with starting points for windows
-      # window: window length (= window for nonwear)
-      # sdcriter: criteria for standard deviation
-      # racriter: criteria for range of accelerations
-      
-      # get standard deviations below sdcriter
-      SDs = vapply(nwhoc, FUN.VALUE = logical(length = 1),
-                   FUN = function(nwhoc) {
-                     endpoint = nwhoc + window - 1
-                     if (endpoint > length(data)) window = length(nwhoc:length(data))
-                     sd(data[nwhoc:(nwhoc + window - 1)]) < sdcriter
-                   })
-      
-      # get ranges below racriter
-      RAs = vapply(nwhoc, FUN.VALUE = logical(length = 1),
-                   FUN = function(nwhoc) {
-                     endpoint = nwhoc + window - 1
-                     if (endpoint > length(data)) window = length(nwhoc:length(data))
-                     diff(range(data[nwhoc:(nwhoc + window - 1)])) < racriter
-                   })
-      
-      # Nonwear indicator
-      ifelse(SDs == TRUE & RAs == TRUE, 1, 0) 
-    }
-    
-    nwhoc = seq(1, nrow(data), by = window2)
-    NW = vapply(1:3, FUN.VALUE = double(length = length(nwhoc)),
-                FUN = function(jj) cbind(
-                  getnonwear(data[, jj], nwhoc, window, sdcriter, racriter)))
-    NWav = rowSums(NW)
-    
-  } else if (nonwear_approach == "data_table") {
-    DT = data.table(data)
-    
-    # clipping detection ----
-    clip = function(x, clipthres) sum(abs(x) > clipthres)
-    
-    DT$index = rep(1:nmin, each = window2)
-    CW = DT[, lapply(.SD, clip, clipthres = clipthres), by = .(index)] / window2
-    CWav = apply(CW[, -1], 1, max)
-    
-    # Nonwear detection --------
-     getnonwear = function(data, nwhoc, window, sdcriter, racriter) {
-      # function to get criteria for nonwear for a single axis
-      # data: numeric vector with one-axis data for this chunk
-      # nwhoc: integer with starting points for windows
-      # window: window length (= window for nonwear)
-      # sdcriter: criteria for standard deviation
-      # racriter: criteria for range of accelerations
-      
-      # get standard deviations below sdcriter
-      SDs = vapply(nwhoc, FUN.VALUE = logical(length = 1),
-                   FUN = function(nwhoc) {
-                     endpoint = nwhoc + window - 1
-                     if (endpoint > length(data)) window = length(nwhoc:length(data))
-                     sd(data[nwhoc:(nwhoc + window - 1)]) < sdcriter
-                   })
-      
-      # get ranges below racriter
-      RAs = vapply(nwhoc, FUN.VALUE = logical(length = 1),
-                   FUN = function(nwhoc) {
-                     endpoint = nwhoc + window - 1
-                     if (endpoint > length(data)) window = length(nwhoc:length(data))
-                     diff(range(data[nwhoc:(nwhoc + window - 1)])) < racriter
-                   })
-      
-      # Nonwear indicator
-      ifelse(SDs == TRUE & RAs == TRUE, 1, 0) 
-    }
-    
-    nwhoc = seq(1, nrow(data), by = window2)
-    NW = vapply(1:3, FUN.VALUE = double(length = length(nwhoc)),
-                FUN = function(jj) cbind(
-                  getnonwear(data[, jj], nwhoc, window, sdcriter, racriter)))
-    NWav = rowSums(NW)
-    
-  }
-  
+  } 
   
   # In NWav: single 1's surrounded by 2's or 3's --> 2 (so it is considered nonwear)
   ones = which(NWav == 1)
