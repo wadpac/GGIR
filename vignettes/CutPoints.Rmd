@@ -28,20 +28,56 @@ instructions on how to use them with GGIR. As newer cut-points are frequently
 published the list below may not be up to date. **Please let us know you if know of 
 any cut-points we missed!**
 
+Also, note that activity counts-based cut-points are not included in this list, but they
+can be applied in GGIR via `do.neishabouricounts = TRUE`. Activity-count based cut-points
+can be easily found in the literature, for example, see this [systematic review](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6231536/) for a organized
+list based on age groups.
+
+## Should cut-points be scaled to epoch length and/or sampling frequency?
+
 It is important to highlight that some of the presented cut-points were originally 
 based on acceleration metrics that are not available in GGIR. In particular 
 acceleration metrics that sum their values per epoch rather than average them
-per epoch like GGIR does. However, we can use them in GGIR by multiplying the 
-cut-point by the sample frequency as used in the study that proposed it.
-For each of the studies this is detailed in the footnotes. In the tables below these 
-conversion are already performed. Thus, some of the cut-points as shown differ with the
-values reported in the publications.
+per epoch like GGIR does. 
 
 Note that GGIR intentionally does not sum values per epoch because that approach
 makes the cut-point sample frequency and epoch length dependent, which complicates
 comparisons and harmonisation of literature. The explained variance and accuracy
 remains identical because we are only multiplying with a constant, so no 
 information will be lost.
+
+
+**How to scale cut-points to sampling frequency?**
+In the case that a study provides cut-points summing their value per epoch (usually 
+presented as g·min), we can still use them in GGIR by multiplying the cut-point by 
+the sample frequency as used in the study that proposed it.
+In the tables below  (section 2), these conversions are already performed. Thus, 
+some of the cut-points as shown differ with the values reported in the publications.
+
+
+**Can activity counts-based cut-points be used in GGIR?**
+Activity counts-based cut-points are a particular case as the raw signal is first down-sampled
+to 10 Hz, and then the activity counts are summed over the epoch length in the down-sampled signal.
+Therefore, multiplying by the sampling frequency does not make sense in this case. Still, as the 
+counts are summed, the cut-point value is affected when it is applied to a different epoch length
+(i.e., the longer the epoch, the more time to accumulate counts). The cut-points should then be scaled
+to the epoch length that is being used in GGIR.
+
+And how to scale activity counts-based cut-points? Let's take the traditional threshold of 100 counts 
+per minute in the vertical axis to separate inactivity from light physical activity as example. And let's 
+assume that we are using the default epoch length in GGIR (i.e., first value in `windowsizes`, 5 seconds). 
+One minute consists of 12 5-second epochs, so 100 counts per minute correspond to ~8.3 counts per 5 seconds. 
+Therefore, the GGIR function call would look like this:
+
+```
+GGIR([...],
+     mode = 1:5,
+     windowsizes = c(5, 900, 3600),
+     do.neishabouricounts = TRUE,
+     acc.metric = "NeishabouriCount_y",
+     threshold.in = 8.3,
+     [...])
+```
 
 # Relevant arguments to use cut-points in GGIR
 
