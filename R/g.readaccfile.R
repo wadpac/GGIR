@@ -380,8 +380,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
                                    rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
                                    rmc.origin = params_rawdata[["rmc.origin"]],
-                                   rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
-                                   rmc.configtz = params_rawdata[["rmc.configtz"]],
+                                   rmc.desiredtz = params_general[["rmc.desiredtz"]],
+                                   rmc.configtz = params_general[["rmc.configtz"]],
                                    rmc.sf = params_rawdata[["rmc.sf"]],
                                    rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
                                    rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
@@ -393,7 +393,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    interpolationType = params_rawdata[["interpolationType"]],
                                    PreviousLastValue = PreviousLastValue,
                                    PreviousLastTime = PreviousLastTime,
-                                   epochsize = params_general[["windowsizes"]][1:2])
+                                   epochsize = params_general[["windowsizes"]][1:2],
+                                   desiredtz = params_general[["desiredtz"]],
+                                   configtz = params_general[["configtz"]])
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
     if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv

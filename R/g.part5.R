@@ -412,6 +412,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
+            # 2023-04-23 - backup of nightsi outside threshold look to avoid
+            # overwriting the backup after the first iteration 
+            nightsi_bu = nightsi
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
@@ -433,7 +436,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
                   FM = which(diff(ts$diur) == -1)
-                  nightsi_bu = nightsi
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
                     nightsi = nightsi_bu
@@ -834,7 +836,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
                             y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
                             dsummary[di,fi:(fi + 2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
-                            ds_names[fi:(fi + 2)] = c("ig_gradient", "ig_intercept", "ig_rsquared")
+                            ds_names[fi:(fi + 2)] = c("ig_day_gradient", "ig_day_intercept", "ig_day_rsquared")
+                            fi = fi + 3
+                          }
+                          #===========================
+                          # Intensity gradient over the full window (waking + spt)
+                          if (length(params_247[["iglevels"]]) > 0) {
+                            q55 = cut(ts$ACC[sse], breaks = params_247[["iglevels"]], right = FALSE)
+                            x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
+                            y_ig = (as.numeric(table(q55)) * ws3new)/60 #converting to minutes
+                            dsummary[di,fi:(fi + 2)] = as.numeric(g.intensitygradient(x_ig, y_ig))
+                            ds_names[fi:(fi + 2)] = c("ig_day_spt_gradient", "ig_day_spt_intercept", "ig_day_spt_rsquared")
                             fi = fi + 3
                           }
                           #===============================================

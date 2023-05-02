@@ -188,7 +188,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["def.noc.sleep"]] = 1
     }
     if (params_sleep[["HASPT.algo"]] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
-      warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed", call. = FALSE)
+      warning("\nHASPT.algo is set to HorAngle, therefore auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
@@ -206,11 +206,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (params_cleaning[["strategy"]] != 3 & params_cleaning[["ndayswindow"]] != 7) {
+    if (!(params_cleaning[["strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
       warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"), call. = FALSE)
+                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when strategy = 3 or strategy = 5"), call. = FALSE)
     }
-    
+    if (params_cleaning[["strategy"]] == 5 &
+        params_cleaning[["ndayswindow"]] != round(params_cleaning[["ndayswindow"]])) {
+      newValue = round(params_cleaning[["ndayswindow"]])
+      warning(paste0("\nArgument ndayswindow has been rounded from ",
+                     params_cleaning[["ndayswindow"]], " to ", newValue, " days",
+                     "because when strategy == 5 we expect an integer value", call. = FALSE))
+      params_cleaning[["ndayswindow"]] = newValue
+    }
     
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       # Convert paths from Windows specific slashed to generic slashes
@@ -260,14 +267,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop("\nThe argument expand_tail_max_hours has been replaced by",
            " recordingEndSleepHour which has a different definition. Please",
            " see the documentation for further details and replace",
-           " expand_tail_max_hour in your function call and config.csv file.")
+           " expand_tail_max_hour in your function call and config.csv file.", call. = FALSE)
     } else {
       # If both are defined, this is probably because expand_tail_max_hours is 
       # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
       warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
               " are defined. GGIR will only use recordingEndSleepHour",
-              " and expand_tail_max_hours will be set to NULL.")
+              " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
@@ -278,9 +285,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      " has been defined as ", params_general[["recordingEndSleepHour"]],
                      ", which does not look plausible, please specify time at or later than 19:00",
                   " . Please note that it is your responsibility as user to verify that the
-                  assumption is credible."))
+                  assumption is credible."), call. = FALSE)
     }
   }
+  
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,
