@@ -10,6 +10,7 @@
    \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest #768.
    \item Part 5: intensity gradient is now also calculated for full window in part 5 and column names now indicate the window over the intensity gradient is calculated (i.e., "_day_" or "_day_spt_") #763.
    \item General: warnings added to inform user that rmc.desiredtz and rmc.configtz will be deprecated #765.
+   \item Vignettes: expansion of the cut-point vignette with information on activity counts-based cut-points #771.
   }
 }
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{
