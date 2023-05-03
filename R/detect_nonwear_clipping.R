@@ -1,6 +1,6 @@
 detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
                                    clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
-                                   nonwear_approach = "old",
+                                   nonwear_approach = "2013",
                                    params_rawdata = c()) {
   ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]
   window3 = ws3 * sf #window size in samples
