@@ -1057,23 +1057,44 @@ Key output variables:
 
 ## Non-wear detection
 
-Accelerometer non-wear time is estimated on the basis of the standard
+Accelerometer non-wear time is detected on the basis of the standard
 deviation and the value range of the raw data from each accelerometer
-axis. Classification is done per 15 minute (or ws2) block and based on
-the characteristics of the 60 minute (or ws) window centred at these 15
-minutes. A block is classified as non-wear time if the standard
-deviation of the 60 minute window is less than 13.0 mg
-($1 mg = 0.00981 m·s^−2$) and the value range of the 60 minute window is
-less than 50 mg, for at least two out of the three accelerometer axes.
-The procedure for non-wear detection was modified in comparison to the
-procedure as applied in the 2011 PLoSONE publication
-[link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922).
-Instead of 30-minute time windows 60-minute time windows were used to
-decrease the chance of accidently detecting short sedentary periods as
-non-wear time. The windows were overlapping (15 minute steps, window
-overlap of 45 minutes), which was done to improve the accuracy of
-detecting the boundaries of non-wear time as opposed to non-overlapping
-time windows. Inspection of unpublished data on non-wear classification
+axis. A block is classified as non-wear time if the standard
+deviation of the accelerations is less than 13.0 m*g*
+($1 mg = 0.00981 m·s^−2$) and the range of accelerations (i.e., maximum value *minus* minimum value) 
+is less than 50 m*g*, for at least two out of the three accelerometer axes.
+
+The block to test these conditions can be defined by the user via the argument 
+`windowsizes`, where the second (mediumsize window, default = 15 min) and third value 
+(longsize window, default = 60 min) are used for the non-wear classification based
+on the selected `nonwear_approach`. At the moment there are two approaches to detect
+non-wear: `nonwear_approach = "2013"` and `nonwear_approach = "2023"`.
+
+### Approaches to detect non-wear: 2013 and 2023 algorithms
+
+**nonwear_approach = "2013"**
+
+The 2013 algorithm is a revision of the algorithm first described in the [2011 PLoSONE publication](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922).
+This non-wear detection approach is done per mediumsize window (default = 15 minutes) and based on
+the characteristics of the longsize window (default = 60 minutes) centred at the mediumsize window 
+to be flagged. 
+
+The modification of the algorithm in 2013 included:
+
+-   The longsize window passed from 30 minutes (original, 2011) to 60 minutes (current default, 2013)
+to decrease the chance of accidentally detecting short sedentary periods as non-wear time.
+-   The windows passed from non-overlapping to overlapping (15 minute steps, window
+overlap of 45 minutes), which was done to improve the accuracy of detecting the boundaries of non-wear time.
+
+**nonwear_approach = "2023"**
+The 2023 version of the algorithm proposes marking as non-wear the longsize window (default = 60 minutes) 
+being tested, instead of the mediumsize window in the middle (default = 15 minutes). 
+Instead of centering the longsize window in the middle of the mediumsize window, the 2023 method aligns 
+the longsizewindow with its left edge to the left edge of the mediumsize window.
+
+### Additional non-wear
+
+Inspection of unpublished data on non-wear classification
 by the algorithm as described in our published work indicated that the
 algorithm does not cope well with periods of monitor transportation per
 post. Here, long periods of non-wear are briefly interrupted by periods
@@ -1093,16 +1114,18 @@ periods were classified as non-wear. The motivation for selecting a
 relatively high criteria (\< 30%) in combination with a long period
 (6hrs) and a low criteria (\< 80%) in combination with a short period (3
 hrs) was that long period are more likely to be actually related to
-monitor wear time. A visual model was created, see Figure 1. Here, units
+monitor wear time. A visual model was created, see picture below. Here, units
 of time are presented in squares and marked grey if detected as non-wear
 time. Period C is detected as wear-time and borders to non-wear periods
-B and D, see Figure 1. If the length of C is less than six hours and C
+B and D. If the length of C is less than six hours and C
 divided by the sum of B and D is less than 0.3 then the first criteria
 is met and block C is turned into a non-wear period.
 
 ```{r, out.width = "400px",echo=FALSE}
 knitr::include_graphics("nonwearimage.jpg")
 ```
+
+### Beginning and ending of the recording
 
 By visual inspection of \>100 traces from a large observational study it
 turned out that applying this stage in three iterative stages allowed
@@ -1127,13 +1150,13 @@ Reference:
     Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating
     movement and gravity components in an acceleration signal and
     implications for the assessment of human daily physical activity.
-    PLoS One. 2013 Apr 23
-    [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
+    [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
 
 Key decisions to be made:
 
 1.  Size of windows
 2.  Whether to utilize the non-wear detection
+3.  Non-wear approach (either 2013 or 2023)
 
 Key output variables:
 
@@ -1143,11 +1166,12 @@ Key output variables:
 
 ## Clipping score
 
-The acceleration signal was screened for 'clipping'. If more than 50% of
-the data points in a 15 minute time window are higher than 7.5g (close
-to the maximal dynamic range of this sensor) the corresponding time
+GGIR also screens the acceleration signal for "clipping". If more than 50% of
+the data points in a mediumsize window (default = 15 minutes) are close
+to the maximal dynamic range of this sensor the corresponding time
 period is considered as potentially corrupt data, which may be explained
-by the sensor getting stuck at its extreme value.
+by the sensor getting stuck at its extreme value. For example, for a dynamic range of 8*g*, 
+accelerations over 7.5*g* would be marked as "clipping". 
 
 Reference:
 
@@ -1155,8 +1179,7 @@ Reference:
     Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating
     movement and gravity components in an acceleration signal and
     implications for the assessment of human daily physical activity.
-    PLoS One. 2013 Apr 23
-    [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+    [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
 
 ## Why collapse information to epoch level?
 
