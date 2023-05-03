@@ -11,7 +11,7 @@ of the accelerometer.
 \usage{
 detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
                         clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
-                        nonwear_approach = "old",
+                        nonwear_approach = "2013",
                         params_rawdata = c())
 }
 \arguments{
@@ -38,11 +38,14 @@ detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
 }
  \item{nonwear_approach}{
   Whether to use the traditional version of the non-wear detection algorithm
-  (nonwear_approach = "old", default) or the new version (nonwear_approach = "new). 
-  The old version would use the longsize window (windowsizes[3], one hour as default)
+  (nonwear_approach = "2013", default) or the new version (nonwear_approach = "2023"). 
+  The 2013 version would use the longsize window (windowsizes[3], one hour as default)
   to check the conditions for nonwear identification and would flag as nonwear the
-  mediumsize window (windowsizes[2], 15 min as default) in the middle. The new 
-  version differs in which it would flag as nonwear the full longsize window.
+  mediumsize window (windowsizes[2], 15 min as default) in the middle. The 2023 
+  version differs in which it would flag as nonwear the full longsize window. For the 2013
+  method the longsize window is centered in the centre of the mediumsize window, while in 
+  the 2023 method the longsizewindow is aligned with its left edge to the left edge of the 
+  mediumsize window.
  }
  \item{params_rawdata}{
   See details in \link{GGIR}.
