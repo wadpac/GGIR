@@ -988,8 +988,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   SRI = SleepRegularityIndex
                   if (is.data.frame(SRI) == TRUE) {
-                    calendar_date_asDate = as.Date(calendar_date[j], format = "%d/%m/%Y")
-                    calendar_date_reformat = as.character(format(x = calendar_date_asDate, format = "%d/%m/%Y"))
+                    calendar_date_asDate = format(as.Date(calendar_date[j], format = "%d/%m/%Y"), format = ("%d/%m/%Y"))
+                    calendar_date_reformat = format(x = calendar_date_asDate, format = "%d/%m/%Y")
                     SRIindex = which(SRI$date == calendar_date_reformat & SRI$frac_valid > (params_cleaning[["includenightcrit"]]/24))
                     if (length(SRIindex) > 0) {
                       nightsummary[sumi, 37] = SRI$SleepRegularityIndex[SRIindex[1]]
