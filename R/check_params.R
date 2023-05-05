@@ -293,14 +293,26 @@ check_params = function(params_sleep = c(), params_metrics = c(),
           params_metrics[["do.lfenmo"]] == TRUE |
           params_metrics[["do.bfen"]] == TRUE |
           params_metrics[["do.mad"]] == TRUE) {
+        metricsNotFalse = NULL
+        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
+                             "do.enmo", "do.bfen", "do.mad", "do.lfenmo")) {
+          if (params_metrics[[metricName]] == TRUE) {
+            metricsNotFalse = c(metricsNotFalse, metricName)
+          }
+        }
+        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                       " we assume that only metric ZCY is extracted and",
+                       " GGIR ignores all other metric requests. So, you should set arguments ",
+                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
+        
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
         params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
         params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
-        params_metrics[["do.mad"]] = FALSE
-        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                       " we assume that only metric ZCY is extracted and",
-                       " GGIR ignores all other metric requests"), call. = FALSE)
+        params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
+        # Force acc.metric to be ZCY
+        params_general[["acc.metric"]] = "ZCY"
+       
       }
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
@@ -323,6 +335,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
           params_metrics[["do.bfen"]] == TRUE |
           params_metrics[["do.mad"]] == TRUE |
           params_general[["acc.metric"]] != "LFENMO") {
+        metricsNotFalse = NULL
+        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
+                             "do.enmo", "do.bfen", "do.mad")) {
+          if (params_metrics[[metricName]] == TRUE) {
+            metricsNotFalse = c(metricsNotFalse, metricName)
+          }
+        }
+        warning(paste0("\nWhen dataFormat is set to ukbiobank",
+                       " we assume that only metric LFENMO is extracted and",
+                       " GGIR ignores all other metric requests. So, you should set arguments ",
+                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
+        
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
         params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
@@ -330,9 +354,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_metrics[["do.mad"]] = FALSE
         # Force acc.metric to be LFENMO
         params_general[["acc.metric"]] = "LFENMO"
-        warning(paste0("\nWhen dataFormat is set to ukbiobank",
-                       " we assume that only metric LFENMO is extracted and",
-                       " GGIR ignores all other metric requests"), call. = FALSE)
+        
       }
       
     }
