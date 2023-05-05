@@ -111,7 +111,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_output = params$params_output
   params_general = params$params_general
   
-  if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE) {
+  if (params_general[["dataFormat"]] == "ukbiobank") {
+    warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
+    dopart3 = dopart4 = dopart5 = FALSE
+    mode = mode[which(mode > 2)]
+  }
+  
+  if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
     params_metrics[["do.anglez"]] = TRUE
   }
   
@@ -167,6 +173,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else {
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
+      warning(paste0("\nBe aware that you are using externally derived metrics ",
+              "that are computed outside GGIR by which their reproducibility and ",
+              "transparancy is outside the scope of GGIR. Most GGIR arguments ",
+              "related to raw data handling will be ignored"), call. = FALSE)
       convertEpochData(datadir = datadir,
                        studyname = studyname,
                        outputdir = outputdir,

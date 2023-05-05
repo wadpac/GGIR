@@ -277,13 +277,73 @@ check_params = function(params_sleep = c(), params_metrics = c(),
               " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
     }
   }
+  if (length(params_metrics) > 0 & length(params_general) > 0) {
+    if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
+      if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
+        params_metrics[["do.zcy"]] = TRUE
+        params_general[["acc.metric"]] = "ZCY"
+        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                       " we assume that metric is ZCY, this is now used"), call. = FALSE)
+      }
+      if (params_metrics[["do.anglex"]] == TRUE |
+          params_metrics[["do.angley"]] == TRUE |
+          params_metrics[["do.anglez"]] == TRUE |
+          params_metrics[["do.enmoa"]] == TRUE |
+          params_metrics[["do.enmo"]] == TRUE |
+          params_metrics[["do.lfenmo"]] == TRUE |
+          params_metrics[["do.bfen"]] == TRUE |
+          params_metrics[["do.mad"]] == TRUE) {
+        # Turn all commonly used metrics to FALSE
+        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+        params_metrics[["do.mad"]] = FALSE
+        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                       " we assume that only metric ZCY is extracted and",
+                       " GGIR ignores all other metric requests"), call. = FALSE)
+      }
+      if (length(params_sleep) > 0) {
+        if (params_sleep[["Sadeh_axis"]] != "Y") {
+          params_sleep[["Sadeh_axis"]] = TRUE
+          warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                         " we assume that Sadeh_axis Y, this is now overwritten"), call. = FALSE)
+        }
+        if (params_sleep[["HASIB.algo"]] == "vanHees2015") {
+          stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",
+                      " setting in combination with dataFormat set to ",
+                      params_general[["dataFormat"]], " Please fix"), call. = FALSE)
+        }
+      }
+    } else if (params_general[["dataFormat"]] == "ukbiobank") {
+      if (params_metrics[["do.anglex"]] == TRUE |
+          params_metrics[["do.angley"]] == TRUE |
+          params_metrics[["do.anglez"]] == TRUE |
+          params_metrics[["do.enmoa"]] == TRUE |
+          params_metrics[["do.enmo"]] == TRUE |
+          params_metrics[["do.bfen"]] == TRUE |
+          params_metrics[["do.mad"]] == TRUE |
+          params_general[["acc.metric"]] != "LFENMO") {
+        # Turn all commonly used metrics to FALSE
+        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+        params_metrics[["do.mad"]] = FALSE
+        # Force acc.metric to be LFENMO
+        params_general[["acc.metric"]] = "LFENMO"
+        warning(paste0("\nWhen dataFormat is set to ukbiobank",
+                       " we assume that only metric LFENMO is extracted and",
+                       " GGIR ignores all other metric requests"), call. = FALSE)
+      }
+      
+    }
+  }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
     # stop if expand_tail_max_hours was defined before 7pm
     if (params_general[["recordingEndSleepHour"]] < 19) {
       stop(paste0("\nrecordingEndSleepHour expects the latest time at which",
-                     " the participant is expected to fall asleep. recordingEndSleepHour",
-                     " has been defined as ", params_general[["recordingEndSleepHour"]],
-                     ", which does not look plausible, please specify time at or later than 19:00",
+                  " the participant is expected to fall asleep. recordingEndSleepHour",
+                  " has been defined as ", params_general[["recordingEndSleepHour"]],
+                  ", which does not look plausible, please specify time at or later than 19:00",
                   " . Please note that it is your responsibility as user to verify that the
                   assumption is credible."), call. = FALSE)
     }

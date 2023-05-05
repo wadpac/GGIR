@@ -89,7 +89,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
              EN = rep(0, 3)
            ),
            metashort = data.frame(timestamp = rep(0, 3),
-                                  ENMO = rep(0, 3)), 
+                                  accmetric = rep(0, 3)), 
            wday = 0,
            wdayname = "Sunday",
            windowsizes = params_general[["windowsizes"]],
@@ -115,6 +115,24 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     deviceSerialNumber = "unknown")
   
   filefoldername = NA
+  
+  
+  detectQuote = function(fn, ind) {
+    # From experience we know that on some machine the quotes in the files are
+    # poorly recognised, to catch this first try to check whether this is the case:
+    quote = "\""
+    try(expr = {Dtest = data.table::fread(input = fn,
+                                          header = FALSE, sep = ",", skip = ind,
+                                          nrows = 20, quote = quote)}, silent = TRUE)
+    if (length(Dtest) == 0) {
+      quote = ""
+    } else {
+      if (nrow(Dtest) <= 1) {
+        quote = "" 
+      }
+    }
+    return(quote)
+  }
   
   for (i in 1:length(fnames)) { # loop over all epoch files
     # filename
@@ -149,18 +167,21 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         if (params_general[["dataFormat"]] == "actiwatch_csv") {
           # ! Assumptions that timeseries start before line 150
           ind = 150
+          quote = detectQuote(fn = fnames[i], ind = ind)
+          print(quote)
           testraw = data.table::fread(input = fnames[i],
                                       header = FALSE, sep = ",", skip = ind,
-                                      nrows = 1, data.table = TRUE)
+                                      nrows = 1, data.table = TRUE, quote = quote)
           # ! Assumption that first column are the epoch numbers
           delta = 1 - testraw$V1
           ind = ind + delta
-          D = data.table::fread(input = fnames[i],
-                                header = FALSE, sep = ",", skip = ind)
+          D = data.table::fread(input = fnames[i], sep = ",", skip = 500, nrows = 10, quote = quote)
+          
           # ! Assumption that column names are present 2 lines prior to timeseries
           colnames = data.table::fread(input = fnames[i],
                                        header = FALSE, sep = ",",
-                                       skip = ind - 2, nrows = 1)
+                                       skip = ind - 2, nrows = 1, quote = quote)
+
           colnames(D) = as.character(colnames)[1:ncol(D)]
           # ! Assumptions about columns names
           colnames(D) = gsub(pattern = "datum|date", replacement = "date", x = colnames(D), ignore.case = TRUE)
@@ -177,14 +198,18 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           }
           timestamp_POSIX = timestamp_POSIX[1]
           D = D[, "ZCY"]
+          if (quote == "") D$ZCY = as.numeric(D$ZCY)
         } else if (params_general[["dataFormat"]] == "actiwatch_awd") {
           # ! Assumption that first data row equals the first row with 3 columns
           ind = 0
+          
+          quote = detectQuote(fn = fnames[i], ind = 50)
           NC = 1
           while (NC >= 3) {
+            
             testraw = data.table::fread(input = fnames[i],
                                       header = FALSE, sep = ",", skip = ind,
-                                      nrows = 1, data.table = TRUE)
+                                      nrows = 1, data.table = TRUE, quote = quote)
             NC = ncol(testraw)
             if (NC >= 3) {
               break()
@@ -193,11 +218,11 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
             }
           }
           D = data.table::fread(input = fnames[i],
-                                header = FALSE, sep = ",", skip = ind)
+                                header = FALSE, sep = ",", skip = ind, quote = quote)
           D = D[,1]
           colnames(D)[1] = "ZCY"
           header = data.table::fread(input = fnames[i],
-                                header = FALSE, sep = ",", nrows =  7)
+                                header = FALSE, sep = ",", nrows =  7, quote = quote)
           # Get epoch size
           optionalEpochs = data.frame(code = c("1", "2", "4", "8", "20", "81", "C1", "C2"),
                                       size = c(15, 30, 60, 120, 300, 2, 5, 10))
@@ -211,6 +236,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                         " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
                  " seconds). Please correct.", call. = FALSE)
           }
+          if (quote == "") D$ZCY = as.numeric(D$ZCY)
         }
       }
       
@@ -241,12 +267,14 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                                                      tz = tz)
       time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
                                                 tz = tz)
-      M$metashort = data.frame(timestamp = time_shortEp_8601,ENMO = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
+      M$metashort = data.frame(timestamp = time_shortEp_8601,
+                               accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       LML = length(time_longEp_8601)
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
+        names(M$metashort)[2] = "LFENMO"
         #Collapse second column of input data to use as non-wear score
         imp = D[, 2]
-        M$metashort$ENMO = M$metashort$ENMO/1000
+        M$metashort$LFENMO = M$metashort$LFENMO/1000
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         imp = unlist(D[, 1])
       }
