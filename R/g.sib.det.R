@@ -82,7 +82,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   if (ND > 0.2) {
     #========================================================================
     # timestamps
-    time = as.character(IMP$metashort[,1])
+    time = format(IMP$metashort[,1])
     # # angle
     # if (length(which(colnames(IMP$metashort) == "anglez")) == 0 ) {
     #   cat("metric anglez was not extracted, please make sure that anglez  is extracted")
