@@ -168,7 +168,6 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           # ! Assumptions that timeseries start before line 150
           ind = 150
           quote = detectQuote(fn = fnames[i], ind = ind)
-          print(quote)
           testraw = data.table::fread(input = fnames[i],
                                       header = FALSE, sep = ",", skip = ind,
                                       nrows = 1, data.table = TRUE, quote = quote)
