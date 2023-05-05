@@ -114,7 +114,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (params_general[["dataFormat"]] == "ukbiobank") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
-    mode = mode[which(mode > 2)]
+    mode = mode[which(mode <= 2)]
   }
   
   if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
