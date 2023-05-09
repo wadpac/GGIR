@@ -12,6 +12,7 @@
    \item Part 2: strategy = 5 implemented as a variation of strategy 3 (it allows to select
    most active X calendar days) #768.
    \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest #768.
+   \item Part 3 + 4: Update date handling in SleepRegularityIndex to be compatible with latest R version #782.
    \item Part 5: intensity gradient is now also calculated for full window in part 5 and column names now indicate the window over the intensity gradient is calculated (i.e., "_day_" or "_day_spt_") #763.
    \item General: warnings added to inform user that rmc.desiredtz and rmc.configtz will be deprecated #765.
    \item Part 1: Function g.calibrate now able to handle zero variation in temperature data #785.
