@@ -1,11 +1,13 @@
 library(GGIR)
 context("g.part5.classifyNaps")
 test_that("is able to classifyNaps", {
+  starttimes = as.POSIXlt(c("2020-04-04 10:15:00", "2020-04-04 12:00:00",
+                            "2020-04-04 12:18:00", "2020-04-04 19:39:00"))
+  endtimes = as.POSIXlt(c("2020-04-04 10:40:00", "2020-04-04 12:16:00", 
+                          "2020-04-04 12:47:00", "2020-04-04 19:59:00"))
   sibreport = data.frame(ID = 1:4, type = rep("sib", 4),
-                         start = as.POSIXlt(c("2020-04-04 10:15:00", "2020-04-04 12:00:00",
-                                              "2020-04-04 12:18:00", "2020-04-04 19:39:00")),
-                         end = as.POSIXlt(c("2020-04-04 10:40:00", "2020-04-04 12:16:00", 
-                                            "2020-04-04 12:47:00", "2020-04-04 19:59:00")),
+                         start = starttimes,
+                         end = endtimes,
                          mean_acc_1min_before = c(2, 2, 100, 100), mean_acc_1min_after = c(2, 2, 100, 100))
   sibreport$duration = sibreport$end - sibreport$start
   

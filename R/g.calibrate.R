@@ -1,9 +1,9 @@
 g.calibrate = function(datafile, params_rawdata = c(),
                        params_general = c(),
                        params_cleaning = c(),
-                       verbose = TRUE, 
+                       verbose = TRUE,
                        ...) {
-  
+
   #get input variables
   input = list(...)
   expectedArgs = c("datadir", "params_rawdata", "params_general", "params_cleaning")
@@ -20,7 +20,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     params_cleaning = params$params_cleaning
     params_general = params$params_general
   }
-  
+
   use.temp = TRUE
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
@@ -90,7 +90,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   }
   if (sf == 0) stop("Sample frequency not recognised")
   options(warn = -1) #turn off warnings
-  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon, 
+  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
                                                desiredtz = params_general[["desiredtz"]],
                                                rmc.dec = params_rawdata[["rmc.dec"]],
                                                loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
@@ -182,7 +182,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       if ((mon == 3 & dformat == 2) | length(zeros) > 0) {
         data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
         data = as.matrix(data)
-      } 
+      }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
       use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
@@ -200,7 +200,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           # Initialization of variables
           if (dformat != 5) {
             suppressWarnings(storage.mode(data) <- "numeric")
-          } 
+          }
           if (mon == 1) { # GENEA
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
@@ -238,7 +238,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
             }
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
-          
+
           if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 0 & use.temp == TRUE)) {
             if (mon == 2) { # GENEActiv
               if ("temperature" %in% colnames(data)) {
@@ -265,10 +265,13 @@ g.calibrate = function(datafile, params_rawdata = c(),
             # GENEACTIV \ AX cwa \ Movisense \ ad-hoc monitor
             #also ignore temperature for GENEActive/movisens if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
-              if (verbose == TRUE) cat("\ntemperature is NA\n")
+              warning("\ntemperature ignored for auto-calibration because values are NA\n")
               use.temp = FALSE
             } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 120)) > 0) {
-              if (verbose == TRUE) cat("\ntemperature is too high\n")
+              warning("\ntemperature ignored for auto-calibration because values are too high\n")
+              use.temp = FALSE
+            } else if (sd(data[,temperaturecolumn], na.rm = TRUE) == 0) {
+              warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
           }
@@ -473,7 +476,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
         if (nhoursused > params_rawdata[["minloadcrit"]]) {
           if (verbose == TRUE) {
             cat(paste0("\nnew calibration error: ",cal.error.end, " g"))
-            cat(paste0("\nnpoints around sphere: ", npoints)) 
+            cat(paste0("\nnpoints around sphere: ", npoints))
           }
         }
         QC = "recalibration attempted with all available data, but possibly not good enough: Check calibration error variable to varify this"
