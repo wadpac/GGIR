@@ -11,6 +11,7 @@
    \item Part 3 + 4: Update date handling in SleepRegularityIndex to be compatible with latest R version #782.
    \item Part 5: intensity gradient is now also calculated for full window in part 5 and column names now indicate the window over the intensity gradient is calculated (i.e., "_day_" or "_day_spt_") #763.
    \item General: warnings added to inform user that rmc.desiredtz and rmc.configtz will be deprecated #765.
+   \item Part 1: Function g.calibrate now able to handle zero variation in temperature data #785.
   }
 }
 \section{Changes in version 2.9-0 (release date:24-03-2023)}{
