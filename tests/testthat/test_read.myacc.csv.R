@@ -68,7 +68,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                                 rmc.headername.sn = "serial_number",
                                 rmc.headername.recordingid = "ID"))
   
-  # warning if desiredtz not provided but rmc.desiredtz provided:
+  #  now also with configtz
   expect_warning(read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
                                 rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
                                 rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
