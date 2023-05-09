@@ -1,10 +1,14 @@
 convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                             params_general = c()) {
-  
+  timefound = Sys.getenv("LC_TIME")
+  Sys.setlocale("LC_TIME", "C") # set language to English
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
   # Identify input data file extensions
+  if (dir.exists(datadir) == FALSE) {
+    stop("\nWhen working with external data, argument datadir is expected to be a directory")
+  }
   fnames_csv = dir(datadir,full.names = TRUE,pattern = "[.]csv")
   fnames_awd = dir(datadir,full.names = TRUE,pattern = "[.]awd|[.]AWD")
   if (length(fnames_csv) > 0 & length(fnames_awd) > 0) {
@@ -189,6 +193,11 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           
           timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "), format = "%d-%m-%Y %H:%M:%S", tz = tz)
           epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
+          if (is.na(epSizeShort)) {
+            timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "), format = "%d/%m/%Y %H:%M:%S", tz = tz)
+            epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
+          }
+
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
                  params_general[["windowsizes"]][1],
@@ -229,6 +238,10 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           # Get starttime 
           timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
                                        format = "%d-%b-%Y %H:%M", tz = tz)
+          if (is.na(timestamp_POSIX) == TRUE) {
+            timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
+                                         format = "%d/%b/%Y %H:%M", tz = tz)
+          }
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
                         params_general[["windowsizes"]][1],
@@ -239,20 +252,21 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         }
       }
       
-      Sys.setlocale("LC_TIME", "C") # set language to English
+      
       quartlystart = (ceiling(as.numeric(timestamp_POSIX) / epSizeLong)) * epSizeLong
       
       ts_longEp_POSIX = as.POSIXlt(quartlystart, tz = tz, origin = "1970-01-01") # POSIX time
       M$wdayname = weekdays(x = ts_longEp_POSIX, abbreviate = FALSE) # extract weekday as day name
       M$wday = ts_longEp_POSIX$wday # extract weekday as a daynumber
       
-      # calculate time difference relative to original data
-      # to know how much epoch to ignore at the beginning of the file
-      deltastart = as.numeric(difftime(ts_longEp_POSIX, timestamp_POSIX,units = "sec") / 5)
-      # shorten the data (object D) accordingly
-      D = D[(deltastart + 1):nrow(D),]
+      if (length(ts_longEp_POSIX) > 2) {
+        # calculate time difference relative to original data
+        # to know how much epoch to ignore at the beginning of the file
+        deltastart = as.numeric(difftime(ts_longEp_POSIX, timestamp_POSIX,units = "sec") / 5)
+        # shorten the data (object D) accordingly
+        D = D[(deltastart + 1):nrow(D),]
+      }
       #create timeseries for metashort
-      
       time_shortEp_num = seq(quartlystart, quartlystart + ((nrow(D) - 1) * epSizeShort), by = epSizeShort)
       time_longEp_num = seq(quartlystart, quartlystart + ((nrow(D) - 1) * epSizeShort), by = epSizeLong)
       
@@ -314,6 +328,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       # Save these files as new meta-file
       save(M, C, I, filename_dir, filefoldername,
            file = outputFileName)
+      Sys.setlocale("LC_TIME", timefound) # set language to English
     }
   }
 }
