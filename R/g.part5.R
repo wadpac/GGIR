@@ -189,13 +189,18 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # extract key variables from the mile-stone data: time, acceleration and elevation angle
         # note that this is imputed ACCELERATION because we use this for describing behaviour:
         scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
-        ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
-                        guider = rep("unknown", nrow(IMP$metashort)),
-                        angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])) )
-        Nts = nrow(ts)
-        if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
-          cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
+        # if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
+        #   cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
+        # }
+        if ("anglez" %in% names(IMP$metashort)) {
+          ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
+                          guider = rep("unknown", nrow(IMP$metashort)),
+                          angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])))
+        } else {
+          ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
+                          guider = rep("unknown", nrow(IMP$metashort)))
         }
+        Nts = nrow(ts)
         # add non-wear column
         nonwear = IMP$rout[,5]
         nonwear = rep(nonwear, each = (IMP$windowsizes[2]/IMP$windowsizes[1]))
@@ -306,11 +311,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                       Nepochsinhour, Nts, SPTE_end, ws3)
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
+              
+              # only include angle if angle is present
+              angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
               if (lightpeak_available == TRUE) {
-                ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", "angle", "lightpeak", "lightpeak_imputationcode")],
+                ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", angleColName, "lightpeak", "lightpeak_imputationcode")],
                                by = list(ts$time_num), FUN = function(x) mean(x))
               } else {
-                ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", "angle")],
+                ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName)],
                                by = list(ts$time_num), FUN = function(x) mean(x))
               }
               ts$sibdetection = round(ts$sibdetection)
@@ -352,7 +360,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
-              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_",fnames.ms3[i],"_",j,".csv")
+              shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
+              
+              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
               write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
               # nap/sib/nonwear overlap analysis
               

@@ -78,7 +78,7 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
         SleepRegularityIndex$SleepRegularityIndex[i] = round(-100 + (200/(M - NValuesSkipped)) * SummedValue, digits = 3)
       }
       SleepRegularityIndex$weekday[i] = weekdays(abbreviate = FALSE, x =  uniqueDates[i])
-      SleepRegularityIndex$date[i] = as.character(as.Date(uniqueDates[i], 
+      SleepRegularityIndex$date[i] = format(as.Date(uniqueDates[i], 
                                                           origin = "1970-01-01"), format = "%d/%m/%Y")
     }
   } else {
