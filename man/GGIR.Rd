@@ -248,7 +248,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         to the 5, 15 and 60 second epoch level data files provided by UK Biobank 
         in csv format, Actiwatch in csv format, and Actiwatch in awd format. 
         For the Actiwatch data functionality has been tested with example data from
-        only one research group. Please let us know if you find difficulty using the
+        only one research group. Please let us know if you have difficulties using this
         functionality in your data.
       }
     }
