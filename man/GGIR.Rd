@@ -241,6 +241,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series 
         output to avoid biased output.
       }
+       \item{dataFormat}{
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
+        to indicate what the format is of the data in datadir.
+        Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
+        to the 5, 15 and 60 second epoch level data files provided by UK Biobank 
+        in csv format, Actiwatch in csv format, and Actiwatch in awd format. 
+        For the Actiwatch data functionality has been tested with example data from
+        only one research group. Please let us know if you have difficulties using this
+        functionality in your data.
+      }
     }
   }
 
@@ -1360,6 +1370,42 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        # Report generation
        #-------------------------------
        do.report = c(2,4,5))
+       
+       # For externally derived Actiwatch data in .AWD format:
+       GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
+          outputdir = "/media/myoutput", 
+          dataFormat = "actiwatch_awd",
+          mode = 1:5,
+          do.report = c(2, 4, 5),
+          windowsizes = c(60, 900, 3600), # 60 is the expected epoch length
+          visualreport = FALSE,
+          outliers.only = FALSE,
+          overwrite = TRUE,
+          HASIB.algo = "Sadeh1994",
+          def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
+
+       # For externally derived Actiwatch data in .CSV format:
+       GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
+          outputdir = "/media/myoutput", 
+          dataFormat = "actiwatch_csv",
+          mode = 1:5,
+          do.report = c(2, 4, 5),
+          windowsizes = c(15, 900, 3600), # 15 is the expected epoch length
+          visualreport = FALSE,
+          outliers.only = FALSE,
+          HASIB.algo = "Sadeh1994",
+          def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
+
+       # For externally derived UK Biobank data in .CSV format:   
+       GGIR(datadir = "/media/ukbiobank",
+           outputdir = "/media/myoutput",
+           dataFormat = "ukbiobank_csv",
+           mode = c(1:2),
+           do.report = c(2),
+           windowsizes = c(5, 900, 3600), # We know that data was stored in 5 second epoch
+           desiredtz = "Europe/London", # We know that data was collected in the UK
+           visualreport = FALSE,
+           overwrite = TRUE)
   }
 }
 \author{

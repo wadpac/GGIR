@@ -1,7 +1,8 @@
 GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 studyname = c(), f0 = 1, f1 = 0,
                 do.report = c(2, 4, 5), configfile = c(),
-                myfun = c(), verbose = TRUE, ...) {
+                myfun = c(), verbose = TRUE,
+                ...) {
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -73,7 +74,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   configfile_csv = c()
   ex = "csv"
   if (length(configfile) > 0) { # Get extension of file
-    ex = unlist(strsplit(basename(configfile), split ="\\."))
+    ex = unlist(strsplit(basename(configfile), split = "\\."))
     ex = ex[length(ex)]
   }
   if (ex == "csv") { # at a later point there may also be other file extensions
@@ -110,7 +111,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_output = params$params_output
   params_general = params$params_general
   
-  if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE) {
+  if (params_general[["dataFormat"]] == "ukbiobank") {
+    warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
+    dopart3 = dopart4 = dopart5 = FALSE
+    mode = mode[which(mode <= 2)]
+  }
+  
+  if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
     params_metrics[["do.anglez"]] = TRUE
   }
   
@@ -118,6 +125,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
             " user from specifying argument myfun as this poses a security risk.", call. = FALSE)
     check_myfun(myfun, params_general[["windowsizes"]])
+  }
+  
+  if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
+    params_output[["visualreport"]] == FALSE
+    warning(paste0("Turning off visualreport generation because",
+                   " dataFormat is not raw."), call. = FALSE)
   }
   
   #-----------------------------------------------------------
@@ -151,11 +164,25 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
-    g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
-            studyname = studyname, myfun = myfun,
-            params_rawdata = params_rawdata, params_metrics = params_metrics,
-            params_cleaning = params_cleaning, params_general = params_general,
-            verbose = verbose)
+    if (params_general[["dataFormat"]] == "raw") {
+      g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
+              studyname = studyname, myfun = myfun,
+              params_rawdata = params_rawdata, params_metrics = params_metrics,
+              params_cleaning = params_cleaning, params_general = params_general,
+              verbose = verbose)
+    } else {
+      # Skip g.part1, but instead convert epoch data to a format that
+      # looks as if it came out of g.part1
+      warning(paste0("\nBe aware that you are using epoch level aggregates of raw data ",
+              "computed outside GGIR by which their reproducibility and ",
+              "transparancy is also outside the scope of GGIR. GGIR",
+              " input arguments related to raw data handling are ignored."),
+              call. = FALSE)
+      convertEpochData(datadir = datadir,
+                       studyname = studyname,
+                       outputdir = outputdir,
+                       params_general = params_general)
+    }
   }
   if (dopart2 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 2")
@@ -236,7 +263,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
-                     selectdaysfile = params_cleaning[["selectdaysfile"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
                      verbose = verbose)
     } else {
