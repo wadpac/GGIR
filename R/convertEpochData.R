@@ -1,6 +1,10 @@
 convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                             params_general = c()) {
-  timefound = Sys.getenv("LC_TIME")
+  # Function to convert externally derived epoch data
+  # to a format that allows GGIR to process them as if they were part 1 output.
+  
+  # Capture current local settings
+  Syslocale = Sys.getenv("LC_TIME")
   Sys.setlocale("LC_TIME", "C") # set language to English
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
@@ -328,7 +332,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       # Save these files as new meta-file
       save(M, C, I, filename_dir, filefoldername,
            file = outputFileName)
-      Sys.setlocale("LC_TIME", timefound) # set language to English
+      Sys.setlocale("LC_TIME", Syslocale) # set language to English
     }
   }
 }

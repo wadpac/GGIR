@@ -1,11 +1,13 @@
 \name{convertEpochData}
 \alias{convertEpochData}
 \title{
-  convert Epoch data to GGIR part 1 milestone data format
+  convert external Epoch data to GGIR part 1 milestone data format
 }
 \description{
-  convert Epoch data to GGIR part 1 milestone data format. Function not
-  intended for direct use by user.
+  convert externally created Epoch data to GGIR part 1 milestone data format. Function not
+  intended for direct use by user. The aim is to allow for using GGIR on top of
+  extrnally derived epoch data. See argument dataFormat in the \link{GGIR} for details on
+  how to use this functionality.
 }
 \usage{
    convertEpochData(datadir = c(), studyname = c(), outputdir = c(),
