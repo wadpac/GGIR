@@ -262,10 +262,13 @@ g.calibrate = function(datafile, params_rawdata = c(),
             # GENEACTIV \ AX cwa \ Movisense \ ad-hoc monitor
             #also ignore temperature for GENEActive/movisens if temperature values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
-              cat("\ntemperature is NA\n")
+              warning("\ntemperature ignored for auto-calibration because values are NA\n")
               use.temp = FALSE
             } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 120)) > 0) {
-              cat("\ntemperature is too high\n")
+              warning("\ntemperature ignored for auto-calibration because values are too high\n")
+              use.temp = FALSE
+            } else if (sd(data[,temperaturecolumn], na.rm = TRUE) == 0) {
+              warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
           }
