@@ -129,6 +129,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         deviceSerialNumber = "not extracted"
       } else if (I$monc == 5) { #movisense
         deviceSerialNumber = "not extracted"
+      } else if (I$monc == 99) {
+        deviceSerialNumber = "not extracted"
       } else if (I$monc == 0) {
         if (header != "no header") {
           deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]

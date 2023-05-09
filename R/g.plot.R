@@ -113,13 +113,15 @@ g.plot = function(IMP, M, I, durplot) {
   # derive acceleration signal
   # Index of first acceleration metric in metashort other than timestamp, or angle-related
   IndOtMetric = which(colnames(M$metashort) %in% c("timestamp","anglex","angley","anglez") == FALSE)[1]
+  metricName = colnames(M$metashort)[IndOtMetric]
   accel = as.numeric(as.matrix(M$metashort[,IndOtMetric]))
+  
 
   accel2 = cumsum(c(0, accel))
   select = seq(1,length(accel2), by = ws2 / ws3)
   Acceleration = diff(accel2[round(select)]) / abs(diff(round(select[1:(length(select))])))
   if (length(timeline) > length(Acceleration)) {
-    Acceleration = c(Acceleration, rep(0, length(Acceleration) - length(timeline)))
+    Acceleration = c(Acceleration, rep(0, abs(length(Acceleration) - length(timeline))))
   } else if (length(timeline) < length(Acceleration)) {
     Acceleration = Acceleration[1:length(timeline)]
   }
@@ -127,11 +129,23 @@ g.plot = function(IMP, M, I, durplot) {
   MEND = length(timeline)
   ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
   # creating plot functions to avoid duplicated code
-  plot_acc = function(timeline, Acceleration, durplot, ticks) {
+  plot_acc = function(timeline, Acceleration, durplot, ticks, metricName) {
+    if (metricName %in% c("ZCX", "ZCY", "ZCX") == TRUE | 
+        length(grep(pattern = "count", x = metricName, ignore.case = TRUE)) > 0) {
+      # Metric is not on a G scale
+      ylabel = paste0(metricName, " (counts)")
+      YLIM = c(0, max(Acceleration, na.rm = TRUE) * 1.05)
+      YTICKS = round(c(0, YLIM[2] * 0.3, YLIM[2] * 0.65, YLIM[2] * 0.95))
+      YTICKS = unique(round(YTICKS/10) * 10) # round to nearest ten and remove possible duplicates
+    } else {
+      ylabel = expression(paste("Acceleration (", italic("g"), ")"))
+      YLIM = c(0, 0.6)
+      YTICKS = c(0, 0.2, 0.4, 0.6)
+    }
     plot(timeline, Acceleration, type = "l", xlab = "Day (24 hour blocks relative to start of recording)",
-         ylab = expression(paste("Acceleration (", italic("g"), ")")),
-         bty = "l", lwd = 0.1, xlim = c(0, durplot), ylim = c(0, 0.6), axes = FALSE, cex.lab = 0.8)
-    axis(side = 2, at = c(0, 0.2, 0.4, 0.6))
+         ylab = ylabel,
+         bty = "l", lwd = 0.1, xlim = c(0, durplot), ylim = YLIM, axes = FALSE, cex.lab = 0.8)
+    axis(side = 2, at = YTICKS)
     axis(side = 1, at = ticks, labels = 0:(length(ticks) - 1))
   }
   
@@ -146,7 +160,7 @@ g.plot = function(IMP, M, I, durplot) {
   if (mon == 2 | (mon == 4 & dformat == 4)) {
     # Recordings with temperature
     par(fig = c(0,1,0,0.65), new = T)
-    plot_acc(timeline, Acceleration, durplot, ticks)
+    plot_acc(timeline, Acceleration, durplot, ticks, metricName)
     
     par(fig = c(0, 1, 0.45, 0.80), new = T)
     plot_nonwear(timeline, M, durplot, ticks)
@@ -162,7 +176,7 @@ g.plot = function(IMP, M, I, durplot) {
   } else {
     # Recordings without temperature
     par(fig = c(0, 1, 0, 0.80), new = T)
-    plot_acc(timeline, Acceleration, durplot, ticks)
+    plot_acc(timeline, Acceleration, durplot, ticks, metricName)
 
     par(fig = c(0, 1, 0.60, 0.95), new = T)
     plot_nonwear(timeline, M, durplot, ticks)
