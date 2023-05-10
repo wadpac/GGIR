@@ -1,7 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.9-1 (release date:?-?-2023)}{
+\section{Changes in version 2.9-2 (release date:??-??-2023)}{
+  \itemize{
+    \item Part 1: function and new algorithm for non-wear time detection which flags the full ws3 window as non-wear #645.
+    \item Visual report: now it flags non-wear in the plot based on the part 2 milestone data.
+ }
+}
+\section{Changes in version 2.9-1 (release date:09-05-2023)}{
   \itemize{
   \item General: warnings added to inform user that rmc.desiredtz and rmc.configtz
   will be deprecated #765.
@@ -10,6 +16,7 @@
    \item Part 2: strategy = 5 implemented as a variation of strategy 3 (it allows to select
    most active X calendar days) #768.
    \item Part 2: fixed bug in strategy = 3 and now it selects the acc.metric of interest #768.
+   
    \item Part 3 + 4: Update date handling in SleepRegularityIndex to be compatible with latest R version #782.
    \item Part 5: minor bug #775 fixed in the separation of the first and second day when
    more than one set of thresholds is defined and both MM and WW timewindows are extracted.
