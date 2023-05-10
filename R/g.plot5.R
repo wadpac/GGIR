@@ -1,6 +1,6 @@
 g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                    f0 = c(), f1 = c(), overwrite = FALSE,
-                   metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30, 
+                   metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30,
                    threshold.mod = 100, threshold.vig = 400) {
   if (file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     fnames.fsr = sort(dir(paste0(metadatadir, "/results/file summary reports")))
@@ -15,12 +15,14 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
   # directories
   tail_expansion_log = NULL
   ms1dir = paste0(metadatadir, "/meta/basic")
+  ms2dir = paste0(metadatadir,"/meta/ms2.out")
   ms3dir = paste0(metadatadir, "/meta/ms3.out")
   ms4dir = paste0(metadatadir, "/meta/ms4.out")
   results = paste0(metadatadir, "/results")
   # names of files in those directories
   fname_ms1 = dir(ms1dir)
   fname_ms3 = dir(ms3dir)
+  fname_ms2 = dir(ms2dir)
   fname_ms4 = dir(ms4dir)
   removeRDa = function(x) as.character(unlist(strsplit(x,".RDa")))[1]
   fname_ms1_stripped = apply(as.matrix(as.character(fname_ms1)), MARGIN = c(1), FUN = removeRDa)
@@ -50,6 +52,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
     if (overwrite == TRUE) skip = 0
     if (skip == 0) {
       sel = which(fnames_ms1_stripped == fnames_ms3_withoutRDa[i])
+      ms2_file_index = which(fname_ms2 == fname_ms2[i])
+      ms2_filepath = paste(ms2dir, "/", fname_ms2[ms2_file_index], sep = "")
+      IMP = NULL
+      load(ms2_filepath) #to load summary sleep
       if (length(sel) > 0) {
         ms4_file_index = which(fname_ms4 == fname_ms3[i])
         if (length(ms4_file_index) == 1) {
@@ -107,14 +113,14 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         if (length(missingNights) > 0) {
           n2excludeb = n2exclude = sort(unique(c(n2exclude, missingNights)))
         }
-        
+
         if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
           lastnight = max(summarysleep_tmp$night)
           if (lastnight %in% n2exclude) {
             n2excludeb = n2exclude = n2exclude[-which(n2exclude == lastnight)]
           }
         }
-        
+
         # detect which column is mvpa
         n45 = names(P2daysummary_tmp)
         varsVPA = grep(pattern = "VPA",x = n45)
@@ -170,9 +176,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           CLS_B[which(days_SLEEP == "SUN" | days_SLEEP == "SAT")] = CLS[2]
           # headers
           vars = c(paste0("Time spent in moderate or vigorous activity (average is ",
-                          round(mean(f01, na.rm = TRUE)), " minutes per day)"), 
+                          round(mean(f01, na.rm = TRUE)), " minutes per day)"),
                    paste0("Total physical activity (average per day is ",
-                          round(mean(f02, na.rm = TRUE)), " mg)"), 
+                          round(mean(f02, na.rm = TRUE)), " mg)"),
                    paste0("Sleep period time (average is ",
                           round(mean(f05_2, na.rm = TRUE), digits = 1), " hours per night)"),
                    paste0("Sleep efficiency (average is ", round(mean(f06, na.rm = TRUE)), "% per night)"),
@@ -201,7 +207,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           )
           #Acceleration
           YXLIM = c(0, (max(f02, na.rm = TRUE) * 1.3))
-          B6 = barplot(as.matrix(f02), names.arg = days_PA, beside = TRUE, 
+          B6 = barplot(as.matrix(f02), names.arg = days_PA, beside = TRUE,
                        ylim = YXLIM, cex.names = CEXN, las = 0,
                        col = CLS_A, density = 20)
           abline(h = 25, lty = 2, lwd = 2)
@@ -273,7 +279,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           )
           #Sleep efficiency
           YXLIM = c(0, 120)
-          B5 = barplot(as.matrix(f06), names.arg = days_SLEEP, beside = TRUE, 
+          B5 = barplot(as.matrix(f06), names.arg = days_SLEEP, beside = TRUE,
                        ylim = YXLIM, cex.names = CEXN, las = 0, col = CLS_B, density = 20)
           abline(h = 60, lty = 2, lwd = 2)
           abline(h = 100,lty = 3, lwd = 1)
@@ -312,23 +318,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         sec = time_unclassed$sec
         min_vec = time_unclassed$min
         hour = time_unclassed$hour
-        # Prepare nonwear information for plotting
-        NONWEAR = rep(NA,length(ACC))
-        day = time_unclassed$mday
-        month = time_unclassed$mon + 1
-        year = time_unclassed$year + 1900
-        rm(time_unclassed)
-        # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
-        if (sum(which(nonwearscore > 1))) {
-          nonwear_elements = which(nonwearscore > 1 | nonwearscore == -1) # it now includes the expanded time
-          for (j in 1:length(nonwear_elements)) {
-            # could add try/catch in here in case 'which' fails..
-            match_loc = which(nw_time[nonwear_elements[j]] == time)
-            match_loc = match_loc[1]
-            NONWEAR[match_loc:(match_loc + (ws2 / ws3) - 1)] <- 1
-          }
-        }
+        NONWEAR = IMP$r5long
         INACT = LIGPA = MODPA = VIGPA = rep(NA, length(ACC))  # PA vectors for plotting
+
         # Find bouts of light-PA (LPA):
         boutdur2 = 10 * (60/ws3)    # 10min bout duration
         boutcriter = 0.8            # 80% bout criteria
@@ -419,11 +411,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         # detect midnights
         if (viewingwindow == 1) {
           nightsi = which(sec == 0 & min_vec == 0 & hour == 0)
-          xaxislabels = c("midnight","2am", "4am", "6am", "8am", "10am", "noon", 
+          xaxislabels = c("midnight","2am", "4am", "6am", "8am", "10am", "noon",
                           "2pm","4pm","6pm","8pm","10pm","midnight")
         } else if (viewingwindow == 2) {
           nightsi = which(sec == 0 & min_vec == 0 & hour == 12)
-          xaxislabels = c("noon","2pm", "4pm", "6pm", "8pm", "10pm", "midnight", 
+          xaxislabels = c("noon","2pm", "4pm", "6pm", "8pm", "10pm", "midnight",
                           "2am", "4am", "6am", "8am", "10am", "noon")
         }
         if (length(nightsi) > 0) { # Do not attempt to create a plot when there is no midnight in the data, because calculation of t1 will be complicated.
@@ -487,13 +479,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             annot_mat[,4] <- LIGPA[t0:t1]              # light pa
             annot_mat[,5] <- MODPA[t0:t1]              # moderate pa
             annot_mat[,6] <- VIGPA[t0:t1]              # vigorous pa
-            # check to see if there are any sleep onset or wake annotations on this day 
+            # check to see if there are any sleep onset or wake annotations on this day
             sleeponset_loc = 0
             wake_loc = 0
             if (viewingwindow == 1) {  # use different search coefficients for noon or midnight centered plots
-              sw_coefs = c(0,24)  
+              sw_coefs = c(0,24)
             } else if (viewingwindow == 2) {
-              sw_coefs = c(12,36)  
+              sw_coefs = c(12,36)
             }
             # check for sleeponset & wake time that is logged on this day before midnight
             curr_date = as.Date(substr(time[t0], start = 1, stop = 10),
@@ -515,7 +507,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                 sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
                 if (sleeponset_min == 60) sleeponset_min = 0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
-                if (!is.na(sleeponset_locations[1])) { 
+                if (!is.na(sleeponset_locations[1])) {
                   sleeponset_loc = sleeponset_locations[1]
                 }
               }
@@ -554,7 +546,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                   }
                 }
               }
-              # new way 
+              # new way
               sleeponset_time = summarysleep_tmp$sleeponset[check_date]
               if (sleeponset_time >= sw_coefs[2]) {
                 sleeponset_hour = trunc(sleeponset_time) - 24
@@ -563,10 +555,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                 if (sleeponset_loc > 0) {
                   if (!is.na(sleeponset_locations[1])) {
-                    sleeponset_loc[2] = sleeponset_locations[1]  
+                    sleeponset_loc[2] = sleeponset_locations[1]
                   }
                 } else if (sleeponset_loc == 0) {
-                  if (!is.na(sleeponset_locations[1])) { 
+                  if (!is.na(sleeponset_locations[1])) {
                     sleeponset_loc = sleeponset_locations[1]
                   }
                 }
@@ -702,10 +694,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             #VvH I have moved unclass to one location, to avoid doing this computation several times:
             curr_date_unclassed = unclass(as.POSIXlt(curr_date,desiredtz))
             title = paste0("Day ",daycount,": ",
-                          wdaynames[curr_date_unclassed$wday + 1], 
+                          wdaynames[curr_date_unclassed$wday + 1],
                           " | ",
                           curr_date_unclassed$mday, " ",
-                          month.abb[curr_date_unclassed$mon + 1], " ", 
+                          month.abb[curr_date_unclassed$mon + 1], " ",
                           curr_date_unclassed$year + 1900)
             rm(curr_date_unclassed)
             if (skip == FALSE) {
@@ -714,7 +706,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               # plot accelerometer data:
               if (abcisL == length(acc) & abcisL == length(ang)) {  # check to prevent x.y coords errors, show more useful error msg
                 plot(abcis, acc, type = "l", lwd = LWDA,
-                     bty = "l", axes = FALSE, ylim = YXLIM, 
+                     bty = "l", axes = FALSE, ylim = YXLIM,
                      xlab = "", ylab = "", main = "",
                      cex.main = 0.9, lend = LJ) #,axes=FALSE,ylim=YXLIM,xlab="",ylab="",main="",cex=0.3
                 # plot z-angle:
@@ -725,7 +717,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                 # Following warning turned off because we expect condition not
                 # to be met when recording ends
                 # with many non-wear days
-                # warning('\nplot5 error: index, acc and ang vectors are different lengths') 
+                # warning('\nplot5 error: index, acc and ang vectors are different lengths')
               }
               # add sleeponset time annotation to plot:
               arrow_line_length = abcisL * 0.01736 # make arrow line length adaptable to differnt short epochs
@@ -807,11 +799,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               # daytime inactivity annotations
               plot_rects(vec = wake_mat[, 1],
                          col_select = inactive_col,
-                         rect_heights = pa_heights)         
+                         rect_heights = pa_heights)
               # light pa annotatoins
               plot_rects(vec = wake_mat[, 2],
                          col_select = light_pa_col,
-                         rect_heights = pa_heights)         
+                         rect_heights = pa_heights)
               # mod pa annotations
               plot_rects(vec = wake_mat[, 3],
                          col_select = mod_pa_col,
@@ -823,7 +815,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               # night_sleep annotations on graph
               plot_rects(vec = sleep_mat[, 1],
                          col_select = night_sleep_col,
-                         rect_heights = spt_heights)  
+                         rect_heights = spt_heights)
               # night_wake annotations on graph
               plot_rects(vec = sleep_mat[, 2],
                          col_select = night_wake_col,
@@ -840,7 +832,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               abline(h = 0, untf = FALSE, lty = 3, lwd = 1, col = "grey")
               # x-axis coordinate for plotting text on the plot adaptable
               # to different short epoch lengths
-              plot_loc = -abcisL * 0.05 
+              plot_loc = -abcisL * 0.05
               text(x = plot_loc, y = 285, labels = title, pos = 4, font = 2, cex = 1)
               text(x = plot_loc, y = -120, labels = "Arm movement:",
                    pos = 4, font = 1.8, cex = 0.9)
@@ -858,9 +850,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                        inactive_col, light_pa_col,
                        mod_pa_col, vig_pa_col,
                        nonwear_col
-                     ), 
+                     ),
                      lwd = c(LWDX, LWDX, LWDX), bg = "white", cex = 0.6, ncol = 7, box.lwd = BLX)
-              if (daycount == 1 | 
+              if (daycount == 1 |
                   ((daycount - 1) / NGPP) == (round((daycount - 1) / NGPP))) {
                 mtext(paste0("Filename: ", fnames_ms1_stripped[sel]),
                       side = 3, line = 0, outer = TRUE, font = 2, cex = 0.6)
