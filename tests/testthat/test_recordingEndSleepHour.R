@@ -10,7 +10,7 @@ test_that("recordingEndSleepHour works as expected", {
   GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
        studyname = "test", overwrite = TRUE, 
        recordingEndSleepHour = 21, desiredtz = tz,
-       visualreport = FALSE, do.report = c())
+       visualreport = FALSE, do.report = c(), verbose = FALSE)
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   nrow(M$metashort)
@@ -22,13 +22,13 @@ test_that("recordingEndSleepHour works as expected", {
     GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
          studyname = "test", overwrite = TRUE,  desiredtz = tz,
          expand_tail_max_hours = 5, recordingEndSleepHour = NULL,
-         visualreport = FALSE, do.report = c())
+         visualreport = FALSE, do.report = c(), verbose = FALSE)
   )
   expect_warning( # warning from using both expand_tail_max_hour and recordingEndSleepHour
     GGIR(mode = 1, datadir = fn, outputdir = getwd(), 
          studyname = "test", overwrite = TRUE, desiredtz = tz,
          expand_tail_max_hours = 5, recordingEndSleepHour = 20,
-         visualreport = FALSE, do.report = c())
+         visualreport = FALSE, do.report = c(), verbose = FALSE)
   )
   
   expect_error( # error from recordingEndSleepHour being too early,
@@ -36,7 +36,7 @@ test_that("recordingEndSleepHour works as expected", {
     GGIR(datadir = fn, outputdir = getwd(),
          studyname = "test", overwrite = TRUE, desiredtz = tz,
          recordingEndSleepHour = 6,
-         minimum_MM_length.part5 = 15)
+         minimum_MM_length.part5 = 15, verbose = FALSE)
   )
   
   
@@ -44,7 +44,7 @@ test_that("recordingEndSleepHour works as expected", {
   GGIR(datadir = fn, outputdir = getwd(),
          studyname = "test", overwrite = TRUE, desiredtz = tz,
          recordingEndSleepHour = 20,
-         minimum_MM_length.part5 = 6)
+         minimum_MM_length.part5 = 6, verbose = FALSE)
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
   expect_true(nrow(M$metashort) > 43020) # metashort is expanded
