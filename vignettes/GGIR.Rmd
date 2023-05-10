@@ -1057,23 +1057,55 @@ Key output variables:
 
 ## Non-wear detection
 
-Accelerometer non-wear time is estimated on the basis of the standard
-deviation and the value range of the raw data from each accelerometer
-axis. Classification is done per 15 minute (or ws2) block and based on
-the characteristics of the 60 minute (or ws) window centred at these 15
-minutes. A block is classified as non-wear time if the standard
-deviation of the 60 minute window is less than 13.0 mg
-($1 mg = 0.00981 m·s^−2$) and the value range of the 60 minute window is
-less than 50 mg, for at least two out of the three accelerometer axes.
-The procedure for non-wear detection was modified in comparison to the
-procedure as applied in the 2011 PLoSONE publication
-[link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922).
-Instead of 30-minute time windows 60-minute time windows were used to
-decrease the chance of accidently detecting short sedentary periods as
-non-wear time. The windows were overlapping (15 minute steps, window
-overlap of 45 minutes), which was done to improve the accuracy of
-detecting the boundaries of non-wear time as opposed to non-overlapping
-time windows. Inspection of unpublished data on non-wear classification
+Accelerometer non-wear time is detected on the basis of statistics derived from 
+a rolling time window. A step in time is classified as non-wear if 
+both of the following criteria are met for at least two out of the three accelerometer axes:
+
+- The standard deviation of the accelerations is less than accelerometer brand specific reference
+values, which for most brands is 13.0 m*g*
+($1 mg = 0.00981 m·s^−2$)
+- The range of accelerations (i.e., maximum value *minus* minimum value) 
+is less than 50 m*g*.
+
+The size of the rolling time window and the size of the steps it takes in time are defined by
+argument `windowsizes`, a vector with length three. More specifically, the second value 
+(mediumsize window, default = 15 min) and the third value 
+(longsize window, default = 60 min) are used.
+
+How it then labels the data depends on the non-wear approach taken as discussed below,
+and specified with argument `nonwear_approach`. At the moment there are two approaches to detect
+non-wear: `nonwear_approach = "2013"` and `nonwear_approach = "2023"`.
+
+### Approaches to detect non-wear: 2013 and 2023 algorithms
+
+**nonwear_approach = "2013"**
+
+The 2013 approach is a revision of the approach first described in the [2011 PLoSONE publication](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922).
+It uses the criteria derived from the longsize window centered around each mediumsize 
+window (default = 15 minutes) to classify each mediumsize window at its centre. 
+
+The modification of the algorithm in 2013 relative to 2011 included:
+
+-   The longsize window changed from 30 minutes to 60 minutes to decrease the chance of
+accidentally detecting short sedentary periods as non-wear time.
+-   The rolling window went from non-overlapping to overlapping (15 minute steps of
+a 60 minute window results in a longsize window overlap between step of 22.5 minutes)
+to improve the time resolution.
+
+**nonwear_approach = "2023"**
+
+The 2023 version of the algorithm uses the criteria applied to the longsize window
+to assign a nonwear score to the entire longsize window (default = 60 minutes) 
+being tested. Instead of centering the longsize window in the middle of the mediumsize
+window, the 2023 method aligns the longsizewindow with its left edge to the left
+edge of the mediumsize window. As a result, each point in time is classified multiple
+times given that multiple steps of the rolling window classification will overlap
+with it. If the nonwear criteria are met for any
+of these windows that overlap with a point in time, it will be labelled as nonwear. 
+
+### Additional non-wear
+
+Inspection of unpublished data on non-wear classification
 by the algorithm as described in our published work indicated that the
 algorithm does not cope well with periods of monitor transportation per
 post. Here, long periods of non-wear are briefly interrupted by periods
@@ -1093,16 +1125,18 @@ periods were classified as non-wear. The motivation for selecting a
 relatively high criteria (\< 30%) in combination with a long period
 (6hrs) and a low criteria (\< 80%) in combination with a short period (3
 hrs) was that long period are more likely to be actually related to
-monitor wear time. A visual model was created, see Figure 1. Here, units
+monitor wear time. A visual model was created, see picture below. Here, units
 of time are presented in squares and marked grey if detected as non-wear
 time. Period C is detected as wear-time and borders to non-wear periods
-B and D, see Figure 1. If the length of C is less than six hours and C
+B and D. If the length of C is less than six hours and C
 divided by the sum of B and D is less than 0.3 then the first criteria
 is met and block C is turned into a non-wear period.
 
 ```{r, out.width = "400px",echo=FALSE}
 knitr::include_graphics("nonwearimage.jpg")
 ```
+
+### Beginning and ending of the recording
 
 By visual inspection of \>100 traces from a large observational study it
 turned out that applying this stage in three iterative stages allowed
@@ -1113,13 +1147,16 @@ hours are often considered the period in which the accelerometer is
 potentially taken off but moved because of transportation, e.g. by the
 mail service. All wear-periods in the final 24 hrs of each measurement
 shorter than three hours and preceded by at least one hour of non-wear
-time were classified as non-wear. Finally, if the measurement starts or
+time were classified as non-wear. 
+
+Finally, if the measurement starts or
 ends with a period of less than three hours of wear followed by non-wear
 (any length) then this period of wear is classified as non-wear. These
 additional criteria for screening the beginning and end of the
 accelerometer file reflect the likelihood of movements that are involved
 when starting the accelerometer or downloading the data from the
-accelerometer.
+accelerometer. This final check can be turned off with
+argument `nonWearEdgeCorrection`.
 
 Reference:
 
@@ -1127,13 +1164,13 @@ Reference:
     Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating
     movement and gravity components in an acceleration signal and
     implications for the assessment of human daily physical activity.
-    PLoS One. 2013 Apr 23
-    [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
+    [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
 
 Key decisions to be made:
 
 1.  Size of windows
 2.  Whether to utilize the non-wear detection
+3.  Non-wear approach (either 2013 or 2023)
 
 Key output variables:
 
@@ -1143,11 +1180,12 @@ Key output variables:
 
 ## Clipping score
 
-The acceleration signal was screened for 'clipping'. If more than 50% of
-the data points in a 15 minute time window are higher than 7.5g (close
-to the maximal dynamic range of this sensor) the corresponding time
+GGIR also screens the acceleration signal for "clipping". If more than 50% of
+the data points in a mediumsize window (default = 15 minutes) are close
+to the maximal dynamic range of this sensor the corresponding time
 period is considered as potentially corrupt data, which may be explained
-by the sensor getting stuck at its extreme value.
+by the sensor getting stuck at its extreme value. For example, for a dynamic range of 8*g*, 
+accelerations over 7.5*g* would be marked as "clipping". 
 
 Reference:
 
@@ -1155,8 +1193,7 @@ Reference:
     Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating
     movement and gravity components in an acceleration signal and
     implications for the assessment of human daily physical activity.
-    PLoS One. 2013 Apr 23
-    [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+    [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
 
 ## Why collapse information to epoch level?
 
