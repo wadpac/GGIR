@@ -11,7 +11,7 @@
 }
 \usage{
   g.calibrate(datafile, params_rawdata = c(), params_general = c(),
-              params_cleaning = c(), ...)
+              params_cleaning = c(), verbose = TRUE, ...)
 }
 \arguments{
   \item{datafile}{
@@ -25,6 +25,11 @@
   }
   \item{params_cleaning}{
     See \link{g.part1}
+  }
+  \item{verbose}{
+    Boolean (default = TRUE). to indicate whether console message should be printed. 
+    Note that warnings and error are always printed and can be suppressed with 
+    suppressWarning() or suppressMessages().
   }
   \item{...}{
      Any argument used in the previous version of g.calibrate, which will now

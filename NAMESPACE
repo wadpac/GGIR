@@ -36,6 +36,7 @@ export(g.analyse, g.calibrate,
        check_params, extract_params,
        g.imputeTimegaps, g.part5.classifyNaps,
        tidyup_df, cosinorAnalyses,
+       detect_nonwear_clipping,
        ShellDoc2Vignette, parametersVignette,
        correctOlderMilestoneData,
        convertEpochData, g.part5.analyseRest)
