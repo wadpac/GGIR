@@ -7,6 +7,7 @@
     \item Visual report: now it flags non-wear in the plot based on the part 2 milestone data.
     \item Part 1: Can now handle ActiGraph csv where first timegap occurs not in
     the first day of the recording #784
+    \item Reports: Part 5 rows now ordered numerically again #769.
 
  }
 }
