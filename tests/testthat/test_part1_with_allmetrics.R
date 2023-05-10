@@ -19,7 +19,7 @@ test_that("Part 1 can run with all metrics", {
           do.bfen = TRUE, do.hfenplus = TRUE,
           do.mad = TRUE, do.zcx = TRUE, #do.brondcounts = TRUE,
           windowsizes = c(15,3600,3600), do.parallel = FALSE,
-          minimumFileSizeMB = 0)
+          minimumFileSizeMB = 0, verbose = FALSE)
   
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])

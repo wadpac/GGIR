@@ -82,11 +82,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   if (ND > 0.2) {
     #========================================================================
     # timestamps
-    time = as.character(IMP$metashort[,1])
-    # angle
-    if (length(which(colnames(IMP$metashort) == "anglez")) == 0) {
-      cat("metric anglez was not extracted, please make sure that anglez  is extracted")
-    }
+    time = format(IMP$metashort[,1])
+    # # angle
+    # if (length(which(colnames(IMP$metashort) == "anglez")) == 0 ) {
+    #   cat("metric anglez was not extracted, please make sure that anglez  is extracted")
+    # }
     fix_NA_invector = function(x){
       if (length(which(is.na(x) == TRUE)) > 0) {
         x[which(is.na(x) == T)] = 0
@@ -102,7 +102,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         "anglex" %in% colnames(IMP$metashort) &
         "angley" %in% colnames(IMP$metashort) &
         "anglez" %in% colnames(IMP$metashort)) {
-      do.HASPT.hip= TRUE
+      do.HASPT.hip = TRUE
       if (length(colnames(IMP$metashort) == "anglex") > 0) {
         anglex =  IMP$metashort[, which(colnames(IMP$metashort) == "anglex")]
         anglex = fix_NA_invector(anglex)
@@ -116,7 +116,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
-    night = rep(0, length(anglez))
+    night = rep(0, length(ACC))
     if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
         params_sleep[["HASIB.algo"]] == "Galland2012" |
         params_sleep[["HASIB.algo"]] == "ColeKripke1992") { # extract zeroCrossingCount
@@ -246,13 +246,18 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             tmpANGLE = angley[qqq1:qqq2]
           }
         }
-        spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
-                             constrain2range = params_sleep[["constrain2range"]],
-                             perc = perc, spt_threshold = spt_threshold,
-                             sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
-                             HASPT.algo = params_sleep[["HASPT.algo"]],
-                             invalid = invalid,
-                             HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])
+        
+        if (length(params_sleep[["def.noc.sleep"]]) == 1) {
+          spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
+                               constrain2range = params_sleep[["constrain2range"]],
+                               perc = perc, spt_threshold = spt_threshold,
+                               sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
+                               HASPT.algo = params_sleep[["HASPT.algo"]],
+                               invalid = invalid,
+                               HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])
+        } else {
+          spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL)
+        }
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end + qqq1 >= qqq2 - (1 * (3600 / ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window
@@ -303,6 +308,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       cat("No midnights found")
       detection.failed = TRUE
     }
+
     metatmp = data.frame(time, invalid, night = night, sleep = sleep, stringsAsFactors = T)
   } else {
     metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = c()
