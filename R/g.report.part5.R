@@ -64,8 +64,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     return(indices)
   }
   ms5.out = "/meta/ms5.out"
-  if (file.exists(paste(metadatadir,ms5.out,sep=""))) {
-    if (length(dir(paste(metadatadir,ms5.out,sep=""))) == 0) {
+  if (file.exists(paste(metadatadir, ms5.out, sep = ""))) {
+    if (length(dir(paste(metadatadir, ms5.out, sep = ""))) == 0) {
       try.generate.report = FALSE #do not run this function if there is no milestone data from g.part5
     } else {
       try.generate.report = TRUE
@@ -77,15 +77,17 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
   if (try.generate.report == TRUE) {
     #======================================================================
     # loop through meta-files
-    fnames.ms5 = list.files(paste0(metadatadir,ms5.out),full.names=TRUE)
-    if(f1 > length(fnames.ms5)) f1 = length(fnames.ms5)
+    fnames.ms5 = list.files(paste0(metadatadir, ms5.out), full.names = TRUE)
+    if (f1 > length(fnames.ms5)) {
+      f1 = length(fnames.ms5)
+    }
     if (verbose == TRUE) cat(" loading all the milestone data from part 5 this can take a few minutes\n")
     myfun = function(x, expectedCols = c()) {
       tail_expansion_log = NULL
       load(file = x)
       cut = which(output[, 1] == "")
       if (length(cut) > 0 & length(cut) < nrow(output)) {
-        output = output[-cut,which(colnames(output) != "")]
+        output = output[-cut, which(colnames(output) != "")]
       }
       out = as.matrix(output)
       if (length(expectedCols) > 0) {
@@ -108,9 +110,15 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     }
     out_try = myfun(fnames.ms5[f0])
     expectedCols = colnames(out_try)
-    # print(fnames.ms5[f0:f1])
-    outputfinal = as.data.frame(do.call(rbind,lapply(fnames.ms5[f0:f1],myfun, expectedCols)), stringsAsFactors = FALSE)
-    cut = which(sapply(outputfinal, function(x) all(x=="")) == TRUE) # Find columns filled with missing values which(output[1,] == "" & output[2,] == "")
+    outputfinal = as.data.frame(do.call(rbind,
+                                        lapply(fnames.ms5[f0:f1], myfun, expectedCols)),
+                                stringsAsFactors = FALSE)
+    # order data.frame
+    outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
+    outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window, outputfinal$window_number),]
+    
+    # Find columns filled with missing values
+    cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE) 
     if (length(cut) > 0) {
       outputfinal = outputfinal[,-cut]
     }
@@ -170,17 +178,26 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 OF3_clean = tidyup_df(OF3)
-                data.table::fwrite(OF3_clean,paste(metadatadir,"/results/QC/part5_daysummary_full_",
-                                    uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",uTRVi[h3],
-                                    "_",usleepparam[h4],".csv",sep=""),row.names=FALSE, na = "")
+                data.table::fwrite(
+                  OF3_clean,
+                  paste(
+                    metadatadir,
+                    "/results/QC/part5_daysummary_full_",
+                    uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
+                    "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "")
                 # store all summaries in csv files with cleaning criteria
                 validdaysi = getValidDayIndices(OF3,includedaycrit.part5, excludefirstlast.part5, window = uwi[j])
-                data.table::fwrite(OF3_clean[validdaysi,],paste(metadatadir,"/results/part5_daysummary_",
-                                                 uwi[j],"_L",uTRLi[h1],"M",uTRMi[h2],"V",
-                                                 uTRVi[h3],"_",usleepparam[h4],".csv",sep=""), row.names=FALSE, na = "")
+                data.table::fwrite(
+                  OF3_clean[validdaysi, ],
+                  paste(metadatadir, "/results/part5_daysummary_",
+                        uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
+                        "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "")
                 #------------------------------------------------------------------------------------
                 #also compute summary per person
-                agg_plainNweighted = function(df,filename="filename",daytype="daytype") {
+                agg_plainNweighted = function(df,
+                                              filename = "filename",
+                                              daytype = "daytype") {
+                  
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
                   ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number",
@@ -188,31 +205,31 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
-                    options(warn=-1)
-                    trynum = as.numeric(as.character(df[1:nr,ee]))
-                    options(warn=0)
+                    options(warn = -1)
+                    trynum = as.numeric(as.character(df[1:nr, ee]))
+                    options(warn = 0)
                     if (length(which(is.na(trynum) == TRUE)) != nr &
                         length(which(ignorevar == names(df)[ee])) == 0) {
-                      options(warn=-1)
-                      class(df[,ee]) = "numeric"
-                      options(warn=0)
+                      options(warn = -1)
+                      class(df[, ee]) = "numeric"
+                      options(warn = 0)
                     }
                   }
                   plain_mean = function(x) {
-                    options(warn=-1)
-                    plain_mean = mean(x,na.rm=TRUE)
-                    options(warn=0)
+                    options(warn = -1)
+                    plain_mean = mean(x, na.rm = TRUE)
+                    options(warn = 0)
                     if (is.na(plain_mean) == TRUE) {
                       plain_mean = x[1]
                     }
                     return(plain_mean)
                   }
                   # aggregate across all days
-                  PlainAggregate = aggregate.data.frame(df,by=list(df$filename),FUN=plain_mean)
-                  PlainAggregate = PlainAggregate[,-1]
+                  PlainAggregate = aggregate.data.frame(df, by = list(df$filename), FUN = plain_mean)
+                  PlainAggregate = PlainAggregate[, -1]
                   # aggregate per day type (weekday or weekenddays)
-                  AggregateWDWE = aggregate.data.frame(df,by=list(df$filename,df$daytype),plain_mean)
-                  AggregateWDWE = AggregateWDWE[,-c(1:2)]
+                  AggregateWDWE = aggregate.data.frame(df, by = list(df$filename, df$daytype), plain_mean)
+                  AggregateWDWE = AggregateWDWE[, -c(1:2)]
                   # Add counted number of days for Gini, Cov, alpha Fragmentation variables, because 
                   # days are dropped if there are not enough fragments:
                   vars_with_mininum_Nfrag = c("FRAG_Gini_dur_PA_day", "FRAG_CoV_dur_PA_day",
@@ -221,9 +238,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   vars_with_mininum_Nfrag_i = which(vars_with_mininum_Nfrag %in% colnames(df) == TRUE)
                   if (length(vars_with_mininum_Nfrag_i) > 0) {
                     varname_minfrag = vars_with_mininum_Nfrag[vars_with_mininum_Nfrag_i[1]]
-                    DAYCOUNT_Frag_Multiclass = aggregate.data.frame(df[,varname_minfrag],
-                                                                    by=list(df$filename,df$daytype),
-                                                                    FUN=function(x) length(which(is.na(x) == FALSE)))
+                    DAYCOUNT_Frag_Multiclass = aggregate.data.frame(
+                      df[, varname_minfrag],
+                      by = list(df$filename, df$daytype),
+                      FUN = function(x) length(which(is.na(x) == FALSE))
+                    )
                     colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
                     colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
                     AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = c("filename","daytype"))
@@ -232,22 +251,27 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   AggregateWDWE$len <- 0
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WD")] = 5 #weighting of weekdays
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WE")] = 2 #weighting of weekend days
-                  dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class)=="numeric" |
+                  dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
                                                                          names(AggregateWDWE) == filename)])
-                  options(warn=-1)
+                  options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
-                  WeightedAggregate <- dt[,lapply(.SD,weighted.mean,w=len,na.rm=TRUE),by=list(filename)]
-                  options(warn=0)
+                  WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
+                  options(warn = 0)
                   LUXmetrics = c("above1000", "timeawake", "mean", "imputed", "ignored")
-                  add_missing_LUX = function(x, LUX_day_segments, weeksegment=c(), LUXmetrics) {
+                  add_missing_LUX = function(x, LUX_day_segments, weeksegment = c(), LUXmetrics) {
                     # missing columns, add these:
                     NLUXseg = length(LUX_day_segments)
                     if (length(weeksegment) > 0) {
-                      LUX_segment_vars_expected = paste0("LUX_",LUXmetrics,"_",LUX_day_segments[1:(NLUXseg-1)],"-",LUX_day_segments[2:(NLUXseg)],"hr_day_",weeksegment)
+                      LUX_segment_vars_expected = paste0("LUX_", LUXmetrics, "_", 
+                                                         LUX_day_segments[1:(NLUXseg - 1)], 
+                                                         "-", LUX_day_segments[2:(NLUXseg)],
+                                                         "hr_day_", weeksegment)
                     } else {
-                      LUX_segment_vars_expected = paste0("LUX_",LUXmetrics,"_",LUX_day_segments[1:(NLUXseg-1)],"-",LUX_day_segments[2:(NLUXseg)],"hr_day")
+                      LUX_segment_vars_expected = paste0("LUX_", LUXmetrics, "_", 
+                                                         LUX_day_segments[1:(NLUXseg - 1)], 
+                                                         "-", LUX_day_segments[2:(NLUXseg)], "hr_day")
                     }
-                    dummy_df = as.data.frame(matrix(NaN,1, (NLUXseg-1)))
+                    dummy_df = as.data.frame(matrix(NaN, 1, (NLUXseg - 1)))
                     colnames(dummy_df) = LUX_segment_vars_expected
                     if (length(which(LUX_segment_vars_expected %in% colnames(x))) > 0) {
                       x = as.data.frame(merge(x, dummy_df, all.x = T))
@@ -260,48 +284,75 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   }
                   LUX_segment_vars = c()
                   for (li in 1:length(LUXmetrics)) {
-                    LUX_segment_vars = c(LUX_segment_vars, grep(pattern = paste0("LUX_",LUXmetrics[li]),x = colnames(WeightedAggregate), value=TRUE))
+                    LUX_segment_vars = c(LUX_segment_vars, grep(
+                      pattern = paste0("LUX_", LUXmetrics[li]),
+                      x = colnames(WeightedAggregate),
+                      value = TRUE
+                    ))
                   }
-                  if (length(LUX_segment_vars) > 0 & length(LUX_segment_vars) < 24 & length(LUX_day_segments) > 0) {
-                    WeightedAggregate = add_missing_LUX(WeightedAggregate, LUX_day_segments, weeksegment=c(), LUXmetrics = LUXmetrics)
+                  if (length(LUX_segment_vars) > 0 &
+                      length(LUX_segment_vars) < 24 &
+                      length(LUX_day_segments) > 0) {
+                    WeightedAggregate = add_missing_LUX(
+                      WeightedAggregate,
+                      LUX_day_segments,
+                      weeksegment = c(),
+                      LUXmetrics = LUXmetrics
+                    )
                   }
                   # merge them into one output data.frame (G)
                   LUX_segment_vars = c()
                   for (li in 1:length(LUXmetrics)) {
-                    LUX_segment_vars = colnames(PlainAggregate) %in% grep(x = colnames(PlainAggregate), pattern=paste0("LUX_",LUXmetrics[li]), value=TRUE)
+                    LUX_segment_vars = colnames(PlainAggregate) %in% grep(
+                      x = colnames(PlainAggregate),
+                      pattern = paste0("LUX_", LUXmetrics[li]),
+                      value = TRUE
+                    )
                   }
-                  charcol = which(lapply(PlainAggregate, class) != "numeric" & names(PlainAggregate) != filename & !(LUX_segment_vars))
+                  charcol = which(
+                    lapply(PlainAggregate, class) != "numeric" &
+                      names(PlainAggregate) != filename & !(LUX_segment_vars)
+                  )
                   numcol = which(lapply(PlainAggregate, class) == "numeric" | LUX_segment_vars)
                   WeightedAggregate = as.data.frame(WeightedAggregate, stringsAsFactors = TRUE)
-                  G = base::merge(PlainAggregate,WeightedAggregate,by="filename",all.x=TRUE)
-                  p0b = paste0(names(PlainAggregate[,charcol]),".x")
-                  p1 = paste0(names(PlainAggregate[,numcol]),".x")
-                  p2 = paste0(names(PlainAggregate[,numcol]),".y")
+                  G = base::merge(PlainAggregate,
+                                  WeightedAggregate,
+                                  by = "filename",
+                                  all.x = TRUE)
+                  p0b = paste0(names(PlainAggregate[, charcol]), ".x")
+                  p1 = paste0(names(PlainAggregate[, numcol]), ".x")
+                  p2 = paste0(names(PlainAggregate[, numcol]), ".y")
                   for (i in 1:length(p0b)) {
-                    names(G)[which(names(G)==p0b[i])] = paste0(names(PlainAggregate[,charcol])[i])
+                    names(G)[which(names(G) == p0b[i])] = paste0(names(PlainAggregate[, charcol])[i])
                   }
                   for (i in 1:length(p1)) {
-                    names(G)[which(names(G)==p1[i])] = paste0(names(PlainAggregate[,numcol])[i],"_pla")
+                    names(G)[which(names(G) == p1[i])] = paste0(names(PlainAggregate[, numcol])[i], "_pla")
                   }
                   for (i in 1:length(p2)) {
-                    names(G)[which(names(G)==p2[i])] = paste0(names(PlainAggregate[,numcol])[i],"_wei")
+                    names(G)[which(names(G) == p2[i])] = paste0(names(PlainAggregate[, numcol])[i], "_wei")
                   }
                   # expand output with weekday (WD) and weekend (WE) day aggregates
                   for (weeksegment in c("WD", "WE")) {
-                    temp_aggregate = AggregateWDWE[which(AggregateWDWE$daytype==weeksegment),]
-                    charcol = which(lapply(temp_aggregate, class) != "numeric" & names(temp_aggregate) != filename)
+                    temp_aggregate = AggregateWDWE[which(AggregateWDWE$daytype == weeksegment), ]
+                    charcol = which(lapply(temp_aggregate, class) != "numeric" &
+                                      names(temp_aggregate) != filename)
                     numcol = which(lapply(temp_aggregate, class) %in% c("numeric", "integer") == TRUE)
                     names(temp_aggregate)[numcol] = paste0(names(temp_aggregate)[numcol], "_", weeksegment)
-                    temp_aggregate = temp_aggregate[,c(which(colnames(temp_aggregate) == "filename"), numcol)]
+                    temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename"), numcol)]
                     LUX_segment_vars = c()
                     for (li in 1:length(LUXmetrics)) {
-                      LUX_segment_vars = grep(pattern = paste0("LUX_",LUXmetrics[li]),x = colnames(temp_aggregate), value=TRUE)
+                      LUX_segment_vars = grep(
+                        pattern = paste0("LUX_", LUXmetrics[li]),
+                        x = colnames(temp_aggregate),
+                        value = TRUE
+                      )
                     }
-                    if (length(LUX_segment_vars) > 0 & length(LUX_segment_vars) < 24 & length(LUX_day_segments) > 0) {
+                    if (length(LUX_segment_vars) > 0 &
+                        length(LUX_segment_vars) < 24 & length(LUX_day_segments) > 0) {
                       temp_aggregate = add_missing_LUX(temp_aggregate, LUX_day_segments, weeksegment, LUXmetrics)
                     }
                     G = base::merge(G, temp_aggregate,
-                                    by="filename", all.x=TRUE)
+                                    by = "filename", all.x = TRUE)
                   }
                   G = G[,-which(names(G) %in% c("len", "daytype", "len_WE", "len_WD"))]
                   return(G)
@@ -327,12 +378,18 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     # df is the non-aggregated data (days across individuals
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
-                    df2 = function(x) df2 = length(which(x==cval)) # check which values meets criterion
-                    mmm = as.data.frame(aggregate.data.frame(df,by=list(df$filename),FUN = df2),
+                    df2 = function(x)
+                      df2 = length(which(x == cval)) # check which values meets criterion
+                    mmm = as.data.frame(aggregate.data.frame(df, by = list(df$filename), FUN = df2),
                                         stringsAsFactors = TRUE)
-                    mmm2 = data.frame(filename=mmm$Group.1, cc=mmm[,nameold], stringsAsFactors = TRUE)
-                    aggPerIndividual = merge(aggPerIndividual, mmm2,by="filename")
-                    names(aggPerIndividual)[which(names(aggPerIndividual)=="cc")] = namenew
+                    mmm2 = data.frame(
+                      filename = mmm$Group.1,
+                      cc = mmm[, nameold],
+                      stringsAsFactors = TRUE
+                    )
+                    aggPerIndividual = merge(aggPerIndividual, mmm2,
+                                             by = "filename")
+                    names(aggPerIndividual)[which(names(aggPerIndividual) == "cc")] = namenew
                     foo34 = aggPerIndividual
                   }
                   # # calculate number of valid days (both night and day criteria met)
@@ -341,27 +398,70 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   OF3tmp$validdays[validdaysi] = 1
                   # now we have a label for the valid days, we can create a new variable
                   # in OF4 that is a count of the number of valid days:
-                  OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays",cval=1)
+                  OF4 = foo34(
+                    df = OF3tmp,
+                    aggPerIndividual = OF4,
+                    nameold = "validdays",
+                    namenew = "Nvaliddays",
+                    cval = 1
+                  )
                   # do the same for WE (weekend days):
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WE")]] = 1
-                  OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays_WE",cval=1)
+                  OF4 = foo34(
+                    df = OF3tmp,
+                    aggPerIndividual = OF4,
+                    nameold = "validdays",
+                    namenew = "Nvaliddays_WE",
+                    cval = 1
+                  )
                   # do the same for WD (weekdays):
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WD")]] = 1
                   OF4 = foo34(df=OF3tmp,aggPerIndividual=OF4,nameold="validdays",namenew="Nvaliddays_WD",cval=1) # create variable from it
                   # do the same for daysleeper,cleaningcode, sleeplog_used, acc_available:
                   OF3tmp$validdays = 1
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="daysleeper",namenew="Ndaysleeper",cval=1)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="cleaningcode",namenew="Ncleaningcodezero",cval=0)
+                  OF4 = foo34(
+                    df = OF3tmp[validdaysi,],
+                    aggPerIndividual = OF4,
+                    nameold = "daysleeper",
+                    namenew =
+                      "Ndaysleeper",
+                    cval = 1
+                  )
+                  OF4 = foo34(
+                    df = OF3tmp[validdaysi,],
+                    aggPerIndividual = OF4,
+                    nameold = "cleaningcode",
+                    namenew = "Ncleaningcodezero",
+                    cval = 0
+                  )
                   for (ccode in 1:6) {
-                    OF4 = foo34(df=OF3tmp[validdaysi,], aggPerIndividual=OF4, nameold="cleaningcode",
-                                namenew=paste0("Ncleaningcode", ccode), cval=ccode)
+                    OF4 = foo34(
+                      df = OF3tmp[validdaysi, ],
+                      aggPerIndividual = OF4,
+                      nameold = "cleaningcode",
+                      namenew = paste0("Ncleaningcode", ccode),
+                      cval = ccode
+                    )
                   }
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="sleeplog_used",namenew="Nsleeplog_used",cval=TRUE)
-                  OF4 = foo34(df=OF3tmp[validdaysi,],aggPerIndividual=OF4,nameold="acc_available",namenew="Nacc_available",cval=1)
+                  OF4 = foo34(
+                    df = OF3tmp[validdaysi, ],
+                    aggPerIndividual = OF4,
+                    nameold = "sleeplog_used",
+                    namenew = "Nsleeplog_used",
+                    cval = TRUE
+                  )
+                  OF4 = foo34(
+                    df = OF3tmp[validdaysi, ],
+                    aggPerIndividual = OF4,
+                    nameold = "acc_available",
+                    namenew = "Nacc_available",
+                    cval = 1
+                  )
                   # Move valid day count variables to beginning of dataframe
-                  OF4 = cbind(OF4[,1:5],OF4[,(ncol(OF4)-10):ncol(OF4)],OF4[,6:(ncol(OF4)-11)])
+                  OF4 = cbind(OF4[, 1:5], OF4[, (ncol(OF4) - 10):ncol(OF4)], OF4[, 6:(ncol(OF4) -
+                                                                                        11)])
                   nom = names(OF4)
                   cut = which(nom == "sleeponset_ts" | nom == "wakeup_ts" | nom == "night_number"  | nom == "window_number"
                               | nom == "daysleeper" | nom == "cleaningcode" | nom == "acc_available"
@@ -377,10 +477,13 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   }
                   #Move Nvaliddays variables to the front of the spreadsheet
                   Nvaliddays_variables = grep(x = colnames(OF4), pattern = "Nvaliddays", value = FALSE)
-                  Nvaliddays_variables = unique(c(which(colnames(OF4) =="Nvaliddays"),
-                                                  which(colnames(OF4) =="Nvaliddays_WD"),
-                                                  which(colnames(OF4) =="Nvaliddays_WE"), Nvaliddays_variables))
-                  OF4 = OF4[,unique(c(1:4, Nvaliddays_variables, 5:ncol(OF4)))]
+                  Nvaliddays_variables = unique(c(
+                    which(colnames(OF4) == "Nvaliddays"),
+                    which(colnames(OF4) == "Nvaliddays_WD"),
+                    which(colnames(OF4) == "Nvaliddays_WE"),
+                    Nvaliddays_variables
+                  ))
+                  OF4 = OF4[, unique(c(1:4, Nvaliddays_variables, 5:ncol(OF4)))]
                   #-------------------------------------------------------------
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
