@@ -4,6 +4,7 @@
 \section{Changes in version 2.9-2 (release date:??-??-2023)}{
   \itemize{
     \item Part 1: function and new algorithm for non-wear time detection which flags the full ws3 window as non-wear #645.
+    \item Visual report: now it flags non-wear in the plot based on the part 2 milestone data.
  }
 }
 \section{Changes in version 2.9-1 (release date:09-05-2023)}{

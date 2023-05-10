@@ -13,11 +13,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
   # directories
   tail_expansion_log = NULL
   meta = paste(metadatadir,"/meta/basic", sep = "")
+  ms2 = paste(metadatadir,"/meta/ms2.out", sep = "")
   metasleep = paste(metadatadir,"/meta/ms3.out", sep = "")
   ms4 = paste(metadatadir,"/meta/ms4.out", sep = "")
   results = paste(metadatadir,"/results", sep = "")
   # get list of filenames
   fname_m = dir(meta)
+  fname_ms2 = dir(ms2)
   fname_ms = dir(metasleep)
   fname_ms4 = dir(ms4)
   cave = function(x) as.character(unlist(strsplit(x,".RDa")))[1]
@@ -53,6 +55,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
     }
     if (overwrite == TRUE) skip = 0
     if (skip == 0) {
+      ms2_file_index = which(fname_ms2 == fname_ms[i])
+      ms2_filepath = paste(ms2, "/", fname_ms2[ms2_file_index], sep = "")
+      load(ms2_filepath) #to load summary sleep
       sel = which(fnamesmeta == fnamesmetasleep[i])
       if (length(sel) > 0) {
         
@@ -242,22 +247,23 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         sec = time_unclassed$sec
         min_vec = time_unclassed$min
         hour = time_unclassed$hour
-        # Prepare nonwear information for plotting
-        NONWEAR = rep(NA,length(ACC))
-        day = time_unclassed$mday
-        month = time_unclassed$mon + 1
-        year = time_unclassed$year + 1900
-        rm(time_unclassed)
-        # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
-        if (sum(which(nonwearscore > 1))) {
-          nonwear_elements = which(nonwearscore > 1 | nonwearscore == -1) # it now includes the expanded time
-          for (j in 1:length(nonwear_elements)) {
-            # could add try/catch in here in case 'which' fails..
-            match_loc = which(nw_time[nonwear_elements[j]]==time)
-            match_loc = match_loc[1]
-            NONWEAR[match_loc:(match_loc+(ws2/ws3)-1)] <- 1
-          }
-        }
+        # # Prepare nonwear information for plotting
+        # NONWEAR = rep(NA,length(ACC))
+        # day = time_unclassed$mday
+        # month = time_unclassed$mon + 1
+        # year = time_unclassed$year + 1900
+        # rm(time_unclassed)
+        # # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
+        # if (sum(which(nonwearscore > 1))) {
+        #   nonwear_elements = which(nonwearscore > 1 | nonwearscore == -1) # it now includes the expanded time
+        #   for (j in 1:length(nonwear_elements)) {
+        #     # could add try/catch in here in case 'which' fails..
+        #     match_loc = which(nw_time[nonwear_elements[j]]==time)
+        #     match_loc = match_loc[1]
+        #     NONWEAR[match_loc:(match_loc+(ws2/ws3)-1)] <- 1
+        #   }
+        # }
+        NONWEAR = IMP$r5long
         INACT = LIGPA = MODPA = VIGPA = rep(NA,length(ACC))  # PA vectors for plotting
         
         # Find bouts of light-PA (LPA):
