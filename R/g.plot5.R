@@ -57,6 +57,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
     if (skip == 0) {
       ms2_file_index = which(fname_ms2 == fname_ms[i])
       ms2_filepath = paste(ms2, "/", fname_ms2[ms2_file_index], sep = "")
+      IMP = NULL
       load(ms2_filepath) #to load summary sleep
       sel = which(fnamesmeta == fnamesmetasleep[i])
       if (length(sel) > 0) {
