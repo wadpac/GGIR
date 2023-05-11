@@ -23,25 +23,54 @@ See also complementary vignettes on:
 
 # Considerations
 
-In this vignette we have compiled a list of published cut-points with
-instructions on how to use them with GGIR. As newer cut-points are frequently
-published the list below may not be up to date. **Please let us know you if know of 
-any cut-points we missed!**
+The physical activity research field has used so called cut-points to segment
+accelerometer time series based on level of intensity. In this vignette we have 
+compiled a list of published cut-points with instructions on how to use them with GGIR.
+As newer cut-points are frequently published the list below may not be up to date.
+**Please let us know you if know of any cut-points we missed!**
 
-It is important to highlight that some of the presented cut-points were originally 
-based on acceleration metrics that are not available in GGIR. In particular 
-acceleration metrics that sum their values per epoch rather than average them
-per epoch like GGIR does. However, we can use them in GGIR by multiplying the 
-cut-point by the sample frequency as used in the study that proposed it.
-For each of the studies this is detailed in the footnotes. In the tables below these 
-conversion are already performed. Thus, some of the cut-points as shown differ with the
-values reported in the publications.
+## Cut-points expressed in gravitational units (this vignette)
 
-Note that GGIR intentionally does not sum values per epoch because that approach
-makes the cut-point sample frequency and epoch length dependent, which complicates
-comparisons and harmonisation of literature. The explained variance and accuracy
-remains identical because we are only multiplying with a constant, so no 
-information will be lost.
+This vignette focuses on cut-points for metrics that attempt to quantify average 
+acceleration per epoch in gravitational units. The strength of these metrics is 
+that their values are not affected by sampling rate and epoch length improving 
+comparability across studies.
+
+## Cut-points NOT expressed in gravitational units (not in this vignette)
+
+However, GGIR also facilitates some metrics whose values are not expressed in 
+gravitational units that were historically used. For example, the metric as 
+described by Neishabouri (see GGIR argument `do.neishabouricounts`) which reflects
+the indicator of accumulated body movement over time, referred to as counts, 
+calculated by the ActiLife software from the ActiGraph accelerometer brand.
+Cut-points for counts corresponding to the ActiGraph brand have been recurrently 
+proposed in the literature, for example, see this [systematic review](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6231536/)
+with a stratification by age group. Note that cut-points for ActiGraph counts proposed before
+the introduction of multiday raw data collection are most likely
+hardware-based calculations which may not perfectly align with ActiGraph
+software-based (Actilife) calculations of counts that Neishabouri described.
+As a result, older cut-points may need to be used with caution.
+
+The cut-points you find in the literature for ActiGraph counts cannot be applied 
+to Neishabouri counts directly because both are epoch length specific. The cut-points 
+from the literature need to be corrected by a conversion factor. The conversion 
+factor is calculated as the epoch length in the new study (e.g. 5 seconds) divided 
+by the epoch length in the original study (e.g. 60 seconds). Note that no correction 
+for differences in sampling rate is needed because Neishabouri counts already account 
+for this via down-sampling.
+
+If we would want to use cut-point "100 counts per minute" from the literature on 5
+second epoch data, the GGIR function call would look like this:
+
+```
+GGIR([...],
+     mode = 1:5,
+     windowsizes = c(5, 900, 3600),
+     do.neishabouricounts = TRUE,
+     acc.metric = "NeishabouriCount_y",
+     threshold.in = 100 * (5/60),
+     [...])
+```
 
 # Relevant arguments to use cut-points in GGIR
 
