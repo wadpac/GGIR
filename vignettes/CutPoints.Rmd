@@ -23,10 +23,11 @@ See also complementary vignettes on:
 
 # Considerations
 
-In this vignette we have compiled a list of published cut-points with
-instructions on how to use them with GGIR. As newer cut-points are frequently
-published the list below may not be up to date. **Please let us know you if know of 
-any cut-points we missed!**
+The physical activity research field has used so called cut-points to segment
+accelerometer time series based on level of intensity. In this vignette we have 
+compiled a list of published cut-points with instructions on how to use them with GGIR.
+As newer cut-points are frequently published the list below may not be up to date.
+**Please let us know you if know of any cut-points we missed!**
 
 ## Cut-points expressed in gravitational units (this vignette)
 
@@ -37,28 +38,29 @@ comparability across studies.
 
 ## Cut-points NOT expressed in gravitational units (not in this vignette)
 
-However, GGIR also facilitates some metrics whose value is not expressed in 
-gravitational units to facilitate comparability with historical methods. 
-For example, the count metric described by Neishabouri (see GGIR argument
-`do.neishabouricounts = TRUE`) to reflect the counts calculated by the ActiLife 
-software by ActiGraph. Cut-points for ActiGraph counts have been recurrently 
-proposed in the literature, for example, see this [systematic review](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6231536/) with cut-points 
-stratified by age group. Note that cut-points for ActiGraph counts proposed before
-the introduction of raw data collected (2009) are most likely device hardware-based 
-calculation which may not align with ActiGraph software-based counts (Actilife) 
-that Neishabouri described. As a result, older cut-points should may need to be 
-used with extra caution.
+However, GGIR also facilitates some metrics whose values are not expressed in 
+gravitational units that were historically used. For example, the metric as 
+described by Neishabouri (see GGIR argument `do.neishabouricounts`) which reflects
+the indicator of accumulated body movement over time, referred to as counts, 
+calculated by the ActiLife software from the ActiGraph accelerometer brand.
+Cut-points for counts corresponding to the ActiGraph brand have been recurrently 
+proposed in the literature, for example, see this [systematic review](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6231536/)
+with a stratification by age group. Note that cut-points for ActiGraph counts proposed before
+the introduction of multiday raw data collection are most likely
+hardware-based calculations which may not perfectly align with ActiGraph
+software-based (Actilife) calculations of counts that Neishabouri described.
+As a result, older cut-points may need to be used with caution.
 
 The cut-points you find in the literature for ActiGraph counts cannot be applied 
-to Neishabouri counts directly because both are epoch length specific. The cut-point 
-from the literature needs to be correct by a conversation factor. The conversion 
+to Neishabouri counts directly because both are epoch length specific. The cut-points 
+from the literature need to be corrected by a conversion factor. The conversion 
 factor is calculated as the epoch length in the new study (e.g. 5 seconds) divided 
-by the epoch length original study (e.g. 60 seconds). Note that a no correction 
+by the epoch length in the original study (e.g. 60 seconds). Note that no correction 
 for differences in sampling rate is needed because Neishabouri counts already account 
-for this via downsampling.
+for this via down-sampling.
 
-If we would want to use cut-point 100 counts per minute from the literature, the 
-GGIR function call would look like this:
+If we would want to use cut-point "100 counts per minute" from the literature on 5
+second epoch data, the GGIR function call would look like this:
 
 ```
 GGIR([...],
