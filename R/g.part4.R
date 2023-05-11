@@ -63,14 +63,17 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   # initialize output variable names
   colnamesnightsummary = c("ID", "night", "sleeponset", "wakeup", "SptDuration", "sleepparam", "guider_onset",
                            "guider_wakeup", "guider_SptDuration", "error_onset", "error_wake", "error_dur", "fraction_night_invalid",
-                           "SleepDurationInSpt", "WASO", "duration_sib_wakinghours", "number_sib_sleepperiod", "number_of_awakenings",
+                           "SleepDurationInSpt", "WASO", "duration_sib_wakinghours",
+                           "number_sib_sleepperiod", "number_of_awakenings",
                            "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
                            "meandur_sib_wakinghours_atleast15min",
                            "number_sib_wakinghours_atleast15min",
-                           "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
-                           "guider_wakeup_ts", "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
+                           "sleeponset_ts", "wakeup_ts", "guider_onset_ts",  "guider_wakeup_ts",
+                           "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
                            "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
-                           "longitudinal_axis")
+                           "longitudinal_axis") #
+
+  
   if (params_output[["storefolderstructure"]] == TRUE) {
     colnamesnightsummary = c(colnamesnightsummary, "filename_dir", "foldername")
   }
@@ -869,6 +872,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                       spocum.n.dur_sibd_atleast15min = length(sibds_atleast15min)
                     }
                   }
+
                   nightsummary[sumi, 14] = spocum.t.dur.noc  #total nocturnalsleep /accumulated sleep duration
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
                   nightsummary[sumi, 16] = spocum.t.dur_sibd  #total sib (sustained inactivty bout) duration during wakinghours
@@ -891,7 +895,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[sumi, 23] = acc_onsetTS
                   nightsummary[sumi, 24] = acc_wakeTS
                   #----------------------------------------------
-                  nightsummary[sumi, 25] = tmp1  #guider_onset_ts
+                  nightsummary[sumi, 25] = tmp1  #guider_wake_ts
                   nightsummary[sumi, 26] = tmp4  #guider_onset_ts
                   if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
                     # If guider isa sleeplog and if the sleeplog recorded time in bed then
@@ -984,10 +988,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   #------------------------------------------------------------------------
                   nightsummary[sumi, 34] = cleaningcode
                   nightsummary[sumi, 35] = sleeplog_used
-                  nightsummary[sumi, 36] = acc_available
-                  nightsummary[sumi, 37] = guider
+                  nightsummary[sumi, 36] = logid
+                  nightsummary[sumi, 37] = acc_available
+                  nightsummary[sumi, 38] = guider
                   # Extract SRI for this night
-                  nightsummary[sumi, 38:39] = NA
+                  nightsummary[sumi, 39:40] = NA
                   if (!exists("SleepRegularityIndex")) {
                     SleepRegularityIndex = NA
                   }
@@ -997,18 +1002,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     calendar_date_reformat = format(x = calendar_date_asDate, format = "%d/%m/%Y")
                     SRIindex = which(SRI$date == calendar_date_reformat & SRI$frac_valid > (params_cleaning[["includenightcrit"]]/24))
                     if (length(SRIindex) > 0) {
-                      nightsummary[sumi, 38] = SRI$SleepRegularityIndex[SRIindex[1]]
-                      nightsummary[sumi, 39] = SRI$frac_valid[SRIindex[1]]
+                      nightsummary[sumi, 39] = SRI$SleepRegularityIndex[SRIindex[1]]
+                      nightsummary[sumi, 40] = SRI$frac_valid[SRIindex[1]]
                     }
                   }
                   if (length(longitudinal_axis) == 0) {
-                    nightsummary[sumi, 40] = NA
+                    nightsummary[sumi, 41] = NA
                   } else {
-                    nightsummary[sumi, 40] = longitudinal_axis
+                    nightsummary[sumi, 41] = longitudinal_axis
                   }
                   if (params_output[["storefolderstructure"]] == TRUE) {
-                    nightsummary[sumi, 41] = ffd[i]  #full filename structure
-                    nightsummary[sumi, 42] = ffp[i]  #use the lowest foldername as foldername name
+                    nightsummary[sumi, 42] = ffd[i]  #full filename structure
+                    nightsummary[sumi, 43] = ffp[i]  #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 }  #run through definitions
