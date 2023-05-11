@@ -27,22 +27,28 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
 
 
   if (!is.null(rmc.desiredtz) | !is.null(rmc.configtz)) {
-    warning(paste0("\nArgument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
-                   " and will be replaced by the existing arguments desiredtz and configtz, respectively.",
-                   " Please start using these arguments."), call. = FALSE)
+    generalWarning = paste0("Argument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
+                   " and will be replaced by the existing arguments desiredtz and configtz, respectively.")
+    showGeneralWarning = TRUE
     # Check if both types of tz are provided:
     if (!is.null(desiredtz) & !is.null(rmc.desiredtz)) {
       if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
-        stop("\nPlease, specify only desiredtz and set ",
-             "rmc.desiredtz to NULL to ensure it is no longer used.")
+        showGeneralWarning = FALSE
+        stop(paste0("\n", generalWarning, "Please, specify only desiredtz and set ",
+             "rmc.desiredtz to NULL to ensure it is no longer used."))
       }
     }
     if (!is.null(configtz) & !is.null(rmc.configtz)) { # then both provided 
       if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
-        stop("\nPlease, specify only configtz and set ",
-             "rmc.configtz to NULL to ensure it is no longer used.")
+        showGeneralWarning = FALSE
+        stop(paste0("\n", generalWarning, "Please, specify only configtz and set ",
+             "rmc.configtz to NULL to ensure it is no longer used."))
       }
     }
+    if (showGeneralWarning == TRUE) {
+      warning(paste0("\n", generalWarning))
+    }
+
     # Until deprecation still allow rmc. to be used, 
     # so us it to overwrite normal tz in this function:
     if (is.null(desiredtz)) desiredtz = rmc.desiredtz 
