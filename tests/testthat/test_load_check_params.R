@@ -16,7 +16,7 @@ test_that("load_params can load parameters", {
   expect_equal(length(params$params_cleaning), 18)
   expect_equal(length(params$params_phyact), 13)
   expect_equal(length(params$params_output), 16)
-  expect_equal(length(params$params_general), 14)
+  expect_equal(length(params$params_general), 16)
 
   params_sleep = params$params_sleep
   # Test that parameter check does not generate warnings:
@@ -27,7 +27,7 @@ test_that("load_params can load parameters", {
   params_sleep$timethreshold = "ABC"
   expect_error(check_params(params_sleep), regexp = "Sleep argument timethreshold is not numeric")
   # Test that parameter check produces error when character is given a numeric value
-  params = load_params(group="sleep")
+  params = load_params(group = "sleep")
   params_sleep = params$params_sleep
   params_sleep$Sadeh_axis = 123
   expect_error(check_params(params_sleep), regexp = "Sleep argument Sadeh_axis is not character")

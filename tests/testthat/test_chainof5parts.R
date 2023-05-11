@@ -36,7 +36,7 @@ test_that("chainof5parts", {
   #-------------------------
   # part 2 with strategy = 3
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-          idloc = 2, desiredtz = desiredtz,
+          idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
           strategy = 3, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c())
   dirname = "output_test/meta/ms2.out/"
@@ -44,7 +44,21 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
-  expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 0.417)
+  expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
+  expect_equal(SUM$summary$`N valid WEdays`, "1")
+  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  
+  # part 2 with strategy = 5
+  g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
+          strategy = 5, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c())
+  dirname = "output_test/meta/ms2.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
+  expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, "1")
   expect_equal(SUM$summary$`N valid WKdays`, "2")
   
@@ -111,7 +125,7 @@ test_that("chainof5parts", {
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
   g.report.part4(datadir = fn, metadatadir = metadatadir, loglocation = sleeplog_fn,
-                 f0 = 1, f1 = 1)
+                 f0 = 1, f1 = 1, verbose = FALSE)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
@@ -128,7 +142,7 @@ test_that("chainof5parts", {
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr")
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
-  expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile.csv.RData_T5A5.csv")))
+  expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
   
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
@@ -152,11 +166,13 @@ test_that("chainof5parts", {
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                         studyname = "test", f0 = 1, f1 = 1,
                         do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
-                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB))
+                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB,
+                        verbose = FALSE))
   suppressWarnings(GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
                         f0 = 1, f1 = 1,
                         do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
-                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE))
+                        do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB, 
+                        verbose = FALSE))
   expect_true(file.exists("output_test/results/part2_daysummary.csv"))
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))

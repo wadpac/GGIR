@@ -181,7 +181,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
   if (remove_time_at_end == TRUE) {
-    x = x[,-which(colnames(x) == "time")]
+    x = x[, grep(pattern = "time", x = colnames(x), invert = TRUE)]
   }
   if (all(c("time", "timestamp") %in% colnames(x))) {
     x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]

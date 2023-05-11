@@ -118,7 +118,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder", "expand_tail_max_hours")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
-    character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location")
+    character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", "dataFormat")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
@@ -188,7 +188,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["def.noc.sleep"]] = 1
     }
     if (params_sleep[["HASPT.algo"]] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
-      warning("\nHASPT.algo is set to HorAngle, therefor auto-updating sleepwindowType to TimeInBed", call. = FALSE)
+      warning("\nHASPT.algo is set to HorAngle, therefore auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
@@ -206,11 +206,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (params_cleaning[["strategy"]] != 3 & params_cleaning[["ndayswindow"]] != 7) {
+    if (!(params_cleaning[["strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
       warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 3"), call. = FALSE)
+                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when strategy = 3 or strategy = 5"), call. = FALSE)
     }
-    
+    if (params_cleaning[["strategy"]] == 5 &
+        params_cleaning[["ndayswindow"]] != round(params_cleaning[["ndayswindow"]])) {
+      newValue = round(params_cleaning[["ndayswindow"]])
+      warning(paste0("\nArgument ndayswindow has been rounded from ",
+                     params_cleaning[["ndayswindow"]], " to ", newValue, " days",
+                     "because when strategy == 5 we expect an integer value", call. = FALSE))
+      params_cleaning[["ndayswindow"]] = newValue
+    }
     
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       # Convert paths from Windows specific slashed to generic slashes
@@ -260,27 +267,110 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop("\nThe argument expand_tail_max_hours has been replaced by",
            " recordingEndSleepHour which has a different definition. Please",
            " see the documentation for further details and replace",
-           " expand_tail_max_hour in your function call and config.csv file.")
+           " expand_tail_max_hour in your function call and config.csv file.", call. = FALSE)
     } else {
       # If both are defined, this is probably because expand_tail_max_hours is 
       # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
       warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
               " are defined. GGIR will only use recordingEndSleepHour",
-              " and expand_tail_max_hours will be set to NULL.")
+              " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
+    }
+  }
+  if (length(params_metrics) > 0 & length(params_general) > 0) {
+    if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
+      if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
+        params_metrics[["do.zcy"]] = TRUE
+        params_general[["acc.metric"]] = "ZCY"
+        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                       " we assume that metric is ZCY, this is now used"), call. = FALSE)
+      }
+      if (params_metrics[["do.anglex"]] == TRUE |
+          params_metrics[["do.angley"]] == TRUE |
+          params_metrics[["do.anglez"]] == TRUE |
+          params_metrics[["do.enmoa"]] == TRUE |
+          params_metrics[["do.enmo"]] == TRUE |
+          params_metrics[["do.lfenmo"]] == TRUE |
+          params_metrics[["do.bfen"]] == TRUE |
+          params_metrics[["do.mad"]] == TRUE) {
+        metricsNotFalse = NULL
+        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
+                             "do.enmo", "do.bfen", "do.mad", "do.lfenmo")) {
+          if (params_metrics[[metricName]] == TRUE) {
+            metricsNotFalse = c(metricsNotFalse, metricName)
+          }
+        }
+        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                       " we assume that only metric ZCY is extracted and",
+                       " GGIR ignores all other metric requests. So, you should set arguments ",
+                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
+        
+        # Turn all commonly used metrics to FALSE
+        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+        params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
+        # Force acc.metric to be ZCY
+        params_general[["acc.metric"]] = "ZCY"
+       
+      }
+      if (length(params_sleep) > 0) {
+        if (params_sleep[["Sadeh_axis"]] != "Y") {
+          params_sleep[["Sadeh_axis"]] = TRUE
+          warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
+                         " we assume that Sadeh_axis Y, this is now overwritten"), call. = FALSE)
+        }
+        if (params_sleep[["HASIB.algo"]] == "vanHees2015") {
+          stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",
+                      " setting in combination with dataFormat set to ",
+                      params_general[["dataFormat"]], " Please fix"), call. = FALSE)
+        }
+      }
+    } else if (params_general[["dataFormat"]] == "ukbiobank") {
+      if (params_metrics[["do.anglex"]] == TRUE |
+          params_metrics[["do.angley"]] == TRUE |
+          params_metrics[["do.anglez"]] == TRUE |
+          params_metrics[["do.enmoa"]] == TRUE |
+          params_metrics[["do.enmo"]] == TRUE |
+          params_metrics[["do.bfen"]] == TRUE |
+          params_metrics[["do.mad"]] == TRUE |
+          params_general[["acc.metric"]] != "LFENMO") {
+        metricsNotFalse = NULL
+        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
+                             "do.enmo", "do.bfen", "do.mad")) {
+          if (params_metrics[[metricName]] == TRUE) {
+            metricsNotFalse = c(metricsNotFalse, metricName)
+          }
+        }
+        warning(paste0("\nWhen dataFormat is set to ukbiobank",
+                       " we assume that only metric LFENMO is extracted and",
+                       " GGIR ignores all other metric requests. So, you should set arguments ",
+                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
+        
+        # Turn all commonly used metrics to FALSE
+        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+        params_metrics[["do.mad"]] = FALSE
+        # Force acc.metric to be LFENMO
+        params_general[["acc.metric"]] = "LFENMO"
+        
+      }
+      
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
     # stop if expand_tail_max_hours was defined before 7pm
     if (params_general[["recordingEndSleepHour"]] < 19) {
       stop(paste0("\nrecordingEndSleepHour expects the latest time at which",
-                     " the participant is expected to fall asleep. recordingEndSleepHour",
-                     " has been defined as ", params_general[["recordingEndSleepHour"]],
-                     ", which does not look plausible, please specify time at or later than 19:00",
+                  " the participant is expected to fall asleep. recordingEndSleepHour",
+                  " has been defined as ", params_general[["recordingEndSleepHour"]],
+                  ", which does not look plausible, please specify time at or later than 19:00",
                   " . Please note that it is your responsibility as user to verify that the
-                  assumption is credible."))
+                  assumption is credible."), call. = FALSE)
     }
   }
+  
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

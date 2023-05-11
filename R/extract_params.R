@@ -139,8 +139,11 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                           if (varName %in% names(params_cleaning)) {
                             params_247[[varName]] = newValue
                           } else {
-                            warning("\nNot able to use argument/parameter ", varName,
-                                    " from configuration file and ignored.")
+                            warning(paste0("\nIgnoring argument/parameter ", varName,
+                                           " as stored in the configuration file",
+                                           " as no (longer) used by GGIR. To avoid this",
+                                           " warning remove the corresponding rows",
+                                           " from the config.csv file."), call. = FALSE)
                           }
                         }
                       }
@@ -198,7 +201,6 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Check that all parameter values have expect data class
   # and perform some checks on reasonable parameter combinations
-
   # prevent checking of parameters that are not used in GGIR part
   if (!"sleep" %in% params2check) params_sleep = c()
   if (!"metrics" %in% params2check) params_metrics = c()

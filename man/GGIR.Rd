@@ -152,10 +152,10 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{acc.metric}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["acc.metric"]]}).
-        Which one of the acceleration metrics do you want to use for all acceleration magnitude 
-        analyses in GGIR part 5 and the visual report? For example: "ENMO", "LFENMO", "MAD", 
-        "NeishabouriCount_y", or "NeishabouriCount_vm". Only one acceleration metric can be specified 
-        and the selected metric needs to have been calculated in part 1 (see \link{g.part1}) 
+        Which one of the acceleration metrics do you want to use for all acceleration magnitude
+        analyses in GGIR part 5 and the visual report? For example: "ENMO", "LFENMO", "MAD",
+        "NeishabouriCount_y", or "NeishabouriCount_vm". Only one acceleration metric can be specified
+        and the selected metric needs to have been calculated in part 1 (see \link{g.part1})
         via arguments such as \code{do.enmo = TRUE} or \code{do.mad = TRUE}.}
 
       \item{part5_agg2_60seconds}{
@@ -216,34 +216,54 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{expand_tail_max_hours}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
-        This parameter has been replaced for \code{recordingEndSleepHour}. 
+        This parameter has been replaced for \code{recordingEndSleepHour}.
       }
       \item{recordingEndSleepHour}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]]}).
-        Time (in hours) at which the recording should end (or later) to expand the  
+        Time (in hours) at which the recording should end (or later) to expand the
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
         Using argument \code{recordingEndSleepHour} implies the assumption that the
         participant fell asleep at or before the end of the recording if the recording
         ended at or after \code{recordingEndSleepHour} hour of the last day. This assumption may not
-        always hold true and should be used with caution. 
+        always hold true and should be used with caution.
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
         the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}.
         To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in
-        the RData files, which is then passed via \link{g.part2}, \link{g.part3}, 
-        and \link{g.part4} to \link{g.part5}. In \link{g.part5} the tail expansion 
+        the RData files, which is then passed via \link{g.part2}, \link{g.part3},
+        and \link{g.part4} to \link{g.part5}. In \link{g.part5} the tail expansion
         size is included as an additional variable in the csv-reports.
         In the \link{g.part4} csv-report the last nigth is omitted, because we know
-        that sleep estimates from the last night will not be trustworthy. Similarly, 
-        in the \link{g.part5} output columns related to the sleep assessment will 
-        be omitted for the last window to avoid biassing the averages Further, 
-        the synthetic data are also ignored in the visualizations and time series 
+        that sleep estimates from the last night will not be trustworthy. Similarly,
+        in the \link{g.part5} output columns related to the sleep assessment will
+        be omitted for the last window to avoid biassing the averages Further,
+        the synthetic data are also ignored in the visualizations and time series
         output to avoid biased output.
       }
+      \item{nonwear_approach}{
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["nonwear_approach"]]}).
+        Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "2013")
+        or the new version (nonwear_approach = "2023"). The 2013 version would use the longsize window (windowsizes[3],
+        one hour as default) to check the conditions for nonwear identification and would flag as nonwear the
+        mediumsize window (windowsizes[2], 15 min as default) in the middle. The 2023 version differs in which it
+        would flag as nonwear the full longsize window. For the 2013 method the longsize window is centered in
+        the centre of the mediumsize window, while in the 2023 method the longsizewindow is aligned with its left edge
+        to the left edge of the mediumsize window.
+        }
+       \item{dataFormat}{
+        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
+        to indicate what the format is of the data in datadir.
+        Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
+        to the 5, 15 and 60 second epoch level data files provided by UK Biobank
+        in csv format, Actiwatch in csv format, and Actiwatch in awd format.
+        For the Actiwatch data functionality has been tested with example data from
+        only one research group. Please let us know if you have difficulties using this
+        functionality in your data.
+        }
+      }
     }
-  }
-
+  
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
     raw data, excluding parameters related to metrics as those are in
@@ -417,13 +437,13 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{rmc.desiredtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.desiredtz"]]}", i.e., system timezone).
-        Timezone in which experiments took place. Value should be a timezone database name
-        See also https://en.wikipedia.org/wiki/Zone.tab}
+        Timezone in which experiments took place. This argument is scheduled to
+        be deprecated and is now used to overwrite \code{desiredtz} if not provided.}
 
       \item{rmc.configtz}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_rawdata"]][["rmc.configtz"]]}", i.e., system timezone).
-        Timezone in which device was configured. Value should be a timezone database name
-        See also https://en.wikipedia.org/wiki/Zone.tab}
+        Timezone in which device was configured. This argument is scheduled to
+        be deprecated and is now used to overwrite \code{configtz} if not provided.}
 
       \item{rmc.sf}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["rmc.sf"]])}).
@@ -468,7 +488,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Noise level of acceleration signal in m\emph{g}-units, used when working ad-hoc .csv data formats
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
-      
+
     }
   }
 
@@ -640,17 +660,17 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         we clarify that these are the counts proposed by Jan Br&#248;nd and implemented
         in R by Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
         the counts produced by one of the closed source ActiLife software by ActiGraph.}
-        
+
       \item{do.neishabouricounts}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["do.neishabouricounts"]])}).
         If TRUE, calculates the metric via R package actilifecounts, which is an implementation
-        of the algorithm used in the closed-source software ActiLife by ActiGraph (methods published in doi: 
-        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the 
+        of the algorithm used in the closed-source software ActiLife by ActiGraph (methods published in doi:
+        10.1038/s41598-022-16003-x). We use the name of the first author (instead of ActiLifeCounts) of the
         paper and call them NeishabouriCount under the uncertainty that ActiLife will implement this same
         algorithm over time. To use the Neishabouri counts for the physical activity intensity classification
         in part 5 (i.e., metric over the threshold.lig, threshold.mod, and threshold.vig would be applied),
-        the \code{acc.metric} argument needs to be set as one of the following: "NeishabouriCount_x", 
-        "NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm" to use the counts in the x-, 
+        the \code{acc.metric} argument needs to be set as one of the following: "NeishabouriCount_x",
+        "NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm" to use the counts in the x-,
         y-, z-axis or vector magnitude, respectively.}
 
       \item{lb}{
@@ -664,28 +684,28 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{n}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["n"]])}).
         Order of the frequency filter as used in the filter-based metrics.}
-      
+
       \item{zc.lb}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.lb"]])})
           Used for zero-crossing counts only. Lower boundery of cut-off frequency filter.}
-        
+
       \item{zc.hb}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.hb"]])})
           Used for zero-crossing counts only. Higher boundery of cut-off frequencies in filter.}
-        
+
       \item{zc.sb}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.sb"]])})
         Stop band used for calculation of zero crossing counts. Value is the acceleration threshold
         in g units below which  acceleration will be rounded to zero.}
-      
+
       \item{zc.order}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.order"]])})
         Used for zero-crossing counts only. Order of frequency filter.}
-      
+
       \item{zc.scale}{default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["zc.scale"]])})
         Used for zero-crossing counts only. Scaling factor to be applied after
         counts are calculated (GGIR part 3).}
-        
+
       \item{actilife_LFE}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_metrics"]][["actilife_LFE"]])}).
         If TRUE, calculates the NeishabouriCount metric with the low-frequency extension filter
-        as proposed in the closed source ActiLife software by ActiGraph. Only applicable to 
+        as proposed in the closed source ActiLife software by ActiGraph. Only applicable to
         the metric NeishabouriCount.}
     }
   }
@@ -756,8 +776,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
         strategy = 3 only selects the most active X days in the file where X is
-        specified by argument \code{ndayswindow}.
-        strategy = 4 to only use the data after the first midnight.}
+        specified by argument \code{ndayswindow}, where the days are a series of 24-h blocks
+        starting any time in the day.
+        strategy = 4 to only use the data after the first midnight.
+        strategy = 5 is similar to \code{strategy = 3}, but it selects X complete
+        calendar days where X is specified by argument \code{ndayswindow}.}
 
       \item{hrs.del.start}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["hrs.del.start"]]}).
@@ -776,7 +799,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{ndayswindow}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["ndayswindow"]]}).
-        If \code{strategy} is set to 3 then this is the size of the window as a number of days.}
+        If \code{strategy} is set to 3 or 5, then this is the size of the window as a
+        number of days. For strategy 3 value can be fractional, e.g. 7.5,
+        while for strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includedaycrit.part5"]], 3)}).
@@ -794,16 +819,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{max_calendar_days}{
       Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["max_calendar_days"]]}).
       The maximum number of calendar days to include (set to zero if unknown).}
-      
-      
+
+
       \item{nonWearEdgeCorrection}{
       Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["nonWearEdgeCorrection"]]}).
         If TRUE then the non-wear detection around the edges of the recording (first
-        and last 3 hours) are corrected following description in vanHees2013 as 
+        and last 3 hours) are corrected following description in vanHees2013 as
         has been the default since then. This functionality is advisable when working with
         sleep clinic or exercise lab data typically lasting less than a day.
       }
-      
+
     }
   }
 
@@ -1071,8 +1096,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         continuing with activity types for next day. Leave missing values empty. If an
         activitylog is used then individuals who do not appear in the activitylog will still
         be processed with value \code{qwindow = c(0, 24)}. Dates with no activiy log data can be skipped,
-        no need to have a column with the date followed by a column with the next date. If times in the 
-        activity diary are not multiple of the short window size (epoch length), the next epoch is 
+        no need to have a column with the date followed by a column with the next date. If times in the
+        activity diary are not multiple of the short window size (epoch length), the next epoch is
         considered (e.g., with epoch of 5 seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).}
 
       \item{qwindow_dateformat}{
@@ -1095,7 +1120,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         extracted. Distribution will be derived from short epoch metric data. Argument
         qlevels can for example be used for the MX-metrics (e.g. Rowlands et al) as
         discussed in the \href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{main package vignette}}
-        
+
       \item{ilevels}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["ilevels"]])}).
         Levels for acceleration value frequency distribution in m\emph{g}, e.g., \code{ilevels = c(0,100,200)}.
@@ -1174,7 +1199,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{cosinor}{
         Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
-        
+
     }
   }
 
@@ -1279,31 +1304,31 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
   GGIR(#-------------------------------
        # General parameters
        #-------------------------------
-       mode=mode,
-       datadir=datadir,
-       outputdir=outputdir,
-       studyname=studyname,
-       f0=f0,
-       f1=f1,
+       mode = mode,
+       datadir = datadir,
+       outputdir = outputdir,
+       studyname = studyname,
+       f0 = f0,
+       f1 = f1,
        overwrite = FALSE,
-       do.imp=TRUE,
-       idloc=1,
-       print.filename=FALSE,
+       do.imp = TRUE,
+       idloc = 1,
+       print.filename = FALSE,
        storefolderstructure = FALSE,
        #-------------------------------
        # Part 1 parameters:
        #-------------------------------
        windowsizes = c(5,900,3600),
-       do.cal=TRUE,
+       do.cal = TRUE,
        do.enmo = TRUE,
-       do.anglez=TRUE,
-       chunksize=1,
-       printsummary=TRUE,
+       do.anglez = TRUE,
+       chunksize = 1,
+       printsummary = TRUE,
        #-------------------------------
        # Part 2 parameters:
        #-------------------------------
        strategy = 1,
-       ndayswindow=7,
+       ndayswindow = 7,
        hrs.del.start = 1,
        hrs.del.end = 1,
        maxdur = 9,
@@ -1312,14 +1337,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        M5L5res = 10,
        winhr = c(5,10),
        qlevels = c(c(1380/1440),c(1410/1440)),
-       qwindow=c(0,24),
+       qwindow = c(0,24),
        ilevels = c(seq(0,400,by=50),8000),
-       mvpathreshold =c(100,120),
+       mvpathreshold = c(100,120),
        #-------------------------------
        # Part 3 parameters:
        #-------------------------------
-       timethreshold= c(5,10),
-       anglethreshold=5,
+       timethreshold = c(5,10),
+       anglethreshold = 5,
        ignorenonwear = TRUE,
        #-------------------------------
        # Part 4 parameters:
@@ -1327,12 +1352,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        excludefirstlast = FALSE,
        includenightcrit = 16,
        def.noc.sleep = 1,
-       loglocation= "D:/sleeplog.csv",
+       loglocation = "D:/sleeplog.csv",
        outliers.only = FALSE,
        criterror = 4,
        relyonguider = FALSE,
-       colid=1,
-       coln1=2,
+       colid = 1,
+       coln1 = 2,
        do.visual = TRUE,
        nnights = 9,
        #-------------------------------
@@ -1354,7 +1379,43 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        #-----------------------------------
        # Report generation
        #-------------------------------
-       do.report=c(2,4,5))
+       do.report = c(2,4,5))
+
+       # For externally derived Actiwatch data in .AWD format:
+       GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
+          outputdir = "/media/myoutput",
+          dataFormat = "actiwatch_awd",
+          mode = 1:5,
+          do.report = c(2, 4, 5),
+          windowsizes = c(60, 900, 3600), # 60 is the expected epoch length
+          visualreport = FALSE,
+          outliers.only = FALSE,
+          overwrite = TRUE,
+          HASIB.algo = "Sadeh1994",
+          def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
+
+       # For externally derived Actiwatch data in .CSV format:
+       GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
+          outputdir = "/media/myoutput",
+          dataFormat = "actiwatch_csv",
+          mode = 1:5,
+          do.report = c(2, 4, 5),
+          windowsizes = c(15, 900, 3600), # 15 is the expected epoch length
+          visualreport = FALSE,
+          outliers.only = FALSE,
+          HASIB.algo = "Sadeh1994",
+          def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
+
+       # For externally derived UK Biobank data in .CSV format:
+       GGIR(datadir = "/media/ukbiobank",
+           outputdir = "/media/myoutput",
+           dataFormat = "ukbiobank_csv",
+           mode = c(1:2),
+           do.report = c(2),
+           windowsizes = c(5, 900, 3600), # We know that data was stored in 5 second epoch
+           desiredtz = "Europe/London", # We know that data was collected in the UK
+           visualreport = FALSE,
+           overwrite = TRUE)
   }
 }
 \author{
