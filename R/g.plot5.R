@@ -1,7 +1,8 @@
 g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                    f0 = c(), f1 = c(), overwrite = FALSE,
                    metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30,
-                   threshold.mod = 100, threshold.vig = 400) {
+                   threshold.mod = 100, threshold.vig = 400,
+                   visualreport_without_invalid = TRUE, verbose = TRUE) {
   if (file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     fnames.fsr = sort(dir(paste0(metadatadir, "/results/file summary reports")))
     ffdone = fnames.fsr #ffdone is now a vector of filenames that have already been processed by g.part5
@@ -38,6 +39,15 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
   }
   P2daysummary = read.csv(paste0(results, "/part2_daysummary.csv"))
   M = c()
+  
+  if (f1 - f0 > 50 & verbose == TRUE) {
+    cat(paste0("\nCode is now creating a visualreport (pdf) for each of the ", f1 - f0,
+               " recordings as a final step to the GGIR pipeline. This can take a while as",
+               " it is done serially. If you do not want the reports  then you",
+               " may want to consider killing the process (Ctrl-C or ESC) and",
+               " changing Boolean argument 'visualreport' to FALSE for next time",
+               " you run this pipeline to skip this process."))
+  }
   # loop through files
   for (i in f0:f1) {
     if (length(ffdone) > 0) {
@@ -90,37 +100,38 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           }
           if (length(della) > 0) summarysleep_tmp = summarysleep_tmp[-della,]
         }
-        # do not include days with no meaningful data
         threshold_hrs_of_data_per_day = 0.5
-        d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
-        n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
-                                       | summarysleep_tmp$SptDuration == 0)
-        if (length(d2exclude) > 0) {
-          d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
-          P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
-          d2exclude = d2excludeb
-        }
-
-
-        if (length(n2exclude) > 0) {
-          n2excludeb = summarysleep_tmp$night[n2exclude]
-          summarysleep_tmp = summarysleep_tmp[-n2exclude,]
-          n2exclude = n2excludeb
-        }
-        # nights missing in sleep summary?
-        allnights = 1:max(summarysleep_tmp$night)
-        missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
-        if (length(missingNights) > 0) {
-          n2excludeb = n2exclude = sort(unique(c(n2exclude, missingNights)))
-        }
-
-        if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
-          lastnight = max(summarysleep_tmp$night)
-          if (lastnight %in% n2exclude) {
-            n2excludeb = n2exclude = n2exclude[-which(n2exclude == lastnight)]
+        if (visualreport_without_invalid == TRUE) {
+          # do not include days with no meaningful data
+          d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
+          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
+                                         | summarysleep_tmp$SptDuration == 0)
+          if (length(d2exclude) > 0) {
+            d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
+            P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
+            d2exclude = d2excludeb
           }
+          if (length(n2exclude) > 0) {
+            n2excludeb = summarysleep_tmp$night[n2exclude]
+            summarysleep_tmp = summarysleep_tmp[-n2exclude,]
+            n2exclude = n2excludeb
+          }
+          # nights missing in sleep summary?
+          allnights = 1:max(summarysleep_tmp$night)
+          missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+          if (length(missingNights) > 0) {
+            n2exclude = sort(unique(c(n2exclude, missingNights)))
+          }
+          
+          if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
+            lastnight = max(summarysleep_tmp$night)
+            if (lastnight %in% n2exclude) {
+              n2exclude = n2exclude[-which(n2exclude == lastnight)]
+            }
+          }
+        } else {
+          n2exclude = d2exclude = NULL
         }
-
         # detect which column is mvpa
         n45 = names(P2daysummary_tmp)
         varsVPA = grep(pattern = "VPA",x = n45)
@@ -418,7 +429,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           xaxislabels = c("noon","2pm", "4pm", "6pm", "8pm", "10pm", "midnight",
                           "2am", "4am", "6am", "8am", "10am", "noon")
         }
-        if (length(nightsi) > 0) { # Do not attempt to create a plot when there is no midnight in the data, because calculation of t1 will be complicated.
+        if (length(nightsi) > 0) { 
+          # Do not attempt to create a plot when there is no midnight in the data,
+          # because calculation of t1 will be complicated.
           nplots = length(nightsi) + 1
           if (viewingwindow == 2) {
             nplots = min(c(nplots, max(summarysleep_tmp$night)))

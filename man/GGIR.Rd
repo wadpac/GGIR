@@ -1290,6 +1290,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["dofirstpage"]])}).
         To indicate whether a first page with histograms summarizing the whole
         measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
+        
+      \item{visualreport_without_invalid}{
+        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport_without_invalid"]])}).
+        If TRUE, then reports generated with \code{visualreport = TRUE} only show
+        the valid time days.} 
     }
   }
 }
