@@ -105,7 +105,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # do not include days with no meaningful data
           d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
           n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
-                                         | summarysleep_tmp$SptDuration == 0)
+                                         | summarysleep_tmp$SptDuration == 0) + 1
           if (length(d2exclude) > 0) {
             d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
             P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
@@ -433,10 +433,12 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # Do not attempt to create a plot when there is no midnight in the data,
           # because calculation of t1 will be complicated.
           nplots = length(nightsi) + 1
-          if (viewingwindow == 2) {
-            nplots = min(c(nplots, max(summarysleep_tmp$night)))
-          } else {
-            nplots = min(c(nplots, max(P2daysummary_tmp$measurementday)))
+          if (visualreport_without_invalid == TRUE) {
+            if (viewingwindow == 2) {
+              nplots = min(c(nplots, max(summarysleep_tmp$night)))
+            } else {
+              nplots = min(c(nplots, max(P2daysummary_tmp$measurementday)))
+            }
           }
           # plot
           npointsperday = (60/ws3)*1440
