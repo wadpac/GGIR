@@ -454,6 +454,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           daycount = 1
           for (g in 1:nplots) {
             skip = FALSE
+            
             if (g == 1) {
               t0 = 1
               t1 = nightsi[g] - 1
@@ -465,7 +466,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               t1 = nightsi[g] - 1
             }  else if (g == nplots) {
               t0 = nightsi[g - 1]
-              t1 = length(time)
+              t1 = min(c(length(time), t0 + (24 * 60 * (60 / ws3)) - 1))
               if ((t1 - t0) < (threshold_hrs_of_data_per_day * (60 / ws3) * 60)) {
                 skip = TRUE
               }
