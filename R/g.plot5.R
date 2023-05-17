@@ -105,7 +105,15 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # do not include days with no meaningful data
           d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
           n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
-                                         | summarysleep_tmp$SptDuration == 0) + 1
+                                         | summarysleep_tmp$SptDuration == 0)
+          
+          if (P2daysummary_tmp$N.hours[1] < 24 & P2daysummary_tmp$N.hours[1] > 12) {
+            # First calendar day is between 12 and 24 hours
+            # this means that the first night viewindow (=2) may include some data but
+            # is not reflected by the sleep reportswindow
+            # so our night counts should be increased by one
+            n2excludeb = n2exclude = n2exclude + 1
+          }
           if (length(d2exclude) > 0) {
             d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
             P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
