@@ -8,7 +8,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   sf = 30
   options(digits.secs = 4)
   t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
-  time = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  timeseq = t0 + ((0:(N - 1))/sf)
+  time = as.POSIXlt(timeseq, origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 4, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -68,7 +69,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                                 rmc.headername.sn = "serial_number",
                                 rmc.headername.recordingid = "ID"))
   
-  # warning if desiredtz not provided but rmc.desiredtz provided:
+  #  now also with configtz
   expect_warning(read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
                                 rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
                                 rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
@@ -188,7 +189,8 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
   sf = 30
   options(digits.secs = 4)
   t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
-  time = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  timeseq = t0 + ((0:(N - 1))/sf)
+  time = as.POSIXlt(timeseq, origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 3, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -328,7 +330,8 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
   sf = 30
   options(digits.secs = 4)
   t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
-  time = as.POSIXlt(t0 + ((0:(N - 1))/sf), origin = "1970-1-1", tz = "Europe/London")
+  timeseq = t0 + ((0:(N - 1))/sf)
+  time = as.POSIXlt(timeseq, origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 1, 1)
   set.seed(100)
   accx = rnorm(N)

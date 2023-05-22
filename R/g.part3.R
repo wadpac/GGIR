@@ -101,7 +101,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         longitudinal_axis = SLE$longitudinal_axis
         if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
           ID = SUM$summary$ID
-          datename = as.character(unlist(strsplit(as.character(as.matrix(M$metashort[1]))," "))[1])
+          datename = as.character(unlist(strsplit(format(as.matrix(M$metashort[1]))," "))[1])
           plottitle = " "
           if (params_output[["do.part3.pdf"]] == TRUE) {
             pdf(paste(metadatadir, "/meta/sleep.qc/graphperday_id_", ID, "_",

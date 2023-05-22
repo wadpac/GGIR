@@ -67,7 +67,7 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
 
   EHV = g.extractheadervars(IGA)
   expect_equal(EHV$deviceSerialNumber,"012967")
-  MGA = g.getmeta(GAfile, desiredtz = desiredtz, windowsize = c(1,300,300))
+  MGA = g.getmeta(GAfile, desiredtz = desiredtz, windowsize = c(1,300,300), verbose = FALSE)
   expect_true(MGA$filetooshort)
   # expect_true(MGA$filecorrupt)
   
@@ -110,6 +110,6 @@ test_that("g.readaccfile and g.inspectfile can read genea, gt3x and cwa files co
   #also test one small other function:
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
-  expect_equal(length(fnames$fnames), 2)
-  expect_equal(length(fnames$fnamesfull), 2)
+  expect_equal(length(fnames$fnames), 4)
+  expect_equal(length(fnames$fnamesfull), 4)
 })

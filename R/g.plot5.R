@@ -13,11 +13,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
   # directories
   tail_expansion_log = NULL
   meta = paste(metadatadir,"/meta/basic", sep = "")
+  ms2 = paste(metadatadir,"/meta/ms2.out", sep = "")
   metasleep = paste(metadatadir,"/meta/ms3.out", sep = "")
   ms4 = paste(metadatadir,"/meta/ms4.out", sep = "")
   results = paste(metadatadir,"/results", sep = "")
   # get list of filenames
   fname_m = dir(meta)
+  fname_ms2 = dir(ms2)
   fname_ms = dir(metasleep)
   fname_ms4 = dir(ms4)
   cave = function(x) as.character(unlist(strsplit(x,".RDa")))[1]
@@ -53,6 +55,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
     }
     if (overwrite == TRUE) skip = 0
     if (skip == 0) {
+      ms2_file_index = which(fname_ms2 == fname_ms[i])
+      ms2_filepath = paste(ms2, "/", fname_ms2[ms2_file_index], sep = "")
+      IMP = NULL
+      load(ms2_filepath) #to load summary sleep
       sel = which(fnamesmeta == fnamesmetasleep[i])
       if (length(sel) > 0) {
         
@@ -242,22 +248,23 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
         sec = time_unclassed$sec
         min_vec = time_unclassed$min
         hour = time_unclassed$hour
-        # Prepare nonwear information for plotting
-        NONWEAR = rep(NA,length(ACC))
-        day = time_unclassed$mday
-        month = time_unclassed$mon + 1
-        year = time_unclassed$year + 1900
-        rm(time_unclassed)
-        # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
-        if (sum(which(nonwearscore > 1))) {
-          nonwear_elements = which(nonwearscore > 1 | nonwearscore == -1) # it now includes the expanded time
-          for (j in 1:length(nonwear_elements)) {
-            # could add try/catch in here in case 'which' fails..
-            match_loc = which(nw_time[nonwear_elements[j]]==time)
-            match_loc = match_loc[1]
-            NONWEAR[match_loc:(match_loc+(ws2/ws3)-1)] <- 1
-          }
-        }
+        # # Prepare nonwear information for plotting
+        # NONWEAR = rep(NA,length(ACC))
+        # day = time_unclassed$mday
+        # month = time_unclassed$mon + 1
+        # year = time_unclassed$year + 1900
+        # rm(time_unclassed)
+        # # take instances where nonwear was detected (on ws2 time vector) and map results onto a ws3 length vector for plotting purposes
+        # if (sum(which(nonwearscore > 1))) {
+        #   nonwear_elements = which(nonwearscore > 1 | nonwearscore == -1) # it now includes the expanded time
+        #   for (j in 1:length(nonwear_elements)) {
+        #     # could add try/catch in here in case 'which' fails..
+        #     match_loc = which(nw_time[nonwear_elements[j]]==time)
+        #     match_loc = match_loc[1]
+        #     NONWEAR[match_loc:(match_loc+(ws2/ws3)-1)] <- 1
+        #   }
+        # }
+        NONWEAR = IMP$r5long
         INACT = LIGPA = MODPA = VIGPA = rep(NA,length(ACC))  # PA vectors for plotting
         
         # Find bouts of light-PA (LPA):
@@ -405,13 +412,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
             annot_mat[,4] <- LIGPA[t0:t1]              # light pa
             annot_mat[,5] <- MODPA[t0:t1]              # moderate pa
             annot_mat[,6] <- VIGPA[t0:t1]              # vigorous pa
-            # check to see if there are any sleep onset or wake annotations on this day 
+            # check to see if there are any sleep onset or wake annotations on this day
             sleeponset_loc = 0
             wake_loc = 0
             if (viewingwindow == 1) {  # use different search coefficients for noon or midnight centered plots
-              sw_coefs = c(0,24)  
+              sw_coefs = c(0,24)
             } else if (viewingwindow == 2) {
-              sw_coefs = c(12,36)  
+              sw_coefs = c(12,36)
             }
             # check for sleeponset & wake time that is logged on this day before midnight
             curr_date = as.Date(substr(time[t0],start=1,stop=10),format = '%Y-%m-%d', origin="1970-1-1")  # what day is it?
@@ -431,7 +438,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 sleeponset_min = round((sleeponset_time - trunc(sleeponset_time)) * 60)
                 if (sleeponset_min == 60) sleeponset_min = 0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
-                if (!is.na(sleeponset_locations[1])) { 
+                if (!is.na(sleeponset_locations[1])) {
                   sleeponset_loc = sleeponset_locations[1]
                 }
               }
@@ -470,7 +477,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                   }
                 }
               }
-              # new way 
+              # new way
               sleeponset_time = summarysleep_tmp$sleeponset[check_date]
               if (sleeponset_time >= sw_coefs[2]) {
                 sleeponset_hour = trunc(sleeponset_time) - 24
@@ -479,10 +486,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
                 sleeponset_locations = which(hour[t0:t1] == sleeponset_hour & min_vec[t0:t1] == sleeponset_min)
                 if (sleeponset_loc > 0) {
                   if (!is.na(sleeponset_locations[1])) {
-                    sleeponset_loc[2] = sleeponset_locations[1]  
+                    sleeponset_loc[2] = sleeponset_locations[1]
                   }
                 } else if (sleeponset_loc == 0) {
-                  if (!is.na(sleeponset_locations[1])) { 
+                  if (!is.na(sleeponset_locations[1])) {
                     sleeponset_loc = sleeponset_locations[1]
                   }
                 }
