@@ -1,5 +1,5 @@
 g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
-                         configtz = c(), sep = ",", ...) {
+                         configtz = c(), ...) {
   #get input variables
   input = list(...)
   if (any(names(input) %in% c("datafile", "desiredtz", "params_rawdata", "configtz")) == FALSE) {
@@ -48,8 +48,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     tmp7 = unlist(strsplit(filename,"[.]GT3"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
-      testcsv = read.csv(datafile, nrow = 10, skip = 10, sep = sep)
-      testcsvtopline = read.csv(datafile, nrow = 2,skip = 1, sep = sep)
+      testcsv = read.csv(datafile, nrow = 10, skip = 10)
+      testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
       if (ncol(testcsv) == 2 & ncol(testcsvtopline) < 4) { #it is a geneactivefile
         mon = 2
       } else if (ncol(testcsv) >= 3 & ncol(testcsvtopline) < 4) {	#it is an actigraph file
@@ -158,7 +158,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
       if (mon == 2) {
-        tmp = read.csv(datafile, nrow = 50, skip = 0, sep = sep)
+        tmp = read.csv(datafile, nrow = 50, skip = 0)
         sf = as.character(tmp[which(as.character(tmp[,1]) == "Measurement Frequency"),2])
         tmp = as.numeric(unlist(strsplit(sf," "))[1])
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
@@ -169,7 +169,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           sf = as.numeric(tmp[1])
         }
       } else if (mon == 3) {
-        tmp0 = read.csv(datafile, nrow = 9, skip = 0, sep = sep)
+        tmp0 = read.csv(datafile, nrow = 9, skip = 0)
         tmp = colnames(tmp0)
         tmp2 = as.character(unlist(strsplit(tmp,".Hz"))[1])
         # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2])
@@ -184,7 +184,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (mon == 4) {
         # sample frequency is not stored
-        tmp0 = read.csv(datafile, nrow = 100000, skip = 0, sep = sep)
+        tmp0 = read.csv(datafile, nrow = 100000, skip = 0)
         tmp1 = as.numeric(as.POSIXlt(tmp0[, 1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
         sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is 
@@ -266,11 +266,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         # as we are only interested in two character fields
         # try extract value by reading xml as text file to avoid having to add
         # software dependencies
-        header = as.character(read.csv(xmlfile, nrow = 1, sep = sep))
+        header = as.character(read.csv(xmlfile, nrow = 1))
         tmp1 = unlist(strsplit(header, "measurementId="))[2]
         ID = gsub(pattern = " ",replacement = "",  unlist(strsplit(tmp1, " timestampStart"))[1])
         
-        header = paste0(read.csv(xmlfile, nrow = 10, skip = 2, sep = sep), collapse = " ")
+        header = paste0(read.csv(xmlfile, nrow = 10, skip = 2), collapse = " ")
         tmp1 = unlist(strsplit(header, "sensorSerialNumber value="))[2]
         SN = unlist(strsplit(tmp1, "/>"))[1]
         header = data.frame(serialnumber = SN, ID = ID)
@@ -283,27 +283,27 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { # geneactiv
-      H = read.csv(datafile,nrow = 20, skip = 0, sep = sep) #note that not the entire header is copied
+      H = read.csv(datafile,nrow = 20, skip = 0) #note that not the entire header is copied
       # cat("\nGENEACTIV csv files support is deprecated in GGIR v2.6-2 onwards. Please, either use the GENEACTIV bin files or the read.myacc.csv function on the csv files")
     } else if (mon == 3) { #actigraph
-      H = read.csv(datafile, nrow = 9, skip = 0, sep = sep)
+      H = read.csv(datafile, nrow = 9, skip = 0)
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
     }
   } else if (dformat == 3) { #wav data
     header = c()
-    try(expr = {header = rownames(read.csv(datafile, nrow = 15, header = TRUE, sep = sep))}, silent = TRUE)
+    try(expr = {header = rownames(read.csv(datafile, nrow = 15, header = TRUE))}, silent = TRUE)
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "WINDOWS-1252", sep = sep))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "WINDOWS-1252"))
     }
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "UTF-8", sep = sep))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "UTF-8"))
     }
     if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "latin1", sep = sep))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "latin1"))
     }
     if (length(which(header %in% paste0(1:15, sep = "") == TRUE)) == 15) { #
-      header = read.csv(datafile, skipNul = TRUE, nrow = 15, skip = 1, header = FALSE, sep = sep)
+      header = read.csv(datafile, skipNul = TRUE, nrow = 15, skip = 1, header = FALSE)
       if (ncol(header) == 2) {
         ii = which(is.na(header[,2]) == FALSE)
         if (length(ii) > 0) header = header[-ii,]
@@ -311,7 +311,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
     if (length(header) <= 5) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, sep = sep))
+      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE))
     }
     H = sapply(header,function(x) {
       tmp = as.character(unlist(strsplit(as.character(x), ": ")))
@@ -392,7 +392,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     header = "no header"
   }
   if (mon == 3 & dformat != 6) {
-    verisense_check = substr(colnames(read.csv(datafile, nrow = 1, sep = sep)[1]), start = 36, stop = 44)
+    verisense_check = substr(colnames(read.csv(datafile,nrow = 1)[1]), start = 36, stop = 44)
     if (identical('Verisense', toString(verisense_check))) {
       mon = 6
     }

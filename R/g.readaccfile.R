@@ -92,7 +92,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = g.wavread(wavfile = filename, startpage, endpage, sep = params_general[["sep"]])}, silent = TRUE)
+    try(expr = {P = g.wavread(wavfile = filename, startpage, endpage)}, silent = TRUE)
     if (length(P) > 1) {
       if (nrow(P$rawxyz) < ((sf * ws * 2) + 1) & blocknumber == 1) {
         P = c() ; switchoffLD = 1 #added 30-6-2012

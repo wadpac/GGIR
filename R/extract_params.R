@@ -49,7 +49,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Overwrite them by arguments provided via configuration file
   if (length(configfile_csv) > 0) {
-    config = read.csv(file = configfile_csv, stringsAsFactors = FALSE, sep = params_general[["sep"]])
+    config = read.csv(file = configfile_csv, stringsAsFactors = FALSE)
     argNames = names(input)
     if (nrow(config) > 1) {
       for (ci in 1:nrow(config)) {

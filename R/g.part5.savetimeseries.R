@@ -1,8 +1,7 @@
 g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                   save_ms5raw_format="csv", save_ms5raw_without_invalid=TRUE,
                                   DaCleanFile = c(),
-                                  includedaycrit.part5= 2/3, ID = c(),
-                                  sep = ",") {
+                                  includedaycrit.part5= 2/3, ID = c()) {
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
                             stringsAsFactors = FALSE)
@@ -72,7 +71,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     # re-oder columns
     if (save_ms5raw_format == "csv") {
       # save to csv file
-      data.table::fwrite(mdat,rawlevels_fname, row.names = F, sep = sep)
+      write.csv(mdat,rawlevels_fname, row.names = F)
     } else if (save_ms5raw_format == "RData") {
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.

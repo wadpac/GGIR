@@ -1,6 +1,5 @@
 g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0 = c(), f1 = c(), overwrite = FALSE,
-                   metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30, threshold.mod = 100, threshold.vig = 400,
-                   sep = ",") {
+                   metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30, threshold.mod = 100, threshold.vig = 400) {
   if (file.exists(paste(metadatadir,"/results/file summary reports", sep = ""))) {
     fnames.fsr = sort(dir(paste(metadatadir,"/results/file summary reports", sep = "")))
     ffdone = fnames.fsr #ffdone is now a list of files that have already been processed by g.part5
@@ -36,8 +35,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
   } else {
     stop("Warning: File daysummary.csv not generated yet")
   }
-  daysummary = read.csv(paste(results,"/part2_daysummary.csv", sep = ""), sep = sep)
-  summary = read.csv(paste(results,"/part2_summary.csv", sep = ""), sep = sep)
+  daysummary = read.csv(paste(results,"/part2_daysummary.csv", sep = ""))
+  summary = read.csv(paste(results,"/part2_summary.csv", sep = ""))
   checkfiles = dir(results)
   M = c()
   # loop through files

@@ -1,11 +1,11 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
-                     sep = ",", meta.sleep.folder = c(), desiredtz="") {
+                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
   dateformat_correct = "%Y-%m-%d" # set default value
   deltadate = 0
   #===============================
   # Load sleep log data...
-  S = read.csv(loglocation, sep = sep, stringsAsFactors = FALSE)
+  S = read.csv(loglocation, sep = sleeplogsep, stringsAsFactors = FALSE)
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S))) > 0
   if (advanced_sleeplog ==  TRUE) {

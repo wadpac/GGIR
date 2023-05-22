@@ -23,8 +23,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   } else if (is.character(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
                                             params_247[["qwindow_dateformat"]],
-                                            epochSize = params_general[["windowsizes"]][1],
-                                            sep = params_general[["sep"]])
+                                            epochSize = params_general[["windowsizes"]][1])
     # This will be an object with numeric qwindow values for all individuals and days
   }
   #---------------------------------
@@ -110,7 +109,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         TimeSegments2Zero = c() # set defaul
         # Check whether csv file exists with start-end end times of timewindows to be ignored (where 0 movement will be assumed)
         if (length(params_cleaning[["TimeSegments2ZeroFile"]]) > 0) {
-          TimeSegments2ZeroAll = read.csv(params_cleaning[["TimeSegments2ZeroFile"]], sep = params_general[["sep"]])
+          TimeSegments2ZeroAll = read.csv(params_cleaning[["TimeSegments2ZeroFile"]])
           # Check whether this individual is part of the file
           filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))
           if (length(filei) > 0) {
@@ -180,8 +179,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
-            data.table::fwrite(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"), row.names = FALSE,
-                      sep = params_general[["sep"]])
+            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"), row.names = FALSE)
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {

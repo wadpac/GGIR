@@ -1,4 +1,4 @@
-g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5, sep = ",") {
+g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) {
   # Function to read activity log and convert it into data.frame
   # that has for each ID and date a different qwindow vector
   # local functions:
@@ -22,7 +22,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5, 
   # main function code
   
   # Read content of activity diary file
-  actlog = read.csv(file = qwindow, sep = sep)
+  actlog = read.csv(file = qwindow)
   # assume ID to be in first column
   actlog = actlog[which(actlog[,1] != ""),] # ignore rows for which there is no id
   
