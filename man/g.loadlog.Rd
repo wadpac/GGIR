@@ -32,7 +32,7 @@
   is missing for certain nights then leave these blank
   
   }
-  \item{sleeplogsep}{
+  \item{sep_logs}{
     Value used as sep argument for reading sleeplog csv file, usually "," or ";".
   }
   \item{meta.sleep.folder}{

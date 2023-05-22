@@ -15,7 +15,8 @@
                           minimum_MM_length.part5 = 23,
                           week_weekend_aggregate.part5 = FALSE,
                           LUX_day_segments = c(), 
-                          excludefirstlast.part5 = c(), verbose = TRUE)
+                          excludefirstlast.part5 = c(), verbose = TRUE,
+                          sep_logs = ",", sep_reports = ",")
 }
 \arguments{
   \item{metadatadir}{
@@ -65,6 +66,14 @@
   \item{verbose}{
     See details in \link{GGIR}.
   }
+  \item{sep_logs}{
+    Character (default = ","). Value used as sep argument in read.csv for reading 
+    accelerometer raw csv files, diaries (i.e., activity log, sleeplog), and data 
+    cleaning file. Usually "," or ";".
+  }
+  \item{sep_reports}{
+    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
+  }  
 }
 \value{
   Function does not produce data, but only writes reports

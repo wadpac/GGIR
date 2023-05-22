@@ -264,7 +264,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
-                     verbose = verbose)
+                     verbose = verbose, sep_reports = params_general[["sep_reports"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }
@@ -281,7 +281,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
-                     verbose = verbose)
+                     verbose = verbose, sep_reports = params_general[["sep_reports"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }
@@ -303,7 +303,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
-                     verbose = verbose)
+                     verbose = verbose, sep_reports = params_general[["sep_reports"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }

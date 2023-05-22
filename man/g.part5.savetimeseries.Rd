@@ -11,7 +11,7 @@
   g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
   save_ms5raw_format="csv",
   save_ms5raw_without_invalid=TRUE,
-  DaCleanFile=c(), includedaycrit.part5=2/3, ID=c())
+  DaCleanFile=c(), includedaycrit.part5=2/3, ID=c(), sep_reports = ",")
 }
 \arguments{
   \item{ts}{
@@ -43,6 +43,10 @@
   \item{ID}{
   If data_cleaning_file is used then this argument specifies
   which participant ID the data correspond with.
+  }
+  \item{sep_reports}{
+  Character (default = ","). Value used as sep argument in \link[utils]{write.csv}
+  for writing csv files with the GGIR reports.
   }
 }
 \value{

@@ -242,7 +242,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         output to avoid biased output.
       }
       \item{nonwear_approach}{
-        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["nonwear_approach"]]}).
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["nonwear_approach"]])}").
         Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "2013")
         or the new version (nonwear_approach = "2023"). The 2013 version would use the longsize window (windowsizes[3],
         one hour as default) to check the conditions for nonwear identification and would flag as nonwear the
@@ -261,6 +261,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         only one research group. Please let us know if you have difficulties using this
         functionality in your data.
         }
+       \item{sep_logs}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_logs"]])}").
+        Value used as sep argument in \link[utils]{read.csv} for reading accelerometer raw csv files,
+        diaries (i.e., activity log, sleeplog), and data cleaning file. Usually "," or ";".
+        }
+       \item{sep_reports}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_reports"]])}").
+        Value used as sep argument in \link[utils]{write.csv} for writing  csv files containing
+        the GGIR reports.
+        }        
       }
     }
   
@@ -1027,7 +1037,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{sleeplogsep}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogsep"]]}").
         Value used as sep argument in \link[utils]{read.csv} for reading sleeplog csv file,
-        usually "," or ";".}
+        usually "," or ";". Using argument \code{sep_logs} is preferred.}
 
       \item{nap_model}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["nap_model"]])}).

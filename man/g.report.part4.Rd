@@ -10,7 +10,7 @@
 \usage{
 g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
   f1 = c(), storefolderstructure = TRUE, data_cleaning_file = c(),
-  sleepwindowType = "SPT", verbose = TRUE)
+  sleepwindowType = "SPT", verbose = TRUE, sep_logs = ",", sep_reports = ",")
 }
 \arguments{
   \item{datadir}{
@@ -45,6 +45,14 @@ g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
   }
   \item{verbose}{
     See details in \link{GGIR}.
+  }
+  \item{sep_logs}{
+    Character (default = ","). Value used as sep argument in read.csv for reading 
+    accelerometer raw csv files, diaries (i.e., activity log, sleeplog), and data 
+    cleaning file. Usually "," or ";".
+  }
+  \item{sep_reports}{
+    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
   }
 }
 \value{

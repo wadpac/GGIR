@@ -32,13 +32,6 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
   fnamesmetasleep = apply(x, MARGIN = c(1), FUN = cave) # part 3 milestone data files
   # create list of day names
   wdaynames = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-  # load summary spreadsheets for this study
-  if (file.exists(paste(results,"/part2_daysummary.csv", sep = ""))) {
-  } else {
-    stop("Warning: File daysummary.csv not generated yet")
-  }
-  daysummary = read.csv(paste(results,"/part2_daysummary.csv", sep = ""))
-  summary = read.csv(paste(results,"/part2_summary.csv", sep = ""))
   checkfiles = dir(results)
   M = c()
   # loop through files
@@ -57,8 +50,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
     if (skip == 0) {
       ms2_file_index = which(fname_ms2 == fname_ms[i])
       ms2_filepath = paste(ms2, "/", fname_ms2[ms2_file_index], sep = "")
-      IMP = NULL
+      IMP = SUM = NULL
       load(ms2_filepath) #to load summary sleep
+      daysummary = SUM$daysummary
+      summary = SUM$summary
       sel = which(fnamesmeta == fnamesmetasleep[i])
       if (length(sel) > 0) {
         
@@ -154,15 +149,15 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1, f0
           lengthnight = summarysleep_tmp$SptDuration #including wake periods
           nocsleepdur = summarysleep_tmp$SleepDurationInSpt
           sleepefficiency = (nocsleepdur /lengthnight) * 100
-          f01 = daysummary_tmp[,c45]
-          f02 = daysummary_tmp[,MainMetric]
+          f01 = as.numeric(daysummary_tmp[,c45])
+          f02 = as.numeric(daysummary_tmp[,MainMetric])
           #f05 = nocsleepdur #runif(length(days), 4, 10)
           f05 = matrix(NA,nrow=2,ncol=length(summarysleep_tmp$SptDuration))
           f05[1,] = summarysleep_tmp$SleepDurationInSpt
           f05[2,] = summarysleep_tmp$SptDuration - summarysleep_tmp$SleepDurationInSpt
           f05_2 = summarysleep_tmp$SptDuration
           f06 = sleepefficiency #runif(length(days), 30, 100)
-          f07 = daysummary_tmp$N.valid.hours #runif(7, 20, 24)
+          f07 = as.numeric(daysummary_tmp$`N valid hours`) #runif(7, 20, 24)
           # allocate colours
           CLS = c("white","black")
           CLS_A = rep(CLS[1],length(days_PA))
