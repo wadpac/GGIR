@@ -129,6 +129,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     # From experience we know that on some machine the quotes in the files are
     # poorly recognised, to catch this first try to check whether this is the case:
     quote = "\""
+    Dtest = NULL
     try(expr = {Dtest = data.table::fread(input = fn,
                                           header = FALSE, sep = ",", skip = index,
                                           nrows = 20, quote = quote)}, silent = TRUE)
