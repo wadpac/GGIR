@@ -136,7 +136,7 @@ remotes::install_github("wadpac/GGIR")
 1.  GGIR works with the following accelerometer brands and formats:
     -   [GENEActiv](https://activinsights.com/) .bin
     -   [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
-    -   [ActiGraph](https://actigraphcorp.com/) .csv and .gt3x (.gt3x
+    -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x
         only the newer format generated with firmware versions above
         2.5.0. Serial numbers that start with "NEO" or "MRA" and have
         firmware version of 2.5.0 or earlier use an older format of the
