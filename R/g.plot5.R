@@ -102,18 +102,12 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         }
         threshold_hrs_of_data_per_day = 0.5
         if (visualreport_without_invalid == TRUE) {
+          incrementNight = 0
           # do not include days with no meaningful data
           d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
           n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
                                          | summarysleep_tmp$SptDuration == 0)
-          
-          if (P2daysummary_tmp$N.hours[1] < 24 & P2daysummary_tmp$N.hours[1] > 12) {
-            # First calendar day is between 12 and 24 hours
-            # this means that the first night viewindow (=2) may include some data but
-            # is not reflected by the sleep reportswindow
-            # so our night counts should be increased by one
-            n2excludeb = n2exclude = n2exclude + 1
-          }
+
           if (length(d2exclude) > 0) {
             d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
             P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
@@ -130,9 +124,18 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           if (length(missingNights) > 0) {
             n2exclude = sort(unique(c(n2exclude, missingNights)))
           }
+          # Account for shift in nights relative to windows
+          if (P2daysummary_tmp$N.hours[1] < 24 & P2daysummary_tmp$N.hours[1] > 12 & length(n2exclude) > 0) {
+            # First calendar day is between 12 and 24 hours
+            # this means that the first night viewindow (=2) may include some data but
+            # is not reflected by the sleep reportswindow
+            # so our night counts should be increased by one
+            n2excludeb = n2exclude = n2exclude + 1
+            incrementNight = 1
+          }
           
           if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
-            lastnight = max(summarysleep_tmp$night)
+            lastnight = max(summarysleep_tmp$night) + incrementNight
             if (lastnight %in% n2exclude) {
               n2exclude = n2exclude[-which(n2exclude == lastnight)]
             }
@@ -325,13 +328,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         #=================================================
         # Next pages with day specific graphs
         # get variables - activity:
-        ACC = as.numeric(as.matrix(M$metashort[,metric])) * 1000
+        ACC = as.numeric(as.matrix(M$metashort[, metric])) * 1000
         nonwearscore = as.numeric(as.matrix(M$metalong[,"nonwearscore"]))
         time =  as.character(M$metashort[,1])
         nw_time = as.character(M$metalong[,1])
         if (length(unlist(strsplit(time[1],"T"))) > 1) { # ISO timestamp format
-          time = format(iso8601chartime2POSIX(time,desiredtz))
-          nw_time = format(iso8601chartime2POSIX(nw_time,desiredtz))
+          time = format(iso8601chartime2POSIX(time, desiredtz))
+          nw_time = format(iso8601chartime2POSIX(nw_time, desiredtz))
         }
         time_unclassed = unclass(as.POSIXlt(time,desiredtz))
         sec = time_unclassed$sec
@@ -376,7 +379,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           endi = p[jmvpa] + boutdur2
           if (endi <= length(rr)) { #does bout fall without measurement?
             lengthbout = sum(rr[p[jmvpa]:endi])
-            if (lengthbout > (boutdur2*boutcriter)) { #0.9 => 90% of the bout needs to meet the criteria
+            if (lengthbout > (boutdur2 * boutcriter)) { #0.9 => 90% of the bout needs to meet the criteria
               rr1t[p[jmvpa]:endi] = 2 # remember that this was a bout in r1t
             } else {
               rr[p[jmvpa]] = 0
@@ -443,7 +446,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           nplots = length(nightsi) + 1
           if (visualreport_without_invalid == TRUE) {
             if (viewingwindow == 2) {
-              nplots = min(c(nplots, max(summarysleep_tmp$night)))
+              nplots = min(c(nplots, max(summarysleep_tmp$night) + incrementNight))
             } else {
               nplots = min(c(nplots, max(P2daysummary_tmp$measurementday)))
             }
@@ -462,7 +465,6 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           daycount = 1
           for (g in 1:nplots) {
             skip = FALSE
-            
             if (g == 1) {
               t0 = 1
               t1 = nightsi[g] - 1
@@ -496,7 +498,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             # if only expanded data in this day, then no plot
             if (all(is.na(acc)) & all(is.na(ang))) next
             non_wear <- NONWEAR[t0:t1]
-            annot_mat = matrix(NA,nrow=length(acc),ncol=6)
+            annot_mat = matrix(NA, nrow = length(acc), ncol = 6)
             annot_mat[,1] <- detection[t0:t1]          # night sleep
             annot_mat[,2] <- night_wake_full[t0:t1]    # nocturnal wake
             annot_mat[,3] <- INACT[t0:t1]              # inactivity
@@ -521,7 +523,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                 curr_date = curr_date - 1
               }
             }
-            check_date = match(curr_date,sleep_dates)
+            check_date = match(curr_date, sleep_dates)
             if (is.na(check_date) == FALSE) {
               sleeponset_time = summarysleep_tmp$sleeponset[check_date]  # get the time of sleep_onset
               if (sleeponset_time >= sw_coefs[1] & sleeponset_time < sw_coefs[2]) {
@@ -589,7 +591,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               }
             }
             # if midnight centered plots, then search next day as well
-            if (viewingwindow==2) {
+            if (viewingwindow == 2) {
               next_day = curr_date + 1
               check_date = match(next_day,sleep_dates)
             }
