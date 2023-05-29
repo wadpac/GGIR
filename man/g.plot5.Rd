@@ -17,9 +17,10 @@
 }
 \usage{
   g.plot5(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
-  f0 = c(), f1 = c(), overwrite = FALSE, metric="ENMO",desiredtz = "Europe/London",
+  f0 = c(), f1 = c(), overwrite = FALSE, metric="ENMO",desiredtz = "",
   threshold.lig = 30, threshold.mod = 100, threshold.vig = 400, 
-  visualreport_without_invalid = TRUE, verbose = TRUE)
+  visualreport_without_invalid = TRUE, includedaycrit = 0.66, includenightcrit = 0.66,
+  verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -62,6 +63,12 @@
     See \link{GGIR}
   }
   \item{visualreport_without_invalid}{
+    See \link{GGIR}
+  }
+  \item{includenightcrit}{
+    See \link{GGIR}
+  }
+    \item{includedaycrit}{
     See \link{GGIR}
   }
   \item{verbose}{

@@ -328,6 +328,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               threshold.mod = params_phyact[["threshold.mod"]],
               threshold.vig = params_phyact[["threshold.vig"]],
               visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
+              includedaycrit = params_cleaning[["includedaycrit"]],
+              includenightcrit = params_sleep[["includenightcrit"]],
               verbose = TRUE)
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")

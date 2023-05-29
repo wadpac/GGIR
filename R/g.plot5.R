@@ -1,8 +1,10 @@
 g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                    f0 = c(), f1 = c(), overwrite = FALSE,
-                   metric = "ENMO", desiredtz = "Europe/London", threshold.lig = 30,
+                   metric = "ENMO", desiredtz = "", threshold.lig = 30,
                    threshold.mod = 100, threshold.vig = 400,
-                   visualreport_without_invalid = TRUE, verbose = TRUE) {
+                   visualreport_without_invalid = TRUE,
+                   includedaycrit = 0.66, includenightcrit = 0.66,
+                   verbose = TRUE) {
   if (file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     fnames.fsr = sort(dir(paste0(metadatadir, "/results/file summary reports")))
     ffdone = fnames.fsr #ffdone is now a vector of filenames that have already been processed by g.part5
@@ -41,12 +43,12 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
   M = c()
   
   if (f1 - f0 > 50 & verbose == TRUE) {
-    cat(paste0("\nCode is now creating a visualreport (pdf) for each of the ", f1 - f0,
-               " recordings as a final step to the GGIR pipeline. This can take a while as",
-               " it is done serially. If you do not want the reports  then you",
-               " may want to consider killing the process (Ctrl-C or ESC) and",
-               " changing Boolean argument 'visualreport' to FALSE for next time",
-               " you run this pipeline to skip this process."))
+    cat(paste0("\nGGIR is now creating a visualreport (pdf) for each of the ", f1 - f0,
+               " recordings as a final step in the GGIR pipeline. This can take a while as",
+               " it is done file-by-file. If you do not want the visualreports then you",
+               " can kill the process (Ctrl-C or ESC) as that will not affect the",
+               " rest of the analyses and reports. To avoid this next time, ",
+               " change Boolean argument 'visualreport' to FALSE."))
   }
   # loop through files
   for (i in f0:f1) {
@@ -104,8 +106,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         if (visualreport_without_invalid == TRUE) {
           incrementNight = 0
           # do not include days with no meaningful data
-          d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
-          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > 0.66
+          d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < includedaycrit * 24 &
+                                        P2daysummary_tmp$N.valid.hours < threshold_hrs_of_data_per_day)
+          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
                                          | summarysleep_tmp$SptDuration == 0)
 
           if (length(d2exclude) > 0) {
@@ -469,7 +472,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
               t0 = 1
               t1 = nightsi[g] - 1
               if ((t1 - t0) < (threshold_hrs_of_data_per_day * (60 / ws3) * 60)) {
-                skip = TRUE
+                skip = TRUE # regardless of inclusion criterion only plot windows with at least half an hour of data
               }
             } else if (g > 1 & g < nplots) {
               t0 = nightsi[g - 1]
