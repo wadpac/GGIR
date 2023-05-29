@@ -363,7 +363,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
               
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
-              write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE, 
+              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE, 
                         sep = params_general[["sep_reports"]])
               # nap/sib/nonwear overlap analysis
               

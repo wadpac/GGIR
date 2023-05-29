@@ -53,7 +53,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     # The next time (blocknumber > 1) the startpage will be derived from the previous
     # endpage and the blocksize.
     if (blocknumber != 1 & length(PreviousEndPage) != 0) {
-      # if ((mon == 2 & dformat == 1) | dformat == 2) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
+      # if ((mon == 2 & dformat == 1) | dformat == 2) {  # change this line as the csv data do not need to skip one more row (the skip argument in fread does not include this row of the dataset)
       if (mon == 2 & dformat == 1) {
         # only in GENEActiv binary data and for csv format data
         # page selection is defined from start to end (including end)
