@@ -371,15 +371,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
   }
   
-  # check separator for logs and reports
-  if (!is.null(params_sleep[["sleeplogsep"]])) {
-    # this means user defined sleeplogsep (default = NULL)
-    if (params_general[["sep_logs"]] == ",") {
-      # then user might not have defined sep_logs
-      params_general[["sep_logs"]] = params_sleep[["sleeplogsep"]]
-    }
-  }
-  
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

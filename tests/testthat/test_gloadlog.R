@@ -12,7 +12,7 @@ test_that("gloadlog is able to load different log formats", {
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   cat(paste0("\nLocal timezone: ", Sys.timezone()))
   logs1 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7,
-                   sep_logs = ",", meta.sleep.folder = tempdir , desiredtz = "")
+                    meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs1$sleeplog), 7)
   expect_equal(ncol(logs1$sleeplog), 5)
   expect_equal(logs1$sleeplog$night, as.character(1:7))
@@ -26,7 +26,7 @@ test_that("gloadlog is able to load different log formats", {
   rec_starttime = format(as.POSIXct("2016-06-20 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   logs2 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7,
-                   sep_logs = ",", meta.sleep.folder = tempdir , desiredtz = "")
+                   meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs2$sleeplog), 7)
   expect_equal(ncol(logs2$sleeplog), 5)
   expect_equal(logs2$sleeplog$night, as.character(6:12)) # these are nights in the acc recording
@@ -40,7 +40,7 @@ test_that("gloadlog is able to load different log formats", {
   rec_starttime = format(as.POSIXct("2016-06-29 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   logs3 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1, nnights = 7,
-                    sep_logs = ",", meta.sleep.folder = tempdir , desiredtz = "")
+                    meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs3$sleeplog), 3)
   expect_equal(ncol(logs3$sleeplog), 5)
   expect_equal(logs3$sleeplog$night, as.character(1:3)) # 1:3 because these are the first three nights of the acc recording

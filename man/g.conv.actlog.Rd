@@ -8,7 +8,7 @@
  that has for each ID and date a different qwindow vector.
 }
 \usage{
-  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y", epochSize = 5, sep_logs = ",")	
+  g.conv.actlog(qwindow, qwindow_dateformat="\%d-\%m-\%Y", epochSize = 5)	
 }
 \arguments{
   \item{qwindow}{
@@ -33,10 +33,6 @@
   }
   \item{epochSize}{
     Short epoch size (first value of windowsizes in \link{g.getmeta}).
-  }
-  \item{sep_logs}{
-    Chraracter (default = ,). Value used as sep argument in read.csv for reading accelerometer 
-    raw csv files, diaries (i.e., activity log, sleeplog), and data cleaning file. Usually "," or ";".
   }
 }
 \value{

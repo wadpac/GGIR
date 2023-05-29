@@ -122,7 +122,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     di = 1
     DaCleanFile = c()
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
-      if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]], sep = params_general[["sep_logs"]])
+      if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
     }
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) {

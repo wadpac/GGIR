@@ -48,8 +48,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     tmp7 = unlist(strsplit(filename,"[.]GT3"))
     if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") { #this is a csv file
       dformat = 2 #2 = csv
-      testcsv = read.csv(datafile, nrow = 10, skip = 10)
-      testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
+      testcsv = data.table::fread(datafile, nrows = 10, skip = 10, data.table = FALSE)
+      testcsvtopline = data.table::fread(datafile, nrows = 2, skip = 1, data.table = FALSE)
       if (ncol(testcsv) == 2 & ncol(testcsvtopline) < 4) { #it is a geneactivefile
         mon = 2
       } else if (ncol(testcsv) >= 3 & ncol(testcsvtopline) < 4) {	#it is an actigraph file
@@ -125,8 +125,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           sf_r = sf
           csvr = c()
           suppressWarnings(expr = {
-            try(expr = {csvr = as.matrix(read.csv(datafile, nrow = 10,
-                                                  skip = 200, sep = ""))
+            try(expr = {csvr = as.matrix(data.table::fread(datafile, nrows = 10,
+                                                           skip = 200, sep = "",
+                                                           data.table = FALSE))
             }, silent = TRUE)
           })
           if (length(csvr) > 1) {
@@ -158,7 +159,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
       if (mon == 2) {
-        tmp = read.csv(datafile, nrow = 50, skip = 0)
+        tmp = data.table::fread(datafile, nrows = 50, skip = 0, data.table = FALSE)
         sf = as.character(tmp[which(as.character(tmp[,1]) == "Measurement Frequency"),2])
         tmp = as.numeric(unlist(strsplit(sf," "))[1])
         tmp2 = unlist(strsplit(as.character(tmp[1]),","))
@@ -169,12 +170,13 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           sf = as.numeric(tmp[1])
         }
       } else if (mon == 3) {
-        tmp0 = read.csv(datafile, nrow = 9, skip = 0)
+        tmp0 = data.table::fread(datafile, nrows = 9, skip = 0, data.table = FALSE)
         tmp = colnames(tmp0)
         tmp2 = as.character(unlist(strsplit(tmp,".Hz"))[1])
         # tmp3 = as.character(unlist(strsplit(tmp2,"yy.at."))[2])
         # following suggestion by XInyue on github https://github.com/wadpac/GGIR/issues/102 replaced by:
         tmp3 = as.character(unlist(strsplit(tmp2, ".at.",fixed = T))[2])
+        if (is.na(tmp3)) tmp3 = as.character(unlist(strsplit(tmp2, " at ",fixed = T))[2])
         tmp5 = unlist(strsplit(tmp3,","))
         if (length(tmp5) > 1) { #decimals seperated by comma
           sf = as.numeric(tmp5[1])
@@ -184,7 +186,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (mon == 4) {
         # sample frequency is not stored
-        tmp0 = read.csv(datafile, nrow = 100000, skip = 0)
+        tmp0 = data.table::fread(datafile, nrows = 100000, skip = 0, data.table = FALSE)
         tmp1 = as.numeric(as.POSIXlt(tmp0[, 1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
         sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is 
@@ -266,11 +268,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         # as we are only interested in two character fields
         # try extract value by reading xml as text file to avoid having to add
         # software dependencies
-        header = as.character(read.csv(xmlfile, nrow = 1))
+        header = as.character(data.table::fread(xmlfile, nrows = 1, data.table = FALSE))
         tmp1 = unlist(strsplit(header, "measurementId="))[2]
         ID = gsub(pattern = " ",replacement = "",  unlist(strsplit(tmp1, " timestampStart"))[1])
         
-        header = paste0(read.csv(xmlfile, nrow = 10, skip = 2), collapse = " ")
+        header = paste0(data.table::fread(xmlfile, nrows = 10, skip = 2, data.table = FALSE), collapse = " ")
         tmp1 = unlist(strsplit(header, "sensorSerialNumber value="))[2]
         SN = unlist(strsplit(tmp1, "/>"))[1]
         header = data.frame(serialnumber = SN, ID = ID)
@@ -283,10 +285,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
   } else if (dformat == 2) { #csv data
     if (mon == 2) { # geneactiv
-      H = read.csv(datafile,nrow = 20, skip = 0) #note that not the entire header is copied
+      H = data.table::fread(datafile,nrows = 20, skip = 0, data.table = FALSE) #note that not the entire header is copied
       # cat("\nGENEACTIV csv files support is deprecated in GGIR v2.6-2 onwards. Please, either use the GENEACTIV bin files or the read.myacc.csv function on the csv files")
     } else if (mon == 3) { #actigraph
-      H = read.csv(datafile, nrow = 9, skip = 0)
+      H = data.table::fread(datafile, nrows = 9, skip = 0, data.table = FALSE)
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
     }
@@ -348,6 +350,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     H = data.frame(name = names(H), value = as.character(H), stringsAsFactors = FALSE)
     sf = as.numeric(H$value[which(H$name == "Sample.Rate")])
   }
+  if (is.data.frame(H)) { # beacuse of now we use fread and this may produce empty cols
+    empty_cols = which(colSums(H == " ") == nrow(H))
+    if (length(empty_cols) > 0) H = H[, -empty_cols]
+  }
   H = as.matrix(H)
   if (ncol(H) == 3 & dformat == 2 & mon == 3) {
     if (length(which(is.na(H[,2]) == FALSE)) == 0) {
@@ -392,7 +398,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     header = "no header"
   }
   if (mon == 3 & dformat != 6) {
-    verisense_check = substr(colnames(read.csv(datafile,nrow = 1)[1]), start = 36, stop = 44)
+    verisense_check = substr(colnames(data.table::fread(datafile, nrows = 1, data.table = FALSE)[1]), start = 36, stop = 44)
     if (identical('Verisense', toString(verisense_check))) {
       mon = 6
     }

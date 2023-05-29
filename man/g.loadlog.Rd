@@ -9,8 +9,7 @@
 }
 \usage{
   g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
-    sleeplogsep=",", meta.sleep.folder = c(),
-  desiredtz="")
+    meta.sleep.folder = c(), desiredtz="")
 }
 \arguments{
   \item{loglocation}{
@@ -31,9 +30,6 @@
   It assumes that this is constant within a study. If sleep log information
   is missing for certain nights then leave these blank
   
-  }
-  \item{sep_logs}{
-    Value used as sep argument for reading sleeplog csv file, usually "," or ";".
   }
   \item{meta.sleep.folder}{
     Path to part3 milestone data, only specify if sleeplog is in advanced format.

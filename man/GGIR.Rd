@@ -261,11 +261,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         only one research group. Please let us know if you have difficulties using this
         functionality in your data.
         }
-       \item{sep_logs}{
-        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_logs"]])}").
-        Value used as sep argument in \link[utils]{read.csv} for reading accelerometer raw csv files,
-        diaries (i.e., activity log, sleeplog), and data cleaning file. Usually "," or ";".
-        }
        \item{sep_reports}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_reports"]])}").
         Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
@@ -1041,8 +1036,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{sleeplogsep}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogsep"]]}").
-        Value used as sep argument in \link[utils]{read.csv} for reading sleeplog csv file,
-        usually "," or ";". Using argument \code{sep_logs} is preferred.}
+        This argument is deprecated.}
 
       \item{nap_model}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["nap_model"]])}).

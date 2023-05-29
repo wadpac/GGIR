@@ -26,7 +26,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
     # lot of zeros, which makes it impossible to detect decimal separator
     # "." will then be the default, which is not correct for "," systems.
     while (skiprows < 1000000) { #foundnonzero == FALSE & 
-      deci = as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10))
+      deci = as.matrix(data.table::fread(inputfile, skip = skiprows, nrows = 10, data.table = FALSE))
       skiprows = skiprows + 10000
       if (length(unlist(strsplit(as.character(deci[2,2]), ","))) > 1) {
         decn = ","
