@@ -266,7 +266,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -283,7 +283,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      sleepwindowType = params_sleep[["sleepwindowType"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 5)) > 0) {
@@ -305,7 +305,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (params_output[["visualreport"]] == TRUE) {
@@ -330,7 +330,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
               verbose = TRUE)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
 }
