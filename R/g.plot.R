@@ -135,6 +135,17 @@ g.plot = function(IMP, M, I, durplot) {
       # Metric is not on a G scale
       ylabel = paste0(metricName, " (counts)")
       YLIM = c(0, max(Acceleration, na.rm = TRUE) * 1.05)
+      if (YLIM[2] < 0.8) {
+        YLIM[2] = 0.8
+      } else if (YLIM[2] >= 0.8 & YLIM[2] < 1.5) {
+        YLIM[2] = 1.5
+      } else if (YLIM[2] >= 1.5 & YLIM[2] < 10) {
+        YLIM[2] = 10
+      } else if (YLIM[2] >= 10 & YLIM[2] < 500) {
+        YLIM[2] = 500
+      } else if (YLIM[2] >= 500 & YLIM[2] < 1000) {
+        YLIM[2] = 1000
+      }
       YTICKS = round(c(0, YLIM[2] * 0.3, YLIM[2] * 0.65, YLIM[2] * 0.95))
       YTICKS = unique(round(YTICKS/10) * 10) # round to nearest ten and remove possible duplicates
     } else {

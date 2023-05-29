@@ -24,6 +24,9 @@ test_that("External epoch data is correctly converted", {
   if (!dir.exists(QCbasis)) dir.create(QCbasis, recursive = TRUE)
   outputdir = "./output_tmp_testdata"
   
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
   # AWD
   move2folder(system.file("testfiles/Actiwatch.AWD", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 60
@@ -36,6 +39,9 @@ test_that("External epoch data is correctly converted", {
   expect_equal(ncol(M$metashort), 2)
   expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
   
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
   # Actiwatch CSV
   move2folder(system.file("testfiles/Actiwatch.csv", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 15
@@ -44,9 +50,12 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_Actiwatch.csv.RData"))
-  expect_equal(nrow(M$metashort), 8)
+  expect_equal(nrow(M$metashort), 860)
   expect_equal(ncol(M$metashort), 2)
   expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
+
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
   
   # ukbiobank CSV
   move2folder(system.file("testfiles/ukbiobank.csv", package = "GGIR")[1], dn)
@@ -59,7 +68,7 @@ test_that("External epoch data is correctly converted", {
   expect_equal(nrow(M$metashort), 492)
   expect_equal(ncol(M$metashort), 2)
   expect_equal(colnames(M$metashort), c("timestamp", "LFENMO"))
-  
+
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
   
