@@ -268,9 +268,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         }
        \item{sep_reports}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_reports"]])}").
-        Value used as sep argument in \link[utils]{write.csv} for writing  csv files containing
+        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
         the GGIR reports.
-        }        
+        }
+       \item{sep_config}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_config"]])}").
+        Value used as sep argument in \link[utils]{write.csv} for writing and reading csv files containing
+        the GGIR config file.
+        }    
       }
     }
   

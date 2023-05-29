@@ -235,7 +235,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
-    write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
+    data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"), 
+                       row.names = FALSE, sep = params_general[["sep_config"]])
   } else {
     if (dir.exists(datadir) == FALSE) {
       warning("\nCould not write config file because studyname or datadir are not correctly specified.")
