@@ -1294,7 +1294,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{visualreport_without_invalid}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport_without_invalid"]])}).
         If TRUE, then reports generated with \code{visualreport = TRUE} only show
-        the valid time days.} 
+        the windows with sufficiently valid data according to \code{includedaycrit}
+        when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2} 
     }
   }
 }
