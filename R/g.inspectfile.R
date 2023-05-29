@@ -90,7 +90,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
     if (dformat == 1 & is.mv == FALSE) { # .bin and not movisens
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-      isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
+      isitageneactive = suppressWarnings(GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1))
       # try read the file as if it is a genea and store output in variable 'isitagenea'
       try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
