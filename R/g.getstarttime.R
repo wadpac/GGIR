@@ -1,4 +1,4 @@
-g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz = NULL) { 
+g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz = NULL) {
   #get input variables (relevant when read.myacc.csv is used)
   #------------------------------------------------------------
   if (mon  == 1 & dformat == 1) {
@@ -47,7 +47,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     starttime = as.POSIXlt(starttime)
   } else if (dformat == 2 & (mon == 3 | mon == 4 | mon == 6)) {
     if (mon == 3 | mon == 6) {
-      tmph = data.table::fread(datafile, nrows = 8, skip = 1, data.table = FALSE)
+      tmph = read.csv(datafile, nrow = 8, skip = 1)
       tmphi = 1
       while (tmphi < 10) {
         if (length(unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))) > 1) {

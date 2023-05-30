@@ -25,12 +25,12 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
     # Note: I have added the below lines because some ActiGraph files start with a
     # lot of zeros, which makes it impossible to detect decimal separator
     # "." will then be the default, which is not correct for "," systems.
-    while (skiprows < 1000000) { #foundnonzero == FALSE & 
-      deci = as.matrix(data.table::fread(inputfile, skip = skiprows, nrows = 10, data.table = FALSE))
+    while (skiprows < 1000000) { #foundnonzero == FALSE &
+      deci = as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10))
       skiprows = skiprows + 10000
       if (length(unlist(strsplit(as.character(deci[2,2]), ","))) > 1) {
         decn = ","
-        break() 
+        break()
       }
       numtemp = as.numeric(deci[2,2])
       if (is.na(numtemp) == FALSE) {
@@ -64,7 +64,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
       inputfile = gsub(pattern = "[.]GT3X", replacement = "[.]gt3x", x = inputfile)
     }
     try(expr = {deci = as.data.frame(read.gt3x::read.gt3x(path = inputfile,
-                                                       batch_begin = 1, batch_end = 10, 
+                                                       batch_begin = 1, batch_end = 10,
                                                        asDataFrame = TRUE))}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .gt3x file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
