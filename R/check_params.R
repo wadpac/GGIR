@@ -133,6 +133,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   "once the issues are resolved. Consider using argument do.neishabouricounts, ",
                   "for more information see package documentation."), call. = FALSE)
     }
+  }
 
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
