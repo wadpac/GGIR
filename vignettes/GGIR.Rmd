@@ -131,6 +131,18 @@ install.packages("remotes")
 remotes::install_github("wadpac/GGIR")
 ```
 
+Additionally, make sure you have the packages that GGIR will need to process
+the data, specifically:
+
+-   If you are working with Axivity, GENEActiv, or GENEA files, install
+    the GGIRread package with `install.packages("GGIRread")`
+-   If you are working with ActiGraph gt3x files, install
+    the read.gt3x package with `install.packages("read.gt3x")`
+-   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
+    install the actilifecounts package with `install.packages("actilifecounts")`
+-   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
+    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
+
 ## Prepare folder structure
 
 1.  GGIR works with the following accelerometer brands and formats:
