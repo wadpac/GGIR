@@ -119,7 +119,7 @@ save(I, M, C, filefoldername, filename_dir, tail_expansion_log, file = paste0(dn
 
 test_that("Neighbouring recordings are correctly appended", {
   
-  appendRecords(metadatadir = "./testfolder", desiredtz = "", idloc = 2) # extract ID from filename
+  appendRecords(metadatadir = "./testfolder", desiredtz = "Europe/Amsterdam", idloc = 2) # extract ID from filename
   
   expect_true(dir.exists("./testfolder/meta/basic"))
   expect_equal(length(dir("./testfolder/meta/basic")), 2)
