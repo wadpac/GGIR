@@ -272,7 +272,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             verbose = verbose)
   }
   #--------------------------------------------------
-  browser()
   # Store configuration parameters in config file
   LS = ls()
   LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
