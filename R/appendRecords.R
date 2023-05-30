@@ -14,9 +14,10 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1) {
     load(fn)
     hvars = g.extractheadervars(I)
     ID = extractID(hvars, idloc, fname = I$filename)
-    start = as.POSIXlt(x = M$metashort$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    end = as.POSIXlt(x = M$metashort$timestamp[nrow(M$metashort)], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    return(data.frame(ID = ID, start = start, end = end, filename = fn))
+    start = as.POSIXct(x = M$metashort$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
+    end = as.POSIXct(x = M$metashort$timestamp[nrow(M$metashort)], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
+    info = data.frame(ID = ID, start = start, end = end, filename = fn)
+    return(info)
   }
   mergePair = function(M1, M2, overlap, tz) {
     if (overlap < 0) { 
@@ -29,7 +30,7 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1) {
         }
         NEWSHORT = df[nrow(df), ]
         NEWSHORT[1:N, ] = NEWSHORT
-        T0 = as.POSIXlt(x = NEWSHORT$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz) + epochSize
+        T0 = as.POSIXct(x = NEWSHORT$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz) + epochSize
         NEWSHORT$timestamp = POSIXtime2iso8601(seq(T0, T0 + (N * epochSize) - 1, by =  epochSize), tz)
         if (pattern != "long") {
           NEWSHORT[, grep(pattern = pattern, x = colnames(NEWSHORT), invert = TRUE, ignore.case = TRUE)] = 0
