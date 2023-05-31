@@ -1300,8 +1300,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{sep_config}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_config"]])}").
-        Value used as sep argument in \link[utils]{write.csv} for writing and reading csv files containing
-        the GGIR config file.}
+        Value used as sep argument in \link[utils]{write.csv} for writing the GGIR config file.}
     }
   }
 }
