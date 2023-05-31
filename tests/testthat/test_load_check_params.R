@@ -13,10 +13,10 @@ test_that("load_params can load parameters", {
   expect_equal(length(params$params_metrics), 41)
   expect_equal(length(params$params_rawdata), 36)
   expect_equal(length(params$params_247), 20)
-  expect_equal(length(params$params_cleaning), 18)
+  expect_equal(length(params$params_cleaning), 19)
   expect_equal(length(params$params_phyact), 13)
-  expect_equal(length(params$params_output), 16)
-  expect_equal(length(params$params_general), 18)
+  expect_equal(length(params$params_output), 18)
+  expect_equal(length(params$params_general), 15)
 
   params_sleep = params$params_sleep
   # Test that parameter check does not generate warnings:

@@ -325,12 +325,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     params_metrics = params_metrics,
                     params_rawdata = params_rawdata,
                     params_general = params_general,
+                    params_cleaning = params_cleaning,
                     daylimit = daylimit,
                     tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
                     meantempcal = C$meantempcal,
                     outputdir = outputdir,
                     outputfolder = outputfolder,
-                    myfun = myfun, 
+                    myfun = myfun,
                     verbose = verbose)
 
       if (!is.null(params_general[["recordingEndSleepHour"]])) {

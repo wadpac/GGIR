@@ -261,19 +261,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         only one research group. Please let us know if you have difficulties using this
         functionality in your data.
         }
-       \item{sep_reports}{
-        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_reports"]])}").
-        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
-        the GGIR reports.
-        }
-       \item{sep_config}{
-        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["sep_config"]])}").
-        Value used as sep argument in \link[utils]{write.csv} for writing and reading csv files containing
-        the GGIR config file.
-        }    
       }
     }
-  
+
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
     raw data, excluding parameters related to metrics as those are in
@@ -1299,6 +1289,18 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["dofirstpage"]])}).
         To indicate whether a first page with histograms summarizing the whole
         measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
+    }
+
+      \item{sep_reports}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_reports"]])}").
+        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
+        the GGIR reports.
+    }
+
+      \item{sep_config}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_config"]])}").
+        Value used as sep argument in \link[utils]{write.csv} for writing and reading csv files containing
+        the GGIR config file.
     }
   }
 }

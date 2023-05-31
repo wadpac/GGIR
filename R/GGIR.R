@@ -55,7 +55,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
-  
+
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
@@ -69,7 +69,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-  
+
   # Configuration file - check whether it exists or auto-load
   configfile_csv = c()
   ex = "csv"
@@ -98,7 +98,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-  
+
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
   params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
@@ -110,29 +110,29 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-  
+
   if (params_general[["dataFormat"]] == "ukbiobank") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
     mode = mode[which(mode <= 2)]
   }
-  
+
   if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
     params_metrics[["do.anglez"]] = TRUE
   }
-  
+
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
             " user from specifying argument myfun as this poses a security risk.", call. = FALSE)
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-  
+
   if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
     warning(paste0("Turning off visualreport generation because",
                    " dataFormat is not raw."), call. = FALSE)
   }
-  
+
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -235,8 +235,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
-    data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"), 
-                       row.names = FALSE, sep = params_general[["sep_config"]])
+    data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"),
+                       row.names = FALSE, sep = params_output[["sep_config"]])
   } else {
     if (dir.exists(datadir) == FALSE) {
       warning("\nCould not write config file because studyname or datadir are not correctly specified.")
@@ -265,7 +265,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
-                     verbose = verbose, sep_reports = params_general[["sep_reports"]])
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }
@@ -282,7 +282,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
-                     verbose = verbose, sep_reports = params_general[["sep_reports"]])
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }
@@ -304,7 +304,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
-                     verbose = verbose, sep_reports = params_general[["sep_reports"]])
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       cat("\nSkipped because no milestone data available")
     }

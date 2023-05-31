@@ -62,7 +62,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
-  
+
   fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -110,7 +110,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
-                        extractfilenames, referencefnames, folderstructure, 
+                        extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldernam, verbose) {
     tail_expansion_log =  NULL
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
@@ -177,7 +177,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
-        # remove expanded time so that it is not used for behavioral classification 
+        # remove expanded time so that it is not used for behavioral classification
         if (length(tail_expansion_log) != 0) {
           expanded_short = which(IMP$r5long == -1)
           expanded_long = which(IMP$rout$r5 == -1)
@@ -267,9 +267,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (!(last_wakeup %in% ts$time)) {
             replaceLastWakeup = which(S$sib.end.time == last_wakeup)
             S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
-          } 
+          }
         }
-        
+
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
@@ -292,7 +292,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
           # include last window if has been expanded and not present in ts
-          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) 
+          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
           S2 = S[S$definition == j,] # simplify to one definition
@@ -311,7 +311,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                       Nepochsinhour, Nts, SPTE_end, ws3)
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
-              
+
               # only include angle if angle is present
               angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
               if (lightpeak_available == TRUE) {
@@ -361,14 +361,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
-              
+
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
-              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE, 
-                        sep = params_general[["sep_reports"]])
+              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
+                        sep = params_output[["sep_reports"]])
               # nap/sib/nonwear overlap analysis
-              
+
               # TO DO
-              
+
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
                   params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -424,7 +424,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             }
             ts$window = 0
             # 2023-04-23 - backup of nightsi outside threshold look to avoid
-            # overwriting the backup after the first iteration 
+            # overwriting the backup after the first iteration
             nightsi_bu = nightsi
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
@@ -922,7 +922,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
                       data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                         sep = params_general[["sep_reports"]])
+                                         sep = params_output[["sep_reports"]])
                     }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
@@ -943,7 +943,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
-                                           sep_reports = params_general[["sep_reports"]])
+                                           sep_reports = params_output[["sep_reports"]])
                   }
                 }
               }
@@ -960,7 +960,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-        
+
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW
