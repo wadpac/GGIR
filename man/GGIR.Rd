@@ -241,17 +241,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series
         output to avoid biased output.
       }
-      \item{nonwear_approach}{
-        Character (default = "\Sexpr{format(GGIR::load_params()[["params_general"]][["nonwear_approach"]])}").
-        Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "2013")
-        or the new version (nonwear_approach = "2023"). The 2013 version would use the longsize window (windowsizes[3],
-        one hour as default) to check the conditions for nonwear identification and would flag as nonwear the
-        mediumsize window (windowsizes[2], 15 min as default) in the middle. The 2023 version differs in which it
-        would flag as nonwear the full longsize window. For the 2013 method the longsize window is centered in
-        the centre of the mediumsize window, while in the 2023 method the longsizewindow is aligned with its left edge
-        to the left edge of the mediumsize window.
-        }
-       \item{dataFormat}{
+
+     \item{dataFormat}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
         to indicate what the format is of the data in datadir.
         Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
@@ -828,6 +819,17 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         has been the default since then. This functionality is advisable when working with
         sleep clinic or exercise lab data typically lasting less than a day.
       }
+
+      \item{nonwear_approach}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_cleaning"]][["nonwear_approach"]])}").
+        Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "2013")
+        or the new version (nonwear_approach = "2023"). The 2013 version would use the longsize window (windowsizes[3],
+        one hour as default) to check the conditions for nonwear identification and would flag as nonwear the
+        mediumsize window (windowsizes[2], 15 min as default) in the middle. The 2023 version differs in which it
+        would flag as nonwear the full longsize window. For the 2013 method the longsize window is centered in
+        the centre of the mediumsize window, while in the 2023 method the longsizewindow is aligned with its left edge
+        to the left edge of the mediumsize window.
+        }
 
     }
   }
