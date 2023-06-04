@@ -193,11 +193,28 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           # ! Assumption that first column are the epoch numbers
           delta = 1 - testraw$V1[1]
           index = index + delta
+          startFound = FALSE
+          while (startFound == FALSE) {
+            Dtest = data.table::fread(input = fnames[i], sep = ",", skip = index, quote = quote, nrows = 1)  
+            if (Dtest$V1[1] == 1) {
+              startFound = TRUE
+            } else {
+              # This happens when file is has an empty row between each measurement point is stored
+              index = index - 1
+              if (index < 1) stop("Could not find start of recording", call. = FALSE)
+            }
+          }
+
           D = data.table::fread(input = fnames[i], sep = ",", skip = index, quote = quote)
           # ! Assumption that column names are present 2 lines prior to timeseries
           colnames = data.table::fread(input = fnames[i],
                                        header = FALSE, sep = ",",
                                        skip = index - 2, nrows = 1, quote = quote)
+          if (all(is.na(colnames))) {
+            colnames = data.table::fread(input = fnames[i],
+                                         header = FALSE, sep = ",",
+                                         skip = index - 4, nrows = 1, quote = quote)
+          }
           colnames(D) = as.character(colnames)[1:ncol(D)]
           
           # ! Assumptions about columns names
@@ -210,7 +227,6 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
             timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "), format = "%d/%m/%Y %H:%M:%S", tz = tz)
             epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
           }
-
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
                  params_general[["windowsizes"]][1],
