@@ -1,10 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.9-3 (GitHub-only-release date:??-??-2023)}{
+\section{Changes in version 2.9-3 (GitHub-only-release date:?-?-2023)}{
   \itemize{
+    \item General: automatic detection of missing dependencies #786.
+    \item Vignettes: instruction expanded about when to install additional R packages #786.
     \item Visualreport: Argument visualreport_without_invalid added #780
-    }
+ }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
   \itemize{
