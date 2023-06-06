@@ -131,8 +131,8 @@ install.packages("remotes")
 remotes::install_github("wadpac/GGIR")
 ```
 
-Additionally, make sure you have the packages that GGIR will need to process
-the data, specifically:
+Additionally, in some use-cases you will need to install one or multiple 
+additional packages:
 
 -   If you are working with Axivity, GENEActiv, or GENEA files, install
     the GGIRread package with `install.packages("GGIRread")`

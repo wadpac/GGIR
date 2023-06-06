@@ -123,7 +123,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
   }
-
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
   if (length(params_metrics) > 0) {
@@ -134,7 +133,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   "for more information see package documentation."), call. = FALSE)
     }
   }
-
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
       if (params_sleep[["HASPT.algo"]] != "HorAngle") {
@@ -187,7 +185,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
-
   if (length(params_cleaning) > 0) {
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.start"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ",
@@ -209,7 +206,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      "because when strategy == 5 we expect an integer value", call. = FALSE))
       params_cleaning[["ndayswindow"]] = newValue
     }
-
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       # Convert paths from Windows specific slashed to generic slashes
       params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
@@ -240,7 +236,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["qwindow"]] = gsub(pattern = "\\\\", replacement = "/", x = params_247[["qwindow"]])
       }
     }
-
     if (length(params_247[["LUX_day_segments"]]) > 0) {
       params_247[["LUX_day_segments"]] = sort(unique(round(params_247[["LUX_day_segments"]])))
       if (params_247[["LUX_day_segments"]][1] != 0) {
@@ -295,7 +290,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        " we assume that only metric ZCY is extracted and",
                        " GGIR ignores all other metric requests. So, you should set arguments ",
                        paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
         params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
@@ -303,7 +297,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
         # Force acc.metric to be ZCY
         params_general[["acc.metric"]] = "ZCY"
-
       }
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
@@ -337,7 +330,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        " we assume that only metric LFENMO is extracted and",
                        " GGIR ignores all other metric requests. So, you should set arguments ",
                        paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
         params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
@@ -345,9 +337,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_metrics[["do.mad"]] = FALSE
         # Force acc.metric to be LFENMO
         params_general[["acc.metric"]] = "LFENMO"
-
       }
-
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
@@ -361,7 +351,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   assumption is credible."), call. = FALSE)
     }
   }
-
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

@@ -4,7 +4,7 @@
 \section{Changes in version 2.9-3 (GitHub-only-release date:?-?-2023)}{
   \itemize{
     \item General: automatic detection of missing dependencies #786.
-    \item Vignettes: expanded instructions on installation of GGIR dependencies #786.
+    \item Vignettes: instruction expanded about when to install additional R packages #786.
  }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
