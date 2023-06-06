@@ -115,7 +115,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
   The parameters that can be used in GGIR are:
 
-     \subsection{params_general}{
+    \subsection{params_general}{
     A list of parameters used across all GGIR parts that do not fall in any of the other
     categories.
     \describe{
@@ -243,15 +243,18 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       }
       \item{nonwear_approach}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["nonwear_approach"]]}).
-        Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "2013")
-        or the new version (nonwear_approach = "2023"). The 2013 version would use the longsize window (windowsizes[3],
-        one hour as default) to check the conditions for nonwear identification and would flag as nonwear the
-        mediumsize window (windowsizes[2], 15 min as default) in the middle. The 2023 version differs in which it
-        would flag as nonwear the full longsize window. For the 2013 method the longsize window is centered in
-        the centre of the mediumsize window, while in the 2023 method the longsizewindow is aligned with its left edge
-        to the left edge of the mediumsize window.
-        }
-       \item{dataFormat}{
+        Whether to use the traditional version of the non-wear detection 
+        algorithm (nonwear_approach = "2013") or the new version 
+        (nonwear_approach = "2023"). The 2013 version would use the longsize
+        window (windowsizes[3], one hour as default) to check the conditions
+        for nonwear identification and would flag as nonwear the
+        mediumsize window (windowsizes[2], 15 min as default) in the middle. 
+        The 2023 version differs in which it would flag as nonwear the full longsize
+        window. For the 2013 method the longsize window is centered in the centre 
+        of the mediumsize window, while in the 2023 method the longsizewindow is aligned 
+        with its left edge to the left edge of the mediumsize window.
+      }
+      \item{dataFormat}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
         to indicate what the format is of the data in datadir.
         Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
@@ -260,7 +263,18 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         For the Actiwatch data functionality has been tested with example data from
         only one research group. Please let us know if you have difficulties using this
         functionality in your data.
-        }
+      }
+       \item{maxRecordingInterval}{
+        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["maxRecordingInterval"]]}).
+        to indicate the maximum gap in hours between repeated measurements with the same
+        ID for the recordings to be appended. So, the assumption is that the
+        ID can be matched, make sure argument \code{idloc} is set correctly.
+        If argument \code{maxRecordingInterval} is set to NULL (default) recordings 
+        are not appended. If recordings overlap then GGIR will use the data from
+        the latest recording. If recordings are seperated then the timegap between
+        the recordings is filled with data points that resembale monitor not worn.
+        The maximum value of maxFile gap is 504 (21 days).
+      }
       }
     }
   

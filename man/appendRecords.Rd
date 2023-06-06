@@ -9,7 +9,7 @@
   than 2 days the recordings are not appended. Not intended for direct use by the user.
 }
 \usage{
-   appendRecords(metadatadir, desiredtz = "", idloc = 1)
+   appendRecords(metadatadir, desiredtz = "", idloc = 1, maxRecordingInterval = NULL)
 }
 \arguments{
   \item{metadatadir}{
@@ -19,6 +19,9 @@
     See \link{GGIR}
   }
   \item{idloc}{
+    See \link{GGIR}
+  }
+  \item{maxRecordingInterval}{
     See \link{GGIR}
   }
 }

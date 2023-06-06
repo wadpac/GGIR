@@ -22,7 +22,7 @@ timestamps[, 3] = c("2020-05-13T14:30:00+0200", "2020-05-13T14:31:00+0200",
                     "2020-05-13T14:36:00+0200", "2020-05-13T14:37:00+0200",
                     "2020-05-13T14:38:00+0200", "2020-05-13T14:39:00+0200")
 # Timstamps for file 4: non-overlapping time but long gap
-timestamps[, 3] = c("2020-05-25T14:30:00+0200", "2020-05-25T14:31:00+0200",
+timestamps[, 4] = c("2020-05-25T14:30:00+0200", "2020-05-25T14:31:00+0200",
                     "2020-05-25T14:32:00+0200", "2020-05-25T14:33:00+0200",
                     "2020-05-25T14:34:00+0200", "2020-05-25T14:35:00+0200",
                     "2020-05-25T14:36:00+0200", "2020-05-25T14:37:00+0200",
@@ -119,7 +119,10 @@ save(I, M, C, filefoldername, filename_dir, tail_expansion_log, file = paste0(dn
 
 test_that("Neighbouring recordings are correctly appended", {
   
-  appendRecords(metadatadir = "./testfolder", desiredtz = "Europe/Amsterdam", idloc = 2) # extract ID from filename
+  appendRecords(metadatadir = "./testfolder",
+                desiredtz = "Europe/Amsterdam",
+                idloc = 2,
+                maxRecordingInterval = 120) # extract ID from filename
   
   expect_true(dir.exists("./testfolder/meta/basic"))
   expect_equal(length(dir("./testfolder/meta/basic")), 2)
@@ -128,9 +131,9 @@ test_that("Neighbouring recordings are correctly appended", {
   
   # File one, should now be merged
   load("./testfolder/meta/basic/meta_1_bin.RData")
-  expect_equal(nrow(M$metashort), 36)
+  expect_equal(nrow(M$metashort), 40)
   expect_equal(sum(M$metashort$accmetric), 55)
-  expect_equal(nrow(M$metalong), 7)
+  expect_equal(nrow(M$metalong), 8)
   expect_equal(sum(M$metalong$lightmean), 11)
   expect_equal(length(which(duplicated(M$metalong$timestamp) == TRUE)), 0)
   expect_equal(length(which(duplicated(M$metashort$timestamp) == TRUE)), 0)
@@ -140,13 +143,14 @@ test_that("Neighbouring recordings are correctly appended", {
                                        "2020-05-13T14:10:00+0200",
                                        "2020-05-13T14:15:00+0200",
                                        "2020-05-13T14:20:00+0200",
-                                       "2020-05-25T14:30:00+0200",
-                                       "2020-05-25T14:35:00+0200"))
+                                       "2020-05-13T14:25:00+0200",
+                                       "2020-05-13T14:30:00+0200",
+                                       "2020-05-13T14:35:00+0200"))
   
   expect_equal(M$metashort$timestamp[c(1, 12, 24, 36)], c( "2020-05-13T14:00:00+0200",
                                                            "2020-05-13T14:11:00+0200",
                                                            "2020-05-13T14:23:00+0200",
-                                                           "2020-05-25T14:39:00+0200"))
+                                                           "2020-05-13T14:35:00+0200"))
 
   expect_equal(unique(M$metashort$accmetric), c(1, 2, 0, 3))
   
@@ -155,5 +159,5 @@ test_that("Neighbouring recordings are correctly appended", {
   expect_equal(nrow(M$metashort), 10)
   expect_equal(nrow(M$metalong), 2)
   expect_equal(unique(M$metashort$accmetric), 4)
+  if (file.exists(dn))  unlink(dn, recursive = TRUE)
 })
-if (file.exists(dn))  unlink(dn, recursive = TRUE)

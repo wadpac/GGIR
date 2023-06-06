@@ -116,7 +116,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           part5_agg2_60seconds = FALSE,
                           sensor.location = "wrist",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
-                          dataFormat = "raw", nonwear_approach = "2013")
+                          dataFormat = "raw", nonwear_approach = "2013", maxRecordingInterval = NULL)
   }
   # }
   invisible(list(params_sleep = params_sleep,
