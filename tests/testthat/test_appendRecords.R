@@ -138,6 +138,11 @@ test_that("Neighbouring recordings are correctly appended", {
   expect_equal(length(which(duplicated(M$metalong$timestamp) == TRUE)), 0)
   expect_equal(length(which(duplicated(M$metashort$timestamp) == TRUE)), 0)
   
+  expect_equal(length(I_list), 3)
+  expect_equal(I_list[[1]]$interval, c(-0.267, 0.067))
+  expect_equal(I_list[[2]]$interval, -0.267)
+  expect_false("interval" %in% names(I_list[[3]]))
+
   expect_equal(M$metalong$timestamp, c("2020-05-13T14:00:00+0200",
                                        "2020-05-13T14:05:00+0200",
                                        "2020-05-13T14:10:00+0200",
@@ -155,7 +160,9 @@ test_that("Neighbouring recordings are correctly appended", {
   expect_equal(unique(M$metashort$accmetric), c(1, 2, 0, 3))
   
   # File four, should be unmerged
+  rm(I_list)
   load("./testfolder/meta/basic/meta_4_bin.RData")
+  expect_false(exists("I_list"))
   expect_equal(nrow(M$metashort), 10)
   expect_equal(nrow(M$metalong), 2)
   expect_equal(unique(M$metashort$accmetric), 4)

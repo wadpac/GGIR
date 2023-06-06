@@ -174,11 +174,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
         basic_ms_files = dir(basic_folder, full.names = TRUE)
         if (length(basic_ms_files) > 0) {
           for (fnr in basic_ms_files) unlink(fnr)
+          rm(fnr)
         }
+        rm(basic_folder, basic_ms_files)
       }
     }
-    
-    
     if (params_general[["dataFormat"]] == "raw") {
       g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
               studyname = studyname, myfun = myfun,

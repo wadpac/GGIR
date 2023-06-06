@@ -273,7 +273,9 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         are not appended. If recordings overlap then GGIR will use the data from
         the latest recording. If recordings are seperated then the timegap between
         the recordings is filled with data points that resembale monitor not worn.
-        The maximum value of maxFile gap is 504 (21 days).
+        The maximum value of maxFile gap is 504 (21 days). The part 2 csv report
+        will show number of appended recordings, sampling rate for each, time overlap or gap
+        and the names of the filenames of the respective recording.
       }
       }
     }

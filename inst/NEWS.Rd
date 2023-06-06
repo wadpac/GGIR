@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9-3 (GitHub-only-release date:??-??-2023)}{
+  \itemize{
+    \item Part 1: Functionality to append recordings with the same ID, see argument 
+    maxRecordingInterval #972
+  }
+}
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
   \itemize{
     \item Part 1: function and new algorithm for non-wear time detection which flags the full ws3 window as non-wear #645.

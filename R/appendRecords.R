@@ -116,16 +116,22 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
         cnt = 0
         for (k in (Nrec:1)) {
           if (!is.na(S$overlap[rowsOfInterest[k]])) {
-            val = S$overlap[rowsOfInterest[k]]
+            interval = S$overlap[rowsOfInterest[k]]
           } else {
-            val = -2e10
+            interval = -2e10
           }
-          if (val > -abs(maxRecordingInterval) * 3600 & k > 1) {
+          if (interval > -abs(maxRecordingInterval) * 3600 & k > 1) {
             # Merge this pair
             Mlist[[k - 1]] = mergePair(M1 = Mlist[[k - 1]],
                                        M2 =  Mlist[[k]],
                                        overlap = S$overlap[rowsOfInterest[k]],
                                        tz = desiredtz)
+            interval = round(interval / 3600, digits = 3)
+            if ("interval" %in% names(Ilist[[k]])) {
+              Ilist[[k - 1]]$interval = c(Ilist[[k]]$interval, interval)
+            } else {
+              Ilist[[k - 1]]$interval = interval
+            }
             # Remove duplicate files
             unlink(S$filename[rowsOfInterest[k]])
             cnt = cnt + 1 # keep track of how many files were appended
@@ -138,7 +144,12 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
               # save as new milestone data for part 1
               # Note that we also keep copy of I and C for each of the original recordings
               # this to retain this information for reporting in part 2
-              save(M, C, I, Clist, Ilist, filefoldername, filename_dir, tail_expansion_log,
+              Nappended = cnt
+              print(k:(cnt + 1))
+              C_list = Clist[c(k:(cnt + 1))]
+              I_list = Ilist[c(k:(cnt + 1))]
+              save(M, C, I, C_list, I_list,
+                   filefoldername, filename_dir, tail_expansion_log, Nappended,
                    file = S$filename[rowsOfInterest[k]])
             }
             cnt = 0 # start again
