@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9-4 (GitHub-only-release date:?-?-2023)}{
+  \itemize{
+    \item Labelling a lot of the GGIR functions as internal in order to reduce 
+    package documentation to only the functions that are potentially relevant
+    to the typical user #679
+ }
+}
 \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
   \itemize{
     \item General: automatic detection of missing suggested packages such as GGIRread 

@@ -25,10 +25,11 @@ g.intensitygradient(x,y)
  \item{rsquared}{R squared of x and y values in log-log space}
 }
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }
+\keyword{internal}
 \references{
-Rowlands A, Edwardson CL, et al. (2018) Beyond Cut Points: Accelerometer Metrics 
-that Capture the Physical Activity Profile. MSSE 50(6):1. 
-doi:10.1249/MSS.0000000000001561
+  Rowlands A, Edwardson CL, et al. (2018) Beyond Cut Points: Accelerometer Metrics 
+  that Capture the Physical Activity Profile. MSSE 50(6):1. 
+  doi:10.1249/MSS.0000000000001561
 }

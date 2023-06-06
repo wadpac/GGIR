@@ -39,6 +39,7 @@
 \value{
   Data.frame with classified naps and newly detected non-wear periods.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

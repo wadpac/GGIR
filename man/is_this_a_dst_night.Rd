@@ -24,7 +24,7 @@ night with day saving time (DST) and on what hour the time moved.
   \item{dsthour}{Either the double hour or the hour that was skipped, 
   this differs between countries}
 }
-  
+\keyword{internal}
 \examples{
   test4dst = is_this_a_dst_night("23/03/2014",tz="Europe/London")
 }

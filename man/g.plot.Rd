@@ -48,7 +48,7 @@ hrs.del.start = 0, hrs.del.end = 0, maxdur = 0)
 #plot data
 g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
-
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }
