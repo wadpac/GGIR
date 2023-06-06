@@ -3,7 +3,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
   \itemize{
-    \item General: automatic detection of missing dependencies #786.
+    \item General: automatic detection of missing suggested packages such as GGIRread 
+    when code recognises that they will be needed #786.
     \item Vignettes: instruction expanded about when to install additional R packages #786.
     \item Part 2: minor bug fixed in strategy = 3 and strategy = 5 (now they consider
     the first ndaywindow which is equal to the max activity level) #796
