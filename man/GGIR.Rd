@@ -1292,7 +1292,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         To indicate whether a first page with histograms summarizing the whole
         measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
 
-
       \item{sep_reports}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_reports"]])}").
         Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
@@ -1301,6 +1300,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{sep_config}{
         Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_config"]])}").
         Value used as sep argument in \link[utils]{write.csv} for writing the GGIR config file.}
+
+      \item{visualreport_without_invalid}{
+          Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport_without_invalid"]])}).
+          If TRUE, then reports generated with \code{visualreport = TRUE} only show
+          the windows with sufficiently valid data according to \code{includedaycrit}
+          when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
     }
   }
 }
