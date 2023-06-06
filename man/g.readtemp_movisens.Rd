@@ -35,6 +35,7 @@ g.readtemp_movisens(datafile, desiredtz = "", from = c(), to = c(),
 \value{
   Data matrix with the temperature values resampled at 64 Hz.
 }
+\keyword{internal}
 \examples{
 \dontrun{
   P = g.readtemp_movisens(datafile, desiredtz = "", from = c(), to = c())

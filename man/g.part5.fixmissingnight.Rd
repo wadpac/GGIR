@@ -23,6 +23,7 @@
 \value{
   Corrected summarysleep_tmp2 object.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

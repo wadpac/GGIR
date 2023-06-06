@@ -71,6 +71,7 @@ detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
 Vincent T van Hees <v.vanhees@accelting.com>
 Jairo Hidalgo Migueles <j.h.migueles@accelting.com>
 }
+\keyword{internal}
 \references{
 \itemize{
     \item van Hees  et al. 2011, doi: 10.1371/journal.pone.0022922.

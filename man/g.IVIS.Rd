@@ -39,7 +39,6 @@
     Boolean to indicate whether IVIS should be calculated per day pair and
     then aggregated across day pairs weighted by day completeness (default FALSE).
   }
-
 }
 \value{
   \item{InterdailyStability}{}
@@ -49,11 +48,16 @@
   Xi = abs(rnorm(n = 10000,mean = 0.2))
   IVISvariables = g.IVIS(Xi=Xi)
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }
 \references{
   \itemize{
-    \item Eus J. W. Van Someren, Dick F. Swaab, Christopher C. Colenda, Wayne Cohen, W. Vaughn McCall &      Peter B. Rosenquist. Bright Light Therapy: Improved Sensitivity to Its Effects on Rest-Activity Rhythms in Alzheimer Patients by Application of Nonparametric Methods  Chronobiology International. 1999. Volume 16, issue 4.
+    \item Eus J. W. Van Someren, Dick F. Swaab, Christopher C. Colenda, 
+    Wayne Cohen, W. Vaughn McCall & Peter B. Rosenquist. Bright Light Therapy: 
+    Improved Sensitivity to Its Effects on Rest-Activity Rhythms in Alzheimer 
+    Patients by Application of Nonparametric Methods  Chronobiology
+    International. 1999. Volume 16, issue 4.
   }
 }

@@ -12,7 +12,6 @@
   nightsi, sleeplog, ws3new, Nts, ID, Nepochsinhour)
 }
 \arguments{
-
   \item{ts}{
     data.frame with time series
   }
@@ -33,11 +32,11 @@
   }
   \item{Nepochsinhour}{
   }
-
 }
 \value{
   Object ts
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

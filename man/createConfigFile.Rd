@@ -17,6 +17,7 @@
    GGIR version mumber to be incorported in the ConfigFile.
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

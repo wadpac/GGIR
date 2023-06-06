@@ -20,6 +20,7 @@
 \value{
   Structure for the vignette subsection.
 }
+\keyword{internal}
 \author{
   Jairo Hidalgo Migueles <jairo.hidalgo.migueles@gmail.com>
 }

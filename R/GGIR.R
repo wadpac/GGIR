@@ -170,7 +170,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
         tmp = unlist(strsplit(x, "[.]"))
         return(tmp[length(tmp)])
       }
-      rawaccfiles_formats = unique(unlist(lapply(rawaccfile, FUN = getExt)))
+      rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
       # axivity (cwa, wav), geneactive (bin), genea (bin):
       if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
         if (is_GGIRread_installed == FALSE) {

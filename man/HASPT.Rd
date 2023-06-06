@@ -55,6 +55,7 @@ HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
 \value{
   List with start and end times of the SPT window and the threshold as used.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

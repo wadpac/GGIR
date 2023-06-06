@@ -14,3 +14,4 @@
     Arguments ignored
   }
 }
+\keyword{internal}
