@@ -35,6 +35,7 @@
 \value{
   Data.frame ts
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

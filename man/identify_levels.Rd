@@ -55,6 +55,7 @@
                                ws3,bout.metric)
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

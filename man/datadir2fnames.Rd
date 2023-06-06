@@ -1,33 +1,33 @@
 \name{datadir2fnames}
 \alias{datadir2fnames}
 \title{
-Generates vector of file names out of datadir input
-argument
+  Generates vector of file names out of datadir input
+  argument
 }
 \description{
-Uses input argument datadir from \link{g.part1} and
-the output from \link{isfilelist} to generate vector of filenames
+  Uses input argument datadir from \link{g.part1} and
+  the output from \link{isfilelist} to generate vector of filenames
 }
 \usage{
-datadir2fnames(datadir,filelist)
+  datadir2fnames(datadir,filelist)
 }
 \arguments{
   \item{datadir}{
-  See \link{g.part1}
+    See \link{g.part1}
   }
-   \item{filelist}{
-  Produced by \link{isfilelist}
+  \item{filelist}{
+    Produced by \link{isfilelist}
   }
 }
 \value{
-Character vector of filenames
+  Character vector of filenames
 }
-
 \examples{
-\dontrun{
-datadir2fnames(datadir = "C:/mydatafolder",filelist=TRUE)
+  \dontrun{
+  datadir2fnames(datadir = "C:/mydatafolder",filelist=TRUE)
+  }
 }
-}
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

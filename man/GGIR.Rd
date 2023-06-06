@@ -730,7 +730,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{excludefirstlast.part5}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
-        If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in \link{g.part5}.}
+        If TRUE then the first and last window (waking-waking or 
+        midnight-midnight) are ignored in \link{g.part5}.}
 
       \item{excludefirstlast}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast"]]}).
@@ -799,7 +800,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Inclusion criteria for number of valid hours, either
         as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
 
-
       \item{includedaycrit}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includedaycrit"]]}).
         Minimum required number of valid hours in day specific analysis
@@ -810,7 +810,6 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{max_calendar_days}{
       Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["max_calendar_days"]]}).
       The maximum number of calendar days to include (set to zero if unknown).}
-
 
       \item{nonWearEdgeCorrection}{
       Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["nonWearEdgeCorrection"]]}).
@@ -900,7 +899,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         It will start with the identification of the longest to the shortest duration.
         In the default setting, it will start with the identification of 30 minute bouts,
         followed by 20 minute bouts in the rest of the data, and followed by 10 minute
-        bouts in the rest of the data.}
+        bouts in the rest of the data. Note that we use the term inactivity instead
+        of sedentary behaviour for the lowest intensity level of behaviour. The reason
+        for this is that GGIR does not attempt to classifying the activity type 
+        sitting at the moment, by which we feel that using the term sedentary
+        behaviour would fail to communicate that.
+      }
 
       \item{boutdur.lig}{
         Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.lig"]],
@@ -1061,13 +1065,17 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_sleep"]][["possible_nap_window"]],
         collapse = ", "), ")")}).
         Numeric vector of length two with range in clock hours during which naps are
-        assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}.}
+        assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. Currently
+        used in the context of an explorative nap classification algortihm that
+        was trained in 3.5 year olds. }
 
       \item{possible_nap_dur}{
         Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_sleep"]][["possible_nap_dur"]],
         collapse = ", "), ")")}).
         Numeric vector of length two with range in duration (minutes) of a nap,
-        e.g., \code{possible_nap_dur = c(15, 240)}.}
+        e.g., \code{possible_nap_dur = c(15, 240)}. Currently
+        used in the context of an explorative nap classification algortihm that
+        was trained in 3.5 year olds.}
     }
   }
 
@@ -1274,7 +1282,18 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{visualreport}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport"]])}).
-        If TRUE, then generate visual report based on combined output from \link{g.part2} and \link{g.part4}.}
+        If TRUE, then generate visual report based on combined output 
+        from \link{g.part2} and \link{g.part4}. Please note that the visual report 
+        was initially developed to provide something to show to study participants 
+        and not for data quality checking purposes. Over time we have improved
+        the visual report to also be useful for QC-ing the data. However, some of 
+        the scorings as shown in the visual report are created for the visual report
+        only and may not reflect the scorings in the main GGIR analyses as reported in the
+        quantitative csv-reports. Most of our effort in the past 10 years has gone 
+        into making sure that the csv-report are correct, while the visualreport has
+        mostly been a side project. This is unfortunate and we hope to find funding
+        in the future to design a new report specifically for the purpose of
+        QC-ing the anlayses done by GGIR.}
 
       \item{viewingwindow}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["viewingwindow"]])}).

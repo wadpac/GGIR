@@ -35,6 +35,7 @@ corresponding to downsample time series at
   sig = runif(n=10000,min=1,max=10)
  downsampled_sig = g.downsample(sig,fs=20,ws3=5,ws2=15)
 }
+\keyword{internal}
 \author{
 Vincent T van Hees <v.vanhees@accelting.com>
 }

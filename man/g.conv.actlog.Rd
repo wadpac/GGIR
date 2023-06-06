@@ -36,9 +36,10 @@
   }
 }
 \value{
-Data.frame with column ID, date and qwindow, where each
-qwindow value is a qwindow vector
+  Data.frame with column ID, date and qwindow, where each
+  qwindow value is a qwindow vector
 }
+\keyword{internal}
 \author{
 Vincent T van Hees <v.vanhees@accelting.com>
 }

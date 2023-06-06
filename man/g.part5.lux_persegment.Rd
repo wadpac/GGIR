@@ -24,6 +24,7 @@
 \value{
  List with values (vector) of the derived variables and corresponding names (vector).
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

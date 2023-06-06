@@ -20,6 +20,7 @@
     Numeric time in hours relative to next midnight
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

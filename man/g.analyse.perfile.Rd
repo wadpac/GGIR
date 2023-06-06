@@ -70,10 +70,10 @@ the average day produced by \link{g.analyse.avday}}
   file summary}
 }
 \value{
-\item{\code{filesummary}}{summary for the file that was analysed}
-\item{\code{daysummary}}{Summary per day for the file that was analysed}
+  \item{\code{filesummary}}{summary for the file that was analysed}
+  \item{\code{daysummary}}{Summary per day for the file that was analysed}
 }
-
+\keyword{internal}
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }
