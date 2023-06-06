@@ -57,6 +57,7 @@
 \value{
   Lists of updated parameter objects 
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

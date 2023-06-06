@@ -31,6 +31,7 @@
  List with accid the ID and matching_indices_sleeplog a vector with matching row
  indices in the sleeplog
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

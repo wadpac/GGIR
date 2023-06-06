@@ -83,6 +83,7 @@
     decn = ".", dayborder = 0, PreviousEndPage = c()) 
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

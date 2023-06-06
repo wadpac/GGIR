@@ -37,8 +37,8 @@
   \item{rmc.dynamic_range}{
     Optional, please see \link{read.myacc.csv}
   }
-  
 }
+\keyword{internal}
 \author{
 Vincent T van Hees <v.vanhees@accelting.com>
 }

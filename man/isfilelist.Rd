@@ -14,8 +14,9 @@ isfilelist(datadir)
 \arguments{
   \item{datadir}{
 Argument datadir as used in various other functions in GGIR
+  }
 }
-}
+\keyword{internal}
 \value{
 Boolean whether it is a list of files (TRUE) or not (FALSE)
 }

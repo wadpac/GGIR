@@ -26,6 +26,7 @@
 \author{
   Jairo H Migueles
 }
+\keyword{internal}
 \examples{
   # Test data frame
   df = data.frame(a = c("a", "b"), b = as.character(c(1.543218, 8.216856483)))

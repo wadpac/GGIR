@@ -45,6 +45,7 @@
 \value{
   Vector with binary indicator of sustained inactivity bout, 1 is yes, 0 is no.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }
