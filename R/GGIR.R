@@ -55,7 +55,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
-  
+
   # test whether RData input was used and if so, use original outputfolder
   if (length(datadir) > 0) {
     # list of all csv and bin files
@@ -69,7 +69,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-  
+
   # Configuration file - check whether it exists or auto-load
   configfile_csv = c()
   ex = "csv"
@@ -98,7 +98,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-  
+
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
   params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
@@ -110,29 +110,82 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-  
+
   if (params_general[["dataFormat"]] == "ukbiobank") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
     mode = mode[which(mode <= 2)]
   }
-  
+
   if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
     params_metrics[["do.anglez"]] = TRUE
   }
-  
+
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
             " user from specifying argument myfun as this poses a security risk.", call. = FALSE)
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-  
+
   if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
     warning(paste0("Turning off visualreport generation because",
                    " dataFormat is not raw."), call. = FALSE)
   }
-  
+
+  # check package dependencies
+  if (params_metrics$do.neishabouricounts == TRUE) {
+    is_actilifecounts_installed = is.element('actilifecounts', installed.packages()[,1])
+    if (is_actilifecounts_installed == FALSE) {
+      stop("If you want to derive Neishabouricounts, please install package: actilifecounts.", call. = FALSE)
+    } else {
+      if (utils::packageVersion("actilifecounts") < "1.1.0") {
+        stop("Please update R package actilifecounts to version 1.1.0 or higher", call. = FALSE)
+      }
+    }
+  }
+
+  if (params_247$cosinor == TRUE) {
+    is_ActCR_installed = is.element('ActCR', installed.packages()[,1])
+    if (is_ActCR_installed == FALSE) {
+      stop("If you want to derive circadian rhythm indicators, please install package: ActCR.", call. = FALSE)
+    }
+  }
+
+  checkFormat = TRUE
+  if (all(dir.exists(datadir)) == TRUE) {
+    rawaccfiles = dir(datadir, full.names = TRUE)[f0:f1]
+  } else if (all(file.exists(datadir))) {
+    rawaccfiles = datadir[f0:f1]
+  } else {
+    checkFormat = FALSE
+  }
+
+  if (checkFormat == TRUE) {
+    is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
+    is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
+    # skip this check if GGIRread and read.gt3x are both available
+    if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
+      getExt = function(x) {
+        tmp = unlist(strsplit(x, "[.]"))
+        return(tmp[length(tmp)])
+      }
+      rawaccfiles_formats = unique(unlist(lapply(rawaccfile, FUN = getExt)))
+      # axivity (cwa, wav), geneactive (bin), genea (bin):
+      if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
+        if (is_GGIRread_installed == FALSE) {
+          stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
+        }
+      }
+      # actigraph (gt3x)
+      if (any(grepl("gt3x", rawaccfiles_formats))) {
+        if (is_read.gt3x_installed == FALSE) {
+          stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
+        }
+      }
+    }
+  }
+
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -189,9 +242,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
       warning(paste0("\nBe aware that you are using epoch level aggregates of raw data ",
-              "computed outside GGIR by which their reproducibility and ",
-              "transparancy is also outside the scope of GGIR. GGIR",
-              " input arguments related to raw data handling are ignored."),
+                     "computed outside GGIR by which their reproducibility and ",
+                     "transparancy is also outside the scope of GGIR. GGIR",
+                     " input arguments related to raw data handling are ignored."),
               call. = FALSE)
       convertEpochData(datadir = datadir,
                        studyname = studyname,
@@ -291,7 +344,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -308,7 +361,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      sleepwindowType = params_sleep[["sleepwindowType"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 5)) > 0) {
@@ -330,7 +383,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (params_output[["visualreport"]] == TRUE) {
@@ -342,17 +395,22 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
     if (verbose == TRUE) print_console_header("Generate visual reports")
     if (length(files.available) > 0) {
-      g.plot5(metadatadir = metadatadir, f0 = f0, f1 = f1,
+      g.plot5(metadatadir = metadatadir, 
               dofirstpage = params_output[["dofirstpage"]],
               viewingwindow = params_output[["viewingwindow"]],
+              f0 = f0, f1 = f1,
               overwrite = params_general[["overwrite"]],
-              desiredtz = params_general[["desiredtz"]],
               metric = params_general[["acc.metric"]],
+              desiredtz = params_general[["desiredtz"]],
               threshold.lig = params_phyact[["threshold.lig"]],
               threshold.mod = params_phyact[["threshold.mod"]],
-              threshold.vig = params_phyact[["threshold.vig"]])
+              threshold.vig = params_phyact[["threshold.vig"]],
+              visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
+              includedaycrit = params_cleaning[["includedaycrit"]],
+              includenightcrit = params_cleaning[["includenightcrit"]],
+              verbose = TRUE)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
 }

@@ -2,10 +2,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                         params_rawdata = c(), params_247 = c(),
                         params_phyact = c(), params_cleaning = c(),
                         params_output = c(), params_general = c()) {
-  
+
   check_class = function(category, params, parnames, parclass) {
     for (parname in parnames) {
-      if (length(params[[parname]]) > 0) { 
+      if (length(params[[parname]]) > 0) {
         if (params[[parname]][1] %in% c("c()","NULL") == FALSE) { # because some variables are initialised empty
           x = params[[parname]]
           if (parclass == "numeric") {
@@ -38,18 +38,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
     check_class("Sleep", params = params_sleep, parnames = boolean_params, parclass = "boolean")
     check_class("Sleep", params = params_sleep, parnames = character_params, parclass = "character")
-  } 
+  }
   if (length(params_metrics) > 0) { # Check class of metrics parameters
     boolean_params = c("do.anglex", "do.angley", "do.anglez",
                        "do.zcx", "do.zcy", "do.zcz",
                        "do.enmo", "do.lfenmo", "do.en", "do.mad", "do.enmoa",
-                       "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z", 
-                       "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z", 
-                       "do.bfen", "do.hfen", "do.hfenplus", "do.lfen", 
+                       "do.roll_med_acc_x", "do.roll_med_acc_y", "do.roll_med_acc_z",
+                       "do.dev_roll_med_acc_x", "do.dev_roll_med_acc_y", "do.dev_roll_med_acc_z",
+                       "do.bfen", "do.hfen", "do.hfenplus", "do.lfen",
                        "do.lfx", "do.lfy", "do.lfz", "do.hfx", "do.hfy", "do.hfz",
                        "do.bfx", "do.bfy", "do.bfz", "do.brondcounts")
     check_class("Metrics", params = params_metrics, parnames = boolean_params, parclass = "boolean")
-    check_class("Metrics", params = params_metrics, parnames = c("hb", "lb", "n", "zc.lb", "zc.hb", 
+    check_class("Metrics", params = params_metrics, parnames = c("hb", "lb", "n", "zc.lb", "zc.hb",
                                                                  "zc.sb", "zc.order", "zc.scale"), parclass = "numeric")
   }
   if (length(params_rawdata) > 0) {
@@ -60,14 +60,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "rmc.sf", "rmc.col.wear", "rmc.noise")
     boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
                        "imputeTimegaps")
-    character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc", 
-                         "rmc.unit.temp", "rmc.unit.time", "rmc.format.time", 
-                         "rmc.origin", "rmc.desiredtz", "rmc.configtz", "rmc.headername.sf", 
-                         "rmc.headername.sn", "rmc.headername.recordingid", 
+    character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc",
+                         "rmc.unit.temp", "rmc.unit.time", "rmc.format.time",
+                         "rmc.origin", "rmc.desiredtz", "rmc.configtz", "rmc.headername.sf",
+                         "rmc.headername.sn", "rmc.headername.recordingid",
                          "rmc.header.structure")
     if (is.logical(params_rawdata[["rmc.noise"]])) {
       # Older config files used this, so overwrite with NULL value
-      params_rawdata[["rmc.noise"]] = c() 
+      params_rawdata[["rmc.noise"]] = c()
     }
     check_class("Raw data", params = params_rawdata, parnames = numeric_params, parclass = "numeric")
     check_class("Raw data", params = params_rawdata, parnames = boolean_params, parclass = "boolean")
@@ -77,7 +77,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     # iglevels and qwindow can be numeric or character, so not tested
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
-                       "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant", 
+                       "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
     boolean_params = "cosinor"
     character_params = c("qwindow_dateformat")
@@ -86,9 +86,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("247", params = params_247, parnames = character_params, parclass = "character")
   }
   if (length(params_phyact) > 0) {
-    numeric_params = c("mvpathreshold", "boutcriter", "mvpadur", 
-                       "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa", 
-                       "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa", 
+    numeric_params = c("mvpathreshold", "boutcriter", "mvpadur",
+                       "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
+                       "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa",
                        "boutdur.in", "boutdur.lig")
     check_class("phyact", params = params_phyact, parnames = numeric_params, parclass = "numeric")
     # check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
@@ -98,7 +98,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
                        "includenightcrit", "max_calendar_days")
-    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast", 
+    boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
@@ -107,10 +107,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_output) > 0) {
     numeric_params = c("viewingwindow", "criterror")
-    boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid", 
+    boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
-                       "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport")
-    character_params = c("save_ms5raw_format", "timewindow", " do.part2.pdf")
+                       "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
+                       "do.part2.pdf")
+    character_params = c("save_ms5raw_format", "timewindow")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
@@ -124,7 +125,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
   }
-  
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
   if (length(params_metrics) > 0) {
@@ -134,17 +134,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   "once the issues are resolved. Consider using argument do.neishabouricounts, ",
                   "for more information see package documentation."), call. = FALSE)
     }
-    if (params_metrics[["do.neishabouricounts"]] == TRUE) {
-      if ("actilifecounts" %in% rownames(utils::installed.packages()) == FALSE) {
-        stop("\nR package actilifecounts was not found and is required for deriving the neishabouricounts", call. = FALSE)
-      } else {
-        if (utils::packageVersion("actilifecounts") < "1.1.0") {
-          stop("\nPlease update R package actilifecounts to version 1.1.0 or higher", call. = FALSE)
-        }
-      }
-    }
   }
-  
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
       if (params_sleep[["HASPT.algo"]] != "HorAngle") {
@@ -197,10 +187,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
-  
   if (length(params_cleaning) > 0) {
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.start"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ", 
+      warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.end"]] != 0) {
@@ -208,7 +197,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
     if (!(params_cleaning[["strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
-      warning(paste0("\nSetting argument ndayswindow in combination with strategy = ", 
+      warning(paste0("\nSetting argument ndayswindow in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when strategy = 3 or strategy = 5"), call. = FALSE)
     }
     if (params_cleaning[["strategy"]] == 5 &
@@ -219,7 +208,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      "because when strategy == 5 we expect an integer value", call. = FALSE))
       params_cleaning[["ndayswindow"]] = newValue
     }
-    
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       # Convert paths from Windows specific slashed to generic slashes
       params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
@@ -250,7 +238,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["qwindow"]] = gsub(pattern = "\\\\", replacement = "/", x = params_247[["qwindow"]])
       }
     }
-    
     if (length(params_247[["LUX_day_segments"]]) > 0) {
       params_247[["LUX_day_segments"]] = sort(unique(round(params_247[["LUX_day_segments"]])))
       if (params_247[["LUX_day_segments"]][1] != 0) {
@@ -270,7 +257,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
            " see the documentation for further details and replace",
            " expand_tail_max_hour in your function call and config.csv file.", call. = FALSE)
     } else {
-      # If both are defined, this is probably because expand_tail_max_hours is 
+      # If both are defined, this is probably because expand_tail_max_hours is
       # in the config file from a previous run
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
       warning("\nBoth expand_tail_max_hours and recordingEndSleepHour",
@@ -305,7 +292,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        " we assume that only metric ZCY is extracted and",
                        " GGIR ignores all other metric requests. So, you should set arguments ",
                        paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-        
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
         params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
@@ -313,7 +299,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
         # Force acc.metric to be ZCY
         params_general[["acc.metric"]] = "ZCY"
-       
       }
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
@@ -347,7 +332,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        " we assume that only metric LFENMO is extracted and",
                        " GGIR ignores all other metric requests. So, you should set arguments ",
                        paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-        
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
         params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
@@ -355,9 +339,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_metrics[["do.mad"]] = FALSE
         # Force acc.metric to be LFENMO
         params_general[["acc.metric"]] = "LFENMO"
-        
       }
-      
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
@@ -371,14 +353,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   assumption is credible."), call. = FALSE)
     }
   }
-  
+
   if (!is.null(params_general[["maxRecordingInterval"]])) {
     if (params_general[["maxRecordingInterval"]] > 24 * 21) {
       stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is permitted,",
                   " please specify a lower value."), call. = FALSE)
     }
   }
-  
+
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

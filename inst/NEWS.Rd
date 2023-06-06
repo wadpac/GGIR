@@ -1,22 +1,35 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.9-3 (GitHub-only-release date:??-??-2023)}{
+
+
+\section{Changes in version 2.9-4 (GitHub-only-release date:??-??-2023)}{
   \itemize{
-    \item Part 1: Functionality to append recordings with the same ID, see argument 
+    \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
-  }
+ }
+}
+
+\section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
+  \itemize{
+    \item General: automatic detection of missing suggested packages such as GGIRread
+    when code recognises that they will be needed #786.
+    \item Vignettes: instruction expanded about when to install additional R packages #786.
+    \item Part 2: minor bug fixed in strategy = 3 and strategy = 5 (now they consider
+    the first ndaywindow which is equal to the max activity level) #796
+    \item Visualreport: Argument visualreport_without_invalid added #780
+ }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
   \itemize{
-    \item Part 1: function and new algorithm for non-wear time detection which flags the full ws3 window as non-wear #645.
-    \item Visual report: now it flags non-wear in the plot based on the part 2 milestone data.
+    \item Part 1: function and new algorithm for non-wear time detection which flags
+    the full ws3 window as non-wear #645.
     \item Part 1: Can now handle ActiGraph csv where first timegap occurs not in
     the first day of the recording #784 and #790
     \item Vignettes: expansion of the cut-point vignette with information on activity counts-based cut-points #771.
     \item Reports: Part 5 rows now ordered numerically again #769.
-
- }
+    \item Visualreport: now it flags non-wear in the plot based on the part 2 milestone data.
+    }
 }
 \section{Changes in version 2.9-1 (GitHub-only-release date:09-05-2023)}{
   \itemize{
