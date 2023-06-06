@@ -44,6 +44,7 @@
     decn = g.dotorcomma(inputfile="C:/myfile.bin",dformat=1,mon=2)
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

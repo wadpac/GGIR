@@ -27,6 +27,7 @@
     Parameters object see \link{GGIR}
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

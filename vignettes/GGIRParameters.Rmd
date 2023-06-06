@@ -77,6 +77,8 @@ find a description and default value for all the arguments.
 | do.zcx                      | 1                 | params_metrics           |
 | do.zcy                      | 1                 | params_metrics           |
 | do.zcz                      | 1                 | params_metrics           |
+| do.neishabouricounts        | 1                 | params_metrics           |
+| actilife_LFE                | 1                 | params_metrics           |
 | lb                          | 1                 | params_metrics           |
 | hb                          | 1                 | params_metrics           |
 | n                           | 1                 | params_metrics           |
@@ -118,6 +120,9 @@ find a description and default value for all the arguments.
 | minimumFileSizeMB           | 1                 | params_rawdata           |
 | interpolationType           | 1                 | params_rawdata           |
 | expand_tail_max_hours       | 1                 | params_general           |
+| recordingEndSleepHour       | deprecated        | params_general           |
+| nonwear_approach            | 1                 | params_general           |
+| dataFormat                  | 1                 | params_general           |
 | metadatadir                 | 2, 3, 4, 5        | not in parameter objects |
 | minimum_MM_length.part5     | 5                 | params_cleaning          |
 | strategy                    | 2, 5              | params_cleaning          |
@@ -126,6 +131,7 @@ find a description and default value for all the arguments.
 | maxdur                      | 2, 5              | params_cleaning          |
 | max_calendar_days           | 2                 | params_cleaning          |
 | includedaycrit              | 2                 | params_cleaning          |
+| nonWearEdgeCorrection       | 2                 | params_cleaning          |
 | L5M5window                  | 2                 | params_247               |
 | M5L5res                     | 2, 5              | params_247               |
 | winhr                       | 2, 5              | params_247               |
@@ -169,6 +175,8 @@ find a description and default value for all the arguments.
 | coln1                       | 4                 | params_sleep             |
 | nnights                     | 4                 | params_sleep             |
 | sleeplogidnum               | 4, 5              | params_sleep             |
+| possible_nap_window         | 5                 | params_sleep             |
+| possible_nap_dur            | 5                 | params_sleep             |
 | do.visual                   | 4                 | params_output            |
 | outliers.only               | 4                 | params_output            |
 | excludefirstlast            | 4                 | params_cleaning          |
@@ -189,21 +197,25 @@ find a description and default value for all the arguments.
 | threshold.lig               | 5                 | params_phyact            |
 | threshold.mod               | 5                 | params_phyact            |
 | threshold.vig               | 5                 | params_phyact            |
-| timewindow                  | 5                 | params_output            |
 | boutdur.mvpa                | 5                 | params_phyact            |
 | boutdur.in                  | 5                 | params_phyact            |
 | boutdur.lig                 | 5                 | params_phyact            |
 | save_ms5rawlevels           | 5                 | params_output            |
 | part5_agg2_60seconds        | 5                 | params_general           |
-| save_ms5raw_format          | 5                 | params_output            |
-| save_ms5raw_without_invalid | 5                 | params_output            |
 | includedaycrit.part5        | 5                 | params_cleaning          |
 | frag.metrics                | 5                 | params_phyact            |
 | LUXthresholds               | 5                 | params_247               |
 | LUX_cal_constant            | 5                 | params_247               |
 | LUX_cal_exponent            | 5                 | params_247               |
 | LUX_day_segments            | 5                 | params_247               |
+| timewindow                  | 5                 | params_output            |
+| save_ms5raw_format          | 5                 | params_output            |
+| save_ms5raw_without_invalid | 5                 | params_output            |
 | do.sibreport                | 5                 | params_output            |
+| visualreport_without_invalid| visualreport      | params_output            |
+| dofirstpage                 | visualreport      | params_output            |
+| visualreport                | visualreport      | params_output            |
+| viewingwindow               | visualreport      | params_output            |
 
 
 # Arguments/parameters description {#default-argument-values}
