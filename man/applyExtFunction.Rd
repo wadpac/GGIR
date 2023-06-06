@@ -49,6 +49,7 @@
     Function applyExtFunction
     is typically not used by the GGIR user directly.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

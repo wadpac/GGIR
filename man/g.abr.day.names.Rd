@@ -15,11 +15,11 @@
     Vector of daynames in character format
   }
 }
-
 \examples{
   daynames = c("Monday","Friday")
   daynames_converted = g.abr.day.names(daynames)
 }
+\keyword{internal}
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

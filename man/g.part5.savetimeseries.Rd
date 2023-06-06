@@ -49,6 +49,7 @@
   Function does not provide output, it only prepare data for saving
   and saves it to a file.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

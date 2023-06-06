@@ -19,6 +19,7 @@
 \value{
   Character object with the definition of the argument.
 }
+\keyword{internal}
 \author{
   Jairo Hidalgo Migueles <jairo.hidalgo.migueles@gmail.com>
 }

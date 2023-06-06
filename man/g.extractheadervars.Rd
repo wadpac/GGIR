@@ -28,6 +28,7 @@ g.extractheadervars(I)
 data(data.inspectfile)
 headervars = g.extractheadervars(I=data.inspectfile)
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

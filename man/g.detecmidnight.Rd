@@ -22,16 +22,17 @@
   
 }
 \value{
-Output of the function is list containing the following objects:\cr
-\itemize{
-\item firstmidnight = timestamp of first midnight
-\item firstmidnighti = index of first midnight
-\item lastmidnight = timestamp of last midnight
-\item lastmidnighti = index of last midnight
-\item midnights = timestamps of midnights
-\item midnightsi = indeces of midnights
+  Output of the function is list containing the following objects:\cr
+  \itemize{
+  \item firstmidnight = timestamp of first midnight
+  \item firstmidnighti = index of first midnight
+  \item lastmidnight = timestamp of last midnight
+  \item lastmidnighti = index of last midnight
+  \item midnights = timestamps of midnights
+  \item midnightsi = indeces of midnights
+  }
 }
-}
+\keyword{internal}
 \author{
 Vincent T van Hees <v.vanhees@accelting.com>
 }

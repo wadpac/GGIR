@@ -20,6 +20,7 @@ g.convert.part2.long(daySUMMARY)
 \value{
   Data.frame with long format version of daySUMMARY
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

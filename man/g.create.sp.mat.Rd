@@ -30,12 +30,13 @@ g.create.sp.mat(nsp,spo,sleepdet.t,daysleep=FALSE)
  
 }
 \value{
- \itemize{
-\item spo matrix with start and end of each sleep period
-\item calendardate date corresponding to the day on which the night started
-\item item wdayname weekdayname
+  \itemize{
+  \item spo matrix with start and end of each sleep period
+  \item calendardate date corresponding to the day on which the night started
+  \item item wdayname weekdayname
+  }
 }
-}
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }
