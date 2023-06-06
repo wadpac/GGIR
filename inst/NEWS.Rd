@@ -1,16 +1,21 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9-3 (GitHub-only-release date:??-??-2023)}{
+  \itemize{
+    \item Visualreport: Argument visualreport_without_invalid added #780
+    }
+}
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
   \itemize{
-    \item Part 1: function and new algorithm for non-wear time detection which flags the full ws3 window as non-wear #645.
-    \item Visual report: now it flags non-wear in the plot based on the part 2 milestone data.
+    \item Part 1: function and new algorithm for non-wear time detection which flags
+    the full ws3 window as non-wear #645.
     \item Part 1: Can now handle ActiGraph csv where first timegap occurs not in
     the first day of the recording #784 and #790
     \item Vignettes: expansion of the cut-point vignette with information on activity counts-based cut-points #771.
     \item Reports: Part 5 rows now ordered numerically again #769.
-
- }
+    \item Visualreport: now it flags non-wear in the plot based on the part 2 milestone data.
+    }
 }
 \section{Changes in version 2.9-1 (GitHub-only-release date:09-05-2023)}{
   \itemize{

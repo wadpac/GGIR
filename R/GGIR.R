@@ -266,7 +266,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -283,7 +283,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      sleepwindowType = params_sleep[["sleepwindowType"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 5)) > 0) {
@@ -305,7 +305,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
                      verbose = verbose)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (params_output[["visualreport"]] == TRUE) {
@@ -317,17 +317,22 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
     if (verbose == TRUE) print_console_header("Generate visual reports")
     if (length(files.available) > 0) {
-      g.plot5(metadatadir = metadatadir, f0 = f0, f1 = f1,
+      g.plot5(metadatadir = metadatadir, 
               dofirstpage = params_output[["dofirstpage"]],
               viewingwindow = params_output[["viewingwindow"]],
+              f0 = f0, f1 = f1,
               overwrite = params_general[["overwrite"]],
-              desiredtz = params_general[["desiredtz"]],
               metric = params_general[["acc.metric"]],
+              desiredtz = params_general[["desiredtz"]],
               threshold.lig = params_phyact[["threshold.lig"]],
               threshold.mod = params_phyact[["threshold.mod"]],
-              threshold.vig = params_phyact[["threshold.vig"]])
+              threshold.vig = params_phyact[["threshold.vig"]],
+              visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
+              includedaycrit = params_cleaning[["includedaycrit"]],
+              includenightcrit = params_cleaning[["includenightcrit"]],
+              verbose = TRUE)
     } else {
-      cat("\nSkipped because no milestone data available")
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
 }
