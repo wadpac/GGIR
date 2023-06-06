@@ -29,11 +29,11 @@
   \item{desiredtz}{
     See \link{g.part3}
   }
-  
 }
 \value{
-Function has no output other than the plot
+  Function has no output other than the plot
 }
+\keyword{internal}
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

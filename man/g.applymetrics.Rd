@@ -78,7 +78,7 @@
   
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 }
-
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

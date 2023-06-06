@@ -62,6 +62,7 @@
     \item L5list = L5 for every day (defined from noon to noon)
   }
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

@@ -25,6 +25,7 @@
   message are printed to the console with feedback on which checks did 
   not pass.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

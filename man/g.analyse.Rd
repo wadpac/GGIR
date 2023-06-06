@@ -103,6 +103,7 @@
   A = g.analyse(I = data.inspectfile, C = data.calibrate,
   M = data.getmeta, IMP)
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

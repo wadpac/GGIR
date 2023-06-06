@@ -14,3 +14,4 @@ g.cwaread(...)
     Arguments ignored
   }
 }
+\keyword{internal}

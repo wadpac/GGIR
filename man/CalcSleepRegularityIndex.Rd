@@ -37,6 +37,7 @@
   Therefore, this function is broader in functionality than the algorithm proposed by Phillips and 
   colleagues in 2017.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

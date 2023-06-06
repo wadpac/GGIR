@@ -27,9 +27,10 @@
   }
 }
 \value{
-Dataframe with per night and per definition of sustained inactivity bouts
-the start and end time of each sustained inactivity bout
+  Dataframe with per night and per definition of sustained inactivity bouts
+  the start and end time of each sustained inactivity bout
 }
+\keyword{internal}
 \author{
-Vincent T van Hees <v.vanhees@accelting.com>
+  Vincent T van Hees <v.vanhees@accelting.com>
 }

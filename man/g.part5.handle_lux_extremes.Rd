@@ -20,6 +20,7 @@
   correction_log indicating which timestamps where imputed (value=1),
   replaced by NA (value=2) or untouched (value=0).
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

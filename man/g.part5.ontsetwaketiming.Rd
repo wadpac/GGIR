@@ -32,6 +32,7 @@
 \value{
   A list with objects: wake, onset, wakei, onseti, skiponset, and skipwake.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }
