@@ -897,7 +897,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         It will start with the identification of the longest to the shortest duration.
         In the default setting, it will start with the identification of 30 minute bouts,
         followed by 20 minute bouts in the rest of the data, and followed by 10 minute
-        bouts in the rest of the data.}
+        bouts in the rest of the data. Note that we use the term inactivity instead
+        of sedentary behaviour for the lowest intensity level of behaviour. The reason
+        for this is that GGIR does not attempt to classifying the activity type 
+        sitting at the moment, by which we feel that using the term sedentary
+        behaviour would fail to communicate that.
+      }
 
       \item{boutdur.lig}{
         Numeric (default = \Sexpr{paste0("c(", paste(GGIR::load_params()[["params_phyact"]][["boutdur.lig"]],

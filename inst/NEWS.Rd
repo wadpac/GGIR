@@ -12,6 +12,9 @@
     \item Adding keyword internal to many of the GGIR functions that are not
     intended for direct used by the user to reduce size of package pdf documentation and
     to ease navigation for the user #679
+    \item Vignette and documentation: Adding motivation for not using term 
+    sedentary behaviour and warning that visualreport has not been optimised for
+    quality checking the GGIR results.
  }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{

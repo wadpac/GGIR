@@ -913,7 +913,11 @@ vigorous activity:
 | `ACC_`      | (average) acceleration according to default metric specific by acc.metric|
 | `_spt_wake_`| Wakefulness within the Sleep period time window.|
 | `_spt_sleep_`           | Sleep within the Sleep period time window.     |
-| `_IN_`      | Inactivity|
+| `_IN_`      | Inactivity. Note that we use the term inactivity instead
+        of sedentary behaviour for the lowest intensity level of behaviour. The reason
+        for this is that GGIR does not attempt to classifying the activity type 
+        sitting at the moment, by which we feel that using the term sedentary
+        behaviour would fail to communicate that.|
 | `_LIG_`     | Light activity        |
 | `_MOD_`     | Moderate activity     |
 | `_VIG_`     | Vigorous activity     |
