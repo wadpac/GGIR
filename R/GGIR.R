@@ -133,6 +133,59 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    " dataFormat is not raw."), call. = FALSE)
   }
 
+  # check package dependencies
+  if (params_metrics$do.neishabouricounts == TRUE) {
+    is_actilifecounts_installed = is.element('actilifecounts', installed.packages()[,1])
+    if (is_actilifecounts_installed == FALSE) {
+      stop("If you want to derive Neishabouricounts, please install package: actilifecounts.", call. = FALSE)
+    } else {
+      if (utils::packageVersion("actilifecounts") < "1.1.0") {
+        stop("Please update R package actilifecounts to version 1.1.0 or higher", call. = FALSE)
+      }
+    }
+  }
+
+  if (params_247$cosinor == TRUE) {
+    is_ActCR_installed = is.element('ActCR', installed.packages()[,1])
+    if (is_ActCR_installed == FALSE) {
+      stop("If you want to derive circadian rhythm indicators, please install package: ActCR.", call. = FALSE)
+    }
+  }
+
+  checkFormat = TRUE
+  if (all(dir.exists(datadir)) == TRUE) {
+    rawaccfiles = dir(datadir, full.names = TRUE)[f0:f1]
+  } else if (all(file.exists(datadir))) {
+    rawaccfiles = datadir[f0:f1]
+  } else {
+    checkFormat = FALSE
+  }
+
+  if (checkFormat == TRUE) {
+    is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
+    is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
+    # skip this check if GGIRread and read.gt3x are both available
+    if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
+      getExt = function(x) {
+        tmp = unlist(strsplit(x, "[.]"))
+        return(tmp[length(tmp)])
+      }
+      rawaccfiles_formats = unique(unlist(lapply(rawaccfile, FUN = getExt)))
+      # axivity (cwa, wav), geneactive (bin), genea (bin):
+      if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
+        if (is_GGIRread_installed == FALSE) {
+          stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
+        }
+      }
+      # actigraph (gt3x)
+      if (any(grepl("gt3x", rawaccfiles_formats))) {
+        if (is_read.gt3x_installed == FALSE) {
+          stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
+        }
+      }
+    }
+  }
+
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -174,9 +227,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
       warning(paste0("\nBe aware that you are using epoch level aggregates of raw data ",
-              "computed outside GGIR by which their reproducibility and ",
-              "transparancy is also outside the scope of GGIR. GGIR",
-              " input arguments related to raw data handling are ignored."),
+                     "computed outside GGIR by which their reproducibility and ",
+                     "transparancy is also outside the scope of GGIR. GGIR",
+                     " input arguments related to raw data handling are ignored."),
               call. = FALSE)
       convertEpochData(datadir = datadir,
                        studyname = studyname,
@@ -318,7 +371,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
     if (verbose == TRUE) print_console_header("Generate visual reports")
     if (length(files.available) > 0) {
-      g.plot5(metadatadir = metadatadir, 
+      g.plot5(metadatadir = metadatadir,
               dofirstpage = params_output[["dofirstpage"]],
               viewingwindow = params_output[["viewingwindow"]],
               f0 = f0, f1 = f1,

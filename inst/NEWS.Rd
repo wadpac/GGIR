@@ -11,6 +11,9 @@
     by automatically detecting the sep argument with function data.table::fread #770.
     \item Visualreport: Argument visualreport_without_invalid added #780
     \item Visualreport: now flags non-wear in the plot based on the part 2 milestone data.
+    \item General: automatic detection of missing dependencies #786.
+    \item Vignettes: instruction expanded about when to install additional R packages #786.
+    \item Visualreport: Argument visualreport_without_invalid added #780
  }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
