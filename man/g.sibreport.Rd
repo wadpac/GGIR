@@ -31,6 +31,7 @@
   Dataframe with one row per sustained inactivity bout and corresponding 
   properties stored in the data.frame columns.
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

@@ -90,6 +90,7 @@ as follows:
                         LEVELS = x,
                         Lnames=Lnames)}
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

@@ -32,11 +32,11 @@
   }
   \item{Nwindows}{
   }
-
 }
 \value{
   List of qqq and qqq_backup 
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

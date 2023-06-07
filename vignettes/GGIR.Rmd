@@ -131,6 +131,18 @@ install.packages("remotes")
 remotes::install_github("wadpac/GGIR")
 ```
 
+Additionally, in some use-cases you will need to install one or multiple 
+additional packages:
+
+-   If you are working with Axivity, GENEActiv, or GENEA files, install
+    the GGIRread package with `install.packages("GGIRread")`
+-   If you are working with ActiGraph gt3x files, install
+    the read.gt3x package with `install.packages("read.gt3x")`
+-   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
+    install the actilifecounts package with `install.packages("actilifecounts")`
+-   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
+    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
+
 ## Prepare folder structure
 
 1.  GGIR works with the following accelerometer brands and formats:
@@ -318,6 +330,16 @@ for that.
 -   `do.report` - specify reports that need to be generated.
 -   `viewingwindow` and `visualreport` - to create a visual report, this
     only works when all five parts of GGIR have successfully run.
+    Note that the visual report was initially developed to provide something to show to
+    study participants and not for data quality checking purposes. Over time we have improved
+    the visual report to also be useful for QC-ing the data. however, some of
+    the scorings as shown in the visual report are created for the visual report only and
+    may not reflect the scorings in the main GGIR analyses as reported in the
+    quantitative csv-reports. Most of our effort in the past 10 years has gone 
+    into making sure that the csv-report are correct, while the visualreport has
+    mostly been a side project. This is unfortunate and we hope to find funding
+    in the future to design a new report specifically for the purpose of
+    QC-ing the anlayses done by GGIR.
 
 ### Key arguments related to sleep analysis {#key-arguments-related-to-sleep-analysis}
 
@@ -401,7 +423,7 @@ comes with the following changes:
     asleep on a certain date. However, if the sleep onset time is at 
     2am, you should still fill in the 02:00:00, even though it is the 
     02:00:00 of the next calendar date.
--   You can add columns relating to napping time and nonwear time. These
+-   You can add columns relating to self-reported napping time and nonwear time. These
     are not used for the sleep analysis in g.part3 and g.part4, but used
     in g.part5 to facilitate napping analysis, see argument
     `do.sibreport`. Multiple naps and multiple nonwear periods can be
@@ -891,7 +913,11 @@ vigorous activity:
 | `ACC_`      | (average) acceleration according to default metric specific by acc.metric|
 | `_spt_wake_`| Wakefulness within the Sleep period time window.|
 | `_spt_sleep_`           | Sleep within the Sleep period time window.     |
-| `_IN_`      | Inactivity|
+| `_IN_`      | Inactivity. Note that we use the term inactivity instead
+        of sedentary behaviour for the lowest intensity level of behaviour. The reason
+        for this is that GGIR does not attempt to classifying the activity type 
+        sitting at the moment, by which we feel that using the term sedentary
+        behaviour would fail to communicate that.|
 | `_LIG_`     | Light activity        |
 | `_MOD_`     | Moderate activity     |
 | `_VIG_`     | Vigorous activity     |

@@ -70,6 +70,7 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
   selectdayfile is specified}
   \item{\code{ws_names}}{Variable names in windowsummary}
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

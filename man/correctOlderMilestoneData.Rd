@@ -19,7 +19,7 @@ to the appropriate class (e.g., numeric).}
  Data frame with the class fixed in the appropriate columns (i.e., light and 
  temperature columns)
 }
-  
+\keyword{internal}
 \examples{
   \dontrun{
     correctOlderMilestoneData(x)
