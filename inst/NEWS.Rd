@@ -26,6 +26,8 @@
     \item Vignette and documentation: Adding motivation for not using term
     sedentary behaviour and warning that visualreport has not been optimised for
     quality checking the GGIR results.
+    \item Visualreport: now it flags non-wear in the plot based on the part 2 
+    milestone data.
  }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
