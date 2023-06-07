@@ -1,9 +1,14 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9-4 (GitHub-only-release date:?-?-2023)}{
+  \itemize{
+    \item Part 4: minor bug fixed in the determination of SPT when daysleeper #802
+ }
+}
 \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
   \itemize{
-    \item General: automatic detection of missing suggested packages such as GGIRread 
+    \item General: automatic detection of missing suggested packages such as GGIRread
     when code recognises that they will be needed #786.
     \item Vignettes: instruction expanded about when to install additional R packages #786.
     \item Part 2: minor bug fixed in strategy = 3 and strategy = 5 (now they consider
@@ -12,7 +17,7 @@
     \item Adding keyword internal to many of the GGIR functions that are not
     intended for direct used by the user to reduce size of package pdf documentation and
     to ease navigation for the user #679
-    \item Vignette and documentation: Adding motivation for not using term 
+    \item Vignette and documentation: Adding motivation for not using term
     sedentary behaviour and warning that visualreport has not been optimised for
     quality checking the GGIR results.
  }
