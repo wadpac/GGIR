@@ -432,12 +432,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           spo_day = c()
           spo_day_exists = FALSE
           # ============================================================================================
-          # load twice if daysleeper because we also need data from the afternoon on the next day
-          # now get accelerometer sleep detection
-          # we now have sleeplog (or HDCZA or L5+/-6hr) data for one night (guider.df2) and we
-          # have acc data for one night (sleepdet)
+          # Loop through sleep definitions
           defs = unique(sib.cla.sum$definition)  # definition of sleep episode metric (see van Hees 2015 PLoSONE paper)
           for (k in defs) {
+            # load twice if daysleeper because we also need data from the afternoon on the next day
             for (loaddaysi in 1:loaddays) {
               qq = sib.cla.sum
               sleepdet = qq[which(qq$night == (j + (loaddaysi - 1))), ]
