@@ -1,4 +1,4 @@
-create_test_sleeplog_csv = function(Nnights=7,storagelocation=c(), advanced=FALSE) {
+create_test_sleeplog_csv = function(Nnights=7,storagelocation=c(), advanced=FALSE, sep=",") {
   # function to create a test sleeplog file needed for testing GGIR
   # Nnights is the number of nights the sleeplog has
   if (length(storagelocation) == 0) storagelocation = getwd()
@@ -30,7 +30,7 @@ create_test_sleeplog_csv = function(Nnights=7,storagelocation=c(), advanced=FALS
     sleeplog = as.data.frame(t(c("123A",log)), stringsAsFactors = TRUE)
     colnames(sleeplog) = names
     
-    write.table(sleeplog, file = paste0(storagelocation,"/testsleeplogfile.csv"),
-                row.names = FALSE,col.names = TRUE,sep=",",fileEncoding="UTF-8")
+    data.table::fwrite(sleeplog, file = paste0(storagelocation,"/testsleeplogfile.csv"),
+                row.names = FALSE, col.names = TRUE, sep = sep)
   }
 }
