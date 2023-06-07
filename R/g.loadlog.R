@@ -1,6 +1,6 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
                      sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
-
+  
   dateformat_correct = "%Y-%m-%d" # set default value
   deltadate = 0
   #===============================
@@ -17,7 +17,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         invisible(list(ID = ID, rec_starttime = rec_starttime))
       }
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
-
+      
       startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
@@ -56,7 +56,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       # - empty columns if relevant to make sleeplog match accelerometer recording, make sure coln1 argument is used
       # - onset and wakup times of sleeplog, for this extract dates from sleeplog to check for missing days
       newsleeplog = matrix("", nrow(S), max(c(nnights*2, 100)) + 1)
-
+      
       naplog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       nonwearlog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       napcnt = 1

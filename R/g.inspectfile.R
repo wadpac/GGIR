@@ -10,7 +10,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                             input = input) # load default parameters
     params_rawdata = params$params_rawdata
   }
-
+  
   #get input variables (relevant when read.myacc.csv is used
   input = list(...)
   if (length(input) > 0) {
@@ -33,8 +33,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # 1 - bin; 2 - csv; 3 - wav
   # 4 - cwa; 5 - movisens
   # 6 - gt3x
-
-
+  
+  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
@@ -70,7 +70,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       mon = 3 # actigraph
     } else if (tmp7[length(tmp7)] == "X") { #this is a gt3x file from Centerpoint
       if (file.access(datafile, 2) == 0) { # test for write access to file
-
+        
         # rename file to be lower case gt3x extension
         file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
         datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
@@ -209,11 +209,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   filename = filename[length(filename)]
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
-
+  
   if (length(filename) == 0) {
     print("no files to analyse")
   }
-
+  
   if (length(params_rawdata[["rmc.firstrow.acc"]]) == 1) {
     dformat = 5
     mon = 0
@@ -269,7 +269,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         header = as.character(read.csv(xmlfile, nrow = 1))
         tmp1 = unlist(strsplit(header, "measurementId="))[2]
         ID = gsub(pattern = " ",replacement = "",  unlist(strsplit(tmp1, " timestampStart"))[1])
-
+        
         header = paste0(read.csv(xmlfile, nrow = 10, skip = 2), collapse = " ")
         tmp1 = unlist(strsplit(header, "sensorSerialNumber value="))[2]
         SN = unlist(strsplit(tmp1, "/>"))[1]
@@ -333,9 +333,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   } else if (dformat == 4) { #cwa data
     PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
-
+    
   } else if (dformat == 5) { # csv data in a user-specified format
-
+    
     H = header = Pusercsvformat$header
     if (Pusercsvformat$header != "no header") {
       H = data.frame(name = row.names(header), value = header, stringsAsFactors = TRUE)

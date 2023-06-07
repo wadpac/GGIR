@@ -2,7 +2,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), params_cleaning = c(), daylimit = FALSE,
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
                      meantempcal = c(), myfun = c(), verbose = TRUE, ...) {
-
+  
   #get input variables
   input = list(...)
   expectedArgs = c("datafile", "params_metrics",
@@ -35,7 +35,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   }
   if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
   if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
-
+  
   metrics2do = data.frame(do.bfen = params_metrics[["do.bfen"]],
                           do.enmo = params_metrics[["do.enmo"]],
                           do.lfenmo = params_metrics[["do.lfenmo"]],
@@ -97,7 +97,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     # bugs after waiting for the data to be load
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-
+  
   if (length(nmetrics) == 0) {
     if (verbose == TRUE) cat("\nWARNING: No metrics selected\n")
   }
@@ -123,7 +123,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
   data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
-
+  
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -176,7 +176,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                       loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
   options(warn = 0)
   ID = hvars$ID
-
+  
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
                                         dynrange = params_rawdata[["dynrange"]],
@@ -220,9 +220,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         cat(paste0(" ", i))
       }
     }
-
+    
     options(warn = -1) #turn off warnings (code complains about unequal rowlengths
-
+    
     if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
     if (!exists("PreviousLastTime")) PreviousLastTime = NULL
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
@@ -261,7 +261,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     #============
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-
+      
       if (mon == 1 & dformat == 1) { # GENEA bin
         data = P$rawxyz / 1000 #convert mg output to g for genea
       } else if (mon == 2  & dformat == 1) { # GENEActiv bin
@@ -347,7 +347,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       use.temp = SWMT$use.temp
       wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
-
+      
       if (mon == 1 | mon == 3 | mon == 6 | (mon == 4 & dformat == 3) | (mon == 4 & dformat == 2) | (mon == 0 & use.temp == FALSE)) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
       } else if (mon == 2 | (mon == 4 & dformat == 4)  | (mon == 0 & use.temp == TRUE)) {
@@ -364,11 +364,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         switchoffLD = 1
         LD = 0 #ignore rest of the data and store what has been loaded so far.
       }
-
-
+      
+      
       #store data that could not be used for this block, but will be added to next block
       if (LD >= (ws*sf)) {
-
+        
         use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
         if (length(myfun) != 0) { # if using external function, then check that use is a multitude of the expected windowlength
           Nminlength = use / myfun$minlength
@@ -486,7 +486,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
         # STORE THE RAW DATA
         # data[,1], data[,2], data[,3], starttime, (temperature, light)
-
+        
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data,
                                     sf = sf, ws3 = ws3,
@@ -566,7 +566,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
           metashort[count:(count - 1 + nrow(OutputExternalFunction)), col_msi:(col_msi + NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-
+        
         length_acc_metrics =  length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
         rm(accmetrics)
         # update blocksize depending on available memory
@@ -734,7 +734,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       metalong[, 1] = as.character(time2)
     }
     metricnames_short = c("timestamp", metnames)
-
+    
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)
@@ -747,7 +747,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-
+    
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {

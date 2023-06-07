@@ -2,7 +2,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    myfun=c(), params_cleaning = c(), params_247 = c(),
                    params_phyact = c(), params_output = c(), params_general = c(),
                    verbose = TRUE, ...) {
-
+  
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -70,10 +70,10 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   # fnames = sort(fnames)
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > f1) f0 = 1
-
+  
   #---------------------------------------
   cnt78 = 1
-
+  
   #=========================================================
   # Declare core functionality, which at the end of this g.part2 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -125,7 +125,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                  TimeSegments2Zero$windowend < timespan1)
             if (length(validtimes) > 0) {
               TimeSegments2Zero = TimeSegments2Zero[validtimes,c("windowstart","windowend")]
-
+              
             } else {
               TimeSegments2Zero = c()
             }
@@ -145,7 +145,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero,
                        acc.metric = params_general[["acc.metric"]])
-
+        
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
           # IMP$metalong = M$metalong
@@ -160,7 +160,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           M$metalong = M$metalong[-expanded_time_long,]
           IMP$rout = IMP$rout[-expanded_time_long,]
         }
-
+        
         SUM = g.analyse(I, C, M, IMP,
                         params_247 = params_247,
                         params_phyact = params_phyact,
@@ -189,7 +189,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             cnt78 = 2
           }
         }
-
+        
         NumberRDinFilename = length(unlist(strsplit(RDname,"[.]RD")))
         if (NumberRDinFilename == 1) { # to avoid getting .RData.RData
           RDname = paste0(RDname,".RData")
@@ -206,7 +206,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       rm(M); rm(I)
     }
   } # end of main_part2
-
+  
   #--------------------------------------------------------------------------------
   # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
   cores = parallel::detectCores()
@@ -256,7 +256,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                   path, ms2.out, foldername, fullfilenames,
                                                   folderstructure, referencefnames,
                                                   daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose)
-
+                                       
                                      })
                                      return(tryCatchResult)
                                    }

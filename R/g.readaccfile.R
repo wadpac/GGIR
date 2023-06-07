@@ -29,7 +29,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # mon 4 = Axivity
   # mon 5 = Movisens
   # mon 6 = Verisense
-
+  
   # dformat 1 = binary
   # dformat 2 = csv
   # dformat 3 = wav
@@ -38,14 +38,14 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # dformat 6 = gt3x
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
-
+  
   switchoffLD = 0
   I = inspectfileobject
   mon = I$monc
   if (mon == 6) mon = 3
   dformat = I$dformc
   sf = I$sf
-
+  
   P = c()
   updatepageindexing = function(startpage = c(), deltapage = c(), blocknumber = c(), PreviousEndPage = c(),
                                 mon = c(), dformat = c()) {
@@ -108,11 +108,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-
+    
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
                                             end = endpage, desiredtz = params_general[["desiredtz"]],
                                             configtz = params_general[["configtz"]])}, silent = TRUE)
-
+    
     if (length(P) > 0) {
       if (nrow(P$data.out) < (blocksize*300)) {
         switchoffLD = 1 #last block
@@ -149,7 +149,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-
+    
     # load rows 11:13  to investigate whether the file has a header
     # invisible because R complains about poor Actigraph file format,
     # this is an an ActiGraph problem not a GGIR problem, so we ignore it
@@ -174,7 +174,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         endpage = endpage + 1
       }
     }
-
+    
     #--------------
     try(expr = {
       P = quiet(as.data.frame(

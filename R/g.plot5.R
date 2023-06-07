@@ -41,9 +41,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
   # stop("Warning: File part2_daysummary.csv not generated yet")
   #}
   #P2daysummary = read.csv(paste0(results, "/part2_daysummary.csv"))
-
+  
   M = c()
-
+  
   if (f1 - f0 > 50 & verbose == TRUE) {
     cat(paste0("\nGGIR is now creating a visualreport (pdf) for each of the ", f1 - f0,
                " recordings as a final step in the GGIR pipeline. This can take a while as",
@@ -81,7 +81,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         } else {
           warning(
             paste0("\nVisual report not generated for ",
-              fnames_ms1_stripped[sel], " because part 4 output was not available."
+                   fnames_ms1_stripped[sel], " because part 4 output was not available."
             )
           )
           next()
@@ -94,7 +94,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         load(paste0(ms1dir,"/",fname_ms1[sel]))
         ws3 = M$windowsizes[1]
         ws2 = M$windowsizes[2]
-
+        
         # P2daysummary_tmp = P2daysummary[which(P2daysummary$filename == fnames_ms1_stripped[sel]),]
         # note that the reports are generated from the raw sleep classification (part4) and no attempt is made to clean it up,
         # by deleting nights for which no diary was available or not enough accelerometer data was available
@@ -113,10 +113,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           if (includedaycrit < 1) includedaycrit = includedaycrit * 24
           if (includenightcrit > 1) includenightcrit = includenightcrit / 24
           d2excludeb = d2exclude = which(P2daysummary_tmp$`N valid hours` < max(c(includedaycrit,
-                                                                                threshold_hrs_of_data_per_day)))
+                                                                                  threshold_hrs_of_data_per_day)))
           n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
                                          | summarysleep_tmp$SptDuration == 0)
-
+          
           if (length(d2exclude) > 0) {
             d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
             P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
@@ -142,7 +142,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             n2excludeb = n2exclude = n2exclude + 1
             incrementNight = 1
           }
-
+          
           if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
             lastnight = max(summarysleep_tmp$night) + incrementNight
             if (lastnight %in% n2exclude) {
@@ -218,8 +218,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # plot data
           CEXN = 0.9
           par(mfrow = c(5, 1),
-            omi = c(0, 0, 0.2, 0),
-            mar = c(3, 2, 2, 2) + 0.1)
+              omi = c(0, 0, 0.2, 0),
+              mar = c(3, 2, 2, 2) + 0.1)
           #MVPA
           YXLIM = c(0, (max(f01, na.rm = TRUE) * 1.3))
           if (YXLIM[2] == 0) YXLIM[2] = 60
@@ -352,7 +352,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         hour = time_unclassed$hour
         NONWEAR = IMP$r5long
         INACT = LIGPA = MODPA = VIGPA = rep(NA, length(ACC))  # PA vectors for plotting
-
+        
         # Find bouts of light-PA (LPA):
         boutdur2 = 10 * (60/ws3)    # 10min bout duration
         boutcriter = 0.8            # 80% bout criteria
@@ -730,11 +730,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             #VvH I have moved unclass to one location, to avoid doing this computation several times:
             curr_date_unclassed = unclass(as.POSIXlt(curr_date,desiredtz))
             title = paste0("Day ",daycount,": ",
-                          wdaynames[curr_date_unclassed$wday + 1],
-                          " | ",
-                          curr_date_unclassed$mday, " ",
-                          month.abb[curr_date_unclassed$mon + 1], " ",
-                          curr_date_unclassed$year + 1900)
+                           wdaynames[curr_date_unclassed$wday + 1],
+                           " | ",
+                           curr_date_unclassed$mday, " ",
+                           month.abb[curr_date_unclassed$mon + 1], " ",
+                           curr_date_unclassed$year + 1900)
             rm(curr_date_unclassed)
             if (skip == FALSE) {
               YXLIM = c(-230,300)

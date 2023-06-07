@@ -9,7 +9,7 @@
     \item General: increased flexibility to read csv files related to sleeplog, 
     activity log, data cleaning file, and csv containing calibration coefficients,
     by automatically detecting any separator argument from the set 
-    of [,\t |;]with function data.table::fread #770.
+    of [,\\t |;] with function data.table::fread #770.
     }
   }
   \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
