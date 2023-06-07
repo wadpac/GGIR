@@ -137,7 +137,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                           params_247[[varName]] = newValue
                         } else {
                           if (varName %in% names(params_cleaning)) {
-                            params_247[[varName]] = newValue
+                            params_cleaning[[varName]] = newValue
                           } else {
                             warning(paste0("\nIgnoring argument/parameter ", varName,
                                            " as stored in the configuration file",
