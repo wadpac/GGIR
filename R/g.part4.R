@@ -42,7 +42,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   if (dolog == TRUE) {
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
                              nnights = params_sleep[["nnights"]],
-                             sleeplogsep = params_sleep[["sleeplogsep"]], meta.sleep.folder = meta.sleep.folder,
+                             meta.sleep.folder = meta.sleep.folder,
                              desiredtz = params_general[["desiredtz"]])
     sleeplog = logs_diaries$sleeplog
     save(logs_diaries, file = paste0(metadatadir,"/meta/sleeplog.RData"))
@@ -73,7 +73,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                            "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
                            "longitudinal_axis") #
 
-  
+
   if (params_output[["storefolderstructure"]] == TRUE) {
     colnamesnightsummary = c(colnamesnightsummary, "filename_dir", "foldername")
   }
@@ -147,7 +147,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
     # allow for forced relying on guider based on external data_cleaning_file
-    DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
+    DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
   }
   # =================================================================
   # start of loop through the

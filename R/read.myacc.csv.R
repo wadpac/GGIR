@@ -157,7 +157,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     skip = skip + rmc.skip
   }
   # read data from file
-  P = as.data.frame(data.table::fread(rmc.file,nrow = rmc.nrow, skip = skip,
+  P = as.data.frame(data.table::fread(rmc.file,nrows = rmc.nrow, skip = skip,
                                       dec = rmc.dec, showProgress = FALSE, header = freadheader),
                     stringsAsFactors = TRUE)
   if (length(configtz) == 0) {

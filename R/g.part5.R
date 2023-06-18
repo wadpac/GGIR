@@ -122,7 +122,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     di = 1
     DaCleanFile = c()
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
-      if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
+      if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
     }
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) {
@@ -381,7 +381,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
               
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
-              write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
+              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
+                                 sep = params_output[["sep_reports"]])
               # nap/sib/nonwear overlap analysis
 
               # TO DO
@@ -1014,7 +1015,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                      write.csv(legendtable, file = legendfile, row.names = FALSE)
+                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                         sep = params_output[["sep_reports"]])
                     }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
@@ -1034,7 +1036,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            save_ms5raw_format = params_output[["save_ms5raw_format"]],
                                            save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
-                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID)
+                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
+                                           sep_reports = params_output[["sep_reports"]])
                   }
                 }
               }

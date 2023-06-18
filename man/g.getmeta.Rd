@@ -9,13 +9,13 @@
   epoch length. The non-wear indication score, the clipping score, temperature
   (if available), light (if available), and Euclidean norm are stored at long epoch
   length. The function has been designed and thoroughly tested with accelerometer files
-  from GENEA and GENEActiv bin files. Further, the function should be able to cope with ActiGraph gt3x and 
-  csv files, Axivity cwa and csv files, Movisens bin files, and ad-hoc csv files read through the 
+  from GENEA and GENEActiv bin files. Further, the function should be able to cope with ActiGraph gt3x and
+  csv files, Axivity cwa and csv files, Movisens bin files, and ad-hoc csv files read through the
   \link{read.myacc.csv} function.
 }
 \usage{
   g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
-                     params_general = c(), daylimit = FALSE, 
+                     params_general = c(), params_cleaning = c(), daylimit = FALSE,
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
                      meantempcal = c(), myfun = c(), verbose = TRUE, ...)
 }
@@ -24,13 +24,16 @@
     name of accelerometer file
   }
   \item{params_metrics}{
-    See \link{g.part1}
+    See details in \link{GGIR}.
   }
   \item{params_rawdata}{
-    See \link{g.part1}
+    See details in \link{GGIR}.
   }
   \item{params_general}{
-    See \link{g.part1}
+    See details in \link{GGIR}.
+  }
+  \item{params_cleaning}{
+    See details in \link{GGIR}.
   }
   \item{daylimit}{
     number of days to limit (roughly), if set to FALSE no daylimit
@@ -59,8 +62,8 @@
     See details \link{applyExtFunction}.
   }
   \item{verbose}{
-    Boolean (default = TRUE). to indicate whether console message should be printed. 
-    Note that warnings and error are always printed and can be suppressed with 
+    Boolean (default = TRUE). to indicate whether console message should be printed.
+    Note that warnings and error are always printed and can be suppressed with
     suppressWarning() or suppressMessages().
   }
   \item{...}{
@@ -78,13 +81,13 @@
 \examples{
   \dontrun{
     datafile = "C:/myfolder/testfile.bin"
-    
+
     #Extract meta-data:
     M = g.getmeta(datafile)
-    
+
     #Inspect first couple of rows of long epoch length meta data:
     print(M$metalong[1:5,])
-    
+
     #Inspect first couple of rows of short epoch length meta data:
     print(M$metalong[1:5,])
   }

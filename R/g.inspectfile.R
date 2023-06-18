@@ -22,7 +22,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       eval(parse(text = txt))
     }
   }
-  # Although also documented in the package manual files, here 
+  # Although also documented in the package manual files, here
   # for convenience the monitor codes (mon):
   # 0 - ad-hoc file (currently only .csv format)
   # 1 - GENEA (non-commercial); 2 - GENEActiv
@@ -154,7 +154,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           }
         } else {
           print("Possibibly corrupt geneactive File")
-        } 
+        }
       }
     } else if (dformat == 2) { #no checks for corrupt file yet...maybe not needed for csv-format?
       if (mon == 2) {
@@ -187,7 +187,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         tmp0 = read.csv(datafile, nrow = 100000, skip = 0)
         tmp1 = as.numeric(as.POSIXlt(tmp0[, 1]))
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
-        sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is 
+        sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is
       }
     } else if (dformat == 3) { # wav
       H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)

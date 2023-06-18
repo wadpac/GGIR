@@ -5,7 +5,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
   deltadate = 0
   #===============================
   # Load sleep log data...
-  S = read.csv(loglocation, sep = sleeplogsep, stringsAsFactors = FALSE)
+  S = data.table::fread(loglocation, stringsAsFactors = FALSE, data.table = FALSE,
+                        check.names = TRUE, colClasses = "character")
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S))) > 0
   if (advanced_sleeplog ==  TRUE) {
@@ -16,7 +17,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         invisible(list(ID = ID, rec_starttime = rec_starttime))
       }
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
-  
+      
       startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
@@ -69,11 +70,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
           startdate_sleeplog = S[i, datecols[1]]
           Sdates_correct = c()
           # Detect data format in sleeplog:
-          for (dateformat in c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m", 
-                               "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m", 
+          for (dateformat in c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m",
+                               "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m",
                                "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%d/%m",
                                "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
-            startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz) 
+            startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz)
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat, tz = desiredtz)
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
               deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
@@ -100,7 +101,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
             newsleeplog_times = c()
             expected_dates = seq(startdate_sleeplog - deltadate, startdate_sleeplog + nnights, by = 1)
             # loop over expect dates giving start date of sleeplog
-            for (ni in 1:(length(expected_dates) - 1)) { 
+            for (ni in 1:(length(expected_dates) - 1)) {
               # checking whether date exists in sleeplog
               ind = which(Sdates_correct == as.Date(expected_dates[ni], tz = desiredtz))
               if (length(ind) > 0) {
@@ -142,14 +143,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
               newsleeplog = cbind(newsleeplog, matrix(NA, nrow(newsleeplog), extracols))
             }
             newsleeplog[count, 2:(length(newsleeplog_times) + 1)] = newsleeplog_times
-            count  = count + 1  
+            count  = count + 1
           }
         }
       }
       if (IDcouldNotBeMatched == TRUE) {
         warning(paste0("\nNone of the IDs in the accelerometer data could be matched with",
                        " the ID numbers in the sleeplog. You may want to check that the ID",
-                       " format in your sleeplog is consistent with the ID column in the GGIR part2 csv-report,", 
+                       " format in your sleeplog is consistent with the ID column in the GGIR part2 csv-report,",
                        " and that argument coldid is correctly set."), call. = FALSE)
       }
       # remove empty rows and columns:
@@ -170,7 +171,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         nonwearlog = remove_empty_rows_cols(nonwearlog, name = "nonwear")
       }
       if (length(newsleeplog) > 0) {
-        emptyrows = which(rowSums(newsleeplog == "") == ncol(newsleeplog)) 
+        emptyrows = which(rowSums(newsleeplog == "") == ncol(newsleeplog))
         if (length(emptyrows)) {
           newsleeplog = as.matrix(newsleeplog[-emptyrows,])
         }
@@ -179,7 +180,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
             newsleeplog = t(newsleeplog)
           }
         }
-        emptycols = which(colSums(newsleeplog == "") == nrow(newsleeplog)) 
+        emptycols = which(colSums(newsleeplog == "") == nrow(newsleeplog))
         colp = ncol(newsleeplog)
         twocols = c(colp - 1, colp)
         while (min(twocols) > 0) {
@@ -249,6 +250,6 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
   sleeplog$sleepwake = sleeplog_times[,2]
   # keep only the non-empty rows as they can only lead to confusion later on
   sleeplog = sleeplog[which(is.na(sleeplog$duration) == FALSE),]
-  invisible(list(sleeplog = sleeplog, nonwearlog = nonwearlog, naplog = naplog, 
+  invisible(list(sleeplog = sleeplog, nonwearlog = nonwearlog, naplog = naplog,
                  dateformat = dateformat_correct))
 }
