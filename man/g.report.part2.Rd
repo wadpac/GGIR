@@ -9,7 +9,8 @@
 }
 \usage{
   g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-  selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE, verbose = TRUE)
+  selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE, 
+  sep_reports = ",", verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -39,6 +40,9 @@
   \item{do.part2.pdf}{
     Boolean, see \link{g.part2}
   }
+  \item{sep_reports}{
+    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
+  }  
   \item{verbose}{
     See details in \link{GGIR}.
   }

@@ -288,7 +288,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
-    write.csv(config.matrix, file = paste0(metadatadir, "/config.csv"), row.names = FALSE)
+    data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"),
+                       row.names = FALSE, sep = params_output[["sep_config"]])
   } else {
     if (dir.exists(datadir) == FALSE) {
       warning("\nCould not write config file because studyname or datadir are not correctly specified.")
@@ -317,7 +318,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
-                     verbose = verbose)
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
@@ -334,7 +335,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
-                     verbose = verbose)
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
@@ -356,7 +357,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
-                     verbose = verbose)
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
@@ -370,7 +371,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
     if (verbose == TRUE) print_console_header("Generate visual reports")
     if (length(files.available) > 0) {
-      g.plot5(metadatadir = metadatadir, 
+      g.plot5(metadatadir = metadatadir,
               dofirstpage = params_output[["dofirstpage"]],
               viewingwindow = params_output[["viewingwindow"]],
               f0 = f0, f1 = f1,
