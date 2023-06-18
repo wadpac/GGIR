@@ -62,7 +62,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #======================================================================
   # compile lists of milestone data filenames
   fnames.ms3 = dir(paste(metadatadir, "/meta/ms3.out", sep = ""))
-
+  
   fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
   sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
@@ -269,7 +269,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
           }
         }
-
+        
         for (j in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
@@ -311,7 +311,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                       Nepochsinhour, Nts, SPTE_end, ws3)
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
-
+              
               # only include angle if angle is present
               angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
               if (lightpeak_available == TRUE) {
@@ -379,14 +379,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
-
+              
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
               data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
                                  sep = params_output[["sep_reports"]])
               # nap/sib/nonwear overlap analysis
-
+              
               # TO DO
-
+              
               # nap detection
               if (params_general[["acc.metric"]] != "ENMO" |
                   params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -441,7 +441,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
-
+            
             backup_cosinor_MM = backup_cosinor_WW = NULL
             # 2023-04-23 - backup of nightsi outside threshold look to avoid
             # overwriting the backup after the first iteration
@@ -936,7 +936,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         }
                       }
                     }
-
+                    
                     #===============================================================
                     # Cosinor analyses based on only the data used for GGIR part5
                     if (params_247[["cosinor"]] == TRUE) {
@@ -975,7 +975,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                                                            cosinor_coef$coef$params$ndays,
                                                                                            cosinor_coef$coef$params$R2)), times = di), nrow = di, byrow = TRUE)},
                             silent = TRUE)
-
+                        
                         ds_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                                                   "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
                         fi = fi + 6
@@ -1008,9 +1008,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       cosinor_coef = c()
                       fi = fi + 20
                     }
-
+                    
                   }
-
+                  
                   if (params_output[["save_ms5rawlevels"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
@@ -1042,10 +1042,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 }
               }
             }
-
+            
             #===============================================================
           }
-
+          
         }
         if ("angle" %in% colnames(ts)) {
           ts = ts[, -which(colnames(ts) == "angle")]
