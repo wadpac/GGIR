@@ -1044,7 +1044,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
                            "extract_params", "load_params", "check_params",
-                           "correctOlderMilestoneData")
+                           "correctOlderMilestoneData", "g.part5.classifyNaps")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
