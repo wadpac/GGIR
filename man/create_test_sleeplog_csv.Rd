@@ -1,14 +1,15 @@
 \name{create_test_sleeplog_csv}
 \alias{create_test_sleeplog_csv}
 \title{
-Creates csv sleeplog file for testing purposes
+  Creates csv sleeplog file for testing purposes
 }
 \description{
-Creates sleeplog file in the format as expected by g.part4
+  Creates sleeplog file in the format as expected by g.part4
 with dummy data (23:00 onset, 07:00 waking time for every night).
 }
 \usage{
-  create_test_sleeplog_csv(Nnights=7,storagelocation=c(), advanced=FALSE)
+  create_test_sleeplog_csv(Nnights = 7, storagelocation = c(),
+                            advanced = FALSE, sep = ",")
 }
 \arguments{
   \item{Nnights}{
@@ -22,6 +23,9 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
   \item{advanced}{
     Boolean to indicate whether to create an advanced sleeplog that also includes
     logs of nap times and nonwear
+  }
+  \item{sep}{
+    Character to indicate the column separator of the csv file.
   }
 }
 \value{

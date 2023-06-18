@@ -111,7 +111,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         TimeSegments2Zero = c() # set defaul
         # Check whether csv file exists with start-end end times of timewindows to be ignored (where 0 movement will be assumed)
         if (length(params_cleaning[["TimeSegments2ZeroFile"]]) > 0) {
-          TimeSegments2ZeroAll = read.csv(params_cleaning[["TimeSegments2ZeroFile"]])
+          TimeSegments2ZeroAll = data.table::fread(params_cleaning[["TimeSegments2ZeroFile"]], data.table = FALSE)
           # Check whether this individual is part of the file
           filei = which(TimeSegments2ZeroAll$filename == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))
           if (length(filei) > 0) {
@@ -180,7 +180,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
-            write.csv(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"), row.names = FALSE)
+            data.table::fwrite(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"),
+                               row.names = FALSE, sep = params_output[["sep_reports"]])
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {

@@ -49,7 +49,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Overwrite them by arguments provided via configuration file
   if (length(configfile_csv) > 0) {
-    config = read.csv(file = configfile_csv, stringsAsFactors = FALSE)
+    config = data.table::fread(file = configfile_csv, stringsAsFactors = FALSE, data.table = FALSE)
     argNames = names(input)
     if (nrow(config) > 1) {
       for (ci in 1:nrow(config)) {
@@ -137,7 +137,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                           params_247[[varName]] = newValue
                         } else {
                           if (varName %in% names(params_cleaning)) {
-                            params_247[[varName]] = newValue
+                            params_cleaning[[varName]] = newValue
                           } else {
                             warning(paste0("\nIgnoring argument/parameter ", varName,
                                            " as stored in the configuration file",

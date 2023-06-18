@@ -1,14 +1,14 @@
 g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
-                     params_general = c(), daylimit = FALSE, 
+                     params_general = c(), params_cleaning = c(), daylimit = FALSE,
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
                      meantempcal = c(), myfun = c(), verbose = TRUE, ...) {
   
   #get input variables
   input = list(...)
-  expectedArgs = c("datafile", "params_metrics", 
+  expectedArgs = c("datafile", "params_metrics",
                    "params_rawdata", "params_general",
-                   "daylimit", "offset", 
-                   "scale", "tempoffset", "meantempcal", 
+                   "daylimit", "offset",
+                   "scale", "tempoffset", "meantempcal",
                    "myfun", "outputdir", "outputfolder")
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
@@ -52,7 +52,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.dev_roll_med_acc_x = params_metrics[["do.dev_roll_med_acc_x"]],
                           do.dev_roll_med_acc_y = params_metrics[["do.dev_roll_med_acc_y"]],
                           do.dev_roll_med_acc_z = params_metrics[["do.dev_roll_med_acc_z"]],
-                          do.enmoa = params_metrics[["do.enmoa"]], 
+                          do.enmoa = params_metrics[["do.enmoa"]],
                           do.lfen = params_metrics[["do.lfen"]],
                           do.lfx = params_metrics[["do.lfx"]],
                           do.lfy = params_metrics[["do.lfy"]],
@@ -78,14 +78,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                    params_metrics[["do.hfen"]], params_metrics[["do.hfenplus"]],
                    params_metrics[["do.mad"]], params_metrics[["do.anglex"]],
                    params_metrics[["do.angley"]], params_metrics[["do.anglez"]],
-                   params_metrics[["do.roll_med_acc_x"]], params_metrics[["do.roll_med_acc_y"]], 
+                   params_metrics[["do.roll_med_acc_x"]], params_metrics[["do.roll_med_acc_y"]],
                    params_metrics[["do.roll_med_acc_z"]],
-                   params_metrics[["do.dev_roll_med_acc_x"]], params_metrics[["do.dev_roll_med_acc_y"]], 
+                   params_metrics[["do.dev_roll_med_acc_x"]], params_metrics[["do.dev_roll_med_acc_y"]],
                    params_metrics[["do.dev_roll_med_acc_z"]],
                    params_metrics[["do.enmoa"]], params_metrics[["do.lfen"]],
-                   params_metrics[["do.lfx"]], params_metrics[["do.lfy"]], 
-                   params_metrics[["do.lfz"]],  params_metrics[["do.hfx"]], 
-                   params_metrics[["do.hfy"]], params_metrics[["do.hfz"]], 
+                   params_metrics[["do.lfx"]], params_metrics[["do.lfy"]],
+                   params_metrics[["do.lfz"]],  params_metrics[["do.hfx"]],
+                   params_metrics[["do.hfy"]], params_metrics[["do.hfz"]],
                    params_metrics[["do.bfx"]], params_metrics[["do.bfy"]],
                    params_metrics[["do.bfz"]],
                    params_metrics[["do.zcx"]], params_metrics[["do.zcy"]],
@@ -232,7 +232,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                             PreviousLastValue = PreviousLastValue,
                             PreviousLastTime = PreviousLastTime,
                             params_rawdata = params_rawdata, params_general = params_general)
-    if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv 
+    if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv
       P = accread$P[1:2]
       PreviousLastValue = accread$P$PreviousLastValue
       PreviousLastTime = accread$P$PreviousLastTime
@@ -278,9 +278,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
           if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-          P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25, 
+          P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25,
                                PreviousLastValue = PreviousLastValue,
-                               PreviousLastTime = PreviousLastTime, 
+                               PreviousLastTime = PreviousLastTime,
                                epochsize = c(ws3, ws2))
           PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
           if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
@@ -293,7 +293,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
           data = P$data[,-c(2:4)]
           P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
-          gyro_available = FALSE 
+          gyro_available = FALSE
           # If we ever want to use gyroscope data then
           # comment out this if statement and set gyro_available = TRUE
         } else {
@@ -308,9 +308,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
           if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
           if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-          P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25, 
+          P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25,
                                PreviousLastValue = PreviousLastValue,
-                               PreviousLastTime = PreviousLastTime, 
+                               PreviousLastTime = PreviousLastTime,
                                epochsize = c(ws3, ws2))
           PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
           PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
@@ -338,7 +338,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
       }
       SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
-                                                      data, 
+                                                      data,
                                                       P, header, desiredtz = params_general[["desiredtz"]],
                                                       sf, i, datafile,  ws2,
                                                       starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
@@ -488,7 +488,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # data[,1], data[,2], data[,3], starttime, (temperature, light)
         
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
-        accmetrics = g.applymetrics(data = data, 
+        accmetrics = g.applymetrics(data = data,
                                     sf = sf, ws3 = ws3,
                                     metrics2do = metrics2do,
                                     n = params_metrics[["n"]],
@@ -577,7 +577,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # MODULE 2 - non-wear time & clipping
         NWCW = detect_nonwear_clipping(data = data, windowsizes = c(ws3, ws2, ws), sf = sfold,
                                        clipthres = clipthres, sdcriter = sdcriter, racriter = racriter,
-                                       nonwear_approach = params_general[["nonwear_approach"]],
+                                       nonwear_approach = params_cleaning[["nonwear_approach"]],
                                        params_rawdata = params_rawdata)
         NWav = NWCW$NWav; CWav = NWCW$CWav; nmin = NWCW$nmin
         # metalong
@@ -631,7 +631,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           impute_at_epoch_level = function(gapsize, timeseries, gap_index, metnames) {
             # gap_index: where do gaps occur (epoch indexing)
             # gap_size: how long is gap (epoch numbers)
-            if (any(duplicated(gap_index))) { 
+            if (any(duplicated(gap_index))) {
               # When 2 gap_index are within the same epoch (either short or long)
               # we would have a duplicated gap_index here, then combine information
               dup_index_tmp = which(duplicated(gap_index))
@@ -642,14 +642,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                 delete = to_combine[-1] # leave only the first index and remove duplicates
                 gap_index = gap_index[-delete] # remove from gap index
                 gapsize[to_combine[1]] = sum(gapsize[to_combine]) - (length_to_combine - 1) # minus 1 because it was summed 1 to each gapsize (which is +2 when it is duplicated) in the function call
-                gapsize = gapsize[-delete] 
+                gapsize = gapsize[-delete]
               }
             }
             if ("nonwearscore" %in% metnames) {
               timeseries[gap_index, which(metnames == "nonwearscore")]  = 3
             } else {
               # set all features to zero except time and angle feature
-              timeseries[gap_index, grep(pattern = "time|angle", 
+              timeseries[gap_index, grep(pattern = "time|angle",
                                          x = metnames, invert = TRUE, value = FALSE)] = 0
               # set EN to 1 if it is available
               if ("EN" %in% metnames) timeseries[gap_index, which(metnames == "EN")] = 1

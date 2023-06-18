@@ -274,7 +274,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       # three columns respectively named temperature.offset.x, temperature.offset.y, and temperature.offset.z
       # the end-user can generate this document based on calibration analysis done with the same accelerometer device.
       if (length(params_rawdata[["backup.cal.coef"]]) > 0 & check.backup.cal.coef == TRUE) {
-        bcc.data = read.csv(params_rawdata[["backup.cal.coef"]])
+        bcc.data = data.table::fread(params_rawdata[["backup.cal.coef"]], data.table = FALSE)
         if (isTRUE(params_rawdata[["do.cal"]]) & verbose == TRUE) {
           cat("\nRetrieving previously derived calibration coefficients")
         }
@@ -325,12 +325,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     params_metrics = params_metrics,
                     params_rawdata = params_rawdata,
                     params_general = params_general,
+                    params_cleaning = params_cleaning,
                     daylimit = daylimit,
                     tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
                     meantempcal = C$meantempcal,
                     outputdir = outputdir,
                     outputfolder = outputfolder,
-                    myfun = myfun, 
+                    myfun = myfun,
                     verbose = verbose)
 
       if (!is.null(params_general[["recordingEndSleepHour"]])) {
@@ -472,7 +473,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
                            "g.extractheadervars", "g.imputeTimegaps", "extract_params", "load_params",
-                           "check_params")
+                           "check_params", "detect_nonwear_clipping")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.

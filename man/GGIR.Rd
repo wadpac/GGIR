@@ -241,19 +241,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         the synthetic data are also ignored in the visualizations and time series
         output to avoid biased output.
       }
-      \item{nonwear_approach}{
-        Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["nonwear_approach"]]}).
-        Whether to use the traditional version of the non-wear detection 
-        algorithm (nonwear_approach = "2013") or the new version 
-        (nonwear_approach = "2023"). The 2013 version would use the longsize
-        window (windowsizes[3], one hour as default) to check the conditions
-        for nonwear identification and would flag as nonwear the
-        mediumsize window (windowsizes[2], 15 min as default) in the middle. 
-        The 2023 version differs in which it would flag as nonwear the full longsize
-        window. For the 2013 method the longsize window is centered in the centre 
-        of the mediumsize window, while in the 2023 method the longsizewindow is aligned 
-        with its left edge to the left edge of the mediumsize window.
-      }
+
       \item{dataFormat}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
         to indicate what the format is of the data in datadir.
@@ -269,7 +257,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         to indicate the maximum gap in hours between repeated measurements with the same
         ID for the recordings to be appended. So, the assumption is that the
         ID can be matched, make sure argument \code{idloc} is set correctly.
-        If argument \code{maxRecordingInterval} is set to NULL (default) recordings 
+        If argument \code{maxRecordingInterval} is set to NULL (default) recordings
         are not appended. If recordings overlap then GGIR will use the data from
         the latest recording. If recordings are seperated then the timegap between
         the recordings is filled with data points that resembale monitor not worn.
@@ -279,7 +267,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       }
       }
     }
-  
+
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
     raw data, excluding parameters related to metrics as those are in
@@ -755,7 +743,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{excludefirstlast.part5}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
-        If TRUE then the first and last window (waking-waking or 
+        If TRUE then the first and last window (waking-waking or
         midnight-midnight) are ignored in \link{g.part5}.}
 
       \item{excludefirstlast}{
@@ -844,6 +832,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         sleep clinic or exercise lab data typically lasting less than a day.
       }
 
+      \item{nonwear_approach}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_cleaning"]][["nonwear_approach"]])}").
+        Whether to use the traditional version of the non-wear detection algorithm (nonwear_approach = "2013")
+        or the new version (nonwear_approach = "2023"). The 2013 version would use the longsize window (windowsizes[3],
+        one hour as default) to check the conditions for nonwear identification and would flag as nonwear the
+        mediumsize window (windowsizes[2], 15 min as default) in the middle. The 2023 version differs in which it
+        would flag as nonwear the full longsize window. For the 2013 method the longsize window is centered in
+        the centre of the mediumsize window, while in the 2023 method the longsizewindow is aligned with its left edge
+        to the left edge of the mediumsize window.
+      }
     }
   }
 
@@ -915,7 +913,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         followed by 20 minute bouts in the rest of the data, and followed by 10 minute
         bouts in the rest of the data. Note that we use the term inactivity instead
         of sedentary behaviour for the lowest intensity level of behaviour. The reason
-        for this is that GGIR does not attempt to classifying the activity type 
+        for this is that GGIR does not attempt to classifying the activity type
         sitting at the moment, by which we feel that using the term sedentary
         behaviour would fail to communicate that.
       }
@@ -1046,8 +1044,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{sleeplogsep}{
         Character (default = "\Sexpr{GGIR::load_params()[["params_sleep"]][["sleeplogsep"]]}").
-        Value used as sep argument in \link[utils]{read.csv} for reading sleeplog csv file,
-        usually "," or ";".}
+        This argument is deprecated.}
 
       \item{nap_model}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_sleep"]][["nap_model"]])}).
@@ -1297,14 +1294,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{visualreport}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport"]])}).
-        If TRUE, then generate visual report based on combined output 
-        from \link{g.part2} and \link{g.part4}. Please note that the visual report 
-        was initially developed to provide something to show to study participants 
+        If TRUE, then generate visual report based on combined output
+        from \link{g.part2} and \link{g.part4}. Please note that the visual report
+        was initially developed to provide something to show to study participants
         and not for data quality checking purposes. Over time we have improved
-        the visual report to also be useful for QC-ing the data. However, some of 
+        the visual report to also be useful for QC-ing the data. However, some of
         the scorings as shown in the visual report are created for the visual report
         only and may not reflect the scorings in the main GGIR analyses as reported in the
-        quantitative csv-reports. Most of our effort in the past 10 years has gone 
+        quantitative csv-reports. Most of our effort in the past 10 years has gone
         into making sure that the csv-report are correct, while the visualreport has
         mostly been a side project. This is unfortunate and we hope to find funding
         in the future to design a new report specifically for the purpose of
@@ -1325,12 +1322,21 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["dofirstpage"]])}).
         To indicate whether a first page with histograms summarizing the whole
         measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
-        
+
+      \item{sep_reports}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_reports"]])}").
+        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
+        the GGIR reports.}
+
+      \item{sep_config}{
+        Character (default = "\Sexpr{format(GGIR::load_params()[["params_output"]][["sep_config"]])}").
+        Value used as sep argument in \link[utils]{write.csv} for writing the GGIR config file.}
+
       \item{visualreport_without_invalid}{
-        Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport_without_invalid"]])}).
-        If TRUE, then reports generated with \code{visualreport = TRUE} only show
-        the windows with sufficiently valid data according to \code{includedaycrit}
-        when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2} 
+          Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport_without_invalid"]])}).
+          If TRUE, then reports generated with \code{visualreport = TRUE} only show
+          the windows with sufficiently valid data according to \code{includedaycrit}
+          when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
     }
   }
 }
