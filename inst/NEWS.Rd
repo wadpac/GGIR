@@ -1,10 +1,10 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-  \section{Changes in version 2.9-4 (GitHub-only-release date:??-??-2023)}{
+  \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
     \itemize{
     \item General: included functionality to allow the user select the separator
-    in the csv files writen by GGIR: reports in part 2, part 4 and part 5,
+    in the csv files written by GGIR: reports in part 2, part 4 and part 5,
     data_quality_report.csv, and config.csv  #770.
     \item General: increased flexibility to read csv files related to sleeplog,
     activity log, data cleaning file, and csv containing calibration coefficients,
