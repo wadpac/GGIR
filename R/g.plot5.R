@@ -35,11 +35,13 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
   # create list of day names
   wdaynames = c("Sunday", "Monday", "Tuesday", "Wednesday",
                 "Thursday", "Friday", "Saturday")
-  # load summary spreadsheets for this study
-  if (!file.exists(paste0(results, "/part2_daysummary.csv"))) {
-    stop("Warning: File part2_daysummary.csv not generated yet")
-  }
-  P2daysummary = read.csv(paste0(results, "/part2_daysummary.csv"))
+  checkfiles = dir(results)
+  ## load summary spreadsheets for this study (no longer used as we now use milestone data)
+  #if (!file.exists(paste0(results, "/part2_daysummary.csv"))) {
+  # stop("Warning: File part2_daysummary.csv not generated yet")
+  #}
+  #P2daysummary = read.csv(paste0(results, "/part2_daysummary.csv"))
+  
   M = c()
   
   if (f1 - f0 > 50 & verbose == TRUE) {
@@ -66,8 +68,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
       sel = which(fnames_ms1_stripped == fnames_ms3_withoutRDa[i])
       ms2_file_index = which(fname_ms2 == fname_ms2[i])
       ms2_filepath = paste(ms2dir, "/", fname_ms2[ms2_file_index], sep = "")
-      IMP = NULL
-      load(ms2_filepath) #to load summary sleep
+      P2daysummary_tmp = IMP = SUM = NULL
+      load(ms2_filepath)
+      P2daysummary_tmp = SUM$daysummary
       if (length(sel) > 0) {
         ms4_file_index = which(fname_ms4 == fname_ms3[i])
         if (length(ms4_file_index) == 1) {
@@ -78,7 +81,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         } else {
           warning(
             paste0("\nVisual report not generated for ",
-              fnames_ms1_stripped[sel], " because part 4 output was not available."
+                   fnames_ms1_stripped[sel], " because part 4 output was not available."
             )
           )
           next()
@@ -91,7 +94,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         load(paste0(ms1dir,"/",fname_ms1[sel]))
         ws3 = M$windowsizes[1]
         ws2 = M$windowsizes[2]
-        P2daysummary_tmp = P2daysummary[which(P2daysummary$filename == fnames_ms1_stripped[sel]),]
+        
+        # P2daysummary_tmp = P2daysummary[which(P2daysummary$filename == fnames_ms1_stripped[sel]),]
         # note that the reports are generated from the raw sleep classification (part4) and no attempt is made to clean it up,
         # by deleting nights for which no diary was available or not enough accelerometer data was available
         if (length(unique(summarysleep_tmp$acc_def)) > 1) {
@@ -108,11 +112,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # do not include days with no meaningful data
           if (includedaycrit < 1) includedaycrit = includedaycrit * 24
           if (includenightcrit > 1) includenightcrit = includenightcrit / 24
-          d2excludeb = d2exclude = which(P2daysummary_tmp$N.valid.hours < max(c(includedaycrit,
-                                                                                threshold_hrs_of_data_per_day)))
+          d2excludeb = d2exclude = which(P2daysummary_tmp$`N valid hours` < max(c(includedaycrit,
+                                                                                  threshold_hrs_of_data_per_day)))
           n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
                                          | summarysleep_tmp$SptDuration == 0)
-
+          
           if (length(d2exclude) > 0) {
             d2excludeb = P2daysummary_tmp$measurementday[d2exclude]
             P2daysummary_tmp = P2daysummary_tmp[-d2exclude,] #ignore days with non-wear
@@ -130,7 +134,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             n2exclude = sort(unique(c(n2exclude, missingNights)))
           }
           # Account for shift in nights relative to windows
-          if (P2daysummary_tmp$N.hours[1] < 24 & P2daysummary_tmp$N.hours[1] > 12 & length(n2exclude) > 0) {
+          if (P2daysummary_tmp$`N hours`[1] < 24 & P2daysummary_tmp$`N hours`[1] > 12 & length(n2exclude) > 0) {
             # First calendar day is between 12 and 24 hours
             # this means that the first night viewindow (=2) may include some data but
             # is not reflected by the sleep reportswindow
@@ -187,18 +191,19 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           lengthnight = summarysleep_tmp$SptDuration #including wake periods
           nocsleepdur = summarysleep_tmp$SleepDurationInSpt
           sleepefficiency = (nocsleepdur / lengthnight) * 100
-          f01 = P2daysummary_tmp[,c45]
-          f02 = P2daysummary_tmp[,MainMetric]
+          f01 = as.numeric(P2daysummary_tmp[,c45])
+          f02 = as.numeric(P2daysummary_tmp[,MainMetric])
           f05 = matrix(NA, nrow = 2, ncol = length(summarysleep_tmp$SptDuration))
           f05[1,] = summarysleep_tmp$SleepDurationInSpt
           f05[2,] = summarysleep_tmp$SptDuration - summarysleep_tmp$SleepDurationInSpt
           f05_2 = summarysleep_tmp$SptDuration
           f06 = sleepefficiency
-          f07 = P2daysummary_tmp$N.valid.hours
+          # f07 = P2daysummary_tmp$N.valid.hours # Previously needed when reading csv-report Part 2
+          f07 = as.numeric(P2daysummary_tmp$`N valid hours`)
           # allocate colours
-          CLS = c("white","black")
-          CLS_A = rep(CLS[1],length(days_PA))
-          CLS_B = rep(CLS[1],length(days_SLEEP))
+          CLS = c("white", "black")
+          CLS_A = rep(CLS[1], length(days_PA))
+          CLS_B = rep(CLS[1], length(days_SLEEP))
           CLS_A[which(days_PA == "SUN" | days_PA == "SAT")] = CLS[2]
           CLS_B[which(days_SLEEP == "SUN" | days_SLEEP == "SAT")] = CLS[2]
           # headers
@@ -213,8 +218,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # plot data
           CEXN = 0.9
           par(mfrow = c(5, 1),
-            omi = c(0, 0, 0.2, 0),
-            mar = c(3, 2, 2, 2) + 0.1)
+              omi = c(0, 0, 0.2, 0),
+              mar = c(3, 2, 2, 2) + 0.1)
           #MVPA
           YXLIM = c(0, (max(f01, na.rm = TRUE) * 1.3))
           if (YXLIM[2] == 0) YXLIM[2] = 60
@@ -347,7 +352,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         hour = time_unclassed$hour
         NONWEAR = IMP$r5long
         INACT = LIGPA = MODPA = VIGPA = rep(NA, length(ACC))  # PA vectors for plotting
-
+        
         # Find bouts of light-PA (LPA):
         boutdur2 = 10 * (60/ws3)    # 10min bout duration
         boutcriter = 0.8            # 80% bout criteria
@@ -445,7 +450,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           xaxislabels = c("noon","2pm", "4pm", "6pm", "8pm", "10pm", "midnight",
                           "2am", "4am", "6am", "8am", "10am", "noon")
         }
-        if (length(nightsi) > 0) { 
+        if (length(nightsi) > 0) {
           # Do not attempt to create a plot when there is no midnight in the data,
           # because calculation of t1 will be complicated.
           nplots = length(nightsi) + 1
@@ -725,11 +730,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             #VvH I have moved unclass to one location, to avoid doing this computation several times:
             curr_date_unclassed = unclass(as.POSIXlt(curr_date,desiredtz))
             title = paste0("Day ",daycount,": ",
-                          wdaynames[curr_date_unclassed$wday + 1],
-                          " | ",
-                          curr_date_unclassed$mday, " ",
-                          month.abb[curr_date_unclassed$mon + 1], " ",
-                          curr_date_unclassed$year + 1900)
+                           wdaynames[curr_date_unclassed$wday + 1],
+                           " | ",
+                           curr_date_unclassed$mday, " ",
+                           month.abb[curr_date_unclassed$mon + 1], " ",
+                           curr_date_unclassed$year + 1900)
             rm(curr_date_unclassed)
             if (skip == FALSE) {
               YXLIM = c(-230,300)

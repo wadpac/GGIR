@@ -14,7 +14,7 @@
 }
 \arguments{
   \item{loglocation}{
-    Location of the spreadsheet (csv) with sleep log information. 
+    Location of the spreadsheet (csv) with sleep log information.
     See package vignette for explanation on expected format
   }
   \item{coln1}{
@@ -30,10 +30,11 @@
     Number of nights for which sleep log information should be available.
   It assumes that this is constant within a study. If sleep log information
   is missing for certain nights then leave these blank
-  
+
   }
   \item{sleeplogsep}{
     Value used as sep argument for reading sleeplog csv file, usually "," or ";".
+    This argument has been deprecated.
   }
   \item{meta.sleep.folder}{
     Path to part3 milestone data, only specify if sleeplog is in advanced format.
@@ -43,7 +44,7 @@
   }
 }
 \value{
-  Data frame with sleeplog, which can be either in basic format or in advanced 
+  Data frame with sleeplog, which can be either in basic format or in advanced
   format. See GGIR package vignette for discussion of these two formats.
 }
 \examples{
