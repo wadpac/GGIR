@@ -311,7 +311,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                       Nepochsinhour, Nts, SPTE_end, ws3)
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
-              
+
               # only include angle if angle is present
               angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
               if (lightpeak_available == TRUE) {
@@ -379,7 +379,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
-              
+
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
               data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
                                  sep = params_output[["sep_reports"]])
@@ -1142,8 +1142,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
-                           "extract_params", "load_params", "check_params", "cosinorAnalyses",
-                           "applyCosinorAnalyses", "g.IVIS", "correctOlderMilestoneData")
+                           "extract_params", "load_params", "check_params",
+                           "cosinorAnalyses", "applyCosinorAnalyses", "g.IVIS",
+                           "correctOlderMilestoneData", "g.part5.classifyNaps")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
