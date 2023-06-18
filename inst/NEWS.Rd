@@ -3,6 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
     \itemize{
+    \item Open-Source Software License for GGIR changed to Apache 2.0
     \item General: included functionality to allow the user select the separator
     in the csv files written by GGIR: reports in part 2, part 4 and part 5,
     data_quality_report.csv, and config.csv  #770.
@@ -11,6 +12,7 @@
     by automatically detecting any separator argument from the set
     of [,\\t |;] with function data.table::fread #770.
     \item Part 4: Bug fixed in the determination of SPT when daysleeper #802
+    
     }
   }
   \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
