@@ -1,6 +1,6 @@
 ![](vignettes/GGIR-MASTERLOGO-RGB.png)
 
-![GitHub Actions R-CMD-check](https://github.com/wadpac/GGIR/workflows/R-CMD-check-full/badge.svg)
+![GitHub Actions R-CMD-check](https://github.com/wadpac/GGIR/workflows/R-CMD-check/badge.svg)
 [![codecov](https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/wadpac/GGIR)
 [![](https://cranlogs.r-pkg.org/badges/last-month/GGIR)](https://cran.r-project.org/package=GGIR)
 

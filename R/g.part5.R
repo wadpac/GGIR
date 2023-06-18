@@ -110,7 +110,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
-                        extractfilenames, referencefnames, folderstructure, 
+                        extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldernam, verbose) {
     tail_expansion_log =  NULL
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
@@ -122,7 +122,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     di = 1
     DaCleanFile = c()
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
-      if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
+      if (file.exists(params_cleaning[["data_cleaning_file"]])) DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
     }
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms3[i])) > 0) {
@@ -311,7 +311,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                       Nepochsinhour, Nts, SPTE_end, ws3)
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
-              
+
               # only include angle if angle is present
               angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
               if (lightpeak_available == TRUE) {
@@ -361,10 +361,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
-              
+
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",j,".csv")
-              write.csv(x = sibreport, file = sibreport_fname, row.names = FALSE)
-              # sibreport_backup = sibreport
+              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
+                                 sep = params_output[["sep_reports"]])
+              # nap/sib/nonwear overlap analysis
+
               if (length(params_sleep[["nap_model"]]) > 0) {
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
@@ -422,7 +424,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             }
             ts$window = 0
             # 2023-04-23 - backup of nightsi outside threshold look to avoid
-            # overwriting the backup after the first iteration 
+            # overwriting the backup after the first iteration
             nightsi_bu = nightsi
             for (TRLi in params_phyact[["threshold.lig"]]) {
               for (TRMi in params_phyact[["threshold.mod"]]) {
@@ -933,7 +935,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                      write.csv(legendtable, file = legendfile, row.names = FALSE)
+                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                         sep = params_output[["sep_reports"]])
                     }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
@@ -953,7 +956,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            save_ms5raw_format = params_output[["save_ms5raw_format"]],
                                            save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
-                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID)
+                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
+                                           sep_reports = params_output[["sep_reports"]])
                   }
                 }
               }

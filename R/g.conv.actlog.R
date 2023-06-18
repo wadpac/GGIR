@@ -22,7 +22,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
   # main function code
   
   # Read content of activity diary file
-  actlog = read.csv(file = qwindow)
+  actlog = data.table::fread(file = qwindow, data.table = FALSE)
   # assume ID to be in first column
   actlog = actlog[which(actlog[,1] != ""),] # ignore rows for which there is no id
   
