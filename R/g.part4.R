@@ -42,7 +42,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   if (dolog == TRUE) {
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
                              nnights = params_sleep[["nnights"]],
-                             sleeplogsep = params_sleep[["sleeplogsep"]], meta.sleep.folder = meta.sleep.folder,
+                             meta.sleep.folder = meta.sleep.folder,
                              desiredtz = params_general[["desiredtz"]])
     sleeplog = logs_diaries$sleeplog
     save(logs_diaries, file = paste0(metadatadir,"/meta/sleeplog.RData"))
@@ -141,7 +141,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
     # allow for forced relying on guider based on external data_cleaning_file
-    DaCleanFile = read.csv(params_cleaning[["data_cleaning_file"]])
+    DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
   }
   # =================================================================
   # start of loop through the
@@ -343,10 +343,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # initialize dataframe to hold sleep period overview:
           spocum = data.frame(nb = numeric(0), start = numeric(0),  end = numeric(0),
                               dur = numeric(0), def = character(0))
-          
+
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
-          
+
           guider.df2 = guider.df[which(guider.df$night == j), ]
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
@@ -677,13 +677,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
                   spocum.t$dur = correct01010pattern(spocum.t$dur)
-                  
+
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night
                   # remove double rows
                   spocum.t = spocum.t[!duplicated(spocum.t), ]
-                  
+
                   #------------------------------------
                   # ACCELEROMETER
                   if (length(which(as.numeric(spocum.t$dur) == 1)) > 0) {
