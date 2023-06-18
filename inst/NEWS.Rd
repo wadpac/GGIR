@@ -1,9 +1,21 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
-  \itemize{
-    \item General: automatic detection of missing suggested packages such as GGIRread 
+  \section{Changes in version 2.9-4 (GitHub-only-release date:??-??-2023)}{
+    \itemize{
+    \item General: included functionality to allow the user select the separator
+    in the csv files writen by GGIR: reports in part 2, part 4 and part 5,
+    data_quality_report.csv, and config.csv  #770.
+    \item General: increased flexibility to read csv files related to sleeplog,
+    activity log, data cleaning file, and csv containing calibration coefficients,
+    by automatically detecting any separator argument from the set
+    of [,\\t |;] with function data.table::fread #770.
+    \item Part 4: Bug fixed in the determination of SPT when daysleeper #802
+    }
+  }
+  \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
+    \itemize{
+    \item General: automatic detection of missing suggested packages such as GGIRread
     when code recognises that they will be needed #786.
     \item Vignettes: instruction expanded about when to install additional R packages #786.
     \item Part 2: minor bug fixed in strategy = 3 and strategy = 5 (now they consider
@@ -12,9 +24,11 @@
     \item Adding keyword internal to many of the GGIR functions that are not
     intended for direct used by the user to reduce size of package pdf documentation and
     to ease navigation for the user #679
-    \item Vignette and documentation: Adding motivation for not using term 
+    \item Vignette and documentation: Adding motivation for not using term
     sedentary behaviour and warning that visualreport has not been optimised for
     quality checking the GGIR results.
+    \item Visualreport: now it flags non-wear in the plot based on the part 2
+    milestone data.
  }
 }
 \section{Changes in version 2.9-2 (GitHub-only-release date:25-05-2023)}{
@@ -25,7 +39,6 @@
     the first day of the recording #784 and #790
     \item Vignettes: expansion of the cut-point vignette with information on activity counts-based cut-points #771.
     \item Reports: Part 5 rows now ordered numerically again #769.
-    \item Visualreport: now it flags non-wear in the plot based on the part 2 milestone data.
     }
 }
 \section{Changes in version 2.9-1 (GitHub-only-release date:09-05-2023)}{

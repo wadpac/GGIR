@@ -23,7 +23,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                         nnights = c(),
                         relyonguider = FALSE,
                         def.noc.sleep = 1,
-                        sleeplogsep = ",", sleepwindowType = "SPT",
+                        sleeplogsep = NULL, sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
                         nap_model = c())
@@ -96,7 +96,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            includenightcrit = 16, #<= to cleaning
                            excludefirst.part4 = FALSE, # => to cleaning
                            excludelast.part4 = FALSE, max_calendar_days = 0,
-                           nonWearEdgeCorrection = TRUE)
+                           nonWearEdgeCorrection = TRUE, nonwear_approach = "2013")
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
@@ -106,7 +106,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                          week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
                          outliers.only = FALSE, criterror = 3, do.visual = TRUE,
                          do.sibreport = FALSE, do.part2.pdf = TRUE,
-                         visualreport_without_invalid = TRUE)
+                         sep_reports = ",", sep_config = ",", visualreport_without_invalid = TRUE)
 
   }
   if ("general" %in% group) {
@@ -117,7 +117,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           part5_agg2_60seconds = FALSE,
                           sensor.location = "wrist",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
-                          dataFormat = "raw", nonwear_approach = "2013")
+                          dataFormat = "raw")
   }
   # }
   invisible(list(params_sleep = params_sleep,
