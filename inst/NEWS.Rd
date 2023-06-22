@@ -3,21 +3,23 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
 \section{Changes in version 2.9-5 (GitHub-only-release date:??-??-2023)}{
-  \itemize{
+    \itemize{
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
- }
+    }
 }
 \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
     \itemize{
+    \item Open-Source Software License for GGIR changed to Apache 2.0
     \item General: included functionality to allow the user select the separator
-    in the csv files writen by GGIR: reports in part 2, part 4 and part 5,
+    in the csv files written by GGIR: reports in part 2, part 4 and part 5,
     data_quality_report.csv, and config.csv  #770.
     \item General: increased flexibility to read csv files related to sleeplog,
     activity log, data cleaning file, and csv containing calibration coefficients,
     by automatically detecting any separator argument from the set
     of [,\\t |;] with function data.table::fread #770.
     \item Part 4: Bug fixed in the determination of SPT when daysleeper #802
+
     }
   }
   \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
