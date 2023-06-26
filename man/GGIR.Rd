@@ -215,11 +215,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         and not actively maintained anymore, but because it is legacy code not omitted.}
 
       \item{expand_tail_max_hours}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]])}).
         This parameter has been replaced for \code{recordingEndSleepHour}.
       }
       \item{recordingEndSleepHour}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]]}).
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]])}).
         Time (in hours) at which the recording should end (or later) to expand the
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
         Using argument \code{recordingEndSleepHour} implies the assumption that the
@@ -253,15 +253,16 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         functionality in your data.
       }
        \item{maxRecordingInterval}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["maxRecordingInterval"]]}).
-        to indicate the maximum gap in hours between repeated measurements with the same
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["maxRecordingInterval"]])}).
+        To indicate the maximum gap in hours between repeated measurements with the same
         ID for the recordings to be appended. So, the assumption is that the
         ID can be matched, make sure argument \code{idloc} is set correctly.
         If argument \code{maxRecordingInterval} is set to NULL (default) recordings
         are not appended. If recordings overlap then GGIR will use the data from
         the latest recording. If recordings are seperated then the timegap between
         the recordings is filled with data points that resembale monitor not worn.
-        The maximum value of maxFile gap is 504 (21 days). The part 2 csv report
+        The maximum value of maxFile gap is 504 (21 days). Only recordings from the
+        same accelerometer brand are appended. The part 2 csv report
         will show number of appended recordings, sampling rate for each, time overlap or gap
         and the names of the filenames of the respective recording.
       }

@@ -19,7 +19,7 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
     }
     start = as.POSIXct(x = M$metashort$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
     end = as.POSIXct(x = M$metashort$timestamp[nrow(M$metashort)], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    info = data.frame(ID = ID, start = start, end = end, filename = fn)
+    info = data.frame(ID = ID, start = start, end = end, filename = fn, brand = I$monn)
     return(info)
   }
   mergePair = function(M1, M2, overlap, tz) {
@@ -87,8 +87,8 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
     S = S[!is.na(S$ID),]
     S = S[order(S$ID, S$start), ]
     S$overlap = NA
-    # Identify recordings that can be appended
-    doubleID = unique(S$ID[duplicated(S$ID)])
+    # Identify recordings that can be appended (ID and brand need to match)
+    doubleID = unique(S$ID[duplicated(S[, c("ID", "brand")])])
     if (length(doubleID) > 0) {
       for (j in 1:length(doubleID)) {
         Mlist = Ilist = Clist = list()
