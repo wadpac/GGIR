@@ -1,14 +1,15 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-
-\section{Changes in version 2.9-5 (GitHub-only-release date:??-??-2023)}{
+  \section{Changes in version 2.9-5 (GitHub-only-release date: ??-??-2023)}{
     \itemize{
+    \item Part 4: Now able to handle first night without any sustained inactivity bout detected #812
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
     }
-}
-\section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
+  }
+
+  \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
     \itemize{
     \item Open-Source Software License for GGIR changed to Apache 2.0
     \item General: included functionality to allow the user select the separator
@@ -19,7 +20,6 @@
     by automatically detecting any separator argument from the set
     of [,\\t |;] with function data.table::fread #770.
     \item Part 4: Bug fixed in the determination of SPT when daysleeper #802
-
     }
   }
   \section{Changes in version 2.9-3 (GitHub-only-release date:6-6-2023)}{
