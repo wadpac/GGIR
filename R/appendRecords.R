@@ -1,13 +1,5 @@
 appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInterval = NULL) {
   
-  # TO DO: Add documentation to vignettes on this new parameter
-  # TO DO: make it impossible to use recordingEndSleepHour when appending files?
-  # TO DO: add statistics about merged files in part 2 or store it as a separate report:
-  # - sample rate
-  # - number of merged files
-  # - relative length
-  # - original filenames
-  
   # Declare local functions:
   getInfo = function(fn, idloc, tz) {
     load(fn)

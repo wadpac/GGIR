@@ -272,7 +272,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
                            "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
                            "iso8601chartime2POSIX", "extract_params", "load_params", "check_params",
-                           "correctOlderMilestoneData", "cosinorAnalyses")
+                           "correctOlderMilestoneData", "cosinorAnalyses", "extractID")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

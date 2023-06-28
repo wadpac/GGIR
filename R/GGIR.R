@@ -252,7 +252,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                        params_general = params_general)
     }
     if (!is.null(params_general[["maxRecordingInterval"]])) {
-      # Append recordings when ID matches and gap between
+      # Append recordings when ID and brand match and gap between
       # recordings does not exceed maxRecordingInterval,
       # where GGIR prohibits user from use a value larger
       # than 504 hours (21 days)
