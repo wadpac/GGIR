@@ -1,7 +1,8 @@
 g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                                             "CoV", "NFragPM", "all"),
                            LEVELS = c(),
-                           Lnames=c(), xmin=1) { 
+                           Lnames=c(), xmin=1,
+                           mode = "day") { 
   
   # This function is loosely inspired by R package ActFrag by Junrui Di.
   # In contrast to R package ActFrag this function assumes
@@ -9,7 +10,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # outside this function. Further, the algorithms are not all exactly the same,
   # and there are some additional metrics.
   # This function is called from GGIR g.part5 function and applied per waking
-  # hours of a day. This avoids the issue of dealing with ppending days,
+  # hours of a day (by default, alternative option spt, see mode).
+  # This avoids the issue of dealing with gaps between days,
   # and allows us to test for behavioural differences between days of the week.
   # It is well known that human behaviour can be driven by weekly rhythm. 
   # Knowing fragmentation per day of the week allows us to account for this
@@ -18,7 +20,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # that the activity type sitting  was classified, which is generally
   # difficult to justify.
   
-    # LEVELS: vector with behavioural classes produced by GGIR
+  # LEVELS: vector with behavioural classes produced by GGIR
   # Lnames: Names of brehavioural classes.
   # frag.metrics: metric to define fragmentation
   # xmin is shortest recordable (not necessarily observed) boutlength
@@ -30,16 +32,18 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   }
   output = list()
   if (length(LEVELS) > 0) {
-    # convert to class names to numeric class ids for inactive, LIPA and MVPA:
-    classes.in = c("day_IN_unbt", Lnames[grep(pattern ="day_IN_bts", x = Lnames)])
-    class.in.ids = which(Lnames %in%  classes.in) - 1 
-    classes.lig = c("day_LIG_unbt", Lnames[grep(pattern ="day_LIG_bts", x = Lnames)])
-    class.lig.ids = which(Lnames %in%  classes.lig) - 1
-    classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern ="day_MVPA_bts", x = Lnames)])
-    class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
+    if (mode == "day") {
+      # convert to class names to numeric class ids for inactive, LIPA and MVPA:
+      classes.in = c("day_IN_unbt", Lnames[grep(pattern = "day_IN_bts", x = Lnames)])
+      class.in.ids = which(Lnames %in%  classes.in) - 1 
+      classes.lig = c("day_LIG_unbt", Lnames[grep(pattern = "day_LIG_bts", x = Lnames)])
+      class.lig.ids = which(Lnames %in%  classes.lig) - 1
+      classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern = "day_MVPA_bts", x = Lnames)])
+      class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
+    }
   }
   Nepochs = length(LEVELS)
-  if (Nepochs > 1) { # metrics that require more than just binary
+  if (Nepochs > 1 & mode == "day") { # metrics that require more than just binary
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
     y = rep(0,Nepochs)
@@ -74,8 +78,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         DurationPA = frag3levels$length[which(frag3levels$value != 1)]
         DurationIN = frag3levels$length[which(frag3levels$value == 1)]
         Nfrag3levels = length(frag3levels$value)
-        inact_2_light_trans = which(frag3levels$value[1:(Nfrag3levels-1)] == 1 & frag3levels$value[2:Nfrag3levels] == 2)
-        inact_2_mvpa_trans = which(frag3levels$value[1:(Nfrag3levels-1)] == 1 & frag3levels$value[2:Nfrag3levels] == 3)
+        inact_2_light_trans = which(frag3levels$value[1:(Nfrag3levels - 1)] == 1 &
+                                      frag3levels$value[2:Nfrag3levels] == 2)
+        inact_2_mvpa_trans = which(frag3levels$value[1:(Nfrag3levels - 1)] == 1 &
+                                     frag3levels$value[2:Nfrag3levels] == 3)
         if (length(inact_2_light_trans) > 0) { # transitions from inactive to LIPA
           DurationIN2LIPA = frag3levels$length[inact_2_light_trans]
           output[["TP_IN2LIPA"]] = (sum(DurationIN2LIPA)/sum(DurationIN)) / mean(DurationIN)
@@ -105,82 +111,114 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
   x = rep(0,Nepochs)
-  x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
+  if (mode == "day") {
+    x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
+  } 
   x = as.integer(x)
   frag2levels = rle(x)
   Nfrag2levels = length(frag2levels$lengths)
-  output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
-  if ("mean" %in% frag.metrics) {
-    output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
-  }
-  if ("Gini" %in% frag.metrics){
-    output[["Gini_dur_PA"]] = output[["Gini_dur_IN"]] = NA
-  }
-  if ("CoV" %in% frag.metrics){ #coefficient of variation
-    output[["CoV_dur_PA"]] = output[["CoV_dur_IN"]] = NA
-  }
-  if ("power" %in% frag.metrics){
-    output[["alpha_dur_PA"]] = output[["alpha_dur_IN"]] = NA
-    output[["x0.5_dur_PA"]] = output[["x0.5_dur_IN"]] = NA
-    output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
-  }
-  if ("power" %in% frag.metrics | "CoV" %in% frag.metrics | "Gini" %in% frag.metrics) {
-    output[["SD_dur_PA"]] = output[["SD_dur_IN"]] = NA
-  }
-  DurationIN = frag2levels$length[which(frag2levels$value == 1)]
-  DurationPA = frag2levels$length[which(frag2levels$value == 0)]
-  output[["Nfrag_PA"]] = length(DurationPA)
-  output[["Nfrag_IN"]] = length(DurationIN)
-  if ("NFragPM" %in% frag.metrics){
-    output[["NFragPM_PA"]] = 0
-    output[["NFragPM_IN"]] = 0
-  }
-  if (Nfrag2levels > 1) {
-      if ("mean" %in% frag.metrics){
-      output[["mean_dur_PA"]] = mean(DurationPA)
-      output[["mean_dur_IN"]] = mean(DurationIN)
+  if (mode == "day") {
+    output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
+    if ("mean" %in% frag.metrics) {
+      output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
     }
-    if ("NFragPM" %in% frag.metrics){
-      # Identify to metric named fragmentation by Chastin,
-      # but renamed into Number of Fragments Per Minutes to be 
-      # a better reflection of the calculation
-      output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / sum(DurationPA)
-      output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / sum(DurationIN)
+    if ("Gini" %in% frag.metrics) {
+      output[["Gini_dur_PA"]] = output[["Gini_dur_IN"]] = NA
     }
-    # minimum number of required fragments (10 here this is the sum of the number
-    # of PA and IN fragments, so basically we allow for 5 PA and 5 IN fragments)
-    # because the metrics below are less informative with a few metrics
-    if (Nfrag2levels >= 10) { 
-      SD0 = sd(DurationPA)
-      SD1 = sd(DurationIN)
-      output[["SD_dur_PA"]] = SD0 # maybe not a fragmentation metric, but helpful to understand other metrics
-      output[["SD_dur_IN"]] = SD1
-      if ("Gini" %in% frag.metrics){
-        output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
-        output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
+    if ("CoV" %in% frag.metrics) { #coefficient of variation
+      output[["CoV_dur_PA"]] = output[["CoV_dur_IN"]] = NA
+    }
+    if ("power" %in% frag.metrics) {
+      output[["alpha_dur_PA"]] = output[["alpha_dur_IN"]] = NA
+      output[["x0.5_dur_PA"]] = output[["x0.5_dur_IN"]] = NA
+      output[["W0.5_dur_PA"]] = output[["W0.5_dur_IN"]] = NA
+    }
+    if ("power" %in% frag.metrics | "CoV" %in% frag.metrics | "Gini" %in% frag.metrics) {
+      output[["SD_dur_PA"]] = output[["SD_dur_IN"]] = NA
+    }
+    DurationIN = frag2levels$length[which(frag2levels$value == 1)]
+    DurationPA = frag2levels$length[which(frag2levels$value == 0)]
+    output[["Nfrag_PA"]] = length(DurationPA)
+    output[["Nfrag_IN"]] = length(DurationIN)
+    if ("NFragPM" %in% frag.metrics) {
+      output[["NFragPM_PA"]] = 0
+      output[["NFragPM_IN"]] = 0
+    }
+    if (Nfrag2levels > 1) {
+      if ("mean" %in% frag.metrics) {
+        output[["mean_dur_PA"]] = mean(DurationPA)
+        output[["mean_dur_IN"]] = mean(DurationIN)
       }
-      if ("CoV" %in% frag.metrics){ #coefficient of variation as described by Blikman 2015
-        output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
-        output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
+      if ("NFragPM" %in% frag.metrics) {
+        # Identify to metric named fragmentation by Chastin,
+        # but renamed into Number of Fragments Per Minutes to be 
+        # a better reflection of the calculation
+        output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / sum(DurationPA)
+        output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / sum(DurationIN)
       }
-      if ("power" %in% frag.metrics){
-        calc_alpha = function(x, xmin) {
-          nr = length(x)
-          alpha = 1+ nr/sum(log(x/(xmin))) # adapted to match Chastin 2010 instead of ActFrag
-          return(alpha)
+      # minimum number of required fragments (10 here this is the sum of the number
+      # of PA and IN fragments, so basically we allow for 5 PA and 5 IN fragments)
+      # because the metrics below are less informative with a few metrics
+      if (Nfrag2levels >= 10) { 
+        SD0 = sd(DurationPA)
+        SD1 = sd(DurationIN)
+        output[["SD_dur_PA"]] = SD0 # maybe not a fragmentation metric, but helpful to understand other metrics
+        output[["SD_dur_IN"]] = SD1
+        if ("Gini" %in% frag.metrics) {
+          output[["Gini_dur_PA"]] = ineq::Gini(DurationPA,corr = T)
+          output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
         }
-        if (SD0 != 0) {
-          output[["alpha_dur_PA"]] = calc_alpha(DurationPA, xmin)
-          output[["x0.5_dur_PA"]] = 2^ (1 / (output[["alpha_dur_PA"]]-1) * xmin) # according to Chastin 2010
-          output[["W0.5_dur_PA"]] = sum(DurationPA[which(DurationPA > output[["x0.5_dur_PA"]])]) / sum(DurationPA)
+        if ("CoV" %in% frag.metrics) { #coefficient of variation as described by Blikman 2015
+          output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
+          output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
         }
-        if (SD1 != 0) {
-          output[["alpha_dur_IN"]] = calc_alpha(DurationIN, xmin)
-          output[["x0.5_dur_IN"]] = 2^ (1 / (output[["alpha_dur_IN"]]-1) * xmin) # according to Chastin 2010
-          output[["W0.5_dur_IN"]] = sum(DurationIN[which(DurationIN > output[["x0.5_dur_IN"]])]) / sum(DurationIN)
+        if ("power" %in% frag.metrics) {
+          calc_alpha = function(x, xmin) {
+            nr = length(x)
+            alpha = 1 + nr/sum(log(x/(xmin))) # adapted to match Chastin 2010 instead of ActFrag
+            return(alpha)
+          }
+          if (SD0 != 0) {
+            output[["alpha_dur_PA"]] = calc_alpha(DurationPA, xmin)
+            output[["x0.5_dur_PA"]] = 2^(1 / (output[["alpha_dur_PA"]] - 1) * xmin) # according to Chastin 2010
+            output[["W0.5_dur_PA"]] = sum(DurationPA[which(DurationPA > output[["x0.5_dur_PA"]])]) / sum(DurationPA)
+          }
+          if (SD1 != 0) {
+            output[["alpha_dur_IN"]] = calc_alpha(DurationIN, xmin)
+            output[["x0.5_dur_IN"]] = 2^(1 / (output[["alpha_dur_IN"]] - 1) * xmin) # according to Chastin 2010
+            output[["W0.5_dur_IN"]] = sum(DurationIN[which(DurationIN > output[["x0.5_dur_IN"]])]) / sum(DurationIN)
+          }
         }
       }
     }
+  } else if (mode == "spt") {
+    # Active - Rest transitions during SPT:
+    output[["Nfrag_spt_rest"]] = output[["Nfrag_spt_act"]] = 0
+    output[["TP_rest2act_spt"]] = output[["TP_act2rest_spt"]] = 0
+    x = rep(0, Nepochs)
+    x[which(LEVELS %in%  c("spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG"))] = 1
+    x = as.integer(x)
+    frag2levels = rle(x)
+    Duration_spt_rest = c(1, frag2levels$length[which(frag2levels$value == 0)])
+    Duration_spt_act = c(1, frag2levels$length[which(frag2levels$value == 1)])
+    output[["Nfrag_spt_rest"]] = length(Duration_spt_rest)
+    output[["Nfrag_spt_act"]] = length(Duration_spt_act)
+    output[["TP_rest2act_spt"]] = 1 / mean(Duration_spt_rest)
+    output[["TP_act2rest_spt"]] = 1 / mean(Duration_spt_act)
+    
+    # Wake - Sleep transitions during SPT:
+    output[["Nfrag_spt_sleep"]] = output[["Nfrag_spt_wake"]] = 0
+    output[["TP_sleep2wake_spt"]] = output[["TP_wake2sleep_spt"]] = 0
+    x = rep(0, Nepochs)
+    x[which(LEVELS %in%   c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG"))] = 1 # active becomes 1 because this is behaviour of interest
+    x = as.integer(x)
+    frag2levels = rle(x)
+    Duration_spt_sleep = c(1, frag2levels$length[which(frag2levels$value == 0)])
+    Duration_spt_wake = c(1, frag2levels$length[which(frag2levels$value == 1)])
+    output[["Nfrag_spt_sleep"]] = length(Duration_spt_sleep)
+    output[["Nfrag_spt_wake"]] = length(Duration_spt_wake)
+    output[["TP_sleep2wake_spt"]] = 1 / mean(Duration_spt_sleep)
+    output[["TP_wake2sleep_spt"]] = 1 / mean(Duration_spt_wake)
   }
   return(output)
 }
