@@ -110,14 +110,13 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   }
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
-  x = rep(0,Nepochs)
+  
   if (mode == "day") {
+    x = rep(0,Nepochs)
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
-  } 
-  x = as.integer(x)
-  frag2levels = rle(x)
-  Nfrag2levels = length(frag2levels$lengths)
-  if (mode == "day") {
+    x = as.integer(x)
+    frag2levels = rle(x)
+    Nfrag2levels = length(frag2levels$lengths)
     # Binary fragmentation metrics for day time:
     output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
     if ("mean" %in% frag.metrics) {
