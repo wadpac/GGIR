@@ -193,18 +193,18 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     }
   } else if (mode == "spt") {
     # Active - Rest transitions during SPT:
-    output[["Nfrag_spt_rest"]] = output[["Nfrag_spt_act"]] = 0
-    output[["TP_rest2act_spt"]] = output[["TP_act2rest_spt"]] = 0
+    output[["Nfrag_spt_IN"]] = output[["Nfrag_spt_PA"]] = 0
+    output[["TP_IN2PA_spt"]] = output[["TP_PA2IN_spt"]] = 0
     x = rep(0, Nepochs)
     x[which(LEVELS %in%  c("spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG"))] = 1
     x = as.integer(x)
     frag2levels = rle(x)
-    Duration_spt_rest = c(1, frag2levels$length[which(frag2levels$value == 0)])
-    Duration_spt_act = c(1, frag2levels$length[which(frag2levels$value == 1)])
-    output[["Nfrag_spt_rest"]] = length(Duration_spt_rest)
-    output[["Nfrag_spt_act"]] = length(Duration_spt_act)
-    output[["TP_rest2act_spt"]] = 1 / mean(Duration_spt_rest)
-    output[["TP_act2rest_spt"]] = 1 / mean(Duration_spt_act)
+    Duration_spt_IN = c(1, frag2levels$length[which(frag2levels$value == 0)])
+    Duration_spt_PA = c(1, frag2levels$length[which(frag2levels$value == 1)])
+    output[["Nfrag_spt_IN"]] = length(Duration_spt_IN)
+    output[["Nfrag_spt_PA"]] = length(Duration_spt_PA)
+    output[["TP_IN2PA_spt"]] = 1 / mean(Duration_spt_IN)
+    output[["TP_PA2IN_spt"]] = 1 / mean(Duration_spt_PA)
     
     # Wake - Sleep transitions during SPT:
     output[["Nfrag_spt_sleep"]] = output[["Nfrag_spt_wake"]] = 0
