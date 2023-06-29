@@ -193,16 +193,19 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     }
   } else if (mode == "spt") {
     # Binary fragmentation metrics for spt:
-    
     # Active - Rest transitions during SPT:
     output[["Nfrag_spt_IN"]] = output[["Nfrag_spt_PA"]] = 0
     output[["TP_IN2PA_spt"]] = output[["TP_PA2IN_spt"]] = 0
     x = rep(0, Nepochs)
-    x[which(LEVELS %in%  c("spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG"))] = 1
+    
+    # convert to class names to numeric class ids for inactive, LIPA and MVPA:
+    classes.pa = c("spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
+    class.pa = which(Lnames %in% classes.pa) - 1 
+    x[which(LEVELS %in% class.pa)] = 1
     x = as.integer(x)
     frag2levels = rle(x)
-    Duration_spt_IN = c(1, frag2levels$length[which(frag2levels$value == 0)])
-    Duration_spt_PA = c(1, frag2levels$length[which(frag2levels$value == 1)])
+    Duration_spt_IN = frag2levels$length[which(frag2levels$value == 0)]
+    Duration_spt_PA = frag2levels$length[which(frag2levels$value == 1)]
     output[["Nfrag_spt_IN"]] = length(Duration_spt_IN)
     output[["Nfrag_spt_PA"]] = length(Duration_spt_PA)
     output[["TP_IN2PA_spt"]] = 1 / mean(Duration_spt_IN)
@@ -212,11 +215,13 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     output[["Nfrag_spt_sleep"]] = output[["Nfrag_spt_wake"]] = 0
     output[["TP_sleep2wake_spt"]] = output[["TP_wake2sleep_spt"]] = 0
     x = rep(0, Nepochs)
-    x[which(LEVELS %in%   c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG"))] = 1 # active becomes 1 because this is behaviour of interest
+    classes.wake = c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
+    class.wake = which(Lnames %in% classes.wake) - 1 
+    x[which(LEVELS %in% class.wake)] = 1
     x = as.integer(x)
     frag2levels = rle(x)
-    Duration_spt_sleep = c(1, frag2levels$length[which(frag2levels$value == 0)])
-    Duration_spt_wake = c(1, frag2levels$length[which(frag2levels$value == 1)])
+    Duration_spt_sleep = frag2levels$length[which(frag2levels$value == 0)]
+    Duration_spt_wake = frag2levels$length[which(frag2levels$value == 1)]
     output[["Nfrag_spt_sleep"]] = length(Duration_spt_sleep)
     output[["Nfrag_spt_wake"]] = length(Duration_spt_wake)
     output[["TP_sleep2wake_spt"]] = 1 / mean(Duration_spt_sleep)

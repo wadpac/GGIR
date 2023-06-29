@@ -20,28 +20,44 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
         6, 6, 6,  rep(11, 22), 6, 6, rep(10, 100), 6, rep(11, 23), 6, 5, 5, 5, 5,
         5, 7, rep(10, 133), 6, rep(10, 119), 6, 6, 5, 6, 6, 6, 6, 6, 7, 7, 7, 6,
         5, 6, 6, 6, 5, 5, 5)
-  Lnames = c("spt_sleep", "spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG",
-             "day_IN_unbt", "day_LIG_unbt", "day_MOD_unbt", "day_VIG_unbt", "day_MVPA_bts_10", "day_IN_bts_30",
-             "day_IN_bts_10_30", "day_LIG_bts_10")
+  
+
   out = g.fragmentation(frag.metrics = "all",
                         LEVELS = x,
-                        Lnames=Lnames)
+                        Lnames = Lnames, mode = "day")
   
-  expect_equal(round(out$mean_dur_PA, digits=3), 4.02)
-  expect_equal(round(out$mean_dur_IN, digits=3), 14.857)
-  expect_equal(round(out$Gini_dur_PA, digits=4), 0.5063)
-  expect_equal(round(out$Gini_dur_IN, digits=4), 0.7685)
+  expect_equal(round(out$mean_dur_PA, digits = 3), 4.02)
+  expect_equal(round(out$mean_dur_IN, digits = 3), 14.857)
+  expect_equal(round(out$Gini_dur_PA, digits = 4), 0.5063)
+  expect_equal(round(out$Gini_dur_IN, digits = 4), 0.7685)
   
-  expect_equal(round(out$alpha_dur_PA, digits=4), 2.0551)
-  expect_equal(round(out$x0.5_dur_PA, digits=4), 1.9289)
-  expect_equal(round(out$W0.5_dur_IN, digits=4), 0.9629)
+  expect_equal(round(out$alpha_dur_PA, digits = 4), 2.0551)
+  expect_equal(round(out$x0.5_dur_PA, digits = 4), 1.9289)
+  expect_equal(round(out$W0.5_dur_IN, digits = 4), 0.9629)
   
-  expect_equal(round(out$TP_IN2MVPA, digits=4), 0.0017)
-  expect_equal(round(out$TP_IN2LIPA, digits=4), 0.0654)
-  expect_equal(round(out$TP_IN2PA, digits=4), 0.0673)
+  expect_equal(round(out$TP_IN2MVPA, digits = 4), 0.0017)
+  expect_equal(round(out$TP_IN2LIPA, digits = 4), 0.0654)
+  expect_equal(round(out$TP_IN2PA, digits = 4), 0.0673)
   expect_equal(out$Nfrag_PA, 49)
   expect_equal(out$Nfrag_IN2LIPA, 44)
   expect_equal(out$Nfrag_IN2MVPA, 4)
   expect_equal(out$Nfrag_IN, 49)
+  
+  x = c(rep(1, 15), rep(0, 10), rep(1, 15), rep(2, 15),
+        rep(0, 15), rep(1, 10), rep(2, 10),
+        rep(0, 25), rep(1, 10))
+  
+  out = g.fragmentation(frag.metrics = "all",
+                        LEVELS = x,
+                        Lnames = Lnames, mode = "spt")
+  
+  expect_equal(out$Nfrag_spt_PA, 2)
+  expect_equal(out$Nfrag_spt_IN, 3)
+  expect_equal(out$TP_PA2IN_spt, 0.08)
+  expect_equal(out$TP_IN2PA_spt, 0.03)
+  expect_equal(out$Nfrag_spt_wake, 4)
+  expect_equal(out$Nfrag_spt_sleep, 3)
+  expect_equal(out$TP_wake2sleep_spt, 0.05333333, tolerance = 0.0001)
+  expect_equal(out$TP_sleep2wake_spt, 0.06)
   
 })
