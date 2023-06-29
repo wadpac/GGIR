@@ -31,7 +31,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "NFragPM", "all")
   }
   output = list()
-  if (length(LEVELS) > 0) {
+  Nepochs = length(LEVELS)
+  if (Nepochs > 0) {
     if (mode == "day") {
       # convert to class names to numeric class ids for inactive, LIPA and MVPA:
       classes.in = c("day_IN_unbt", Lnames[grep(pattern = "day_IN_bts", x = Lnames)])
@@ -42,7 +43,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
     }
   }
-  Nepochs = length(LEVELS)
   if (Nepochs > 1 & mode == "day") { # metrics that require more than just binary
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
@@ -118,6 +118,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   frag2levels = rle(x)
   Nfrag2levels = length(frag2levels$lengths)
   if (mode == "day") {
+    # Binary fragmentation metrics for day time:
     output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
     if ("mean" %in% frag.metrics) {
       output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
@@ -192,6 +193,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       }
     }
   } else if (mode == "spt") {
+    # Binary fragmentation metrics for spt:
+    
     # Active - Rest transitions during SPT:
     output[["Nfrag_spt_IN"]] = output[["Nfrag_spt_PA"]] = 0
     output[["TP_IN2PA_spt"]] = output[["TP_PA2IN_spt"]] = 0
