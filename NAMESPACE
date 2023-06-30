@@ -39,7 +39,7 @@ export(g.analyse, g.calibrate,
        detect_nonwear_clipping,
        ShellDoc2Vignette, parametersVignette,
        correctOlderMilestoneData,
-       convertEpochData)
+       convertEpochData, appendRecords, extractID)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",

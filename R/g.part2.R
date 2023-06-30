@@ -83,7 +83,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
                         daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose) {
-    tail_expansion_log =  NULL
+    
+    Nappended = I_list = tail_expansion_log =  NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -99,6 +100,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       filename_dir = c()
       filefoldername = c()
       file2read = paste0(path,fnames[i])
+      
       load(file2read) #reading RData-file
       # convert to character/numeric if stored as factor in metashort and metalong
       M$metashort = correctOlderMilestoneData(M$metashort)
@@ -200,6 +202,34 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$summary$filename_dir = fullfilenames[i]
           SUM$summary$foldername = foldername[i]
         }
+        if (!is.null(params_general[["maxRecordingInterval"]])) {
+          getValue = function(x, name) {
+            if (name %in% names(x)) {
+              out = x[name]
+            } else {
+              out = NULL
+            }
+            return(out)
+          }
+          if (!is.null(I_list)) {
+            # This recording is the result of appending 2 or more recordings
+            NappendedRecordings = Nappended
+            sf_appendedRecordings = paste0(unlist(lapply(X = I_list, FUN = getValue, name = "sf")), collapse = " ")
+            names_appendedRecordings = paste0(unlist(lapply(X = I_list, FUN = getValue, name = "filename")), collapse = " ")
+            # Note if overlap is positive it is overlap, if it is negative there was a gap
+            overlap_appendedRecordings = paste0(unlist(lapply(X = I_list[[1]], FUN = getValue, name = "interval")), collapse = " ")
+          } else {
+            # This recording is has not been appended
+            NappendedRecordings = 0
+            sf_appendedRecordings = getValue(I, "sf")
+            names_appendedRecordings = getValue(I, "filename")
+            overlap_appendedRecordings = ""
+          }
+          SUM$summary$NappendedRecordings = NappendedRecordings
+          SUM$summary$sf_appendedRecordings  = sf_appendedRecordings
+          SUM$summary$names_appendedRecordings = names_appendedRecordings
+          SUM$summary$overlap_hrs_appendedRecordings = overlap_appendedRecordings
+        }
         save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
@@ -242,7 +272,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
                            "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
                            "iso8601chartime2POSIX", "extract_params", "load_params", "check_params",
-                           "correctOlderMilestoneData", "cosinorAnalyses")
+                           "correctOlderMilestoneData", "cosinorAnalyses", "extractID")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

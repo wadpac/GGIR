@@ -4,9 +4,10 @@
   \section{Changes in version 2.9-5 (GitHub-only-release date: ??-??-2023)}{
     \itemize{
     \item Part 4: Now able to handle first night without any sustained inactivity bout detected #812
+    \item Part 1: Functionality to append recordings with the same ID, see argument
+    maxRecordingInterval #972
     }
   }
-  
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
     \itemize{
     \item Open-Source Software License for GGIR changed to Apache 2.0

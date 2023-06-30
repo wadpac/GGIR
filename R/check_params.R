@@ -117,7 +117,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
   }
   if (length(params_general) > 0) {
-    numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder", "expand_tail_max_hours")
+    numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder",
+                       "expand_tail_max_hours", "maxRecordingInterval")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", "dataFormat")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
@@ -352,6 +353,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   assumption is credible."), call. = FALSE)
     }
   }
+
+  if (!is.null(params_general[["maxRecordingInterval"]])) {
+    if (params_general[["maxRecordingInterval"]] > 24 * 21) {
+      stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is permitted,",
+                  " please specify a lower value."), call. = FALSE)
+    }
+  }
+
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

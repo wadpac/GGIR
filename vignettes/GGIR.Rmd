@@ -340,6 +340,12 @@ for that.
     mostly been a side project. This is unfortunate and we hope to find funding
     in the future to design a new report specifically for the purpose of
     QC-ing the anlayses done by GGIR.
+-   `maxRecordingInterval` - if specified controls whether neighboring or
+    overlapping recordings with the same participant ID and brand are appended
+    at epoch level. This can be useful when the intention is to monitor behaviour
+    over larger periods of time but accelerometers only allow for a few weeks of 
+    data collection. GGIR will never append or alter the raw input file, this operation
+    is preformed on the derived data.
 
 ### Key arguments related to sleep analysis {#key-arguments-related-to-sleep-analysis}
 
@@ -1721,7 +1727,7 @@ However, we made a couple of a different decisions that may affect
 comparability:
 
 -   GGIR derives fragmentation metrics for day. This allows us to avoid
-    the issue of dealing with appending days. Further, it allows us to
+    the issue of gaps between days that need to be dealt with. Further, it allows us to
     test for behavioural differences between days of the week. It is
     well known that human behaviour can be driven by weekly rhythms,
     e.g. work days versus weekend. Estimating fragmentation per day of
