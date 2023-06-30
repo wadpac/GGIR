@@ -31,7 +31,8 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
         if (pattern != "long") {
           NEWSHORT[, grep(pattern = pattern, x = colnames(NEWSHORT), invert = TRUE, ignore.case = TRUE)] = 0
         } else {
-          NEWSHORT$EN = 1
+          enCol = grep("en", colnames(NEWSHORT), ignore.case = TRUE)
+          NEWSHORT[, enCol] = 1
           NEWSHORT$clippingscore = 0
           NEWSHORT$nonwearscore = 3
           if (any(colnames(NEWSHORT) %in% c("lightmean", "lightpeak"))) {
