@@ -115,7 +115,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
   The parameters that can be used in GGIR are:
 
-     \subsection{params_general}{
+    \subsection{params_general}{
     A list of parameters used across all GGIR parts that do not fall in any of the other
     categories.
     \describe{
@@ -215,11 +215,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         and not actively maintained anymore, but because it is legacy code not omitted.}
 
       \item{expand_tail_max_hours}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]]}).
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["expand_tail_max_hours"]])}).
         This parameter has been replaced for \code{recordingEndSleepHour}.
       }
       \item{recordingEndSleepHour}{
-        Numeric (default = \Sexpr{GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]]}).
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["recordingEndSleepHour"]])}).
         Time (in hours) at which the recording should end (or later) to expand the
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
         Using argument \code{recordingEndSleepHour} implies the assumption that the
@@ -242,7 +242,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         output to avoid biased output.
       }
 
-     \item{dataFormat}{
+      \item{dataFormat}{
         Character (default = \Sexpr{GGIR::load_params()[["params_general"]][["dataFormat"]]}).
         to indicate what the format is of the data in datadir.
         Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
@@ -251,7 +251,21 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         For the Actiwatch data functionality has been tested with example data from
         only one research group. Please let us know if you have difficulties using this
         functionality in your data.
-        }
+      }
+       \item{maxRecordingInterval}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["maxRecordingInterval"]])}).
+        To indicate the maximum gap in hours between repeated measurements with the same
+        ID for the recordings to be appended. So, the assumption is that the
+        ID can be matched, make sure argument \code{idloc} is set correctly.
+        If argument \code{maxRecordingInterval} is set to NULL (default) recordings
+        are not appended. If recordings overlap then GGIR will use the data from
+        the latest recording. If recordings are seperated then the timegap between
+        the recordings is filled with data points that resembale monitor not worn.
+        The maximum value of maxFile gap is 504 (21 days). Only recordings from the
+        same accelerometer brand are appended. The part 2 csv report
+        will show number of appended recordings, sampling rate for each, time overlap or gap
+        and the names of the filenames of the respective recording.
+      }
       }
     }
 
@@ -730,7 +744,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{excludefirstlast.part5}{
         Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
-        If TRUE then the first and last window (waking-waking or 
+        If TRUE then the first and last window (waking-waking or
         midnight-midnight) are ignored in \link{g.part5}.}
 
       \item{excludefirstlast}{
@@ -828,8 +842,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         would flag as nonwear the full longsize window. For the 2013 method the longsize window is centered in
         the centre of the mediumsize window, while in the 2023 method the longsizewindow is aligned with its left edge
         to the left edge of the mediumsize window.
-        }
-
+      }
     }
   }
 
@@ -901,7 +914,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         followed by 20 minute bouts in the rest of the data, and followed by 10 minute
         bouts in the rest of the data. Note that we use the term inactivity instead
         of sedentary behaviour for the lowest intensity level of behaviour. The reason
-        for this is that GGIR does not attempt to classifying the activity type 
+        for this is that GGIR does not attempt to classifying the activity type
         sitting at the moment, by which we feel that using the term sedentary
         behaviour would fail to communicate that.
       }
@@ -1282,14 +1295,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{visualreport}{
         Boolean (default = \Sexpr{format(GGIR::load_params()[["params_output"]][["visualreport"]])}).
-        If TRUE, then generate visual report based on combined output 
-        from \link{g.part2} and \link{g.part4}. Please note that the visual report 
-        was initially developed to provide something to show to study participants 
+        If TRUE, then generate visual report based on combined output
+        from \link{g.part2} and \link{g.part4}. Please note that the visual report
+        was initially developed to provide something to show to study participants
         and not for data quality checking purposes. Over time we have improved
-        the visual report to also be useful for QC-ing the data. However, some of 
+        the visual report to also be useful for QC-ing the data. However, some of
         the scorings as shown in the visual report are created for the visual report
         only and may not reflect the scorings in the main GGIR analyses as reported in the
-        quantitative csv-reports. Most of our effort in the past 10 years has gone 
+        quantitative csv-reports. Most of our effort in the past 10 years has gone
         into making sure that the csv-report are correct, while the visualreport has
         mostly been a side project. This is unfortunate and we hope to find funding
         in the future to design a new report specifically for the purpose of
