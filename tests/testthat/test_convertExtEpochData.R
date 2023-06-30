@@ -33,7 +33,7 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/Actiwatch.AWD", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 60
   params_general[["dataFormat"]] = "actiwatch_awd"
-  extEpochData_dateformat = "%d-%b-%Y"
+  params_general[["extEpochData_dateformat"]] = "%d-%b-%Y"
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                               params_general = params_general)
   
