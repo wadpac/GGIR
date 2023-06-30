@@ -269,11 +269,13 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                                       size = c(15, 30, 60, 120, 300, 2, 5, 10))
           epSizeShort = optionalEpochs$size[which(optionalEpochs$code == as.character(header[4]))]
           # Get starttime 
+          timestampFormat = paste0(params_general[["extEpochData_dateformat"]], " %H:%M")
           timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
-                                       format = "%d-%b-%Y %H:%M", tz = tz)
-          if (is.na(timestamp_POSIX) == TRUE) {
-            timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
-                                         format = "%d/%b/%Y %H:%M", tz = tz)
+                                       format = timestampFormat, tz = tz)
+          if (is.na(timestamp_POSIX)) {
+            stop(paste0("\nDate format in data ", header[2], " does not match with date format ",
+                        params_general[["extEpochData_dateformat"]],
+                        " as specified by argument extEpochData_dateformat, please correct.\n"))
           }
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
