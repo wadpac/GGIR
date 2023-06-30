@@ -8,7 +8,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
   S = data.table::fread(loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
   cnt_time_notrecognise = 0
-  advanced_sleeplog = length(grep(pattern = "date", x = colnames(S))) > 0
+  advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
   if (advanced_sleeplog ==  TRUE) {
     if (length(meta.sleep.folder) > 0) {
       getIDstartdate = function(x) {
@@ -47,10 +47,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     datecols = grep(pattern = "date", x = colnames(S), value = FALSE, ignore.case = TRUE)
     # if date occurs in column names at least twice we assume it is an advanced sleeplogreport
     if (length(datecols) > 1) { # if yes, do:
-      wakecols = grep(pattern = "wakeup",x = colnames(S), value = FALSE)
-      onsetcols = grep(pattern = "onset|inbed|tobed|lightsout",x = colnames(S), value = FALSE)
-      napcols = grep(pattern = "nap",x = colnames(S), value = FALSE)
-      nonwearcols = grep(pattern = "nonwear",x = colnames(S), value = FALSE)
+      wakecols = grep(pattern = "wakeup",x = colnames(S), value = FALSE, ignore.case = TRUE)
+      onsetcols = grep(pattern = "onset|inbed|tobed|lightsout",x = colnames(S), value = FALSE, ignore.case = TRUE)
+      napcols = grep(pattern = "nap",x = colnames(S), value = FALSE, ignore.case = TRUE)
+      nonwearcols = grep(pattern = "nonwear",x = colnames(S), value = FALSE, ignore.case = TRUE)
       # Create new sleeplog consisting of:
       # - original ID column
       # - empty columns if relevant to make sleeplog match accelerometer recording, make sure coln1 argument is used
