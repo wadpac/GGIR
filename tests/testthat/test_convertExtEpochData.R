@@ -5,6 +5,7 @@ test_that("External epoch data is correctly converted", {
   # for (i in dirR) source(i)
   params_general = load_params()$params_general
   params_general[["overwrite"]] = TRUE
+  params_general[["extEpochData_dateformat"]] = "%d/%m/%Y"
   # Set smaller than usual windowsizes, because this test recordings are clipped short
   params_general[["windowsizes"]][2] = 60
   params_general[["windowsizes"]][3] = 120

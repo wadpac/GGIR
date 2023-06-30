@@ -6,6 +6,9 @@
     \item Part 4: Now able to handle first night without any sustained inactivity bout detected #812
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
+    \item Part 1: Handling of external derived epoch data now able to handle
+    empty lines and user can now specify date format of the timestamps with 
+    argument extEpochData_dateformat.
     }
   }
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{

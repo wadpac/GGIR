@@ -162,12 +162,13 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
-        D = utils::read.table(file = fnames[i],
+        D = data.table::fread(input = fnames[i],
                               header = TRUE,
+                              data.table = FALSE,
                               sep = ",")
-        header = as.character(read.table(file = fnames[i], header = FALSE, nrows = 1, sep = ",")[1, 1])
+        
+        header = as.character(data.table::fread(input = fnames[i], header = FALSE, nrows = 1, data.table = FALSE, sep = ",")[1, 1])
         # extract date/timestamp from fileheader
-        # header = as.character(colnames(D)[1])
         timestamp = unlist(strsplit(header," - "))[2]
         # define start time of the 15 minute intervals
         # like in the default GGIR version
@@ -180,7 +181,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
             quote = detectQuote(fn = fnames[i], index = index)
             testraw = data.table::fread(input = fnames[i],
                                         header = FALSE, sep = ",", skip = index,
-                                        nrows = 2, data.table = TRUE, quote = quote)
+                                        nrows = 2, data.table = FALSE, quote = quote)
             if (length(testraw) > 0) {
               if (nrow(testraw) == 2) {
                 if (testraw$V1[2] == testraw$V1[1] + 1) {
@@ -221,12 +222,15 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           colnames(D) = gsub(pattern = "datum|date", replacement = "date", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "tijd|time", replacement = "time", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "activiteit|activity", replacement = "ZCY", x = colnames(D), ignore.case = TRUE)
-          timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "), format = "%d-%m-%Y %H:%M:%S", tz = tz)
-          epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
-          if (is.na(epSizeShort)) {
-            timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "), format = "%d/%m/%Y %H:%M:%S", tz = tz)
-            epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
+          timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "),
+                                       format = paste0(params_general[["extEpochData_dateformat"]], "%H:%M:%S"),
+                                       tz = tz)
+          if (all(is.na(timestamp_POSIX))) {
+            stop(paste0("\nDate format in data ", D$date[1], " does not match with date format ",
+                         params_general[["extEpochData_dateformat"]],
+                         " as specified by argument extEpochData_dateformat, please correct.\n"))
           }
+          epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
                  params_general[["windowsizes"]][1],

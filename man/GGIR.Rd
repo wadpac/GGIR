@@ -266,6 +266,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         will show number of appended recordings, sampling rate for each, time overlap or gap
         and the names of the filenames of the respective recording.
       }
+      \item{extEpochData_dateformat}{
+        Character (default =
+        \Sexpr{format(GGIR::load_params()[["params_general"]][["extEpochData_dateformat"]])}).
+        To specify the date format used in the external epoch level data when
+        argument \code{dataFormat} does not in default.
+      }
       }
     }
 
