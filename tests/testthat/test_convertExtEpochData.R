@@ -1,6 +1,7 @@
 library(GGIR)
 context("convertEpochData")
 test_that("External epoch data is correctly converted", {
+  skip_on_cran()
   # dirR = dir("~/GGIR/R", full.names = TRUE)
   # for (i in dirR) source(i)
   params_general = load_params()$params_general
@@ -32,8 +33,10 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/Actiwatch.AWD", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 60
   params_general[["dataFormat"]] = "actiwatch_awd"
+  
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                               params_general = params_general)
+  
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_Actiwatch.AWD.RData"))
   expect_equal(nrow(M$metashort), 329)
@@ -47,6 +50,10 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/Actiwatch.csv", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 15
   params_general[["dataFormat"]] = "actiwatch_csv"
+  params_general[["extEpochData_dateformat"]] = "%d-%m-%Y"
+  expect_error(convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
+                   params_general = params_general))
+  params_general[["extEpochData_dateformat"]] = "%d/%m/%Y"
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)

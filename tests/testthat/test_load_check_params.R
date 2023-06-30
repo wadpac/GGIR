@@ -1,6 +1,7 @@
 library(GGIR)
 context("loading and checking params")
 test_that("load_params can load parameters", {
+  skip_on_cran()
   params = load_params()
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
