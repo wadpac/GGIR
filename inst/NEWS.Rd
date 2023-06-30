@@ -4,6 +4,7 @@
   \section{Changes in version 2.9-5 (GitHub-only-release date: ??-??-2023)}{
     \itemize{
     \item Part 4: Now able to handle first night without any sustained inactivity bout detected #812
+    \item Vignettes: Buchan et al. 2023 cut-points for adults included in the cut-points vignette #804
     \item Part 4: Identification of column names in advanced sleeplog is now case insensitive #812
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
