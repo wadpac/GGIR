@@ -44,7 +44,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     # columnames with nap represent nap start or end-times
     # columnames with nonwear represent nonwear start or end-times
     # dates are expressed as YYYY-mm-dd
-    datecols = grep(pattern = "date", x = colnames(S), value = FALSE)
+    datecols = grep(pattern = "date", x = colnames(S), value = FALSE, ignore.case = TRUE)
     # if date occurs in column names at least twice we assume it is an advanced sleeplogreport
     if (length(datecols) > 1) { # if yes, do:
       wakecols = grep(pattern = "wakeup",x = colnames(S), value = FALSE)
