@@ -217,6 +217,21 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
+    
+    if (!is.null(params_general[["maxRecordingInterval"]] & params_general[["overwrite"]] == TRUE)) {
+      # When we want to overwrite previously processed data and append recordings
+      # it is necessary to first empty folder meta/basic to avoid confusion with
+      # previously appended data
+      basic_folder = paste0(metadatadir, "/meta/basic")
+      if (dir.exists(basic_folder)) {
+        basic_ms_files = dir(basic_folder, full.names = TRUE)
+        if (length(basic_ms_files) > 0) {
+          for (fnr in basic_ms_files) unlink(fnr)
+          rm(fnr)
+        }
+        rm(basic_folder, basic_ms_files)
+      }
+    }
     if (params_general[["dataFormat"]] == "raw") {
       g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
               studyname = studyname, myfun = myfun,
@@ -235,6 +250,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                        studyname = studyname,
                        outputdir = outputdir,
                        params_general = params_general)
+    }
+    if (!is.null(params_general[["maxRecordingInterval"]])) {
+      # Append recordings when ID and brand match and gap between
+      # recordings does not exceed maxRecordingInterval,
+      # where GGIR prohibits user from use a value larger
+      # than 504 hours (21 days)
+      appendRecords(metadatadir = metadatadir,
+                    desiredtz = params_general[["desiredtz"]],
+                    idloc = params_general[["idloc"]],
+                    maxRecordingInterval = params_general[["maxRecordingInterval"]])
     }
   }
   if (dopart2 == TRUE) {
