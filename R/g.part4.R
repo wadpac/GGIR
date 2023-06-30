@@ -619,13 +619,15 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             #------------------------------------------------------------------------
             # Variable 'spo' contains all the sleep periods FOR ONE SLEEP DEFINITION Variable
             # 'spocum' contains all the sleep periods FOR MULTIPLE SLEEP DEFINITIONS
-            spo$def = k
-            if (spocumi == 1) {
-              spocum = spo
-            } else {
-              spocum = rbind(spocum, spo)
+            if (exists("spo")) {
+              spo$def = k
+              if (spocumi == 1) {
+                spocum = spo
+              } else {
+                spocum = rbind(spocum, spo)
+              }
+              spocumi = spocumi + 1
             }
-            spocumi = spocumi + 1
           }
           #------------------------------------------------------------------------
           # Take variables 'spocum', SptOnset and SptWake to derive nightsummary measures and to

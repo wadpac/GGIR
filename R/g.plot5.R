@@ -70,6 +70,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
       ms2_filepath = paste(ms2dir, "/", fname_ms2[ms2_file_index], sep = "")
       P2daysummary_tmp = IMP = SUM = NULL
       load(ms2_filepath)
+      P2daysummary_tmp$measurementday = as.numeric(P2daysummary_tmp$measurementday)
       P2daysummary_tmp = SUM$daysummary
       if (length(sel) > 0) {
         ms4_file_index = which(fname_ms4 == fname_ms3[i])
@@ -77,6 +78,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           nightsummary = c()
           ms4_filepath = paste0(ms4dir, "/", fname_ms4[ms4_file_index])
           load(ms4_filepath) #to load summary sleep
+          nightsummary$night = as.numeric(nightsummary$night)
           summarysleep_tmp = nightsummary
         } else {
           warning(
