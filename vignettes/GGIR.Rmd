@@ -147,7 +147,7 @@ additional packages:
 
 1.  GGIR works with the following accelerometer brands and formats:
     -   [GENEActiv](https://activinsights.com/) .bin
-    -   [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
+    -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
     -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x
         only the newer format generated with firmware versions above
         2.5.0. Serial numbers that start with "NEO" or "MRA" and have
@@ -161,13 +161,19 @@ additional packages:
         in the file header.
     -   [Movisens](https://www.movisens.com/en/) with data stored in
         folders.
-    -   Genea (an accelerometer that is not commercially available
-        anymore, but which was used for some studies between 2007 and
-        2012) .bin and .csv
     -   Any other accelerometer brand that generates csv output, see
         documentation for functions `read.myacc.csv` and argument
         `rmc.noise` in the [GGIR function documentation
         (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
+    Note that functionality for the following file formats was part of GGIR but has
+    been deprecated as it required a significant maintenance effort without 
+    a clear use case or community support: (1) .bin for the Genea monitor by
+    Unilever Discover, an accelerometer that was used for some studies between
+    2007 and 2012) .bin, and (2) .wav files as can be exported by the 
+    Axivity Ltd OMGUI software. Please contact us if you think
+    these data formats should be facilitated by GGIR again and if you are interested
+    in supporting their ongoing maintenance.
+
 2.  All accelerometer data that needs to be analysed should be stored in
     one folder, or subfolders of that folder.
 3.  Give the folder an appropriate name, preferable with a reference to
