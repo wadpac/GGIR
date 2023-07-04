@@ -1,4 +1,7 @@
 g.wavread = function(wavfile,start=1,end=100,units="minutes") {
+  stop(paste0("\nFunctionality to read .wav files has been temporarily",
+              " deprecated in preparation for addressing some issue and making it",
+              " work robustly again on newer R version."))
   if (start == 0) start = 1
   #-----------------------------------------------------
   # get data
