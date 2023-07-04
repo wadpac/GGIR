@@ -619,6 +619,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 fi = correct_fi(di, ds_names, fi, varname = varname)
                 daysummary[di,fi] = mean(varnum, na.rm = TRUE)
                 ds_names[fi] = varname; fi = fi + 1
+                # MEDIAN
+                varname = paste0(colnames(metashort)[mi], "_median", anwi_nameindices[anwi_index])
+                fi = correct_fi(di, ds_names, fi, varname = varname)
+                daysummary[di,fi] = median(varnum, na.rm = TRUE)
+                ds_names[fi] = varname; fi = fi + 1
                 # SD
                 varname = paste0(colnames(metashort)[mi], "_sd", anwi_nameindices[anwi_index])
                 fi = correct_fi(di, ds_names, fi, varname = varname)
