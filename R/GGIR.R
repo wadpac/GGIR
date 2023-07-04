@@ -217,7 +217,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
-
+    
     if (!is.null(params_general[["maxRecordingInterval"]]) & params_general[["overwrite"]] == TRUE) {
       # When we want to overwrite previously processed data and append recordings
       # it is necessary to first empty folder meta/basic to avoid confusion with
