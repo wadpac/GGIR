@@ -1,13 +1,14 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
-                      quantiletype = 7, includedaycrit = 16, 
-                      idloc = 1, snloc = 1, dayborder = 0,  desiredtz = "", 
-                      myfun = c(), acc.metric = c(), ...) {
-  
+                      quantiletype = 7, includedaycrit = 16,
+                      idloc = 1, snloc = 1, dayborder = 0,  desiredtz = "",
+                      myfun = c(), acc.metric = c(),
+                      externalDataColname = NULL, ...) {
+
   #get input variables
   input = list(...)
-  expectedArgs = c("I", "C", "M", "IMP", "params_247", "params_phyact", 
-                   "quantiletype", "includedaycrit", 
-                   "idloc", "snloc", "dayborder", 
+  expectedArgs = c("I", "C", "M", "IMP", "params_247", "params_phyact",
+                   "quantiletype", "includedaycrit",
+                   "idloc", "snloc", "dayborder",
                    "desiredtz", "myfun")
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
@@ -59,7 +60,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   #----------------------
   # Extract ID centrally
   ID = extractID(hvars = hvars, idloc = idloc, fname = I$filename)
-  
+
   #--------------------------------------------------------------
   # Extract qwindow if an activity log is provided:
   qwindow_actlog = FALSE
@@ -104,7 +105,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   }
   nfeatures = 50 + NVARS * (21 + length(params_247[["qlevels"]]) + length(params_247[["ilevels"]]))    #levels changed into qlevels
   if (length(params_247[["qwindow"]]) > 0 | qwindow_actlog == TRUE) {
-    nfeatures = 50 + NVARS*(length(params_247[["qwindow"]]) * 
+    nfeatures = 50 + NVARS*(length(params_247[["qwindow"]]) *
                               (21 + (length(params_247[["qlevels"]]) + length(params_247[["ilevels"]]))))
   }
   i = 1
@@ -146,6 +147,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     ExtFunColsi = which(colnames(M$metashort) %in% myfun$colnames ==  TRUE)
   } else {
     ExtFunColsi = c()
+  }
+  if (length(externalDataColname) > 0) {
+    ExtDataColsi = which(colnames(M$metashort) %in% externalDataColname)
+  } else {
+    ExtDataColsi = c()
   }
   #===============================================
   # Extract features from the imputed data
@@ -204,9 +210,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   qlevels_names = output_avday$qlevels_names
   ML5AD = output_avday$ML5AD
   ML5AD_names = output_avday$ML5AD_names
-  
+
   cosinor_coef = output_avday$cosinor_coef
-  
+
   #--------------------------------------------------------------
   # Analysis per day
   if (doperday == TRUE) {
@@ -219,13 +225,14 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
                                      idloc = idloc, sensor.location = sensor.location, wdayname = wdayname,
                                      tooshort = tooshort, includedaycrit = includedaycrit,
-                                     quantiletype = quantiletype, doilevels = doilevels, 
+                                     quantiletype = quantiletype, doilevels = doilevels,
                                      domvpa = domvpa,
-                                     mvpanames = mvpanames, wdaycode = wdaycode, ID = ID, 
+                                     mvpanames = mvpanames, wdaycode = wdaycode, ID = ID,
                                      deviceSerialNumber = deviceSerialNumber,
                                      doquan = doquan,  ExtFunColsi = ExtFunColsi,
                                      myfun = myfun, desiredtz = desiredtz,
-                                     params_247 = params_247, params_phyact = params_phyact)
+                                     params_247 = params_247, params_phyact = params_phyact,
+                                     ExtDataColsi = ExtDataColsi)
     daysummary = output_perday$daysummary
     ds_names = output_perday$ds_names
     windowsummary = output_perday$windowsummary
@@ -280,7 +287,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     cat("file skipped for general average caculation because not enough data")
   }
   rm(metalong); rm(metashort)
-  
+
   output_perfile = g.analyse.perfile(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
                                      LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
                                      ML5AD_names, igfullr, igfullr_names,
@@ -291,12 +298,12 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      qwindow = params_247[["qwindow"]], longitudinal_axis_id, cosinor_coef)
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
-  
+
   if (length(cosinor_coef) > 0) {
     cosinor_ts = cosinor_coef$coefext$cosinor_ts
   } else {
     cosinor_ts = c()
   }
   invisible(list(summary = filesummary, daysummary = daysummary, cosinor_ts = cosinor_ts))
- 
+
 }
