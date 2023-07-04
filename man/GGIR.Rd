@@ -1230,6 +1230,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{cosinor}{
         Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
+      
+      \item{external_ilevels}{
+        Numeric (default = \Sexpr{format(GGIR::load_params()[["params_247"]][["external_ilevels"]])}).
+        Levels for the external sensor data in the same unit of measurement of the recorded data.
+        Number of recordings in the ilevels are provided in the reports since translating to minutes is
+        not straight-forward if the sampling frequency is very low.}
 
     }
   }
