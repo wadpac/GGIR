@@ -92,7 +92,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
       # try read the file as if it is a genea and store output in variable 'isitagenea'
-      try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
+      # try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
       #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
       if (length(isitagenea) > 1) {
         mon = 1 #mon = 1 is code for saying that it is a genea

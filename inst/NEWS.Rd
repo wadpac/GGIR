@@ -8,8 +8,9 @@
     \item Part 4: Identification of column names in advanced sleeplog is now case insensitive #812
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
-    \item Part 1: Depecreated functionality for wav files. Hopefully this is a temporary deprecation while we work on addressing some issues that prevent the code from working on
-    the lastest R development version.
+    \item Part 1: Depecreated functionality for wav files (Axivity) and bin files 
+    for Genea from Unilever Discover. These are rearely used and should address
+    current problems with making GGIR run on R devel.
     }
   }
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
