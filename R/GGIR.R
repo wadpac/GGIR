@@ -218,7 +218,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
     
-    if (!is.null(params_general[["maxRecordingInterval"]] & params_general[["overwrite"]] == TRUE)) {
+    if (!is.null(params_general[["maxRecordingInterval"]]) & params_general[["overwrite"]] == TRUE) {
       # When we want to overwrite previously processed data and append recordings
       # it is necessary to first empty folder meta/basic to avoid confusion with
       # previously appended data
@@ -260,6 +260,17 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                     desiredtz = params_general[["desiredtz"]],
                     idloc = params_general[["idloc"]],
                     maxRecordingInterval = params_general[["maxRecordingInterval"]])
+    }
+    if (!is.null(params_general[["externalDatadir"]])) {
+      if (verbose == TRUE) print_console_header("Matching external sensor data")
+      matchExternalData(externalDatadir = params_general[["externalDatadir"]],
+                        metadatadir = metadatadir,
+                        f0 = f0, f1 = f1,
+                        colname = params_general[["externalDataColname"]],
+                        idloc = params_general[["idloc"]],
+                        desiredtz = params_general[["desiredtz"]],
+                        overwrite = params_general[["overwrite"]],
+                        verbose = verbose)
     }
   }
   if (dopart2 == TRUE) {
@@ -308,9 +319,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
-                          "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
+                          "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed",
                           "is_read.gt3x_installed", "rawaccfiles", "checkFormat") == FALSE)]
-  
+
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"

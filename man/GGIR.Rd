@@ -266,8 +266,18 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         will show number of appended recordings, sampling rate for each, time overlap or gap
         and the names of the filenames of the respective recording.
       }
+      \item{externalDatadir}{
+        Character (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["externalDatadir"]])}).
+        Directory where the external data (i.e., data from a different sensor in RData format containing
+        a timestamp column and the measurement) are stored, e.g., "C:/myExternalData".
+      }
+      \item{externalDataColname}{
+        Character (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["externalDataColname"]])}).
+        To the name of the column containing the external sensor measurement. GGIR will use the
+        timestamp column and the column indicated by externalDataColname to match the recordings.
       }
     }
+  }
 
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
@@ -342,8 +352,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{dynrange}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["dynrange"]])}).
-        Provide dynamic range for accelerometer data to
-        overwrite hardcoded 6 g for GENEA and 8 g for other brands.}
+        Provide dynamic range of 8 gravity.}
 
       \item{interpolationType}{
         Integer (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["interpolationType"]])}).
