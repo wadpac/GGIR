@@ -233,13 +233,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
     if (params_general[["dataFormat"]] == "raw") {
-      if (FALSE) {
-        g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
-                studyname = studyname, myfun = myfun,
-                params_rawdata = params_rawdata, params_metrics = params_metrics,
-                params_cleaning = params_cleaning, params_general = params_general,
-                verbose = verbose)
-      }
+      g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
+              studyname = studyname, myfun = myfun,
+              params_rawdata = params_rawdata, params_metrics = params_metrics,
+              params_cleaning = params_cleaning, params_general = params_general,
+              verbose = verbose)
     } else {
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
@@ -267,6 +265,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (verbose == TRUE) print_console_header("Matching external sensor data")
       matchExternalData(externalDatadir = params_general[["externalDatadir"]],
                         metadatadir = metadatadir,
+                        f0 = f0, f1 = f1,
                         colname = params_general[["externalDataColname"]],
                         idloc = params_general[["idloc"]],
                         desiredtz = params_general[["desiredtz"]],

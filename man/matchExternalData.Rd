@@ -16,6 +16,12 @@
   \item{metadatadir}{
     Character (default = NULL). Path to file with CGM data (accepts txt and xlsx formats).
   }
+  \item{f0}{
+    Character (default = NULL). Path to file with CGM data (accepts txt and xlsx formats).
+  }
+  \item{f1}{
+    Character (default = NULL). Path to file with CGM data (accepts txt and xlsx formats).
+  }
   \item{colname}{
     Character (default = NULL). Path to file with CGM data (accepts txt and xlsx formats).
   }

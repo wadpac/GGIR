@@ -341,6 +341,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               # Note: vari equals the imputed time series (metahsort) data from one day
               varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              if (is.null(ExtDataColsi)) ExtDataColsi = -1 #dummy value in case external data are not used
               if (mi != ExtDataColsi) {
                 deltaLength = NRV - length(averageday[, (mi - 1)])
                 if (deltaLength < 0) {
