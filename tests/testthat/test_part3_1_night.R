@@ -8,7 +8,7 @@ test_that("Part 3 identifies 1-night scenario", {
   create_test_acc_csv(Nmin=2000)
   fn = "123A_testaccfile.csv"
   dn = "output_test"
-  if (file.exists(dn)) unlink(dn,recursive=TRUE)
+  if (file.exists(dn)) unlink(dn, recursive = TRUE)
   # g.part3 modules report errors and warnings only by printing them out to the console,
   # so these are not true errors and warnings that would get caught by the testing module.
   # Instead, grab the console output and parse out any errors we should know about.

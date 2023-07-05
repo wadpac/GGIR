@@ -126,7 +126,7 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
               Ilist[[k - 1]]$interval = interval
             }
             # Remove duplicate files
-            unlink(S$filename[rowsOfInterest[k]])
+            unlink(S$filename[rowsOfInterest[k]], recursive = TRUE)
             cnt = cnt + 1 # keep track of how many files were appended
           } else {
             if (cnt > 0) {
