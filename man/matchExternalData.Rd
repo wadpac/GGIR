@@ -8,11 +8,11 @@
   milestone data based on the timestamp.
 }
 \usage{
-   matchExternalData(externalDatadir = "C:/mystudy/mydata", 
-                     metadatadir = "C:/mystudy/output_mydata/", 
-                     colname = NULL, idloc = NULL, 
-                     overwrite = FALSE, f0 = 1, f1 = NULL,
-                     desiredtz = "", verbose = TRUE)
+   matchExternalData(externalDatadir = NULL, 
+                     metadatadir = NULL,
+                     f0 = 0, f1 = NULL,
+                     colname = NULL, idloc = NULL, desiredtz = "",
+                     overwrite = FALSE, verbose = TRUE)
 }
 \arguments{
   \item{externalDatadir}{
