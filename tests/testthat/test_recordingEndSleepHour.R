@@ -11,7 +11,7 @@ test_that("recordingEndSleepHour works as expected", {
        studyname = "test", overwrite = TRUE, 
        recordingEndSleepHour = 21, desiredtz = tz,
        visualreport = FALSE, do.report = c(), verbose = FALSE)
-  rn = dir("output_test/meta/basic/",full.names = TRUE)
+  rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
   nrow(M$metashort)
   expect_true(nrow(M$metashort) == 43020)
@@ -62,9 +62,10 @@ test_that("recordingEndSleepHour works as expected", {
   expect_equal(nrow(p5), 3) # expanded day appears in MM report
   expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
   # 
-  
-  if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
-  if (file.exists(fn)) file.remove(fn)
+
+  path = "output_test"
+  if (dir.exists(path)) fs::dir_delete(path)
+  if (file.exists(fn)) unlink(fn, force = TRUE)
 })
 
 
