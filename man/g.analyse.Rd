@@ -18,7 +18,8 @@
   g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
             quantiletype = 7, includedaycrit = 16, 
             idloc = 1, snloc = 1, 
-            dayborder=0,  desiredtz = "", myfun=c(), acc.metric = c(), ...)
+            dayborder=0,  desiredtz = "", myfun=c(), acc.metric = c(), 
+            externalDataColname = NULL, ...)
 }
 \arguments{
   \item{I}{
@@ -65,6 +66,9 @@
   }
   \item{acc.metric}{
      Character, see \link{g.part1}.
+  }
+  \item{externalDataColname}{
+     Character, see \link{GGIR}.
   }
   \item{...}{
      Any argument used in the previous version of g.analyse, which will now
