@@ -116,12 +116,13 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
 
   dummyheader = data.frame(uniqueSerialCode = 0, 
                            frequency = 100,
-                           start = "1980-01-01 19:08:00",
+                           start = "dummytime",
                            device = deviceName,
                            firmwareVersion = "unknown",
                            block = 0)
   dummyheader = t(dummyheader)
   colnames(dummyheader) = "value"
+  dummyheader = as.data.frame(dummyheader)
   I = list(
     header = dummyheader,
     monc = monc,
@@ -199,6 +200,11 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         }
         
         I$deviceSerialNumber = AGh$value[grep(pattern = "serialnumber", x = AGh$variable)]
+        # Add serial number to header object because g.extractheadersvars for Actigraph uses this
+        I$header[nrow(I$header) + 1, 1] = NA
+        I$header$value[nrow(I$header)] = as.character(I$deviceSerialNumber)
+        row.names(I$header)[nrow(I$header)] = "Serial Number:"
+        
         epochSize = AGh$value[grep(pattern = "epochperiod", x = AGh$variable)]
         epSizeShort = sum(as.numeric(unlist(strsplit(epochSize, ":"))) * c(3600, 60, 1))
         
@@ -207,12 +213,18 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         startdate = AGh$value[grep(pattern = "startdate", x = AGh$variable)]
         
         timestamp = paste0(startdate, " ", starttime)
+        I$header[which(rownames(I$header) == "start"), 1] = timestamp
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = paste0(params_general[["extEpochData_dateformat"]], " %H:%M:%S"))
-        
         if (all(is.na(timestamp_POSIX))) {
           stop(paste0("\nDate format in data ", timestamp, " does not match with date format ",
                       params_general[["extEpochData_dateformat"]],
                       " as specified by argument extEpochData_dateformat, please correct.\n"))
+        }
+        if (epSizeShort != params_general[["windowsizes"]][1]) {
+          stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
+                      params_general[["windowsizes"]][1],
+                      " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
+               " seconds). Please correct.", call. = FALSE)
         }
         # mode = AGh$value[grep(pattern = "mode", x = AGh$variable)]
         # add column names to values
@@ -272,6 +284,9 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           colnames(D) = gsub(pattern = "datum|date", replacement = "date", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "tijd|time", replacement = "time", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "activiteit|activity", replacement = "ZCY", x = colnames(D), ignore.case = TRUE)
+          
+          I$header[which(rownames(I$header) == "start")] = paste(D$date[1:4], D$time[1:4], sep = " ")
+          
           timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "),
                                        format = paste0(params_general[["extEpochData_dateformat"]], " %H:%M:%S"),
                                        tz = tz)
@@ -320,6 +335,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           epSizeShort = optionalEpochs$size[which(optionalEpochs$code == as.character(header[4]))]
           # Get starttime 
           timestampFormat = paste0(params_general[["extEpochData_dateformat"]], " %H:%M")
+          I$header[which(rownames(I$header) == "start")] =  paste(header[2], header[3], sep = " ")
           timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
                                        format = timestampFormat, tz = tz)
           if (is.na(timestamp_POSIX)) {
