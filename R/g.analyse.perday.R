@@ -614,6 +614,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
               }
               if (mi %in% ExtDataColsi) {
+                # Nrecords
+                varname = paste0(colnames(metashort)[mi], "_Nrecords", anwi_nameindices[anwi_index])
+                fi = correct_fi(di, ds_names, fi, varname = varname)
+                daysummary[di,fi] = sum(!is.na(varnum))
+                ds_names[fi] = varname; fi = fi + 1
                 # MEAN
                 varname = paste0(colnames(metashort)[mi], "_mean", anwi_nameindices[anwi_index])
                 fi = correct_fi(di, ds_names, fi, varname = varname)

@@ -200,6 +200,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                           guider = rep("unknown", nrow(IMP$metashort)))
         }
+        # add external sensor data if available
+        if (!is.null(params_general[["externalDatadir"]])) {
+          externalDataColname = params_general[["externalDataColname"]]
+          if (is.null(params_general[["externalDataColname"]])) externalDataColname = "external_data"
+          if (externalDataColname %in% colnames(IMP$metashort)) {
+            ts$ext = IMP$metashort[, which(colnames(IMP$metashort) == externalDataColname)]
+            colnames(ts)[which(colnames(ts) == "ext")] = externalDataColname
+          }
+        }
         Nts = nrow(ts)
         # add non-wear column
         nonwear = IMP$rout[,5]
@@ -303,7 +312,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
-            # Add defenition of wake and sleep windows in diur column of data.frame ts
+            # Add definition of wake and sleep windows in diur column of data.frame ts
             ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi2,
                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
             # Add first waking up time, if it is missing:
@@ -602,7 +611,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           dsummary[di,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
                           ds_names[fi] = "nonwear_perc_day_spt";      fi = fi + 1
                           #===============================================
-                          # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
+                          # TOTAL TIME IN IN, LIG, MOD, VIG
                           test_remember = c(di,fi)
                           for (levelsc in 0:(length(Lnames) - 1)) {
                             dsummary[di,fi] = (length(which(LEVELS[sse] == levelsc)) * ws3new) / 60
@@ -616,6 +625,59 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                     "dur_day_total_MOD_min",
                                                     "dur_day_total_VIG_min")
                           fi = fi + 4
+                          #===============================================
+                          # EXTERNAL DATA AGGREGATE MEASURES PER WINDOWS
+                          if (!is.null(params_general[["externalDatadir"]])) {
+                            if (externalDataColname %in% colnames(ts)) {
+                              for (wii in c(0, 1, 2)) {
+                                if (wii == 0) wname = "_day"
+                                if (wii == 1) wname = "_spt"
+                                if (wii == 2) wname = "_day_spt"
+                                if (wii != 2) {
+                                  varnum = ts[which(ts$diur[sse] == wii), externalDataColname]
+                                } else {
+                                  varnum = ts[sse, externalDataColname]
+                                }
+                                # if it is not numeric (when all NAs because this participant
+                                # had no external sensor data...)
+                                if (!is.numeric(varnum)) varnum = as.numeric(varnum)
+                                # N recordings
+                                dsummary[di, fi] = sum(!is.na(varnum))
+                                ds_names[fi] = paste0(externalDataColname, wname, "_Nrecords")
+                                fi = fi + 1
+                                # MEAN
+                                dsummary[di, fi] = mean(varnum, na.rm = TRUE)
+                                ds_names[fi] = paste0(externalDataColname, wname, "_mean")
+                                fi = fi + 1
+                                # MEDIAN
+                                dsummary[di, fi] = median(varnum, na.rm = TRUE)
+                                ds_names[fi] = paste0(externalDataColname, wname, "_median")
+                                fi = fi + 1
+                                # SD
+                                dsummary[di, fi] = sd(varnum, na.rm = TRUE)
+                                ds_names[fi] = paste0(externalDataColname, wname, "_sd")
+                                fi = fi + 1
+                                # CV
+                                dsummary[di, fi] = (sd(varnum, na.rm = TRUE) / mean(varnum, na.rm = TRUE)) * 100
+                                ds_names[fi] = paste0(externalDataColname, wname, "_cv")
+                                fi = fi + 1
+                                # levels
+                                if (!is.null(params_247[["external_ilevels"]])) {
+                                  q52 = cut(varnum, breaks = params_247[["external_ilevels"]], right = FALSE)
+                                  q52 = table(q52)
+                                  dsummary[di,fi:(fi + (length(q52) - 1))] = q52
+                                  namesq52 = rep(0, length(rownames(q52)))
+                                  for (rq52i in 1:length(rownames(q52))) {
+                                    ds_names[fi] = paste0(externalDataColname, wname,
+                                                          "_", rownames(q52)[rq52i])
+                                    fi = fi + 1
+                                  }
+                                }
+                              }
+                            }
+                          }
+                          #===============================================
+                          # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
                           dsummary[di, fi] = (length(which(ts$diur[sse] == 0)) * ws3new) / 60
                           ds_names[fi] = "dur_day_min";      fi = fi + 1
                           dsummary[di, fi] = (length(which(ts$diur[sse] == 1)) * ws3new) / 60
