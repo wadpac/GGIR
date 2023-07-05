@@ -55,4 +55,4 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help", "read.table")
-importFrom("lubridate", "as_interval", "intersect")
+importFrom("lubridate", "as.interval", "intersect")
