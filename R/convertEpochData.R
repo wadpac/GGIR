@@ -284,8 +284,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           colnames(D) = gsub(pattern = "datum|date", replacement = "date", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "tijd|time", replacement = "time", x = colnames(D), ignore.case = TRUE)
           colnames(D) = gsub(pattern = "activiteit|activity", replacement = "ZCY", x = colnames(D), ignore.case = TRUE)
-          
-          I$header[which(rownames(I$header) == "start")] = paste(D$date[1:4], D$time[1:4], sep = " ")
+          I$header[which(rownames(I$header) == "start"), 1] = paste(D$date[1], D$time[1], sep = " ")
           
           timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "),
                                        format = paste0(params_general[["extEpochData_dateformat"]], " %H:%M:%S"),
@@ -335,7 +334,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           epSizeShort = optionalEpochs$size[which(optionalEpochs$code == as.character(header[4]))]
           # Get starttime 
           timestampFormat = paste0(params_general[["extEpochData_dateformat"]], " %H:%M")
-          I$header[which(rownames(I$header) == "start")] =  paste(header[2], header[3], sep = " ")
+          I$header[which(rownames(I$header) == "start"), 1] =  paste(header[2], header[3], sep = " ")
           timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
                                        format = timestampFormat, tz = tz)
           if (is.na(timestamp_POSIX)) {

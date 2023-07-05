@@ -2,6 +2,7 @@ library(GGIR)
 context("convertEpochData")
 test_that("External epoch data is correctly converted", {
   skip_on_cran()
+  # library(testthat)
   # dirR = dir("~/GGIR/R", full.names = TRUE)
   # for (i in dirR) source(i)
   params_general = load_params()$params_general
