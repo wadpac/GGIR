@@ -269,7 +269,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
       \item{externalDatadir}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["externalDatadir"]])}).
         Directory where the external data (i.e., data from a different sensor in RData format containing
-        a timestamp column and the measurement) are stored, e.g., "C:/myExternalData".
+        a timestamp column and the measurement) are stored, e.g., "C:/myExternalData". Files should be
+        .RData containing a data frame with two columns: a "timestamp" column
+        and another column with the sensor data. The user should define the column name of
+        the second column with \code{externalDataColname} (this same name will be used in
+        M$metashort and reports). The user is responsible for providing timestamps in ISO8601 format 
+        and compatible with the epoch length used in GGIR.
       }
       \item{externalDataColname}{
         Character (default = \Sexpr{format(GGIR::load_params()[["params_general"]][["externalDataColname"]])}).

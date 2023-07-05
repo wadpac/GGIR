@@ -11,7 +11,8 @@
 }
 \usage{
   g.impute(M, I, params_cleaning = c(),
-  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", ...)
+  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", 
+  externalDataColname = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,6 +38,9 @@
     time of the time segment in POSIXlt class.
   }
   \item{acc.metric}{
+    See \link{GGIR}
+  }
+  \item{externalDataColname}{
     See \link{GGIR}
   }
   \item{...}{

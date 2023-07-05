@@ -122,6 +122,8 @@ find a description and default value for all the arguments.
 | expand_tail_max_hours       | deprecated        | params_general           |
 | recordingEndSleepHour       | 1                 | params_general           |
 | maxRecordingInterval        | 1                 | params_general           |
+| externalDatadir             | 1, 2, 5           | params_general           |
+| externalDataColname         | 1, 2, 5           | params_general           |
 | nonwear_approach            | 1                 | params_general           |
 | dataFormat                  | 1                 | params_general           |
 | metadatadir                 | 2, 3, 4, 5        | not in parameter objects |
@@ -139,6 +141,7 @@ find a description and default value for all the arguments.
 | qwindow                     | 2                 | params_247               |
 | qlevels                     | 2                 | params_247               |
 | ilevels                     | 2                 | params_247               |
+| external_ilevels            | 1, 2, 5           | params_247               |
 | mvpathreshold               | 2                 | params_phyact            |
 | boutcriter                  | 2                 | params_phyact            |
 | ndayswindow                 | 2                 | params_cleaning          |
