@@ -71,6 +71,6 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   #also test one small other function:
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
-  expect_equal(length(fnames$fnames), 4)
-  expect_equal(length(fnames$fnamesfull), 4)
+  expect_equal(length(fnames$fnames), 6)
+  expect_equal(length(fnames$fnamesfull), 6)
 })
