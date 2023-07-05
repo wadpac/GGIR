@@ -8,9 +8,10 @@
   Function not intended for direct use by package user
 }
 \usage{
-  HASIB(HASIB.algo = "vanHees2015", timethreshold=c(), anglethreshold=c(), 
-                 time=c(), anglez=c(), ws3=c(), zeroCrossingCount=c(), BrondCount = c(),
-                 NeishabouriCount = c())
+  HASIB(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
+                 time = c(), anglez = c(), ws3 = c(), zeroCrossingCount = c(),
+                 BrondCount = c(),
+                 NeishabouriCount = c(), activity = NULL)
 }
 \arguments{
   \item{HASIB.algo}{
@@ -40,6 +41,9 @@
   }
   \item{NeishabouriCount}{
     Vector with Neishabouri counts per epoch to be used by the count-based algorithms
+  }
+  \item{activity}{
+    Magnitude of acceleration, only used when HASIB.algo is set to NotWorn
   }
 }
 \value{

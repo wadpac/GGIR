@@ -334,9 +334,9 @@ test_that("chainof5parts", {
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
   
   
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
+  if (file.exists(selectdaysfile)) unlink(selectdaysfile)
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
-  if (file.exists(fn)) file.remove(fn)
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
-  if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
+  if (file.exists(fn)) unlink(fn)
+  if (file.exists(selectdaysfile)) unlink(selectdaysfile)
+  if (file.exists(sleeplog_fn)) unlink(sleeplog_fn)
 })
