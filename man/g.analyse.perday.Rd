@@ -15,7 +15,7 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
                 doquan, quantiletype, doilevels, domvpa,
                 mvpanames, wdaycode, ID,
                 deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
-                params_247 = c(), params_phyact = c(),
+                params_247 = c(), params_phyact = c(), ExtDataColsi = NULL,
                 ...)
 }
 \arguments{
@@ -57,6 +57,9 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
   }
   \item{params_phyact}{
     See \link{g.part2}
+  }
+  \item{ExtDataColsi}{
+    Numeric to indicate the column index in which the external data is stored.
   }
   \item{...}{
    Any argument used in the previous version of g.analyse.perday, which will now
