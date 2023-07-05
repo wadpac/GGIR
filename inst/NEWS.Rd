@@ -11,6 +11,11 @@
     \item Part 1: Handling of external derived epoch data now able to handle
     empty lines, user can now specify date format of the timestamps with 
     argument extEpochData_dateformat, and ActiGraph count data also facilitated.
+    \item Part 1: Deprecate functionality for file formats .wav (Axivity Ltd) .bin
+    (Unilever Discover) as keeping this code up to date with newer R versions took
+    a lot of time. If you are interestedin re-inserting this functionality and 
+    contributing to its ongoing maintenance then please contact us.
+    \item Part 1: Fully deprecate function g.cwaread as it migrated to GGIRread a year ago.
     }
   }
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
