@@ -226,7 +226,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (dir.exists(basic_folder)) {
         basic_ms_files = dir(basic_folder, full.names = TRUE)
         if (length(basic_ms_files) > 0) {
-          for (fnr in basic_ms_files) unlink(fnr)
+          for (fnr in basic_ms_files) unlink(fnr, recursive = TRUE)
           rm(fnr)
         }
         rm(basic_folder, basic_ms_files)
