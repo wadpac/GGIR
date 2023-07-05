@@ -348,8 +348,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{dynrange}{
         Numeric (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["dynrange"]])}).
-        Provide dynamic range for accelerometer data to
-        overwrite hardcoded 6 g for GENEA and 8 g for other brands.}
+        Provide dynamic range of 8 gravity.}
 
       \item{interpolationType}{
         Integer (default = \Sexpr{format(GGIR::load_params()[["params_rawdata"]][["interpolationType"]])}).
