@@ -13,6 +13,7 @@
     a lot of time. If you are interestedin re-inserting this functionality and 
     contributing to its ongoing maintenance then please contact us.
     \item Part 1: Fully deprecate function g.cwaread as it migrated to GGIRread a year ago.
+    \item General: New functionality to match data from external devices (other than accelerometers) based on timestamp and derive basic descriptive measures and intensity levels.
     }
   }
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
