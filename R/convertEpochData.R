@@ -195,10 +195,9 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         }
         
         AGh = NULL
-        for (hh in header[2:9,]) {
+        for (hh in header[2:9,1]) {
           AGh = rbind(AGh, splitHeader(hh))
         }
-        
         I$deviceSerialNumber = AGh$value[grep(pattern = "serialnumber", x = AGh$variable)]
         # Add serial number to header object because g.extractheadersvars for Actigraph uses this
         I$header[nrow(I$header) + 1, 1] = NA

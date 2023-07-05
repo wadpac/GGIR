@@ -14,7 +14,7 @@ test_that("recordingEndSleepHour works as expected", {
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   nrow(M$metashort)
-  expect_true(nrow(M$metashort) == 43020 )
+  expect_true(nrow(M$metashort) == 43020)
   # expect_true(M$metashort$timestamp[nrow(M$metashort)] == "2016-06-25T20:44:55+0200")
   
   # errors and warnings work properly
