@@ -1469,16 +1469,19 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
            desiredtz = "Europe/London", # We know that data was collected in the UK
            visualreport = FALSE,
            overwrite = TRUE)
-        # For externally derived ActiGraph count data in .CSV format assuming
-        # a study protocol where sensor was not worn during the night:
-        GGIR(datadir = "/examplefiles",
+        
+       # For externally derived ActiGraph count data in .CSV format assuming
+       # a study protocol where sensor was not worn during the night:
+       GGIR(datadir = "/examplefiles",
            outputdir = "",
            dataFormat = "actigraph_csv",
-           mode = c(1:5),
-           overwrite = TRUE,
+           mode = 1:5,
            do.report = c(2, 4, 5),
            windowsizes = c(5, 900, 3600),
-           extEpochData_dateformat = "%m/%d/%Y",
+           threshold.in = round(100 * (5/60), digits = 2),
+           threshold.mod = round(2500 * (5/60), digits = 2),
+           threshold.vig = round(10000 * (5/60), digits = 2),
+           extEpochData_dateformat = "\%m/\%d/\%Y",
            do.neishabouricounts = TRUE,
            acc.metric = "NeishabouriCount_x",
            HASPT.algo = "NotWorn",
@@ -1488,8 +1491,10 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
            includenightcrit = 10,
            visualreport = FALSE,
            outliers.only = FALSE,
+           save_ms5rawlevels = TRUE,
            ignorenonwear = FALSE,
-           HASPT.ignore.invalid = FALSE)
+           HASPT.ignore.invalid = FALSE,
+           save_ms5raw_without_invalid = FALSE)
   }
 }
 \author{

@@ -52,7 +52,9 @@ HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
     Boolean to indicate whether invalid time segments should be ignored
   }
    \item{activity}{
-    Magnitude of acceleration, only used when HASPT.algo is set to NotWorn
+    Magnitude of acceleration, only used when HASPT.algo is set to NotWorn.
+    Acceleration metric used is specified by argument \code{acc.metric} 
+    elsewhere in GGIR.
   }
 }
 \value{

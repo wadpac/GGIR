@@ -63,9 +63,8 @@ test_that("recordingEndSleepHour works as expected", {
   expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
   # 
 
-  path = "output_test"
-  if (dir.exists(path)) fs::dir_delete(path)
-  if (file.exists(fn)) unlink(fn, force = TRUE)
+  if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
+  if (file.exists(fn)) file.remove(fn)
 })
 
 

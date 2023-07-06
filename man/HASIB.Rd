@@ -43,7 +43,9 @@
     Vector with Neishabouri counts per epoch to be used by the count-based algorithms
   }
   \item{activity}{
-    Magnitude of acceleration, only used when HASIB.algo is set to NotWorn
+    Magnitude of acceleration, only used when HASIB.algo is set to NotWorn.
+    Acceleration metric used is specified by argument \code{acc.metric} 
+    elsewhere in GGIR.
   }
 }
 \value{

@@ -55,5 +55,5 @@ test_that("gloadlog is able to load different log formats", {
     expect_equal(ncol(logs3$naplog), 6)
   }
 
-  if (dir.exists(tempdir)) unlink(tempdir, recursive = TRUE, force = TRUE)
+  if (dir.exists(tempdir)) unlink(tempdir, recursive = TRUE)
 })

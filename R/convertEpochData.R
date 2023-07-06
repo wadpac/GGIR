@@ -113,10 +113,10 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
            windowsizes = params_general[["windowsizes"]],
            bsc_qc = data.frame(A = 1:3,
                                B = 1:3))
-
+  
   dummyheader = data.frame(uniqueSerialCode = 0, 
                            frequency = 100,
-                           start = "dummytime",
+                           start = "", # if relevant, this will be filled later on in code
                            device = deviceName,
                            firmwareVersion = "unknown",
                            block = 0)
@@ -173,7 +173,6 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                               header = TRUE,
                               data.table = FALSE,
                               sep = ",")
-        
         header = as.character(data.table::fread(input = fnames[i], header = FALSE, nrows = 1, data.table = FALSE, sep = ",")[1, 1])
         # extract date/timestamp from fileheader
         timestamp = unlist(strsplit(header," - "))[2]
@@ -266,7 +265,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
               if (index < 1) stop("Could not find start of recording", call. = FALSE)
             }
           }
-
+          
           D = data.table::fread(input = fnames[i], sep = ",", skip = index, quote = quote)
           # ! Assumption that column names are present 2 lines prior to timeseries
           colnames = data.table::fread(input = fnames[i],
@@ -290,14 +289,14 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                                        tz = tz)
           if (all(is.na(timestamp_POSIX))) {
             stop(paste0("\nDate format in data ", D$date[1], " does not match with date format ",
-                         params_general[["extEpochData_dateformat"]],
-                         " as specified by argument extEpochData_dateformat, please correct.\n"))
+                        params_general[["extEpochData_dateformat"]],
+                        " as specified by argument extEpochData_dateformat, please correct.\n"))
           }
           epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
-                 params_general[["windowsizes"]][1],
-                 " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
+                        params_general[["windowsizes"]][1],
+                        " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
                  " seconds). Please correct.", call. = FALSE)
           }
           timestamp_POSIX = timestamp_POSIX[1]
@@ -312,8 +311,8 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           while (NC >= 3) {
             
             testraw = data.table::fread(input = fnames[i],
-                                      header = FALSE, sep = ",", skip = index,
-                                      nrows = 1, data.table = TRUE, quote = quote)
+                                        header = FALSE, sep = ",", skip = index,
+                                        nrows = 1, data.table = TRUE, quote = quote)
             NC = ncol(testraw)
             if (NC >= 3) {
               break()
@@ -326,7 +325,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           D = D[,1]
           colnames(D)[1] = "ZCY"
           header = data.table::fread(input = fnames[i],
-                                header = FALSE, sep = ",", nrows =  7, quote = quote)
+                                     header = FALSE, sep = ",", nrows =  7, quote = quote)
           # Get epoch size
           optionalEpochs = data.frame(code = c("1", "2", "4", "8", "20", "81", "C1", "C2"),
                                       size = c(15, 30, 60, 120, 300, 2, 5, 10))
@@ -374,13 +373,13 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       }
       starttime = as.POSIXlt(time_longEp_num[1], origin = "1970-1-1", tz = tz)
       time_shortEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_shortEp_num, tz = tz,
-                                                                origin = "1970-01-01"),
-                                                     tz = tz)
+                                                           origin = "1970-01-01"),
+                                            tz = tz)
       time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
-                                                tz = tz)
+                                           tz = tz)
       if (params_general[["dataFormat"]] != "actigraph_csv") {
         M$metashort = data.frame(timestamp = time_shortEp_8601,
-                               accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
+                                 accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       } else if (params_general[["dataFormat"]] == "actigraph_csv") {
         M$metashort = as.data.frame(cbind(time_shortEp_8601,
                                           D[1:length(time_shortEp_8601), ]))

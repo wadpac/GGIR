@@ -2,11 +2,6 @@ library(GGIR)
 context("appendRecords")
 #==========================================
 # Create dummy data: 4 files from which the first 3 can be appended
-
-# library(testthat)
-# dirR = dir("./R", full.names = TRUE)
-# for (i in dirR) source(i)
-
 timestamps = matrix("", 10, 4)
 # Timstamps for file 1
 timestamps[, 1] = c("2020-05-13T14:00:00+0200", "2020-05-13T14:01:00+0200",
@@ -170,8 +165,5 @@ test_that("Neighbouring recordings are correctly appended", {
   expect_equal(nrow(M$metashort), 10)
   expect_equal(nrow(M$metalong), 2)
   expect_equal(unique(M$metashort$accmetric), 4)
-  
-  if (dir.exists("./testfolder")) {
-    fs::dir_delete("./testfolder")
-  }
+  if (file.exists(dn))  unlink(dn, recursive = TRUE)
 })

@@ -26,7 +26,7 @@ Description: A tool to process and analyse data collected with wearable raw acce
 URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/RpackageGGIR
 BugReports: https://github.com/wadpac/GGIR/issues
 License: Apache License (== 2.0) | file LICENSE
-Suggests: testthat, covr, knitr, rmarkdown, fs, actilifecounts, ActCR, GGIRread, read.gt3x
+Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, ActCR, GGIRread, read.gt3x
 Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods
 Depends: stats, utils, R (>= 3.5)
 VignetteBuilder: knitr
