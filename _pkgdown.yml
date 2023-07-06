@@ -34,10 +34,8 @@ navbar:
           href: articles/GGIR.html
   
   structure:
-    left:  [intro, reference, articles, news]
+    left:  [intro, articles, news]
     right: [search, github, twitter]
-
-
 
 news:
   releases:
