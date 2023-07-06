@@ -138,7 +138,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]] != "HorAngle") {
+      if (params_sleep[["HASPT.algo"]] %in% c("HorAngle", "NotWorn") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {

@@ -110,7 +110,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
+  
   if (params_general[["dataFormat"]] == "ukbiobank") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
@@ -309,7 +309,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
-                          "is_read.gt3x_installed", "rawaccfiles", "checkFormat") == FALSE)]
+                          "is_read.gt3x_installed", "rawaccfiles", "checkFormat",
+                          "is_actilifecounts_installed") == FALSE)]
   
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
