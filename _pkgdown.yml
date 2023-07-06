@@ -1,0 +1,53 @@
+url: ~
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+  includes:
+    in_header:
+      <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+  opengraph:
+    twitter:
+      creator: "@RpackageGGIR"
+      card: summary_large_image
+      
+authors:
+  Vincent van Hees:
+    href: https://www.accelting.com
+  Jairo H Migueles:
+    href: https://www.jhmigueles.com
+
+home:
+  title: GGIR R Package
+
+navbar:
+  components:
+    intro:
+      text: Get Started
+      href: index.html
+    articles:
+      text: Articles
+      menu:
+        - text: Chapter.
+          href: articles/GGIR.html
+  
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github, twitter]
+
+
+
+news:
+  releases:
+  - text: "Version 2.9-0"
+    href: https://www.accelting.com/updates/ggir-release-2-9-0/
+  - text: "Version 2.8-0"
+    href: https://www.accelting.com/updates/ggir-release-2-8-0/
+  - text: "Version 2.7-1"
+    href: https://www.accelting.com/updates/ggir-release-2-7-1/
+  - text: "Version 2.6-0"
+    href: https://www.accelting.com/updates/ggir-release-2-6-0/
+  - text: "Version 2.5-0"
+    href: https://www.accelting.com/updates/ggir-release-2-5-0/
