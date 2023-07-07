@@ -478,9 +478,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, ws3new, qqq_backup, ts, Nts,
-                                                   timewindowi, Nwindows)
+                                                   timewindowi, Nwindows, qwindow = params_247[["qwindow"]])
                       qqq = defdays$qqq
                       qqq_backup = defdays$qqq_backup
+                      # browser()
                       if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           fi = 1
@@ -571,11 +572,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           # qqq2 is the end of the day
                           qqq1 = qqq[1] # added 26 Feb 2020
                           qqq2 = qqq[2] # added 26 Feb 2020
-                          if (timewindowi == "MM") {
-                            dsummary[di, fi] = "MM"
-                          } else if (timewindowi == "WW") {
-                            dsummary[di, fi] = "WW"
-                          }
+                          dsummary[di, fi] = timewindowi
                           ds_names[fi] = "window";      fi = fi + 1
                           # keep track of threshold value
                           dsummary[di,fi] = TRLi
