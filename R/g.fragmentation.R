@@ -25,6 +25,64 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # frag.metrics: metric to define fragmentation
   # xmin is shortest recordable (not necessarily observed) boutlength
   
+  TransProb = function(x, a = 1, b = c(2,3)) {
+    # Set default
+    TPab = TPba = NA
+    Nab = Nba = 0
+    totDur_ab = totDur_ba = 0
+    if (length(x) > 0) {
+      frag = rle(x)
+      Nsegments = length(frag$value)
+      if (Nsegments > 1) {
+        # Scenario where we have more than 1 segment
+        ab = which(frag$value[1:(Nsegments - 1)] %in% a &
+                     frag$value[2:Nsegments] %in% b)
+        ba = which(frag$value[1:(Nsegments - 1)] %in% b &
+                     frag$value[2:Nsegments] %in% a)
+        Nab = length(ab)
+        Nba = length(ba)
+        durations_ab = frag$length[ab]
+        durations_ba = frag$length[ba]
+        totDur_ab = sum(durations_ab)
+        totDur_ba = sum(durations_ba)
+        TPba = (Nba + 1) / (totDur_ba + 1) # Ian's new approach
+        ux = unique(x)
+        if (all(b %in% ux)) {
+          TPab = (Nab + 1) / (totDur_ab + 1) # Ian's new approach
+        } else {
+          # Scenario where we have three classes in x
+          # and are interested in the transition probability
+          # between 2 of them
+          totalDur_a = sum(frag$length[which(frag$value %in% a)])
+          meanDur_a = mean(sum(frag$length[which(frag$value %in% a)]))
+          TPab = (totDur_ab / totalDur_a) / meanDur_a # note: 'a' is not a typo
+        }
+      } else if (Nsegments == 1) {
+        # Scenario where we have only one segment of data
+        if (frag$value[1] %in% a) { # Only a
+          TPab = 0
+          TPba = 1
+          totDur_ab = frag$length[1]
+          totDur_ba = 0
+          Nab = 1
+          Nba = 0
+        } else { # Only b
+          TPab = 1
+          TPba = 0
+          totDur_ab = 0
+          totDur_ba = frag$length[1]
+          Nab = 0
+          Nba = 1
+        }
+      }
+    }
+    invisible(list(TPab = TPab,
+                   TPba = TPba,
+                   Nab = Nab, Nba = Nba,
+                   totDur_ab = totDur_ab,
+                   totDur_ba = totDur_ba))
+  }
+  
   
   if ("all" %in% frag.metrics) {
     frag.metrics = c("mean", "TP", "Gini", "power",
@@ -53,61 +111,31 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     #====================================================
     # TP (transition probability) metrics that depend on multiple classes
     if ("TP" %in% frag.metrics) {
-      frag3levels = rle(y) # frag3levels is data.frame with value (intensity) and length (duration of fragment) 
-      Nfrag_IN = length(frag3levels$value[which(frag3levels$value == 1)])
-      output[["TP_IN2PA"]] = output[["TP_PA2IN"]] = 0
-      output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
-      output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
-      DurationLIPA = frag3levels$length[which(frag3levels$value == 2)] # all LIPA fragments
-      DurationMVPA = frag3levels$length[which(frag3levels$value == 3)] # all MVPA fragments
-      Nfrag_LIPA = length(DurationLIPA)
-      Nfrag_MVPA = length(DurationMVPA)
-      if (Nfrag_LIPA > 0) {
-        output[["Nfrag_LIPA"]] = Nfrag_LIPA
-        output[["mean_dur_LIPA"]] = mean(DurationLIPA)
-      } else {
-        output[["mean_dur_LIPA"]] = output[["Nfrag_LIPA"]] = 0
-      }
-      if (Nfrag_MVPA > 0) {
-        output[["Nfrag_MVPA"]] = Nfrag_MVPA
-        output[["mean_dur_MVPA"]] = mean(DurationMVPA)
-      } else {
-        output[["mean_dur_MVPA"]] = output[["Nfrag_MVPA"]] = 0
-      }
-      if (Nfrag_IN > 0 & (Nfrag_LIPA > 0 | Nfrag_MVPA > 0)) {
-        DurationPA = frag3levels$length[which(frag3levels$value != 1)]
-        DurationIN = frag3levels$length[which(frag3levels$value == 1)]
-        Nfrag3levels = length(frag3levels$value)
-        inact_2_light_trans = which(frag3levels$value[1:(Nfrag3levels - 1)] == 1 &
-                                      frag3levels$value[2:Nfrag3levels] == 2)
-        inact_2_mvpa_trans = which(frag3levels$value[1:(Nfrag3levels - 1)] == 1 &
-                                     frag3levels$value[2:Nfrag3levels] == 3)
-        if (length(inact_2_light_trans) > 0) { # transitions from inactive to LIPA
-          DurationIN2LIPA = frag3levels$length[inact_2_light_trans]
-          output[["TP_IN2LIPA"]] = (sum(DurationIN2LIPA)/sum(DurationIN)) / mean(DurationIN)
-          output[["Nfrag_IN2LIPA"]] = length(DurationIN2LIPA)
-        } 
-        if (length(inact_2_mvpa_trans) > 0) { # transitions from inactive to MVPA
-          DurationIN2MVPA = frag3levels$length[inact_2_mvpa_trans]
-          output[["TP_IN2MVPA"]] = (sum(DurationIN2MVPA)/sum(DurationIN)) / mean(DurationIN)
-          output[["Nfrag_IN2MVPA"]] = length(DurationIN2MVPA)
-        }
-        output[["TP_IN2PA"]] = 1 / mean(DurationIN)
-        output[["TP_PA2IN"]] = 1 / mean(DurationPA)
-        if (length(inact_2_light_trans) == 0 & length(inact_2_mvpa_trans) != 0) {
-          output[["TP_IN2MVPA"]] = 1 / mean(DurationIN)
-          output[["Nfrag_IN2MVPA"]] = length(DurationIN)
-          output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = 0
-        }
-        if (length(inact_2_light_trans) != 0 & length(inact_2_mvpa_trans) == 0) {
-          output[["TP_IN2LIPA"]] = 1 / mean(DurationIN)
-          output[["Nfrag_IN2LIPA"]] = length(DurationIN)
-          output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = 0
-        }
-      }
+      out = TransProb(y, a = 1, b = c(2, 3)) #IN <-> PA
+      output[["TP_IN2PA"]] = out$TPab
+      output[["TP_PA2IN"]] = out$TPba
+      output[["Nfrag_IN2PA"]] = out$Nab
+      output[["Nfrag_PA2IN"]] = out$Nba
+      
+      out = TransProb(y, a = 1, b = 2) #IN to LIPA
+      output[["TP_IN2LIPA"]] = out$TPab
+      output[["Nfrag_IN2LIPA"]] = out$Nab
+
+      out = TransProb(y, a = 1, b = 3) #IN to MVPA
+      output[["TP_IN2MVPA"]] = out$TPab
+      output[["Nfrag_IN2MVPA"]] = out$Nab
+      
+      out = TransProb(y, a = 2, b = c(1, 3)) #LIPA <-> rest
+      output[["Nfrag_LIPA"]] = out$Nab
+      output[["mean_dur_LIPA"]] = out$totDur_ab / out$Nab
+      
+      out = TransProb(y, a = 3, b = c(1, 2)) #MVPA <-> rest
+      output[["Nfrag_MVPA"]] = out$Nab
+      output[["mean_dur_MVPA"]] = out$totDur_ab / out$Nab
     }
     rm(y)
   }
+  
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
   
@@ -115,10 +143,16 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     x = rep(0,Nepochs)
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
     x = as.integer(x)
+    
+   
     frag2levels = rle(x)
     Nfrag2levels = length(frag2levels$lengths)
-    # Binary fragmentation metrics for day time:
-    output[["Nfrag_PA"]] = output[["Nfrag_IN"]] = 0
+    
+    out = TransProb(x, a = 1, b = 0) #IN <-> PA
+    output[["Nfrag_PA"]] = out$Nba
+    output[["Nfrag_IN"]] = out$Nab
+    
+    # Define default values
     if ("mean" %in% frag.metrics) {
       output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0
     }
@@ -136,30 +170,28 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     if ("power" %in% frag.metrics | "CoV" %in% frag.metrics | "Gini" %in% frag.metrics) {
       output[["SD_dur_PA"]] = output[["SD_dur_IN"]] = NA
     }
-    DurationIN = frag2levels$length[which(frag2levels$value == 1)]
-    DurationPA = frag2levels$length[which(frag2levels$value == 0)]
-    output[["Nfrag_PA"]] = length(DurationPA)
-    output[["Nfrag_IN"]] = length(DurationIN)
     if ("NFragPM" %in% frag.metrics) {
       output[["NFragPM_PA"]] = 0
       output[["NFragPM_IN"]] = 0
     }
     if (Nfrag2levels > 1) {
       if ("mean" %in% frag.metrics) {
-        output[["mean_dur_PA"]] = mean(DurationPA)
-        output[["mean_dur_IN"]] = mean(DurationIN)
+        output[["mean_dur_PA"]] = out$totDur_ba / out$Nba
+        output[["mean_dur_IN"]] = out$totDur_ab / out$Nab
       }
       if ("NFragPM" %in% frag.metrics) {
         # Identify to metric named fragmentation by Chastin,
         # but renamed into Number of Fragments Per Minutes to be 
         # a better reflection of the calculation
-        output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / sum(DurationPA)
-        output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / sum(DurationIN)
+        output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / out$totDur_ba
+        output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / out$totDur_ab
       }
       # minimum number of required fragments (10 here this is the sum of the number
       # of PA and IN fragments, so basically we allow for 5 PA and 5 IN fragments)
       # because the metrics below are less informative with a few metrics
-      if (Nfrag2levels >= 10) { 
+      if (Nfrag2levels >= 10) {
+        DurationIN = frag2levels$length[which(frag2levels$value == 1)]
+        DurationPA = frag2levels$length[which(frag2levels$value == 0)]
         SD0 = sd(DurationPA)
         SD1 = sd(DurationIN)
         output[["SD_dur_PA"]] = SD0 # maybe not a fragmentation metric, but helpful to understand other metrics
@@ -194,38 +226,33 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   } else if (mode == "spt") {
     # Binary fragmentation metrics for spt:
     # Active - Rest transitions during SPT:
-    output[["Nfrag_spt_IN"]] = output[["Nfrag_spt_PA"]] = 0
-    output[["TP_IN2PA_spt"]] = output[["TP_PA2IN_spt"]] = 0
     x = rep(0, Nepochs)
-    
     # convert to class names to numeric class ids for inactive, LIPA and MVPA:
     classes.pa = c("spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
-    class.pa = which(Lnames %in% classes.pa) - 1 
-    x[which(LEVELS %in% class.pa)] = 1
-    x = as.integer(x)
-    frag2levels = rle(x)
-    Duration_spt_IN = frag2levels$length[which(frag2levels$value == 0)]
-    Duration_spt_PA = frag2levels$length[which(frag2levels$value == 1)]
-    output[["Nfrag_spt_IN"]] = length(Duration_spt_IN)
-    output[["Nfrag_spt_PA"]] = length(Duration_spt_PA)
-    output[["TP_IN2PA_spt"]] = 1 / mean(Duration_spt_IN)
-    output[["TP_PA2IN_spt"]] = 1 / mean(Duration_spt_PA)
+    class.pa = which(Lnames %in% classes.pa) - 1
+    PAi = which(LEVELS %in% class.pa)
+    if (length(PAi) > 0) {
+      x[PAi] = 1
+    }
+    out = TransProb(x = x, a = 0, b = 1)
+    output[["Nfrag_spt_IN"]] = out$Nab
+    output[["Nfrag_spt_PA"]] = out$Nba
+    output[["TP_IN2PA_spt"]] = out$TPab
+    output[["TP_PA2IN_spt"]] = out$TPba
     
     # Wake - Sleep transitions during SPT:
-    output[["Nfrag_spt_sleep"]] = output[["Nfrag_spt_wake"]] = 0
-    output[["TP_sleep2wake_spt"]] = output[["TP_wake2sleep_spt"]] = 0
     x = rep(0, Nepochs)
     classes.wake = c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
     class.wake = which(Lnames %in% classes.wake) - 1 
-    x[which(LEVELS %in% class.wake)] = 1
-    x = as.integer(x)
-    frag2levels = rle(x)
-    Duration_spt_sleep = frag2levels$length[which(frag2levels$value == 0)]
-    Duration_spt_wake = frag2levels$length[which(frag2levels$value == 1)]
-    output[["Nfrag_spt_sleep"]] = length(Duration_spt_sleep)
-    output[["Nfrag_spt_wake"]] = length(Duration_spt_wake)
-    output[["TP_sleep2wake_spt"]] = 1 / mean(Duration_spt_sleep)
-    output[["TP_wake2sleep_spt"]] = 1 / mean(Duration_spt_wake)
+    wakei = which(LEVELS %in% class.wake)
+    if (length(wakei) > 0) {
+      x[wakei] = 1
+    }
+    out = TransProb(x = x, a = 0, b = 1)
+    output[["Nfrag_spt_sleep"]] = out$Nab
+    output[["Nfrag_spt_wake"]] = out$Nba
+    output[["TP_sleep2wake_spt"]] = out$TPab
+    output[["TP_wake2sleep_spt"]] = out$TPba
   }
   return(output)
 }
