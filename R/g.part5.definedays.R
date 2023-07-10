@@ -11,13 +11,15 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     M = ifelse(nchar(M) == 1, paste0("0", M), M)
     S = ifelse(nchar(S) == 1, paste0("0", S), S)
     HMS = paste(H, M, S, sep = ":")
-    HMS = ifelse(as.numeric(H) == 24, lastepoch, HMS)
+    if (HMS[length(HMS)] == "24:00:00") HMS[length(HMS)] = lastepoch
+    if (HMS[1] != "00:00:00") HMS = c("00:00:00", HMS)
+    if (HMS[length(HMS)] != lastepoch) HMS = c(HMS, lastepoch)
     return(HMS)
   }
   # main script -----
   # Check that this is a meaningful day (that is all the qqq variable is used for),
   # before storing it.
-  qqq = rep(0,2); segments = c()
+  qqq = rep(0,2); segments = segments_labels = c()
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
@@ -67,15 +69,28 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       lastepoch = substr(ts$time[qqq[2]], 12, 19)
       breaks = qwindow2timestamp(qwindow, lastepoch = lastepoch)
       fullQqq = qqq[1]:qqq[2]
-      for (si in 1:length(breaks)) {
-        if (any(grepl(breaks[si], ts$time[fullQqq]))) {
-          segments[si] = fullQqq[grep(breaks[si], ts$time[fullQqq])]
+      breaks_i = c()
+      for (bi in 1:length(breaks)) {
+        if (any(grepl(breaks[bi], ts$time[fullQqq]))) {
+          breaks_i[bi] = fullQqq[grep(breaks[bi], ts$time[fullQqq])]
         } else {
-          segments[si] = 1
+          breaks_i[bi] = qqq[1]
         }
       }
-      if (segments[1] != qqq[1]) segments = c(qqq[1], segments)
-      if (segments[length(segments)] != qqq[2]) segments = c(segments, qqq[2]) 
+      # build up segments
+      segments = list(qqq)
+      segments_names = paste("00:00:00", lastepoch, sep = "-")
+      segments_labels = "fullWindow"
+      si = 2
+      for (bi in 1:(length(breaks) - 1)) {
+        minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
+        segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - minusOne)
+        if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
+        segments_names[si] = paste(breaks[bi], breaks[bi + 1], sep = "-")
+        segments_labels[si] = paste0("segment", bi)
+        si = si + 1 
+      }
+      names(segments) = segments_names
     }
   } else if (timewindowi == "WW") {
     if (wi <= (Nwindows - 1)) { # all full wake to wake days
@@ -90,5 +105,6 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       qqq = c(NA, NA)
     }
   }
-  return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, segments = segments)))
+  return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, 
+                        segments = segments, segments_labels = segments_labels)))
 }
