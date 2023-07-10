@@ -40,20 +40,12 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
     if (!exists("deci")) stop("Problem with reading .csv file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 1) {
-    if (mon == 1) {
-      # GENEA values are stroed in g without decimal place.
-      try(expr = {deci = GGIRread::readGenea(inputfile,0,2)}, silent = TRUE)
-      if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T) decn = ","
-    } else if (mon == 2 ) {
+    if (mon == 2 ) {
       try(expr = {deci = GGIRread::readGENEActiv(filename = inputfile,
                                                  start = 1, end = 3)}, silent = TRUE)
       if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
-  } else if (dformat == 3) {
-    try(expr = {deci = g.wavread(wavfile = inputfile,start = 1, end = 10)}, silent = TRUE)
-    if (!exists("deci")) stop("Problem with reading .wav file in GGIR function dotorcomma")
-    if (is.na(suppressWarnings(as.numeric(deci$rawxyz[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == 4) {
     try(expr = {deci = GGIRread::readAxivity(filename = inputfile,start = 1, end = 10, desiredtz = desiredtz,
                                interpolationType = 1)$data},silent = TRUE)
