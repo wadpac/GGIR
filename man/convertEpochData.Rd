@@ -11,7 +11,7 @@
 }
 \usage{
    convertEpochData(datadir = c(), studyname = c(), outputdir = c(),
-                            params_general = c())
+                            params_general = c(), verbose = TRUE)
 }
 \arguments{
   \item{datadir}{
