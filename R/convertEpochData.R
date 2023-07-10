@@ -301,6 +301,11 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
             format = paste(params_general[["extEpochData_dateformat"]],
                            params_general[["extEpochData_timeformat"]])
             timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = format)
+            if (all(is.na(timestamp_POSIX))) {
+              stop(paste0("\nTimestamps are not available in hte file, neither it has
+                          a header to extract the timestamps from. Therefore, the file
+                          cannot be processed.\n"))
+            }
             
             epochSize = difftime(timestamp_POSIX[2], timestamp_POSIX[1], 
                                  units = "secs")

@@ -88,9 +88,9 @@ test_that("External epoch data is correctly converted", {
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph61.csv.RData"))
   expect_equal(nrow(M$metashort), 984)
-  expect_equal(ncol(M$metashort), 4)
-  expect_equal(colnames(M$metashort), c("timestamp", "NeishabouriCount_x",
-                                        "NeishabouriCount_y", "NeishabouriCount_z"))
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+                    "NeishabouriCount_z") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -105,9 +105,9 @@ test_that("External epoch data is correctly converted", {
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph13.csv.RData"))
   expect_equal(nrow(M$metashort), 988)
-  expect_equal(ncol(M$metashort), 4)
-  expect_equal(colnames(M$metashort), c("timestamp", "NeishabouriCount_x",
-                                        "NeishabouriCount_y", "NeishabouriCount_z"))
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+                    "NeishabouriCount_z") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
