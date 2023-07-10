@@ -118,7 +118,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           sensor.location = "wrist",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
                           dataFormat = "raw", maxRecordingInterval = NULL,
-                          extEpochData_dateformat = "%d-%m-%Y")
+                          extEpochData_dateformat = "%d-%m-%Y",
+                          extEpochData_timeformat = "%H:%M:%S")
   }
   # }
   invisible(list(params_sleep = params_sleep,

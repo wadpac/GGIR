@@ -26,6 +26,9 @@
   \item{params_general}{
     Parameters object see \link{GGIR}
   }
+  \item{verbose}{
+    See \link{GGIR}
+  }
 }
 \keyword{internal}
 \author{

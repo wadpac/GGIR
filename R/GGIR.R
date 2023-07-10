@@ -249,7 +249,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       convertEpochData(datadir = datadir,
                        studyname = studyname,
                        outputdir = outputdir,
-                       params_general = params_general)
+                       params_general = params_general,
+                       verbose = verbose)
     }
     if (!is.null(params_general[["maxRecordingInterval"]])) {
       # Append recordings when ID and brand match and gap between

@@ -272,6 +272,12 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         To specify the date format used in the external epoch level data when
         argument \code{dataFormat} is set to "actiwatch_csv" or "actiwatch_awd".
       }
+      \item{extEpochData_timeformat}{
+        Character (default =
+        \Sexpr{format(GGIR::load_params()[["params_general"]][["extEpochData_timeformat"]])}).
+        To specify the time format used in the external epoch level data when
+        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", or "actigraph_csv".
+      }
       }
     }
 
