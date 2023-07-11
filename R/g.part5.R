@@ -482,7 +482,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       qqq = defdays$qqq
                       qqq_backup = defdays$qqq_backup
                       segments = defdays$segments
-                      segments_names = defdays$segments_labels
+                      segments_names = defdays$segments_names
                       if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           ts$window[qqq[1]:qqq[2]] = wi
@@ -494,8 +494,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             sss1 = segments[[current_segment_i]][1]
                             sss2 = segments[[current_segment_i]][2]
                             if (si > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
-                            dsummary[si,fi:(fi + 2)] = c(ID, fnames.ms3[i], wi)
-                            ds_names[fi:(fi + 2)] = c("ID", "filename", "window_number"); fi = fi + 3
+                            dsummary[si,fi:(fi + 1)] = c(ID, fnames.ms3[i])
+                            ds_names[fi:(fi + 1)] = c("ID", "filename"); fi = fi + 2
                             if (timewindowi == "WW") {
                               plusb = 0
                             } else {
@@ -519,11 +519,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             weekday = weekdays(date, abbreviate = FALSE)
                             dsummary[si,fi:(fi + 1)] = c(weekday, as.character(date))
                             ds_names[fi:(fi + 1)] = c("weekday", "calendar_date"); fi = fi + 2
-                            # segment of the day
-                            dsummary[si,fi] = names(segments)[current_segment_i]
-                            ds_names[fi] = "qwindow"; fi = fi + 1
-                            dsummary[si,fi] = segments_names[current_segment_i]
-                            ds_names[fi] = "qwindow_names"; fi = fi + 1
+                            # window and segment of the day
+                            segmentName = segments_names[current_segment_i]
+                            segmentTiming = names(segments)[current_segment_i]
+                            dsummary[si, fi:(fi + 2)] = c(wi, segmentName, segmentTiming)
+                            ds_names[fi:(fi + 2)] = c("window_number", "window", "start_end_window"); fi = fi + 3
                             # Get onset and waking timing, both as timestamp and as index
                             onsetwaketiming = g.part5.onsetwaketiming(qqq,ts, min, sec, hour, timewindowi, skiponset, skipwake)
                             onset = onsetwaketiming$onset; wake = onsetwaketiming$wake
@@ -586,8 +586,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             # qqq2 is the end of the day
                             qqq1 = sss1 # added 26 Feb 2020
                             qqq2 = sss2 # added 26 Feb 2020
-                            dsummary[si, fi] = timewindowi
-                            ds_names[fi] = "window";      fi = fi + 1
                             # keep track of threshold value
                             dsummary[si,fi] = TRLi
                             ds_names[fi] = "TRLi";      fi = fi + 1

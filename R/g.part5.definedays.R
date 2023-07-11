@@ -16,10 +16,16 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (HMS[length(HMS)] != lastepoch) HMS = c(HMS, lastepoch)
     return(HMS)
   }
+  fixTime = function(x, ws3) {
+    hms = strptime(x, format = "%H:%M:%S")
+    hms = hms - ws3
+    hms = substr(as.character(hms), 12, 19)
+    return(hms)
+  }
   # main script -----
   # Check that this is a meaningful day (that is all the qqq variable is used for),
   # before storing it.
-  qqq = rep(0,2); segments = segments_labels = c()
+  qqq = rep(0,2); segments = segments_names = c()
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
@@ -66,9 +72,9 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     }
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
+      fullQqq = qqq[1]:qqq[2]
       lastepoch = substr(ts$time[qqq[2]], 12, 19)
       breaks = qwindow2timestamp(qwindow, lastepoch = lastepoch)
-      fullQqq = qqq[1]:qqq[2]
       breaks_i = c()
       for (bi in 1:length(breaks)) {
         if (any(grepl(breaks[bi], ts$time[fullQqq]))) {
@@ -79,24 +85,29 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       }
       # build up segments
       segments = list(qqq)
-      segments_names = paste("00:00:00", lastepoch, sep = "-")
-      segments_labels = "fullWindow"
+      segments_timing = paste("00:00:00", lastepoch, sep = "-")
+      segments_names = "MM"
       si = 2
       for (bi in 1:(length(breaks) - 1)) {
         minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
-        segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - minusOne)
+        if (minusOne == 1) {
+          segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
+          endOfSegment = fixTime(breaks[bi + 1], ws3new)
+        } else {
+          segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
+          endOfSegment = breaks[bi + 1]
+        }
         if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
-        segments_names[si] = paste(breaks[bi], breaks[bi + 1], sep = "-")
-        segments_labels[si] = paste0("segment", bi)
+        segments_timing[si] = paste(breaks[bi], endOfSegment, sep = "-")
+        segments_names[si] = paste0("segment", bi)
         si = si + 1 
       }
-      names(segments) = segments_names
+      names(segments) = segments_timing
     }
   } else if (timewindowi == "WW") {
     if (wi <= (Nwindows - 1)) { # all full wake to wake days
       qqq[1] = which(diff(ts$diur) == -1)[wi] + 1
       qqq[2] = which(diff(ts$diur) == -1)[wi + 1]
-      
     } else {
       # time after last reliable waking up (this can be more than 24 hours)
       # ignore this day, because if the night was ignored for sleep analysis
@@ -104,7 +115,15 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       # not informative.
       qqq = c(NA, NA)
     }
+    # build up segments
+    if (!is.na(qqq[1]) & !is.na(qqq[2])) {
+      segments = list(qqq)
+      start = substr(ts$time[qqq[1]], 12, 19)
+      end = substr(ts$time[qqq[2]], 12, 19)
+      names(segments) = paste(start, end, sep = "-")
+      segments_names = "WW"
+    }
   }
   return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, 
-                        segments = segments, segments_labels = segments_labels)))
+                        segments = segments, segments_names = segments_names)))
 }
