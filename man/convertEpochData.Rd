@@ -11,7 +11,7 @@
 }
 \usage{
    convertEpochData(datadir = c(), studyname = c(), outputdir = c(),
-                            params_general = c())
+                            params_general = c(), verbose = TRUE)
 }
 \arguments{
   \item{datadir}{
@@ -25,6 +25,9 @@
   }
   \item{params_general}{
     Parameters object see \link{GGIR}
+  }
+  \item{verbose}{
+    See \link{GGIR}
   }
 }
 \keyword{internal}

@@ -4,7 +4,7 @@ test_that("External epoch data is correctly converted", {
   skip_on_cran()
   params_general = load_params()$params_general
   params_general[["overwrite"]] = TRUE
-  params_general[["extEpochData_dateformat"]] = "%d/%m/%Y"
+  params_general[["extEpochData_timeformat"]] = "%d/%m/%Y %H:%M:%S"
   # Set smaller than usual windowsizes, because this test recordings are clipped short
   params_general[["windowsizes"]][2] = 60
   params_general[["windowsizes"]][3] = 120
@@ -31,7 +31,7 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/Actiwatch.AWD", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 60
   params_general[["dataFormat"]] = "actiwatch_awd"
-  params_general[["extEpochData_dateformat"]] = "%d-%b-%Y"
+  params_general[["extEpochData_timeformat"]] = "%d-%b-%Y %H:%M:%S"
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                               params_general = params_general)
   
@@ -48,10 +48,10 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/Actiwatch.csv", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 15
   params_general[["dataFormat"]] = "actiwatch_csv"
-  params_general[["extEpochData_dateformat"]] = "%d-%m-%Y"
+  params_general[["extEpochData_timeformat"]] = "%d-%m-%Y %H:%M:%S"
   expect_error(convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                    params_general = params_general))
-  params_general[["extEpochData_dateformat"]] = "%d/%m/%Y"
+  params_general[["extEpochData_timeformat"]] = "%d/%m/%Y %H:%M:%S"
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
@@ -82,15 +82,15 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/ActiGraph61.csv", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 5
   params_general[["dataFormat"]] = "actigraph_csv"
-  params_general[["extEpochData_dateformat"]] = "%m/%d/%Y"
+  params_general[["extEpochData_timeformat"]] = "%m/%d/%Y %H:%M:%S"
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph61.csv.RData"))
   expect_equal(nrow(M$metashort), 984)
-  expect_equal(ncol(M$metashort), 4)
-  expect_equal(colnames(M$metashort), c("timestamp", "NeishabouriCount_x",
-                                        "NeishabouriCount_y", "NeishabouriCount_z"))
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+                    "NeishabouriCount_z") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -99,15 +99,15 @@ test_that("External epoch data is correctly converted", {
   move2folder(system.file("testfiles/ActiGraph13.csv", package = "GGIR")[1], dn)
   params_general[["windowsizes"]][1] = 15
   params_general[["dataFormat"]] = "actigraph_csv"
-  params_general[["extEpochData_dateformat"]] = "%m/%d/%Y"
+  params_general[["extEpochData_timeformat"]] = "%m/%d/%Y %H:%M:%S"
   convertEpochData(datadir = dn, studyname = "tmp_testdata", outputdir = ".",
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph13.csv.RData"))
   expect_equal(nrow(M$metashort), 988)
-  expect_equal(ncol(M$metashort), 4)
-  expect_equal(colnames(M$metashort), c("timestamp", "NeishabouriCount_x",
-                                        "NeishabouriCount_y", "NeishabouriCount_z"))
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+                    "NeishabouriCount_z") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
