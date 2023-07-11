@@ -280,7 +280,8 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           
           timestamp = paste0(startdate, " ", starttime)
           I$header[which(rownames(I$header) == "start"), 1] = timestamp
-          timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = paste0(params_general[["extEpochData_dateformat"]], " %H:%M:%S"))
+          timestamp_POSIX = as.POSIXlt(timestamp, tz = tz,
+                                       format = params_general[["extEpochData_timeformat"]])
         } else if (header_test == FALSE) {
           # extract date/timestamp if included in the columns
           tmp = data.table::fread(input = fnames[i],
@@ -298,8 +299,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
             starttime = date[1]
             timestamp = paste0(date, " ", time)
             I$header[which(rownames(I$header) == "start"), 1] = timestamp[1]
-            format = paste(params_general[["extEpochData_dateformat"]],
-                           params_general[["extEpochData_timeformat"]])
+            format = params_general[["extEpochData_timeformat"]]
             timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = format)
             if (all(is.na(timestamp_POSIX))) {
               stop(paste0("\nTimestamps are not available in hte file, neither it has
@@ -315,9 +315,9 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         }
         # CHECKS
         if (all(is.na(timestamp_POSIX))) {
-          stop(paste0("\nDate format in data ", timestamp, " does not match with date format ",
-                      params_general[["extEpochData_dateformat"]],
-                      " as specified by argument extEpochData_dateformat, please correct.\n"))
+          stop(paste0("\nTime format in data ", timestamp, " does not match with time format ",
+                      params_general[["extEpochData_timeformat"]],
+                      " as specified by argument extEpochData_timeformat, please correct.\n"))
         }
         if (epSizeShort != params_general[["windowsizes"]][1]) {
           stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
@@ -378,12 +378,12 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
           I$header[which(rownames(I$header) == "start"), 1] = paste(D$date[1], D$time[1], sep = " ")
           
           timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "),
-                                       format = paste0(params_general[["extEpochData_dateformat"]], " %H:%M:%S"),
+                                       format = params_general[["extEpochData_timeformat"]],
                                        tz = tz)
           if (all(is.na(timestamp_POSIX))) {
-            stop(paste0("\nDate format in data ", D$date[1], " does not match with date format ",
-                        params_general[["extEpochData_dateformat"]],
-                        " as specified by argument extEpochData_dateformat, please correct.\n"))
+            stop(paste0("\nTime format in data ", D$date[1], " does not match with time format ",
+                        params_general[["extEpochData_timeformat"]],
+                        " as specified by argument extEpochData_timeformat, please correct.\n"))
           }
           epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
           if (epSizeShort != params_general[["windowsizes"]][1]) {
@@ -424,14 +424,14 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
                                       size = c(15, 30, 60, 120, 300, 2, 5, 10))
           epSizeShort = optionalEpochs$size[which(optionalEpochs$code == as.character(header[4]))]
           # Get starttime 
-          timestampFormat = paste0(params_general[["extEpochData_dateformat"]], " %H:%M")
+          timestampFormat = paste0(unlist(strsplit(params_general[["extEpochData_timeformat"]], " "))[1], " %H:%M")
           I$header[which(rownames(I$header) == "start"), 1] =  paste(header[2], header[3], sep = " ")
           timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
                                        format = timestampFormat, tz = tz)
           if (is.na(timestamp_POSIX)) {
-            stop(paste0("\nDate format in data ", header[2], " does not match with date format ",
-                        params_general[["extEpochData_dateformat"]],
-                        " as specified by argument extEpochData_dateformat, please correct.\n"))
+            stop(paste0("\nTime format in data ", header[2], " does not match with time format ",
+                        params_general[["extEpochData_timeformat"]],
+                        " as specified by argument extEpochData_timeformat, please correct.\n"))
           }
           if (epSizeShort != params_general[["windowsizes"]][1]) {
             stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",

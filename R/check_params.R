@@ -121,7 +121,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "expand_tail_max_hours", "maxRecordingInterval")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
-                         "dataFormat", "extEpochData_dateformat")
+                         "dataFormat", "extEpochData_timeformat")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
