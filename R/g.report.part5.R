@@ -52,11 +52,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       # identify first and last day per file
       first_days = aggregate(window_number ~ filename, data = x, FUN = min, na.rm = TRUE)
       last_days = aggregate(window_number ~ filename, data = x, FUN = max, na.rm = TRUE)
-
+      
       # match first and last days with the output dataframe
       exclude_firsts = which(paste(x$filename, x$window_number) %in% paste(first_days$filename, first_days$window_number))
       exclude_lasts = which(paste(x$filename, x$window_number) %in% paste(last_days$filename, last_days$window_number))
-
+      
       # keep only indices that do not match with first and last days
       indices2exclude = which(indices %in% c(exclude_firsts, exclude_lasts))
       if (length(indices2exclude) > 0) indices = indices[-indices2exclude]
@@ -116,7 +116,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     # order data.frame
     outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
     outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window, outputfinal$window_number),]
-
+    
     # Find columns filled with missing values
     cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE)
     if (length(cut) > 0) {
@@ -199,7 +199,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 agg_plainNweighted = function(df,
                                               filename = "filename",
                                               daytype = "daytype") {
-
+                  
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
                   ignorevar = c("daysleeper", "cleaningcode", "night_number", "sleeplog_used",
@@ -512,12 +512,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
-                                      uwi[j],"_L",uTRLi[h1],"M", uTRMi[h2], "V", uTRVi[h3], "_", usleepparam[h4], ".csv", sep = ""),
+                                                     uwi[j],"_L",uTRLi[h1],"M", uTRMi[h2], "V", uTRVi[h3], "_", usleepparam[h4], ".csv", sep = ""),
                                      row.names = FALSE, na = "", sep = sep_reports)
                 }
               }
             }
-
+            
           }
         }
       }
