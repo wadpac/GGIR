@@ -45,10 +45,12 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         durations_ba = frag$length[ba]
         totDur_ab = sum(durations_ab)
         totDur_ba = sum(durations_ba)
-        TPba = (Nba + 1) / (totDur_ba + 1) # Ian's new approach
+        TPba = (Nba + 1e-7) / (totDur_ba + 1e-7) # Ian's new approach
+        TPba = round(TPba, digits = 6)
         ux = unique(x)
         if (all(b %in% ux)) {
-          TPab = (Nab + 1) / (totDur_ab + 1) # Ian's new approach
+          TPab = (Nab + 1e-7) / (totDur_ab + 1e-7) # Ian's new approach
+          TPab = round(TPab, digits = 6)
         } else {
           # Scenario where we have three classes in x
           # and are interested in the transition probability
@@ -90,21 +92,19 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   }
   output = list()
   Nepochs = length(LEVELS)
-  if (Nepochs > 0) {
-    if (mode == "day") {
-      # convert to class names to numeric class ids for inactive, LIPA and MVPA:
-      classes.in = c("day_IN_unbt", Lnames[grep(pattern = "day_IN_bts", x = Lnames)])
-      class.in.ids = which(Lnames %in%  classes.in) - 1 
-      classes.lig = c("day_LIG_unbt", Lnames[grep(pattern = "day_LIG_bts", x = Lnames)])
-      class.lig.ids = which(Lnames %in%  classes.lig) - 1
-      classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern = "day_MVPA_bts", x = Lnames)])
-      class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
-    }
+  if (mode == "day") {
+    # convert to class names to numeric class ids for inactive, LIPA and MVPA:
+    classes.in = c("day_IN_unbt", Lnames[grep(pattern = "day_IN_bts", x = Lnames)])
+    class.in.ids = which(Lnames %in%  classes.in) - 1 
+    classes.lig = c("day_LIG_unbt", Lnames[grep(pattern = "day_LIG_bts", x = Lnames)])
+    class.lig.ids = which(Lnames %in%  classes.lig) - 1
+    classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern = "day_MVPA_bts", x = Lnames)])
+    class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
   }
   if (Nepochs > 1 & mode == "day") { # metrics that require more than just binary
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
-    y = rep(0,Nepochs)
+    y = rep(0, Nepochs)
     y[which(LEVELS %in% class.in.ids)] = 1
     y[which(LEVELS %in% class.lig.ids)] = 2
     y[which(LEVELS %in% class.mvpa.ids)] = 3

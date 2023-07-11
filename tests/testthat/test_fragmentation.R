@@ -29,16 +29,16 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   
   expect_equal(out$mean_dur_PA, 4.020408, tolerance = 0.0001)
   expect_equal(out$mean_dur_IN, 15.10417, tolerance = 0.0001)
-  expect_equal(round(out$Gini_dur_PA, digits = 4), 0.5063, tolerance = 0.0001)
-  expect_equal(round(out$Gini_dur_IN, digits = 4), 0.7685, tolerance = 0.0001)
+  expect_equal(out$Gini_dur_PA, 0.506352, tolerance = 0.0001)
+  expect_equal(out$Gini_dur_IN, 0.768544, tolerance = 0.0001)
   
   expect_equal(out$alpha_dur_PA, 2.055102, tolerance = 0.0001)
   expect_equal(out$x0.5_dur_PA, 1.928897, tolerance = 0.0001)
   expect_equal(out$W0.5_dur_IN, 0.9629121, tolerance = 0.0001)
   
-  expect_equal(out$TP_IN2MVPA, 0.2631579, tolerance = 0.0001)
-  expect_equal(out$TP_IN2LIPA, 0.06355932, tolerance = 0.0001)
-  expect_equal(out$TP_IN2PA, 0.06749311, tolerance = 0.0001)
+  expect_equal(out$TP_IN2MVPA, 0.222222, tolerance = 0.0001)
+  expect_equal(out$TP_IN2LIPA, 0.0622535, tolerance = 0.0001)
+  expect_equal(out$TP_IN2PA, 0.066207, tolerance = 0.0001)
   expect_equal(out$Nfrag_PA, 49)
   expect_equal(out$Nfrag_IN2LIPA, 44)
   expect_equal(out$Nfrag_IN2MVPA, 4)
@@ -54,10 +54,12 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   
   expect_equal(out$Nfrag_spt_PA, 2)
   expect_equal(out$Nfrag_spt_IN, 2)
-  expect_equal(out$TP_PA2IN_spt, 0.11538, tolerance = 0.0001)
-  expect_equal(out$TP_IN2PA_spt, 0.04545, tolerance = 0.0001)
+  expect_equal(out$TP_PA2IN_spt, 0.08, tolerance = 0.0001)
+  expect_equal(out$TP_IN2PA_spt, 0.030769, tolerance = 0.0001)
   expect_equal(out$Nfrag_spt_wake, 3)
   expect_equal(out$Nfrag_spt_sleep, 3)
-  expect_equal(out$TP_wake2sleep_spt, 0.06060606, tolerance = 0.0001)
-  expect_equal(out$TP_sleep2wake_spt, 0.07843137, tolerance = 0.0001)
+  expect_equal(out$TP_wake2sleep_spt, 0.046154, tolerance = 0.0001)
+  expect_equal(out$TP_sleep2wake_spt, 0.06, tolerance = 0.0001)
+  
+  
 })
