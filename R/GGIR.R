@@ -218,7 +218,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
     
-    if (!is.null(params_general[["maxRecordingInterval"]] & params_general[["overwrite"]] == TRUE)) {
+    if (!is.null(params_general[["maxRecordingInterval"]]) & params_general[["overwrite"]] == TRUE) {
       # When we want to overwrite previously processed data and append recordings
       # it is necessary to first empty folder meta/basic to avoid confusion with
       # previously appended data
@@ -226,7 +226,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (dir.exists(basic_folder)) {
         basic_ms_files = dir(basic_folder, full.names = TRUE)
         if (length(basic_ms_files) > 0) {
-          for (fnr in basic_ms_files) unlink(fnr)
+          for (fnr in basic_ms_files) unlink(fnr, recursive = TRUE)
           rm(fnr)
         }
         rm(basic_folder, basic_ms_files)
