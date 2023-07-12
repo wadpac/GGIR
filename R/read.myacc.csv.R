@@ -25,7 +25,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           desiredtz = NULL,
                           configtz = NULL) {
 
-
   if (!is.null(rmc.desiredtz) | !is.null(rmc.configtz)) {
     generalWarning = paste0("Argument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
                    " and will be replaced by the existing arguments desiredtz and configtz, respectively.")
@@ -186,7 +185,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
       P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
-
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
         return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
@@ -212,7 +210,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         trans_1 = trans[which(sf_tmp == rmc.sf)]
         indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:rmc.sf)})))
         P$timestamp[indices_1] =  P$timestamp[indices_1] + rep(timeIncrement, length(trans_1))
-        
         # First second
         if (sf_tmp[1] != rmc.sf) {
           indices_2 = 1:trans[2]
@@ -247,12 +244,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
             }
           }
         }
-        # print(diff(P$timestamp))
       }
     } else if (rmc.unit.time == "character") {
-      P$timestamp = as.POSIXlt(P$timestamp,format = rmc.format.time, tz = configtz)
+      P$timestamp = as.POSIXct(P$timestamp,format = rmc.format.time, tz = configtz)
     } else if (rmc.unit.time == "UNIXsec") {
-      P$timestamp = as.POSIXlt(P$timestamp, origin = rmc.origin, tz = configtz)
+      P$timestamp = as.POSIXct(P$timestamp, origin = rmc.origin, tz = configtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
       rmc.origin = "1899-12-30"
@@ -260,7 +256,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       tmp2 = P$timestamp - round(P$timestamp)
       timecode = ((tmp2 * 10^10) * 8.64) / 1000000
       numerictime = datecode + timecode
-      P$timestamp = as.POSIXlt(numerictime, origin = rmc.origin, tz = configtz)
+      P$timestamp = as.POSIXct(numerictime, origin = rmc.origin, tz = configtz)
     }
     if (length(which(is.na(P$timestamp) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
@@ -268,7 +264,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   
   if (configtz != desiredtz) {
-    P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
+    P$timestamp = as.POSIXct(as.numeric(P$timestamp),
                                  tz = desiredtz, origin = "1970-01-01")
   }
   
@@ -314,7 +310,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   if (rmc.doresample == TRUE) { #resample
     rawTime = vector(mode = "numeric", nrow(P))
-    rawTime = as.numeric(as.POSIXlt(P$timestamp,tz = configtz))
+    rawTime = as.numeric(as.POSIXct(P$timestamp,tz = configtz))
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "timestamp"))])
     step = 1/sf
     start = rawTime[1]
@@ -326,12 +322,12 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     rawLast = nrow(rawAccel)
     accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
-    timeRes = as.POSIXlt(timeRes, origin = rmc.origin, tz = configtz)
+    timeRes = as.POSIXct(timeRes, origin = rmc.origin, tz = configtz)
     P = as.data.frame(accelRes, stringsAsFactors = TRUE)
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
-    P$timestamp = as.POSIXlt(as.numeric(P$timestamp),
+    P$timestamp = as.POSIXct(as.numeric(P$timestamp),
                              tz = desiredtz, origin = "1970-01-01")
   }
   return(list(data = P, header = header, 
