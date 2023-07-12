@@ -360,6 +360,23 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   " please specify a lower value."), call. = FALSE)
     }
   }
+  
+  if ("MM" %in% params_output[["timewindow"]] == FALSE) {
+    warn_user = FALSE
+    if (is.character(params_247[["qwindow"]])) {
+      warn_user = TRUE
+    } else if (is.numeric(params_247[["qwindow"]])) {
+      if (all(params_247[["qwindow"]] == c(0,24)) == FALSE) {
+        warn_user = TRUE
+      }
+    }
+    if (warn_user == TRUE) {
+      warning("There are segments of the day specified with qwindow. ", 
+              "This functionality only works in part 5 if 'MM' is included ",
+              "as a timewindow. Please define timewindow = c('MM', 'WW') ",
+              "or timewindow = 'MM'.", call. = FALSE)
+    }
+  }
 
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

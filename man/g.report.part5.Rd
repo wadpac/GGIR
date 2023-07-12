@@ -12,6 +12,7 @@
                           includenightcrit = c(),includedaycrit = c(),
                           data_cleaning_file = c(),
                           includedaycrit.part5 = 2/3,
+                          includesegmentcrit.part5 = 0.5,
                           minimum_MM_length.part5 = 23,
                           week_weekend_aggregate.part5 = FALSE,
                           LUX_day_segments = c(), 
@@ -47,6 +48,10 @@
   \item{includedaycrit.part5}{
     Inclusion criteria for number of valid hours, either
     as expressed as a ratio of 1 or as the number of hours in a 24 hour day.
+  }
+  \item{includesegmentcrit.part5}{
+    Inclusion criteria for number of valid hours in the segments defined with
+    qwindow in part 5, expressed as a ratio of 1.
   }
   \item{minimum_MM_length.part5}{
     Minimum length in hours of a MM day to be included in the cleaned

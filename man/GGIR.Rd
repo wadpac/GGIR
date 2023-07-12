@@ -828,6 +828,11 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Inclusion criteria for number of valid hours, either
         as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
 
+      \item{includesegmentcrit.part5}{
+        Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includesegmentcrit.part5"]], 3)}).
+        Inclusion criteria for number of valid hours in the segments defined with 
+        qwindow in part 5 expressed as a ratio of 1.}
+
       \item{includedaycrit}{
         Numeric (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["includedaycrit"]]}).
         Minimum required number of valid hours in day specific analysis

@@ -9,7 +9,8 @@
 }
 \usage{
   g.part5.definedays(nightsi, wi, indjump, nightsi_bu, 
-                              ws3new, qqq_backup=c(), ts, Nts, timewindowi, Nwindows)
+                     ws3new, qqq_backup=c(), ts, Nts, 
+                     timewindowi, Nwindows, qwindow)
 }
 \arguments{
   \item{nightsi}{
@@ -31,6 +32,8 @@
   \item{timewindowi}{
   }
   \item{Nwindows}{
+  }
+  \item{qwindow}{
   }
 }
 \value{

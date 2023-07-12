@@ -1,6 +1,6 @@
 g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
                           includenightcrit = c(), includedaycrit = c(), data_cleaning_file = c(),
-                          includedaycrit.part5 = 2/3,
+                          includedaycrit.part5 = 2/3, includesegmentcrit.part5 = 0.5,
                           minimum_MM_length.part5 = 23, week_weekend_aggregate.part5 = FALSE,
                           LUX_day_segments = c(), excludefirstlast.part5 = c(),
                           verbose = TRUE, sep_reports = ",") {
@@ -9,42 +9,73 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
   # from parallel processed accelerometer files
   # Note: argument includenightcrit and includedaycrit is not used anymore, and can be depricated
   if (length(includedaycrit) != 0 & length(includedaycrit.part5) == 0) includedaycrit.part5 = includedaycrit
-  getValidDayIndices = function(x, includedaycrit.part5, excludefirstlast.part5, window) {
-    if (includedaycrit.part5 >= 0 & includedaycrit.part5 <= 1) { # if includedaycrit.part5 is used as a ratio
-      includedaycrit.part5 = includedaycrit.part5 * 100
-    } else if (includedaycrit.part5 > 1 & includedaycrit.part5 <= 25) { # if includedaycrit.part5 is used like includedaycrit as a number of hours
-      includedaycrit.part5 = (includedaycrit.part5 / 24) * 100
-    } else if (includedaycrit.part5 < 0 ) {
-      warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
-    } else if (includedaycrit.part5 > 25) {
-      warning("\nIncorrect value of includedaycrit.part5, this should be a fraction of the day between zero and one or the number of hours in a day.")
-    }
-    maxpernwday = 100 - includedaycrit.part5
-    include_window = rep(TRUE, nrow(x))
-    if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
-      DaCleanFile = data.table::fread(data_cleaning_file, data.table = FALSE)
-      days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
-      if (length(days2exclude) > 0) {
-        for (ri in 1:length(days2exclude)) {
-          id2remove = DaCleanFile$ID[days2exclude[ri]]
-          window2remove = DaCleanFile$day_part5[days2exclude[ri]]
-          include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
-        }
+  getValidDayIndices = function(x, includedaycrit.part5, excludefirstlast.part5, window,
+                                includesegmentcrit.part5) {
+    if (window != "Segments") {
+      if (includedaycrit.part5 >= 0 & includedaycrit.part5 <= 1) { # if includedaycrit.part5 is used as a ratio
+        includedaycrit.part5 = includedaycrit.part5 * 100
+      } else if (includedaycrit.part5 > 1 & includedaycrit.part5 <= 25) { # if includedaycrit.part5 is used like includedaycrit as a number of hours
+        includedaycrit.part5 = (includedaycrit.part5 / 24) * 100
+      } else if (includedaycrit.part5 < 0 ) {
+        warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
+      } else if (includedaycrit.part5 > 25) {
+        warning("\nIncorrect value of includedaycrit.part5, this should be a fraction of the day between zero and one or the number of hours in a day.")
       }
-    } else {
-      include_window = rep(TRUE,nrow(x))
-    }
-    # Note: Below we intentionally only sets a criteria on daytime, because for
-    # the night time we only need start and end of the SPT window.
-    if (window == "WW") {
-      indices = which(x$nonwear_perc_day <= maxpernwday &
-                        x$dur_spt_min > 0 & x$dur_day_min > 0 & include_window == TRUE)
-    } else if (window == "MM") {
-      indices = which(x$nonwear_perc_day <= maxpernwday &
-                        x$dur_spt_min > 0 & x$dur_day_min > 0 &
-                        x$dur_day_spt_min >= (minimum_MM_length.part5*60) &
-                        include_window == TRUE)
-      # Note: By default for MM analysis only full days are interesting (23 hours for one day in the year)
+      maxpernwday = 100 - includedaycrit.part5
+      include_window = rep(TRUE, nrow(x))
+      if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
+        DaCleanFile = data.table::fread(data_cleaning_file, data.table = FALSE)
+        days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
+        if (length(days2exclude) > 0) {
+          for (ri in 1:length(days2exclude)) {
+            id2remove = DaCleanFile$ID[days2exclude[ri]]
+            window2remove = DaCleanFile$day_part5[days2exclude[ri]]
+            include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
+          }
+        }
+      } else {
+        include_window = rep(TRUE,nrow(x))
+      }
+      # Note: Below we intentionally only sets a criteria on daytime, because for
+      # the night time we only need start and end of the SPT window.
+      if (window == "WW") {
+        indices = which(x$nonwear_perc_day <= maxpernwday &
+                          x$dur_spt_min > 0 & x$dur_day_min > 0 & include_window == TRUE)
+      } else if (window == "MM") {
+        indices = which(x$nonwear_perc_day <= maxpernwday &
+                          x$dur_spt_min > 0 & x$dur_day_min > 0 &
+                          x$dur_day_spt_min >= (minimum_MM_length.part5*60) &
+                          include_window == TRUE)
+        # Note: By default for MM analysis only full days are interesting (23 hours for one day in the year)
+      }
+    } else if (window == "Segments") {
+      # clean based on segments (even if a day is not valid, a certain segment of that
+      # day could be valid if participant wore device enough in that part of the day)
+      if (includesegmentcrit.part5 >= 0 & includesegmentcrit.part5 <= 1) { # if includesegmentcrit.part5 is used as a ratio
+        includesegmentcrit.part5 = includesegmentcrit.part5 * 100
+      } else if (includesegmentcrit.part5 > 1 & includesegmentcrit.part5 <= 25) { # if includesegmentcrit.part5 is used like includedaycrit as a number of hours
+        includesegmentcrit.part5 = (includesegmentcrit.part5 / 24) * 100
+      } else if (includesegmentcrit.part5 < 0 ) {
+        warning("\nNegative value of includesegmentcrit.part5 is not allowed, please change.")
+      } else if (includesegmentcrit.part5 > 25) {
+        warning("\nIncorrect value of includesegmentcrit.part5, this should be a fraction of the day between zero and one, please change.")
+      }
+      maxpernwday = 100 - includesegmentcrit.part5
+      include_window = rep(TRUE, nrow(x))
+      if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
+        DaCleanFile = data.table::fread(data_cleaning_file, data.table = FALSE)
+        days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
+        if (length(days2exclude) > 0) {
+          for (ri in 1:length(days2exclude)) {
+            id2remove = DaCleanFile$ID[days2exclude[ri]]
+            window2remove = DaCleanFile$day_part5[days2exclude[ri]]
+            include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
+          }
+        }
+      } else {
+        include_window = rep(TRUE,nrow(x))
+      }
+      indices = which(as.numeric(x$nonwear_perc_day_spt) <= maxpernwday & include_window == TRUE)
     }
     # exclude first and last window?
     if (excludefirstlast.part5 == TRUE) {
@@ -113,17 +144,24 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     outputfinal = as.data.frame(do.call(rbind,
                                         lapply(fnames.ms5[f0:f1], myfun, expectedCols)),
                                 stringsAsFactors = FALSE)
-    # order data.frame
-    outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
-    outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window, outputfinal$window_number),]
     
     # Find columns filled with missing values
     cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE) 
     if (length(cut) > 0) {
       outputfinal = outputfinal[,-cut]
     }
+    
+    # order data.frame
+    outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
+    # outputfinal_segments = outputfinal[which(!outputfinal$window %in% c("MM", "WW")),]
+    # outputfinal = outputfinal[which(outputfinal$window %in% c("MM", "WW")),]
+    outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window, outputfinal$window_number),]
+    
     # split results to different spreadsheets in order to minimize individual filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
+    if (!all(uwi %in% c("MM", "WW"))) {
+      uwi = c(uwi[uwi %in% c("MM", "WW")], "Segments")
+    }
     uTRLi = as.character(unique(outputfinal$TRLi))
     uTRMi = as.character(unique(outputfinal$TRMi))
     uTRVi = as.character(unique(outputfinal$TRVi))
@@ -149,7 +187,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     outputfinal$dur_spt_min = as.numeric(outputfinal$dur_spt_min)
     outputfinal$dur_day_min = as.numeric(outputfinal$dur_day_min)
     outputfinal$dur_day_spt_min = as.numeric(outputfinal$dur_day_spt_min)
-    # loop to store varous variants of the analysis seperately
+    # loop to store various variants of the analysis separately
+    outputfinal_bu = outputfinal
     if (verbose == TRUE) cat(" generating csv report for every parameter configurations...\n")
     for (j in 1:length(uwi)) {
       for (h1 in 1:length(uTRLi)) {
@@ -157,7 +196,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
           for (h3 in 1:length(uTRVi)) {
             for (h4 in 1:length(usleepparam)) {
               if (verbose == TRUE) cat(paste0(" ",uwi[j],"-",uTRLi[h1],"-",uTRMi[h2],"-",uTRVi[h3],"-",usleepparam[h4]))
-              seluwi = which(as.character(outputfinal$window) == uwi[j] &
+              select_window = as.character(outputfinal$window) == uwi[j]
+              if (!(uwi[j] %in% c("MM", "WW"))) select_window = !(as.character(outputfinal$window) %in% c("MM", "WW"))
+              seluwi = which(select_window &
                                as.character(outputfinal$TRLi) == uTRLi[h1] &
                                as.character(outputfinal$TRMi) == uTRMi[h2] &
                                as.character(outputfinal$TRVi) == uTRVi[h3] &
@@ -169,9 +210,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 CN = colnames(outputfinal)
                 outputfinal2 = outputfinal
                 colnames(outputfinal2) = CN
-                delcol = which(colnames(outputfinal2) == "window" | colnames(outputfinal2) == "TRLi" |
+                delcol = which(colnames(outputfinal2) == "TRLi" |
                                  colnames(outputfinal2) == "TRMi" | colnames(outputfinal2) == "TRVi" |
                                  colnames(outputfinal2) == "sleepparam")
+                if (uwi[j] != "Segments") {
+                  delcol = c(delcol, which(colnames(outputfinal2) == "window"))
+                }
                 outputfinal2 = outputfinal2[,-delcol]
                 OF3 = outputfinal2[seluwi,]
                 OF3 = as.data.frame(OF3, stringsAsFactors = TRUE)
@@ -187,7 +231,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
                   sep = sep_reports)
                 # store all summaries in csv files with cleaning criteria
-                validdaysi = getValidDayIndices(OF3,includedaycrit.part5, excludefirstlast.part5, window = uwi[j])
+                validdaysi = getValidDayIndices(x = OF3, 
+                                                includedaycrit.part5 = includedaycrit.part5, 
+                                                excludefirstlast.part5 = excludefirstlast.part5, 
+                                                includesegmentcrit.part5 = includesegmentcrit.part5, 
+                                                window = uwi[j])
                 data.table::fwrite(
                   OF3_clean[validdaysi, ],
                   paste(metadatadir, "/results/part5_daysummary_",
@@ -198,12 +246,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #also compute summary per person
                 agg_plainNweighted = function(df,
                                               filename = "filename",
-                                              daytype = "daytype") {
-                  
+                                              daytype = "daytype",
+                                              window = "MM") {
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
                   ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number",
-                                "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric")
+                                "window", "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric")
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
@@ -227,11 +275,21 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     return(plain_mean)
                   }
                   # aggregate across all days
-                  PlainAggregate = aggregate.data.frame(df, by = list(df$filename), FUN = plain_mean)
-                  PlainAggregate = PlainAggregate[, -1]
+                  if (window == "Segments") {
+                    by = list(df$filename, df$window)
+                  } else {
+                    by = list(df$filename)
+                  }
+                  PlainAggregate = aggregate.data.frame(df, by = by, FUN = plain_mean)
+                  PlainAggregate = PlainAggregate[, -grep("^Group", colnames(PlainAggregate))]
                   # aggregate per day type (weekday or weekenddays)
-                  AggregateWDWE = aggregate.data.frame(df, by = list(df$filename, df$daytype), plain_mean)
-                  AggregateWDWE = AggregateWDWE[, -c(1:2)]
+                  if (window == "Segments") {
+                    by = list(df$filename, df$window, df$daytype)
+                  } else {
+                    by = list(df$filename, df$daytype)
+                  }
+                  AggregateWDWE = aggregate.data.frame(df, by = by, plain_mean)
+                  AggregateWDWE = AggregateWDWE[, -grep("^Group", colnames(AggregateWDWE))]
                   # Add counted number of days for Gini, Cov, alpha Fragmentation variables, because 
                   # days are dropped if there are not enough fragments:
                   vars_with_mininum_Nfrag = c("FRAG_Gini_dur_PA_day", "FRAG_CoV_dur_PA_day",
@@ -242,22 +300,40 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     varname_minfrag = vars_with_mininum_Nfrag[vars_with_mininum_Nfrag_i[1]]
                     DAYCOUNT_Frag_Multiclass = aggregate.data.frame(
                       df[, varname_minfrag],
-                      by = list(df$filename, df$daytype),
+                      by = by,
                       FUN = function(x) length(which(is.na(x) == FALSE))
                     )
-                    colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
-                    colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
-                    AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = c("filename","daytype"))
+                    if (window != "Segments") {
+                      colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
+                      colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
+                      by.x = c("filename", "daytype")
+                    } else if (window == "Segments") {
+                      colnames(DAYCOUNT_Frag_Multiclass)[1:3] = c("filename","window", "daytype")
+                      colnames(DAYCOUNT_Frag_Multiclass)[4] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
+                      by.x = c("filename","window", "daytype")
+                    }
+                    AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = by.x)
                   }
                   len = NULL
                   AggregateWDWE$len <- 0
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WD")] = 5 #weighting of weekdays
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WE")] = 2 #weighting of weekend days
-                  dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
-                                                                         names(AggregateWDWE) == filename)])
+                  if (window == "Segments") {
+                    dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
+                                                                           names(AggregateWDWE) == filename |
+                                                                           names(AggregateWDWE) == "window")])
+                  } else {
+                    dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
+                                                                           names(AggregateWDWE) == filename)])
+                  }
+                  
                   options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
-                  WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
+                  if (window == "Segments") {
+                    WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename, window)]
+                  } else {
+                    WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
+                  }
                   options(warn = 0)
                   LUXmetrics = c("above1000", "timeawake", "mean", "imputed", "ignored")
                   add_missing_LUX = function(x, LUX_day_segments, weeksegment = c(), LUXmetrics) {
@@ -317,9 +393,15 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   )
                   numcol = which(lapply(PlainAggregate, class) == "numeric" | LUX_segment_vars)
                   WeightedAggregate = as.data.frame(WeightedAggregate, stringsAsFactors = TRUE)
+                  
+                  if (window == "Segments") {
+                    by = c("filename", "window")
+                  } else {
+                    by = "filename"
+                  }
                   G = base::merge(PlainAggregate,
                                   WeightedAggregate,
-                                  by = "filename",
+                                  by = by,
                                   all.x = TRUE)
                   p0b = paste0(names(PlainAggregate[, charcol]), ".x")
                   p1 = paste0(names(PlainAggregate[, numcol]), ".x")
@@ -340,7 +422,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                       names(temp_aggregate) != filename)
                     numcol = which(lapply(temp_aggregate, class) %in% c("numeric", "integer") == TRUE)
                     names(temp_aggregate)[numcol] = paste0(names(temp_aggregate)[numcol], "_", weeksegment)
-                    temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename"), numcol)]
+                    if (window == "Segments") {
+                      temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename" |
+                                                                  colnames(temp_aggregate) == "window"), numcol)]
+                    } else {
+                      temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename"), numcol)]
+                    }
                     LUX_segment_vars = c()
                     for (li in 1:length(LUXmetrics)) {
                       LUX_segment_vars = grep(
@@ -354,7 +441,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       temp_aggregate = add_missing_LUX(temp_aggregate, LUX_day_segments, weeksegment, LUXmetrics)
                     }
                     G = base::merge(G, temp_aggregate,
-                                    by = "filename", all.x = TRUE)
+                                    by = by, all.x = TRUE)
                   }
                   G = G[,-which(names(G) %in% c("len", "daytype", "len_WE", "len_WD"))]
                   return(G)
@@ -363,15 +450,21 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 # Calculate, weighted and plain mean of all variables
                 # add column to define what are weekenddays and weekdays as needed for function agg_plainNweighted
                 # before processing OF3, first identify which days have enough monitor wear time
-                validdaysi = getValidDayIndices(OF3,includedaycrit.part5, excludefirstlast.part5, window = uwi[j])
-                if (length(validdaysi) >0) { # do not attempt to aggregate if there are no valid days
+                validdaysi = getValidDayIndices(OF3,includedaycrit.part5, excludefirstlast.part5, window = uwi[j],
+                                                includesegmentcrit.part5 = includesegmentcrit.part5)
+                if (length(validdaysi) > 0) { # do not attempt to aggregate if there are no valid days
                   # aggregate OF3 (days) to person summaries in OF4
-                  OF4 = agg_plainNweighted(OF3[validdaysi,],filename="filename",day="daytype")
+                  OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
+                                           daytype = "daytype", window = uwi[j])
                   # calculate additional variables
-                  OF3tmp = OF3[,c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
-                                  "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
-                                  "dur_spt_min")]
-                  foo34 = function(df,aggPerIndividual,nameold,namenew,cval) {
+                  columns2keep = c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
+                                   "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
+                                   "dur_spt_min")
+                  if (uwi[j] == "Segments") {
+                    columns2keep = c(columns2keep, "window")
+                  }
+                  OF3tmp = OF3[, columns2keep]
+                  foo34 = function(df,aggPerIndividual,nameold,namenew,cval,window) {
                     # function to help with calculating additinal variables
                     # related to counting how many days of measurement there are
                     # that meet a certain criteria
@@ -380,17 +473,23 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     # df is the non-aggregated data (days across individuals
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
-                    df2 = function(x)
-                      df2 = length(which(x == cval)) # check which values meets criterion
-                    mmm = as.data.frame(aggregate.data.frame(df, by = list(df$filename), FUN = df2),
+                    df2 = function(x) df2 = length(which(x == cval)) # check which values meets criterion
+                    if (window == "Segments") by = list(df$filename, df$window)
+                    if (window != "Segments") by = list(df$filename)
+                    mmm = as.data.frame(aggregate.data.frame(df, by = by, FUN = df2),
                                         stringsAsFactors = TRUE)
                     mmm2 = data.frame(
                       filename = mmm$Group.1,
                       cc = mmm[, nameold],
                       stringsAsFactors = TRUE
                     )
-                    aggPerIndividual = merge(aggPerIndividual, mmm2,
-                                             by = "filename")
+                    if (window == "Segments") {
+                      mmm2$window = mmm$Group.2
+                      by = c("filename", "window")
+                    } else if (window != "Segments") {
+                      by = "filename"
+                    }
+                    aggPerIndividual = merge(aggPerIndividual, mmm2, by = by)
                     names(aggPerIndividual)[which(names(aggPerIndividual) == "cc")] = namenew
                     foo34 = aggPerIndividual
                   }
@@ -405,7 +504,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     aggPerIndividual = OF4,
                     nameold = "validdays",
                     namenew = "Nvaliddays",
-                    cval = 1
+                    cval = 1,
+                    window = uwi[j]
                   )
                   # do the same for WE (weekend days):
                   OF3tmp$validdays = 0
@@ -415,28 +515,31 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     aggPerIndividual = OF4,
                     nameold = "validdays",
                     namenew = "Nvaliddays_WE",
-                    cval = 1
+                    cval = 1,
+                    window = uwi[j]
                   )
                   # do the same for WD (weekdays):
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WD")]] = 1
-                  OF4 = foo34(df = OF3tmp, aggPerIndividual = OF4, nameold = "validdays", namenew = "Nvaliddays_WD", cval = 1) # create variable from it
+                  OF4 = foo34(df = OF3tmp, aggPerIndividual = OF4, nameold = "validdays", namenew = "Nvaliddays_WD", cval = 1, window = uwi[j]) # create variable from it
                   # do the same for daysleeper,cleaningcode, sleeplog_used, acc_available:
                   OF3tmp$validdays = 1
+                  # redefine by considering only valid days
                   OF4 = foo34(
                     df = OF3tmp[validdaysi,],
                     aggPerIndividual = OF4,
                     nameold = "daysleeper",
-                    namenew =
-                      "Ndaysleeper",
-                    cval = 1
+                    namenew = "Ndaysleeper",
+                    cval = 1,
+                    window = uwi[j]
                   )
                   OF4 = foo34(
                     df = OF3tmp[validdaysi,],
                     aggPerIndividual = OF4,
                     nameold = "cleaningcode",
                     namenew = "Ncleaningcodezero",
-                    cval = 0
+                    cval = 0,
+                    window = uwi[j]
                   )
                   for (ccode in 1:6) {
                     OF4 = foo34(
@@ -444,7 +547,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       aggPerIndividual = OF4,
                       nameold = "cleaningcode",
                       namenew = paste0("Ncleaningcode", ccode),
-                      cval = ccode
+                      cval = ccode,
+                      window = uwi[j]
                     )
                   }
                   OF4 = foo34(
@@ -452,14 +556,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     aggPerIndividual = OF4,
                     nameold = "sleeplog_used",
                     namenew = "Nsleeplog_used",
-                    cval = TRUE
+                    cval = TRUE,
+                    window = uwi[j]
                   )
                   OF4 = foo34(
                     df = OF3tmp[validdaysi, ],
                     aggPerIndividual = OF4,
                     nameold = "acc_available",
                     namenew = "Nacc_available",
-                    cval = 1
+                    cval = 1,
+                    window = uwi[j]
                   )
                   # Move valid day count variables to beginning of dataframe
                   OF4 = cbind(OF4[, 1:5], OF4[, (ncol(OF4) - 10):ncol(OF4)], OF4[, 6:(ncol(OF4) -
@@ -490,7 +596,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
-                                      uwi[j],"_L",uTRLi[h1],"M", uTRMi[h2], "V", uTRVi[h3], "_", usleepparam[h4], ".csv", sep = ""), 
+                                                     uwi[j],"_L",uTRLi[h1],"M", uTRMi[h2], "V", uTRVi[h3], "_", usleepparam[h4], ".csv", sep = ""), 
                                      row.names = FALSE, na = "", sep = sep_reports)
                 }
               }
