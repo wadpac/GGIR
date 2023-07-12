@@ -309,7 +309,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
-                          "is_read.gt3x_installed", "rawaccfiles", "checkFormat") == FALSE)]
+                          "is_read.gt3x_installed", "is_ActCR_installed", "rawaccfiles", "checkFormat") == FALSE)]
   
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
