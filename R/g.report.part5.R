@@ -431,11 +431,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # aggregate OF3 (days) to person summaries in OF4
                   OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
                                            daytype = "daytype", window = uwi[j])
+                  browser()
                   # calculate additional variables
-                  OF3tmp = OF3[,c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
-                                  "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
-                                  "dur_spt_min")]
-                  foo34 = function(df,aggPerIndividual,nameold,namenew,cval) {
+                  columns2keep = c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
+                                   "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
+                                   "dur_spt_min")
+                  if (uwi[j] == "Segments") {
+                    columns2keep = c(columns2keep, "start_end_window")
+                  }
+                  OF3tmp = OF3[, columns2keep]
+                  foo34 = function(df,aggPerIndividual,nameold,namenew,cval,window) {
                     # function to help with calculating additinal variables
                     # related to counting how many days of measurement there are
                     # that meet a certain criteria
@@ -444,17 +449,23 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     # df is the non-aggregated data (days across individuals
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
-                    df2 = function(x)
-                      df2 = length(which(x == cval)) # check which values meets criterion
-                    mmm = as.data.frame(aggregate.data.frame(df, by = list(df$filename), FUN = df2),
+                    df2 = function(x) df2 = length(which(x == cval)) # check which values meets criterion
+                    if (window == "Segments") by = list(df$filename, df$start_end_window)
+                    if (window != "Segments") by = list(df$filename)
+                    mmm = as.data.frame(aggregate.data.frame(df, by = by, FUN = df2),
                                         stringsAsFactors = TRUE)
                     mmm2 = data.frame(
                       filename = mmm$Group.1,
                       cc = mmm[, nameold],
                       stringsAsFactors = TRUE
                     )
-                    aggPerIndividual = merge(aggPerIndividual, mmm2,
-                                             by = "filename")
+                    if (window == "Segments") {
+                      mmm2$start_end_window = mmm$Group.2
+                      by = c("filename", "start_end_window")
+                    } else if (window != "Segments") {
+                      by = "filename"
+                    }
+                    aggPerIndividual = merge(aggPerIndividual, mmm2, by = by)
                     names(aggPerIndividual)[which(names(aggPerIndividual) == "cc")] = namenew
                     foo34 = aggPerIndividual
                   }
@@ -469,7 +480,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     aggPerIndividual = OF4,
                     nameold = "validdays",
                     namenew = "Nvaliddays",
-                    cval = 1
+                    cval = 1,
+                    window = uwi[j]
                   )
                   # do the same for WE (weekend days):
                   OF3tmp$validdays = 0
@@ -479,28 +491,31 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     aggPerIndividual = OF4,
                     nameold = "validdays",
                     namenew = "Nvaliddays_WE",
-                    cval = 1
+                    cval = 1,
+                    window = uwi[j]
                   )
                   # do the same for WD (weekdays):
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WD")]] = 1
-                  OF4 = foo34(df = OF3tmp, aggPerIndividual = OF4, nameold = "validdays", namenew = "Nvaliddays_WD", cval = 1) # create variable from it
+                  OF4 = foo34(df = OF3tmp, aggPerIndividual = OF4, nameold = "validdays", namenew = "Nvaliddays_WD", cval = 1, window = uwi[j]) # create variable from it
                   # do the same for daysleeper,cleaningcode, sleeplog_used, acc_available:
                   OF3tmp$validdays = 1
+                  # redefine by considering only valid days
                   OF4 = foo34(
                     df = OF3tmp[validdaysi,],
                     aggPerIndividual = OF4,
                     nameold = "daysleeper",
-                    namenew =
-                      "Ndaysleeper",
-                    cval = 1
+                    namenew = "Ndaysleeper",
+                    cval = 1,
+                    window = uwi[j]
                   )
                   OF4 = foo34(
                     df = OF3tmp[validdaysi,],
                     aggPerIndividual = OF4,
                     nameold = "cleaningcode",
                     namenew = "Ncleaningcodezero",
-                    cval = 0
+                    cval = 0,
+                    window = uwi[j]
                   )
                   for (ccode in 1:6) {
                     OF4 = foo34(
@@ -508,7 +523,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       aggPerIndividual = OF4,
                       nameold = "cleaningcode",
                       namenew = paste0("Ncleaningcode", ccode),
-                      cval = ccode
+                      cval = ccode,
+                      window = uwi[j]
                     )
                   }
                   OF4 = foo34(
@@ -516,14 +532,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     aggPerIndividual = OF4,
                     nameold = "sleeplog_used",
                     namenew = "Nsleeplog_used",
-                    cval = TRUE
+                    cval = TRUE,
+                    window = uwi[j]
                   )
                   OF4 = foo34(
                     df = OF3tmp[validdaysi, ],
                     aggPerIndividual = OF4,
                     nameold = "acc_available",
                     namenew = "Nacc_available",
-                    cval = 1
+                    cval = 1,
+                    window = uwi[j]
                   )
                   # Move valid day count variables to beginning of dataframe
                   OF4 = cbind(OF4[, 1:5], OF4[, (ncol(OF4) - 10):ncol(OF4)], OF4[, 6:(ncol(OF4) -
@@ -554,7 +572,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
-                                      uwi[j],"_L",uTRLi[h1],"M", uTRMi[h2], "V", uTRVi[h3], "_", usleepparam[h4], ".csv", sep = ""), 
+                                                     uwi[j],"_L",uTRLi[h1],"M", uTRMi[h2], "V", uTRVi[h3], "_", usleepparam[h4], ".csv", sep = ""), 
                                      row.names = FALSE, na = "", sep = sep_reports)
                 }
               }
