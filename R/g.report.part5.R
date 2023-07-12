@@ -431,7 +431,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # aggregate OF3 (days) to person summaries in OF4
                   OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
                                            daytype = "daytype", window = uwi[j])
-                  browser()
                   # calculate additional variables
                   columns2keep = c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
                                    "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
