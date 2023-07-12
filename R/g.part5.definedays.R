@@ -88,19 +88,21 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       segments_timing = paste("00:00:00", lastepoch, sep = "-")
       segments_names = "MM"
       si = 2
-      for (bi in 1:(length(breaks) - 1)) {
-        minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
-        if (minusOne == 1) {
-          segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
-          endOfSegment = fixTime(breaks[bi + 1], ws3new)
-        } else {
-          segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
-          endOfSegment = breaks[bi + 1]
+      if (all((qwindow) == c(0, 24)) == FALSE) {
+        for (bi in 1:(length(breaks) - 1)) {
+          minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
+          if (minusOne == 1) {
+            segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
+            endOfSegment = fixTime(breaks[bi + 1], ws3new)
+          } else {
+            segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
+            endOfSegment = breaks[bi + 1]
+          }
+          if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
+          segments_timing[si] = paste(breaks[bi], endOfSegment, sep = "-")
+          segments_names[si] = paste0("segment", bi)
+          si = si + 1 
         }
-        if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
-        segments_timing[si] = paste(breaks[bi], endOfSegment, sep = "-")
-        segments_names[si] = paste0("segment", bi)
-        si = si + 1 
       }
       names(segments) = segments_timing
     }

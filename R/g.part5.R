@@ -876,7 +876,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                               frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
                                                          LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
                                                          Lnames = Lnames, xmin = 60/ws3new)
-                              print(length(frag.out))
                               # fragmentation values come with a lot of decimal places
                               dsummary[si, fi:(fi + (length(frag.out) - 1))] = round(as.numeric(frag.out), digits = 5)
                               ds_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_day")
