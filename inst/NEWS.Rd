@@ -13,6 +13,8 @@
     a lot of time. If you are interestedin re-inserting this functionality and 
     contributing to its ongoing maintenance then please contact us.
     \item Part 1: Fully deprecate function g.cwaread as it migrated to GGIRread a year ago.
+    \item Address #834 by using POSIXct where possible and avoiding use of 
+    POSIXlt in data.frame
     }
   }
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
