@@ -210,9 +210,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 CN = colnames(outputfinal)
                 outputfinal2 = outputfinal
                 colnames(outputfinal2) = CN
-                delcol = which(colnames(outputfinal2) == "window" | colnames(outputfinal2) == "TRLi" |
+                delcol = which(colnames(outputfinal2) == "TRLi" |
                                  colnames(outputfinal2) == "TRMi" | colnames(outputfinal2) == "TRVi" |
                                  colnames(outputfinal2) == "sleepparam")
+                if (uwi[j] != "Segments") {
+                  delcol = c(delcol, which(colnames(outputfinal2) == "window"))
+                }
                 outputfinal2 = outputfinal2[,-delcol]
                 OF3 = outputfinal2[seluwi,]
                 OF3 = as.data.frame(OF3, stringsAsFactors = TRUE)
@@ -248,7 +251,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
                   ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number",
-                                "start_end_window", "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric")
+                                "window", "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric")
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
@@ -273,7 +276,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   }
                   # aggregate across all days
                   if (window == "Segments") {
-                    by = list(df$filename, df$start_end_window)
+                    by = list(df$filename, df$window)
                   } else {
                     by = list(df$filename)
                   }
@@ -281,7 +284,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   PlainAggregate = PlainAggregate[, -grep("^Group", colnames(PlainAggregate))]
                   # aggregate per day type (weekday or weekenddays)
                   if (window == "Segments") {
-                    by = list(df$filename, df$start_end_window, df$daytype)
+                    by = list(df$filename, df$window, df$daytype)
                   } else {
                     by = list(df$filename, df$daytype)
                   }
@@ -305,9 +308,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
                       by.x = c("filename", "daytype")
                     } else if (window == "Segments") {
-                      colnames(DAYCOUNT_Frag_Multiclass)[1:3] = c("filename","start_end_window", "daytype")
+                      colnames(DAYCOUNT_Frag_Multiclass)[1:3] = c("filename","window", "daytype")
                       colnames(DAYCOUNT_Frag_Multiclass)[4] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
-                      by.x = c("filename","start_end_window", "daytype")
+                      by.x = c("filename","window", "daytype")
                     }
                     AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = by.x)
                   }
@@ -315,11 +318,22 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   AggregateWDWE$len <- 0
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WD")] = 5 #weighting of weekdays
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WE")] = 2 #weighting of weekend days
-                  dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
-                                                                         names(AggregateWDWE) == filename)])
+                  if (window == "Segments") {
+                    dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
+                                                                           names(AggregateWDWE) == filename |
+                                                                           names(AggregateWDWE) == "window")])
+                  } else {
+                    dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
+                                                                           names(AggregateWDWE) == filename)])
+                  }
+                  
                   options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
-                  WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
+                  if (window == "Segments") {
+                    WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename, window)]
+                  } else {
+                    WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
+                  }
                   options(warn = 0)
                   LUXmetrics = c("above1000", "timeawake", "mean", "imputed", "ignored")
                   add_missing_LUX = function(x, LUX_day_segments, weeksegment = c(), LUXmetrics) {
@@ -379,9 +393,15 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   )
                   numcol = which(lapply(PlainAggregate, class) == "numeric" | LUX_segment_vars)
                   WeightedAggregate = as.data.frame(WeightedAggregate, stringsAsFactors = TRUE)
+                  
+                  if (window == "Segments") {
+                    by = c("filename", "window")
+                  } else {
+                    by = "filename"
+                  }
                   G = base::merge(PlainAggregate,
                                   WeightedAggregate,
-                                  by = "filename",
+                                  by = by,
                                   all.x = TRUE)
                   p0b = paste0(names(PlainAggregate[, charcol]), ".x")
                   p1 = paste0(names(PlainAggregate[, numcol]), ".x")
@@ -402,7 +422,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                       names(temp_aggregate) != filename)
                     numcol = which(lapply(temp_aggregate, class) %in% c("numeric", "integer") == TRUE)
                     names(temp_aggregate)[numcol] = paste0(names(temp_aggregate)[numcol], "_", weeksegment)
-                    temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename"), numcol)]
+                    if (window == "Segments") {
+                      temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename" |
+                                                                  colnames(temp_aggregate) == "window"), numcol)]
+                    } else {
+                      temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename"), numcol)]
+                    }
                     LUX_segment_vars = c()
                     for (li in 1:length(LUXmetrics)) {
                       LUX_segment_vars = grep(
@@ -416,7 +441,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       temp_aggregate = add_missing_LUX(temp_aggregate, LUX_day_segments, weeksegment, LUXmetrics)
                     }
                     G = base::merge(G, temp_aggregate,
-                                    by = "filename", all.x = TRUE)
+                                    by = by, all.x = TRUE)
                   }
                   G = G[,-which(names(G) %in% c("len", "daytype", "len_WE", "len_WD"))]
                   return(G)
@@ -436,7 +461,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                    "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
                                    "dur_spt_min")
                   if (uwi[j] == "Segments") {
-                    columns2keep = c(columns2keep, "start_end_window")
+                    columns2keep = c(columns2keep, "window")
                   }
                   OF3tmp = OF3[, columns2keep]
                   foo34 = function(df,aggPerIndividual,nameold,namenew,cval,window) {
@@ -449,7 +474,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
                     df2 = function(x) df2 = length(which(x == cval)) # check which values meets criterion
-                    if (window == "Segments") by = list(df$filename, df$start_end_window)
+                    if (window == "Segments") by = list(df$filename, df$window)
                     if (window != "Segments") by = list(df$filename)
                     mmm = as.data.frame(aggregate.data.frame(df, by = by, FUN = df2),
                                         stringsAsFactors = TRUE)
@@ -459,8 +484,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       stringsAsFactors = TRUE
                     )
                     if (window == "Segments") {
-                      mmm2$start_end_window = mmm$Group.2
-                      by = c("filename", "start_end_window")
+                      mmm2$window = mmm$Group.2
+                      by = c("filename", "window")
                     } else if (window != "Segments") {
                       by = "filename"
                     }

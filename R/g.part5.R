@@ -474,6 +474,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     indjump = 1
                     qqq_backup = c()
                     add_one_day_to_next_date = FALSE
+                    if (is.character(params_247[["qwindow"]])) {
+                      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                                              params_247[["qwindow_dateformat"]],
+                                                              epochSize = ws3new)
+                      # This will be an object with numeric qwindow values for all individuals and days
+                    }
                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,

@@ -74,6 +74,14 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
       fullQqq = qqq[1]:qqq[2]
       lastepoch = substr(ts$time[qqq[2]], 12, 19)
+      qnames = NULL
+      if (is.data.frame(qwindow)) {
+        browser()
+        date_of_interest = unique(substr(ts$time, 1, 10))[wi]
+        qdate = which(qwindow$date == date_of_interest)
+        qnames = unlist(qwindow$qwindow_names[qdate])
+        qwindow = unlist(qwindow$qwindow_values[qdate])
+      }
       breaks = qwindow2timestamp(qwindow, lastepoch = lastepoch)
       breaks_i = c()
       for (bi in 1:length(breaks)) {
@@ -100,7 +108,11 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
           }
           if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
           segments_timing[si] = paste(breaks[bi], endOfSegment, sep = "-")
-          segments_names[si] = paste0("segment", bi)
+          if (is.null(qnames)) {
+            segments_names[si] = paste0("segment", bi)
+          } else {
+            segments_names[si] = paste(qnames[si - 1], qnames[si], sep = "-")
+          }
           si = si + 1 
         }
       }
