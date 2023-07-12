@@ -243,8 +243,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #also compute summary per person
                 agg_plainNweighted = function(df,
                                               filename = "filename",
-                                              daytype = "daytype") {
-                  
+                                              daytype = "daytype",
+                                              window = "MM") {
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
                   ignorevar = c("daysleeper","cleaningcode","night_number","sleeplog_used","ID","acc_available","window_number",
@@ -289,7 +289,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   AggregateWDWE = AggregateWDWE[, -grep("^Group", colnames(AggregateWDWE))]
                   # Add counted number of days for Gini, Cov, alpha Fragmentation variables, because 
                   # days are dropped if there are not enough fragments:
-                  browser()
                   vars_with_mininum_Nfrag = c("FRAG_Gini_dur_PA_day", "FRAG_CoV_dur_PA_day",
                                               "FRAG_alpha_dur_PA_day", "FRAG_Gini_dur_IN_day",
                                               "FRAG_CoV_dur_IN_day")
@@ -301,9 +300,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       by = by,
                       FUN = function(x) length(which(is.na(x) == FALSE))
                     )
-                    colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
-                    colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
-                    AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = c("filename","daytype"))
+                    if (window != "Segments") {
+                      colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
+                      colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
+                      by.x = c("filename", "daytype")
+                    } else if (window == "Segments") {
+                      colnames(DAYCOUNT_Frag_Multiclass)[1:3] = c("filename","start_end_window", "daytype")
+                      colnames(DAYCOUNT_Frag_Multiclass)[4] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
+                      by.x = c("filename","start_end_window", "daytype")
+                    }
+                    AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = by.x)
                   }
                   len = NULL
                   AggregateWDWE$len <- 0
@@ -423,8 +429,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                                 includesegmentcrit.part5 = includesegmentcrit.part5)
                 if (length(validdaysi) > 0) { # do not attempt to aggregate if there are no valid days
                   # aggregate OF3 (days) to person summaries in OF4
-                  if (uwi[j] == "Segments") browser()
-                  OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", daytype = "daytype")
+                  OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
+                                           daytype = "daytype", window = uwi[j])
                   # calculate additional variables
                   OF3tmp = OF3[,c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
                                   "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
