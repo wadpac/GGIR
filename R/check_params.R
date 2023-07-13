@@ -366,8 +366,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (is.character(params_247[["qwindow"]])) {
       warn_user = TRUE
     } else if (is.numeric(params_247[["qwindow"]])) {
-      if (all(params_247[["qwindow"]] == c(0,24)) == FALSE) {
-        warn_user = TRUE
+      if (length(params_247[["qwindow"]]) == 2) {
+        if (all(params_247[["qwindow"]] == c(0,24)) == FALSE) {
+          warn_user = TRUE
+        }
       }
     }
     if (warn_user == TRUE) {

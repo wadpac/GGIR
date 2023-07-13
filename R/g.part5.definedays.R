@@ -96,7 +96,13 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       segments_timing = paste("00:00:00", lastepoch, sep = "-")
       segments_names = "MM"
       si = 2
-      if (all((qwindow) == c(0, 24)) == FALSE) {
+      do.segments = TRUE
+      if (length(qwindow) == 2) {
+        if (all((qwindow) == c(0, 24))) {
+          do.segments = FALSE
+        }
+      }
+      if (do.segments == TRUE) {
         for (bi in 1:(length(breaks) - 1)) {
           minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
           if (minusOne == 1) {
