@@ -509,6 +509,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             }
                             skiponset = skipwake = TRUE
                             if (si > next_si) { # because first segment is always full window
+                              if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
                               ts$segment[sss1:sss2] = si
                             }
                             #==========================
