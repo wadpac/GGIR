@@ -1,6 +1,7 @@
 g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
                           includenightcrit = c(), includedaycrit = c(), data_cleaning_file = c(),
-                          includedaycrit.part5 = 2/3, includesegmentcrit.part5 = 0.5,
+                          includedaycrit.part5 = 2/3, segmentWEARcrit.part5 = 0.5,
+                          segmentDAYSPTcrit.part5 = c(0,0), 
                           minimum_MM_length.part5 = 23, week_weekend_aggregate.part5 = FALSE,
                           LUX_day_segments = c(), excludefirstlast.part5 = c(),
                           verbose = TRUE, sep_reports = ",") {
@@ -10,7 +11,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
   # Note: argument includenightcrit and includedaycrit is not used anymore, and can be depricated
   if (length(includedaycrit) != 0 & length(includedaycrit.part5) == 0) includedaycrit.part5 = includedaycrit
   getValidDayIndices = function(x, includedaycrit.part5, excludefirstlast.part5, window,
-                                includesegmentcrit.part5) {
+                                segmentWEARcrit.part5) {
     if (window != "Segments") {
       if (includedaycrit.part5 >= 0 & includedaycrit.part5 <= 1) { # if includedaycrit.part5 is used as a ratio
         includedaycrit.part5 = includedaycrit.part5 * 100
@@ -51,31 +52,19 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     } else if (window == "Segments") {
       # clean based on segments (even if a day is not valid, a certain segment of that
       # day could be valid if participant wore device enough in that part of the day)
-      if (includesegmentcrit.part5 >= 0 & includesegmentcrit.part5 <= 1) { # if includesegmentcrit.part5 is used as a ratio
-        includesegmentcrit.part5 = includesegmentcrit.part5 * 100
-      } else if (includesegmentcrit.part5 > 1 & includesegmentcrit.part5 <= 25) { # if includesegmentcrit.part5 is used like includedaycrit as a number of hours
-        includesegmentcrit.part5 = (includesegmentcrit.part5 / 24) * 100
-      } else if (includesegmentcrit.part5 < 0 ) {
-        warning("\nNegative value of includesegmentcrit.part5 is not allowed, please change.")
-      } else if (includesegmentcrit.part5 > 25) {
-        warning("\nIncorrect value of includesegmentcrit.part5, this should be a fraction of the day between zero and one, please change.")
+      if (segmentWEARcrit.part5 >= 0 & segmentWEARcrit.part5 <= 1) { # if segmentWEARcrit.part5 is used as a ratio
+        segmentWEARcrit.part5 = segmentWEARcrit.part5 * 100
+      } else if (segmentWEARcrit.part5 < 0 ) {
+        warning("\nNegative value of segmentWEARcrit.part5 is not allowed, please change.")
+      } else if (segmentWEARcrit.part5 > 1) {
+        warning("\nIncorrect value of segmentWEARcrit.part5, this should be a fraction of the day between zero and one, please change.")
       }
-      maxpernwday = 100 - includesegmentcrit.part5
+      maxpernwday = 100 - segmentWEARcrit.part5
       include_window = rep(TRUE, nrow(x))
-      if (length(data_cleaning_file) > 0) { # allow for forced relying on guider based on external data_cleaning_file
-        DaCleanFile = data.table::fread(data_cleaning_file, data.table = FALSE)
-        days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
-        if (length(days2exclude) > 0) {
-          for (ri in 1:length(days2exclude)) {
-            id2remove = DaCleanFile$ID[days2exclude[ri]]
-            window2remove = DaCleanFile$day_part5[days2exclude[ri]]
-            include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
-          }
-        }
-      } else {
-        include_window = rep(TRUE,nrow(x))
-      }
-      indices = which(as.numeric(x$nonwear_perc_day_spt) <= maxpernwday & include_window == TRUE)
+      indices = which(as.numeric(x$nonwear_perc_day_spt) <= maxpernwday &
+                        as.numeric(x$dur_day_min) / as.numeric(x$dur_day_spt_min) >= segmentDAYSPTcrit.part5[1] &
+                        as.numeric(x$dur_spt_min) / as.numeric(x$dur_day_spt_min) >= segmentDAYSPTcrit.part5[2] &
+                        include_window == TRUE)
     }
     # exclude first and last window?
     if (excludefirstlast.part5 == TRUE) {
@@ -234,7 +223,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 validdaysi = getValidDayIndices(x = OF3, 
                                                 includedaycrit.part5 = includedaycrit.part5, 
                                                 excludefirstlast.part5 = excludefirstlast.part5, 
-                                                includesegmentcrit.part5 = includesegmentcrit.part5, 
+                                                segmentWEARcrit.part5 = segmentWEARcrit.part5, 
                                                 window = uwi[j])
                 data.table::fwrite(
                   OF3_clean[validdaysi, ],
@@ -451,7 +440,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 # add column to define what are weekenddays and weekdays as needed for function agg_plainNweighted
                 # before processing OF3, first identify which days have enough monitor wear time
                 validdaysi = getValidDayIndices(OF3,includedaycrit.part5, excludefirstlast.part5, window = uwi[j],
-                                                includesegmentcrit.part5 = includesegmentcrit.part5)
+                                                segmentWEARcrit.part5 = segmentWEARcrit.part5)
                 if (length(validdaysi) > 0) { # do not attempt to aggregate if there are no valid days
                   # aggregate OF3 (days) to person summaries in OF4
                   OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
