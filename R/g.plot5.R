@@ -70,8 +70,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
       ms2_filepath = paste(ms2dir, "/", fname_ms2[ms2_file_index], sep = "")
       P2daysummary_tmp = IMP = SUM = NULL
       load(ms2_filepath)
-      P2daysummary_tmp$measurementday = as.numeric(P2daysummary_tmp$measurementday)
       P2daysummary_tmp = SUM$daysummary
+      P2daysummary_tmp$measurementday = as.numeric(P2daysummary_tmp$measurementday)
       if (length(sel) > 0) {
         ms4_file_index = which(fname_ms4 == fname_ms3[i])
         if (length(ms4_file_index) == 1) {
