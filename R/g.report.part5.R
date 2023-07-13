@@ -298,7 +298,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       by.x = c("filename", "daytype")
                     } else if (window == "Segments") {
                       colnames(DAYCOUNT_Frag_Multiclass)[1:3] = c("filename","window", "daytype")
-                      colnames(DAYCOUNT_Frag_Multiclass)[4] = "Nvaliddays_AL10F" # AL10F, abbreviation for: at least 10 fragments
+                      colnames(DAYCOUNT_Frag_Multiclass)[4] = "Nvalidsegments_AL10F" # AL10F, abbreviation for: at least 10 fragments
                       by.x = c("filename","window", "daytype")
                     }
                     AggregateWDWE = merge(AggregateWDWE, DAYCOUNT_Frag_Multiclass, by.x = by.x)
@@ -488,29 +488,40 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   OF3tmp$validdays[validdaysi] = 1
                   # now we have a label for the valid days, we can create a new variable
                   # in OF4 that is a count of the number of valid days:
+                  namenew = "Nvaliddays"
+                  if (uwi[j] == "Segments") namenew = "Nvalidsegments"
                   OF4 = foo34(
                     df = OF3tmp,
                     aggPerIndividual = OF4,
                     nameold = "validdays",
-                    namenew = "Nvaliddays",
+                    namenew = namenew,
                     cval = 1,
                     window = uwi[j]
                   )
                   # do the same for WE (weekend days):
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WE")]] = 1
+                  namenew = "Nvaliddays_WE"
+                  if (uwi[j] == "Segments") namenew = "Nvalidsegments_WE"
                   OF4 = foo34(
                     df = OF3tmp,
                     aggPerIndividual = OF4,
                     nameold = "validdays",
-                    namenew = "Nvaliddays_WE",
+                    namenew = namenew,
                     cval = 1,
                     window = uwi[j]
                   )
                   # do the same for WD (weekdays):
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WD")]] = 1
-                  OF4 = foo34(df = OF3tmp, aggPerIndividual = OF4, nameold = "validdays", namenew = "Nvaliddays_WD", cval = 1, window = uwi[j]) # create variable from it
+                  namenew = "Nvaliddays_WD"
+                  if (uwi[j] == "Segments") namenew = "Nvalidsegments_WD"
+                  OF4 = foo34(df = OF3tmp, 
+                              aggPerIndividual = OF4, 
+                              nameold = "validdays", 
+                              namenew = namenew, 
+                              cval = 1, 
+                              window = uwi[j]) # create variable from it
                   # do the same for daysleeper,cleaningcode, sleeplog_used, acc_available:
                   OF3tmp$validdays = 1
                   # redefine by considering only valid days
