@@ -656,7 +656,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                   if (wii == 1) wname = "_spt"
                                   if (wii == 2) wname = "_day_spt"
                                   if (wii != 2) {
-                                    varnum = ts[which(ts$diur[sse] == wii), externalDataColname]
+                                    select = sse[which(ts$diur[sse] == wii)]
+                                    varnum = ts[select, externalDataColname]
                                   } else {
                                     varnum = ts[sse, externalDataColname]
                                   }
@@ -664,30 +665,30 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                   # had no external sensor data...)
                                   if (!is.numeric(varnum)) varnum = as.numeric(varnum)
                                   # N recordings
-                                  dsummary[di, fi] = sum(!is.na(varnum))
+                                  dsummary[si, fi] = sum(!is.na(varnum))
                                   ds_names[fi] = paste0(externalDataColname, wname, "_Nrecords")
                                   fi = fi + 1
                                   # MEAN
-                                  dsummary[di, fi] = mean(varnum, na.rm = TRUE)
+                                  dsummary[si, fi] = mean(varnum, na.rm = TRUE)
                                   ds_names[fi] = paste0(externalDataColname, wname, "_mean")
                                   fi = fi + 1
                                   # MEDIAN
-                                  dsummary[di, fi] = median(varnum, na.rm = TRUE)
+                                  dsummary[si, fi] = median(varnum, na.rm = TRUE)
                                   ds_names[fi] = paste0(externalDataColname, wname, "_median")
                                   fi = fi + 1
                                   # SD
-                                  dsummary[di, fi] = sd(varnum, na.rm = TRUE)
+                                  dsummary[si, fi] = sd(varnum, na.rm = TRUE)
                                   ds_names[fi] = paste0(externalDataColname, wname, "_sd")
                                   fi = fi + 1
                                   # CV
-                                  dsummary[di, fi] = (sd(varnum, na.rm = TRUE) / mean(varnum, na.rm = TRUE)) * 100
+                                  dsummary[si, fi] = (sd(varnum, na.rm = TRUE) / mean(varnum, na.rm = TRUE)) * 100
                                   ds_names[fi] = paste0(externalDataColname, wname, "_cv")
                                   fi = fi + 1
                                   # levels
                                   if (!is.null(params_247[["external_ilevels"]])) {
                                     q52 = cut(varnum, breaks = params_247[["external_ilevels"]], right = FALSE)
                                     q52 = table(q52)
-                                    dsummary[di,fi:(fi + (length(q52) - 1))] = q52
+                                    dsummary[si,fi:(fi + (length(q52) - 1))] = q52
                                     namesq52 = rep(0, length(rownames(q52)))
                                     for (rq52i in 1:length(rownames(q52))) {
                                       ds_names[fi] = paste0(externalDataColname, wname,
