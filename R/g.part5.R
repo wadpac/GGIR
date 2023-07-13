@@ -279,7 +279,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           time_POSIX = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
           tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
           if (is.na(tempp$sec[1]) == TRUE) {
-            tempp = as.POSIXlt(as.POSIXct(ts$time, tz = params_general[["desiredtz"]]))
+            time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
+            tempp = as.POSIXlt(time_POSIX)
           }
           sec = tempp$sec
           min = tempp$min
@@ -332,7 +333,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               time_POSIX = ts$time
               tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
               if (is.na(tempp$sec[1]) == TRUE) {
-                tempp = as.POSIXlt(as.POSIXct(ts$time, tz = params_general[["desiredtz"]]))
+                time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
+                tempp = as.POSIXlt(time_POSIX)
               }
               sec = tempp$sec
               min = tempp$min
