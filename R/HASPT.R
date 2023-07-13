@@ -1,7 +1,7 @@
 HASPT = function(angle, perc = 10, spt_threshold = 15,
                  sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  constrain2range = FALSE, HASPT.algo="HDCZA", invalid,
-                 HASPT.ignore.invalid=FALSE) {
+                 HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = c()
   
   adjustlength = function(x, invalid) {
@@ -22,7 +22,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       k1 = 5 * (60/ws3)
       x = zoo::rollapply(angle, width=k1, FUN=medabsdi) # 5 minute rolling median of the absolute difference
       nomov = rep(0,length(x)) # no movement
-      pp = quantile(x,probs=c(perc/100)) * spt_threshold
+      pp = quantile(x, probs = c(perc / 100)) * spt_threshold
       if (constrain2range == TRUE) {
         if (pp < 0.13) pp = 0.13
         if (pp > 0.50) pp = 0.50
@@ -47,6 +47,24 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       pp = NA
       if (length(horizontal) > 0) {
         nomov[horizontal] = 1
+      }
+    } else if (HASPT.algo == "NotWorn") {  
+      # When protocol is to not wear sensor during the night,
+      # then look for longest period of zero or very low intensity
+      # However, we need to take into account that there may be some
+      # noise in the data, so take 10th percentile and multiply by 2.
+      x = activity
+      activityThreshold = quantile(x = x, probs = 0.1) * 2
+      if (HASPT.ignore.invalid == TRUE) {
+        invalid = adjustlength(x, invalid)
+        zeroMovement = which(x <= activityThreshold & invalid == 0)
+      } else {
+        zeroMovement = which(x <= activityThreshold)
+      }
+      nomov = rep(0,length(x)) # no movement
+      pp = NA
+      if (length(zeroMovement) > 0) {
+        nomov[zeroMovement] = 1
       }
     }
     inspttime = rep(NA,length(x))

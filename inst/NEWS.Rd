@@ -8,6 +8,9 @@
     \item Part 4: Identification of column names in advanced sleeplog is now case insensitive #812
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
+    \item Part 1: Handling of external derived epoch data now able to handle
+    empty lines, user can now specify date format of the timestamps with 
+    argument extEpochData_dateformat, and ActiGraph count data also facilitated.
     \item Part 1: Deprecate functionality for file formats .wav (Axivity Ltd) .bin
     (Unilever Discover) as keeping this code up to date with newer R versions took
     a lot of time. If you are interestedin re-inserting this functionality and 

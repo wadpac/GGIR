@@ -937,6 +937,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     } else {
                       napNonwear_col = c()
                     }
+                    
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
