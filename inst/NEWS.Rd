@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-  \section{Changes in version 2.9-5 (GitHub-only-release date: ??-??-2023)}{
+  \section{Changes in version 2.9-5 (GitHub-only-release date: 13-07-2023)}{
     \itemize{
     \item Part 4: Now able to handle first night without any sustained inactivity bout detected #812
     \item Vignettes: Buchan et al. 2023 cut-points for adults included in the cut-points vignette #804
@@ -9,15 +9,15 @@
     \item Part 1: Functionality to append recordings with the same ID, see argument
     maxRecordingInterval #972
     \item Part 1: Handling of external derived epoch data now able to handle
-    empty lines, user can now specify date format of the timestamps with 
-    argument extEpochData_dateformat, and ActiGraph count data also facilitated.
+    empty lines, user can now specify format of the timestamps with 
+    argument extEpochData_timeformat, and ActiGraph count data also facilitated.
     \item Part 1: Deprecate functionality for file formats .wav (Axivity Ltd) .bin
     (Unilever Discover) as keeping this code up to date with newer R versions took
     a lot of time. If you are interestedin re-inserting this functionality and 
     contributing to its ongoing maintenance then please contact us.
     \item Part 1: Fully deprecate function g.cwaread as it migrated to GGIRread a year ago.
     \item Address #834 by using POSIXct where possible and avoiding use of 
-    POSIXlt in data.frame
+    POSIXlt in data.frame.
     }
   }
   \section{Changes in version 2.9-4 (GitHub-only-release date:18-06-2023)}{
