@@ -828,8 +828,15 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         Inclusion criteria for number of valid hours, either
         as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
 
-      \item{includesegmentcrit.part5}{
-        Numeric (default = \Sexpr{round(GGIR::load_params()[["params_cleaning"]][["includesegmentcrit.part5"]], 3)}).
+      \item{segmentWEARcrit.part5}{
+        Numeric (default = 0.5).
+        Inclusion criteria for the proportion of the segment that should be 
+        classified as day (awake) and spt (sleep period time) to be considered 
+        valid. Usually, one of the two numbers is 0, and the other defines the 
+        proportion of the segment that should be classified as day or spt.}
+        
+      \item{segmentDAYSPTcrit.part5}{
+        Numeric vector or length 2 (default = c(0, 0)).
         Inclusion criteria for number of valid hours in the segments defined with 
         qwindow in part 5 expressed as a ratio of 1.}
 
