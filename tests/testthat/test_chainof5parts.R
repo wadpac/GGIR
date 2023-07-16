@@ -335,8 +335,7 @@ test_that("chainof5parts", {
   
   
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
-  if (file.exists(dn))  unlink(dn, recursive = TRUE)
-  if (file.exists(fn)) file.remove(fn)
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  if (file.exists(fn)) unlink(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })

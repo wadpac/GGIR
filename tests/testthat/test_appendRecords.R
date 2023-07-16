@@ -123,7 +123,6 @@ test_that("Neighbouring recordings are correctly appended", {
                 desiredtz = "Europe/Amsterdam",
                 idloc = 2,
                 maxRecordingInterval = 120) # extract ID from filename
-  
   expect_true(dir.exists("./testfolder/meta/basic"))
   expect_equal(length(dir("./testfolder/meta/basic")), 2)
   expect_true(file.exists("./testfolder/meta/basic/meta_1_bin.RData"))
