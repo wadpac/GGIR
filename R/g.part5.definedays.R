@@ -1,6 +1,6 @@
 g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
                               ws3new, qqq_backup=c(), ts, Nts, timewindowi, 
-                              Nwindows, qwindow) {
+                              Nwindows, qwindow, ID = NULL) {
   # define local functions ----
   qwindow2timestamp = function(qwindow, lastepoch) {
     H = floor(qwindow)
@@ -77,7 +77,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       qnames = NULL
       if (is.data.frame(qwindow)) {
         date_of_interest = unique(substr(ts$time, 1, 10))[wi]
-        qdate = which(qwindow$date == date_of_interest)
+        qdate = which(qwindow$ID == ID & qwindow$date == date_of_interest)
         qnames = unlist(qwindow$qwindow_names[qdate])
         qwindow = unlist(qwindow$qwindow_values[qdate])
       }
