@@ -76,7 +76,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       lastepoch = substr(ts$time[qqq[2]], 12, 19)
       qnames = NULL
       if (is.data.frame(qwindow)) {
-        date_of_interest = unique(substr(ts$time, 1, 10))[wi]
+        date_of_interest = substr(ts$time[qqq[1]], 1, 10)
         qdate = which(qwindow$ID == ID & qwindow$date == date_of_interest)
         qnames = unlist(qwindow$qwindow_names[qdate])
         qwindow = unlist(qwindow$qwindow_values[qdate])
