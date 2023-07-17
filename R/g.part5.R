@@ -484,7 +484,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     }
                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
-                      browser()
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, ws3new, qqq_backup, ts, Nts,
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
