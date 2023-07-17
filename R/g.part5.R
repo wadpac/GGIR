@@ -286,9 +286,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           }
           # extract time and from that the indices for midnights
           time_POSIX = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
-          tempp = unclass(time_POSIX)
+          tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
           if (is.na(tempp$sec[1]) == TRUE) {
-            tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
+            time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
+            tempp = as.POSIXlt(time_POSIX)
           }
           sec = tempp$sec
           min = tempp$min
@@ -335,13 +336,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               ts$nonwear = round(ts$nonwear)
               names(ts)[1] = "time"
               # # convert back to iso8601 format
-              ts$time = as.POSIXlt(ts$time, origin = "1970-1-1", tz = params_general[["desiredtz"]])
+              ts$time = as.POSIXct(ts$time, origin = "1970-1-1", tz = params_general[["desiredtz"]])
               ws3new = 60 # change because below it is used to decide how many epochs are there in
               # extract nightsi again
               time_POSIX = ts$time
-              tempp = unclass(time_POSIX)
+              tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
               if (is.na(tempp$sec[1]) == TRUE) {
-                tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
+                time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
+                tempp = as.POSIXlt(time_POSIX)
               }
               sec = tempp$sec
               min = tempp$min
@@ -493,7 +495,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, ws3new, qqq_backup, ts, Nts,
-                                                   timewindowi, Nwindows, qwindow = params_247[["qwindow"]])
+                                                   timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
+                                                   ID = ID)
                       qqq = defdays$qqq
                       qqq_backup = defdays$qqq_backup
                       segments = defdays$segments
@@ -1014,6 +1017,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     } else {
                       napNonwear_col = c()
                     }
+                    
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],

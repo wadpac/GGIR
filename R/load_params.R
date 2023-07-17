@@ -122,7 +122,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
                           dataFormat = "raw", maxRecordingInterval = NULL,
                           externalDatadir = NULL,
-                          externalDataColname = NULL)
+                          externalDataColname = NULL,
+                          extEpochData_timeformat = "%d-%m-%Y %H:%M:%S")
   }
   # }
   invisible(list(params_sleep = params_sleep,

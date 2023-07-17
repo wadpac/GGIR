@@ -126,6 +126,7 @@ find a description and default value for all the arguments.
 | externalDataColname         | 1, 2, 5           | params_general           |
 | nonwear_approach            | 1                 | params_general           |
 | dataFormat                  | 1                 | params_general           |
+| extEpochData_dateformat     | 1                 | params_general           |
 | metadatadir                 | 2, 3, 4, 5        | not in parameter objects |
 | minimum_MM_length.part5     | 5                 | params_cleaning          |
 | strategy                    | 2, 5              | params_cleaning          |
