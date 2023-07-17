@@ -112,7 +112,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   # Evaluate with decimal places in seconds
   expect_equal(nrow(D1$data), 20)
   expect_equal(ncol(D1$data), 5)
-  expect_equal(as.character(strftime(D1$data$time[1:5], '%Y-%m-%d %H:%M:%OS2')), 
+  expect_equal(strftime(D1$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
+                        tz = "Europe/London"), 
                c("2022-11-02 13:01:16.00",
                  "2022-11-02 13:01:16.03",
                  "2022-11-02 13:01:16.06",
@@ -134,8 +135,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.headername.recordingid = "ID")
   expect_equal(nrow(D2$data), 20)
   expect_equal(ncol(D2$data), 5)
-  expect_equal(as.character(strftime(D2$data$time[1:5], 
-                                     '%Y-%m-%d %H:%M:%OS2')),
+  expect_equal(strftime(D2$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
+                        tz = "Europe/London"),
                c("2022-11-02 18:01:16.50", "2022-11-02 18:01:16.53",
                  "2022-11-02 18:01:16.56", "2022-11-02 18:01:16.59",
                  "2022-11-02 18:01:16.63"))

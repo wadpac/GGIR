@@ -1,6 +1,7 @@
 library(GGIR)
 context("loading and checking params")
 test_that("load_params can load parameters", {
+  skip_on_cran()
   params = load_params()
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
@@ -16,7 +17,7 @@ test_that("load_params can load parameters", {
   expect_equal(length(params$params_cleaning), 21)
   expect_equal(length(params$params_phyact), 13)
   expect_equal(length(params$params_output), 19)
-  expect_equal(length(params$params_general), 16)
+  expect_equal(length(params$params_general), 17)
 
   params_sleep = params$params_sleep
   # Test that parameter check does not generate warnings:

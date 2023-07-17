@@ -266,6 +266,14 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
         will show number of appended recordings, sampling rate for each, time overlap or gap
         and the names of the filenames of the respective recording.
       }
+      \item{extEpochData_timeformat}{
+        Character (default =
+        \Sexpr{format(GGIR::load_params()[["params_general"]][["extEpochData_timeformat"]])}).
+        To specify the time format used in the external epoch level data when
+        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", or "actigraph_csv".
+        For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for "2023-07-11 01:24:01 PM" or
+        "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
+      }
       }
     }
 
@@ -1444,6 +1452,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
           outputdir = "/media/myoutput",
           dataFormat = "actiwatch_awd",
+          extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
           mode = 1:5,
           do.report = c(2, 4, 5),
           windowsizes = c(60, 900, 3600), # 60 is the expected epoch length
@@ -1457,6 +1466,7 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
           outputdir = "/media/myoutput",
           dataFormat = "actiwatch_csv",
+          extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
           mode = 1:5,
           do.report = c(2, 4, 5),
           windowsizes = c(15, 900, 3600), # 15 is the expected epoch length
@@ -1469,12 +1479,39 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
        GGIR(datadir = "/media/ukbiobank",
            outputdir = "/media/myoutput",
            dataFormat = "ukbiobank_csv",
+           extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
            mode = c(1:2),
            do.report = c(2),
            windowsizes = c(5, 900, 3600), # We know that data was stored in 5 second epoch
            desiredtz = "Europe/London", # We know that data was collected in the UK
            visualreport = FALSE,
            overwrite = TRUE)
+        
+       # For externally derived ActiGraph count data in .CSV format assuming
+       # a study protocol where sensor was not worn during the night:
+       GGIR(datadir = "/examplefiles",
+           outputdir = "",
+           dataFormat = "actigraph_csv",
+           mode = 1:5,
+           do.report = c(2, 4, 5),
+           windowsizes = c(5, 900, 3600),
+           threshold.in = round(100 * (5/60), digits = 2),
+           threshold.mod = round(2500 * (5/60), digits = 2),
+           threshold.vig = round(10000 * (5/60), digits = 2),
+           extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
+           do.neishabouricounts = TRUE,
+           acc.metric = "NeishabouriCount_x",
+           HASPT.algo = "NotWorn",
+           HASIB.algo = "NotWorn",
+           do.visual = TRUE,
+           includedaycrit = 10,
+           includenightcrit = 10,
+           visualreport = FALSE,
+           outliers.only = FALSE,
+           save_ms5rawlevels = TRUE,
+           ignorenonwear = FALSE,
+           HASPT.ignore.invalid = FALSE,
+           save_ms5raw_without_invalid = FALSE)
   }
 }
 \author{

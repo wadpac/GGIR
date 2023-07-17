@@ -1312,6 +1312,12 @@ marginal added value of this added complexity. To use the GGIR implementation of
 the zero-crossing counts and Sadeh algorithm, specify argument
 `HASIB.algo = "ColeKripke1992"` and argument `Sadeh_axis = "Y"` to indicate that
 the algorithm should use the Y-axis of the sensor.
+- **NotWorn:** This algorithm can be used if the study protocol was to not wear
+the accelerometer at night. GGIR will then look for hours with close to zero
+movement and treat those as sustained inactivity bouts. It should be obvious that
+this does not facilitate any meaningful sleep analysis but it does allow GGIR to 
+then run GGIR part 5 based on the assumption that this analysis helped to isolate 
+night time from daytime.
 
 
 ### Notes on sleep classification algorithms designed for count data
@@ -1450,6 +1456,9 @@ methods:
     minutes are ignored. Therefore, it is partially similar to the HDCZA
     algorithm. When "HorAngle" is used, `sleepwindowType` is
     automatically set to "TimeInBed".
+-   **Guider = NotWorn**: Used for studies where the instruction was
+    not to wear the accelerometer durating the night. GGIR then searches
+    for the longest period with zero movement.
 
 For all guiders other than "HorAngle" and "sleep log" argument
 `sleepwindowType` is automatically switched to "SPT", such that no

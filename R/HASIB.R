@@ -1,6 +1,7 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), 
-                 zeroCrossingCount = c(), BrondCount = c(), NeishabouriCount = c()) {
+                 zeroCrossingCount = c(), BrondCount = c(), NeishabouriCount = c(),
+                 activity = NULL) {
   epochsize = ws3 #epochsize in seconds
   sumPerWindow = function(x, epochsize, summingwindow = 60) {
     x2 = cumsum(c(0, x))
@@ -38,7 +39,8 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     return(sib_classification)
   }
   #===============================
-  Nvalues = max(length(anglez), length(zeroCrossingCount), length(BrondCount), length(NeishabouriCount))
+  Nvalues = max(length(anglez), length(zeroCrossingCount), length(BrondCount), length(NeishabouriCount),
+                length(activity))
   if (HASIB.algo == "vanHees2015") { # default
     cnt = 1
     Ndefs = length(timethreshold) * length(anglethreshold)
@@ -214,6 +216,20 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
+  } else if (HASIB.algo == "NotWorn") {  
+    # For the rare study protocols where sensor is not worn during the night
+    # there is no point in looking at sleep. Nonetheless for the GGIR 
+    # framework to work we need some estimate. This is not ideal but seems a pragmatic work
+    # around to avoid having to completely redesign GGIR just for those studies.
+    
+    sib_classification = as.data.frame(matrix(0, Nvalues, 1))
+    activityThreshold = as.numeric(quantile(x = activity, probs = 0.1) * 2)
+    activity2 = zoo::rollmax(x = activity, k = 3600 / epochsize, fill = 1)
+    zeroMovement = which(activity2 <= activityThreshold)
+    if (length(zeroMovement) > 0) {
+      sib_classification[zeroMovement, 1] = 1
+    }
+    colnames(sib_classification) = "NotWorn"
   }
   return(sib_classification)
 }
