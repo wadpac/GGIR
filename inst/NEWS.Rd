@@ -1,6 +1,11 @@
 \name{NEWS}
 \title{News for Package \pkg{GGIR}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+  \section{Changes in version 2.9-6 (GitHub-only-release date: ?-?-2023)}{
+    \itemize{
+    \item Part 5: Now able to segment days based on qwindow #815
+    }
+  }
   \section{Changes in version 2.9-5 (GitHub-only-release date: 13-07-2023)}{
     \itemize{
     \item Part 4: Now able to handle first night without any sustained inactivity bout detected #812
