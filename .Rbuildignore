@@ -10,3 +10,14 @@ RELEASE_CYCLE.md
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^vignettes/chapter0.Rmd
+^vignettes/chapter1.Rmd
+^vignettes/chapter2.Rmd
+^vignettes/chapter3.Rmd
+^vignettes/chapter4.Rmd
+^vignettes/chapter5.Rmd
+^vignettes/chapter6.Rmd
+^vignettes/chapter7.Rmd
+^vignettes/chapter8.Rmd
+^vignettes/chapter9.Rmd
+^vignettes/chapter10.Rmd
