@@ -26,12 +26,30 @@ navbar:
   components:
     intro:
       text: Get Started
-      href: index.html
+      href: articles/chapter0.html
     articles:
       text: Articles
       menu:
-        - text: Chapter.
-          href: articles/GGIR.html
+        - text: 1. The GGIR pipeline
+          href: articles/chapter1.html
+        - text: 2. Inspecting the Data Quality in GGIR
+          href: articles/chapter2.html
+        - text: 3. From Raw Data to Acceleration Metrics
+          href: articles/chapter3.html
+        - text: 4. Accounting for Study Protocol
+          href: articles/chapter4.html
+        - text: 5. How GGIR Deals with Invalid Data
+          href: articles/chapter5.html
+        - text: 6. Characterizing Human Behaviour with GGIR
+          href: articles/chapter6.html
+        - text: 7. The 24-hour time use analysis
+          href: articles/chapter7.html
+        - text: 8. Cleaning the Data
+          href: articles/chapter8.html
+        - text: 9. Inspecting the results
+          href: articles/chapter9.html
+        - text: 10. Motivation and Clarification
+          href: articles/chapter10.html
   
   structure:
     left:  [intro, articles, news]
