@@ -467,12 +467,15 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     } else { # development mode, pass on individual function that were sourced by developer
       # pass on functions
       # packages2passon = 'Rcpp'
-      functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma", "g.applymetrics",
-                           "g.readaccfile", "g.wavread", "g.downsample", "updateBlocksize",
+      functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma",
+                           "g.applymetrics",
+                           "g.readaccfile", "g.downsample", "updateBlocksize",
                            "g.getstarttime", "POSIXtime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
-                           "get_nw_clip_block_params", "get_starttime_weekday_meantemp_truncdata", "ismovisens",
-                           "g.extractheadervars", "g.imputeTimegaps", "extract_params", "load_params",
+                           "get_nw_clip_block_params",
+                           "get_starttime_weekday_meantemp_truncdata", "ismovisens",
+                           "g.extractheadervars", "g.imputeTimegaps", "extract_params",
+                           "load_params",
                            "check_params", "detect_nonwear_clipping")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
