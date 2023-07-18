@@ -15,7 +15,7 @@ GGIR(mode = 1:5,
      datadir = c(),
      outputdir = c(),
      studyname = c(),
-     f0 = 0, f1 = 1,
+     f0 = 1, f1 = 0,
      do.report = c(2, 4, 5),
      configfile = c(),
      myfun = c(),
@@ -47,12 +47,12 @@ GGIR(mode = 1:5,
     by this input argument will be used as name for the study.
   }
   \item{f0}{
-    Numeric (default = 0).
+    Numeric (default = 1).
     File index to start with (default = 1). Index refers to the filenames sorted
     in alphabetical order.
   }
   \item{f1}{
-    Numeric (default = 1).
+    Numeric (default = 0).
     File index to finish with (defaults to number of files available).
   }
   \item{do.report}{
