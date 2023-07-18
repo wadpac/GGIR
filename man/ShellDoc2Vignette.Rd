@@ -8,11 +8,11 @@
   Function not designed for direct use by package user.
 }
 \usage{
-  ShellDoc2Vignette(argument = \Sexpr{format(paste0('"',formals(GGIR::ShellDoc2Vignette)[["argument"]],'"'))})
+  ShellDoc2Vignette(argument = "mode")
 }
 \arguments{
   \item{argument}{
-    Character (default = \Sexpr{format(paste0('"',formals(GGIR::ShellDoc2Vignette)[["argument"]],'"'))}). 
+    Character (default = "mode"). 
     Name of the argument to extract the definition.
   }
 }

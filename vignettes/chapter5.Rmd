@@ -1,0 +1,19 @@
+---
+title: "5. How GGIR Deals with Invalid Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5. How GGIR Deals with Invalid Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(GGIR)
+```
