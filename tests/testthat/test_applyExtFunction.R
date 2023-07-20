@@ -39,4 +39,24 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_that(nrow(output),equals(4))
   expect_that(sum(output[,2:4]),equals(66000))
   expect_that(output[3,2],equals(7000))
+  
+  # test with different settings ----
+  myfun =  list(FUN=exampleExtFunction,
+                parameters = 1.1,
+                expected_sample_rate= 30, # resample data to 30 Hertz before applying function
+                expected_unit="ms2",
+                minlength = 1,
+                outputres = 1,
+                colnames=c("A","B","C"),
+                outputtype="numeric", #"numeric" (averaging is possible), "category" (majority vote)
+                aggfunction = mean,
+                timestamp=TRUE) # for unit test only
+  
+  expect_warning({ # warning from setting timestamp = TRUE
+    output = applyExtFunction(data, myfun, sf, ws3)
+  })
+  
+  expect_that(ncol(output),equals(3))
+  expect_that(nrow(output),equals(4))
+  expect_that(sum(output[,2:3]),equals(431.64))
 })
