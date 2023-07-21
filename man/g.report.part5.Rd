@@ -51,14 +51,14 @@
     as expressed as a ratio of 1 or as the number of hours in a 24 hour day.
   }
   \item{segmentWEARcrit.part5}{
-    Inclusion criteria for number of valid hours in the segments defined with
-    qwindow in part 5, expressed as a ratio of 1.
+    Fraction of \code{qwindow} segment expected to be valid in part 5, where 0.3 
+    indicates that at least 30 percent of the time should be valid.
   }
   \item{segmentDAYSPTcrit.part5}{
     Numeric vector of length 2 with the inclusion criteria for the proportion
-    of the segment that should be classified as day (awake) and spt (sleep period 
-    time) to be considered valid. Usually, one of the two numbers is 0, and the other
-    defines the proportion of the segment that should be classified as day or spt.
+    of the \code{qwindow} segment that should be classified as day (awake) and 
+    spt (sleep period time) to be considered valid. Usually, one of the two 
+    numbers is 0.
   }
   \item{minimum_MM_length.part5}{
     Minimum length in hours of a MM day to be included in the cleaned

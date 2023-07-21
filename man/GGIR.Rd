@@ -823,8 +823,8 @@ GGIR(mode = \Sexpr{format(formals(GGIR::GGIR)[["mode"]])},
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
-        Inclusion criteria for number of valid hours in the segments defined with 
-        qwindow in part 5 expressed as a ratio of 1.}
+        Fraction of \code{qwindow} segment expected to be valid in part 5, where 
+        0.3 indicates that at least 30 percent of the time should be valid.}
         
       \item{segmentDAYSPTcrit.part5}{
         Numeric vector or length 2 (default = c(0, 0)).

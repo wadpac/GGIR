@@ -52,13 +52,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     } else if (window == "Segments") {
       # clean based on segments (even if a day is not valid, a certain segment of that
       # day could be valid if participant wore device enough in that part of the day)
-      if (segmentWEARcrit.part5 >= 0 & segmentWEARcrit.part5 <= 1) { # if segmentWEARcrit.part5 is used as a ratio
-        segmentWEARcrit.part5 = segmentWEARcrit.part5 * 100
-      } else if (segmentWEARcrit.part5 < 0 ) {
-        warning("\nNegative value of segmentWEARcrit.part5 is not allowed, please change.")
-      } else if (segmentWEARcrit.part5 > 1) {
-        warning("\nIncorrect value of segmentWEARcrit.part5, this should be a fraction of the day between zero and one, please change.")
-      }
+      segmentWEARcrit.part5 = segmentWEARcrit.part5 * 100
       maxpernwday = 100 - segmentWEARcrit.part5
       include_window = rep(TRUE, nrow(x))
       indices = which(as.numeric(x$nonwear_perc_day_spt) <= maxpernwday &
