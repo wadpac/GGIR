@@ -363,18 +363,20 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   # cleaning parameters for segments
-  if (is.null(params_cleaning[["segmentWEARcrit.part5"]])) {
-    # if null, then assign default value
-    params_cleaning[["segmentWEARcrit.part5"]] = 0.5
-    warning(paste0("\nsegmentWEARcrit.part5 is expected to be a number between 0 and 1",
-                   ", the default value has been assigned (i.e., 0.5) "), call. = FALSE)
-  } else if (params_cleaning[["segmentWEARcrit.part5"]] < 0 | 
-             params_cleaning[["segmentWEARcrit.part5"]] > 1) {
-    stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
-                "fraction of the day between zero and one, please change."), 
-         call. = FALSE)
+  if (length(params_cleaning) > 0) {
+    if (is.null(params_cleaning[["segmentWEARcrit.part5"]])) {
+      # if null, then assign default value
+      params_cleaning[["segmentWEARcrit.part5"]] = 0.5
+      warning(paste0("\nsegmentWEARcrit.part5 is expected to be a number between 0 and 1",
+                     ", the default value has been assigned (i.e., 0.5) "), call. = FALSE)
+    } else if (params_cleaning[["segmentWEARcrit.part5"]] < 0 | 
+               params_cleaning[["segmentWEARcrit.part5"]] > 1) {
+      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
+                  "fraction of the day between zero and one, please change."), 
+           call. = FALSE)
+    }
   }
-
+  
   
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
