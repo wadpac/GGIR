@@ -15,6 +15,14 @@ test_that("chainof5parts", {
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
   minimumFileSizeMB = 0
   #--------------------------------------------
+  # isfilelist
+  expect_true(isfilelist(c("file1.bin", "file2.bin")))
+  expect_true(isfilelist(c("file1.csv", "file2.csv")))
+  expect_true(isfilelist(c("file1.wav", "file2.wav")))
+  expect_true(isfilelist(c("file1.cwa", "file2.cwa")))
+  expect_true(isfilelist(c("file1.gt3x", "file2.gt3x")))
+  expect_true(isfilelist(c("file1.bin", "file2.gt3x")))
+  #--------------------------------------------
   # part 1
   g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
