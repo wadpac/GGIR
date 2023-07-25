@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 2.9-6
+
+- Config file: Fix minor bug by ignoring the local function getExt from the config file #846
+
 # CHANGES IN GGIR VERSION 2.9-5
 
 - Part 4: Now able to handle first night without any sustained inactivity bout detected #812
