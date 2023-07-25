@@ -180,7 +180,12 @@ can select to include only those segments with a given amount of wear time
 during the segment (`segmentWEARcrit.part5`), as well as with a given 
 awake time or sleep period time in the segment (`segmentDAYSPTcrit.part5`). 
 
-These arguments are likely to be critical for a meaningful analysis of the data. The presence of sleep in a segment with physical activity will bias physical activity estimates and the presence of physical activity in a segment with sleep will bias sleep estimates. It will then become impossible to quantify whether it was the lack of one or the presence of the other behaviour that drives the association
+These arguments are likely to be critical for a meaningful analysis of the data. 
+The presence of sleep in a segment with physical activity will bias physical inactivity 
+estimates and the presence of physical activity in a segment with sleep will bias 
+sleep estimates. It will then become impossible to quantify whether it was the lack
+of one or the presence of the other behaviour that drives the association with
+for example a health outcome.
 
 
 # Analyses performed per day segment
