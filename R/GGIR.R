@@ -380,16 +380,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (f1 == 0) f1 = N.files.ms5.out
       g.report.part5(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      loglocation = params_sleep[["loglocation"]],
-                     includenightcrit = params_sleep[["includenightcrit"]],
-                     includedaycrit = params_cleaning[["includedaycrit"]],
-                     data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                     includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
-                     segmentWEARcrit.part5 = params_cleaning[["segmentWEARcrit.part5"]],
-                     segmentDAYSPTcrit.part5 = params_cleaning[["segmentDAYSPTcrit.part5"]],
-                     minimum_MM_length.part5 = params_cleaning[["minimum_MM_length.part5"]],
+                     params_cleaning = params_cleaning,
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
-                     excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
                      verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")
