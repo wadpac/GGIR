@@ -49,7 +49,7 @@ test_that("lux_per_segment is correctly calculated", {
   
   # lux values are artificial, so they are not expected to be reasonable values
   # values produced with rnorm so not make sense to test the actual values produced
-  expect_equal(length(which(grepl("^LUX", colnames(df)))), 12)
+  expect_equal(length(which(grepl("^LUX", colnames(df)))), 12) # max and mean day, mean spt, mean mvpa, and ranges ()
   expect_equal(df$LUX_min_0_500_day, df$dur_day_min) #in this artificial data, all LUX values in the day are expected to be below 500
   
   # dayborder and ws3 = 60
@@ -62,7 +62,5 @@ test_that("lux_per_segment is correctly calculated", {
   load(p5raw_fn)
   expect_equal(diff(mdat[1:2, "timenum"]), 60) #epoch = 60
   pm11 = grep("23:00:00", as.character(mdat$timestamp))[1]
-  expect_equal(diff(mdat[pm11:(pm11 + 1), "window"]), 1) #dayborder = 23 (change in window at 23:00) 
-  # last test needs to be changed when bias in 1 epoch is solved (issue #838)
-  # expect_equal(diff(mdat[(pm11 - 1):pm11, "window"]), 1) #dayborder = 23 (change in window at 23:00) 
+  expect_equal(diff(mdat[(pm11 - 1):pm11, "window"]), 1) #dayborder = 23 (change in window at 23:00)
 })

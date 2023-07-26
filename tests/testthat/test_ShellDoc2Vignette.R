@@ -3,7 +3,7 @@ context("ShellDoc2Vignette and parametersVignette")
 test_that("ShellDoc2Vignette retrieves the parameters definition correctly", {
   
   # ShellDoc2Vignette
-  x = ShellDoc2Vignette("mode")
+  x = ShellDoc2Vignette(mode)
   expect_true(grepl("^Numeric", x))
   
   x = ShellDoc2Vignette("desiredtz")
