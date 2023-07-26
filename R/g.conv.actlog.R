@@ -102,9 +102,9 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
         # Note: qindow is a data.frame and the timestamps for each day will be stored
         # as a list object in a single cell of qwindow. The same applies ot the corresponding
         # labels.
-        k = cnt+j-1
-        if ((datei[j+1] - datei[j]) >= 2) {
-          actlog_tmp = actlog[i,(datei[j]+1):(datei[j+1]-1)]
+        k = cnt + j - 1
+        if ((datei[j + 1] - datei[j]) >= 2) {
+          actlog_tmp = actlog[i,(datei[j] + 1):(datei[j + 1] - 1)]
           actlog_tmp = actlog_tmp[which(is.na(actlog_tmp) == FALSE & actlog_tmp != "")]
           qwindow$qwindow_times[k] = list(actlog_tmp) # list of times for that day
           # make sure that seconds are multiple of epochSize
@@ -116,7 +116,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
             seconds2sum = epochSize - seconds[to_next_epoch] %% epochSize
             time = time + seconds2sum
             timechar_new = as.character(time)
-            time_new = strsplit(timechar_new, " ", fixed = T)[[1]][2]
+            time_new = unlist(lapply(timechar_new, FUN = function(x) strsplit(x, " ", fixed = T)[[1]][2]))
             qwindow$qwindow_times[[k]][to_next_epoch] = time_new
           }
           qwindow$qwindow_values[k] = list(time2numeric(qwindow$qwindow_times[k]))
