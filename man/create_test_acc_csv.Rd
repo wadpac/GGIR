@@ -10,7 +10,8 @@ with bouts of higher acceleration, variations non-movement periods
 in a range of accelerometer positions to allow for testing the
 auto-calibration functionality.}
 \usage{
-  create_test_acc_csv(sf=3,Nmin=2000,storagelocation=c())
+  create_test_acc_csv(sf=3,Nmin=2000,storagelocation=c(),
+                      starts_at_midnight = FALSE)
 }
 \arguments{
   \item{sf}{
@@ -23,6 +24,10 @@ auto-calibration functionality.}
     Location where the test file named testfile.csv will be stored
     If no value is provided then the function uses the current 
     working directory
+  }
+  \item{starts_at_midnight}{
+    Boolean indicating whether the recording should start at 
+    midnight.
   }
 }
 \value{
