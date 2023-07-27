@@ -1,5 +1,4 @@
 library(GGIR)
-library(GGIRread)
 context("g.readaccfile")
 test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly", {
   skip_on_cran()
