@@ -29,8 +29,13 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
-    if (nightsi[1] == 1) wi = wi + 1 # if recording starts at midnight
-    if (Nwindows >= wi) {
+    # if recording starts at midnight, adjust wi and nightsi
+    if (nightsi[1] == 1) {
+      wi = wi + 1
+      # add extra nightsi to get the last day processed (as wi has been increased by 1)
+      nightsi = c(nightsi, nightsi + (24*(60/ws3new) * 60) - 1)
+    }
+    if (length(nightsi) >= wi) {
       if (wi == 1) {
         qqq[1] = 1
         qqq[2] = nightsi[wi] - 1
