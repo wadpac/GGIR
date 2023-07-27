@@ -30,7 +30,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # in the data for this day.
   if (timewindowi == "MM") {
     if (nightsi[1] == 1) wi = wi + 1 # if recording starts at midnight
-    if (length(nightsi) >= wi) {
+    if (Nwindows >= wi) {
       if (wi == 1) {
         qqq[1] = 1
         qqq[2] = nightsi[wi] - 1
