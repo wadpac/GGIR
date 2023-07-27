@@ -9,11 +9,11 @@
   Function not designed for direct use by package user.
 }
 \usage{
-  parametersVignette(params = \Sexpr{format(paste0('"',formals(GGIR::parametersVignette)[["params"]],'"'))})
+  parametersVignette(params = "sleep")
 }
 \arguments{
   \item{params}{
-    Character (default = \Sexpr{format(paste0('"',formals(GGIR::parametersVignette)[["params"]],'"'))}). 
+    Character (default = "sleep"). 
     Name of the parameters object to build its corresponding section in the Parameters vignette.
   }
 }

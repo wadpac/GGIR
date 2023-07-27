@@ -7,3 +7,7 @@ CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 RELEASE_CYCLE.md
 ^CRAN-SUBMISSION$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^vignettes/chapter*.Rmd
