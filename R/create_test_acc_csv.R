@@ -1,4 +1,5 @@
-create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c()) {
+create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c(),
+                               starts_at_midnight = FALSE) {
   # function to create a test Actigraph csv file needed for testing GGIR
   # adds variation in angle to enable autocalibration
   # adds some activity periods
@@ -47,16 +48,29 @@ create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c()) {
   
   if (length(storagelocation) == 0) storagelocation = getwd()
   if (Nmin < 2000) Nmin = 2000 # only make this file for tests with at least 2k minutes of data
-  header = c(paste0("------------ Data File Created By ActiGraph GT3X+ ActiLife v6.13.3 Firmware v1.8.0 date format M/d/yyyy at ",sf," Hz  Filter Normal -----------"),
-             "Serial Number: MOS2D12345678",
-             "Start Time 08:55:30",
-             "Start Date 6/23/2016",
-             "Epoch Period (hh:mm:ss) 00:00:00",
-             "Download Time 10:28:51",
-             "Download Date 6/25/2016",
-             "Current Memory Address: 0",
-             "Current Battery Voltage: 3.97     Mode = 12",
-             "--------------------------------------------------")
+  if (starts_at_midnight) {
+    header = c(paste0("------------ Data File Created By ActiGraph GT3X+ ActiLife v6.13.3 Firmware v1.8.0 date format M/d/yyyy at ",sf," Hz  Filter Normal -----------"),
+               "Serial Number: MOS2D12345678",
+               "Start Time 0:00:00",
+               "Start Date 6/23/2016",
+               "Epoch Period (hh:mm:ss) 00:00:00",
+               "Download Time 10:28:51",
+               "Download Date 6/25/2016",
+               "Current Memory Address: 0",
+               "Current Battery Voltage: 3.97     Mode = 12",
+               "--------------------------------------------------")
+  } else {
+    header = c(paste0("------------ Data File Created By ActiGraph GT3X+ ActiLife v6.13.3 Firmware v1.8.0 date format M/d/yyyy at ",sf," Hz  Filter Normal -----------"),
+               "Serial Number: MOS2D12345678",
+               "Start Time 08:55:30",
+               "Start Date 6/23/2016",
+               "Epoch Period (hh:mm:ss) 00:00:00",
+               "Download Time 10:28:51",
+               "Download Date 6/25/2016",
+               "Current Memory Address: 0",
+               "Current Battery Voltage: 3.97     Mode = 12",
+               "--------------------------------------------------")
+  }
   variablenames = c("Accelerometer X","Accelerometer Y","Accelerometer Z")
   Nrows = Nmin*sf*60
   # default values, including some calibration error such that auto-calibration can do its work
