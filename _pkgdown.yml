@@ -32,6 +32,10 @@ navbar:
     intro:
       text: Get Started
       href: articles/chapterInProgress.html
+    twitter:
+      icon: fa-twitter
+      href: https://twitter.com/RpackageGGIR
+      aria-label: Twitter
     articles:
       text: Articles
       menu:
