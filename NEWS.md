@@ -1,6 +1,16 @@
 # CHANGES IN GGIR VERSION 2.9-6
 
+- Part 5: Now able to segment days based on qwindow #815
+
+- Part 5: Fix minor bug related to the definition of the MM window (it was biased by 1 epoch) #838
+
+- Activity log: Fix minor bug that appeared when seconds in the activity log are not compatible with the epoch length used in GGIR #844
+
 - Config file: Fix minor bug by ignoring the local function getExt from the config file #846
+
+- Update authors' information in DESCRIPTION and CITATION files
+
+- Added structure for github.io documentation page
 
 # CHANGES IN GGIR VERSION 2.9-5
 
