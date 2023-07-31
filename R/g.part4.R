@@ -41,7 +41,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
-                             nnights = params_sleep[["nnights"]],
                              meta.sleep.folder = meta.sleep.folder,
                              desiredtz = params_general[["desiredtz"]])
     sleeplog = logs_diaries$sleeplog
@@ -211,15 +210,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         if (dolog == TRUE) logid = sleeplog$ID[wi][1]
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
-        if (length(params_sleep[["nnights"]]) == 0) {
-          nnightlist = 1:max(sib.cla.sum$night)  # sib.cla.sum is the output from g.part3
+        if (dolog == TRUE) {
+          last_night = max(max(sib.cla.sum$night), 
+                           max(as.numeric(sleeplog$night)))
         } else {
-          if (max(sib.cla.sum$night) < params_sleep[["nnights"]]) {
-            nnightlist = 1:max(sib.cla.sum$night)
-          } else {
-            nnightlist = 1:params_sleep[["nnights"]]
-          }
+          last_night = max(sib.cla.sum$night)
         }
+        nnightlist = 1:last_night
+        
         if (length(nnightlist) < length(wi)) {
           nnightlist = nnightlist[1:length(wi)]
         }

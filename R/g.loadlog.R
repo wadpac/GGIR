@@ -1,4 +1,4 @@
-g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
+g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
                      sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
   dateformat_correct = "%Y-%m-%d" # set default value
@@ -45,6 +45,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     # columnames with nonwear represent nonwear start or end-times
     # dates are expressed as YYYY-mm-dd
     datecols = grep(pattern = "date", x = colnames(S), value = FALSE, ignore.case = TRUE)
+    nnights = length(datecols)
     # if date occurs in column names at least twice we assume it is an advanced sleeplogreport
     if (length(datecols) > 1) { # if yes, do:
       wakecols = grep(pattern = "wakeup",x = colnames(S), value = FALSE, ignore.case = TRUE)
@@ -198,15 +199,18 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       }
     }
   }
-  nnights = nnights + deltadate
+  nnights = nnights + deltadate + 1
   # # From here we continue with original code focused on sleeplog only
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
   cnt = 1
   nnights = min(floor((ncol(S) - 1) / 2), nnights)
-  for (i in 1:nnights) { #loop through nights
-    SL = as.character(S[,coln1 + ((i - 1) * 2)])
-    WK = as.character(S[,coln1 + ((i - 1) * 2) + 1])
+  sli = coln1
+  wki = sli + 1
+  night = 1
+  while (wki <= ncol(S)) { #loop through nights
+    SL = as.character(S[,sli])
+    WK = as.character(S[,wki])
     # Check whether any correction need to be made to the sleep log:
     for (j in 1:length(SL)) { #loop through participant
       # idtmp = S[j,colid]
@@ -231,12 +235,15 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         is.na(dur) =  TRUE
       }
       sleeplog[cnt,1] = as.character(S[j,colid])
-      sleeplog[cnt,2] = i #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
+      sleeplog[cnt,2] = night #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
       sleeplog[cnt,3] = dur
       sleeplog_times[cnt,1] = SL[j]
       sleeplog_times[cnt,2] = WK[j]
       cnt = cnt + 1
     }
+    sli = sli + 2
+    wki = wki + 2
+    night = night + 1
   }
   # delete id-numbers that are unrecognisable
   empty_rows = which(as.character(sleeplog[,1]) == "0")
