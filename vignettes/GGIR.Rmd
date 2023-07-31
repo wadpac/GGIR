@@ -380,7 +380,7 @@ analysis](#Sleep_analysis).
 -   If you want the sleep analysis to be guided by a sleeplog (diary)
     then check out arguments `loglocation` which specifies the location
     of the spreadsheet (csv) with sleep log information. Further, use
-    arguments `colid`, `coln1`, `nnights`, and `sleeplogsep` to specify
+    arguments `colid` and `coln1` to specify
     the details of your sleep log structure.
 
 GGIR facilitates two possible sleeplog file structures:
