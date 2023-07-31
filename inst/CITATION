@@ -81,3 +81,19 @@ bibentry(bibtype = "Article",
         year      =  2018,
         url       = "https://www.nature.com/articles/s41598-018-31266-z")
 
+
+bibentry(bibtype = "Article",
+        title = "GGIR: A Research Community-Driven Open Source R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw Accelerometer Data",
+        author = c(person("Jairo H","Migueles",role="aut"),
+                   person("Alex V","Rowlands"),
+                   person("Florian","Huber"),
+                   person("Severine","Sabia"),
+                   person("Vincent T","van Hees",role=c("aut","cre"),
+                          email="v.vanhees@accelting.com")),
+        doi = "10.1123/jmpb.2018-0063",
+        journal = "Journal for the Measurement of Physical Behavior",
+        volume    =  2,
+        number    =  3,
+        year      =  2019,
+        url       = "https://journals.humankinetics.com/view/journals/jmpb/2/3/article-p188.xml")
+
