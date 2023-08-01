@@ -195,9 +195,21 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         firstmidnight = midnights[1]
         firstmidnighti = midnightsi[1]
       }
-      for (j in 1:(countmidn)) { #Looping over the midnight
-        qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
-        qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
+      # if recording started before 6am, then also derive first awakening
+      first6am = grep("06:00:00", time)[1]
+      if (first6am < firstmidnighti) {
+        midn_start = 0
+      } else {
+        midn_start = 1
+      }
+      for (j in midn_start:(countmidn)) { #Looping over the midnight
+        if (j == 0) {
+          qqq1 = 1 # preceding noon (not available in recording)
+          qqq2 = grep("12:00:00", time)[1] # first noon in recording
+        } else {
+          qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
+          qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
+        }
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
         night[qqq1:qqq2] = j
