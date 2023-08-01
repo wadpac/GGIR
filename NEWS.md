@@ -10,6 +10,10 @@
 
 - Config file: Fix minor bug by ignoring the local function getExt from the config file #846
 
+- Update authors' information in DESCRIPTION and CITATION files
+
+- Added structure for github.io documentation page
+
 # CHANGES IN GGIR VERSION 2.9-5
 
 - Part 4: Now able to handle first night without any sustained inactivity bout detected #812
