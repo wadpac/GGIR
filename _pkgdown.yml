@@ -14,10 +14,15 @@ template:
       card: summary_large_image
       
 authors:
-  Vincent van Hees:
-    href: https://www.accelting.com
+  Vincent T van Hees:
+    href: https://www.accelting.com/
   Jairo H Migueles:
-    href: https://www.jhmigueles.com
+    href: https://www.jhmigueles.com/
+  footer:
+    roles: [aut]
+    text: "Developed by"
+  sidebar:
+    roles: [aut]
 
 home:
   title: GGIR R Package
@@ -27,6 +32,10 @@ navbar:
     intro:
       text: Get Started
       href: articles/chapterInProgress.html
+    twitter:
+      icon: fa-twitter
+      href: https://twitter.com/RpackageGGIR
+      aria-label: Twitter
     articles:
       text: Articles
       menu:
