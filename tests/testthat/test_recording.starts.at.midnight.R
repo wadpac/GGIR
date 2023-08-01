@@ -15,7 +15,7 @@ test_that("Test recordings that start at midnight", {
   #--------------------------------------------
   # run GGIR
   GGIR(datadir = fn, outputdir = getwd(), studyname = "test",
-       verbose = TRUE, desiredtz = desiredtz,
+       verbose = FALSE, desiredtz = desiredtz,
        loglocation = sleeplog_fn, colid = 1, coln1 = 2, 
        nnights = 7, timewindow = "MM")
   #--------------------------------------------

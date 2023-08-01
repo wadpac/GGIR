@@ -19,6 +19,7 @@ test_that("lux_per_segment is correctly calculated", {
   meta_fn = paste(getwd(), "output_test", "meta", "basic", 
                   "meta_123A_testaccfile.csv.RData", sep = .Platform$file.sep)
   load(meta_fn)
+  set.seed(400)
   M$metalong$lightmean = rnorm(n = nrow(M$metalong),mean=1000,sd=2000)
   M$metalong$lightmean[which(M$metalong$lightmean < 0)] = 0
   M$metalong$lightmean = M$metalong$lightmean / 1000
@@ -47,9 +48,10 @@ test_that("lux_per_segment is correctly calculated", {
                 sep = .Platform$file.sep)
   df = read.csv(p5_fn)
   
-  # lux values are artificial, so they are not expected to be reasonable values
-  # values produced with rnorm so not make sense to test the actual values produced
   expect_equal(length(which(grepl("^LUX", colnames(df)))), 12) # max and mean day, mean spt, mean mvpa, and ranges ()
+  expect_equal(df$LUX_max_day, 3.3)
+  expect_equal(df$LUX_mean_day, 2)
+  expect_equal(df$LUX_mean_day_mvpa, 2.7)
   expect_equal(df$LUX_min_0_500_day, df$dur_day_min) #in this artificial data, all LUX values in the day are expected to be below 500
   
   # dayborder and ws3 = 60
