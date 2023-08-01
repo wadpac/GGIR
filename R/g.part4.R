@@ -211,12 +211,15 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
         if (dolog == TRUE) {
+          first_night = min(min(sib.cla.sum$night), 
+                            min(as.numeric(sleeplog$night)))
           last_night = max(max(sib.cla.sum$night), 
                            max(as.numeric(sleeplog$night)))
         } else {
+          first_night = min(sib.cla.sum$night)
           last_night = max(sib.cla.sum$night)
         }
-        nnightlist = 1:last_night
+        nnightlist = first_night:last_night
         
         if (length(nnightlist) < length(wi)) {
           nnightlist = nnightlist[1:length(wi)]
@@ -224,7 +227,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # create overview of which night numbers in the file that have a value and are not equal
         # to zero
         nnights.list = nnightlist
-        nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]
+        nnights.list = nnights.list[which(is.na(nnights.list) == FALSE)]
         if (params_cleaning[["excludefirstlast"]] == TRUE & params_cleaning[["excludelast.part4"]] == FALSE & params_cleaning[["excludefirst.part4"]] == FALSE) {
           # exclude first and last night
           if (length(nnights.list) >= 3) {

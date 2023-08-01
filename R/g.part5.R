@@ -304,7 +304,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
-            browser()
             # Add defenition of wake and sleep windows in diur column of data.frame ts
             ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi2,
                                           sleeplog, ws3, Nts, ID, Nepochsinhour)
