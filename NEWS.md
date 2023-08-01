@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 2.9-6
 
+- Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
+
 - Part 5: Now able to segment days based on qwindow #815
 
 - Part 5: Fix minor bug related to the definition of the MM window (it was biased by 1 epoch) #838

@@ -35,7 +35,7 @@ test_that("is able to identify missing night and retrieve sleeplog estimate", {
   create_test_sleeplog_csv()
   fn = "testsleeplogfile.csv"
   expect_true(file.exists(fn))
-  SLEEPLOG = g.loadlog(loglocation=fn, coln1=2,colid=1, nnights=7)
+  SLEEPLOG = g.loadlog(loglocation=fn, coln1=2,colid=1)
   
   out = g.part5.fixmissingnight(summarysleep_tmp2 = nightsummary, sleeplog=SLEEPLOG$sleeplog, ID=123)
   expect_equal(round(out$sleeponset[2],digits=4), 3)

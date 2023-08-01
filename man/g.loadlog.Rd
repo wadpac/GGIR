@@ -8,7 +8,7 @@
   before storing the output in a dataframe
 }
 \usage{
-  g.loadlog(loglocation=c(),coln1=c(),colid=c(),nnights=c(),
+  g.loadlog(loglocation=c(),coln1=c(),colid=c(),
     sleeplogsep=",", meta.sleep.folder = c(),
   desiredtz="")
 }
@@ -24,12 +24,6 @@
   \item{colid}{
       Column number in the sleep log spreadsheet in which the participant
   ID code is stored (default = 1)
-
-  }
-  \item{nnights}{
-    Number of nights for which sleep log information should be available.
-  It assumes that this is constant within a study. If sleep log information
-  is missing for certain nights then leave these blank
 
   }
   \item{sleeplogsep}{
@@ -50,7 +44,7 @@
 \examples{
 \dontrun{
   sleeplog = g.loadlog(loglocation="C:/mysleeplog.csv",coln1=2,
-  colid=1,nnights=5)
+  colid=1)
 }
 }
 \author{

@@ -994,9 +994,7 @@ GGIR(mode = 1:5,
 
       \item{nnights}{
         Numeric (default = NULL).
-        Number of nights for which sleep log information should be available.
-        It assumes that this is constant within a study. If sleep log information
-        is missing for certain nights then leave these blank.}
+        This argument is deprecated.}
 
       \item{loglocation}{
         Character (default = NULL).
@@ -1414,7 +1412,6 @@ GGIR(mode = 1:5,
        colid = 1,
        coln1 = 2,
        do.visual = TRUE,
-       nnights = 9,
        #-------------------------------
        # Part 5 parameters:
        #-------------------------------
