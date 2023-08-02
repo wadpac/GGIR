@@ -110,7 +110,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-
+  
   if (params_general[["dataFormat"]] == "ukbiobank") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
@@ -249,7 +249,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       convertEpochData(datadir = datadir,
                        studyname = studyname,
                        outputdir = outputdir,
-                       params_general = params_general)
+                       params_general = params_general,
+                       verbose = verbose)
     }
     if (!is.null(params_general[["maxRecordingInterval"]])) {
       # Append recordings when ID and brand match and gap between
@@ -307,10 +308,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "dopart4", "dopart5", "fnames", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
-                          "print_console_header", "configfile_csv", "myfun", "ex", "dir2fn", "fnamesfull",
+                          "print_console_header", "configfile_csv", "myfun",
+                          "ex", "dir2fn", "fnamesfull",
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
-                          "is_read.gt3x_installed", "is_ActCR_installed", "rawaccfiles", "checkFormat") == FALSE)]
-  
+                          "is_read.gt3x_installed", "is_ActCR_installed", 
+                          "is_actilifecounts_installed", "rawaccfiles", 
+                          "checkFormat", "getExt") == FALSE)]
+
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
@@ -376,14 +380,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (f1 == 0) f1 = N.files.ms5.out
       g.report.part5(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      loglocation = params_sleep[["loglocation"]],
-                     includenightcrit = params_sleep[["includenightcrit"]],
-                     includedaycrit = params_cleaning[["includedaycrit"]],
-                     data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                     includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
-                     minimum_MM_length.part5 = params_cleaning[["minimum_MM_length.part5"]],
+                     params_cleaning = params_cleaning,
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
-                     excludefirstlast.part5 = params_cleaning[["excludefirstlast.part5"]],
                      verbose = verbose, sep_reports = params_output[["sep_reports"]])
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")

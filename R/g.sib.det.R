@@ -96,6 +96,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     anglez = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == "anglez")]))
     anglez = fix_NA_invector(anglez)
     
+    
     anglex = angley = c()
     do.HASPT.hip = FALSE
     if (sensor.location == "hip" &
@@ -161,7 +162,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                     time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
                     BrondCount = BrondCount,
-                    NeishabouriCount = NeishabouriCount)
+                    NeishabouriCount = NeishabouriCount, activity = ACC)
     } else { # getSleepFromExternalFunction == TRUE
       # Code now uses the sleep estimates from the external function
       # So, the assumption is that the external function provides a 
@@ -224,7 +225,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         tmpANGLE = anglez[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
-        if (do.HASPT.hip == TRUE) {
+        if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
           params_sleep[["HASPT.algo"]] = "HorAngle"
           if (length(params_sleep[["longitudinal_axis"]]) == 0) { #only estimate long axis if not provided by user
             count_updown = matrix(0,3,2)
@@ -246,7 +247,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             tmpANGLE = angley[qqq1:qqq2]
           }
         }
-        
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                constrain2range = params_sleep[["constrain2range"]],
@@ -254,7 +254,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]],
                                invalid = invalid,
-                               HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])
+                               HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
+                               activity = tmpACC)
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL)
         }
@@ -269,11 +270,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
               spt_estimate_tmp = HASPT(anglez[newqqq1:newqqq2], ws3 = ws3,
-                                   constrain2range = params_sleep[["constrain2range"]],
-                                   perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
-                                   spt_max_gap = spt_max_gap,
-                                   HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid,
-                                   HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]])
+                                       constrain2range = params_sleep[["constrain2range"]],
+                                       perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
+                                       spt_max_gap = spt_max_gap,
+                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid,
+                                       HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
+                                       activity = tmpACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 if (spt_estimate_tmp$SPTE_start + newqqq1 >= newqqq2) {
                   spt_estimate_tmp$SPTE_start = (newqqq2 - newqqq1) - 1
@@ -308,7 +310,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       cat("No midnights found")
       detection.failed = TRUE
     }
-
     metatmp = data.frame(time, invalid, night = night, sleep = sleep, stringsAsFactors = T)
   } else {
     metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = c()
