@@ -6,6 +6,8 @@
 
 - Part 5: Now g.part5.lux_persegment is able to handle timestamp in iso8601 format #848
 
+- Part 5: Fix minor bug by which GGIR skipped the last day if measurement starts at midnight and timewindow = MM #852
+
 - Activity log: Fix minor bug that appeared when seconds in the activity log are not compatible with the epoch length used in GGIR #844
 
 - Config file: Fix minor bug by ignoring the local function getExt from the config file #846
