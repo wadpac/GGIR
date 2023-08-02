@@ -2,6 +2,8 @@
 
 - Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
 
+- General: When recorging start after midnight and before 4am, then the wake time for this first time is now derived #859
+
 - Part 5: Now able to segment days based on qwindow #815
 
 - Part 5: Fix minor bug related to the definition of the MM window (it was biased by 1 epoch) #838
