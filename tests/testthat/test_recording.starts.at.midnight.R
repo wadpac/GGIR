@@ -36,7 +36,7 @@ test_that("Test recordings that start at midnight", {
   # part 5 data contains 2 complete days
   rn = "output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"
   out5 = read.csv(rn)
-  expect_equal(nrow(out5), 1) # this should be 2 when PR855 is merged
+  expect_equal(nrow(out5), 2)
   expect_true(all(out5$dur_day_spt_min == 1440))
   
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
