@@ -916,7 +916,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                               fi = fi + Nluxt
                               if (timewindowi == "WW") {
                                 # LUX per segment of the day
-                                luxperseg = g.part5.lux_persegment(ts, sse, params_247[["LUX_day_segments"]], ws3new)
+                                luxperseg = g.part5.lux_persegment(ts, sse, params_247[["LUX_day_segments"]], ws3new, desiredtz = params_general[["desiredtz"]])
                                 dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
                                 ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
                                 fi = fi + length(luxperseg$values)

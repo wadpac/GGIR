@@ -15,6 +15,14 @@ test_that("chainof5parts", {
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
   minimumFileSizeMB = 0
   #--------------------------------------------
+  # isfilelist
+  expect_true(isfilelist("file1.bin"))
+  expect_true(isfilelist("file1.csv"))
+  expect_true(isfilelist("file1.wav"))
+  expect_true(isfilelist("file1.cwa"))
+  expect_true(isfilelist("file1.gt3x"))
+  expect_true(isfilelist(c("file1.bin", "file2.bin")))
+  #--------------------------------------------
   # part 1
   g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
@@ -139,7 +147,8 @@ test_that("chainof5parts", {
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,
-          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr")
+          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
+          iglevels = 1)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
@@ -153,7 +162,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(154))
+  expect_that(ncol(output),equals(160)) # changed because intensity gradient now included in the test
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
@@ -167,7 +176,7 @@ test_that("chainof5parts", {
                         studyname = "test", f0 = 1, f1 = 1,
                         do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
                         do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB,
-                        verbose = FALSE))
+                        verbose = FALSE, storefolderstructure = TRUE))
   suppressWarnings(GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
                         f0 = 1, f1 = 1,
                         do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,

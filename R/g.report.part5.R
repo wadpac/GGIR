@@ -347,11 +347,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                                          "-", LUX_day_segments[2:(NLUXseg)],
                                                          "hr_day_", weeksegment)
                     } else {
-                      LUX_segment_vars_expected = paste0("LUX_", LUXmetrics, "_", 
-                                                         LUX_day_segments[1:(NLUXseg - 1)], 
-                                                         "-", LUX_day_segments[2:(NLUXseg)], "hr_day")
+                      luxvars = paste0("LUX_", LUXmetrics, "_")
+                      segments = paste0(LUX_day_segments[1:(NLUXseg - 1)], 
+                                        "_", LUX_day_segments[2:(NLUXseg)], "hr_day")
+                      LUX_segment_vars_expected = c()
+                      for (luxi in 1:length(luxvars)) {
+                        LUX_segment_vars_expected = c(LUX_segment_vars_expected,
+                                                      paste0(luxvars[luxi], segments))
+                      }
                     }
-                    dummy_df = as.data.frame(matrix(NaN, 1, (NLUXseg - 1)))
+                    dummy_df = as.data.frame(matrix(NaN, 1, length(LUX_segment_vars_expected)))
                     colnames(dummy_df) = LUX_segment_vars_expected
                     if (length(which(LUX_segment_vars_expected %in% colnames(x))) > 0) {
                       x = as.data.frame(merge(x, dummy_df, all.x = T))
