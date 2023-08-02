@@ -395,37 +395,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
         inputtemp = matrix(0, nrow(input), ncol(input)) #temperature, here used as a dummy variable
       }
       
-      #---------------------------------------
-      # Explorative code inserted by VvH 2023:
-      # Sphere data can be skewed, e.g. in hip or thigh data.
-      # therefore take a more uniformly distributed sample
-      # sphere_balance = data.frame(x = factor(nrow(input)), y = factor(nrow(input)), z= factor(nrow(input)))
-      Ninput = nrow(input)
-      if (Ninput > 27 * 3) {
-        uniform_expectation = 1 / 27 # because 27 sectors
-        ignore = rep(0, Ninput)
-        sectorEdges = c(-1.125, -0.375, 0.375)
-        for (sectorx in sectorEdges) {
-          for (sectory in sectorEdges) {
-            for (sectorz in sectorEdges) {
-              sectori = which(input[, 1] > sectorx & input[, 1] <= sectorx + 0.75 &
-                                input[, 2] > sectory & input[, 2] <= sectory + 0.75 &
-                                input[, 3] > sectorz & input[, 3] <= sectorz + 0.75)
-              sector_proportion = length(sectori) / Ninput
-              if (sector_proportion > uniform_expectation/2) {
-                set.seed(9000)
-                ignore[sample(sectori,
-                              size = round(Ninput * (sector_proportion - (uniform_expectation/2))),
-                              replace = FALSE)] = 1
-              }
-            }
-          }
-        }
-        input = input[which(ignore == 0), ]
-        inputtemp = inputtemp[which(ignore == 0), ]
-      }
-      #---------------------------------------------------------
-      
       meantemp = mean(as.numeric(inputtemp[, 1]), na.rm = TRUE)
       inputtemp = inputtemp - meantemp
       offset = rep(0, ncol(input))
