@@ -18,7 +18,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     params = extract_params(params_metrics = params_metrics,
                             params_rawdata = params_rawdata,
                             params_general = params_general,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = c("metrics", "rawdata", "general")) # load default parameters
     params_metrics = params$params_metrics
     params_rawdata = params$params_rawdata
     params_general = params$params_general

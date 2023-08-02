@@ -1,8 +1,13 @@
-g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
+g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new, desiredtz = "") {
   # only look at waking hours of this day
   sse = sse[which(ts$diur[sse] == 0)]
   # create equal length vector representing per epoch the first hour of the corresponding day segment
-  first_hour_seg = as.numeric(format(ts$time[sse],"%H"))
+  if ("POSIXt" %in% class(ts$time[sse[1]])) {
+    posixTime = ts$time[sse]
+  } else {
+    posixTime = iso8601chartime2POSIX(ts$time[sse], tz = desiredtz)
+  }
+  first_hour_seg = as.numeric(format(posixTime,"%H"))
   for (ldi in 1:(length(LUX_day_segments)-1)) { # round all hours to bottom of its class
     tmpl = which(first_hour_seg >= LUX_day_segments[ldi] &
                    first_hour_seg <  LUX_day_segments[ldi+1])

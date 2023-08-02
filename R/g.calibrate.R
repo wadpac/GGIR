@@ -15,7 +15,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
     params = extract_params(params_rawdata = params_rawdata,
                             params_cleaning = params_cleaning,
                             params_general = params_general,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = c("rawdata", "cleaning", "general")) # load default parameters
     params_rawdata = params$params_rawdata
     params_cleaning = params$params_cleaning
     params_general = params$params_general
