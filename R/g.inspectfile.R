@@ -276,9 +276,17 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   } else if (dformat == 6) { # gt3x
     info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
     info = info[lengths(info) != 0] # remove odd NULL in the list
-    H = as.data.frame(info)
-    H = data.frame(name = names(H), value = format(H), stringsAsFactors = FALSE)
-    sf = as.numeric(H$value[which(H$name == "Sample.Rate")])
+    
+    H = matrix("", length(info), 2)
+    H[, 1] = names(info)
+    for (ci in 1:length(info)) {
+      if (inherits(info[[ci]], "POSIXct") == TRUE) {
+        H[ci, 2] = format(info[[ci]])
+      } else {
+        H[ci, 2] = as.character(info[[ci]])
+      }
+    }
+    sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
   }
   H = as.matrix(H)
   if (ncol(H) == 3 & dformat == 2 & mon == 3) {
