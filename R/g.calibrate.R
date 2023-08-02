@@ -394,7 +394,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
       } else {
         inputtemp = matrix(0, nrow(input), ncol(input)) #temperature, here used as a dummy variable
       }
-      
       meantemp = mean(as.numeric(inputtemp[, 1]), na.rm = TRUE)
       inputtemp = inputtemp - meantemp
       offset = rep(0, ncol(input))
