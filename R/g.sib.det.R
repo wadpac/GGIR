@@ -195,9 +195,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         firstmidnight = midnights[1]
         firstmidnighti = midnightsi[1]
       }
-      # if recording started before 6am, then also derive first awakening
-      first3am = grep("03:00:00", time)[1]
-      if (first3am < firstmidnighti) {
+      # if recording started before 4am, then also derive first awakening
+      first4am = grep("04:00:00", time)[1]
+      if (first4am < firstmidnighti) { # this means recording started after midnight and before 4am
         midn_start = 0
       } else {
         midn_start = 1

@@ -29,10 +29,10 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   if (length(missingnights) > 0) {
     un = un[-missingnights]
   }
-  # if recording starts after 3am, then also remove first night
-  first3am = grep("03:00:00", M$metalong$timestamp)[1]
+  # if recording starts after 4am, then also remove first night
+  first4am = grep("04:00:00", M$metalong$timestamp)[1]
   firstmidnight = grep("00:00:00", M$metalong$timestamp)[1]
-  if (firstmidnight < first3am) {
+  if (firstmidnight < first4am) { # then recording started after 4am and first night is not calculated
     missingnights = which(un == 0)
     if (length(missingnights) > 0) {
       un = un[-missingnights]
