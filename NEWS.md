@@ -3,6 +3,8 @@
 - Part 1: Fix major bug to .gt3x data autocalibration, where autocalibration
 was done but not applied to the data #864
 
+- Part 1: Fix .gt3x file serial number and firmware extraction #850
+
 - Part 5: Now able to segment days based on qwindow #815
 
 - Part 5: Fix minor bug related to the definition of the MM window (it was biased by 1 epoch) #838
