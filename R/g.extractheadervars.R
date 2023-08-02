@@ -39,7 +39,7 @@ g.extractheadervars = function(I) {
   } else if (mon == "actigraph" | mon == 'verisense') {
     if (I$dformn == "gt3x") {
       header = I$header
-      deviceSerialNumber = as.character(header["Serial.Number",])
+      deviceSerialNumber = as.character(header["Serial Number",])
       firmwareversion = as.character(header["Firmware",])
     } else { # .csv format
       deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
@@ -51,7 +51,7 @@ g.extractheadervars = function(I) {
     if (length(firmwareversion) == 1) deviceSerialNumber = paste0(deviceSerialNumber,"_firmware_",firmwareversion)
   } else if (mon == "axivity" | mon == "movisens") {
     if (mon  == "actigraph") {
-      deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "Serial Number:")])
+      deviceSerialNumber = as.character(I$header$value[grep(pattern = "serial number", x = row.names(I$header), ignore.case = TRUE, value = FALSE)])
     }
     if (mon == "axivity") {
       seriali = which(hnames %in% c("uniqueSerialCode", "IART2Id"))

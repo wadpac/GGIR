@@ -147,7 +147,7 @@ additional packages:
 
 1.  GGIR works with the following accelerometer brands and formats:
     -   [GENEActiv](https://activinsights.com/) .bin
-    -   [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
+    -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
     -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x
         only the newer format generated with firmware versions above
         2.5.0. Serial numbers that start with "NEO" or "MRA" and have
@@ -161,13 +161,19 @@ additional packages:
         in the file header.
     -   [Movisens](https://www.movisens.com/en/) with data stored in
         folders.
-    -   Genea (an accelerometer that is not commercially available
-        anymore, but which was used for some studies between 2007 and
-        2012) .bin and .csv
     -   Any other accelerometer brand that generates csv output, see
         documentation for functions `read.myacc.csv` and argument
         `rmc.noise` in the [GGIR function documentation
         (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
+    Note that functionality for the following file formats was part of GGIR but has
+    been deprecated as it required a significant maintenance effort without 
+    a clear use case or community support: (1) .bin for the Genea monitor by
+    Unilever Discover, an accelerometer that was used for some studies between
+    2007 and 2012) .bin, and (2) .wav files as can be exported by the 
+    Axivity Ltd OMGUI software. Please contact us if you think
+    these data formats should be facilitated by GGIR again and if you are interested
+    in supporting their ongoing maintenance.
+
 2.  All accelerometer data that needs to be analysed should be stored in
     one folder, or subfolders of that folder.
 3.  Give the folder an appropriate name, preferable with a reference to
@@ -340,6 +346,12 @@ for that.
     mostly been a side project. This is unfortunate and we hope to find funding
     in the future to design a new report specifically for the purpose of
     QC-ing the anlayses done by GGIR.
+-   `maxRecordingInterval` - if specified controls whether neighboring or
+    overlapping recordings with the same participant ID and brand are appended
+    at epoch level. This can be useful when the intention is to monitor behaviour
+    over larger periods of time but accelerometers only allow for a few weeks of 
+    data collection. GGIR will never append or alter the raw input file, this operation
+    is preformed on the derived data.
 
 ### Key arguments related to sleep analysis {#key-arguments-related-to-sleep-analysis}
 
@@ -1300,6 +1312,12 @@ marginal added value of this added complexity. To use the GGIR implementation of
 the zero-crossing counts and Sadeh algorithm, specify argument
 `HASIB.algo = "ColeKripke1992"` and argument `Sadeh_axis = "Y"` to indicate that
 the algorithm should use the Y-axis of the sensor.
+- **NotWorn:** This algorithm can be used if the study protocol was to not wear
+the accelerometer at night. GGIR will then look for hours with close to zero
+movement and treat those as sustained inactivity bouts. It should be obvious that
+this does not facilitate any meaningful sleep analysis but it does allow GGIR to 
+then run GGIR part 5 based on the assumption that this analysis helped to isolate 
+night time from daytime.
 
 
 ### Notes on sleep classification algorithms designed for count data
@@ -1438,6 +1456,9 @@ methods:
     minutes are ignored. Therefore, it is partially similar to the HDCZA
     algorithm. When "HorAngle" is used, `sleepwindowType` is
     automatically set to "TimeInBed".
+-   **Guider = NotWorn**: Used for studies where the instruction was
+    not to wear the accelerometer durating the night. GGIR then searches
+    for the longest period with zero movement.
 
 For all guiders other than "HorAngle" and "sleep log" argument
 `sleepwindowType` is automatically switched to "SPT", such that no
@@ -1721,7 +1742,7 @@ However, we made a couple of a different decisions that may affect
 comparability:
 
 -   GGIR derives fragmentation metrics for day. This allows us to avoid
-    the issue of dealing with appending days. Further, it allows us to
+    the issue of gaps between days that need to be dealt with. Further, it allows us to
     test for behavioural differences between days of the week. It is
     well known that human behaviour can be driven by weekly rhythms,
     e.g. work days versus weekend. Estimating fragmentation per day of

@@ -25,12 +25,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # Although also documented in the package manual files, here
   # for convenience the monitor codes (mon):
   # 0 - ad-hoc file (currently only .csv format)
-  # 1 - GENEA (non-commercial); 2 - GENEActiv
+  # 1 - GENEA (non-commercial, DEPRECATED); 2 - GENEActiv
   # 3 - Actigraph; 4 - Axivity (AX3, AX6)
   # 5 - Movisense; 6 - Verisense
   # data formats:
   # 0 = ad-hoc .csv
-  # 1 - bin; 2 - csv; 3 - wav
+  # 1 - bin; 2 - csv; 3 - wav (DEPRECATED)
   # 4 - cwa; 5 - movisens
   # 6 - gt3x
   
@@ -38,7 +38,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
-    sf = c(); isitageneactive = c();  isitagenea = c();  mon = c(); dformat = c() #generating empty variables
+    sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
     tmp1 = unlist(strsplit(filename,"[.]cs"))
     tmp2 = unlist(strsplit(filename,"[.]b"))
     tmp3 = unlist(strsplit(filename,"[.]w"))
@@ -59,9 +59,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     } else if (tmp2[length(tmp2)] == "in") { #this is a bin file
       dformat = 1 #1 = binary
-    } else if (tmp3[length(tmp3)] == "av") { #this is a wav file
-      dformat = 3 #3 = wav
-      mon = 4 # Axivity
     } else if (tmp5[length(tmp5)] == "a") { #this is a cwa file
       dformat = 4 #4 = cwa
       mon = 4 # Axivity
@@ -70,7 +67,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       mon = 3 # actigraph
     } else if (tmp7[length(tmp7)] == "X") { #this is a gt3x file from Centerpoint
       if (file.access(datafile, 2) == 0) { # test for write access to file
-        
         # rename file to be lower case gt3x extension
         file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
         datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
@@ -91,25 +87,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     if (dformat == 1 & is.mv == FALSE) { # .bin and not movisens
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
-      # try read the file as if it is a genea and store output in variable 'isitagenea'
-      try(expr = {isitagenea = GGIRread::readGenea(datafile, 0, 1)} , silent = TRUE)
-      #size and content of variables 'isitagenea' and 'isitageneactive' will now tell us what it is
-      if (length(isitagenea) > 1) {
-        mon = 1 #mon = 1 is code for saying that it is a genea
-        H = isitagenea$header
-        tmp = strsplit(H[which(H[,1] == "Sample_Rate"),2],"Hz")
-        tmp2 = unlist(strsplit(as.character(tmp[1]),","))
-        if (length(tmp2) > 1) { #decimals seperated by comma
-          sf = as.numeric(tmp2[1])
-          sf = sf + (as.numeric(tmp2[2])) / 10
-        } else { #decimals seperated by dot
-          sf = as.numeric(tmp[1])
-        }
-        if (sf == 0 | is.na(sf) == T) {
-          skip = 1 #reconsider decision to analyse this file as it is possibly corrupt
-          print("Possibibly corrupt genea File")
-        }
-      } else if (length(isitageneactive) >= 1 & length(isitagenea) == 0) {
+      if (length(isitageneactive) >= 1) {
         if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
           mon = 2 #mon = 2 is code for saying that it is a geneactive
           H = isitageneactive$header
@@ -189,9 +167,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         sf = length(tmp1) / (tmp1[length(tmp1)] - tmp1[1])
         sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is
       }
-    } else if (dformat == 3) { # wav
-      H = tuneR::readWave(datafile,from = 1, to = 10,units = c("seconds"), header = TRUE)
-      sf = H$sample.rate
     } else if (dformat == 4) { # cwa
       PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
       H = PP$header
@@ -254,10 +229,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     datafile = INFI$datafile
   }
   if (dformat == 1) { #binary data
-    if (mon == 1) { # genea
-      genea = GGIRread::readGenea(filename = datafile, start = 0,end = 1)
-      H = genea$header
-    } else if (mon == 2) { #geneactive
+    if (mon == 2) { #geneactive
       H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
     } else if (mon == 5) { #movisens
       H = "file does not have header" # these files have no header
@@ -290,46 +262,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     } else if (mon == 4) { #ax3 (axivity)
       H = "file does not have header" # these files have no header
     }
-  } else if (dformat == 3) { #wav data
-    header = c()
-    try(expr = {header = rownames(read.csv(datafile, nrow = 15, header = TRUE))}, silent = TRUE)
-    if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "WINDOWS-1252"))
-    }
-    if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "UTF-8"))
-    }
-    if (length(header) == 0) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE, fileEncoding = "latin1"))
-    }
-    if (length(which(header %in% paste0(1:15, sep = "") == TRUE)) == 15) { #
-      header = read.csv(datafile, skipNul = TRUE, nrow = 15, skip = 1, header = FALSE)
-      if (ncol(header) == 2) {
-        ii = which(is.na(header[,2]) == FALSE)
-        if (length(ii) > 0) header = header[-ii,]
-        header = header[,-2]
-      }
-    }
-    if (length(header) <= 5) {
-      header = rownames(read.csv(datafile, skipNul = TRUE, nrow = 15, header = TRUE))
-    }
-    H = sapply(header,function(x) {
-      tmp = as.character(unlist(strsplit(as.character(x), ": ")))
-      if (length(tmp) == 1) {
-        tmp = c(tmp, NA)
-      }
-      tmp
-    })
-    if (is.list(H) == TRUE) {
-      conv = c()
-      for (jj in 1:length(H)) {
-        conv = rbind(conv,H[[jj]], stringsAsFactors = TRUE)
-      }
-      H = as.data.frame(conv, stringsAsFactors = TRUE)
-    } else {
-      H = as.data.frame(t(H), stringsAsFactors = TRUE)
-    }
-    names(H) = c("hnames","hvalues")
   } else if (dformat == 4) { #cwa data
     PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
@@ -344,9 +276,17 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   } else if (dformat == 6) { # gt3x
     info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
     info = info[lengths(info) != 0] # remove odd NULL in the list
-    H = as.data.frame(info)
-    H = data.frame(name = names(H), value = as.character(H), stringsAsFactors = FALSE)
-    sf = as.numeric(H$value[which(H$name == "Sample.Rate")])
+    
+    H = matrix("", length(info), 2)
+    H[, 1] = names(info)
+    for (ci in 1:length(info)) {
+      if (inherits(info[[ci]], "POSIXct") == TRUE) {
+        H[ci, 2] = format(info[[ci]])
+      } else {
+        H[ci, 2] = as.character(info[[ci]])
+      }
+    }
+    sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
   }
   H = as.matrix(H)
   if (ncol(H) == 3 & dformat == 2 & mon == 3) {

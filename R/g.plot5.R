@@ -71,12 +71,14 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
       P2daysummary_tmp = IMP = SUM = NULL
       load(ms2_filepath)
       P2daysummary_tmp = SUM$daysummary
+      P2daysummary_tmp$measurementday = as.numeric(P2daysummary_tmp$measurementday)
       if (length(sel) > 0) {
         ms4_file_index = which(fname_ms4 == fname_ms3[i])
         if (length(ms4_file_index) == 1) {
           nightsummary = c()
           ms4_filepath = paste0(ms4dir, "/", fname_ms4[ms4_file_index])
           load(ms4_filepath) #to load summary sleep
+          nightsummary$night = as.numeric(nightsummary$night)
           summarysleep_tmp = nightsummary
         } else {
           warning(

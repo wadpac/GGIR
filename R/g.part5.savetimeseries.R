@@ -8,8 +8,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                             stringsAsFactors = FALSE)
 
   if (length(grep(pattern = " ", x = ts$time[1])) == 0) {
-    ts$timestamp = as.POSIXlt(ts$time, tz = desiredtz, format = "%Y-%m-%dT%H:%M:%S%z")
-    ms5rawlevels$date_time = as.POSIXlt(ms5rawlevels$date_time, 
+    ts$timestamp = as.POSIXct(ts$time, tz = desiredtz, format = "%Y-%m-%dT%H:%M:%S%z")
+    ms5rawlevels$date_time = as.POSIXct(ms5rawlevels$date_time, 
                                         tz = desiredtz, format = "%Y-%m-%dT%H:%M:%S%z")
   } else {
     ts$timestamp = ts$time
@@ -76,7 +76,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     } else if (save_ms5raw_format == "RData") {
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
-      mdat$timestamp = as.POSIXlt(mdat$timenum, origin = "1970-01-01",tz = desiredtz) 
+      mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz) 
       save(mdat, file = rawlevels_fname)
     }
     #===============================
