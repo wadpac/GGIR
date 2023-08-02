@@ -18,7 +18,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     params = extract_params(params_metrics = params_metrics,
                             params_rawdata = params_rawdata,
                             params_general = params_general,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = c("metrics", "rawdata", "general")) # load default parameters
     params_metrics = params$params_metrics
     params_rawdata = params$params_rawdata
     params_general = params$params_general
@@ -419,14 +420,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           temperature = as.numeric(data[, temperaturecolumn])
         }
+
         # Initialization of variables
-        if (mon == 1) {
+        data_scaled = FALSE
+        if (mon == 1 | (mon == 3 & dformat == 6) | ( mon == 4 & dformat == 3)) {
+          # Genea bin, Actigraph gt3x, Axivity wav
           data = data[, 1:3]
           data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
-        } else if (mon == 4 & dformat == 3) {
-          data = data[, 1:3]
-          data[, 1:3] = scale(data[, 1:3],center = -offset, scale = 1/scale) #rescale data
+          data_scaled = TRUE
         } else if (mon == 4 & (dformat == 4 |  dformat == 2)) {
+          # Axivity cwa or csv
           extraction_succeeded = FALSE
           if (gyro_available == TRUE) {
             data[,5:7] = scale(data[,5:7],center = -offset, scale = 1/scale) #rescale data
@@ -437,7 +440,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             data[, 2:4] = scale(data[, 2:4],center = -offset, scale = 1/scale) #rescale data
             data = data[,2:4]
           }
+          data_scaled = TRUE
         } else if (mon == 2 & dformat == 1) {
+          # GENEActiv bin
           yy = as.matrix(cbind(as.numeric(data[,temperaturecolumn]),
                                as.numeric(data[,temperaturecolumn]),
                                as.numeric(data[,temperaturecolumn])))
@@ -445,13 +450,17 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
             scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
           rm(yy); gc()
+          data_scaled = TRUE
         } else if (mon == 5) {
+          # Movisense
           yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
           data = data[,1:3]
           data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
             scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
           rm(yy); gc()
+          data_scaled = TRUE
         } else if ((dformat == 2 | dformat == 5) & (mon != 4)) {
+          # Any brand that is not Axivity with csv or Movisense format data
           if (mon == 2 | (mon == 0 & use.temp == TRUE)) {
             tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))
             yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
@@ -480,6 +489,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
             rm(yy); gc()
           }
+          data_scaled = TRUE
+        }
+        if (data_scaled == FALSE) {
+          warning(paste0("\nAutocalibration was not applied, this should",
+                         "not happen please contact GGIR maintainers"))
         }
         suppressWarnings(storage.mode(data) <- "numeric")
         ## resample experiment to see whehter processing time can be much improved if data is resampled

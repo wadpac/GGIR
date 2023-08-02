@@ -23,7 +23,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # blocksize = number of pages to read at once
   # blocknumber = block count relative to beginning of measurement
   # mon 0 = Other
-  # mon 1 =  GENEA
+  # mon 1 =  GENEA (DEPRECATED)
   # mon 2 = GENEACtiv
   # mon 3 = Actigraph
   # mon 4 = Axivity
@@ -32,7 +32,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   
   # dformat 1 = binary
   # dformat 2 = csv
-  # dformat 3 = wav
+  # dformat 3 = wav (DEPRECATED)
   # dformat 4 = cwa
   # dformat 5 = your own adhoc csv format
   # dformat 6 = gt3x
@@ -68,41 +68,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     endpage = startpage + deltapage
     return(list(startpage = startpage, endpage = endpage))
   }
-  if (mon == 1 & dformat == 1) { # genea binary
-    startpage = blocksize * (blocknumber - 1)
-    deltapage = blocksize
-    UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = GGIRread::readGenea(filename = filename, start = startpage, end = endpage)}, silent = TRUE)
-    if (length(P) > 1) {
-      if (nrow(P$rawxyz) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
-        filequality$filetooshort = TRUE
-      }
-    } else {
-      P = c()
-      if (blocknumber == 1) {
-        filequality$filecorrupt = TRUE
-      }
-    }
-  } else if (mon == 4 & dformat == 3) { # axivity wav
-    startpage = blocksize * (blocknumber - 1)
-    deltapage = blocksize
-    UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = g.wavread(wavfile = filename, startpage, endpage)}, silent = TRUE)
-    if (length(P) > 1) {
-      if (nrow(P$rawxyz) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
-        filequality$filetooshort = TRUE
-      }
-    } else {
-      P = c()
-      if (blocknumber == 1) filequality$filecorrupt = TRUE
-    }
-  } else if (mon == 2 & dformat == 1) { # GENEActiv binary non-RDA format
+  if (mon == 2 & dformat == 1) { # GENEActiv binary non-RDA format
     startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
