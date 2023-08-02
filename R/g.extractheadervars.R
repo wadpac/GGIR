@@ -51,7 +51,7 @@ g.extractheadervars = function(I) {
     if (length(firmwareversion) == 1) deviceSerialNumber = paste0(deviceSerialNumber,"_firmware_",firmwareversion)
   } else if (mon == "axivity" | mon == "movisens") {
     if (mon  == "actigraph") {
-      deviceSerialNumber = as.character(I$header$value[grep(pattern = "Serial number", x = row.names(I$header), value = FALSE)])
+      deviceSerialNumber = as.character(I$header$value[grep(pattern = "serial number", x = row.names(I$header), ignore.case = TRUE, value = FALSE)])
     }
     if (mon == "axivity") {
       seriali = which(hnames %in% c("uniqueSerialCode", "IART2Id"))
