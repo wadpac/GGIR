@@ -207,10 +207,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                  sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
-        if (dolog == TRUE) logid = sleeplog$ID[wi][1]
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
         if (dolog == TRUE) {
+          logid = sleeplog$ID[wi][1]
           first_night = min(min(sib.cla.sum$night), 
                             min(as.numeric(sleeplog$night)))
           last_night = max(max(sib.cla.sum$night), 

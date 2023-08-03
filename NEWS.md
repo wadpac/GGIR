@@ -2,7 +2,7 @@
 
 - Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
 
-- General: When recorging start after midnight and before 4am, then the wake time for this first time is now derived #859
+- General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 #859
 
 - Part 5: Now able to segment days based on qwindow #815
 

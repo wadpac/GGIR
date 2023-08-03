@@ -994,7 +994,7 @@ GGIR(mode = 1:5,
 
       \item{nnights}{
         Numeric (default = NULL).
-        This argument is deprecated.}
+        This argument has been deprecated.}
 
       \item{loglocation}{
         Character (default = NULL).

@@ -207,12 +207,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         if (j == 0) {
           qqq1 = 1 # preceding noon (not available in recording)
           qqq2 = grep("12:00:00", time)[1] # first noon in recording
-          sptei = 1
         } else {
           qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
-          sptei = sptei + 1
         }
+        sptei = sptei + 1
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
         night[qqq1:qqq2] = sptei
