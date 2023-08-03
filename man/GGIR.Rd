@@ -274,11 +274,10 @@ GGIR(mode = 1:5,
         To specify the time format used in the external epoch level data when
         argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", or 
         "actigraph_csv". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
-        "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
-        }
+        "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"}
       }
     }
-  }
+  
 
     \subsection{params_rawdata}{
     A list of parameters used to related to reading and pre-processing
