@@ -9,16 +9,10 @@
 }
 \usage{
   g.report.part5(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
-                          includenightcrit = c(),includedaycrit = c(),
-                          data_cleaning_file = c(),
-                          includedaycrit.part5 = 2/3,
-                          segmentWEARcrit.part5 = 0.5,
-                          segmentDAYSPTcrit.part5 = c(0, 0),
-                          minimum_MM_length.part5 = 23,
+                          params_cleaning = NULL,
                           week_weekend_aggregate.part5 = FALSE,
                           LUX_day_segments = c(), 
-                          excludefirstlast.part5 = c(), verbose = TRUE,
-                          sep_reports = ",")
+                          verbose = TRUE, sep_reports = ",")
 }
 \arguments{
   \item{metadatadir}{
@@ -37,44 +31,17 @@
   \item{loglocation}{
   see \link{g.part4}
   }
-  \item{includenightcrit}{
-    Depricated as of version 2.0, not used anymore in part 5 report
+  \item{params_cleaning}{
+   See details in \link{GGIR}.
   }
-  \item{includedaycrit}{
-    Depricated as of version 2.0, not used anymore in part 5 report
-  }
-  \item{data_cleaning_file}{
-  see \link{g.part4}
-  }
-  \item{includedaycrit.part5}{
-    Inclusion criteria for number of valid hours, either
-    as expressed as a ratio of 1 or as the number of hours in a 24 hour day.
-  }
-  \item{segmentWEARcrit.part5}{
-    Inclusion criteria for number of valid hours in the segments defined with
-    qwindow in part 5, expressed as a ratio of 1.
-  }
-  \item{segmentDAYSPTcrit.part5}{
-    Numeric vector of length 2 with the inclusion criteria for the proportion
-    of the segment that should be classified as day (awake) and spt (sleep period 
-    time) to be considered valid. Usually, one of the two numbers is 0, and the other
-    defines the proportion of the segment that should be classified as day or spt.
-  }
-  \item{minimum_MM_length.part5}{
-    Minimum length in hours of a MM day to be included in the cleaned
-    part 5 results.
-  }
-   \item{week_weekend_aggregate.part5}{
+  \item{week_weekend_aggregate.part5}{
    Boolean to indicate whether week and weekend-days aggregates
    should be stored. This is turned off by default as it generates a 
    large number of extra columns in the output report.
-   }
-   \item{LUX_day_segments}{
+  }
+  \item{LUX_day_segments}{
    see \link{g.part5}
-   }
-   \item{excludefirstlast.part5}{
-        Boolean (default = \Sexpr{GGIR::load_params()[["params_cleaning"]][["excludefirstlast.part5"]]}).
-        If TRUE then the first and last window (waking-waking or midnight-midnight) are ignored in \link{g.part5}.}
+  }
   \item{verbose}{
     See details in \link{GGIR}.
   }

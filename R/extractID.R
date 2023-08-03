@@ -11,6 +11,7 @@ extractID = function(hvars, idloc, fname) {
   iID2 = iID
   if (idloc == 3) { #remove hyphen in id-name for Pelotas id-numbers
     get_char_before_hyphen = function(x) {
+      x2 = c()
       for (j in 1:length(x)) {
         temp = unlist(strsplit(x,"-"))
         if (length(temp) == 2) {

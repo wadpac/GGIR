@@ -82,7 +82,7 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
   if ("outputtype" %in% names(myfun)) { # If outputtype is available:
     if (is.character(myfun$outputtype) == F) {
       status = 1
-      stop(paste0("Error in check_myfun.R: Element outputtype is expexted to be a",
+      stop(paste0("Error in check_myfun.R: Element outputtype is expected to be a",
                   " character specifying the ouput type"), call. = FALSE)
     }
   }

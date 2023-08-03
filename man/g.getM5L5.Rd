@@ -52,9 +52,10 @@
   }
 }
 \examples{
-  data(data.getmeta)
-  g.getM5L5 = function(varnum=data.getmeta,ws3=5,t0_LFMF=0,
-t1_LFMF=24,M5L5res=10,winhr=5)
+  \dontrun{
+    data(data.getmeta)
+    g.getM5L5(varnum=data.getmeta,ws3=5,t0_LFMF=0,t1_LFMF=24,M5L5res=10,winhr=5)
+  }
 }
 \keyword{internal}
 \author{
