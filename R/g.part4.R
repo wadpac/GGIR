@@ -41,7 +41,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
-                             nnights = params_sleep[["nnights"]],
                              meta.sleep.folder = meta.sleep.folder,
                              desiredtz = params_general[["desiredtz"]])
     sleeplog = logs_diaries$sleeplog
@@ -208,25 +207,27 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                  sleeplog, accid = accid)
         accid = idwi$accid
         wi = idwi$matching_indices_sleeplog
-        if (dolog == TRUE) logid = sleeplog$ID[wi][1]
         #-----------------------------------------------------------
         # create overview of night numbers in the data file: nnightlist
-        if (length(params_sleep[["nnights"]]) == 0) {
-          nnightlist = 1:max(sib.cla.sum$night)  # sib.cla.sum is the output from g.part3
+        if (dolog == TRUE) {
+          logid = sleeplog$ID[wi][1]
+          first_night = min(min(sib.cla.sum$night), 
+                            min(as.numeric(sleeplog$night)))
+          last_night = max(max(sib.cla.sum$night), 
+                           max(as.numeric(sleeplog$night)))
         } else {
-          if (max(sib.cla.sum$night) < params_sleep[["nnights"]]) {
-            nnightlist = 1:max(sib.cla.sum$night)
-          } else {
-            nnightlist = 1:params_sleep[["nnights"]]
-          }
+          first_night = min(sib.cla.sum$night)
+          last_night = max(sib.cla.sum$night)
         }
+        nnightlist = first_night:last_night
+        
         if (length(nnightlist) < length(wi)) {
           nnightlist = nnightlist[1:length(wi)]
         }
         # create overview of which night numbers in the file that have a value and are not equal
         # to zero
         nnights.list = nnightlist
-        nnights.list = nnights.list[which(is.na(nnights.list) == FALSE & nnights.list != 0)]
+        nnights.list = nnights.list[which(is.na(nnights.list) == FALSE)]
         if (params_cleaning[["excludefirstlast"]] == TRUE & params_cleaning[["excludelast.part4"]] == FALSE & params_cleaning[["excludefirst.part4"]] == FALSE) {
           # exclude first and last night
           if (length(nnights.list) >= 3) {
