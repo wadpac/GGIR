@@ -9,7 +9,7 @@
   for direct use by package user.
 }
 \usage{
-  g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new)
+  g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new, desiredtz = "")
 }
 \arguments{
   \item{ts}{
@@ -19,6 +19,8 @@
   \item{LUX_day_segments}{
   }
   \item{ws3new}{
+  }
+  \item{desiredtz}{
   }
 }
 \value{

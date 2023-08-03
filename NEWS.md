@@ -4,9 +4,17 @@
 
 - General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 #859
 
+- Part 1: Fix major bug to .gt3x data autocalibration, where autocalibration was done but not applied to the data #864
+
+- Part 1: Fix .gt3x file serial number and firmware extraction #850
+
 - Part 5: Now able to segment days based on qwindow #815
 
 - Part 5: Fix minor bug related to the definition of the MM window (it was biased by 1 epoch) #838
+
+- Part 5: Now g.part5.lux_persegment is able to handle timestamp in iso8601 format #848
+
+- Part 5: Fix minor bug by which GGIR skipped the last day if measurement starts at midnight and timewindow = MM #852
 
 - Activity log: Fix minor bug that appeared when seconds in the activity log are not compatible with the epoch length used in GGIR #844
 

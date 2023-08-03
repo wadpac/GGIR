@@ -40,5 +40,28 @@ test_that("is able to identify missing night and retrieve sleeplog estimate", {
   out = g.part5.fixmissingnight(summarysleep_tmp2 = nightsummary, sleeplog=SLEEPLOG$sleeplog, ID=123)
   expect_equal(round(out$sleeponset[2],digits=4), 3)
   expect_equal(round(out$wakeup[2],digits=4), 17)
+  
+  # also test g.part5.addfirstwake
+  N = 54*60*60/5
+  t0 = as.POSIXlt("2016-06-22 22:00:00", tz="Europe/Amsterdam", origin="1970-01-01")
+  time = seq(t0, t0 + ((N * 5)-1), by=5) # the values of time are not used in the function, we only care about the length the object time
+  time = POSIXtime2iso8601(time, tz = "")
+  diur = c(rep(0, 18720), #awake until second midnight (to trigger detection of first wake)
+           rep(1, 5040),  #spt until 7 am next day
+           rep(0, 12240),
+           rep(1, N - 36000))
+  detection = rep(0, N)
+  set.seed(300)
+  detection[which(runif(n = N,min=0,max=1)<0.1)] = 1
+  ACC = rnorm(n = N,mean=0,sd=40)
+  
+  ts = data.frame(time = time, ACC=ACC, diur=diur,sibdetection=detection)
+  nightsi = grep("00:00:00", time)
+
+  ts = g.part5.addfirstwake(ts, summarysleep_tmp2 = nightsummary, 
+                            nightsi = nightsi, sleeplog = SLEEPLOG$sleeplog,
+                            ID = 123, Nepochsinhour = 720, 
+                            Nts = nrow(ts), SPTE_end = NA, ws3new = 5)
+  
   if (file.exists(fn)) file.remove(fn)
 })
