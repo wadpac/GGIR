@@ -214,7 +214,6 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
   cnt = 1
-  nnights = min(floor((ncol(S) - coln1 + 1) / 2), nnights)
   sli = coln1
   wki = sli + 1
   night = 1
