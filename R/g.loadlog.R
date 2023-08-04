@@ -200,12 +200,6 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       }
     }
   }
-  nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
-  # # From here we continue with original code focused on sleeplog only
-  sleeplog = matrix(0,(nrow(S)*nnights),3)
-  sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
-  cnt = 1
-  nnights = min(floor((ncol(S) - coln1 + 1) / 2), nnights)
   # test whether number of columns with night information in sleeplog is odd
   # this would provide nnights %% 2 == 0.5
   if (nnights %% 2 == 0.5) { 
@@ -213,8 +207,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                    " in the sleeplog. The last column will be ignored. If this is incorrect,",
                    " please check that argument coln1 is correctly specified if you use a basic sleeplog format and",
                    " that all days have a date column if you use an advanced sleeplog format."))
-            nnights = floor(nnights)
+    nnights = floor(nnights)
   }
+  nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
+  # # From here we continue with original code focused on sleeplog only
+  sleeplog = matrix(0,(nrow(S)*nnights),3)
+  sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
+  cnt = 1
+  nnights = min(floor((ncol(S) - coln1 + 1) / 2), nnights)
   sli = coln1
   wki = sli + 1
   night = 1
