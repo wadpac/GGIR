@@ -2,6 +2,8 @@
 
 - Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
 
+- Sleep log: Minor fixed related to misplaced parenthesis in g.loadlog and automatic extension of sleeplog matrix if needed to avoid error #867
+
 - General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 #859
 
 - Part 1: Fix major bug to .gt3x data autocalibration, where autocalibration was done but not applied to the data #864
