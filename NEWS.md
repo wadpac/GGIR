@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 2.9-7
 
+- Part 1: Fix ID extraction for externally generated epoch files #869
+
 - Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
 
 - Sleep log: Minor fixed related to misplaced parenthesis in g.loadlog and automatic extension of sleeplog matrix if needed to avoid error #867
