@@ -7,7 +7,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   # Load sleep log data...
   S = data.table::fread(loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
-  nnights = floor((ncol(S) - coln1 + 1)) / 2
+  nnights = floor((ncol(S) - coln1 + 1) / 2)
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
   if (advanced_sleeplog ==  TRUE) {
@@ -235,6 +235,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         dur = 0
         is.na(dur) =  TRUE
       }
+      # add extra row if needed
+      if (nrow(sleeplog) < cnt) {
+        sleeplog = rbind(sleeplog, matrix(0, 1, 3))
+        sleeplog_times = rbind(sleeplog_times, matrix(0, 1, 2))
+      }
+      # store information in sleeplog
       sleeplog[cnt,1] = as.character(S[j,colid])
       sleeplog[cnt,2] = night #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
       sleeplog[cnt,3] = dur
