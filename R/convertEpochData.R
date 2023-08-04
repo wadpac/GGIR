@@ -173,8 +173,8 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       }
     }
     if (skip == FALSE) {
+      I = I_bu
       I$filename = filename_dir = fname
-      
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
         D = data.table::fread(input = fnames[i],
@@ -263,7 +263,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         }
         
         # extract information from header
-        I = I_bu
+        
         if (header_test == TRUE) {
           I$deviceSerialNumber = AGh$value[grep(pattern = "serialnumber", x = AGh$variable)]
           # Add serial number to header object because g.extractheadersvars for Actigraph uses this
