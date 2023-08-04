@@ -30,10 +30,8 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
     un = un[-missingnights]
   }
   # if recording starts after 4am, then also remove first night
-  firstTS = M$metashort$timestamp[1]
-  firstTS_posix = iso8601chartime2POSIX(firstTS, tz = desiredtz)
-  firstday4am = paste0(substr(firstTS, 1, 11), "04:00:00", substr(firstTS, 20, nchar(firstTS)))
-  firstday4am_posix = iso8601chartime2POSIX(firstday4am, tz = desiredtz)
+  firstTS_posix = iso8601chartime2POSIX(M$metashort$timestamp[1], tz = desiredtz)
+  firstday4am_posix = as.POSIXct(paste0(as.Date(firstTS_posix), " 04:00:00"), tz = desiredtz)
   if (firstday4am_posix < firstTS_posix) { # then first timestamp is later than 4am
     missingnights = which(un == 0)
     if (length(missingnights) > 0) {

@@ -1,10 +1,12 @@
-# CHANGES IN GGIR VERSION 2.9-6
+# CHANGES IN GGIR VERSION 2.9-7
 
 - Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
 
 - General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 #859
 
 - Part 1: Fix major bug to .gt3x data autocalibration, where autocalibration was done but not applied to the data #864
+
+# CHANGES IN GGIR VERSION 2.9-6
 
 - Part 1: Fix .gt3x file serial number and firmware extraction #850
 
