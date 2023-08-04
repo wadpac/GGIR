@@ -195,12 +195,26 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         firstmidnight = midnights[1]
         firstmidnighti = midnightsi[1]
       }
-      for (j in 1:(countmidn)) { #Looping over the midnight
-        qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
-        qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
+      # if recording started before 4am, then also derive first awakening
+      first4am = grep("04:00:00", time)[1]
+      if (first4am < firstmidnighti) { # this means recording started after midnight and before 4am
+        midn_start = 0
+      } else {
+        midn_start = 1
+      }
+      sptei = 0
+      for (j in midn_start:(countmidn)) { #Looping over the midnight
+        if (j == 0) {
+          qqq1 = 1 # preceding noon (not available in recording)
+          qqq2 = grep("12:00:00", time)[1] # first noon in recording
+        } else {
+          qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
+          qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
+        }
+        sptei = sptei + 1
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
-        night[qqq1:qqq2] = j
+        night[qqq1:qqq2] = sptei
         detection.failed = FALSE
         #------------------------------------------------------------------
         # calculate L5 because this is used as back-up approach
@@ -220,7 +234,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           }
           if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
         }
-        L5list[j] = L5
+        L5list[sptei] = L5
         # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
         tmpANGLE = anglez[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
@@ -293,16 +307,16 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into SPTE was after noon
             startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
             startTimeRecord = sum(as.numeric(startTimeRecord[c("hour", "min", "sec")]) / c(1, 60, 3600))
-            SPTE_end[j] = (spt_estimate$SPTE_end / (3600 / ws3)) + startTimeRecord + daysleep_offset
-            SPTE_start[j] = (spt_estimate$SPTE_start / (3600 / ws3)) + startTimeRecord + daysleep_offset
+            SPTE_end[sptei] = (spt_estimate$SPTE_end / (3600 / ws3)) + startTimeRecord + daysleep_offset
+            SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + startTimeRecord + daysleep_offset
           } else {
-            SPTE_end[j] = (spt_estimate$SPTE_end / (3600 / ws3)) + 12 + daysleep_offset
-            SPTE_start[j] = (spt_estimate$SPTE_start / (3600 / ws3)) + 12 + daysleep_offset
+            SPTE_end[sptei] = (spt_estimate$SPTE_end / (3600 / ws3)) + 12 + daysleep_offset
+            SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + 12 + daysleep_offset
           }
-          SPTE_end[j] = dstime_handling_check(tmpTIME = tmpTIME, spt_estimate = spt_estimate,
-                                              tz = desiredtz, calc_SPTE_end = SPTE_end[j],
-                                              calc_SPTE_start = SPTE_start[j])
-          tib.threshold[j] = spt_estimate$tib.threshold
+          SPTE_end[sptei] = dstime_handling_check(tmpTIME = tmpTIME, spt_estimate = spt_estimate,
+                                              tz = desiredtz, calc_SPTE_end = SPTE_end[sptei],
+                                              calc_SPTE_start = SPTE_start[sptei])
+          tib.threshold[sptei] = spt_estimate$tib.threshold
         }
       }
       detection.failed = FALSE
