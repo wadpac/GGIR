@@ -5,9 +5,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_general = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
   Sys.setlocale("LC_TIME", "C") # set language to English
-  # description: function called by g.shell.GGIR
-  # aimed to merge the milestone output from g.part2, g.part3, and g.part4
-  # in order to create a merged report of both physical activity and sleep
+  # This function called by function GGIR
+  # and aims to combine all the milestone output from the previous parts
+  # in order to facilitate a varierty of analysis on time-use, interactions
+  # between day and night activity, and circadian rhythms
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -82,7 +83,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
-  # fnames.ms3 = sort(fnames.ms3)
   if (f1 > length(fnames.ms3)) f1 = length(fnames.ms3) # this is intentionally ms3 and not ms4, do not change!
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
@@ -186,58 +186,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           M$metashort = M$metashort[-expanded_short,]
           M$metalong = M$metalong[-expanded_long,]
         }
-        # extract key variables from the mile-stone data: time, acceleration and elevation angle
-        # note that this is imputed ACCELERATION because we use this for describing behaviour:
-        scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
-        # if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
-        #   cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
-        # }
-        if ("anglez" %in% names(IMP$metashort)) {
-          ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
-                          guider = rep("unknown", nrow(IMP$metashort)),
-                          angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])))
-        } else {
-          ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
-                          guider = rep("unknown", nrow(IMP$metashort)))
-        }
+        
+        #====================================
+        # Initialise time series data.frame (ts) which will hold the time series
+        # which forms the center of all part 5 activity
+        ts = g.part5_initialise_ts(IMP, M, params_247, params_general)
         Nts = nrow(ts)
-        # add non-wear column
-        nonwear = IMP$rout[,5]
-        nonwear = rep(nonwear, each = (IMP$windowsizes[2]/IMP$windowsizes[1]))
-        if (length(nonwear) > Nts) {
-          nonwear = nonwear[1:Nts]
-        } else if (length(nonwear) < Nts) {
-          nonwear = c(nonwear, rep(0, (Nts - length(nonwear))))
-        }
-        ts$nonwear = 0 # initialise column
-        ts$nonwear = nonwear
-        lightpeak_available = "lightpeak" %in% colnames(M$metalong)
-        # Check if temperature and light are availble
-        if (lightpeak_available == TRUE) {
-          luz = M$metalong$lightpeak
-          if (length(params_247[["LUX_cal_constant"]]) > 0 &
-              length(params_247[["LUX_cal_exponent"]]) > 0) { # re-calibrate light
-            luz = params_247[["LUX_cal_constant"]] * exp(params_247[["LUX_cal_exponent"]] * luz)
-          }
-          handle_luz_extremes = g.part5.handle_lux_extremes(luz)
-          luz = handle_luz_extremes$lux
-          correction_log = handle_luz_extremes$correction_log
-          # repeate values to match resolution of other data
-          repeatvalues = function(x, windowsizes, Nts) {
-            x = rep(x, each = (windowsizes[2]/windowsizes[1]))
-            if (length(x) > Nts) {
-              x = x[1:Nts]
-            } else if (length(x) < Nts) {
-              x = c(x, rep(0, (Nts - length(x))))
-            }
-            return(x)
-          }
-          luz = repeatvalues(x = luz, windowsizes = IMP$windowsizes, Nts)
-          correction_log = repeatvalues(x = correction_log, windowsizes = IMP$windowsizes, Nts)
-          ts$lightpeak_imputationcode = ts$lightpeak = 0 # initialise column
-          ts$lightpeak = luz
-          ts$lightpeak_imputationcode = correction_log
-        }
+        lightpeak_available = "lightpeak" %in% names(ts)
+        
         rm(IMP, M ,I)
         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
           x2 = as.numeric(unlist(strsplit(x, ":"))) / c(1, 60, 3600)
@@ -347,9 +303,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
               Nts = nrow(ts)
             }
-            # if ("angle" %in% colnames(ts)) {
-            #   ts = ts[, -which(colnames(ts) == "angle")]
-            # }
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
@@ -508,7 +461,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           for (si in next_si:(next_si + length(segments) - 1)) {
                             fi = 1
                             current_segment_i = si - next_si + 1
-
                             segStart = segments[[current_segment_i]][1]
                             segEnd = segments[[current_segment_i]][2]
                             if (si > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
