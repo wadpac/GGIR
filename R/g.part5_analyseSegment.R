@@ -35,12 +35,12 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   TRLi = levelList$threshold[1]
   TRMi = levelList$threshold[2]
   TRVi = levelList$threshold[3]
-  LEVELS = levelList$levels
-  Lnames = levelList$levelnames
-  OLEVELS = levelList$otherlevels
-  bc.mvpa = levelList$boutcountMVPA
-  bc.in = levelList$boutcountIN
-  bc.lig = levelList$boutcountLIG
+  LEVELS = levelList$LEVELS
+  Lnames = levelList$Lnames
+  OLEVELS = levelList$OLEVELS
+  bc.mvpa = levelList$bc.mvpa
+  bc.in = levelList$bc.in
+  bc.lig = levelList$bc.lig
   
   skiponset = skipwake = TRUE
   

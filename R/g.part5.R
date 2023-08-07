@@ -385,23 +385,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               for (TRMi in params_phyact[["threshold.mod"]]) {
                 for (TRVi in params_phyact[["threshold.vig"]]) {
                   # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
-                  levels = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
+                  levelList = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
                                            ws3 = ws3new, params_phyact = params_phyact)
-                  LEVELS = levels$LEVELS
-                  OLEVELS = levels$OLEVELS
-                  Lnames = levels$Lnames
-                  bc.mvpa = levels$bc.mvpa
-                  bc.lig = levels$bc.lig
-                  bc.in = levels$bc.in
-                  ts = levels$ts
-                  
-                  levelList = list(threshold = c(TRLi, TRMi, TRVi),
-                                   levels = LEVELS,
-                                   levelnames = Lnames,
-                                   otherlevels = OLEVELS,
-                                   boutcountMVPA = bc.mvpa,
-                                   boutcountIN = bc.in,
-                                   boutcountLIG = bc.lig)
+                  LEVELS = levelList$LEVELS
+                  OLEVELS = levelList$OLEVELS
+                  Lnames = levelList$Lnames
+                  ts = levelList$ts
                   
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
