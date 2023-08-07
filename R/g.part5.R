@@ -410,16 +410,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         nightsi = nightsi[nightsi > FM[1] & nightsi < FM[length(FM)]]
                       }
                     } else {
-                      # newly added on 31-3-2019, because if first night is missing then nights needs to allign with diur
+                      # if first night is missing then nights needs to align with diur
                       startend_sleep = which(abs(diff(ts$diur)) == 1)
                       Nepochsin12Hours =  (60/ws3new) * 60 * 12
                       nightsi = nightsi[nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
                                           nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
-                      #nightsi = nightsi[which(nightsi >= startend_sleep[1] & nightsi <= startend_sleep[length(startend_sleep)])]
                     }
                     if (timewindowi == "MM") {
-                      #  Nwindows = nrow(summarysleep_tmp2)
-                      #  Nwindows = length(which(diff(ts$diur) == -1)) + 1
                       Nwindows = length(nightsi) + 1
                     } else {
                       Nwindows = length(which(diff(ts$diur) == -1))
