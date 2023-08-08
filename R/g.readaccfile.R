@@ -312,7 +312,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     startpage = UPI$startpage;    endpage = UPI$endpage
     P = try(expr = {as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                                        batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
-    if (length(P) == 0 | inherits(info, "try-error") == TRUE) { # too short or not data at all
+    if (length(P) == 0 | inherits(P, "try-error") == TRUE) { # too short or not data at all
       P = c() ; switchoffLD = 1
       if (blocknumber == 1) filequality$filetooshort = TRUE
       if (blocknumber == 1) filequality$filecorrupt = TRUE

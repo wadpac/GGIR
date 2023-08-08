@@ -294,7 +294,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       }
       sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
-     
+      
     }
   }
   H = as.matrix(H)
