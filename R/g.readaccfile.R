@@ -171,7 +171,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage, # try to read block first time
                                           end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
-                                          configtz = params_general[["configtz"]], interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                          configtz = params_general[["configtz"]],
+                                          interpolationType = params_rawdata[["interpolationType"]],
+                                          frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
@@ -189,9 +191,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       PtestLastPage = PtestStartPage = c()
       # try to read the last page of the block, because if it exists then there might be something wrong with the first page(s).
       try(expr = {PtestLastPage = GGIRread::readAxivity(filename = filename, start = endpage, #note this is intentionally endpage
-                                                        end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
+                                                        end = endpage, progressBar = FALSE,
+                                                        desiredtz = params_general[["desiredtz"]],
                                                         configtz = params_general[["configtz"]],
-                                                        interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                                        interpolationType = params_rawdata[["interpolationType"]],
+                                                        frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
       # 
       if (length(PtestLastPage$data) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
@@ -202,10 +206,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                              end = startpage, progressBar = FALSE,
                                                              desiredtz = params_general[["desiredtz"]],
                                                              configtz = params_general[["configtz"]],
-                                                             interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                                             interpolationType = params_rawdata[["interpolationType"]],
+                                                             frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
-        cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
+        warning(paste0("\n", NFilePagesSkipped," page(s) skipped in cwa file in ",
+                       "order to read data-block, this may indicate data corruption."), call. = FALSE)
       }
       if (length(PtestStartPage$data) > 1) {
         # Now we know on which page we can start and end the block, we can try again to
@@ -214,7 +220,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               end = endpage, progressBar = FALSE,
                                               desiredtz = params_general[["desiredtz"]],
                                               configtz = params_general[["configtz"]],
-                                              interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+                                              interpolationType = params_rawdata[["interpolationType"]],
+                                              frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1

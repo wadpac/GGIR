@@ -485,6 +485,13 @@ GGIR(mode = 1:5,
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
 
+      \item{frequency_tol}{
+        Number (default = 0.1) as passed on to readAxivity from the GGIRread package.
+        Represents the frequency tolerance as frequation between 0 and 1. When the bias
+        per data block is larger than this number then the data block will be imputed
+        by lack of movement with oriation guess from most recent valid data block.
+        Only relevant for Axivity .cwa data.
+      }
     }
   }
 
