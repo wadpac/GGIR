@@ -378,7 +378,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
             }
             ts$window = 0
-            # 2023-04-23 - backup of nightsi outside threshold look to avoid
+            # backup of nightsi outside threshold defintions to avoid
             # overwriting the backup after the first iteration
             nightsi_bu = nightsi
             for (TRLi in params_phyact[["threshold.lig"]]) {
@@ -538,7 +538,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     } else {
                       napNonwear_col = c()
                     }
-                    
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
