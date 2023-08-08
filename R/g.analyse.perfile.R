@@ -64,6 +64,44 @@ g.analyse.perfile = function(I, C, metrics_nav,
   s_names[vi:(vi + q0)] = c("calib_err",
                             "calib_status", colnames_to_lookat)
   vi = vi + q0 + 2
+  # readAxivity QClog summary
+  if ("Dur_imputed" %in% names(file_summary)) {
+    # These are summaries of the file health check by the GGIRread::readAxivity
+    # the function handles these issue by imputing data, and logging the information.
+    # Normally we do not expect issues with cwa files, but by logging the information
+    # we will facilitate better insight.
+    filesummary[vi:(vi + 6)] = c(file_summary$Dur_imputed, # total imputed
+                                 file_summary$Dur_chsum_failed, # checksum
+                                 file_summary$Dur_nonincremental, # nonincremental id between blocks
+                                 file_summary$Dur_freqissue_5_10, # bias 5-10%
+                                 file_summary$Dur_freqissue_10_20, # bias 10-20%
+                                 file_summary$Dur_freqissue_20_30, # bias 20-30%
+                                 file_summary$Dur_freqissue_30) # bias >30%
+    s_names[vi:(vi + 6)] = c("filehealth_totimp_min",
+                             "filehealth_checksumfail_min",
+                             "filehealth_niblockid_min", # non incremental block id
+                             "filehealth_fbias0510_min", # frequency bias
+                             "filehealth_fbias1020_min", 
+                             "filehealth_fbias2030_min",
+                             "filehealth_fbias30_min")
+    vi = vi + 7
+    filesummary[vi:(vi + 6)] = c( file_summary$Nblocks_imputed,
+                                  file_summary$Nblocks_chsum_failed,
+                                  file_summary$Nblocks_nonincremental,
+                                  file_summary$Nblock_freqissue_5_10,
+                                  file_summary$Nblock_freqissue_10_20,
+                                  file_summary$Nblock_freqissue_20_30,
+                                  file_summary$Nblock_freqissue_30)
+    s_names[vi:(vi + 6)] = c("filehealth_totimp_N",
+                             "filehealth_checksumfail_N",
+                             "filehealth_niblockid_N",
+                             "filehealth_fbias0510_N",
+                             "filehealth_fbias1020_N",
+                             "filehealth_fbias2030_N",
+                             "filehealth_fbias30_N")
+    vi = vi + 7
+  }
+  
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
     q1 = length(output_avday$QUAN)

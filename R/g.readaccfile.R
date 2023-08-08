@@ -192,7 +192,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                         end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
                                                         configtz = params_general[["configtz"]],
                                                         interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
-      if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
+      # 
+      if (length(PtestLastPage$data) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1
@@ -206,7 +207,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         }
         cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
       }
-      if (length(PtestStartPage) > 1) {
+      if (length(PtestStartPage$data) > 1) {
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
         try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage,
