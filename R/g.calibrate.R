@@ -76,20 +76,26 @@ g.calibrate = function(datafile, params_rawdata = c(),
   sf = INFI$sf
   # if GENEActiv csv, deprecated function
   if (mon == 2 & dformat == 2 & length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
+    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
+                " GGIR from the version 2.6-4 onwards. Please, use either",
+                " the GENEActiv bin files or try to read the csv files with",
+                " GGIR::read.myacc.csv"), call. = FALSE)
   }
   if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
     if (length(params_rawdata[["rmc.sf"]]) == 0) {
-      stop("Could not identify sample frequency")
+      stop("Could not identify sample frequency", call. = FALSE)
     } else {
       if (params_rawdata[["rmc.sf"]] == 0) {
-        stop("Could not identify sample frequency")
+        stop("Could not identify sample frequency", call. = FALSE)
       } else {
         sf = params_rawdata[["rmc.sf"]]
       }
     }
   }
-  if (sf == 0) stop("Sample frequency not recognised")
+  if (sf == 0) {
+    stop(paste0("\nSample frequency not recognised in ", datafile,
+                " calibration procedure stopped."), call. = FALSE)
+  }
   options(warn = -1) #turn off warnings
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
                                                desiredtz = params_general[["desiredtz"]],
@@ -346,7 +352,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
         }
         sdcriter = params_rawdata[["rmc.noise"]] * 1.2
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
-          stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+          stop(paste0("Please provide noise level for the acceleration sensors",
+                      " in g-units with argument rmc.noise to aid non-wear detection"),
+               call. = FALSE)
         }
       }
       nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
@@ -513,7 +521,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
     cat(paste0("\nNumber of hours used: ",nhoursused))
     cat(paste0("\nNumber of 10 second windows around the sphere: ", npoints))
     cat(paste0("\nTemperature used (if available): ", use.temp))
-    cat(paste0("\nTemperature offset (if temperature is available) ", c("x", "y", "z"),": ", tempoffset))
+    cat(paste0("\nTemperature offset (if temperature is available) ",
+               c("x", "y", "z"),": ", tempoffset))
     cat("\n")
   }
   if (use.temp == TRUE) {

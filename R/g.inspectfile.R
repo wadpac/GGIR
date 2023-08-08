@@ -173,8 +173,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = H$frequency
     } else if (dformat == 6) { # gt3
       info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
-      info = info[lengths(info) != 0] # remove odd NULL in the list
-      sf = info[["Sample Rate"]]
+      if (inherits(info, "try-error") == TRUE) {
+        stop(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
+      } else {
+        info = info[lengths(info) != 0] # remove odd NULL in the list
+        sf = info[["Sample Rate"]]
+      }
     }
     invisible(list(dformat = dformat, mon = mon, sf = sf, datafile = datafile))
   }
@@ -274,19 +278,24 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
     sf = params_rawdata[["rmc.sf"]]
   } else if (dformat == 6) { # gt3x
-    info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
-    info = info[lengths(info) != 0] # remove odd NULL in the list
-    
-    H = matrix("", length(info), 2)
-    H[, 1] = names(info)
-    for (ci in 1:length(info)) {
-      if (inherits(info[[ci]], "POSIXct") == TRUE) {
-        H[ci, 2] = format(info[[ci]])
-      } else {
-        H[ci, 2] = as.character(info[[ci]])
+    info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
+    if (inherits(info, "try-error") == TRUE) {
+      stop(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
+    } else {
+      info = info[lengths(info) != 0] # remove odd NULL in the list
+      
+      H = matrix("", length(info), 2)
+      H[, 1] = names(info)
+      for (ci in 1:length(info)) {
+        if (inherits(info[[ci]], "POSIXct") == TRUE) {
+          H[ci, 2] = format(info[[ci]])
+        } else {
+          H[ci, 2] = as.character(info[[ci]])
+        }
       }
+      sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
+     
     }
-    sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
   }
   H = as.matrix(H)
   if (ncol(H) == 3 & dformat == 2 & mon == 3) {
