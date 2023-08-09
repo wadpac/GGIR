@@ -61,8 +61,7 @@ test_that("recordingEndSleepHour works as expected", {
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
   expect_equal(nrow(p5), 3) # expanded day appears in MM report
   expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
-  # 
-  
+
   if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
   if (file.exists(fn)) file.remove(fn)
 })

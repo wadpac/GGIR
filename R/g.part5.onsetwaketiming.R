@@ -1,4 +1,4 @@
-g.part5.onsetwaketiming = function(qqq,ts, min, sec, hour, timewindowi) {
+g.part5.onsetwaketiming = function(qqq, ts, min, sec, hour, timewindowi) {
   onset = wake = 0
   skiponset = TRUE; skipwake = TRUE
   # Onset index
