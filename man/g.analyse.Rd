@@ -16,9 +16,8 @@
 }
 \usage{
   g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
-            quantiletype = 7, includedaycrit = 16, 
-            idloc = 1, snloc = 1, 
-            dayborder=0,  desiredtz = "", myfun=c(), acc.metric = c(), ...)
+                      params_general = c(), params_cleaning = c(),
+                      quantiletype = 7, myfun = c(), ...)
 }
 \arguments{
   \item{I}{
@@ -34,37 +33,23 @@
     the output from function \link{g.impute}
   }
   \item{params_247}{
-    See \link{g.part2}
+    See \link{GGIR}
   }
   \item{params_phyact}{
-    See \link{g.part2}
+    See \link{GGIR}
+  }
+  \item{params_general}{
+    See \link{GGIR}
+  }
+  \item{params_cleaning}{
+    See \link{GGIR}
   }
   \item{quantiletype}{
     type of quantile function to use (default recommended). For details, see 
     quantile function in STATS package
   }
-  \item{includedaycrit}{
-   See \link{g.part1}
-  }
-  \item{idloc}{
-   See \link{g.part1}
-  }
-  \item{snloc}{
-    If value = 1 (default) the code assumes that device serial number is stored in
-    the obvious header field. If value = 2 the code uses the character string between
-    the first and second character '_' in the filename as the serial number
-  }
-  \item{dayborder}{
-    See \link{g.part1}
-  }
-  \item{desiredtz}{
-    See \link{g.part1}
-  }
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
-  }
-  \item{acc.metric}{
-     Character, see \link{g.part1}.
   }
   \item{...}{
      Any argument used in the previous version of g.analyse, which will now

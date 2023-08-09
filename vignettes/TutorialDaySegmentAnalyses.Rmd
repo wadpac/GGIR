@@ -104,7 +104,7 @@ Both approaches are implemented in GGIR part 2 and part 5. Therefore the specifi
 output variables that are calculated both in part 2 and 5 are available per day,
 per person, and per segment of the day based on the argument `qwindow` Note that 
 `qwindow` is only used in **part 5** when `timewindow` includes `"MM"` (see specific
-documentation for `timewindow`} in the [parameters vignette](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html))
+documentation for `timewindow`} in the [parameters vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html))
 
 At the moment, specifying the argument `qwindow` triggers the calculation of the
 `qwindow` segments both in part 2 and part 5, which may result in a longer time
@@ -215,7 +215,7 @@ You will find these as variables such as `MVPA_E5S_T201_ENMO` or `MVPA_E5S_B1M80
 
 **Time spent in sleeping, in inactivity and physical activity intensities (part 5):**
 You will find these variables in the part 5 reports, in their bouted, unbouted, and
-total time version of the variables. See [description](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#41_Output_part_5:~:text=as%3A%20sleeponset%20%2D%20guider_inbedStart-,4.3%20Output%20part%205,-The%20output%20of) of GGIR part 5 output in the main GGIR vignette for further details.
+total time version of the variables. See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_5) of GGIR part 5 output in the main GGIR vignette for further details.
 
 
 ```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}

@@ -1,14 +1,12 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
-                      quantiletype = 7, includedaycrit = 16, 
-                      idloc = 1, snloc = 1, dayborder = 0,  desiredtz = "", 
-                      myfun = c(), acc.metric = c(), ...) {
+                      params_general = c(), params_cleaning = c(),
+                      quantiletype = 7, myfun = c(), ...) {
   
   #get input variables
   input = list(...)
   expectedArgs = c("I", "C", "M", "IMP", "params_247", "params_phyact", 
-                   "quantiletype", "includedaycrit", 
-                   "idloc", "snloc", "dayborder", 
-                   "desiredtz", "myfun")
+                   "params_general", "params_cleaning", "quantiletype",
+                    "myfun")
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
@@ -16,13 +14,23 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
                             params_phyact = params_phyact,
+                            params_general = params_general,
+                            params_cleaning = params_cleaning,
                             input = input) # load default parameters
     params_247 = params$params_247
     params_phyact = params$params_phyact
+    params_general = params$params_general
+    params_cleaning = params$params_cleaning
   }
   params_247[["L5M5window"]] = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
+  
+  desiredtz = params_general[["desiredtz"]]
+  idloc = params_general[["idloc"]]
+  includedaycrit = params_cleaning[["includedaycrit"]]
+  acc.metric = params_general[["acc.metric"]]
+  
   fname = I$filename
   averageday = IMP$averageday
   strategy = IMP$strategy
@@ -127,7 +135,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   timeline = seq(0, ceiling(nrow(metalong)/n_ws2_perday), by = 1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
   tooshort = 0
-  dmidn = g.detecmidnight(time,desiredtz,dayborder) #ND,
+  dmidn = g.detecmidnight(time,
+                          desiredtz =  params_general[["desiredtz"]],
+                          dayborder = params_general[["dayborder"]]) #ND,
   firstmidnight = dmidn$firstmidnight;  firstmidnighti = dmidn$firstmidnighti
   lastmidnight = dmidn$lastmidnight;    lastmidnighti = dmidn$lastmidnighti
   midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
@@ -196,15 +206,6 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                  doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
                                  midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck,
                                  acc.metric = acc.metric)
-  InterdailyStability = output_avday$InterdailyStability
-  IntradailyVariability = output_avday$IntradailyVariability
-  igfullr_names = output_avday$igfullr_names
-  igfullr = output_avday$igfullr
-  QUAN = output_avday$QUAN
-  qlevels_names = output_avday$qlevels_names
-  ML5AD = output_avday$ML5AD
-  ML5AD_names = output_avday$ML5AD_names
-  
   cosinor_coef = output_avday$cosinor_coef
   
   #--------------------------------------------------------------
@@ -217,7 +218,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      doiglevels = doiglevels, nfulldays = nfulldays,
                                      lastmidnight = lastmidnight,
                                      ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
-                                     idloc = idloc, sensor.location = sensor.location, wdayname = wdayname,
+                                     idloc = idloc, sensor.location = sensor.location,
+                                     wdayname = wdayname,
                                      tooshort = tooshort, includedaycrit = includedaycrit,
                                      quantiletype = quantiletype, doilevels = doilevels, 
                                      domvpa = domvpa,
@@ -226,10 +228,6 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      doquan = doquan,  ExtFunColsi = ExtFunColsi,
                                      myfun = myfun, desiredtz = desiredtz,
                                      params_247 = params_247, params_phyact = params_phyact)
-    daysummary = output_perday$daysummary
-    ds_names = output_perday$ds_names
-    windowsummary = output_perday$windowsummary
-    ws_names = output_perday$ws_names
   }
   #metashort is shortened from midgnight to midnight if requested (strategy 2)
   if (strategy == 2) {
@@ -280,15 +278,76 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     cat("file skipped for general average caculation because not enough data")
   }
   rm(metalong); rm(metashort)
+  dataqual_summary = data.frame(clipping_score = LC2  / ((LD/1440)*96),
+                                meas_dur_dys =  LD/1440,
+                                dcomplscore = dcomplscore,
+                                meas_dur_def_proto_day = LMp / 1440,
+                                wear_dur_def_proto_day = LWp / 1440)
+  file_summary = data.frame(wdayname = wdayname,
+                            deviceSerialNumber = deviceSerialNumber,
+                            sensor.location = sensor.location,
+                            ID = ID,
+                            fname = fname,
+                            startt = startt)
   
-  output_perfile = g.analyse.perfile(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
-                                     LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
-                                     ML5AD_names, igfullr, igfullr_names,
-                                     daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
-                                     hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
-                                     qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                                     IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                                     qwindow = params_247[["qwindow"]], longitudinal_axis_id, cosinor_coef)
+  if (!is.null(M$QClog)) {
+    # Summarise the QC log (currently only expected from cwa Axivity files)
+    QCsummarise = function(QClog, wx) {
+      x = ifelse(test = length(wx) > 0,
+                 yes = sum(QClog$end[wx] - QClog$start[wx]) / 60,
+                 no = 0)
+      return(x)
+    }
+    # total imputation
+    impdone = which(M$QClog$imputed == TRUE)
+    file_summary$Dur_imputed = QCsummarise(M$QClog, impdone)
+    file_summary$Nblocks_imputed = length(impdone)
+    
+    # checksum
+    chsum_failed = which(M$QClog$checksum_pass == FALSE)
+    file_summary$Dur_chsum_failed = QCsummarise(M$QClog, chsum_failed)
+    file_summary$Nblocks_chsum_failed = length(chsum_failed)
+    
+    # nonincremental block ID
+    nonincremental = which(M$QClog$blockID_current - M$QClog$blockID_next != 1)
+    file_summary$Dur_nonincremental = QCsummarise(M$QClog, nonincremental)
+    file_summary$Nblocks_nonincremental = length(nonincremental)
+    
+    # sampling frequency issues
+    freqBlockHead = M$QClog$frequency_blockheader
+    frequency_bias = abs(M$QClog$frequency_observed - freqBlockHead) / freqBlockHead
+
+    freqissue = which(frequency_bias >= 0.05 & frequency_bias < 0.1)
+    file_summary$Dur_freqissue_5_10 = QCsummarise(M$QClog, freqissue)
+    file_summary$Nblock_freqissue_5_10 = length(freqissue)
+    
+    freqissue = which(frequency_bias >= 0.1 & frequency_bias < 0.2)
+    file_summary$Dur_freqissue_10_20 = QCsummarise(M$QClog, freqissue)
+    file_summary$Nblock_freqissue_10_20 = length(freqissue)
+    
+    freqissue = which(frequency_bias >= 0.2 & frequency_bias < 0.3)
+    file_summary$Dur_freqissue_20_30 = QCsummarise(M$QClog, freqissue)
+    file_summary$Nblock_freqissue_20_30 = length(freqissue)
+    
+    freqissue = which(frequency_bias >= 0.3)
+    file_summary$Dur_freqissue_30 = QCsummarise(M$QClog, freqissue)
+    file_summary$Nblock_freqissue_30 = length(freqissue)
+  }
+
+  metrics_nav = list(lookat = lookat,
+                    colnames_to_lookat = colnames_to_lookat,
+                    longitudinal_axis_id = longitudinal_axis_id)
+  output_perfile = g.analyse.perfile(I, C, metrics_nav,
+                                     AveAccAve24hr, 
+                                     doquan, doiglevels, tooshort, 
+                                     params_247 = params_247, 
+                                     params_cleaning = params_cleaning,
+                                     params_general = params_general,
+                                     output_avday = output_avday,
+                                     output_perday = output_perday,
+                                     dataqual_summary = dataqual_summary,
+                                     file_summary = file_summary)
+
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
   
@@ -298,5 +357,4 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     cosinor_ts = c()
   }
   invisible(list(summary = filesummary, daysummary = daysummary, cosinor_ts = cosinor_ts))
- 
 }

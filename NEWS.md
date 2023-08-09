@@ -1,4 +1,7 @@
-# CHANGES IN GGIR VERSION 2.9-7
+# CHANGES IN GGIR VERSION 2.10-0
+
+- Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
+and incorporated in data_quality_report #866
 
 - Part 1: Fix ID extraction for externally generated epoch files #869
 
@@ -994,7 +997,7 @@
 
 # CHANGES IN GGIR VERSION 1.5-17
 
-- SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <https://www.biorxiv.org/content/early/2018/02/01/257972>
+- SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <https://www.biorxiv.org/content/10.1101/257972v1>
 
 # CHANGES IN GGIR VERSION 1.5-16
 
