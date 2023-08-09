@@ -15,7 +15,7 @@
   \item{ts}{
     data.frame with time series
   }
-  \item{summarysleep_tmp2}{
+  \item{part4_output}{
     cleaned output from part 4
   }
   \item{desiredtz}{
