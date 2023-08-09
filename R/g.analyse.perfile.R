@@ -67,9 +67,10 @@ g.analyse.perfile = function(I, C, metrics_nav,
   # readAxivity QClog summary
   if ("Dur_imputed" %in% names(file_summary)) {
     # These are summaries of the file health check by the GGIRread::readAxivity
-    # the function handles these issue by imputing data, and logging the information.
-    # Normally we do not expect issues with cwa files, but by logging the information
-    # we will facilitate better insight.
+    # the function handles data blocks (1-3 seconds) with faulty data by imputing 
+    # them and logging the information.
+    # Normally we do not expect issue with cwa files, but by logging the information
+    # we will facilitate better insight into when this happens.
     filesummary[vi:(vi + 6)] = c(file_summary$Dur_imputed, # total imputed
                                  file_summary$Dur_chsum_failed, # checksum
                                  file_summary$Dur_nonincremental, # nonincremental id between blocks
