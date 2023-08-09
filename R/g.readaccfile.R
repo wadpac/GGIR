@@ -172,8 +172,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage, # try to read block first time
                                           end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
                                           configtz = params_general[["configtz"]],
-                                          interpolationType = params_rawdata[["interpolationType"]],
-                                          frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
+                                          interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+    # frequency_tol = params_rawdata[["frequency_tol"]]
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
@@ -194,9 +194,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                         end = endpage, progressBar = FALSE,
                                                         desiredtz = params_general[["desiredtz"]],
                                                         configtz = params_general[["configtz"]],
-                                                        interpolationType = params_rawdata[["interpolationType"]],
-                                                        frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
-      # 
+                                                        interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+      # frequency_tol = params_rawdata[["frequency_tol"]]
       if (length(PtestLastPage$data) > 1) { # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
@@ -206,8 +205,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                              end = startpage, progressBar = FALSE,
                                                              desiredtz = params_general[["desiredtz"]],
                                                              configtz = params_general[["configtz"]],
-                                                             interpolationType = params_rawdata[["interpolationType"]],
-                                                             frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
+                                                             interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+          # frequency_tol = params_rawdata[["frequency_tol"]]
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
         warning(paste0("\n", NFilePagesSkipped," page(s) skipped in cwa file in ",
@@ -220,8 +219,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               end = endpage, progressBar = FALSE,
                                               desiredtz = params_general[["desiredtz"]],
                                               configtz = params_general[["configtz"]],
-                                              interpolationType = params_rawdata[["interpolationType"]],
-                                              frequency_tol = params_rawdata[["frequency_tol"]])}, silent = TRUE)
+                                              interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+        # frequency_tol = params_rawdata[["frequency_tol"]]
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
