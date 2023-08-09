@@ -1,4 +1,4 @@
-g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
+g.part5.fixmissingnight = function(summarysleep, sleeplog = c(), ID) {
   #========================================================
   # Added 24 March 2020, for the rare situation when part 4 does misses a night.
   # This is possible when the accelerometer was not worn the entire day and
@@ -20,10 +20,10 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
     time = paste0(hrsNEW,":",minsNEW,":",secsNEW)
     return(time)
   }
-  potentialnight = min(summarysleep_tmp2$night):max(summarysleep_tmp2$night)
-  missingnight = which(as.numeric(potentialnight) %in% as.numeric(summarysleep_tmp2$night) == FALSE)
+  potentialnight = min(summarysleep$night):max(summarysleep$night)
+  missingnight = which(as.numeric(potentialnight) %in% as.numeric(summarysleep$night) == FALSE)
   
-  if ("guider_wakeup" %in% colnames(summarysleep_tmp2) == TRUE) {
+  if ("guider_wakeup" %in% colnames(summarysleep) == TRUE) {
     guider_onset = "guider_onset"
     guider_wakeup = "guider_wakeup"
   } else {
@@ -33,11 +33,11 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
   if (length(missingnight) > 0) {
     for (mi in missingnight) {
       missingNight = potentialnight[mi]
-      newnight = summarysleep_tmp2[1,]
+      newnight = summarysleep[1,]
       newnight[which(names(newnight) %in% c("ID","night", "sleepparam","filename","filename_dir","foldername") == FALSE)] = NA
       newnight$wakeup = newnight[,guider_wakeup] = newnight$sleeponset = newnight[,guider_onset] = NA
       newnight$night = missingNight
-      newnight$calendar_date = format(as.Date(as.POSIXlt(summarysleep_tmp2$calendar_date[mi-1],format="%d/%m/%Y") + (36*3600)), "%d/%m/%Y")
+      newnight$calendar_date = format(as.Date(as.POSIXlt(summarysleep$calendar_date[mi-1],format="%d/%m/%Y") + (36*3600)), "%d/%m/%Y")
       timesplit = as.numeric(unlist(strsplit(as.character(newnight$calendar_date),"/"))) # remove leading zeros
       newnight$calendar_date = paste0(timesplit[1],"/",timesplit[2],"/",timesplit[3])
       newnight$daysleeper = 0
@@ -67,10 +67,10 @@ g.part5.fixmissingnight = function(summarysleep_tmp2, sleeplog=c(), ID) {
         newnight$guider = "nosleeplog_accnotworn"
       }
       newnight$cleaningcode = 5
-      summarysleep_tmp2 = rbind(summarysleep_tmp2[1:(mi-1),],
+      summarysleep = rbind(summarysleep[1:(mi-1),],
                                 newnight,
-                                summarysleep_tmp2[mi:nrow(summarysleep_tmp2),])
+                                summarysleep[mi:nrow(summarysleep),])
     }
   }
-  return(summarysleep_tmp2)
+  return(summarysleep)
 }

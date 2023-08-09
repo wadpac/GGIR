@@ -9,22 +9,27 @@
   as part of \link{g.part5}.
 }
 \usage{
-  g.part5.addsib(ts,ws3, Nts, S2, desiredtz, j, nightsi)
+  g.part5.addsib(ts, epochSize, part3_output, desiredtz,
+              sibDefinition, nightsi)
 }
 \arguments{
   \item{ts}{
+    Data.frame object as passed on from \link{g.part5}
   }
-  \item{ws3}{
+  \item{epochSize}{
+    Short epoch size in seconds
   }
-  \item{Nts}{
-  }
-  \item{S2}{
+  \item{part3_output}{
+    Segment of part 3 output relevant for current sleep definition
   }
   \item{desiredtz}{
+    see \link{GGIR}
   }
-  \item{j}{
+  \item{sibDefinition}{
+    Character to indicate definition of sib (sustained inactivity bout)
   }
   \item{nightsi}{
+    Vector with indices for the midnights
   }
 }
 \value{

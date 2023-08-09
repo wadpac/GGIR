@@ -9,15 +9,17 @@
   tries to fix as part of \link{g.part5}.
 }
 \usage{
-  g.part5.fixmissingnight(summarysleep_tmp2, sleeplog=c(), ID)
+  g.part5.fixmissingnight(summarysleep, sleeplog = c(), ID)
 }
 \arguments{
-  \item{summarysleep_tmp2}{
+  \item{summarysleep}{
     Object produced by \link{g.part4}
   }
   \item{sleeplog}{
+    Sleeplog object as passed on from \link{g.part5}
   }
   \item{ID}{
+    ID of participant
   }
 }
 \value{

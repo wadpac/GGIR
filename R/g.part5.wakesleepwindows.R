@@ -1,8 +1,9 @@
-g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, sleeplog, ws3new, Nts, ID,
+g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
+                                    sleeplog, epochSize, ID,
                                     Nepochsinhour) {
   #========================================================
   # DIURNAL BINARY CLASSIFICATION INTO NIGHT (onset-wake) OR DAY (wake-onset) PERIOD 
-  
+  Nts = nrow(ts)
   findIndex = function(timeChar = NULL, wc = NULL) {
     wc_withzerotime = paste0(wc," 00:00:00")
     if (length(grep(pattern = " ", x = wc)) == 0) {
@@ -18,13 +19,13 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     x2 = as.numeric(unlist(strsplit(x,":"))) / c(1,60,3600)
     return(sum(x2))
   }
-  w0 = w1 = rep(0,length(summarysleep_tmp2$calendar_date))
+  w0 = w1 = rep(0,length(part4_output$calendar_date))
   # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
-  round_seconds_to_ws3new = function(x, ws3new) {
+  round_seconds_to_epochSize = function(x, epochSize) {
     temp = as.numeric(unlist(strsplit(x,":")))
     if (length(temp) == 3) {
-      if (temp[3] / ws3new != round(temp[3] / ws3new)) {
-        x = paste0(temp[1],":",temp[2],":",round(temp[3] / ws3new)*ws3new)
+      if (temp[3] / epochSize != round(temp[3] / epochSize)) {
+        x = paste0(temp[1],":",temp[2],":",round(temp[3] / epochSize)*epochSize)
       }
     } else {
       x = ""
@@ -37,31 +38,31 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
     timeChar = format(iso8601chartime2POSIX(timeChar, tz = desiredtz))
   }
   
-  for (k in 1:length(summarysleep_tmp2$calendar_date)) { # loop through nights from part 4
-    summarysleep_tmp2$wakeup_ts[k] = round_seconds_to_ws3new(summarysleep_tmp2$wakeup_ts[k], ws3new)
-    summarysleep_tmp2$sleeponset_ts[k] = round_seconds_to_ws3new(summarysleep_tmp2$sleeponset_ts[k], ws3new)
+  for (k in 1:length(part4_output$calendar_date)) { # loop through nights from part 4
+    part4_output$wakeup_ts[k] = round_seconds_to_epochSize(part4_output$wakeup_ts[k], epochSize)
+    part4_output$sleeponset_ts[k] = round_seconds_to_epochSize(part4_output$sleeponset_ts[k], epochSize)
     
-    summarysleep_tmp2$sleeponset[k] = (round((summarysleep_tmp2$sleeponset[k]*3600) / ws3new) * ws3new) / 3600
-    summarysleep_tmp2$wakeup[k] = (round((summarysleep_tmp2$wakeup[k]*3600) / ws3new) * ws3new) / 3600
+    part4_output$sleeponset[k] = (round((part4_output$sleeponset[k]*3600) / epochSize) * epochSize) / 3600
+    part4_output$wakeup[k] = (round((part4_output$wakeup[k]*3600) / epochSize) * epochSize) / 3600
     
     # Load sleep onset and waking time from part 4 and convert them into timestamps
-    tt = unlist(strsplit(as.character(summarysleep_tmp2$calendar_date[k]),"/")) # calendar date
+    tt = unlist(strsplit(as.character(part4_output$calendar_date[k]),"/")) # calendar date
     # if sleep onset is not available in from acc and/or sleep then us the following default
     # in order to still have some beginning and end of the night, these days will be discared
     # anyway, because typically this coincides with a lot of non-wear time:
-    if (is.na(summarysleep_tmp2$sleeponset[k]) == T) {
+    if (is.na(part4_output$sleeponset[k]) == T) {
       defSO = 22 
       defSO_ts = "22:00:00"
     } else {
-      defSO = summarysleep_tmp2$sleeponset[k]
-      defSO_ts = summarysleep_tmp2$sleeponset_ts[k]
+      defSO = part4_output$sleeponset[k]
+      defSO_ts = part4_output$sleeponset_ts[k]
     }
-    if (is.na(summarysleep_tmp2$wakeup[k]) == T) {
+    if (is.na(part4_output$wakeup[k]) == T) {
       defWA = 31
       defWA_ts = "07:00:00"
     } else {
-      defWA = summarysleep_tmp2$wakeup[k]
-      defWA_ts = summarysleep_tmp2$wakeup_ts[k]
+      defWA = part4_output$wakeup[k]
+      defWA_ts = part4_output$wakeup_ts[k]
     }
     w0[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defSO_ts), sep = "")
     w1[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defWA_ts), sep = "")
@@ -70,7 +71,7 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       w0[k] = as.character(as.POSIXlt(w0[k],tz = desiredtz) + (24*3600))
     }
     if (defWA >= 24 |
-        (summarysleep_tmp2$daysleeper[k] == 1 & defWA < 18)) {
+        (part4_output$daysleeper[k] == 1 & defWA < 18)) {
       w1[k] = format(as.POSIXlt(w1[k], tz = desiredtz) + (24*3600))
     }
     s0 = findIndex(timeChar, wc = format(as.POSIXlt(w0[k], tz = desiredtz)))
@@ -89,17 +90,17 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
       distance2midnight = abs(nightsi - s1) + abs(nightsi - s0)
       closestmidnighti = which.min(distance2midnight)
       closestmidnight = nightsi[closestmidnighti]
-      noon0 = closestmidnight - (12 * (60/ws3new) * 60)
-      noon1 = closestmidnight + (12 * (60/ws3new) * 60)
+      noon0 = closestmidnight - (12 * (60/epochSize) * 60)
+      noon1 = closestmidnight + (12 * (60/epochSize) * 60)
       
       if (noon0 < 1) noon0 = 1
       if (noon1 > Nts) noon1 = Nts
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])
-      if ((length(sleeplog) > 0 & (nonwearpercentage > 0.33) | summarysleep_tmp2$sleeponset_ts[k] == "")) { # added condition to detect nights that are not detected in part 4
+      if ((length(sleeplog) > 0 & (nonwearpercentage > 0.33) | part4_output$sleeponset_ts[k] == "")) { # added condition to detect nights that are not detected in part 4
         
         # If non-wear is high for this day and if sleeplog is available
-        sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
-        sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == summarysleep_tmp2$night[k])]
+        sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == part4_output$night[k])]
+        sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == part4_output$night[k])]
         if (length(sleeplogonset) != 0 & length(sleeplogwake) != 0) {
           if (!is.na(sleeplogonset) &  !is.na(sleeplogwake)) {
             # ... and if there is sleeplog data for the relevant night
@@ -110,9 +111,9 @@ g.part5.wakesleepwindows = function(ts, summarysleep_tmp2, desiredtz, nightsi, s
             if (sleeplogonset_hr > 12) {
               sleeplogonset_hr = sleeplogonset_hr - 24
             }
-            if (sleeplogwake_hr > 18 & summarysleep_tmp2$daysleeper[k] == 1) {
+            if (sleeplogwake_hr > 18 & part4_output$daysleeper[k] == 1) {
               sleeplogwake_hr = sleeplogwake_hr - 24 # 18 because daysleepers can wake up after 12
-            } else if (sleeplogwake_hr > 12 & summarysleep_tmp2$daysleeper[k] == 0) {
+            } else if (sleeplogwake_hr > 12 & part4_output$daysleeper[k] == 0) {
               sleeplogwake_hr = sleeplogwake_hr - 24
             }
             if (sleeplogwake_hr > 36 &  sleeplogonset_hr > 36) {
