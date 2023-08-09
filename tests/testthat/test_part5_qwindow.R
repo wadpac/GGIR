@@ -13,9 +13,9 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   qwindow = c(7, 18)
   
   definedays = g.part5.definedays(nightsi = nightsi, wi = 1, indjump = 1, 
-                                  nightsi_bu = nightsi, ws3new = 60, 
+                                  nightsi_bu = nightsi, epochSize = 60, 
                                   qqq_backup=c(), 
-                                  ts = ts, Nts = nrow(ts), 
+                                  ts = ts, 
                                   timewindowi = "MM", Nwindows = 1, 
                                   qwindow = qwindow, ID = NULL)
   
@@ -44,10 +44,9 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   
   # definedays
   definedays = g.part5.definedays(nightsi = nightsi, wi = 1, indjump = 1, 
-                                  nightsi_bu = nightsi, ws3new = 60, 
+                                  nightsi_bu = nightsi, epochSize = 60, 
                                   qqq_backup=c(), 
-                                  ts = ts, Nts = nrow(ts), 
-                                  timewindowi = "MM", Nwindows = 1, 
+                                  ts = ts, timewindowi = "MM", Nwindows = 1, 
                                   qwindow = LOG, ID = "1RAW")
   
   expect_false(is.null(definedays$segments))

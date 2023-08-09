@@ -296,20 +296,28 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
-          S2 = S[S$definition == j,] # simplify to one definition
           # Add sustained inactivity bouts (sib) to the time series
-          ts = g.part5.addsib(ts, ws3new, Nts, S2, params_general[["desiredtz"]], j,  nightsi)
+          ts = g.part5.addsib(ts,
+                              epochSize = ws3new,
+                              part3_output = S[S$definition == j,],
+                              desiredtz = params_general[["desiredtz"]],
+                              sibDefinition = j,
+                              nightsi)
           # Fix missing nights in part 4 data:
           summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
             # Add defenition of wake and sleep windows in diur column of data.frame ts
-            ts = g.part5.wakesleepwindows(ts, summarysleep_tmp2, params_general[["desiredtz"]], nightsi2,
-                                          sleeplog, ws3, Nts, ID, Nepochsinhour)
+            ts = g.part5.wakesleepwindows(ts,
+                                          part4_output = summarysleep_tmp2,
+                                          desiredtz = params_general[["desiredtz"]],
+                                          nightsi = nightsi2,
+                                          sleeplog,
+                                          epochSize = ws3, ID, Nepochsinhour)
             # Add first waking up time, if it is missing:
-            ts = g.part5.addfirstwake(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
-                                      Nepochsinhour, Nts, SPTE_end, ws3)
+            ts = g.part5.addfirstwake(ts, summarysleep = summarysleep_tmp2, nightsi, sleeplog, ID,
+                                      Nepochsinhour, SPTE_end)
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
               
@@ -484,8 +492,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     }
                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
+                      
                       defdays = g.part5.definedays(nightsi, wi, indjump,
-                                                   nightsi_bu, ws3new, qqq_backup, ts, Nts,
+                                                   nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
                                                    ID = ID)
                       qqq = defdays$qqq
@@ -510,7 +519,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             } else {
                               plusb = 1
                             }
-                            skiponset = skipwake = TRUE
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
                               ts$segment[sss1:sss2] = si
@@ -535,7 +543,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             dsummary[si, fi:(fi + 2)] = c(wi, segmentName, segmentTiming)
                             ds_names[fi:(fi + 2)] = c("window_number", "window", "start_end_window"); fi = fi + 3
                             # Get onset and waking timing, both as timestamp and as index
-                            onsetwaketiming = g.part5.onsetwaketiming(qqq,ts, min, sec, hour, timewindowi, skiponset, skipwake)
+                            onsetwaketiming = g.part5.onsetwaketiming(qqq,ts, min, sec, hour, timewindowi)
                             onset = onsetwaketiming$onset; wake = onsetwaketiming$wake
                             onseti = onsetwaketiming$onseti; wakei = onsetwaketiming$wakei
                             skiponset = onsetwaketiming$skiponset; skipwake = onsetwaketiming$skipwake
@@ -916,7 +924,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                               fi = fi + Nluxt
                               if (timewindowi == "WW") {
                                 # LUX per segment of the day
-                                luxperseg = g.part5.lux_persegment(ts, sse, params_247[["LUX_day_segments"]], ws3new, desiredtz = params_general[["desiredtz"]])
+                                luxperseg = g.part5.lux_persegment(ts, sse,
+                                                                   LUX_day_segments = params_247[["LUX_day_segments"]], 
+                                                                   epochSize = ws3new,
+                                                                   desiredtz = params_general[["desiredtz"]])
                                 dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
                                 ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
                                 fi = fi + length(luxperseg$values)
