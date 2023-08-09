@@ -251,13 +251,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           # include last window if has been expanded and not present in ts
           if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
           # create copy of only relevant part of sleep summary dataframe
-          summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == j),]
+          summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == sibDef),]
           # Add sustained inactivity bouts (sib) to the time series
           ts = g.part5.addsib(ts,
                               epochSize = ws3new,
-                              part3_output = S[S$definition == j,],
+                              part3_output = S[S$definition == sibDef,],
                               desiredtz = params_general[["desiredtz"]],
-                              sibDefinition = j,
+                              sibDefinition = sibDef,
                               nightsi)
           # Fix missing nights in part 4 data:
           summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)

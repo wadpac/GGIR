@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 2.10-0
+# CHANGES IN GGIR VERSION 2.10-1
 
 - Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
 and incorporated in data_quality_report #866
@@ -12,6 +12,8 @@ and incorporated in data_quality_report #866
 - General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 #859
 
 - Part 1: Fix major bug to .gt3x data autocalibration (only ActiGraph), where autocalibration was done but not applied to the data #864
+
+- Refactored code for functions g.analyse.perfile and various functions which name starts with "g.part5"
 
 # CHANGES IN GGIR VERSION 2.9-6
 

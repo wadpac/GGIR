@@ -63,7 +63,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   dsummary[si, fi:(fi + 2)] = c(wi, segmentName, segmentTiming)
   ds_names[fi:(fi + 2)] = c("window_number", "window", "start_end_window"); fi = fi + 3
   # Get onset and waking timing, both as timestamp and as index
-  onsetwaketiming = g.part5.onsetwaketiming(qqq, ts, min, sec, hour, timewindowi, skiponset, skipwake)
+  onsetwaketiming = g.part5.onsetwaketiming(qqq, ts, min, sec, hour, timewindowi)
   onset = onsetwaketiming$onset; wake = onsetwaketiming$wake
   onseti = onsetwaketiming$onseti; wakei = onsetwaketiming$wakei
   skiponset = onsetwaketiming$skiponset; skipwake = onsetwaketiming$skipwake
@@ -440,7 +440,10 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       fi = fi + Nluxt
       if (timewindowi == "WW") {
         # LUX per segment of the day
-        luxperseg = g.part5.lux_persegment(ts, sse, params_247[["LUX_day_segments"]], ws3new, desiredtz = params_general[["desiredtz"]])
+        luxperseg = g.part5.lux_persegment(ts, sse,
+                                           LUX_day_segments = params_247[["LUX_day_segments"]],
+                                           epochSize = ws3new,
+                                           desiredtz = params_general[["desiredtz"]])
         dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
         ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
         fi = fi + length(luxperseg$values)
