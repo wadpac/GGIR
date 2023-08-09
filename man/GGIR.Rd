@@ -487,10 +487,10 @@ GGIR(mode = 1:5,
 
       \item{frequency_tol}{
         Number (default = 0.1) as passed on to readAxivity from the GGIRread package.
-        Represents the frequency tolerance as frequation between 0 and 1. When the bias
-        per data block is larger than this number then the data block will be imputed
-        by lack of movement with oriation guess from most recent valid data block.
-        Only relevant for Axivity .cwa data.
+        Represents the frequency tolerance as fraction between 0 and 1. When the relative bias
+        per data block is larger than this fraction then the data block will be imputed
+        by lack of movement with gravitational oriationed guessed from most recent
+        valid data block. Only applicable to Axivity .cwa data.
       }
     }
   }

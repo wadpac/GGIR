@@ -164,16 +164,39 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       P = c()
     }
   } else if (mon == 4 & dformat == 4) { # axivity cwa
+    if (utils::packageVersion("GGIRread") < "0.3.0") {
+      pass_on_freq_tol = FALSE
+    } else {
+      pass_on_freq_tol = TRUE
+    }
+    apply_readAxivity = function(fname = filename,
+                                 bstart, bend,
+                                 desiredtz = params_general[["desiredtz"]],
+                                 configtz = params_general[["configtz"]],
+                                 interpolationType = params_rawdata[["interpolationType"]],
+                                 pass_on_freq_tol, 
+                                 frequency_tol = params_rawdata[["frequency_tol"]]) {
+      if (pass_on_freq_tol == FALSE) {
+        try(expr = {P = GGIRread::readAxivity(filename = fname, start = bstart, # try to read block first time
+                                              end = bend, progressBar = FALSE, desiredtz = desiredtz,
+                                              configtz = configtz,
+                                              interpolationType = interpolationType)}, silent = TRUE)
+      } else {
+        try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart, # try to read block first time
+                                              end = bend, progressBar = FALSE, desiredtz = desiredtz,
+                                              configtz = configtz,
+                                              interpolationType = interpolationType,
+                                              frequency_tol = frequency_tol)}, silent = TRUE)
+      }
+      return(P)
+    }
+    
     startpage = blocksize * (blocknumber - 1)
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage, # try to read block first time
-                                          end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
-                                          configtz = params_general[["configtz"]],
-                                          interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
-    # frequency_tol = params_rawdata[["frequency_tol"]]
+    P = apply_readAxivity(bstart = startpage, bend = endpage, pass_on_freq_tol = pass_on_freq_tol)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
@@ -184,43 +207,29 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
           if (blocknumber == 1) filequality$filetooshort = TRUE
         }
       }
-    } else { #data reading not succesful
-      # Now only load the last page, to assess whether there may be something wrong with this block of data:
-      # I (VvH) implemented this as a temporary fix on 17Nov2018, but it would be better if we understood the source of this error
-      # and address it inside the g.cwaread function. For example, are the page corrupted, and if so then why?
-      PtestLastPage = PtestStartPage = c()
-      # try to read the last page of the block, because if it exists then there might be something wrong with the first page(s).
-      try(expr = {PtestLastPage = GGIRread::readAxivity(filename = filename, start = endpage, #note this is intentionally endpage
-                                                        end = endpage, progressBar = FALSE,
-                                                        desiredtz = params_general[["desiredtz"]],
-                                                        configtz = params_general[["configtz"]],
-                                                        interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
-      # frequency_tol = params_rawdata[["frequency_tol"]]
-      if (length(PtestLastPage$data) > 1) { # Last page exist, so there must be something wrong with the first page
+    } else { 
+      # If data reading is not successful then try following steps to retrieve issue
+      # I am not sure if this is still relevant after all the improvements to GGIRread
+      # but leaving this in just in case it is still needed
+      
+      PtestLastPage = PtestStartPage = NULL
+      # Try to read the last page of the block because if it exists then there might be
+      # something wrong with the first page(s).
+      PtestLastPage = apply_readAxivity(bstart = endpage, bend = endpage, pass_on_freq_tol = pass_on_freq_tol)
+      if (length(PtestLastPage) > 1) { 
+        # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1
           startpage = startpage + NFilePagesSkipped
-          try(expr = {PtestStartPage = GGIRread::readAxivity(filename = filename, start = startpage , # note: end is intentionally startpage
-                                                             end = startpage, progressBar = FALSE,
-                                                             desiredtz = params_general[["desiredtz"]],
-                                                             configtz = params_general[["configtz"]],
-                                                             interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
-          # frequency_tol = params_rawdata[["frequency_tol"]]
+          PtestStartPage = apply_readAxivity(bstart = startpage, bend = startpage, pass_on_freq_tol = pass_on_freq_tol)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
-        warning(paste0("\n", NFilePagesSkipped," page(s) skipped in cwa file in ",
-                       "order to read data-block, this may indicate data corruption."), call. = FALSE)
       }
-      if (length(PtestStartPage$data) > 1) {
+      if (length(PtestStartPage) > 1) {
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
-        try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage,
-                                              end = endpage, progressBar = FALSE,
-                                              desiredtz = params_general[["desiredtz"]],
-                                              configtz = params_general[["configtz"]],
-                                              interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
-        # frequency_tol = params_rawdata[["frequency_tol"]]
+        P = apply_readAxivity(bstart = startpage, bend = endpage, pass_on_freq_tol = pass_on_freq_tol)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
@@ -233,8 +242,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
               filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
             }
           }
-          # Add replications of Ptest to the beginning of P to achieve same data length as under nuormal conditions
-          P$data = rbind(do.call("rbind",replicate(NFilePagesSkipped,PtestStartPage$data,simplify = FALSE)), P$data)
+          # Add replications of Ptest to the beginning of P to achieve same data 
+          # length as under normal conditions
+          P$data = rbind(do.call("rbind",
+                                 replicate(NFilePagesSkipped, PtestStartPage$data, simplify = FALSE)),
+                         P$data)
         } else { # Data reading still not succesful, so classify file as corrupt
           P = c()
           if (blocknumber == 1) filequality$filecorrupt = TRUE

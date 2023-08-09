@@ -33,7 +33,7 @@ bibentry(bibtype = "Article",
         number    =  7,
         pages     = "738--744",
         year      =  2014,
-        url       = "https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014")
+        url       = "https://doi.org/10.1152/japplphysiol.00421.2014")
         
         
 bibentry(bibtype = "Article",
