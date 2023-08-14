@@ -6,18 +6,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   #get input variables
   input = list(...)
   # Check for duplicated arguments
-  if (length(input) > 0) {
-    if (length(input) > 1) {
-      argNames = names(input)
-      dupArgNames = duplicated(argNames)
-      if (any(dupArgNames)) { # Warn user about those duplicated arguments
-        for (dupi in unique(argNames[dupArgNames])) {
-          dupArgValues = input[which(argNames %in% dupi)]
-          if (all(dupArgValues == dupArgValues[[1]])) { # duplicated arguments, but no confusion about what value should be
-            warning(paste0("\nArgument ", dupi, " has been provided more than once. Try to avoid this."))
-          } else {# duplicated arguments, and confusion about what value should be,
-            warning(paste0("\nArgument ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
-          }
+  if (length(input) > 1) {
+    argNames = names(input)
+    dupArgNames = duplicated(argNames)
+    if (any(dupArgNames)) { # Warn user about those duplicated arguments
+      for (dupi in unique(argNames[dupArgNames])) {
+        dupArgValues = input[which(argNames %in% dupi)]
+        if (all(dupArgValues == dupArgValues[[1]])) { # duplicated arguments, but no confusion about what value should be
+          warning(paste0("\nArgument ", dupi, " has been provided more than once. Try to avoid this."))
+        } else {# duplicated arguments, and confusion about what value should be,
+          warning(paste0("\nArgument ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
         }
       }
     }
