@@ -323,9 +323,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   #==========================
   # Report generation:
   # -----
-  # Commented out 2023-03-14 - Not needed since now there are checks for meta data
-  # before generating reports for parts 2, 4, 5 and visualreport
-  #
   # check a few basic assumptions before continuing
   if (length(which(do.report == 2)) > 0) {
     if (verbose == TRUE) print_console_header("Report part 2")
