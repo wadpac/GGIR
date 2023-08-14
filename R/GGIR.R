@@ -27,9 +27,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
   if (dir.exists(outputdir) == FALSE) stop("\nDirectory specified by argument outputdir, does not exist")
-  if (f0 == 0 | f1 == 0) { # What file to start with?
+  if (f0 < 1) { # What file to start with?
     f0 = 1
-    if (filelist == FALSE) {  # What file to end with?
+  }
+  if (f1 < 1) {  # What file to end with?
+    if (filelist == FALSE) {
       f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
