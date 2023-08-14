@@ -27,13 +27,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
   if (dir.exists(outputdir) == FALSE) stop("\nDirectory specified by argument outputdir, does not exist")
-  derivef0f1 = FALSE
-  if (length(f0) == 0 | length(f1) == 0) {
-    derivef0f1 = TRUE
-  } else {
-    if (f0 == 0 | f1 == 0) derivef0f1 = TRUE
-  }
-  if (derivef0f1 == TRUE) { # What file to start with?
+  if (f0 == 0 | f1 == 0) { # What file to start with?
     f0 = 1
     if (filelist == FALSE) {  # What file to end with?
       f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
@@ -302,7 +296,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   #--------------------------------------------------
   # Store configuration parameters in config file
   LS = ls()
-  LS = LS[which(LS %in% c("input", "txt", "derivef0f1", "dopart1", "dopart2", "dopart3", "LS",
+  LS = LS[which(LS %in% c("input", "txt", "dopart1", "dopart2", "dopart3", "LS",
                           "dopart4", "dopart5", "fnames", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
