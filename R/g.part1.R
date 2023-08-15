@@ -33,10 +33,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     if (dir.exists(datadir) == FALSE) {
       stop("\nDirectory specified by argument datadir, does not exist")
     }
-    if (grepl(datadir, outputdir)) {
-      stop(paste0('\nError: The file path specified by argument outputdir should",
-                " NOT equal or be a subdirectory of the path specified by argument datadir'))
-    }
   }
   # list all accelerometer files
   dir2fn = datadir2fnames(datadir,filelist)

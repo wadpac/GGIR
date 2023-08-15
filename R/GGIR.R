@@ -23,6 +23,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Convert paths from Windows specific slashed to generic slashes
   outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
   datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
+
+  if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
+    stop(paste0('\nError: The file path specified by argument outputdir should ',
+                'NOT equal or be a subdirectory of the path specified by argument datadir'))
+  }
+
   #===========================
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
