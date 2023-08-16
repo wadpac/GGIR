@@ -39,12 +39,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
 
   # create output directory if it does not exist
   if (filelist == TRUE) {
-    if (length(studyname) == 0) {
-      studyname = "mystudy"
-      stop('\nError: studyname not specified in part1. Needed for analysing lists of files')
-    } else {
-      outputfolder = paste0("/output_", studyname)
-    }
+    outputfolder = paste0("/output_", studyname)
   } else {
     outputfolder = unlist(strsplit(datadir, "/"))
     outputfolder = paste0("/output_",outputfolder[length(outputfolder)])

@@ -49,6 +49,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dir.exists(outputdir) == FALSE) {
     stop("\nDirectory specified by argument outputdir does not exist")
   }
+  if (filelist == TRUE) {
+    if (length(studyname) == 0) {
+      stop('\nError: studyname must be specified if datadir is a list of files')
+    }
+  }
   if (f0 < 1) { # What file to start with?
     f0 = 1
   }
