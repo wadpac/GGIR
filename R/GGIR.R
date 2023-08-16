@@ -20,19 +20,35 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
+
+  if (length(datadir) == 0) {
+    stop('\nVariable datadir is not specified')
+  }
+
+  if (length(outputdir) == 0) {
+    stop('\nVariable outputdir is not specified')
+  }
+
   # Convert paths from Windows specific slashed to generic slashes
   outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
   datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
 
-  if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
-    stop(paste0('\nError: The file path specified by argument outputdir should ',
-                'NOT equal or be a subdirectory of the path specified by argument datadir'))
-  }
-
   #===========================
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
-  if (dir.exists(outputdir) == FALSE) stop("\nDirectory specified by argument outputdir, does not exist")
+
+  if (filelist == FALSE) {
+    if (dir.exists(datadir) == FALSE) {
+      stop("\nDirectory specified by argument datadir does not exist")
+    }
+    if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
+      stop(paste0('\nError: The file path specified by argument outputdir should ',
+                  'NOT equal or be a subdirectory of the path specified by argument datadir'))
+    }
+  }
+  if (dir.exists(outputdir) == FALSE) {
+    stop("\nDirectory specified by argument outputdir does not exist")
+  }
   if (f0 < 1) { # What file to start with?
     f0 = 1
   }
@@ -322,9 +338,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"),
                        row.names = FALSE, sep = params_output[["sep_config"]])
   } else {
-    if (dir.exists(datadir) == FALSE) {
-      warning("\nCould not write config file because studyname or datadir are not correctly specified.")
-    }
+      warning("\nCould not write config file.")
   }
   #==========================
   # Report generation:

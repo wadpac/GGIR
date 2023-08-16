@@ -17,23 +17,10 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   params_rawdata = params$params_rawdata
   params_cleaning = params$params_cleaning
   params_general = params$params_general
-  # identify whether datadir is list of files or a directory
-  if (length(datadir) == 0 | length(outputdir) == 0) {
-    if (length(datadir) == 0) {
-      stop('\nVariable datadir is not defined')
-    }
-    if (length(outputdir) == 0) {
-      stop('\nVariable outputdir is not specified')
-    }
-  }
-
+  
   if (f1 == 0) warning("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
-  if (filelist == FALSE) {
-    if (dir.exists(datadir) == FALSE) {
-      stop("\nDirectory specified by argument datadir, does not exist")
-    }
-  }
+
   # list all accelerometer files
   dir2fn = datadir2fnames(datadir,filelist)
   fnames = dir2fn$fnames
