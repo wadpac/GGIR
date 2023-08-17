@@ -9,7 +9,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                    "params_rawdata", "params_general",
                    "daylimit", "offset",
                    "scale", "tempoffset", "meantempcal",
-                   "myfun", "outputdir", "outputfolder")
+                   "myfun")
   if (any(names(input) %in% expectedArgs == FALSE) |
       any(!unlist(lapply(expectedArgs, FUN = exists)))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
@@ -34,8 +34,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       eval(parse(text = txt))
     }
   }
-  if (length(which(ls() == "outputdir")) != 0) outputdir = input$outputdir
-  if (length(which(ls() == "outputfolder")) != 0) outputfolder = input$outputfolder
   
   metrics2do = data.frame(do.bfen = params_metrics[["do.bfen"]],
                           do.enmo = params_metrics[["do.enmo"]],

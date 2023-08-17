@@ -12,8 +12,8 @@ test_that("Part 1 can run with all metrics", {
   desiredtz = "Europe/London"
   dn = "output_test"
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
-  g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1, overwrite = TRUE, desiredtz = desiredtz,
-          studyname = "test", do.cal = FALSE, do.anglex = TRUE,
+  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, overwrite = TRUE, desiredtz = desiredtz,
+          do.cal = FALSE, do.anglex = TRUE,
           # We are not doing all the metrics, because Travis-CI cannot allocate enough memory
           do.enmo = TRUE,do.lfenmo = TRUE,
           do.bfen = TRUE, do.hfenplus = TRUE,

@@ -10,17 +10,14 @@
   how to use this functionality.
 }
 \usage{
-   convertEpochData(datadir = c(), studyname = c(), outputdir = c(),
-                            params_general = c(), verbose = TRUE)
+   convertEpochData(datadir = c(), metadatadir = c(),
+                    params_general = c(), verbose = TRUE)
 }
 \arguments{
   \item{datadir}{
     See \link{GGIR}
   }
-  \item{studyname}{
-    See \link{GGIR}
-  }
-  \item{outputdir}{
+  \item{metadatadir}{
     See \link{GGIR}
   }
   \item{params_general}{

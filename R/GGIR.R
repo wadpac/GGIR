@@ -49,6 +49,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dir.exists(outputdir) == FALSE) {
     stop("\nDirectory specified by argument outputdir does not exist")
   }
+  if (file.access(outputdir, mode = 2) == 0) {
+    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
+  } else {
+    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
+  }
   if (filelist == TRUE) {
     if (length(studyname) == 0) {
       stop('\nError: studyname must be specified if datadir is a list of files')
@@ -254,7 +259,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
     if (params_general[["dataFormat"]] == "raw") {
-      g.part1(datadir = datadir, outputdir = outputdir, f0 = f0, f1 = f1,
+      g.part1(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
               studyname = studyname, myfun = myfun,
               params_rawdata = params_rawdata, params_metrics = params_metrics,
               params_cleaning = params_cleaning, params_general = params_general,
@@ -268,8 +273,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      " input arguments related to raw data handling are ignored."),
               call. = FALSE)
       convertEpochData(datadir = datadir,
-                       studyname = studyname,
-                       outputdir = outputdir,
+                       metadatadir = metadatadir,
                        params_general = params_general,
                        verbose = verbose)
     }

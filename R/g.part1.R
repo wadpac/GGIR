@@ -1,8 +1,6 @@
-g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
-                   studyname = c(), myfun = c(),
+g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c(),
                    params_metrics = c(), params_rawdata = c(),
                    params_cleaning = c(), params_general = c(), verbose = TRUE, ...) {
-
   #----------------------------------------------------------
   # Extract and check parameters
   input = list(...)
@@ -38,21 +36,13 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   fnames = fnames[bigEnough]
 
   # create output directory if it does not exist
-  if (filelist == TRUE) {
-    outputfolder = paste0("/output_", studyname)
-  } else {
-    outputfolder = unlist(strsplit(datadir, "/"))
-    outputfolder = paste0("/output_",outputfolder[length(outputfolder)])
+  if (!file.exists(metadatadir)) {
+    dir.create(metadatadir)
+    dir.create(file.path(metadatadir, "meta"))
+    dir.create(file.path(metadatadir, "meta", "basic"))
+    dir.create(file.path(metadatadir, "results"))
+    dir.create(file.path(metadatadir, "results", "QC"))
   }
-  if (file.exists(paste0(outputdir, outputfolder))) {
-  } else {
-    dir.create(file.path(outputdir, outputfolder))
-    dir.create(file.path(outputdir, outputfolder, "meta"))
-    dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "basic"))
-    dir.create(file.path(outputdir, outputfolder, "results"))
-    dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
-  }
-  path3 = paste0(outputdir, outputfolder) #where is output stored?
   use.temp = TRUE
   daylimit = FALSE
 
@@ -64,11 +54,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                    " file(s) in directory specified with argument datadir for which the user does not have read access permission"))
   } else {
     if (verbose == TRUE) cat("\nChecking that user has read access permission for all files in data directory: Yes")
-  }
-  if (file.access(outputdir, mode = 2) == 0) {
-    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
-  } else {
-    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
   }
   f17 = function(X) {
     out = unlist(strsplit(X, "/"))
@@ -106,7 +91,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   #========================================================================
   # check which files have already been processed, such that no double work is done
   # ffdone a matrix with all the binary filenames that have been processed
-  ffdone = fdone = dir(paste0(outputdir, outputfolder, "/meta/basic"))
+  ffdone = fdone = dir(file.path(metadatadir, "meta", "basic"))
 
   if (length(fdone) > 0) {
     for (ij in 1:length(fdone)) {
@@ -128,8 +113,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
   # applied to the file in parallel with foreach or serially with a loop
   main_part1 = function(i, params_metrics, params_rawdata,
                         params_cleaning, params_general, datadir, fnames, fnamesfull,
-                        outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
-                        use.temp, daylimit, path3, outputfolder, is.mv, verbose) {
+                        myfun, filelist, ffdone, tmp5, tmp6,
+                        use.temp, daylimit, metadatadir, is.mv, verbose) {
     tail_expansion_log = NULL
     if (params_general[["print.filename"]] == TRUE & verbose == TRUE) {
       cat(paste0("\nFile name: ",fnames[i]))
@@ -186,12 +171,12 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         params_rawdata[["do.cal"]] = FALSE
         turn.do.cal.back.on = TRUE
       }
-      data_quality_report_exists = file.exists(paste0(outputdir, "/", outputfolder, "/results/QC/data_quality_report.csv"))
+      data_quality_report_exists = file.exists(paste0(metadatadir, "/results/QC/data_quality_report.csv"))
       assigned.backup.cal.coef = FALSE
       if (length(params_rawdata[["backup.cal.coef"]]) > 0) {
         if (params_rawdata[["backup.cal.coef"]] == "retrieve") {
           if (data_quality_report_exists == TRUE) { # use the data_quality_report as backup for calibration coefficients
-            params_rawdata[["backup.cal.coef"]] = paste0(outputdir,outputfolder, "/results/QC/data_quality_report.csv")
+            params_rawdata[["backup.cal.coef"]] = paste0(metadatadir, "/results/QC/data_quality_report.csv")
             assigned.backup.cal.coef = TRUE
           }
         } else if (params_rawdata[["backup.cal.coef"]] == "redo") { #ignore the backup calibration coefficients, and derive them again
@@ -307,8 +292,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
                     daylimit = daylimit,
                     tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
                     meantempcal = C$meantempcal,
-                    outputdir = outputdir,
-                    outputfolder = outputfolder,
                     myfun = myfun,
                     verbose = verbose)
 
@@ -388,7 +371,7 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
         filename = paste0(filename,".RData")
       }
       save(M, I, C, filename_dir, filefoldername, tail_expansion_log,
-           file = paste0(path3, "/meta/basic/meta_", filename))
+           file = paste0(metadatadir, "/meta/basic/meta_", filename))
       rm(M); rm(I); rm(C)
     }
   } # end of main_part1
@@ -459,15 +442,15 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
     }
 
 
-    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', outputdir, outputfolder,'/meta/basic', ' for progress\n'))
+    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ', metadatadir,'/meta/basic', ' for progress\n'))
     `%myinfix%` = foreach::`%dopar%`
     output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
                                    .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                      tryCatchResult = tryCatch({
                                        main_part1(i, params_metrics, params_rawdata,
                                                   params_cleaning, params_general, datadir, fnames, fnamesfull,
-                                                  outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
-                                                  use.temp, daylimit, path3, outputfolder, is.mv, verbose)
+                                                  myfun, filelist, ffdone, tmp5, tmp6,
+                                                  use.temp, daylimit, metadatadir, is.mv, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -483,8 +466,8 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       if (verbose == TRUE) cat(paste0(i, " "))
       main_part1(i, params_metrics, params_rawdata,
                  params_cleaning, params_general, datadir, fnames, fnamesfull,
-                 outputdir, myfun, filelist, studyname, ffdone, tmp5, tmp6,
-                 use.temp, daylimit, path3, outputfolder, is.mv, verbose)
+                 myfun, filelist, ffdone, tmp5, tmp6,
+                 use.temp, daylimit, metadatadir, is.mv, verbose)
 
     }
   }
