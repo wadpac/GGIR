@@ -82,13 +82,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
   }
 
-  # test whether RData input was used and if so, use original outputfolder
-  if (length(datadir) > 0) {
-    # list of all csv and bin files
-    dir2fn = datadir2fnames(datadir, filelist)
-    fnames = dir2fn$fnames
-    fnamesfull = dir2fn$fnamesfull
-  }
   if (filelist == TRUE) {
     metadatadir = paste0(outputdir, "/output_", studyname)
   } else {
@@ -330,11 +323,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Store configuration parameters in config file
   LS = ls()
   LS = LS[which(LS %in% c("input", "txt", "dopart1", "dopart2", "dopart3", "LS",
-                          "dopart4", "dopart5", "fnames", "metadatadir", "ci", "config",
+                          "dopart4", "dopart5", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
-                          "print_console_header", "configfile_csv", "myfun",
-                          "ex", "dir2fn", "fnamesfull",
+                          "print_console_header", "configfile_csv", "myfun", "ex",
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
                           "is_read.gt3x_installed", "is_ActCR_installed", 
                           "is_actilifecounts_installed", "rawaccfiles", 

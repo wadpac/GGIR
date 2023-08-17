@@ -35,6 +35,11 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   fnamesfull = fnamesfull[bigEnough]
   fnames = fnames[bigEnough]
 
+  if (length(fnamesfull) == 0) {
+    stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
+                "in the directory specified with argument datadir"))
+  }
+
   # create output directory if it does not exist
   if (!file.exists(metadatadir)) {
     dir.create(metadatadir)
@@ -55,32 +60,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   } else {
     if (verbose == TRUE) cat("\nChecking that user has read access permission for all files in data directory: Yes")
   }
-  f17 = function(X) {
-    out = unlist(strsplit(X, "/"))
-    f17 = out[(length(out) - 1)]
-  }
-  tmp5 = tmp6 = rep(0, length(fnamesfull))
-  if (length(fnamesfull) > 0) {
-    if (is.mv == FALSE) {
-      fnamesshort = basename(fnamesfull)
-      phase = apply(X = as.matrix(fnamesfull), MARGIN = 1, FUN = f17)
-      for (i in 1:length(fnames)) {
-        ff = unlist(strsplit(fnames[i], "/"))
-        ff = ff[length(ff)]
-        if (length(which(fnamesshort == ff)) > 0) {
-          tmp5[i] = fnamesfull[which(fnamesshort == ff)]
-          tmp6[i] = phase[which(fnamesshort == ff)]
-        }
-      }
-    } else if (is.mv == TRUE) {
-      tmp5 = fnamesfull
-      phase = apply(X = as.matrix(fnamesfull), MARGIN = 1, FUN = f17)
-      tmp6 = phase
-    }
-  } else {
-    stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
-                "in the directory specified with argument datadir"))
-  }
+
   if (length(f0) ==  0) f0 = 1
   if (length(f1) ==  0) f1 = length(fnames)
   if (is.na(fnames[1]) == TRUE) {
@@ -113,7 +93,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   # applied to the file in parallel with foreach or serially with a loop
   main_part1 = function(i, params_metrics, params_rawdata,
                         params_cleaning, params_general, datadir, fnames, fnamesfull,
-                        myfun, filelist, ffdone, tmp5, tmp6,
+                        myfun, filelist, ffdone,
                         use.temp, daylimit, metadatadir, is.mv, verbose) {
     tail_expansion_log = NULL
     if (params_general[["print.filename"]] == TRUE & verbose == TRUE) {
@@ -449,7 +429,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                                      tryCatchResult = tryCatch({
                                        main_part1(i, params_metrics, params_rawdata,
                                                   params_cleaning, params_general, datadir, fnames, fnamesfull,
-                                                  myfun, filelist, ffdone, tmp5, tmp6,
+                                                  myfun, filelist, ffdone,
                                                   use.temp, daylimit, metadatadir, is.mv, verbose)
                                      })
                                      return(tryCatchResult)
@@ -466,7 +446,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       if (verbose == TRUE) cat(paste0(i, " "))
       main_part1(i, params_metrics, params_rawdata,
                  params_cleaning, params_general, datadir, fnames, fnamesfull,
-                 myfun, filelist, ffdone, tmp5, tmp6,
+                 myfun, filelist, ffdone,
                  use.temp, daylimit, metadatadir, is.mv, verbose)
 
     }
