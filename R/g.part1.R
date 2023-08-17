@@ -389,26 +389,6 @@ g.part1 = function(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
       }
       save(M, I, C, filename_dir, filefoldername, tail_expansion_log,
            file = paste0(path3, "/meta/basic/meta_", filename))
-      # as metadatdir is not known derive it:
-      metadatadir = c()
-      if (length(datadir) > 0) {
-        # list of all csv and bin files
-        if (is.mv == TRUE) {
-          for (filei in 1:length(fnames)) {
-            fnames[[filei]] = strsplit(fnames[[filei]], "/")[[1]][1]
-          }
-          fnames = unique(fnames)
-        } else if (is.mv == FALSE) {
-          dir2fn = datadir2fnames(datadir, filelist)
-          fnames = dir2fn$fnames
-        }
-      }
-      if (filelist == TRUE) {
-        metadatadir = paste0(outputdir,"/output_",studyname)
-      } else {
-        outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
-        metadatadir = paste0(outputdir, "/output_", outputfoldername)
-      }
       rm(M); rm(I); rm(C)
     }
   } # end of main_part1
