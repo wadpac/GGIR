@@ -63,9 +63,6 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
 
   if (length(f0) ==  0) f0 = 1
   if (length(f1) ==  0) f1 = length(fnames)
-  if (is.na(fnames[1]) == TRUE) {
-    stop('\nError: File path not clearly identified. Check value of argument datadir')
-  }
   if (f0 > length(fnames)) f0 = 1
   if (f1 > length(fnames)) f1 = length(fnames)
   #========================================================================
