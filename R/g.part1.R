@@ -25,8 +25,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   fnamesfull = dir2fn$fnamesfull
 
   # check whether these are movisens files
-  is.mv = ismovisens(datadir)
-  if (filelist == FALSE & is.mv == TRUE) {
+  if (filelist == FALSE & ismovisens(datadir) == TRUE) {
     fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
     fnames = dir(datadir, recursive = FALSE)
   }
@@ -36,7 +35,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   fnames = fnames[bigEnough]
 
   if (length(fnamesfull) == 0) {
-    stop(paste0("\nNo files to analyse. Check that there are accelerometer files",
+    stop(paste0("\nNo files to analyse. Check that there are accelerometer files ",
                 "in the directory specified with argument datadir"))
   }
 
@@ -90,7 +89,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   main_part1 = function(i, params_metrics, params_rawdata,
                         params_cleaning, params_general, datadir, fnames, fnamesfull,
                         myfun, filelist, ffdone,
-                        use.temp, daylimit, metadatadir, is.mv, verbose) {
+                        use.temp, daylimit, metadatadir, verbose) {
     tail_expansion_log = NULL
     if (params_general[["print.filename"]] == TRUE & verbose == TRUE) {
       cat(paste0("\nFile name: ",fnames[i]))
@@ -406,7 +405,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                                        main_part1(i, params_metrics, params_rawdata,
                                                   params_cleaning, params_general, datadir, fnames, fnamesfull,
                                                   myfun, filelist, ffdone,
-                                                  use.temp, daylimit, metadatadir, is.mv, verbose)
+                                                  use.temp, daylimit, metadatadir, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -423,7 +422,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       main_part1(i, params_metrics, params_rawdata,
                  params_cleaning, params_general, datadir, fnames, fnamesfull,
                  myfun, filelist, ffdone,
-                 use.temp, daylimit, metadatadir, is.mv, verbose)
+                 use.temp, daylimit, metadatadir, verbose)
 
     }
   }
