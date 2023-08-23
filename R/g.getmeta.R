@@ -290,9 +290,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         data = P$rawxyz
       } else if (dformat == 4) { #cwa
         if (P$header$hardwareType == "AX6") { # cwa AX6
-          # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated
-          data = P$data[,-c(2:4)]
-          P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
+          # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated.
+          # Note however that while AX6 is able to collect gyroscope data, it can also be configured
+          # to only collect accelerometer data, so only remove gyro data if it's present.
+          if (ncol(P$data) == 10) {
+            data = P$data[,-c(2:4)]
+            P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
+          } else {
+            data = P$data
+            P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
+          }
           gyro_available = FALSE
           # If we ever want to use gyroscope data then
           # comment out this if statement and set gyro_available = TRUE

@@ -151,8 +151,14 @@ g.calibrate = function(datafile, params_rawdata = c(),
       } else if (dformat == FORMAT$CWA) {
         if (P$header$hardwareType == "AX6") { # cwa AX6
           # Note 18-Feb-2020: For the moment GGIR ignores the AX6 gyroscope signals until robust sensor
-          # fusion algorithms and gyroscope metrics have been prepared
-          data = P$data[,-c(2:4)]
+          # fusion algorithms and gyroscope metrics have been prepared.
+          # Note however that while AX6 is able to collect gyroscope data, it can also be configured
+          # to only collect accelerometer data, so only remove gyro data if it's present.
+          if (ncol(P$data) == 10) {
+            data = P$data[,-c(2:4)]
+          } else {
+            data = P$data
+          }
         } else {
           # cwa AX3
           data = P$data
