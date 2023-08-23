@@ -235,19 +235,18 @@ g.calibrate = function(datafile, params_rawdata = c(),
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
 
-          if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-              (mon == MONITOR$AD_HOC && use.temp == TRUE)) {
-            if (mon == MONITOR$GENEACTIV) {
-              if ("temperature" %in% colnames(data)) {
-                temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
-              } else {
-                temperaturecolumn = 7
-              }
-            } else if (mon == MONITOR$AXIVITY || mon == MONITOR$MOVISENS) {
-              temperaturecolumn = 5
-            } else if (mon == MONITOR$AD_HOC) {
-              temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+          if (mon == MONITOR$GENEACTIV) {
+            if ("temperature" %in% colnames(data)) {
+              temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
+            } else {
+              temperaturecolumn = 7
             }
+            temperature = as.numeric(data[,temperaturecolumn])
+          } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+            temperaturecolumn = 5
+            temperature = as.numeric(data[,temperaturecolumn])
+          } else if (mon == MONITOR$AD_HOC && use.temp == TRUE) {
+            temperaturecolumn = params_rawdata[["rmc.col.temp"]]
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH) {
             use.temp = FALSE
