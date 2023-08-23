@@ -123,7 +123,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     options(warn = 0) #turn on warnings
     if (verbose == TRUE) cat(paste0("\nP1 file ",i))
     turn.do.cal.back.on = FALSE
-    if (params_rawdata[["do.cal"]] == TRUE & I$dformc == 3) { # do not do the auto-calibration for wav files (because already done in pre-processign)
+    if (params_rawdata[["do.cal"]] == TRUE & I$dformc == FORMAT$WAV) { # do not do the auto-calibration for wav files (because already done in pre-processign)
       params_rawdata[["do.cal"]] = FALSE
       turn.do.cal.back.on = TRUE
     }
@@ -154,6 +154,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                       params_rawdata = params_rawdata,
                       params_general = params_general,
                       params_cleaning = params_cleaning,
+                      inspectfileobject = I,
                       verbose = verbose)
     } else {
       C = list(cal.error.end = 0, cal.error.start = 0)
@@ -234,7 +235,9 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
           C = g.calibrate(datafile,
                           params_rawdata = params_rawdata,
                           params_general = params_general,
-                          params_cleaning = params_cleaning)
+                          params_cleaning = params_cleaning,
+                          inspectfileobject = I,
+                          verbose = verbose)
         }
       }
     }
