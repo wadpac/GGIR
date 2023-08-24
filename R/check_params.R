@@ -57,7 +57,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "rmc.col.acc", "interpolationType",
                        "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
                        "rmc.col.temp", "rmc.col.time", "rmc.bitrate", "rmc.dynamic_range",
-                       "rmc.sf", "rmc.col.wear", "rmc.noise")
+                       "rmc.sf", "rmc.col.wear", "rmc.noise", "frequency_tol")
     boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
                        "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc",
@@ -134,6 +134,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   "activityCounts package. We will reinsert brondcounts ",
                   "once the issues are resolved. Consider using argument do.neishabouricounts, ",
                   "for more information see package documentation."), call. = FALSE)
+    }
+  }
+  
+  if (length(params_rawdata) > 0) {
+    if (params_rawdata[["frequency_tol"]] < 0 | params_rawdata[["frequency_tol"]] > 1) {
+      stop(paste0("\nArgument frequency_tol is ", params_rawdata[["frequency_tol"]],
+                  " , please adjust such that it is a number between 0 and 1"))
     }
   }
   

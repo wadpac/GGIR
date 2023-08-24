@@ -201,6 +201,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   } else if (mon == 2 | (mon == 4 & dformat == 4)  | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
     temp.available = TRUE
   }
+  QClog = NULL
   if (temp.available == FALSE) {
     metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
   } else if (temp.available == TRUE & mon != 5) {
@@ -301,6 +302,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data = P$data
           P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
         }
+        QClog = rbind(QClog, P$QClog)
       } else if (dformat == 5) { # ad-hoc csv
         data = P$data
       } else if (mon == 5) { #movisense
@@ -773,5 +775,5 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (length(metashort) == 0 | filedoesnotholdday == TRUE) filetooshort = TRUE
   invisible(list(filecorrupt = filecorrupt, filetooshort = filetooshort, NFilePagesSkipped = NFilePagesSkipped,
                  metalong = metalong, metashort = metashort, wday = wday, wdayname = wdayname,
-                 windowsizes = params_general[["windowsizes"]], bsc_qc = bsc_qc))
+                 windowsizes = params_general[["windowsizes"]], bsc_qc = bsc_qc, QClog = QClog))
 }

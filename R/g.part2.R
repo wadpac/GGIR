@@ -167,13 +167,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         SUM = g.analyse(I, C, M, IMP,
                         params_247 = params_247,
                         params_phyact = params_phyact,
-                        dayborder = params_general[["dayborder"]],
-                        desiredtz = params_general[["desiredtz"]],
-                        idloc = params_general[["idloc"]],
-                        includedaycrit = params_cleaning[["includedaycrit"]],
-                        myfun = myfun,
-                        acc.metric = params_general[["acc.metric"]],
-                        externalDataColname = params_general[["externalDataColname"]])
+                        params_general = params_general,
+                        params_cleaning = params_cleaning,
+                        myfun = myfun)
         RDname = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         # reset M and IMP so that they include the expanded time (needed for sleep detection in parts 3 and 4)
         if (length(tail_expansion_log) != 0) {

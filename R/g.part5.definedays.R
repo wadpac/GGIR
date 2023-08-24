@@ -1,6 +1,7 @@
 g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
-                              ws3new, qqq_backup=c(), ts, Nts, timewindowi, 
+                              epochSize, qqq_backup = c(), ts, timewindowi, 
                               Nwindows, qwindow, ID = NULL) {
+  Nts = nrow(ts)
   # define local functions ----
   qwindow2timestamp = function(qwindow, lastepoch) {
     H = floor(qwindow)
@@ -16,9 +17,9 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (HMS[length(HMS)] != lastepoch) HMS = c(HMS, lastepoch)
     return(HMS)
   }
-  fixTime = function(x, ws3) {
+  fixTime = function(x, epochSize) {
     hms = strptime(x, format = "%H:%M:%S")
-    hms = hms - ws3
+    hms = hms - epochSize
     hms = substr(as.character(hms), 12, 19)
     return(hms)
   }
@@ -33,7 +34,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (nightsi[1] == 1) {
       wi = wi + 1
       # add extra nightsi to get the last day processed (as wi has been increased by 1)
-      nightsi = c(nightsi, nightsi + (24*(60/ws3new) * 60) - 1)
+      nightsi = c(nightsi, nightsi + (24*(60/epochSize) * 60) - 1)
     }
     if (length(nightsi) >= wi) {
       if (wi == 1) {
@@ -55,7 +56,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
             if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
               index_lastmidn = which(nightsi_bu == nightsi[wi - (indjump - 1)]) + (indjump - 1)
               if (length(index_lastmidn) > 0) {
-                qqq[2] = nightsi_bu[index_lastmidn] + (24*(60/ws3new) * 60) - 1
+                qqq[2] = nightsi_bu[index_lastmidn] + (24*(60/epochSize) * 60) - 1
               } else {
                 qqq[2] = NA
               }
@@ -64,9 +65,9 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
             qqq[2] = NA
           }
           if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
-            qqq[2] = qqq_backup[2] + (24*(60/ws3new) * 60) - 1
+            qqq[2] = qqq_backup[2] + (24*(60/epochSize) * 60) - 1
           }
-          if (qqq[1] == qqq[2])  qqq[2] = qqq[2] + (24*(60/ws3new) * 60) - 1
+          if (qqq[1] == qqq[2])  qqq[2] = qqq[2] + (24*(60/epochSize) * 60) - 1
         }
         if (is.na(qqq[2]) == TRUE | Nts < qqq[2]) {
           qqq[2] = Nts
@@ -111,7 +112,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
           minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
           if (minusOne == 1) {
             segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
-            endOfSegment = fixTime(breaks[bi + 1], ws3new)
+            endOfSegment = fixTime(breaks[bi + 1], epochSize)
           } else {
             segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
             endOfSegment = breaks[bi + 1]

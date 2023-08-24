@@ -1,4 +1,4 @@
-g.detecmidnight = function(time,desiredtz,dayborder) {
+g.detecmidnight = function(time, desiredtz, dayborder) {
   # code in this function is able to deal with two types of timestamp format
   convert2clock = function(x) { #ISO format
     return(format(as.POSIXlt(x, format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz), "%H:%M:%S"))

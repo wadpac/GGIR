@@ -1078,7 +1078,7 @@ Reference:
     using local gravity and temperature: an evaluation on four
     continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. PMID:
     25103964
-    [link](https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014)
+    [link](https://doi.org/10.1152/japplphysiol.00421.2014)
 
 Key decisions to be made:
 
@@ -1673,7 +1673,7 @@ fragmentation metrics are applied in function `g.fragmentation`.
 
 -   Coefficient of Variance (`CoV`) is calculated according to [Blikman
     et al.
-    2014](https://www.archives-pmr.org/article/S0003-9993(14)01063-6/fulltext).
+    2014](https://doi.org/10.1016/j.apmr.2014.08.023).
 -   Transition probability (`TP`) from Inactivity (IN) to Physical
     activity (IN2PA) and from Physical activity to inactivity (PA2IN)
     are calculated as 1 divided by the mean fragment duration. The
@@ -2026,7 +2026,7 @@ If you used the **auto-calibration functionality** then also cite:
 4.  van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data
     for free-living physical activity assessment using local gravity and
     temperature: an evaluation on four continents. J Appl Physiol 2014.
-    [link](https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014)
+    [link](https://doi.org/10.1152/japplphysiol.00421.2014)
 
 If you used the **sleep detection** then also cite:
 

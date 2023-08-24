@@ -9,18 +9,23 @@
   for direct use by package user.
 }
 \usage{
-  g.part5.lux_persegment(ts, sse, LUX_day_segments, ws3new, desiredtz = "")
+  g.part5.lux_persegment(ts, sse, LUX_day_segments, epochSize, desiredtz = "")
 }
 \arguments{
   \item{ts}{
+    Data.frame with time series
   }
   \item{sse}{
+    Indices corresponding to the current time window (e.g. MM or WW)
   }
   \item{LUX_day_segments}{
+    See \link{GGIR}
   }
-  \item{ws3new}{
+  \item{epochSize}{
+    Numeric epoch size in seconds
   }
   \item{desiredtz}{
+    See \link{GGIR}
   }
 }
 \value{
