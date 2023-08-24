@@ -168,7 +168,7 @@ g.plot = function(IMP, M, I, durplot) {
     # axis(side = 1,at = ticks, labels = 1:length(ticks))
   }
   # plot data
-  if (mon == 2 | (mon == 4 & dformat == 4)) {
+  if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
     # Recordings with temperature
     par(fig = c(0,1,0,0.65), new = T)
     plot_acc(timeline, Acceleration, durplot, ticks, metricName)
