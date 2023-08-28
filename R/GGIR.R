@@ -59,10 +59,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       stop('\nError: studyname must be specified if datadir is a list of files')
     }
   }
-  if (f0 < 1) { # What file to start with?
+  if (is.null(f0) || f0 < 1) { # What file to start with?
     f0 = 1
   }
-  if (f1 < 1) {  # What file to end with?
+  if (is.null(f1) || f1 < 1) {  # What file to end with?
     if (filelist == FALSE) {
       f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
