@@ -38,7 +38,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   filelist = isfilelist(datadir)
 
   if (filelist == FALSE) {
-    if (dir.exists(datadir) == FALSE) {
+    if (dir.exists(datadir) == FALSE && 1 %in% mode) {
       stop("\nDirectory specified by argument datadir does not exist")
     }
     if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
