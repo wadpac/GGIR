@@ -22,53 +22,55 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       eval(parse(text = txt))
     }
   }
-
+  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
-
+    
     extention = unlist(strsplit(filename,"[.]"))[2]
-
+    
     switch (extention,
-      "bin" = { dformat = FORMAT$BIN },
-      "cwa" = ,
-      "CWA" = { mon = MONITOR$AXIVITY
-                dformat = FORMAT$CWA
-      },
-      "gt3x" = { mon = MONITOR$ACTIGRAPH
-                 dformat = FORMAT$GT3X
-      },
-      "GT3X" = { mon = MONITOR$ACTIGRAPH
-                 dformat = FORMAT$GT3X
-                if (file.access(datafile, 2) == 0) { # test for write access to file
-                  # rename file to be lower case gt3x extension
-                  file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
-                  datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
-                  warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extention")
-                } else {
-                  stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
-                }
-      },
-      "csv" = { dformat = FORMAT$CSV
-
-                testcsv = read.csv(datafile, nrow = 10, skip = 10)
-                testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
-
-                if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
-                  mon = MONITOR$GENEACTIV
-                } else if (ncol(testcsv) >= 3 && ncol(testcsvtopline) < 4) {
-                  mon = MONITOR$ACTIGRAPH
-                } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
-                  mon = MONITOR$AXIVITY
-                } else {
-                  stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
-                }
-        },
-      "wav" = { stop(paste0("\nError processing ", filename, ": GENEA .wav file format is no longer supported.\n")) },
-      { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
+            "bin" = { dformat = FORMAT$BIN },
+            "cwa" = { mon = MONITOR$AXIVITY
+            dformat = FORMAT$CWA
+            },
+            "CWA" = { mon = MONITOR$AXIVITY
+            dformat = FORMAT$CWA
+            },
+            "gt3x" = { mon = MONITOR$ACTIGRAPH
+            dformat = FORMAT$GT3X
+            },
+            "GT3X" = { mon = MONITOR$ACTIGRAPH
+            dformat = FORMAT$GT3X
+            if (file.access(datafile, 2) == 0) { # test for write access to file
+              # rename file to be lower case gt3x extension
+              file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
+              datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
+              warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extention")
+            } else {
+              stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
+            }
+            },
+            "csv" = { dformat = FORMAT$CSV
+            
+            testcsv = read.csv(datafile, nrow = 10, skip = 10)
+            testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
+            
+            if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
+              mon = MONITOR$GENEACTIV
+            } else if (ncol(testcsv) >= 3 && ncol(testcsvtopline) < 4) {
+              mon = MONITOR$ACTIGRAPH
+            } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
+              mon = MONITOR$AXIVITY
+            } else {
+              stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
+            }
+            },
+            "wav" = { stop(paste0("\nError processing ", filename, ": GENEA .wav file format is no longer supported.\n")) },
+            { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
-
+    
     if (ismovisens(datafile)) {
       dformat = FORMAT$BIN
       mon = MONITOR$MOVISENS
@@ -84,7 +86,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
           tmp = sub(",", ".", tmp, fixed = TRUE)
           sf = as.numeric(tmp)
-
+          
           #also try to read sf from first page header
           sf_r = sf
           csvr = c()
@@ -123,7 +125,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
         tmp = sub(",", ".", tmp, fixed = TRUE)
         sf = as.numeric(tmp)
-
+        
       } else if (mon == MONITOR$ACTIGRAPH) {
         tmp = read.csv(datafile, nrow = 9, skip = 0)
         tmp = colnames(tmp)
@@ -148,7 +150,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     } else if (dformat == FORMAT$GT3X) {
       info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
       if (inherits(info, "try-error") == TRUE) {
-        stop(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
+        warning(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
+        sf = NULL
       } else {
         info = info[lengths(info) != 0] # remove odd NULL in the list
         sf = info[["Sample Rate"]]
@@ -162,11 +165,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   filename = filename[length(filename)]
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
-
+  
   if (length(filename) == 0) {
     print("no files to analyse")
   }
-
+  
   if (length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
     INFI = getbrand(filename, datafile)
     mon = INFI$mon
@@ -252,9 +255,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     }
     sf = params_rawdata[["rmc.sf"]]
   } else if (dformat == FORMAT$GT3X) { # gt3x
-    info = read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)
+    info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
     if (inherits(info, "try-error") == TRUE) {
-      stop(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
+      warning(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
+      sf = NULL
+      H = NULL
+      header = NULL
     } else {
       info = info[lengths(info) != 0] # remove odd NULL in the list
       
@@ -270,55 +276,57 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
     }
   }
-  H = as.matrix(H)
-  if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
-    if (length(which(is.na(H[,2]) == FALSE)) == 0) {
-      H = as.matrix(H[,1])
+  if (is.null(sf) == FALSE) {
+    H = as.matrix(H)
+    if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
+      if (length(which(is.na(H[,2]) == FALSE)) == 0) {
+        H = as.matrix(H[,1])
+      }
     }
-  }
-  if (ncol(H) == 1 && dformat == FORMAT$CSV) {
-    if (mon == MONITOR$ACTIGRAPH) {
-      vnames = c("Number:","t Time","t Date",":ss)","d Time","d Date","Address:","Voltage:","Mode =")
-      Hvalues = Hnames = rep(" ",length(H))
-      firstline = colnames(H)
-      for (run in 1:length(H)) {
-        for (runb in 1:length(vnames)) {
-          tmp = unlist(strsplit(H[run],vnames[runb]))
-          if (length(tmp) > 1) {
-            Hnames[run] = paste(tmp[1], vnames[runb], sep = "")
-            Hvalues[run] = paste(tmp[2], sep = "")
+    if (ncol(H) == 1 && dformat == FORMAT$CSV) {
+      if (mon == MONITOR$ACTIGRAPH) {
+        vnames = c("Number:","t Time","t Date",":ss)","d Time","d Date","Address:","Voltage:","Mode =")
+        Hvalues = Hnames = rep(" ",length(H))
+        firstline = colnames(H)
+        for (run in 1:length(H)) {
+          for (runb in 1:length(vnames)) {
+            tmp = unlist(strsplit(H[run],vnames[runb]))
+            if (length(tmp) > 1) {
+              Hnames[run] = paste(tmp[1], vnames[runb], sep = "")
+              Hvalues[run] = paste(tmp[2], sep = "")
+            }
           }
         }
+        H = cbind(Hnames,Hvalues)
+        H = rbind(c("First line",firstline),H)
+      } else {
+        H = cbind(c(1:length(H)),H)
       }
-      H = cbind(Hnames,Hvalues)
-      H = rbind(c("First line",firstline),H)
+    }
+    if (dformat == FORMAT$CWA) {
+      header = data.frame(value = H, row.names = rownames(H), stringsAsFactors = TRUE)
     } else {
-      H = cbind(c(1:length(H)),H)
+      if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || (mon == MONITOR$MOVISENS && length(H) > 0)) {
+        varname = rownames(as.matrix(H))
+        H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
+      } else {
+        if (length(H) > 1 && class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2], stringsAsFactors = TRUE)
+      }
     }
-  }
-  if (dformat == FORMAT$CWA) {
-    header = data.frame(value = H, row.names = rownames(H), stringsAsFactors = TRUE)
-  } else {
-    if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || (mon == MONITOR$MOVISENS && length(H) > 0)) {
-      varname = rownames(as.matrix(H))
-      H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
-    } else {
-      if (length(H) > 1 && class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2], stringsAsFactors = TRUE)
+    if (dformat != FORMAT$CWA && length(H) > 1 && (class(H)[1] == "matrix" || class(H)[1] == "data.frame")) {
+      RowsWithData = which(is.na(H[,1]) == FALSE)
+      header = data.frame(value = H[RowsWithData, 2], row.names = H[RowsWithData, 1], stringsAsFactors = TRUE)
     }
-  }
-  if (dformat != FORMAT$CWA && length(H) > 1 && (class(H)[1] == "matrix" || class(H)[1] == "data.frame")) {
-    RowsWithData = which(is.na(H[,1]) == FALSE)
-    header = data.frame(value = H[RowsWithData, 2], row.names = H[RowsWithData, 1], stringsAsFactors = TRUE)
-  }
-  if (H[1,1] == "file does not have header") { #no header
-    header = "no header"
-  }
-  if (mon == MONITOR$ACTIGRAPH && dformat != FORMAT$GT3X) {
-    verisense_check = substr(colnames(read.csv(datafile,nrow = 1)[1]), start = 36, stop = 44)
-    if (identical('Verisense', toString(verisense_check))) {
-      mon = MONITOR$VERISENSE
+    if (H[1,1] == "file does not have header") { #no header
+      header = "no header"
     }
-  }
+    if (mon == MONITOR$ACTIGRAPH && dformat != FORMAT$GT3X) {
+      verisense_check = substr(colnames(read.csv(datafile,nrow = 1)[1]), start = 36, stop = 44)
+      if (identical('Verisense', toString(verisense_check))) {
+        mon = MONITOR$VERISENSE
+      }
+    }
+  } 
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
