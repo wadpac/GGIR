@@ -28,9 +28,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
 
-    extention = unlist(strsplit(filename,"[.]"))[2]
+    extension = unlist(strsplit(filename,"[.]"))[2]
 
-    switch (extention,
+    switch (extension,
       "bin" = { dformat = FORMAT$BIN },
       "cwa" = ,
       "CWA" = { mon = MONITOR$AXIVITY
@@ -45,7 +45,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                   # rename file to be lower case gt3x extension
                   file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
                   datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
-                  warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extention")
+                  warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
                 } else {
                   stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
                 }
