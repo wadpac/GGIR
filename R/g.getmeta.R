@@ -2,7 +2,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), params_cleaning = c(), daylimit = FALSE,
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
                      meantempcal = c(), myfun = c(),
-                     inspectfileobject = I,
+                     inspectfileobject = c(),
                      verbose = TRUE, ...) {
   
   #get input variables

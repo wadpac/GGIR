@@ -17,7 +17,8 @@
   g.getmeta(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), params_cleaning = c(), daylimit = FALSE,
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-                     meantempcal = c(), myfun = c(), verbose = TRUE, ...)
+                     meantempcal = c(), myfun = c(), inspectfileobject = c(), 
+                     verbose = TRUE, ...)
 }
 \arguments{
   \item{datafile}{
@@ -60,6 +61,9 @@
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
+  }
+  \item{inspectfileobject}{
+    Output from the function \link{g.inspectfile}.
   }
   \item{verbose}{
     Boolean (default = TRUE). to indicate whether console message should be printed.
