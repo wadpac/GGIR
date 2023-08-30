@@ -32,9 +32,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     
     switch (extention,
             "bin" = { dformat = FORMAT$BIN },
-            "cwa" = { mon = MONITOR$AXIVITY
-            dformat = FORMAT$CWA
-            },
+            "cwa" = ,
             "CWA" = { mon = MONITOR$AXIVITY
             dformat = FORMAT$CWA
             },
