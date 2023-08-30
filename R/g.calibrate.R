@@ -145,8 +145,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = P$data
         }
       } else if (dformat == FORMAT$AD_HOC_CSV) {
-        if (ncol(P$data) >= 4 && mon == MONITOR$AD_HOC) {
-          columns_to_use = params_rawdata[["rmc.col.acc"]]
+        if (length(params_rawdata[["rmc.col.time"]]) > 0 && mon == MONITOR$AD_HOC) {
+          columns_to_use = 2:4
         } else {
           columns_to_use = 1:3
         }

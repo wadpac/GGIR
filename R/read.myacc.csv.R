@@ -18,7 +18,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
                           rmc.doresample=FALSE,
-                          interpolationType=1,
+                          rmc.scalefactor.acc = 1,
+                          interpolationType = 1,
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
                           epochsize = NULL,
@@ -273,6 +274,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$accx = P$accx * 1000
     P$accy = P$accy * 1000
     P$accz = P$accz * 1000
+  }
+  if (rmc.scalefactor.acc != 1) {
+    P$accx = P$accx * rmc.scalefactor.acc
+    P$accy = P$accy * rmc.scalefactor.acc
+    P$accz = P$accz * rmc.scalefactor.acc
   }
   # If acceleration is stored in bit values then convert to gravitational unit
   if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
