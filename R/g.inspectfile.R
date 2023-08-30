@@ -146,7 +146,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = H$frequency
     } else if (dformat == FORMAT$GT3X) {
       info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
-      if (inherits(info, "try-error") == TRUE) {
+      if (inherits(info, "try-error") == TRUE || is.null(info)) {
         warning(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
         sf = NULL
       } else {
@@ -253,7 +253,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     sf = params_rawdata[["rmc.sf"]]
   } else if (dformat == FORMAT$GT3X) { # gt3x
     info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
-    if (inherits(info, "try-error") == TRUE) {
+    if (inherits(info, "try-error") == TRUE || is.null(info)) {
       warning(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
       sf = NULL
       H = NULL
