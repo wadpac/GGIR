@@ -148,7 +148,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
       if (inherits(info, "try-error") == TRUE || is.null(info)) {
         warning(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
-        sf = NULL
+        sf = NULL # set to NULL in order to tell other GGIR functions that file was corrupt
       } else {
         info = info[lengths(info) != 0] # remove odd NULL in the list
         sf = info[["Sample Rate"]]
@@ -255,7 +255,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
     if (inherits(info, "try-error") == TRUE || is.null(info)) {
       warning(paste0("\nFile info could not be extracted from ", datafile), call. = FALSE)
-      sf = NULL
+      sf = NULL # set to NULL in order to tell other GGIR functions that file was corrupt
       H = NULL
       header = NULL
     } else {

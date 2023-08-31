@@ -57,6 +57,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
   sf = INFI$sf
   
   if (is.null(sf)) {
+    # If function g.inspectfile which produces the inspectfileobject
+    # identifies a corrupt GT3X file then it sets the sf value to NULL
+    # this is then used here to skip the calibration procedure
     return()
   }
   
