@@ -478,7 +478,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
           rm(yy); gc()
           data_scaled = TRUE
-        } else if ((dformat == FORMAT$CSV || dformat == FORMAT$D_HOC_CSV) && (mon != MONITOR$AXIVITY)) {
+        } else if ((dformat == FORMAT$CSV || dformat == FORMAT$AD_HOC_CSV) && (mon != MONITOR$AXIVITY)) {
           # Any brand that is not Axivity with csv or Movisense format data
           if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AD_HOC && use.temp == TRUE)) {
             tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))

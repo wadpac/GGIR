@@ -40,14 +40,14 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       },
       "GT3X" = { mon = MONITOR$ACTIGRAPH
                  dformat = FORMAT$GT3X
-                if (file.access(datafile, 2) == 0) { # test for write access to file
-                  # rename file to be lower case gt3x extension
-                  file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
-                  datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
-                  warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
-                } else {
-                  stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
-                }
+                 if (file.access(datafile, 2) == 0) { # test for write access to file
+                   # rename file to be lower case gt3x extension
+                   file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
+                   datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
+                   warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
+                 } else {
+                   stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
+                 }
       },
       "csv" = { dformat = FORMAT$CSV
 
@@ -63,7 +63,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                 } else {
                   stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
                 }
-        },
+      },
       "wav" = { stop(paste0("\nError processing ", filename, ": GENEA .wav file format is no longer supported.\n")) },
       { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
