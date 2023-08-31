@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 2.10-2
+
+- Part 1: Revision to readability of code (credits: Lena Kushleyeva)
+
+- Part 1: Improved handling of corrupted .gt3x files #873
+
 # CHANGES IN GGIR VERSION 2.10-1
 
 - Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
