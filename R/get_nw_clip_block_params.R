@@ -5,7 +5,15 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
   if (monc == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) blocksize = round(blocksize)#round(blocksize/5)
   if (monc == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) blocksize = (24 * 3600) * chunksize
   if (monc == MONITOR$AXIVITY && dformat == FORMAT$WAV) blocksize = round(1440 * chunksize)
-  if (monc == MONITOR$AXIVITY && dformat == FORMAT$CWA) blocksize = round(blocksize * 1.0043)
+  if (monc == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+    if (utils::packageVersion("GGIRread") >= "0.3.1") {
+      # 24-hour block.
+      # CWA data blocks can have 40, 80 or 120 samples each; we'll take 80 as the average number.
+      blocksize = round(24 * 3600 * sf / 80 * chunksize)      
+    } else {
+      blocksize = round(blocksize * 1.0043)
+    }
+  }
   if (monc == MONITOR$AXIVITY && dformat == FORMAT$CSV) blocksize = round(blocksize)
   if (monc == MONITOR$MOVISENS) blocksize = sf * 60 * 1440
   if (monc == MONITOR$VERISENSE && dformat == FORMAT$CSV) blocksize = round(blocksize)

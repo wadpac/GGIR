@@ -57,6 +57,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
   sf = INFI$sf
   
   if (is.null(sf)) {
+    # If function g.inspectfile which produces the inspectfileobject
+    # identifies a corrupt GT3X file then it sets the sf value to NULL
+    # this is then used here to skip the calibration procedure
     return()
   }
   
@@ -94,6 +97,12 @@ g.calibrate = function(datafile, params_rawdata = c(),
   if (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) blocksize = round(1440 * params_rawdata[["chunksize"]])
   if (mon == MONITOR$MOVISENS) blocksize = (sf * 60 * 1440) / 2   #Around 12 hours of data for movisens
   if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) blocksize = (12 * 3600) * params_rawdata[["chunksize"]]
+  if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+    if (utils::packageVersion("GGIRread") >= "0.3.1") {
+      # CWA data blocks can have 40, 80 or 120 samples each; we'll take 80 as the average number
+      blocksize = round(12 * 3600 * sf / 80 * params_rawdata[["chunksize"]])
+    }
+  }
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
