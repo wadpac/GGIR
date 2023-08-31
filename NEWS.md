@@ -1,7 +1,21 @@
-# CHANGES IN GGIR VERSION 2.9-6
+# CHANGES IN GGIR VERSION 2.10-1
 
-- Part 1: Fix major bug to .gt3x data autocalibration, where autocalibration
-was done but not applied to the data #864
+- Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
+and incorporated in data_quality_report #866
+
+- Part 1: Fix ID extraction for externally generated epoch files #869
+
+- Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs #856
+
+- Sleep log: Minor fixed related to misplaced parenthesis in g.loadlog and automatic extension of sleeplog matrix if needed to avoid error #867
+
+- General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 #859
+
+- Part 1: Fix major bug to .gt3x data autocalibration (only ActiGraph), where autocalibration was done but not applied to the data #864
+
+- Refactored code for functions g.analyse.perfile and various functions which name starts with "g.part5"
+
+# CHANGES IN GGIR VERSION 2.9-6
 
 - Part 1: Fix .gt3x file serial number and firmware extraction #850
 
@@ -985,7 +999,7 @@ was done but not applied to the data #864
 
 # CHANGES IN GGIR VERSION 1.5-17
 
-- SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <https://www.biorxiv.org/content/early/2018/02/01/257972>
+- SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <https://www.biorxiv.org/content/10.1101/257972v1>
 
 # CHANGES IN GGIR VERSION 1.5-16
 

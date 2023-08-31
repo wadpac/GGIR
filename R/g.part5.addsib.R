@@ -1,9 +1,9 @@
-g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
+g.part5.addsib = function(ts, epochSize, part3_output, desiredtz, sibDefinition, nightsi) {
   #========================================================
   # SUSTAINED INACTIVITY BOUTS
   # These are stored in part 3 milestone data as start- and end-times
   # in the following code we convert the them into indices of the recording sequence
-  
+  Nts = nrow(ts)
   ts$sibdetection = 0# initialize output vector that will hold the sibs
   s0s1 = c()
   # pr0 and pr1 define the indices relative the start of the recording
@@ -12,11 +12,11 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
   # s0 and s1 are the indices within that time window 
   # that match the start and end of the next sustained inactivity bout 
   pr0 = 1
-  pr1 = pr0 + ((60/ws3)*1440*6)
+  pr1 = pr0 + ((60/epochSize)*1440*6)
   pr2 = Nts
-  if (nrow(S2) > 0) {
-    gik.ons = format(S2$sib.onset.time)
-    gik.end = format(S2$sib.end.time)
+  if (nrow(part3_output) > 0) {
+    gik.ons = format(part3_output$sib.onset.time)
+    gik.end = format(part3_output$sib.end.time)
     timeChar = format(ts$time)
     if (is.ISO8601(timeChar[1]) == FALSE) { # only do this for POSIX format
       timeChar = POSIXtime2iso8601(timeChar, tz = desiredtz)
@@ -25,9 +25,9 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
       #not s0 because s0 does not exist yet if classes differ
       timeChar = as.character(timeChar)
     }
-    for (g in 1:nrow(S2)) { # sustained inactivity bouts
+    for (g in 1:nrow(part3_output)) { # sustained inactivity bouts
       lastpr0 = pr0
-      pr1 = pr0 + ((60/ws3)*1440*6)
+      pr1 = pr0 + ((60/epochSize)*1440*6)
       if (pr1 > pr2) pr1 = pr2
       if (pr0 > pr1) pr0 = pr1
       #Coerce time into iso8601 format, so it is sensitive to daylight saving times when hours can be potentially repeated
@@ -43,12 +43,12 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
       if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
         s0s1 = c(s0s1,s0:s1)
       } else {
-        pr0 = lastpr0 + ((60/ws3)*1440*6)
+        pr0 = lastpr0 + ((60/epochSize)*1440*6)
       }
     }
   }
   ts$sibdetection[s0s1] = 1
-  if (length(grep(pattern = "A", j)) > 0 & length(grep(pattern = "T", j)) > 0) {
+  if (length(grep(pattern = "A", sibDefinition)) > 0 & length(grep(pattern = "T", sibDefinition)) > 0) {
     #=========
     # If excludefirstlast was set to TRUE in part 4 then 
     # SUSTAINED INACTIVITY BOUTS are not assessed for the time between
@@ -58,12 +58,12 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     # This part of the code is only performed if using sib estimates based on vanHees2015
     #----------------------------------------------------------------------
     # Step 1: Identify time window that needs to be processed
-    redo1 = nightsi[1] - ((60/ws3)*60) # 1 hour before first midnight
+    redo1 = nightsi[1] - ((60/epochSize)*60) # 1 hour before first midnight
     if (redo1 < 1) redo1 = 1
-    redo2 = nightsi[1] + (14*(60/ws3)*60) # 14 hours after first midngiht
+    redo2 = nightsi[1] + (14*(60/epochSize)*60) # 14 hours after first midngiht
     # Specify defintion of sustained inactivity bout
-    anglethreshold = as.numeric(unlist(strsplit(j,"A"))[2])
-    tempi = unlist(strsplit(unlist(strsplit(j,"A"))[1],"T"))
+    anglethreshold = as.numeric(unlist(strsplit(sibDefinition,"A"))[2])
+    tempi = unlist(strsplit(unlist(strsplit(sibDefinition,"A"))[1],"T"))
     timethreshold = as.numeric(tempi[length(tempi)])
     # ts$angle[which(is.na(ts$angle[redo1:redo2]) == T)] = 0
     if (any(is.na(ts$angle[redo1:redo2]))) {
@@ -74,7 +74,7 @@ g.part5.addsib = function(ts,ws3, Nts, S2, desiredtz, j, nightsi) {
     # count posture changes that happen less than once per ten minutes
     q1 = c()
     if (length(postch) > 1) {
-      q1 = which(diff(postch) > (timethreshold * (60/ws3))) #less than once per i minutes
+      q1 = which(diff(postch) > (timethreshold * (60/epochSize))) #less than once per i minutes
     }
     if (length(q1) > 0) {
       for (gi in 1:length(q1)) {

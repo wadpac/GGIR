@@ -8,29 +8,33 @@
   Label wake and sleepperiod window as part of \link{g.part5}.
 }
 \usage{
-  g.part5.wakesleepwindows(ts, summarysleep_tmp2, desiredtz,
-  nightsi, sleeplog, ws3new, Nts, ID, Nepochsinhour)
+  g.part5.wakesleepwindows(ts, part4_output, desiredtz,
+                    nightsi, sleeplog, epochSize,ID, Nepochsinhour)
 }
 \arguments{
   \item{ts}{
     data.frame with time series
   }
-  \item{summarysleep_tmp2}{
+  \item{part4_output}{
     cleaned output from part 4
   }
   \item{desiredtz}{
+    \link{GGIR}
   }
   \item{nightsi}{
+    vector with indices for the midnights
   }
   \item{sleeplog}{
+    Data.frame with sleeplog information as loaded by \link{g.loadlog}
   }
-  \item{ws3new}{
-  }
-  \item{Nts}{
+  \item{epochSize}{
+    Short epochsize in seconds
   }
   \item{ID}{
+    ID of the participant
   }
   \item{Nepochsinhour}{
+    Number of epochs in an hour
   }
 }
 \value{

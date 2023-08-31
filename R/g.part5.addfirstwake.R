@@ -1,5 +1,5 @@
-g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID, 
-                               Nepochsinhour, Nts, SPTE_end, ws3new) {
+g.part5.addfirstwake =function(ts, summarysleep, nightsi, sleeplog, ID, 
+                               Nepochsinhour, SPTE_end) {
   # Note related to if first and last night were ignored in part 4:
   # - diur lacks the first and last night at this point in the code.
   # - nightsi has all the midnights, so it is possible to check here
@@ -14,15 +14,16 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
   }
   firstwake = which(diff(ts$diur) == -1)[1]
   firstonset = which(diff(ts$diur) == 1)[1]
-  
+  Nts = nrow(ts)
+  epochSize = round(3600 / Nepochsinhour)
   if (is.na(SPTE_end[1]) == TRUE) {
     SPTE_end = SPTE_end[which(is.na(SPTE_end) == FALSE)]
   }
   # test whether wake for second day is missing
   # if the full sleep period happens before midnights
-  if (firstwake > nightsi[2] | (summarysleep_tmp2$sleeponset[1] < 18 &
-                                summarysleep_tmp2$wakeup[1] < 18 & firstwake < nightsi[2])) { 
-    wake_night1_index =c()
+  if (firstwake > nightsi[2] | (summarysleep$sleeponset[1] < 18 &
+                                summarysleep$wakeup[1] < 18 & firstwake < nightsi[2])) { 
+    wake_night1_index = c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
       wake_night1 = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == 1)]
@@ -64,7 +65,7 @@ g.part5.addfirstwake =function(ts, summarysleep_tmp2, nightsi, sleeplog, ID,
     if (length(wake_night1_index) == 0) {
       # use waking up from next day and subtract 24 hours,
       # the final option if neither of the above routes works
-      wake_night1_index = (firstwake - (24* ((60/ws3new)*60))) + 1
+      wake_night1_index = (firstwake - (24* ((60/epochSize)*60))) + 1
     }
     if (is.na(wake_night1_index)) wake_night1_index = 0
     if (wake_night1_index < firstwake & wake_night1_index > 1 & (wake_night1_index-1) > nightsi[1]) {

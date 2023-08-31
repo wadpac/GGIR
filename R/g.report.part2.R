@@ -154,8 +154,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         C$tempoffset = c(0, 0, 0)
       }
       if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
-
-      QC = data.frame(filename = fnames[i],
+      fname2store = unlist(strsplit(fnames[i], "eta_|[.]RDat"))[2]
+      QC = data.frame(filename = fname2store,
                       file.corrupt = M$filecorrupt,
                       file.too.short = M$filetooshort,
                       use.temperature = C$use.temp,
@@ -170,21 +170,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
                       device.serial.number = deviceSerialNumber,
                       NFilePagesSkipped = M$NFilePagesSkipped, stringsAsFactors = FALSE)
 
-
-      QC = data.frame(filename = fnames[i],
-                      file.corrupt = M$filecorrupt,
-                      file.too.short = M$filetooshort,
-                      use.temperature = C$use.temp,
-                      scale.x = C$scale[1], scale.y = C$scale[2], scale.z = C$scale[3],
-                      offset.x = C$offset[1], offset.y = C$offset[2], offset.z = C$offset[3],
-                      temperature.offset.x = C$tempoffset[1],  temperature.offset.y = C$tempoffset[2],
-                      temperature.offset.z = C$tempoffset[3],
-                      cal.error.start = C$cal.error.start,
-                      cal.error.end = C$cal.error.end,
-                      n.10sec.windows = C$npoints,
-                      n.hours.considered = C$nhoursused, QCmessage = C$QCmessage, mean.temp = tmean,
-                      device.serial.number = deviceSerialNumber,
-                      stringsAsFactors = FALSE, NFilePagesSkipped = M$NFilePagesSkipped)
+      filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
+      if (length(filehealth_cols) > 0) {
+        # migrate filehealth columns to QC report
+        QC = merge(x = QC, y = SUMMARY[, c(which(names(SUMMARY) == "filename"), filehealth_cols)], by = "filename")
+        SUMMARY = SUMMARY[, -filehealth_cols]
+      }
       if (i == 1 | i == f0) {
         QCout = QC
       } else {

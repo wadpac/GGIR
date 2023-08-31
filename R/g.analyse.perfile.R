@@ -1,10 +1,16 @@
-g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, startt, I, LC2, LD, dcomplscore,
-                             LMp, LWp, C, lookat, AveAccAve24hr, colnames_to_lookat, QUAN, ML5AD,
-                             ML5AD_names, igfullr, igfullr_names,
-                             daysummary, ds_names, includedaycrit, strategy, hrs.del.start,
-                             hrs.del.end, maxdur, windowsizes, idloc, snloc, wdayname, doquan,
-                             qlevels_names, doiglevels, tooshort, InterdailyStability, IntradailyVariability,
-                             IVIS_windowsize_minutes, qwindow, longitudinal_axis_id, cosinor_coef) {
+g.analyse.perfile = function(I, C, metrics_nav,
+                             AveAccAve24hr, doquan, doiglevels, tooshort, 
+                             params_247, params_cleaning, params_general,
+                             output_avday, output_perday,
+                             dataqual_summary, file_summary) {
+  
+  # extract objects from lists in input:
+  cosinor_coef = output_avday$cosinor_coef
+  daysummary = output_perday$daysummary
+  ds_names = output_perday$ds_names
+  lookat = metrics_nav$lookat
+  colnames_to_lookat = metrics_nav$colnames_to_lookat
+  
   filesummary = matrix(" ", 1, 150) #matrix to be stored with summary per participant
   s_names = rep(" ", ncol(filesummary))
   vi = 1
@@ -15,42 +21,36 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     daysummary = daysummary[,-cut]
   }
   # Person identification number
-  filesummary[vi] = ID
+  filesummary[vi] = file_summary$ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
   g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|NeishabouriCount", invert = TRUE)]
   
   # Serial number
-  if (snloc == 1) {
-    filesummary[(vi + 1)] = deviceSerialNumber
-  } else if (snloc == 2) {
-    filesummary[(vi + 1)] = unlist(strsplit(fname, "_"))[2]
-  }
+  filesummary[(vi + 1)] = file_summary$deviceSerialNumber
   s_names[vi:(vi + 1)] = c("ID","device_sn")
   vi = vi + 2
   # starttime of measurement, body location, filename
-  filesummary[vi] = sensor.location
-  filesummary[(vi + 1)] = fname
-  filesummary[(vi + 2)] = startt # starttime of measurement
+  filesummary[vi] = file_summary$sensor.location
+  filesummary[(vi + 1)] = file_summary$fname
+  filesummary[(vi + 2)] = file_summary$startt # starttime of measurement
   s_names[vi:(vi + 2)] = c("bodylocation","filename","start_time")
   vi = vi + 3
   # weekday on which measurement started, sample frequency and device
-  filesummary[vi] = wdayname
+  filesummary[vi] = file_summary$wdayname
   filesummary[(vi + 1)] = I$sf
   filesummary[(vi + 2)] = I$monn
   s_names[vi:(vi + 2)] = c("startday", "samplefreq", "device")
   vi = vi + 3
   # clipsing score and measurement duration in days
-  filesummary[vi] = LC2  / ((LD/1440)*96)
-  filesummary[(vi + 1)] = LD/1440 #measurement duration in days
-  s_names[vi:(vi + 1)] = c("clipping_score", "meas_dur_dys")
-  vi = vi + 2
+  filesummary[vi] = dataqual_summary$clipping_score
+  filesummary[vi + 1] = dataqual_summary$meas_dur_dys #measurement duration in days
   # completeness core and measurement duration with different definitions
-  filesummary[vi] = dcomplscore #completeness of the day
-  filesummary[(vi + 1)] = LMp / 1440 #measurement duration according to protocol
-  filesummary[(vi + 2)] = LWp / 1440 #wear duration in days (out of measurement protocol)
-  s_names[vi:(vi + 2)] = c("complete_24hcycle", # day (fraction of 24 hours for which data is available at all)
+  filesummary[vi + 2] = dataqual_summary$dcomplscore #completeness of the day
+  filesummary[vi + 3] = dataqual_summary$meas_dur_def_proto_day #measurement duration according to protocol
+  filesummary[vi + 4] = dataqual_summary$wear_dur_def_proto_day #wear duration in days (out of measurement protocol)
+  s_names[vi:(vi + 4)] = c("clipping_score", "meas_dur_dys", "complete_24hcycle", 
                            "meas_dur_def_proto_day", "wear_dur_def_proto_day")
-  vi = vi + 3
+  vi = vi + 5
   # calibration error after auto-calibration
   if (length(C$cal.error.end) == 0)   C$cal.error.end = c(" ")
   filesummary[vi] = C$cal.error.end
@@ -64,23 +64,62 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
   s_names[vi:(vi + q0)] = c("calib_err",
                             "calib_status", colnames_to_lookat)
   vi = vi + q0 + 2
+  # readAxivity QClog summary
+  if ("Dur_imputed" %in% names(file_summary)) {
+    # These are summaries of the file health check by the GGIRread::readAxivity
+    # the function handles data blocks (1-3 seconds) with faulty data by imputing 
+    # them and logging the information.
+    # Normally we do not expect issue with cwa files, but by logging the information
+    # we will facilitate better insight into when this happens.
+    filesummary[vi:(vi + 6)] = c(file_summary$Dur_imputed, # total imputed
+                                 file_summary$Dur_chsum_failed, # checksum
+                                 file_summary$Dur_nonincremental, # nonincremental id between blocks
+                                 file_summary$Dur_freqissue_5_10, # bias 5-10%
+                                 file_summary$Dur_freqissue_10_20, # bias 10-20%
+                                 file_summary$Dur_freqissue_20_30, # bias 20-30%
+                                 file_summary$Dur_freqissue_30) # bias >30%
+    s_names[vi:(vi + 6)] = c("filehealth_totimp_min",
+                             "filehealth_checksumfail_min",
+                             "filehealth_niblockid_min", # non incremental block id
+                             "filehealth_fbias0510_min", # frequency bias
+                             "filehealth_fbias1020_min", 
+                             "filehealth_fbias2030_min",
+                             "filehealth_fbias30_min")
+    vi = vi + 7
+    filesummary[vi:(vi + 6)] = c( file_summary$Nblocks_imputed,
+                                  file_summary$Nblocks_chsum_failed,
+                                  file_summary$Nblocks_nonincremental,
+                                  file_summary$Nblock_freqissue_5_10,
+                                  file_summary$Nblock_freqissue_10_20,
+                                  file_summary$Nblock_freqissue_20_30,
+                                  file_summary$Nblock_freqissue_30)
+    s_names[vi:(vi + 6)] = c("filehealth_totimp_N",
+                             "filehealth_checksumfail_N",
+                             "filehealth_niblockid_N",
+                             "filehealth_fbias0510_N",
+                             "filehealth_fbias1020_N",
+                             "filehealth_fbias2030_N",
+                             "filehealth_fbias30_N")
+    vi = vi + 7
+  }
+  
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
-    q1 = length(QUAN)
-    filesummary[vi:((vi - 1) + q1)] = QUAN * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
-    s_names[vi:((vi - 1) + q1)] = paste0(qlevels_names, "_fullRecording")
+    q1 = length(output_avday$QUAN)
+    filesummary[vi:((vi - 1) + q1)] = output_avday$QUAN * ifelse(test = lookat[la] %in% g_variables_lookat, yes = 1000, no = 1)
+    s_names[vi:((vi - 1) + q1)] = paste0(output_avday$qlevels_names, "_fullRecording")
     vi = vi + q1
-    q1 = length(ML5AD)
-    filesummary[vi:((vi - 1) + q1)] = as.numeric(ML5AD)
-    s_names[vi:((vi - 1) + q1)] = paste0(ML5AD_names, "_fullRecording")
+    q1 = length(output_avday$ML5AD)
+    filesummary[vi:((vi - 1) + q1)] = as.numeric(output_avday$ML5AD)
+    s_names[vi:((vi - 1) + q1)] = paste0(output_avday$ML5AD_names, "_fullRecording")
     vi = vi + q1
   }
   if (doiglevels == TRUE) {
     # intensity gradient (as described by Alex Rowlands 2018)
     # applied to the averageday per metric (except from angle metrics)
-    q1 = length(igfullr)
-    filesummary[vi:((vi - 1) + q1)] = igfullr
-    s_names[vi:((vi - 1) + q1)] = paste0(igfullr_names, "_fullRecording")
+    q1 = length(output_avday$igfullr)
+    filesummary[vi:((vi - 1) + q1)] = output_avday$igfullr
+    s_names[vi:((vi - 1) + q1)] = paste0(output_avday$output_avday$igfullr_names, "_fullRecording")
     vi = vi + q1
   }
   if (tooshort == 0) {
@@ -93,11 +132,11 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     columnWithAlwaysData = which(ds_names == "N hours" | ds_names == "N_hours")
     NVHcolumn = which(ds_names == "N valid hours" | ds_names == "N_valid_hours" ) #only count in the days for which the inclusion criteria is met
     v1 = which(is.na(as.numeric(daysummary[wkend, columnWithAlwaysData])) == F &
-                 as.numeric(daysummary[wkend, NVHcolumn]) >= includedaycrit)
+                 as.numeric(daysummary[wkend, NVHcolumn]) >= params_cleaning[["includedaycrit"]])
     wkend = wkend[v1]
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday, columnWithAlwaysData])) == F  &
-                 as.numeric(daysummary[wkday, NVHcolumn]) >= includedaycrit)
+                 as.numeric(daysummary[wkday, NVHcolumn]) >= params_cleaning[["includedaycrit"]])
     wkday = wkday[v2]
     # Add number of weekend and weekdays to filesummary
     filesummary[vi:(vi + 1)] = c(length(wkend),  length(wkday)) # number of weekend days & weekdays
@@ -106,8 +145,8 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
     s_names[vi:(vi + 1)] = c("N valid WEdays","N valid WKdays")
     vi = vi + 2
     # Add ISIV to filesummary
-    filesummary[vi:(vi + 2)] = c(InterdailyStability, IntradailyVariability,
-                                 IVIS_windowsize_minutes)
+    filesummary[vi:(vi + 2)] = c(output_avday$InterdailyStability, output_avday$IntradailyVariability,
+                                 params_247[["IVIS_windowsize_minutes"]])
     iNA = which(is.na(filesummary[vi:(vi + 3)]) == TRUE)
     if (length(iNA) > 0) filesummary[(vi:(vi + 3))[iNA]] = " "
     s_names[vi:(vi + 2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
@@ -157,7 +196,7 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
       for (dtwi in daytoweekvar) {
         #check whether columns is empty:
         uncona = unique(daysummary[,dtwi])
-        storevalue = !(length(uncona) == 1 & length(qwindow) > 2 & uncona[1] == "")
+        storevalue = !(length(uncona) == 1 & length(params_247[["qwindow"]]) > 2 & uncona[1] == "")
         if (is.na(storevalue) == TRUE) storevalue = FALSE
         # Only do next 15-isch lines of code if:
         # - there is more than 1 day of data
@@ -218,12 +257,12 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
       }
       vi = vi + 6 + ((dtwtel * sp) - 1)
     }
-    filesummary[vi] = strategy
-    filesummary[(vi + 1)] = hrs.del.start
-    filesummary[(vi + 2)] = hrs.del.end
-    filesummary[(vi + 3)] = maxdur
-    filesummary[(vi + 4)] = windowsizes[1]
-    filesummary[(vi + 5)] = longitudinal_axis_id
+    filesummary[vi] = params_cleaning[["strategy"]]
+    filesummary[(vi + 1)] = params_cleaning[["hrs.del.start"]]
+    filesummary[(vi + 2)] = params_cleaning[["hrs.del.end"]]
+    filesummary[(vi + 3)] = params_cleaning[["maxdur"]]
+    filesummary[(vi + 4)] = params_general[["windowsizes"]][1]
+    filesummary[(vi + 5)] = metrics_nav$longitudinal_axis_id
     #get GGIR version
     GGIRversion = "GGIR not used"
     if (is.element('GGIR', installed.packages()[,1])) {
@@ -241,7 +280,6 @@ g.analyse.perfile = function(ID, fname, deviceSerialNumber, sensor.location, sta
                                           "if_hip_long_axis_id", "GGIR version"))
     vi = vi + 6
   }
-  rm(LD); rm(ID)
   # tidy up daysummary object
   mw = which(is.na(daysummary) == T)
   mw = c(mw, grep(pattern = "NaN", x = daysummary))

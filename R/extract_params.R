@@ -22,10 +22,6 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
     params = load_params(group = "rawdata")
     params_rawdata = params$params_rawdata
   }
-  if (length(params_rawdata) == 0) {
-    params = load_params(group = "rawdata")
-    params_rawdata = params$params_rawdata
-  }
   if (length(params_247) == 0) {
     params = load_params(group = "247")
     params_247 = params$params_247
