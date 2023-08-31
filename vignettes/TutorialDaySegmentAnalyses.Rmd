@@ -27,7 +27,10 @@ See also complementary vignettes on:
 
 # Introduction
 
-Is this specific person more active in the morning or in the afternoon? Are children more active during their work hours or their leisure time? Questions like these can be answered with GGIR but you first have to specify a few parameters.
+Is this specific person more active in the morning or in the afternoon? Are children 
+more active during their work hours or their leisure time? How much inactivity occurs
+at work in office workers? Questions like these can be answered with GGIR but you 
+first have to specify a few parameters.
 
 The main input argument to be specified is `qwindow`, which can be used the following ways:
 
@@ -95,6 +98,24 @@ ID | date | A | B | C
 - Dates with no activity log data can be skipped, no need to have a column with the date followed by a column with the next date.
 - The end time of one activity is assumed to be the start time of the next activity. We currently do not facilitate overlapping time segments.
 
+# Implementation in GGIR
+
+Both approaches are implemented in GGIR part 2 and part 5. Therefore the specific
+output variables that are calculated both in part 2 and 5 are available per day,
+per person, and per segment of the day based on the argument `qwindow` Note that 
+`qwindow` is only used in **part 5** when `timewindow` includes `"MM"` (see specific
+documentation for `timewindow`} in the [parameters vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html))
+
+At the moment, specifying the argument `qwindow` triggers the calculation of the
+`qwindow` segments both in part 2 and part 5, which may result in a longer time
+to finish the analysis. If only interested in the segments in either part 2 or part 5,
+an option might be to run GGIR parts 1:2 with the argument `qwindow` of interest,
+and then set `qwindow = NULL` and run GGIR parts 3:5 (or vice versa: `qwindow = NULL`
+for GGIR parts 1:2, and then the desired `qwindow` segments when running GGIR parts 3:5).
+
+For more information about the output variables calculated in each part
+of the pipeline, see the main [GGIR vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html).
+
 
 # Examples
 
@@ -107,9 +128,10 @@ see explanation in the main [GGIR vignette](https://CRAN.R-project.org/package=G
 library("GGIR")
 GGIR(datadir = "/your/data/directory",
              outputdir = "/your/output/directory",
-             mode = 1:2, # <= run GGIR parts 1 and 2
-             do.report = 2, # <= generate csv-report for GGIR part 2
-             qwindow = c(0, 6, 12, 18, 24))
+             mode = 1:5, # <= run GGIR parts 1 to 5
+             do.report = c(2, 5), # <= generate csv-report for GGIR part 2 and part 5
+             qwindow = c(0, 6, 12, 18, 24),
+             timewindow = "MM")
 ```
 
 
@@ -119,14 +141,18 @@ GGIR(datadir = "/your/data/directory",
 library("GGIR")
 GGIR(datadir = "/your/data/directory",
              outputdir = "/your/output/directory",
-             mode = 1:2, # <= run GGIR parts 1 and 2
-             do.report = 2, # <= generate csv-report for GGIR part 2
-             qwindow = "/path/to/your/activity/log.csv")
+             mode = 1:5, # <= run GGIR parts 1 to 5
+             do.report = c(2, 5), # <= generate csv-report for GGIR part 2 and part 5
+             qwindow = "/path/to/your/activity/log.csv",
+             timewindow = "MM")
 ```
 
 
-After running this code GGIR creates an output folder in the output directory as specified with argument outputdir.
-In the subfolder `results` you will then find three files:
+After running this code GGIR creates an output folder in the output directory as 
+specified with argument outputdir. In the subfolder `results` you will then find 
+csv files with the reports generated in part 2 and part 5 of the pipeline:
+
+**Part 2**
 
 - `part2_summary.csv` the recording level summary, with 1 row per recording and in recording level aggregates of day segments in columns. 
 - `part2_daysummary.csv` the day level summary, with 1 row per day and day segment specific outcomes in columns.
@@ -134,26 +160,62 @@ In the subfolder `results` you will then find three files:
 
 In both `part2_summary.csv` and `part2_daysummary.csv` the column names tell you the day segment they correspond to. For example, column names ending with `_18-24hr` refer to the time segment 18:00-24:00. In `part2_daysummary_longformat.csv` the time segment is clarified via columns qwindow_timestamps and qwindow_name.
 
+**Part 5**
+
+In part 5, information about the segments of the days are exported in different csv
+reports than the person-level and day-level summaries. These files include the 
+word "Segments" in the filename and are provided in the long format and 
+aggregated per day and per person:
+
+- `part5_daysummary_Segments[...].csv` the day level summary in long format, such that each row represents one segment from one day in one recording.
+- `part5_personsummary_Segments[...].csv` the recording level summary in long format, such that each row represents the average for each 
+outcome in one specific segments across all days in which that segment is available per participant.
+
+
+# Cleaning parameters for day segments (in part 5):
+
+In part 5, the analyses performed per segment of the day come with the possibility to 
+clean the reports based on the information available in the segments. The users
+can select to include only those segments with a given amount of wear time
+during the segment (`segmentWEARcrit.part5`), as well as with a given 
+awake time or sleep period time in the segment (`segmentDAYSPTcrit.part5`). 
+
+These arguments are likely to be critical for a meaningful analysis of the data. 
+The presence of sleep in a segment with physical activity will bias physical inactivity 
+estimates and the presence of physical activity in a segment with sleep will bias 
+sleep estimates. It will then become impossible to quantify whether it was the lack
+of one or the presence of the other behaviour that drives the association with
+for example a health outcome.
+
 
 # Analyses performed per day segment
 
 The analyses that GGIR per segment of the day, include:
 
-**Acceleration distribution:**
+**Acceleration distribution (in part 2):**
 Derived if argument `ilevels` is specified. You will find these under the variable names such as `[0,36)_ENMO_mg` which means time spent between 0 and 36 mg defined by acceleration metric ENMO.
 
-**Number of valid hours of data:**
-You will recognise these as `N_valid_hours_in_window` which tells yoyu the number of valid hours per time window, and `N_valid_hours` which is the number of valid hours per day.
+**Number of valid hours of data (in part 2):**
+You will recognise these as `N_valid_hours_in_window` which tells you the number of valid hours per time window, and `N_valid_hours` which is the number of valid hours per day.
 
-**LXMX analysis:**
+**Non-wear time percentage (in part 5):**
+`nonwear_day_perc`, `nonwear_spt_perc`, and `nonwear_day_spt_perc` tell you the 
+proportion of the segment classified as non-wear during  awake time (day) and during
+sleep period time (spt).
+
+**LXMX analysis (in part 2 and part5):**
 LXMX analysis, which stands for least and most active X hours of the segment. You will recognise these variable names
 like `L5hr_ENMO_mg` which is the start time of the least active five hours defined by metric ENMO, and `L5_ENMO_mg` which is the average acceleration for those hours.
 
-**Intensity gradient analysis:**
+**Intensity gradient analysis (in part 2 and part 5):**
 You will find these as variables that start with `ig_gradient_` See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_2) of GGIR part 2 output in the main GGIR vignette for further details.
 
-**Time spent in Moderate or Vigorous Physical Activity (MVPA):**
+**Time spent in Moderate or Vigorous Physical Activity (MVPA) (in part 2 and part 5):**
 You will find these as variables such as `MVPA_E5S_T201_ENMO` or `MVPA_E5S_B1M80%_T201_ENMO`. See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_2) of GGIR part 2 output in the main GGIR vignette for further details.
+
+**Time spent in sleeping, in inactivity and physical activity intensities (part 5):**
+You will find these variables in the part 5 reports, in their bouted, unbouted, and
+total time version of the variables. See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_5) of GGIR part 5 output in the main GGIR vignette for further details.
 
 
 ```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}

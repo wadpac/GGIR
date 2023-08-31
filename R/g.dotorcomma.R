@@ -16,11 +16,11 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
   if (exists("rmc.firstrow.acc") == FALSE) rmc.firstrow.acc = c()
   if (exists("rmc.dec") == FALSE) rmc.dec = decn
   if (length(rmc.firstrow.acc) == 1) {
-    dformat = 5
-    mon = 5
+    dformat = FORMAT$AD_HOC_CSV
+    mon = MONITOR$MOVISENS
     decn = rmc.dec
   }
-  if (dformat == 2) {
+  if (dformat == FORMAT$CSV) {
     skiprows = 100
     # Note: I have added the below lines because some ActiGraph files start with a
     # lot of zeros, which makes it impossible to detect decimal separator
@@ -39,19 +39,19 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
     }
     if (!exists("deci")) stop("Problem with reading .csv file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
-  } else if (dformat == 1) {
-    if (mon == 2 ) {
+  } else if (dformat == FORMAT$BIN) {
+    if (mon == MONITOR$GENEACTIV ) {
       try(expr = {deci = GGIRread::readGENEActiv(filename = inputfile,
                                                  start = 1, end = 3)}, silent = TRUE)
       if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
-  } else if (dformat == 4) {
+  } else if (dformat == FORMAT$CWA) {
     try(expr = {deci = GGIRread::readAxivity(filename = inputfile,start = 1, end = 10, desiredtz = desiredtz,
                                interpolationType = 1)$data},silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .cwa file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
-  } else if (dformat == 6) { # .gt3x
+  } else if (dformat == FORMAT$GT3X) {
     if (length(grep(pattern = "[.]GT", x = inputfile)) > 0 & file.exists(inputfile) == FALSE) {
       inputfile = gsub(pattern = "[.]GT3X", replacement = "[.]gt3x", x = inputfile)
     }

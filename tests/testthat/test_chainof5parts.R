@@ -15,10 +15,18 @@ test_that("chainof5parts", {
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
   minimumFileSizeMB = 0
   #--------------------------------------------
+  # isfilelist
+  expect_true(isfilelist("file1.bin"))
+  expect_true(isfilelist("file1.csv"))
+  expect_true(isfilelist("file1.wav"))
+  expect_true(isfilelist("file1.cwa"))
+  expect_true(isfilelist("file1.gt3x"))
+  expect_true(isfilelist(c("file1.bin", "file2.bin")))
+  #--------------------------------------------
   # part 1
-  g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
+  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
-          studyname = "test", do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
+          do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
           windowsizes = c(15,3600,3600), do.parallel = do.parallel,
           minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE)
   expect_true(dir.exists(dn))
@@ -117,7 +125,7 @@ test_that("chainof5parts", {
   # part 4
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
-          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, nnights = 7,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
           colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
           storefolderstructure = FALSE, overwrite = TRUE)
   dirname = "output_test/meta/ms4.out/"
@@ -139,7 +147,8 @@ test_that("chainof5parts", {
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,
-          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr")
+          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
+          iglevels = 1)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
@@ -152,22 +161,22 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(155))
+  expect_that(nrow(output),equals(3))
+  expect_that(ncol(output),equals(162))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(1150))
-  expect_equal(ncol(TSFILE), 11) # 11 columns now because of nap_nonwear classification
+  expect_equal(ncol(TSFILE), 11)
   expect_equal(length(unique(TSFILE$class_id)), 10)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                         studyname = "test", f0 = 1, f1 = 1,
                         do.report = c(2,4,5), overwrite = FALSE, visualreport = FALSE, viewingwindow = 1,
                         do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB,
-                        verbose = FALSE))
+                        verbose = FALSE, storefolderstructure = TRUE))
   suppressWarnings(GGIR(mode = c(), datadir = fn, outputdir = getwd(), studyname = "test",
                         f0 = 1, f1 = 1,
                         do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
@@ -309,10 +318,10 @@ test_that("chainof5parts", {
   write.csv(SDF, file = selectdaysfile)
   
   
-  g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
+  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
           do.parallel = do.parallel, myfun = myfun,
-          studyname = "test", do.enmo = TRUE, do.anglez = TRUE, do.cal = FALSE,
+          do.enmo = TRUE, do.anglez = TRUE, do.cal = FALSE,
           windowsizes = c(15, 300, 3600),
           chunksize = 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
           do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,

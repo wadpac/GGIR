@@ -1,5 +1,6 @@
-g.part5.onsetwaketiming = function(qqq,ts, min, sec, hour, timewindowi, skiponset, skipwake) {
+g.part5.onsetwaketiming = function(qqq, ts, min, sec, hour, timewindowi) {
   onset = wake = 0
+  skiponset = TRUE; skipwake = TRUE
   # Onset index
   if (timewindowi == "WW") {
     onseti = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2]-1)]) == 1)+1]
@@ -49,5 +50,14 @@ g.part5.onsetwaketiming = function(qqq,ts, min, sec, hour, timewindowi, skiponse
     onset = onset - 24
     wake = wake - 24
   }
-  return(invisible(list(wake=wake, onset=onset, wakei=wakei, onseti=onseti, skiponset=skiponset, skipwake=skipwake)))
+  return(invisible(
+    list(
+      wake = wake,
+      onset = onset,
+      wakei = wakei,
+      onseti = onseti,
+      skiponset = skiponset,
+      skipwake = skipwake
+    )
+  ))
 }

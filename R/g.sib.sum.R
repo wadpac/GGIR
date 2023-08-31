@@ -17,16 +17,31 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
   colnames(sleep) = colnames(A)[(which(colnames(A)=="night")+1):ncol(A)]
   ws3 = M$windowsizes[1]
   ws2 = M$windowsizes[2]
-  sib.cla.sum = as.data.frame(matrix(0, 1000,9))
+  sib.cla.sum = as.data.frame(matrix(-1, 1000,9))
+  # label night after last night as -1 to differentiate it from night 0
+  lastNightEnd = max(which(night == max(night)))
+  if (length(night) > lastNightEnd) {
+    night[(lastNightEnd + 1):length(night)] = -1
+  }
+  # unique nights
   un = unique(night) #unique nights
-  missingnights = which(un == 0 | is.na(un) == TRUE)
+  missingnights = which(un == -1 | is.na(un) == TRUE)
   if (length(missingnights) > 0) {
     un = un[-missingnights]
+  }
+  # if recording starts after 4am, then also remove first night
+  firstTS_posix = iso8601chartime2POSIX(M$metashort$timestamp[1], tz = desiredtz)
+  firstday4am_posix = as.POSIXct(paste0(as.Date(firstTS_posix), " 04:00:00"), tz = desiredtz)
+  if (firstday4am_posix < firstTS_posix) { # then first timestamp is later than 4am
+    missingnights = which(un == 0)
+    if (length(missingnights) > 0) {
+      un = un[-missingnights]
+    }
   }
   if (length(un) != 0) {
     if (is.numeric(max(un)) == TRUE) {
       cnt = 1
-      for (i in 1:max(un)) { #nights #length(un)
+      for (i in un) { #nights #length(un)
         qqq1 = which(night == i)[1]
         qqq2 = which(night == i)[length(which(night == i))]
         if (length(qqq1) == 1 & length(qqq2) == 1) {
@@ -95,6 +110,6 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
       }
     }
   }
-  sib.cla.sum = sib.cla.sum[-which(sib.cla.sum$night == 0 | sib.cla.sum$sib.period == 0), ]
+  sib.cla.sum = sib.cla.sum[-which(sib.cla.sum$night == -1 | sib.cla.sum$sib.period == 0), ]
   return(sib.cla.sum)
 }

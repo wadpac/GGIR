@@ -1,4 +1,4 @@
-g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
+g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
                      sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
   
   dateformat_correct = "%Y-%m-%d" # set default value
@@ -7,6 +7,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
   # Load sleep log data...
   S = data.table::fread(loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
+  nnights = (ncol(S) - coln1 + 1) / 2
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
   if (advanced_sleeplog ==  TRUE) {
@@ -45,6 +46,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
     # columnames with nonwear represent nonwear start or end-times
     # dates are expressed as YYYY-mm-dd
     datecols = grep(pattern = "date", x = colnames(S), value = FALSE, ignore.case = TRUE)
+    nnights = length(datecols)
     # if date occurs in column names at least twice we assume it is an advanced sleeplogreport
     if (length(datecols) > 1) { # if yes, do:
       wakecols = grep(pattern = "wakeup",x = colnames(S), value = FALSE, ignore.case = TRUE)
@@ -198,15 +200,26 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
       }
     }
   }
-  nnights = nnights + deltadate
+  # test whether number of columns with night information in sleeplog is odd
+  # this would provide nnights %% 2 == 0.5
+  if (nnights %% 2 == 0.5) { 
+    warning(paste0("\nWe see an odd number of timestamp columns",
+                   " in the sleeplog. The last column will be ignored. If this is incorrect,",
+                   " please check that argument coln1 is correctly specified if you use a basic sleeplog format and",
+                   " that all days have a date column if you use an advanced sleeplog format."))
+    nnights = floor(nnights)
+  }
+  nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
   # # From here we continue with original code focused on sleeplog only
   sleeplog = matrix(0,(nrow(S)*nnights),3)
   sleeplog_times = matrix(" ", (nrow(S) * nnights), 2)
   cnt = 1
-  nnights = min(floor((ncol(S) - 1) / 2), nnights)
-  for (i in 1:nnights) { #loop through nights
-    SL = as.character(S[,coln1 + ((i - 1) * 2)])
-    WK = as.character(S[,coln1 + ((i - 1) * 2) + 1])
+  sli = coln1
+  wki = sli + 1
+  night = 1
+  while (wki <= ncol(S)) { #loop through nights
+    SL = as.character(S[,sli])
+    WK = as.character(S[,wki])
     # Check whether any correction need to be made to the sleep log:
     for (j in 1:length(SL)) { #loop through participant
       # idtmp = S[j,colid]
@@ -230,13 +243,22 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), nnights = c(),
         dur = 0
         is.na(dur) =  TRUE
       }
+      # add extra row if needed
+      if (nrow(sleeplog) < cnt) {
+        sleeplog = rbind(sleeplog, matrix(0, 1, 3))
+        sleeplog_times = rbind(sleeplog_times, matrix(0, 1, 2))
+      }
+      # store information in sleeplog
       sleeplog[cnt,1] = as.character(S[j,colid])
-      sleeplog[cnt,2] = i #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
+      sleeplog[cnt,2] = night #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
       sleeplog[cnt,3] = dur
       sleeplog_times[cnt,1] = SL[j]
       sleeplog_times[cnt,2] = WK[j]
       cnt = cnt + 1
     }
+    sli = sli + 2
+    wki = wki + 2
+    night = night + 1
   }
   # delete id-numbers that are unrecognisable
   empty_rows = which(as.character(sleeplog[,1]) == "0")

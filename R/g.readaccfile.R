@@ -22,27 +22,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # the code identifies which accelerometer brand and data format it is
   # blocksize = number of pages to read at once
   # blocknumber = block count relative to beginning of measurement
-  # mon 0 = Other
-  # mon 1 =  GENEA (DEPRECATED)
-  # mon 2 = GENEACtiv
-  # mon 3 = Actigraph
-  # mon 4 = Axivity
-  # mon 5 = Movisens
-  # mon 6 = Verisense
-  
-  # dformat 1 = binary
-  # dformat 2 = csv
-  # dformat 3 = wav (DEPRECATED)
-  # dformat 4 = cwa
-  # dformat 5 = your own adhoc csv format
-  # dformat 6 = gt3x
   # sf = sample frequency (Hertz)
   # ws = large window size (default 3600 seconds)
   
   switchoffLD = 0
   I = inspectfileobject
   mon = I$monc
-  if (mon == 6) mon = 3
+  if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
   dformat = I$dformc
   sf = I$sf
   
@@ -53,8 +39,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     # The next time (blocknumber > 1) the startpage will be derived from the previous
     # endpage and the blocksize.
     if (blocknumber != 1 & length(PreviousEndPage) != 0) {
-      # if ((mon == 2 & dformat == 1) | dformat == 2) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
-      if (mon == 2 & dformat == 1) {
+      # if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$CSV) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
+      if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
         # only in GENEActiv binary data and for csv format data
         # page selection is defined from start to end (including end)
         startpage = PreviousEndPage + 1
@@ -68,7 +54,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     endpage = startpage + deltapage
     return(list(startpage = startpage, endpage = endpage))
   }
-  if (mon == 2 & dformat == 1) { # GENEActiv binary non-RDA format
+  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
     startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
@@ -107,7 +93,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
     }
     #===============
-  } else if (mon == 3 & dformat == 2) { # Actigraph csv format
+  } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
     headerlength = 10
     #--------------
     startpage = (headerlength + (blocksize * 300 * (blocknumber - 1)))
@@ -128,7 +114,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
                                                         dec = decn, showProgress = FALSE,
                                                         header = TRUE),
-                                      stringsAsFactors = FALSE))
+                                                        stringsAsFactors = FALSE))
     if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1]))) ==  FALSE) { # it has no header, first value is a number
       freadheader = FALSE
     } else { # it has a header, first value is a character
@@ -163,15 +149,44 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     } else {
       P = c()
     }
-  } else if (mon == 4 & dformat == 4) { # axivity cwa
+  } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+    if (utils::packageVersion("GGIRread") < "0.3.0") {
+      # ignore frequency_tol parameter
+      apply_readAxivity = function(fname = filename,
+                                   bstart, bend,
+                                   desiredtz = params_general[["desiredtz"]],
+                                   configtz = params_general[["configtz"]],
+                                   interpolationType = params_rawdata[["interpolationType"]],
+                                   frequency_tol = params_rawdata[["frequency_tol"]]) {
+        try(expr = {P = GGIRread::readAxivity(filename = fname, start = bstart,
+                                              end = bend, progressBar = FALSE, desiredtz = desiredtz,
+                                              configtz = configtz,
+                                              interpolationType = interpolationType)}, silent = TRUE)
+        return(P)
+      }
+    } else {
+      # pass on frequency_tol parameter to GGIRread::readAxivity function
+      apply_readAxivity = function(fname = filename,
+                                   bstart, bend,
+                                   desiredtz = params_general[["desiredtz"]],
+                                   configtz = params_general[["configtz"]],
+                                   interpolationType = params_rawdata[["interpolationType"]],
+                                   frequency_tol = params_rawdata[["frequency_tol"]]) {
+        try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart,
+                                              end = bend, progressBar = FALSE, desiredtz = desiredtz,
+                                              configtz = configtz,
+                                              interpolationType = interpolationType,
+                                              frequency_tol = frequency_tol)}, silent = TRUE)
+        return(P)
+      }
+    }
+    
     startpage = blocksize * (blocknumber - 1)
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage, # try to read block first time
-                                          end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
-                                          configtz = params_general[["configtz"]], interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+    P = apply_readAxivity(bstart = startpage, bend = endpage)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
         P = c() ; switchoffLD = 1
@@ -182,38 +197,29 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
           if (blocknumber == 1) filequality$filetooshort = TRUE
         }
       }
-    } else { #data reading not succesful
-      # Now only load the last page, to assess whether there may be something wrong with this block of data:
-      # I (VvH) implemented this as a temporary fix on 17Nov2018, but it would be better if we understood the source of this error
-      # and address it inside the g.cwaread function. For example, are the page corrupted, and if so then why?
-      PtestLastPage = PtestStartPage = c()
-      # try to read the last page of the block, because if it exists then there might be something wrong with the first page(s).
-      try(expr = {PtestLastPage = GGIRread::readAxivity(filename = filename, start = endpage, #note this is intentionally endpage
-                                                        end = endpage, progressBar = FALSE, desiredtz = params_general[["desiredtz"]],
-                                                        configtz = params_general[["configtz"]],
-                                                        interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
-      if (length(PtestLastPage) > 1) { # Last page exist, so there must be something wrong with the first page
+    } else { 
+      # If data reading is not successful then try following steps to retrieve issue
+      # I am not sure if this is still relevant after all the improvements to GGIRread
+      # but leaving this in just in case it is still needed
+      
+      PtestLastPage = PtestStartPage = NULL
+      # Try to read the last page of the block because if it exists then there might be
+      # something wrong with the first page(s).
+      PtestLastPage = apply_readAxivity(bstart = endpage, bend = endpage)
+      if (length(PtestLastPage) > 1) { 
+        # Last page exist, so there must be something wrong with the first page
         NFilePagesSkipped = 0
         while (length(PtestStartPage) == 0) { # Try loading the first page of the block by iteratively skipping a page
           NFilePagesSkipped = NFilePagesSkipped + 1
           startpage = startpage + NFilePagesSkipped
-          try(expr = {PtestStartPage = GGIRread::readAxivity(filename = filename, start = startpage , # note: end is intentionally startpage
-                                                             end = startpage, progressBar = FALSE,
-                                                             desiredtz = params_general[["desiredtz"]],
-                                                             configtz = params_general[["configtz"]],
-                                                             interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+          PtestStartPage = apply_readAxivity(bstart = startpage, bend = startpage)
           if (NFilePagesSkipped == 10 & length(PtestStartPage) == 0) PtestStartPage = FALSE # stop after 10 attempts
         }
-        cat(paste0("\nWarning (4): ",NFilePagesSkipped," page(s) skipped in cwa file in order to read data-block, this may indicate data corruption."))
       }
       if (length(PtestStartPage) > 1) {
         # Now we know on which page we can start and end the block, we can try again to
         # read the entire block:
-        try(expr = {P = GGIRread::readAxivity(filename = filename, start = startpage,
-                                              end = endpage, progressBar = FALSE,
-                                              desiredtz = params_general[["desiredtz"]],
-                                              configtz = params_general[["configtz"]],
-                                              interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+        P = apply_readAxivity(bstart = startpage, bend = endpage)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
             P = c() ; switchoffLD = 1
@@ -226,8 +232,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
               filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
             }
           }
-          # Add replications of Ptest to the beginning of P to achieve same data length as under nuormal conditions
-          P$data = rbind(do.call("rbind",replicate(NFilePagesSkipped,PtestStartPage$data,simplify = FALSE)), P$data)
+          # Add replications of Ptest to the beginning of P to achieve same data 
+          # length as under normal conditions
+          P$data = rbind(do.call("rbind",
+                                 replicate(NFilePagesSkipped, PtestStartPage$data, simplify = FALSE)),
+                         P$data)
         } else { # Data reading still not succesful, so classify file as corrupt
           P = c()
           if (blocknumber == 1) filequality$filecorrupt = TRUE
@@ -237,7 +246,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         if (blocknumber == 1) filequality$filecorrupt = TRUE
       }
     }
-  } else if (mon == 4 & dformat == 2) { # axivity (ax3) csv format
+  } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
     freadheader = FALSE
     headerlength = 0
     startpage = (headerlength + (blocksize * 300 * (blocknumber - 1)))
@@ -284,7 +293,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     } else {
       P = c()
     }
-  } else if (mon == 5 & dformat == 1) { #movisens
+  } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$CSV) {
     startpage = blocksize * (blocknumber - 1) + 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
@@ -304,15 +313,15 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       switchoffLD = 1
       filequality$filetooshort = TRUE
     }
-  } else if (mon == 3 & dformat == 6) { #actigraph .gt3x
+  } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
     startpage = blocksize * (blocknumber - 1) + 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
+    P = try(expr = {as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                                        batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
-    if (length(P) == 0) { # too short or not data at all
+    if (length(P) == 0 | inherits(P, "try-error") == TRUE) { # too short or not data at all
       P = c() ; switchoffLD = 1
       if (blocknumber == 1) filequality$filetooshort = TRUE
       if (blocknumber == 1) filequality$filecorrupt = TRUE
@@ -322,7 +331,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         if (blocknumber == 1) filequality$filetooshort = TRUE
       } # If data passes these checks then it is usefull
     }
-  } else if (mon == 0 & dformat == 5) { # user specified csv format
+  } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
     startpage = (1 + (blocksize * 300 * (blocknumber - 1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage = startpage,deltapage = deltapage,

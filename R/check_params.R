@@ -2,7 +2,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                         params_rawdata = c(), params_247 = c(),
                         params_phyact = c(), params_cleaning = c(),
                         params_output = c(), params_general = c()) {
-
+  
   check_class = function(category, params, parnames, parclass) {
     for (parname in parnames) {
       if (length(params[[parname]]) > 0) {
@@ -57,7 +57,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "rmc.col.acc", "interpolationType",
                        "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
                        "rmc.col.temp", "rmc.col.time", "rmc.bitrate", "rmc.dynamic_range",
-                       "rmc.sf", "rmc.col.wear", "rmc.noise")
+                       "rmc.sf", "rmc.col.wear", "rmc.noise", "frequency_tol")
     boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
                        "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc",
@@ -136,7 +136,15 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   "for more information see package documentation."), call. = FALSE)
     }
   }
-  if (length(params_metrics) > 0 & length(params_sleep) > 0) {
+  
+  if (length(params_rawdata) > 0) {
+    if (params_rawdata[["frequency_tol"]] < 0 | params_rawdata[["frequency_tol"]] > 1) {
+      stop(paste0("\nArgument frequency_tol is ", params_rawdata[["frequency_tol"]],
+                  " , please adjust such that it is a number between 0 and 1"))
+    }
+  }
+  
+  if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
       if (params_sleep[["HASPT.algo"]] %in% c("HorAngle", "NotWorn") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
@@ -144,6 +152,23 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
     }
+  }
+  
+  if (length(params_metrics) > 0 & length(params_sleep) > 0) {
+    
+    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
+      if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
+        warning("Argument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
+      }
+      if (params_sleep[["Sadeh_axis"]] == "X" & params_metrics[["do.zcx"]] == FALSE) params_metrics[["do.zcx"]] =  TRUE
+      if (params_sleep[["Sadeh_axis"]] == "Y" & params_metrics[["do.zcy"]] == FALSE) params_metrics[["do.zcy"]] =  TRUE
+      if (params_sleep[["Sadeh_axis"]] == "Z" & params_metrics[["do.zcz"]] == FALSE) params_metrics[["do.zcz"]] =  TRUE
+    } else { # vanHees2015
+      params_sleep[["Sadeh_axis"]] = "" # not used
+    }
+  }
+  
+  if (length(params_general) > 0 & length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
@@ -155,16 +180,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
     }
-    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
-      if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
-        warning("\nArgument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
-      }
-      if (params_sleep[["Sadeh_axis"]] == "X" & params_metrics[["do.zcx"]] == FALSE) params_metrics[["do.zcx"]] =  TRUE
-      if (params_sleep[["Sadeh_axis"]] == "Y" & params_metrics[["do.zcy"]] == FALSE) params_metrics[["do.zcy"]] =  TRUE
-      if (params_sleep[["Sadeh_axis"]] == "Z" & params_metrics[["do.zcz"]] == FALSE) params_metrics[["do.zcz"]] =  TRUE
-    } else { # vanHees2015
-      params_sleep[["Sadeh_axis"]] = "" # not used
-    }
+  }
+  
+  if (length(params_sleep) > 0) {
     if (length(params_sleep[["loglocation"]]) == 1) {
       if (params_sleep[["loglocation"]] == "") {
         params_sleep[["loglocation"]] = c() #inserted because some users mistakingly use this
@@ -173,21 +191,25 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_sleep[["loglocation"]] = gsub(pattern = "\\\\", replacement = "/", x = params_sleep[["loglocation"]])
       }
     }
+    
     if (length(params_sleep[["loglocation"]]) > 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
       warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
                      " We assume you want to use the sleeplog and misunderstood",
                      " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"), call. = FALSE)
       params_sleep[["def.noc.sleep"]] = 1
     }
+    
     if (params_sleep[["HASPT.algo"]] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
       warning("\nHASPT.algo is set to HorAngle, therefore auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
+    
     if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
       warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
+  
   if (length(params_cleaning) > 0) {
     if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.start"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ",
@@ -354,14 +376,30 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   assumption is credible."), call. = FALSE)
     }
   }
-
+  
   if (!is.null(params_general[["maxRecordingInterval"]])) {
     if (params_general[["maxRecordingInterval"]] > 24 * 21) {
       stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is permitted,",
                   " please specify a lower value."), call. = FALSE)
     }
   }
-
+  
+  # cleaning parameters for segments
+  if (length(params_cleaning) > 0) {
+    if (is.null(params_cleaning[["segmentWEARcrit.part5"]])) {
+      # if null, then assign default value
+      params_cleaning[["segmentWEARcrit.part5"]] = 0.5
+      warning(paste0("\nsegmentWEARcrit.part5 is expected to be a number between 0 and 1",
+                     ", the default value has been assigned (i.e., 0.5) "), call. = FALSE)
+    } else if (params_cleaning[["segmentWEARcrit.part5"]] < 0 | 
+               params_cleaning[["segmentWEARcrit.part5"]] > 1) {
+      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
+                  "fraction of the day between zero and one, please change."), 
+           call. = FALSE)
+    }
+  }
+  
+  
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
                  params_rawdata = params_rawdata,

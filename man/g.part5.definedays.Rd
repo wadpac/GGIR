@@ -9,28 +9,42 @@
 }
 \usage{
   g.part5.definedays(nightsi, wi, indjump, nightsi_bu, 
-                              ws3new, qqq_backup=c(), ts, Nts, timewindowi, Nwindows)
+                     epochSize, qqq_backup = c(), ts,
+                     timewindowi, Nwindows, qwindow, ID = NULL)
 }
 \arguments{
   \item{nightsi}{
+    Vector with indices for the midnights
   }
   \item{wi}{
+    Numeric to indicate window number
   }
   \item{indjump}{
+    Number of indices to jump
   }
   \item{nightsi_bu}{
+    See argument \code{nightsi} this is a backup of this object
   }
-  \item{ws3new}{
+  \item{epochSize}{
+    Numeric epoch size in seconds
   }
   \item{qqq_backup}{
+    Backup of qqq object, which holds the start and end indices of a window
   }
   \item{ts}{
-  }
-  \item{Nts}{
+    Data.frame with time series
   }
   \item{timewindowi}{
+    Timewindow definition either "MM" or "WW"
   }
   \item{Nwindows}{
+    Number of windows in the data
+  }
+  \item{qwindow}{
+    qwindow argument
+  }
+  \item{ID}{
+    ID of participant
   }
 }
 \value{

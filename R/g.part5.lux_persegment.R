@@ -1,16 +1,22 @@
-g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
+g.part5.lux_persegment = function(ts, sse, LUX_day_segments, epochSize, desiredtz = "") {
   # only look at waking hours of this day
   sse = sse[which(ts$diur[sse] == 0)]
   # create equal length vector representing per epoch the first hour of the corresponding day segment
-  first_hour_seg = as.numeric(format(ts$time[sse],"%H"))
-  for (ldi in 1:(length(LUX_day_segments)-1)) { # round all hours to bottom of its class
+  if ("POSIXt" %in% class(ts$time[sse[1]])) {
+    posixTime = ts$time[sse]
+  } else {
+    posixTime = iso8601chartime2POSIX(ts$time[sse], tz = desiredtz)
+  }
+  first_hour_seg = as.numeric(format(posixTime,"%H"))
+  for (ldi in 1:(length(LUX_day_segments) - 1)) {
+    # round all hours to bottom of its class
     tmpl = which(first_hour_seg >= LUX_day_segments[ldi] &
-                   first_hour_seg <  LUX_day_segments[ldi+1])
-    if(length(tmpl) > 0) {
+                   first_hour_seg <  LUX_day_segments[ldi + 1])
+    if (length(tmpl) > 0) {
       first_hour_seg[tmpl] = LUX_day_segments[ldi]
     }
   }
-  Nepochperday = 24 * (3600 / ws3new)
+  Nepochperday = 24 * (3600 / epochSize)
   if (length(first_hour_seg) > Nepochperday) {
     first_hour_seg = first_hour_seg[1:Nepochperday]
   }
@@ -18,7 +24,7 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
     sse = sse[1:Nepochperday]
   }
   # expanding first time segment
-  expected_N_seg1 = (rep(LUX_day_segments,2)[which(LUX_day_segments == first_hour_seg[1])+1] - LUX_day_segments[which(LUX_day_segments == first_hour_seg[1])]) * 60 * (60/ws3new)
+  expected_N_seg1 = (rep(LUX_day_segments,2)[which(LUX_day_segments == first_hour_seg[1])+1] - LUX_day_segments[which(LUX_day_segments == first_hour_seg[1])]) * 60 * (60/epochSize)
   actual_N_seg1 = length(which(first_hour_seg[1:round(Nepochperday*0.66)] == first_hour_seg[1]))
   missingN_seg1 = expected_N_seg1 - actual_N_seg1
   if (missingN_seg1 > 0) {
@@ -58,30 +64,30 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, ws3new) {
                    names = paste0("LUX_",LUXmetricname,"_",x$seg,"_",end_of_segment, "hr_day")))
   }
   # Fraction above 1000 LUX
-  fraction_above_thousand = function(x, ws3new) {
-    timeabove1000 = length(which(x > 1000)) / (60/ws3new)
+  fraction_above_thousand = function(x, epochSize) {
+    timeabove1000 = length(which(x > 1000)) / (60/epochSize)
     return(timeabove1000)
   }
-  LUXabove1000 = aggregate(ts$lightpeak[sse], by =  list(first_hour_seg), fraction_above_thousand, ws3new)
+  LUXabove1000 = aggregate(ts$lightpeak[sse], by =  list(first_hour_seg), fraction_above_thousand, epochSize)
   # Time awake
-  countvalue = function(x, ws3new, value) {
-    return(length(which(x == value)) / (60/ws3new))
+  countvalue = function(x, epochSize, value) {
+    return(length(which(x == value)) / (60/epochSize))
   }
-  LUXwaketime = aggregate(ts$diur[sse], by =  list(first_hour_seg), FUN=countvalue, value=0, ws3new=ws3new)
+  LUXwaketime = aggregate(ts$diur[sse], by = list(first_hour_seg), FUN = countvalue, value = 0, epochSize = epochSize)
   # Mean light
   mymean = function(x) {
-    return(round(mean(x, na.rm = T), digits=1))
+    return(round(mean(x, na.rm = T), digits = 1))
   }
   LUXmean = aggregate(ts$lightpeak[sse], by =  list(first_hour_seg), mymean)
   # Time light imputed
-  LUXlightimputed = aggregate(ts$lightpeak_imputationcode[sse], by =  list(first_hour_seg), FUN=countvalue, value=1, ws3new=ws3new)
-  LUXlightignored = aggregate(ts$lightpeak_imputationcode[sse], by =  list(first_hour_seg), FUN=countvalue, value=2, ws3new=ws3new)
+  LUXlightimputed = aggregate(ts$lightpeak_imputationcode[sse], by = list(first_hour_seg), FUN = countvalue, value = 1, epochSize = epochSize)
+  LUXlightignored = aggregate(ts$lightpeak_imputationcode[sse], by = list(first_hour_seg), FUN = countvalue, value = 2, epochSize = epochSize)
   
-  standardLPS1 = standardise_luxperseg(x= LUXabove1000, LUX_day_segments, LUXmetricname ="above1000")
-  standardLPS2 = standardise_luxperseg(x= LUXwaketime, LUX_day_segments, LUXmetricname ="timeawake")
-  standardLPS3 = standardise_luxperseg(x= LUXmean, LUX_day_segments, LUXmetricname ="mean")
-  standardLPS4 = standardise_luxperseg(x= LUXlightimputed, LUX_day_segments, LUXmetricname ="imputed")
-  standardLPS5 = standardise_luxperseg(x= LUXlightignored, LUX_day_segments, LUXmetricname ="ignored")
+  standardLPS1 = standardise_luxperseg(x = LUXabove1000, LUX_day_segments, LUXmetricname = "above1000")
+  standardLPS2 = standardise_luxperseg(x = LUXwaketime, LUX_day_segments, LUXmetricname = "timeawake")
+  standardLPS3 = standardise_luxperseg(x = LUXmean, LUX_day_segments, LUXmetricname = "mean")
+  standardLPS4 = standardise_luxperseg(x = LUXlightimputed, LUX_day_segments, LUXmetricname = "imputed")
+  standardLPS5 = standardise_luxperseg(x = LUXlightignored, LUX_day_segments, LUXmetricname = "ignored")
   
   values = c(standardLPS1$values, standardLPS2$values,
              standardLPS3$values, standardLPS4$values,

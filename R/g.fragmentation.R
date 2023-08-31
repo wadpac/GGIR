@@ -91,6 +91,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "NFragPM", "all")
   }
   output = list()
+
   Nepochs = length(LEVELS)
   if (mode == "day") {
     # convert to class names to numeric class ids for inactive, LIPA and MVPA:
@@ -100,7 +101,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     class.lig.ids = which(Lnames %in%  classes.lig) - 1
     classes.mvpa = c("day_MOD_unbt", "day_VIG_unbt", Lnames[grep(pattern = "day_MVPA_bts", x = Lnames)])
     class.mvpa.ids = which(Lnames %in% classes.mvpa) - 1
+  } else {
+    do.frag = FALSE
   }
+
   if (Nepochs > 1 & mode == "day") { # metrics that require more than just binary
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
@@ -133,9 +137,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       output[["Nfrag_MVPA"]] = out$Nab
       output[["mean_dur_MVPA"]] = out$totDur_ab / out$Nab
     }
-    rm(y)
   }
-  
+
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
   
@@ -183,6 +186,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         # Identify to metric named fragmentation by Chastin,
         # but renamed into Number of Fragments Per Minutes to be 
         # a better reflection of the calculation
+
         output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / out$totDur_ba
         output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / out$totDur_ab
       }
@@ -223,6 +227,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         }
       }
     }
+
   } else if (mode == "spt") {
     # Binary fragmentation metrics for spt:
     # Active - Rest transitions during SPT:
@@ -239,7 +244,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     output[["Nfrag_spt_PA"]] = out$Nba
     output[["TP_IN2PA_spt"]] = out$TPab
     output[["TP_PA2IN_spt"]] = out$TPba
-    
     # Wake - Sleep transitions during SPT:
     x = rep(0, Nepochs)
     classes.wake = c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
