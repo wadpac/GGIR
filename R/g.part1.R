@@ -146,7 +146,18 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     #data_quality_report.csv does not exist and there is also no ot
     if (assigned.backup.cal.coef == FALSE) params_rawdata[["backup.cal.coef"]] = c()
     #--------------------------------------
-    if (params_rawdata[["do.cal"]] == TRUE & length(params_rawdata[["backup.cal.coef"]]) == 0) {
+    # Set default C object
+    C = list(cal.error.end = 0, cal.error.start = 0)
+    C$scale = c(1,1,1)
+    C$offset = c(0,0,0)
+    C$tempoffset =  c(0,0,0)
+    C$QCmessage = "Autocalibration not done"
+    C$npoints = 0
+    C$nhoursused = 0
+    C$use.temp = use.temp
+    Cdefault = C
+    if (params_rawdata[["do.cal"]] == TRUE & length(params_rawdata[["backup.cal.coef"]]) == 0 &
+        is.null(I$sf) == FALSE) {
       # cat(paste0("\n",rep('-',options()$width),collapse=''))
       if (verbose == TRUE) cat("\n")
       if (verbose == TRUE) cat("\nInvestigate calibration of the sensors with function g.calibrate:\n")
@@ -156,15 +167,6 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                       params_cleaning = params_cleaning,
                       inspectfileobject = I,
                       verbose = verbose)
-    } else {
-      C = list(cal.error.end = 0, cal.error.start = 0)
-      C$scale = c(1,1,1)
-      C$offset = c(0,0,0)
-      C$tempoffset =  c(0,0,0)
-      C$QCmessage = "Autocalibration not done"
-      C$npoints = 0
-      C$nhoursused = 0
-      C$use.temp = use.temp
     }
     if (turn.do.cal.back.on == TRUE) {
       params_rawdata[["do.cal"]] = TRUE
@@ -238,6 +240,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                           params_cleaning = params_cleaning,
                           inspectfileobject = I,
                           verbose = verbose)
+          if (is.null(C)) C = Cdefault # in case gt3x file is corrupt then this value is needed
         }
       }
     }
@@ -252,6 +255,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                   tempoffset = C$tempoffset, scale = C$scale, offset = C$offset,
                   meantempcal = C$meantempcal,
                   myfun = myfun,
+                  inspectfileobject = I,
                   verbose = verbose)
 
     if (!is.null(params_general[["recordingEndSleepHour"]])) {

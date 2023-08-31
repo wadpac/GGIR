@@ -93,7 +93,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       }
       
       if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
-        warning("No summary data available to be stored in csv-reports")
+        warning("No summary data available to be stored in csv-reports", call. = FALSE)
       }
       #-----------------
       # create data quality report
@@ -109,12 +109,14 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         tmean = ""
       }
       #=========
-      header = I$header
+      if (is.null(I$sf) == FALSE) {
+        header = I$header
+        hnames = rownames(header)
+        hvalues = as.character(as.matrix(header))
+        pp = which(hvalues == "")
+        hvalues[pp] = c("not stored in header")
+      }
       mon = I$monn
-      hnames = rownames(header)
-      hvalues = as.character(as.matrix(header))
-      pp = which(hvalues == "")
-      hvalues[pp] = c("not stored in header")
       if (mon == "genea") {
         deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
       } else if (mon == "geneactive") {
@@ -172,6 +174,14 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
                       device.serial.number = deviceSerialNumber,
                       NFilePagesSkipped = M$NFilePagesSkipped, stringsAsFactors = FALSE)
       
+      if (is.null(I$sf) == TRUE) {
+        if (i == 1 | i == f0) {
+          QCout = QC
+        } else {
+          QCout = rbind(QCout,QC)
+        }
+        next()
+      }
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
       if (length(filehealth_cols) > 0) {
         # migrate filehealth columns to QC report

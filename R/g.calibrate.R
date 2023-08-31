@@ -49,47 +49,31 @@ g.calibrate = function(datafile, params_rawdata = c(),
   if (length(inspectfileobject) > 0) {
     INFI = inspectfileobject
   } else {
-    options(warn = -1) # turn off warnings
-    INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                         rmc.dec = params_rawdata[["rmc.dec"]],
-                         rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                         rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                         rmc.header.length = params_rawdata[["rmc.header.length"]],
-                         rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                         rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                         rmc.col.time = params_rawdata[["rmc.col.time"]],
-                         rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                         rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                         rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                         rmc.format.time = params_rawdata[["rmc.format.time"]],
-                         rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                         rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                         rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                         rmc.origin = params_rawdata[["rmc.origin"]],
-                         rmc.desiredtz = params_general[["rmc.desiredtz"]],
-                         rmc.sf = params_rawdata[["rmc.sf"]],
-                         rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                         rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                         rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
-                         rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                         rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])  # Check which file type and monitor brand it is
-    options(warn = 0) # turn on warnings
+    stop("argument inspectfileobject not specified")
   }
   mon = INFI$monc
   if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
   dformat = INFI$dformc
   sf = INFI$sf
+  
+  if (is.null(sf)) {
+    # If function g.inspectfile which produces the inspectfileobject
+    # identifies a corrupt GT3X file then it sets the sf value to NULL
+    # this is then used here to skip the calibration procedure
+    return()
+  }
+  
   # if GENEActiv csv, deprecated function
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
+    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
+                " GGIR from the version 2.6-4 onwards. Please, use either",
+                " the GENEActiv bin files or try to read the csv files with",
+                " GGIR::read.myacc.csv"), call. = FALSE)
   }
-  if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
-    if (length(params_rawdata[["rmc.sf"]]) == 0 || params_rawdata[["rmc.sf"]] == 0) {
-      stop("Could not identify sample frequency")
-    } 
-    sf = params_rawdata[["rmc.sf"]]
+  if (sf == 0) {
+    stop(paste0("\nSample frequency not recognised in ", datafile,
+                " calibration procedure stopped."), call. = FALSE)
   }
-  if (sf == 0) stop("Sample frequency not recognised")
   options(warn = -1) #turn off warnings
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
                                                desiredtz = params_general[["desiredtz"]],
@@ -353,7 +337,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
         }
         sdcriter = params_rawdata[["rmc.noise"]] * 1.2
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
-          stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+          stop(paste0("Please provide noise level for the acceleration sensors",
+                      " in g-units with argument rmc.noise to aid non-wear detection"),
+               call. = FALSE)
         }
       }
       nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
@@ -522,7 +508,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
     cat(paste0("\nNumber of hours used: ",nhoursused))
     cat(paste0("\nNumber of 10 second windows around the sphere: ", npoints))
     cat(paste0("\nTemperature used (if available): ", use.temp))
-    cat(paste0("\nTemperature offset (if temperature is available) ", c("x", "y", "z"),": ", tempoffset))
+    cat(paste0("\nTemperature offset (if temperature is available) ",
+               c("x", "y", "z"),": ", tempoffset))
     cat("\n")
   }
   if (use.temp == TRUE && length(spheredata) > 0) {

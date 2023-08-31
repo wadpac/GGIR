@@ -173,7 +173,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     starttime = P$data$timestamp[1]
   } else if (mon == MONITOR$MOVISENS) {
     starttime = unisensR::readUnisensStartTime(dirname(datafile))
-  } else if (dformat == GT3X && mon == MONITOR$ACTIGRAPH) {
+  } else if (dformat == FORMAT$GT3X && mon == MONITOR$ACTIGRAPH) {
     if (is.null(configtz)) configtz = desiredtz
     starttime = as.POSIXct(format(P[1, 1]), tz = configtz)
     if (configtz != desiredtz) {

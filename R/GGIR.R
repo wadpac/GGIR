@@ -38,7 +38,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   filelist = isfilelist(datadir)
 
   if (filelist == FALSE) {
-    if (dir.exists(datadir) == FALSE) {
+    if (dir.exists(datadir) == FALSE && 1 %in% mode) {
+      # Note: The check whether datadir exists is only relevant when running part 1
+      # For other scenarios it can be convenient to keep specifying datadir
+      # even if the actual path is no longer available, because GGIR uses the most
+      # distal folder name to identify the output directory. For example,
+      # if part 2-5 are processed on a different system then part 1.
+      
       stop("\nDirectory specified by argument datadir does not exist")
     }
     if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {

@@ -319,9 +319,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
+    P = try(expr = {as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                                        batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
-    if (length(P) == 0) { # too short or not data at all
+    if (length(P) == 0 | inherits(P, "try-error") == TRUE) { # too short or not data at all
       P = c() ; switchoffLD = 1
       if (blocknumber == 1) filequality$filetooshort = TRUE
       if (blocknumber == 1) filequality$filecorrupt = TRUE

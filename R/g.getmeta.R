@@ -1,7 +1,9 @@
 g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      params_general = c(), params_cleaning = c(), daylimit = FALSE,
                      offset = c(0, 0, 0), scale = c(1, 1, 1), tempoffset = c(0, 0, 0),
-                     meantempcal = c(), myfun = c(), verbose = TRUE, ...) {
+                     meantempcal = c(), myfun = c(),
+                     inspectfileobject = c(),
+                     verbose = TRUE, ...) {
   
   #get input variables
   input = list(...)
@@ -131,16 +133,30 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   LD = 2 #dummy variable used to identify end of file and to make the process stop
   bsc_qc = data.frame(time = c(), size = c(), stringsAsFactors = FALSE)
   # inspect file
-  options(warn = -1)
-  INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                       params_rawdata = params_rawdata,
-                       configtz = params_general[["configtz"]])
-  options(warn = 0)
+  
+  if (length(inspectfileobject) > 0) {
+    INFI = inspectfileobject
+  } else {
+    stop("argument inspectfileobject not specified")
+  }
+  
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
-  hvars = g.extractheadervars(INFI)
-  deviceSerialNumber = hvars$deviceSerialNumber
+  if (is.null(sf)) {
+    filequality$filecorrupt = TRUE
+    filecorrupt = TRUE
+    filetooshort = FALSE
+    filedoesnotholdday = FALSE
+    NFilePagesSkipped = 0
+    QClog = NULL
+    LD = 0 # to prevent while loop and skip reading of file
+    deviceSerialNumber = "notExtracted"
+  }
+  if (LD > 1) {
+    hvars = g.extractheadervars(INFI)
+    deviceSerialNumber = hvars$deviceSerialNumber
+  }
   # if GENEActiv csv, deprecated function
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV & length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
     stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
@@ -155,63 +171,57 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       params_rawdata[["dynrange"]] = 6
     }
   }
-  if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
-    if (length(params_rawdata[["rmc.sf"]]) == 0) {
-      stop("Could not identify sample frequency")
-    } else {
-      if (params_rawdata[["rmc.sf"]] == 0) {
-        stop("Could not identify sample frequency")
-      } else {
-        sf = params_rawdata[["rmc.sf"]]
-      }
+  if (LD > 1) {
+    if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
+    header = INFI$header
+    options(warn = -1)
+    decn = g.dotorcomma(datafile, dformat, mon = mon,
+                        desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
+                        loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
+    options(warn = 0)
+    ID = hvars$ID
+    
+    # get now-wear, clip, and blocksize parameters (thresholds)
+    ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
+                                          dynrange = params_rawdata[["dynrange"]],
+                                          mon, rmc.noise = params_rawdata[["rmc.noise"]],
+                                          sf, dformat,
+                                          rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]])
+    clipthres = ncb_params$clipthres
+    blocksize = ncb_params$blocksize
+    sdcriter = ncb_params$sdcriter
+    racriter = ncb_params$racriter
+    n_decimal_places = 4 # number of decimal places to which features should be rounded
+    #creating matrixes for storing output
+    S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
+    nev = 80*10^7 # number expected values
+    # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
+    NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
+    metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
+    if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
+        (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
+        (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
+      temp.available = FALSE
+    } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
+               mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) > 0)) {
+      temp.available = TRUE
     }
+    QClog = NULL
+    if (temp.available == FALSE) {
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
+    } else if (temp.available == TRUE && mon != MONITOR$MOVISENS) {
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7) #generating output matrix for 15 minutes summaries
+    } else if (temp.available == TRUE && mon == MONITOR$MOVISENS) {
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
+    }
+    #===============================================
+    # Read file
+    switchoffLD = 0 #dummy variable part "end of loop mechanism"
+    sforiginal = sf
+  } else {
+    metalong = NULL
+    metashort = NULL
   }
-  if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
-  header = INFI$header
-  options(warn = -1)
-  decn = g.dotorcomma(datafile, dformat, mon = mon,
-                      desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
-                      loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
-  options(warn = 0)
-  ID = hvars$ID
-  
-  # get now-wear, clip, and blocksize parameters (thresholds)
-  ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
-                                        dynrange = params_rawdata[["dynrange"]],
-                                        mon, rmc.noise = params_rawdata[["rmc.noise"]],
-                                        sf, dformat,
-                                        rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]])
-  clipthres = ncb_params$clipthres
-  blocksize = ncb_params$blocksize
-  sdcriter = ncb_params$sdcriter
-  racriter = ncb_params$racriter
-  n_decimal_places = 4 # number of decimal places to which features should be rounded
-  #creating matrixes for storing output
-  S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-  nev = 80*10^7 # number expected values
-  # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
-  NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
-  metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-  if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
-      (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
-      (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
-    temp.available = FALSE
-  } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-             mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) > 0)) {
-    temp.available = TRUE
-  }
-  QClog = NULL
-  if (temp.available == FALSE) {
-    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
-  } else if (temp.available == TRUE && mon != MONITOR$MOVISENS) {
-    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7) #generating output matrix for 15 minutes summaries
-  } else if (temp.available == TRUE && mon == MONITOR$MOVISENS) {
-    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
-  }
-  #===============================================
-  # Read file
-  switchoffLD = 0 #dummy variable part "end of loop mechanism"
-  sforiginal = sf
   while (LD > 1) {
     P = c()
     if (verbose == TRUE) {
@@ -432,7 +442,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           temperature = as.numeric(data[, temperaturecolumn])
         }
-
+        
         # Initialization of variables
         data_scaled = FALSE
         if (mon == MONITOR$GENEA || (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) ||
