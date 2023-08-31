@@ -64,7 +64,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                 } else {
                   stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
                 }
-        },
+      },
       "wav" = { stop(paste0("\nError processing ", filename, ": GENEA .wav file format is no longer supported.\n")) },
       { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
