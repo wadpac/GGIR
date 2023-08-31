@@ -1,4 +1,4 @@
-convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
+convertEpochData = function(datadir = c(), metadatadir = c(),
                             params_general = c(), verbose = TRUE) {
   # Function to convert externally derived epoch data
   # to a format that allows GGIR to process them as if they were part 1 output.
@@ -32,28 +32,13 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
   }
   #-------------
   # Create output folder, normally with raw data g.part1 would do this:
-  filelist = isfilelist(datadir)
-  # create output directory if it does not exist
-  if (filelist == TRUE) {
-    if (length(studyname) == 0) {
-      studyname = "mystudy"
-      stop('\nError: studyname not specified in part1. Needed for analysing lists of files')
-    } else {
-      outputfolder = paste0("/output_", studyname)
-    }
-  } else {
-    outputfolder = unlist(strsplit(datadir, "/"))
-    outputfolder = paste0("/output_",outputfolder[length(outputfolder)])
+  if (!file.exists(metadatadir)) {
+    dir.create(metadatadir)
+    dir.create(file.path(metadatadir, "meta"))
+    dir.create(file.path(metadatadir, "meta", "basic"))
+    dir.create(file.path(metadatadir, "results"))
+    dir.create(file.path(metadatadir, "results", "QC"))
   }
-  if (!file.exists(paste0(outputdir, outputfolder))) {
-    dir.create(file.path(outputdir, outputfolder))
-    dir.create(file.path(outputdir, outputfolder, "meta"))
-    dir.create(file.path(outputdir, paste0(outputfolder,"/meta"), "basic"))
-    dir.create(file.path(outputdir, outputfolder, "results"))
-    dir.create(file.path(outputdir, paste0(outputfolder, "/results"), "QC"))
-  }
-  
-  outputdir = paste0(outputdir, outputfolder) #where is output stored?
   
   #============
   # Based on knowledge about data format
@@ -162,7 +147,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
     # filename
     fname = basename(fnames[i])
     
-    outputFileName = paste0(outputdir, "/meta/basic/meta_", fname, ".RData")
+    outputFileName = paste0(metadatadir, "/meta/basic/meta_", fname, ".RData")
     
     skip = TRUE
     if (params_general[["overwrite"]] == TRUE) {
@@ -173,8 +158,8 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
       }
     }
     if (skip == FALSE) {
+      I = I_bu
       I$filename = filename_dir = fname
-      
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
         D = data.table::fread(input = fnames[i],
@@ -263,7 +248,7 @@ convertEpochData = function(datadir = c(), studyname = c(), outputdir = c(),
         }
         
         # extract information from header
-        I = I_bu
+        
         if (header_test == TRUE) {
           I$deviceSerialNumber = AGh$value[grep(pattern = "serialnumber", x = AGh$variable)]
           # Add serial number to header object because g.extractheadersvars for Actigraph uses this

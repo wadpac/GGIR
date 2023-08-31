@@ -1,7 +1,8 @@
 g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
-                                  save_ms5raw_format = "csv", save_ms5raw_without_invalid = TRUE,
-                                  DaCleanFile = c(),
-                                  includedaycrit.part5= 2/3, ID = c(),
+                                  save_ms5raw_format = "csv",
+                                  save_ms5raw_without_invalid = TRUE,
+                                  DaCleanFile = NULL,
+                                  includedaycrit.part5 = 2/3, ID = NULL,
                                   sep_reports = ",") {
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),

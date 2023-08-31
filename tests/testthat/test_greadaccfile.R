@@ -8,7 +8,8 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
   
   desiredtz = "Europe/London"
-  
+  params_rawdata = list(frequency_tol = 0.1, interpolationType = 1,
+                        desiredtz = "Europe/London", configtz = "Europe/London")
   cat("\nActigraph .gt3x")
   # actigraph .gt3x
   Igt3x = g.inspectfile(gt3xfile, desiredtz = desiredtz)
@@ -17,18 +18,20 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   expect_equal(Igt3x$sf, 30)
   EHV = g.extractheadervars(Igt3x)
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
-  Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300))
+  Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300),
+                    inspectfileobject = Igt3x)
   expect_true(Mgt3x$filetooshort)
   expect_false(Mgt3x$filecorrupt)
   cat("\nAxivity .cwa")
   # axivity .cwa
-  Icwa = g.inspectfile(cwafile, desiredtz = desiredtz)
+  Icwa = g.inspectfile(cwafile, desiredtz = desiredtz, params_rawdata = params_rawdata)
   expect_equal(Icwa$monc, 4)
   expect_equal(Icwa$dformc, 4)
   expect_equal(Icwa$sf, 100)
   EHV = g.extractheadervars(Icwa)
   expect_equal(EHV$deviceSerialNumber,"39434")
-  Mcwa = g.getmeta(cwafile, desiredtz = desiredtz, windowsize = c(1,300,300))
+  Mcwa = g.getmeta(cwafile, desiredtz = desiredtz, windowsize = c(1,300,300),
+                   inspectfileobject = Icwa)
   expect_true(Mcwa$filetooshort)
   expect_false(Mcwa$filecorrupt)
  
@@ -41,7 +44,8 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
 
   EHV = g.extractheadervars(IGA)
   expect_equal(EHV$deviceSerialNumber,"012967")
-  MGA = g.getmeta(GAfile, desiredtz = desiredtz, windowsize = c(1,300,300), verbose = FALSE)
+  MGA = g.getmeta(GAfile, desiredtz = desiredtz, windowsize = c(1,300,300), verbose = FALSE,
+                  inspectfileobject = IGA)
   expect_true(MGA$filetooshort)
   
   
@@ -52,9 +56,11 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   expect_equal(decn,".")
   filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
   dayborder = 0
+  
   cwa_read = g.readaccfile(cwafile, blocksize = 10, blocknumber = 1, filequality = filequality,
                            decn = ".", dayborder,ws = 3, desiredtz = desiredtz, 
-                           PreviousEndPage = 1, inspectfileobject = Icwa)
+                           PreviousEndPage = 1, inspectfileobject = Icwa,
+                           params_rawdata = params_rawdata)
   GA_read = g.readaccfile(GAfile, blocksize = 2, blocknumber = 1, filequality = filequality,
                                          decn = ".", dayborder = dayborder, ws = 3,
                                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA)

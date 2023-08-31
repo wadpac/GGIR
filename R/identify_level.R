@@ -108,5 +108,6 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
     CL = CL + 1
   }
   invisible(list(LEVELS = LEVELS, OLEVELS = OLEVELS, Lnames = Lnames, 
-                 bc.mvpa = bc.mvpa, bc.lig = bc.lig, bc.in = bc.in, ts = ts))
+                 bc.mvpa = bc.mvpa, bc.lig = bc.lig, bc.in = bc.in, ts = ts,
+                 threshold = c(TRLi, TRMi, TRVi)))
 }
