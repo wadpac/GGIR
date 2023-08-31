@@ -24,9 +24,9 @@ test_that("chainof5parts", {
   expect_true(isfilelist(c("file1.bin", "file2.bin")))
   #--------------------------------------------
   # part 1
-  g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
+  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
-          studyname = "test", do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
+          do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
           windowsizes = c(15,3600,3600), do.parallel = do.parallel,
           minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE)
   expect_true(dir.exists(dn))
@@ -318,10 +318,10 @@ test_that("chainof5parts", {
   write.csv(SDF, file = selectdaysfile)
   
   
-  g.part1(datadir = fn, outputdir = getwd(), f0 = 1, f1 = 1,
+  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
           do.parallel = do.parallel, myfun = myfun,
-          studyname = "test", do.enmo = TRUE, do.anglez = TRUE, do.cal = FALSE,
+          do.enmo = TRUE, do.anglez = TRUE, do.cal = FALSE,
           windowsizes = c(15, 300, 3600),
           chunksize = 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
           do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,

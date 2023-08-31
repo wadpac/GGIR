@@ -11,7 +11,7 @@
 }
 \usage{
   g.calibrate(datafile, params_rawdata = c(), params_general = c(),
-              params_cleaning = c(), verbose = TRUE, ...)
+              params_cleaning = c(), inspectfileobject = c(), verbose = TRUE, ...)
 }
 \arguments{
   \item{datafile}{
@@ -25,6 +25,9 @@
   }
   \item{params_cleaning}{
     See \link{g.part1}
+  }
+  \item{inspectfileobject}{
+    Output from the function \link{g.inspectfile}.
   }
   \item{verbose}{
     Boolean (default = TRUE). to indicate whether console message should be printed. 

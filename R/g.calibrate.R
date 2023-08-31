@@ -1,6 +1,7 @@
 g.calibrate = function(datafile, params_rawdata = c(),
                        params_general = c(),
                        params_cleaning = c(),
+                       inspectfileobject = c(),
                        verbose = TRUE,
                        ...) {
 
@@ -45,82 +46,70 @@ g.calibrate = function(datafile, params_rawdata = c(),
   #inspect file
   op <- options(stringsAsFactors = FALSE)
   on.exit(options(op))
-  options(warn = -1) #turn off warnings
-  INFI = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
-                       rmc.dec = params_rawdata[["rmc.dec"]],
-                       rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
-                       rmc.firstrow.header = params_rawdata[["rmc.firstrow.header"]],
-                       rmc.header.length = params_rawdata[["rmc.header.length"]],
-                       rmc.col.acc = params_rawdata[["rmc.col.acc"]],
-                       rmc.col.temp = params_rawdata[["rmc.col.temp"]],
-                       rmc.col.time = params_rawdata[["rmc.col.time"]],
-                       rmc.unit.acc = params_rawdata[["rmc.unit.acc"]],
-                       rmc.unit.temp = params_rawdata[["rmc.unit.temp"]],
-                       rmc.unit.time = params_rawdata[["rmc.unit.time"]],
-                       rmc.format.time = params_rawdata[["rmc.format.time"]],
-                       rmc.bitrate = params_rawdata[["rmc.bitrate"]],
-                       rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
-                       rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
-                       rmc.origin = params_rawdata[["rmc.origin"]],
-                       rmc.desiredtz = params_general[["rmc.desiredtz"]],
-                       rmc.sf = params_rawdata[["rmc.sf"]],
-                       rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
-                       rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                       rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
-                       rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                       rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])  # Check which file type and monitor brand it is
-  options(warn = 0) #turn on warnings
+  if (length(inspectfileobject) > 0) {
+    INFI = inspectfileobject
+  } else {
+    stop("argument inspectfileobject not specified")
+  }
   mon = INFI$monc
-  if (mon == 6) mon = 3
+  if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
   dformat = INFI$dformc
   sf = INFI$sf
+  
+  if (is.null(sf)) {
+    # If function g.inspectfile which produces the inspectfileobject
+    # identifies a corrupt GT3X file then it sets the sf value to NULL
+    # this is then used here to skip the calibration procedure
+    return()
+  }
+  
   # if GENEActiv csv, deprecated function
-  if (mon == 2 & dformat == 2 & length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
+  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
+    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
+                " GGIR from the version 2.6-4 onwards. Please, use either",
+                " the GENEActiv bin files or try to read the csv files with",
+                " GGIR::read.myacc.csv"), call. = FALSE)
   }
-  if (length(sf) == 0) { # if sf is not available then try to retrieve sf from rmc.sf
-    if (length(params_rawdata[["rmc.sf"]]) == 0) {
-      stop("Could not identify sample frequency")
-    } else {
-      if (params_rawdata[["rmc.sf"]] == 0) {
-        stop("Could not identify sample frequency")
-      } else {
-        sf = params_rawdata[["rmc.sf"]]
-      }
-    }
+  if (sf == 0) {
+    stop(paste0("\nSample frequency not recognised in ", datafile,
+                " calibration procedure stopped."), call. = FALSE)
   }
-  if (sf == 0) stop("Sample frequency not recognised")
   options(warn = -1) #turn off warnings
   suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
                                                desiredtz = params_general[["desiredtz"]],
                                                rmc.dec = params_rawdata[["rmc.dec"]],
                                                loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
   options(warn = 0) #turn on warnings
-  #creating matrixes for storing output
+  #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
-  if (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) > 0)) {
+  if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
+      mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) > 0)) {
     meta = matrix(99999,NR,8) #for meta data
-  } else if (mon == 1 | mon == 3 | (mon == 4 & dformat == 3) |
-             (mon == 4 & dformat == 2) | (mon == 0 & length(params_rawdata[["rmc.col.temp"]]) == 0)) {
+  } else if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) ||
+             (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
     meta = matrix(99999,NR,7)
   }
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
   blocksize = round((14512 * (sf/50)) * (params_rawdata[["chunksize"]]*0.5))
-  blocksizegenea = round((20608 * (sf/80)) * (params_rawdata[["chunksize"]]*0.5))
-  if (mon == 1) blocksize = blocksizegenea
-  if (mon == 4 & dformat == 3) blocksize = round(1440 * params_rawdata[["chunksize"]])
-  if (mon == 4 & dformat == 2) blocksize = round(blocksize)
-  if (mon == 5) blocksize = (sf * 60 * 1440) / 2   #Around 12 hours of data for movisens
-  if (mon == 3 & dformat == 6) blocksize = (12 * 3600) * params_rawdata[["chunksize"]]
+  if (mon == MONITOR$GENEA) blocksize = round((20608 * (sf/80)) * (params_rawdata[["chunksize"]]*0.5))
+  if (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) blocksize = round(1440 * params_rawdata[["chunksize"]])
+  if (mon == MONITOR$MOVISENS) blocksize = (sf * 60 * 1440) / 2   #Around 12 hours of data for movisens
+  if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) blocksize = (12 * 3600) * params_rawdata[["chunksize"]]
+  if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+    if (utils::packageVersion("GGIRread") >= "0.3.1") {
+      # CWA data blocks can have 40, 80 or 120 samples each; we'll take 80 as the average number
+      blocksize = round(12 * 3600 * sf / 80 * params_rawdata[["chunksize"]])
+    }
+  }
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
   while (LD > 1) {
     P = c()
     if (verbose == TRUE) {
-      if (i  == 1) {
+      if (i == 1) {
         cat(paste("\nLoading chunk: ",i,sep=""))
       } else {
         cat(paste(" ",i,sep=""))
@@ -133,10 +122,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
                             PreviousEndPage = PreviousEndPage, inspectfileobject = INFI,
                             params_rawdata = params_rawdata, params_general = params_general)
     P = accread$P
-    filequality = accread$filequality
-    filetooshort = filequality$filetooshort
-    filecorrupt = filequality$filecorrupt
-    filedoesnotholdday = filequality$filedoesnotholdday
     switchoffLD = accread$switchoffLD
     PreviousEndPage = accread$endpage
     PreviousStartPage = accread$startpage
@@ -144,32 +129,38 @@ g.calibrate = function(datafile, params_rawdata = c(),
     options(warn = 0) #turn on warnings
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-      if (mon == 1) {
+      if (mon == MONITOR$GENEA) {
         data = P$rawxyz / 1000 #convert g output to mg for genea
         data = as.matrix(data, rownames.force = FALSE)
-      } else if (mon == 4 & dformat == 3) {
+      } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) {
         data = P$rawxyz #change scalling for Axivity?
-      } else if (mon == 2 & dformat == 1) {
+      } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
         data = P$data.out
-      } else if (dformat == 2 | mon == 5) {
+      } else if (dformat == FORMAT$CSV || mon == MONITOR$MOVISENS) {
         data = as.matrix(P)
-      } else if (dformat == 4) {
+      } else if (dformat == FORMAT$CWA) {
         if (P$header$hardwareType == "AX6") { # cwa AX6
           # Note 18-Feb-2020: For the moment GGIR ignores the AX6 gyroscope signals until robust sensor
-          # fusion algorithms and gyroscope metrics have been prepared
-          data = P$data[,-c(2:4)]
+          # fusion algorithms and gyroscope metrics have been prepared.
+          # Note however that while AX6 is able to collect gyroscope data, it can also be configured
+          # to only collect accelerometer data, so only remove gyro data if it's present.
+          if (ncol(P$data) == 10) {
+            data = P$data[,-c(2:4)]
+          } else {
+            data = P$data
+          }
         } else {
           # cwa AX3
           data = P$data
         }
-      } else if (dformat == 5) {
-        if (ncol(P$data) >= 4 & mon == 0) {
+      } else if (dformat == FORMAT$AD_HOC_CSV) {
+        if (ncol(P$data) >= 4 && mon == MONITOR$AD_HOC) {
           columns_to_use = params_rawdata[["rmc.col.acc"]]
         } else {
           columns_to_use = 1:3
         }
         data = P$data[, columns_to_use]
-      } else if (dformat == 6) {
+      } else if (dformat == FORMAT$GT3X) {
         data = as.matrix(P[,2:4])
       }
       rm(P)
@@ -178,9 +169,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
         data = rbind(S,data)
       }
       # remove 0s if ActiGraph csv (idle sleep mode) OR if similar imputation done in ad-hoc csv
-      # current ActiGraph csv's are not wiht zeros but with last observation carried forward
+      # current ActiGraph csv's are not with zeros but with last observation carried forward
       zeros = which(data[,1] == 0 & data[,2] == 0 & data[,3] == 0)
-      if ((mon == 3 & dformat == 2) | length(zeros) > 0) {
+      if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
         data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
         data = as.matrix(data)
       }
@@ -199,38 +190,38 @@ g.calibrate = function(datafile, params_rawdata = c(),
           dur = nrow(data)	#duration of experiment in data points
           durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           # Initialization of variables
-          if (dformat != 5) {
+          if (dformat != FORMAT$AD_HOC_CSV) {
             suppressWarnings(storage.mode(data) <- "numeric")
           }
-          if (mon == 1) { # GENEA
+          if (mon == MONITOR$GENEA) {
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
-          } else if (dformat == 3 & mon == 4) { #AX wav
+          } else if (dformat == FORMAT$WAV && mon == MONITOR$AXIVITY) {
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
-          } else if (dformat == 4 & mon == 4) { #AX cwa
+          } else if (dformat == FORMAT$CWA && mon == MONITOR$AXIVITY) {
             Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = TRUE
-          } else if (dformat == 2 & mon == 4) { #AX csv
+          } else if (dformat == FORMAT$CSV && mon == MONITOR$AXIVITY) {
             Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = FALSE
-          } else if (dformat == 6 & mon == 3) { #gt3x
+          } else if (dformat == FORMAT$GT3X && mon == MONITOR$ACTIGRAPH) {
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = FALSE
-          } else if (mon == 2 & dformat == 1) { #GENEActiv bin
+          } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
             Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
             use.temp = TRUE
-          } else if (mon == 5) { # Movisense
+          } else if (mon == MONITOR$MOVISENS) {
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = TRUE
-          } else if (mon == 0 & dformat == 5 & length(params_rawdata[["rmc.col.temp"]]) > 0) { # ad-hoc format csv with temperature
+          } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV && length(params_rawdata[["rmc.col.temp"]]) > 0) { # ad-hoc format csv with temperature
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
             temperature = as.numeric(data[, params_rawdata[["rmc.col.temp"]]])
             use.temp = TRUE
-          } else if (mon == 0 & dformat == 5 & length(params_rawdata[["rmc.col.temp"]]) == 0) { # ad-hoc format csv without temperature
+          } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV && length(params_rawdata[["rmc.col.temp"]]) == 0) { # ad-hoc format csv without temperature
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
             use.temp = FALSE
-          } else if (dformat == 2 & mon != 4) { # csv and not AX (so, GENEAcitv)
+          } else if (dformat == FORMAT$CSV && mon != MONITOR$AXIVITY) { # csv and not AX (so, GENEAcitv)
             data2 = matrix(NA,nrow(data),3)
             if (ncol(data) == 3) extra = 0
             if (ncol(data) >= 4) extra = 1
@@ -240,31 +231,31 @@ g.calibrate = function(datafile, params_rawdata = c(),
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
 
-          if (mon == 2 | (mon == 4 & dformat == 4) | (mon == 0 & use.temp == TRUE)) {
-            if (mon == 2) { # GENEActiv
-              if ("temperature" %in% colnames(data)) {
-                temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
-              } else {
-                temperaturecolumn = 7
-              }
-            } else if (mon == 4 | mon == 5) { #AX | Movisense
-              temperaturecolumn = 5
-            } else if (mon == 0) {
-              temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+          if (mon == MONITOR$GENEACTIV) {
+            if ("temperature" %in% colnames(data)) {
+              temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
+            } else {
+              temperaturecolumn = 7
             }
             temperature = as.numeric(data[,temperaturecolumn])
-          } else if (mon == 1 | mon == 3) { # GENEA or Actigraph
+          } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+            temperaturecolumn = 5
+            temperature = as.numeric(data[,temperaturecolumn])
+          } else if (mon == MONITOR$AD_HOC && use.temp == TRUE) {
+            temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+            temperature = as.numeric(data[,temperaturecolumn])
+          } else if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH) {
             use.temp = FALSE
-          } else if (mon == 5) { #Movisense
+          } else if (mon == MONITOR$MOVISENS) {
             temperature = g.readtemp_movisens(datafile, params_general[["desiredtz"]], PreviousStartPage, PreviousEndPage,
                                               interpolationType = params_rawdata[["interpolationType"]])
             data = cbind(data, temperature[1:nrow(data)])
             colnames(data)[4] = "temp"
             temperaturecolumn = 4
           }
-          if ((mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | mon == 0) & use.temp == TRUE) {
-            # GENEACTIV \ AX cwa \ Movisense \ ad-hoc monitor
-            #also ignore temperature for GENEActive/movisens if temperature values are unrealisticly high or NA
+          if ((mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) || mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC) && 
+              use.temp == TRUE) {
+            # ignore temperature if the values are unrealisticly high or NA
             if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
               warning("\ntemperature ignored for auto-calibration because values are NA\n")
               use.temp = FALSE
@@ -340,13 +331,15 @@ g.calibrate = function(datafile, params_rawdata = c(),
       #select parts with no movement
       if (mon %in% c(1, 2, 3, 4, 5)) {
         sdcriter = 0.013
-      } else if (mon == 0) {
+      } else if (mon == MONITOR$AD_HOC) {
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
           warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
         }
         sdcriter = params_rawdata[["rmc.noise"]] * 1.2
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
-          stop("Please provide noise level for the acceleration sensors in g-units with argument rmc.noise to aid non-wear detection")
+          stop(paste0("Please provide noise level for the acceleration sensors",
+                      " in g-units with argument rmc.noise to aid non-wear detection"),
+               call. = FALSE)
         }
       }
       nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
@@ -388,8 +381,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
       # instead the similar matrix generated by Zhou Fang's original code. This to allow for
       # more data to be used as meta_temp can now be based on 10 or more days of raw data
       input = meta_temp[,2:4] #as.matrix()
-      if (use.temp == TRUE) { #at the moment i am always using temperature if mon == 2
-        # mon == 2 & removed 19-11-2014 because it is redundant and would not allow for newer monitors to use it
+      if (use.temp == TRUE) { #at the moment i am always using temperature if mon == MONITOR$GENEACTIV
+        # mon == MONITOR$GENEACTIV & removed 19-11-2014 because it is redundant and would not allow for newer monitors to use it
         inputtemp = cbind(as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8])) #temperature
       } else {
         inputtemp = matrix(0, nrow(input), ncol(input)) #temperature, here used as a dummy variable
@@ -422,7 +415,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           # Next few lines added 23 on april 2015 to deal with NaN values in
           # some of the sphere data for Actigraph monitor brand
           # Expanded on 17-Sep-2017 for the generic data format too
-          if ((mon == 3 | mon == 5) & length(which(is.na(closestpoint[,k, drop = F]) == TRUE)) > 0 &
+          if ((mon == MONITOR$ACTIGRAPH || mon == MONITOR$MOVISENS) && length(which(is.na(closestpoint[,k, drop = F]) == TRUE)) > 0 &
               length(which(is.na(closestpoint[,k, drop = F]) == FALSE)) > 10) { #needed for some Actigraph data
             invi = which(is.na(closestpoint[,k, drop = F]) == TRUE)
             closestpoint = closestpoint[-invi,]
@@ -463,12 +456,14 @@ g.calibrate = function(datafile, params_rawdata = c(),
       cal.error.end = round(mean(abs(cal.error.end - 1)), digits = 5)
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > params_rawdata[["minloadcrit"]]) { #do not change scaling if there is no evidence that calibration improves
-        if (use.temp == TRUE & (mon == 2 | (mon == 4 & dformat == 4) | mon == 5 | (mon == 0 & use.temp == FALSE))) {
+        if (use.temp == TRUE && (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
+                                mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && use.temp == FALSE))) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE & (mon == 2 | (mon == 4 & dformat == 4) |
-                                        (mon == 4 & dformat == 2) | mon == 5 | (mon == 0 & use.temp == TRUE)))  {
+        } else if (use.temp == FALSE && (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
+                                         (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || mon == MONITOR$MOVISENS ||
+                                         (mon == MONITOR$AD_HOC && use.temp == TRUE)))  {
           QC = "recalibration done, but temperature values not used"
-        } else if (mon != 2 & dformat != 3)  {
+        } else if (mon != MONITOR$GENEACTIV && dformat != FORMAT$WAV)  {
           QC = "recalibration done, no problems detected"
         }
         LD = 0 #stop loading
@@ -513,15 +508,12 @@ g.calibrate = function(datafile, params_rawdata = c(),
     cat(paste0("\nNumber of hours used: ",nhoursused))
     cat(paste0("\nNumber of 10 second windows around the sphere: ", npoints))
     cat(paste0("\nTemperature used (if available): ", use.temp))
-    cat(paste0("\nTemperature offset (if temperature is available) ", c("x", "y", "z"),": ", tempoffset))
+    cat(paste0("\nTemperature offset (if temperature is available) ",
+               c("x", "y", "z"),": ", tempoffset))
     cat("\n")
   }
-  if (use.temp == TRUE) {
-    if (length(spheredata) > 0) {
+  if (use.temp == TRUE && length(spheredata) > 0) {
       meantempcal = mean(spheredata[,8], na.rm = TRUE)
-    } else {
-      meantempcal = c()
-    }
   } else {
     meantempcal = c()
   }
