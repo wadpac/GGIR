@@ -83,6 +83,9 @@
   \item{foldernamei}{
     Character with folder name in which the data file is stored.
   }
+  \item{sibreport}{
+    Sibreport object as passed on from \link{g.part5}
+  }
 }
 \value{
   List with objects: indexlog, timeList, and the matrix with the prelimenary results
