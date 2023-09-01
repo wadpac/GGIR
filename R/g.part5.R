@@ -503,7 +503,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                          fullFilename = fullfilenames[i],
                                                          add_one_day_to_next_date,
                                                          lightpeak_available, tail_expansion_log,
-                                                         foldernamei = foldername[i])
+                                                         foldernamei = foldername[i],
+                                                         sibreport = sibreport)
                             # Extract essential object to be used as input for the next 
                             # segment
                             indexlog = gas$indexlog
@@ -522,20 +523,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             ts = timeList$ts
                             ws3new = timeList$epochSize
                             if (doNext == TRUE) next
-                          }
-                          #=======================================================
-                          # nap/sib/nonwear overlap analysis
-                          #=======================================================
-                          if (params_output[["do.sibreport"]]  == TRUE)  {
-                            # sibreport = sibreport_backup
-                            restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
-                                                ds_names = ds_names, fi = fi, di = di,
-                                                time = ts$time[sse[ts$diur[sse] == 0]],
-                                                tz = params_general[["desiredtz"]])
-                            fi = restAnalyses$fi
-                            di = restAnalyses$di
-                            dsummary = restAnalyses$dsummary
-                            ds_names = restAnalyses$ds_names
                           }
                           #===============================================
                           # FOLDER STRUCTURE

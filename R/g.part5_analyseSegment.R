@@ -10,7 +10,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei) {
+                                  foldernamei, sibreport) {
   # unpack list objects:
   # indexlog
   fileIndex = indexlog$fileIndex
@@ -448,6 +448,19 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
         fi = fi + length(luxperseg$values)
       }
+    }
+    #=======================================================
+    # nap/sib/nonwear overlap analysis
+    #=======================================================
+    if (params_output[["do.sibreport"]]  == TRUE)  {
+      restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
+                                         ds_names = ds_names, fi = fi, di = si,
+                                         time = ts$time[sse[ts$diur[sse] == 0]],
+                                         tz = params_general[["desiredtz"]])
+      fi = restAnalyses$fi
+      si = restAnalyses$di
+      dsummary = restAnalyses$dsummary
+      ds_names = restAnalyses$ds_names
     }
     #===============================================
     # FOLDER STRUCTURE
