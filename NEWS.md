@@ -4,6 +4,8 @@
 
 - Part 1: Improved handling of corrupted .gt3x files #873
 
+- Part 2: Adress confusing error message for some users that caused code to stop #888
+
 # CHANGES IN GGIR VERSION 2.10-1
 
 - Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
