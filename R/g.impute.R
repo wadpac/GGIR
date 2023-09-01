@@ -11,10 +11,12 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     # So, inside GGIR this will not be used, but it is used when g.impute is used on its own
     # as if it was still the old g.impute function
     params = extract_params(params_cleaning = params_cleaning,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = c("cleaning")) # load default parameters
     params_cleaning = params$params_cleaning
+    rm(params)
   }
-  
+
   windowsizes = M$windowsizes #default: c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
