@@ -172,29 +172,40 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
                       device.serial.number = deviceSerialNumber,
                       NFilePagesSkipped = M$NFilePagesSkipped, stringsAsFactors = FALSE)
       if (is.null(I$sf) == TRUE) {
+        # When ActiGraph is corrupt
+        # Note that QC shape is consistent here
         if (i == 1 | i == f0) {
           QCout = QC
         } else {
-          QCout = rbind(QCout,QC)
+          QCout = rbind(QCout, QC)
         }
         next()
       }
 
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
       if (length(filehealth_cols) > 0) {
-        # migrate filehealth columns to QC report
+        # migrate filehealth columns to QC report, only applicable to Axivity data
         QC = merge(x = QC, y = SUMMARY[, c(which(names(SUMMARY) == "filename"), filehealth_cols)], by = "filename")
         SUMMARY = SUMMARY[, -filehealth_cols]
       }
       if (i == 1 | i == f0) {
         QCout = QC
       } else {
-        if (ncol(QCout) == ncol(QC)) {
-        } else {
-          QC = cbind(QC,matrix(" ",1,(ncol(QCout) - ncol(QC))))
+        n1 = ncol(QCout)
+        n2 = ncol(QC)
+        # n1 and n2 are expected to be consistent, but in case of Axivity possibly not
+        if (n1 > n2) {
+          QC = cbind(QC, matrix(" ", 1, (n1 - n2)))
           colnames(QC) = colnames(QCout)
+          QC = QC[, colnames(QCout)] # reorder to match order of QCout
+        } else if (n1 < n2) {
+          newcolnames = colnames(QC)[which(colnames(QC) %in% colnames(QCout) == FALSE)]
+          newcols = (n2 + 1):(n1 +  length(newcolnames))
+          QCout = cbind(QCout, matrix(" ", 1, n2 - n1))
+          colnames(QCout)[newcols] = newcolnames
+          QCout = QCout[, colnames(QC)] # reorder to match order of QC
         }
-        QCout = rbind(QCout,QC)
+        QCout = rbind(QCout, QC)
       }
       if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
         #---------------------------------------------------------------

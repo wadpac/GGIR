@@ -13,7 +13,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     # So, inside GGIR this will not be used, but it is used when g.sleep is used on its own
     # as if it was still the old g.sleep function
     params = extract_params(params_sleep = params_sleep,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = "sleep") # load default parameters
     params_sleep = params$params_sleep
   }
   #==============================================================
