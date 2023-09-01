@@ -7,8 +7,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     # So, inside GGIR this will not be used, but it is used when g.inspectfile is used on its own
     # as if it was still the old g.inspectfile function
     params = extract_params(params_rawdata = params_rawdata,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = "rawdata") # load default parameters
     params_rawdata = params$params_rawdata
+    rm(params)
   }
   
   #get input variables (relevant when read.myacc.csv is used
