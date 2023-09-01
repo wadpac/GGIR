@@ -2,7 +2,7 @@ library(GGIR)
 context("Chainof5parts")
 test_that("chainof5parts", {
   skip_on_cran()
-
+  
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
   create_test_sleeplog_csv(advanced = FALSE)
@@ -55,7 +55,7 @@ test_that("chainof5parts", {
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, "1")
   expect_equal(SUM$summary$`N valid WKdays`, "2")
-
+  
   # part 2 with strategy = 5
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
@@ -69,7 +69,7 @@ test_that("chainof5parts", {
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, "1")
   expect_equal(SUM$summary$`N valid WKdays`, "2")
-
+  
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
@@ -117,10 +117,10 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms3.out/"
   rn3 = dir(dirname,full.names = TRUE)
   load(rn3[1])
-
+  
   expect_true(dir.exists(dirname))
   expect_that(round(sum(sib.cla.sum[,4:7]), digits = 0), equals(2957))
-
+  
   #--------------------------------------------
   # part 4
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -139,7 +139,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
-
+  
   #--------------------------------------------
   #part 5
   g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
@@ -152,13 +152,13 @@ test_that("chainof5parts", {
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
-
+  
   dirname = "output_test/meta/ms5.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
-
+  
   dirname = "output_test/meta/ms5.out/"
-
+  
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
@@ -188,7 +188,7 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
   dn = "output_test"
-
+  
   #=======================
   # Different variations on part 4:
   #--------------------------------------------
@@ -199,7 +199,7 @@ test_that("chainof5parts", {
           nnights = 7, colid = 1, coln1 = 2,
           relyonguider = FALSE, desiredtz = desiredtz,
           storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE)
-
+  
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -207,7 +207,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(18.075))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
-
+  
   #----------------------------------------------------------------------
   # Part 4 - daysleeper scenario by modifying the part 3 output & criterror = 0, and relyonguider=TRUE
   SPTE_end = c(37, 37) # turn into midday
@@ -230,7 +230,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-
+  
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(0))
@@ -263,7 +263,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(10))
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(7))
-
+  
   #----------------------------------------------------------------------
   # Part 4 - DST-1
   load(rn3[1])
@@ -316,7 +316,7 @@ test_that("chainof5parts", {
   colnames(SDF) = c("Monitor", "Day1", "Day2")
   selectdaysfile = "selectdaysfile.csv"
   write.csv(SDF, file = selectdaysfile)
-
+  
   
   g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
@@ -329,7 +329,7 @@ test_that("chainof5parts", {
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen = TRUE,
           do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen = TRUE,
           do.enmoa = TRUE, selectdaysfile = selectdaysfile, verbose = FALSE)
-
+  
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 24)
@@ -341,8 +341,8 @@ test_that("chainof5parts", {
   expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
-
-
+  
+  
   if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)

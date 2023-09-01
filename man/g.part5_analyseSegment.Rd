@@ -19,7 +19,7 @@
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei)
+                                  foldernamei, sibreport)
 }
 \arguments{
   \item{indexlog}{
