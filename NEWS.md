@@ -8,6 +8,8 @@
 
 - Part 2: Addresses confusing error message for some users #888
 
+- Part 4: Added parameter relyonguider_SleepEfficiency to decide if in-bed time (denominator) should be guider_spt or acc_spt + latency #811
+
 # CHANGES IN GGIR VERSION 2.10-1
 
 - Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
