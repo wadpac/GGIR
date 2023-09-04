@@ -830,7 +830,7 @@ data. If either of these applies set argument `sleepwindowType` to
 | guider_guider_inbedStart  | Time of getting in bed   |
 | guider_guider_inbedEnd    | Time of getting out of bed|
 | guider_inbedDuration      | Time in Bed: guider_inbedEnd - guider_inbedStart  |
-| sleepefficiency           | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration |
+| sleepefficiency           | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration or SleepDurationInSpt / (Spt + latency) as defined with  `relyonguider_SleepEfficiency`|
 | sleeplatency  | Sleep latency, calculated as: sleeponset - guider_inbedStart   |
 
 ### Person level summaries
@@ -852,7 +852,7 @@ may not be obvious:
 | `_WE`| Weekend days    |
 | `_WD`| Week days       |
 | sleeplog_used     | Whether a sleeplog was available (TRUE) or not (FALSE)|
-| sleep_efficiency  | Accelerometer detrive sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and acc_SptDuration (denominator). Only available at person level, because at night level the user can calculate this from existing variables. |
+| sleep_efficiency  | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with relyonguider_SleepEfficiency. Only available at person level, because at night level the user can calculate this from existing variables. |
 | n_nights_acc      | Number of nights of accelerometer data   |
 | n_nights_sleeplog | Number of nights of sleeplog data.       |
 | n\_WE_nights_complete        | Number of weekend nights complete which means both accelerometer and estimate from guider. |
