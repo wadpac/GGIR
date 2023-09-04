@@ -139,6 +139,37 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
+
+  #--------------------------------------------
+  # part 4 with sleepwindowType = TimeInBed
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
+          storefolderstructure = FALSE, overwrite = TRUE,
+          sleepwindowType = "TimeInBed")
+  dirname = "output_test/meta/ms4.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_true("sleeplatency" %in% colnames(nightsummary))
+  expect_true("sleepefficiency" %in% colnames(nightsummary))
+  expect_equal(round(nightsummary$sleeplatency[1], 3), 0.171)
+  expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.951)
+  
+  #--------------------------------------------
+  # part 4 with sleepwindowType = TimeInBed and relyonguider_SleepEfficiency = TRUE
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
+          storefolderstructure = FALSE, overwrite = TRUE,
+          sleepwindowType = "TimeInBed", relyonguider_SleepEfficiency = TRUE)
+  dirname = "output_test/meta/ms4.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_true("sleeplatency" %in% colnames(nightsummary))
+  expect_true("sleepefficiency" %in% colnames(nightsummary))
+  expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.851)
   
   #--------------------------------------------
   #part 5
