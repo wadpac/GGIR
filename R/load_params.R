@@ -26,7 +26,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                         sleeplogsep = NULL, sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
-                        nap_model = c())
+                        nap_model = c(), relyonguider_SleepEfficiency = FALSE)
   }
   if ("metrics" %in% group) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
