@@ -114,9 +114,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # do not include days with no meaningful data
           if (includedaycrit < 1) includedaycrit = includedaycrit * 24
           if (includenightcrit > 1) includenightcrit = includenightcrit / 24
-          d2excludeb = d2exclude = which(P2daysummary_tmp$`N valid hours` < max(c(includedaycrit,
+          d2excludeb = d2exclude = which(as.numeric(P2daysummary_tmp$`N valid hours`) < max(c(includedaycrit,
                                                                                   threshold_hrs_of_data_per_day)))
-          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
+          n2excludeb = n2exclude = which(as.numeric(summarysleep_tmp$fraction_night_invalid) > includenightcrit
                                          | summarysleep_tmp$SptDuration == 0)
           
           if (length(d2exclude) > 0) {
