@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 2.10-3
+
+- Part 5: Time series now also exported if recording only includes one night, even though this is not sufficient for the main part 5 analyses. #894 Further, the time series now also come with lightpeak (LUX).
+
 # CHANGES IN GGIR VERSION 2.10-2
 
 - Part 1: Revision to readability of code (credits: Lena Kushleyeva)
