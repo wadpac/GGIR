@@ -7,9 +7,9 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   N = 30
   sf = 30
   options(digits.secs = 4)
-  t0 = as.POSIXct(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
+  t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
   timeseq = t0 + ((0:(N - 1))/sf)
-  time = as.POSIXct(timeseq, origin = "1970-1-1", tz = "Europe/London")
+  time = as.POSIXlt(timeseq, origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 4, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -112,7 +112,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   # Evaluate with decimal places in seconds
   expect_equal(nrow(D1$data), 20)
   expect_equal(ncol(D1$data), 5)
-  expect_equal(format(D1$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
+  expect_equal(strftime(D1$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
                         tz = "Europe/London"), 
                c("2022-11-02 13:01:16.00",
                  "2022-11-02 13:01:16.03",
@@ -135,7 +135,7 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.headername.recordingid = "ID")
   expect_equal(nrow(D2$data), 20)
   expect_equal(ncol(D2$data), 5)
-  expect_equal(format(D2$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
+  expect_equal(strftime(D2$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
                         tz = "Europe/London"),
                c("2022-11-02 18:01:16.50", "2022-11-02 18:01:16.53",
                  "2022-11-02 18:01:16.56", "2022-11-02 18:01:16.59",
@@ -189,9 +189,9 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
   N = 30
   sf = 30
   options(digits.secs = 4)
-  t0 = as.POSIXct(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
+  t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
   timeseq = t0 + ((0:(N - 1))/sf)
-  time = as.POSIXct(timeseq, origin = "1970-1-1", tz = "Europe/London")
+  time = as.POSIXlt(timeseq, origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 3, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -330,9 +330,9 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
   N = 30
   sf = 30
   options(digits.secs = 4)
-  t0 = as.POSIXct(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
+  t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
   timeseq = t0 + ((0:(N - 1))/sf)
-  time = as.POSIXct(timeseq, origin = "1970-1-1", tz = "Europe/London")
+  time = as.POSIXlt(timeseq, origin = "1970-1-1", tz = "Europe/London")
   testfile = matrix("", 1, 1)
   set.seed(100)
   accx = rnorm(N)
