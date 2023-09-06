@@ -8,12 +8,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   #get input variables
   input = list(...)
   expectedArgs = c("datafile", "params_metrics",
-                   "params_rawdata", "params_general",
+                   "params_rawdata", "params_general", "params_cleaning",
                    "daylimit", "offset",
                    "scale", "tempoffset", "meantempcal",
-                   "myfun")
-  if (any(names(input) %in% expectedArgs == FALSE) |
-      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
+                   "myfun", "inspectfileobject", "verbose")
+  if ((length(input) > 0) ||
+      any(!unlist(lapply(expectedArgs, FUN = exists, where=environment())))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.getmeta is used on its own
     # as if it was still the old g.getmeta function

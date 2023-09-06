@@ -18,8 +18,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                    "doquan", "quantiletype", "doilevels", "domvpa",
                    "mvpanames", "wdaycode", "ID",
                    "deviceSerialNumber", "ExtFunColsi", "myfun", "desiredtz") 
-  if (any(names(input) %in% expectedArgs == FALSE) |
-      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
+  if ((length(input) > 0) ||
+      any(!unlist(lapply(expectedArgs, FUN = exists, where=environment())))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function

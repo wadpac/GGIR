@@ -7,8 +7,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   expectedArgs = c("I", "C", "M", "IMP", "params_247", "params_phyact", 
                    "params_general", "params_cleaning", "quantiletype",
                     "myfun")
-  if (any(names(input) %in% expectedArgs == FALSE) |
-      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
+  if ((length(input) > 0) ||
+      any(!unlist(lapply(expectedArgs, FUN = exists, where=environment())))) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
