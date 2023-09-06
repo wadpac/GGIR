@@ -329,9 +329,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (nrow(meta_temp) > (params_rawdata[["minloadcrit"]] - 21)) {  # enough data for the sphere?
       meta_temp = meta_temp[-1,]
       #select parts with no movement
-      if (mon %in% c(1, 2, 3, 4, 5)) {
-        sdcriter = 0.013
-      } else if (mon == MONITOR$AD_HOC) {
+      if (mon == MONITOR$AD_HOC) {
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
           warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
         }
@@ -341,6 +339,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
                       " in g-units with argument rmc.noise to aid non-wear detection"),
                call. = FALSE)
         }
+      } else {
+        sdcriter = 0.013
       }
       nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
                            abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
