@@ -4,12 +4,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   
   #get input variables
   input = list(...)
-  expectedArgs = c("params_sleep", "M", "IMP",
-                   "I", "twd", "acc.metric", "desiredtz",
-                   "myfun", "sensor.location", "zc.scale")
-  if ((length(input) > 0) ||
-      any(!unlist(lapply(expectedArgs, FUN = exists, where=environment())))) {
-    # Extract and check parameters if user provides more arguments than just the parameter arguments
+  if (length(input) > 0 || length(params_sleep) == 0) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments,
+    # or if params_[...] aren't specified (so need to be filled with defaults).
     # So, inside GGIR this will not be used, but it is used when g.sleep is used on its own
     # as if it was still the old g.sleep function
     params = extract_params(params_sleep = params_sleep,
