@@ -53,8 +53,8 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, "1")
-  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  expect_equal(SUM$summary$`N valid WEdays`, 1)
+  expect_equal(SUM$summary$`N valid WKdays`, 2)
   
   # part 2 with strategy = 5
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -67,8 +67,8 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, "1")
-  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  expect_equal(SUM$summary$`N valid WEdays`, 1)
+  expect_equal(SUM$summary$`N valid WKdays`, 2)
   
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -103,7 +103,7 @@ test_that("chainof5parts", {
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.02911, tolerance = 3)
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(1.95833))
   expect_that(ncol(SUM$daysummary), equals(34))
-  expect_equal(SUM$daysummary$`p50_ENMO_mg_0-24hr`, c("17.15", "33",  "0"))
+  expect_equal(SUM$daysummary$`p50_ENMO_mg_0-24hr`, c(17.15, 33,  0))
   expect_equal(round(as.numeric(SUM$daysummary$`p90_ENMO_mg_0-24hr`)), c(44, 54, 41), tolerance = 0)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), 89.26, tolerance = 3)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), 37.383, tolerance = 3)

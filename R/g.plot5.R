@@ -114,9 +114,9 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           # do not include days with no meaningful data
           if (includedaycrit < 1) includedaycrit = includedaycrit * 24
           if (includenightcrit > 1) includenightcrit = includenightcrit / 24
-          d2excludeb = d2exclude = which(as.numeric(P2daysummary_tmp$`N valid hours`) < max(c(includedaycrit,
+          d2excludeb = d2exclude = which(P2daysummary_tmp$`N valid hours` < max(c(includedaycrit,
                                                                                   threshold_hrs_of_data_per_day)))
-          n2excludeb = n2exclude = which(as.numeric(summarysleep_tmp$fraction_night_invalid) > includenightcrit
+          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
                                          | summarysleep_tmp$SptDuration == 0)
           
           if (length(d2exclude) > 0) {
@@ -193,15 +193,15 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           lengthnight = summarysleep_tmp$SptDuration #including wake periods
           nocsleepdur = summarysleep_tmp$SleepDurationInSpt
           sleepefficiency = (nocsleepdur / lengthnight) * 100
-          f01 = as.numeric(P2daysummary_tmp[,c45])
-          f02 = as.numeric(P2daysummary_tmp[,MainMetric])
+          f01 = P2daysummary_tmp[,c45]
+          f02 = P2daysummary_tmp[,MainMetric]
           f05 = matrix(NA, nrow = 2, ncol = length(summarysleep_tmp$SptDuration))
           f05[1,] = summarysleep_tmp$SleepDurationInSpt
           f05[2,] = summarysleep_tmp$SptDuration - summarysleep_tmp$SleepDurationInSpt
           f05_2 = summarysleep_tmp$SptDuration
           f06 = sleepefficiency
           # f07 = P2daysummary_tmp$N.valid.hours # Previously needed when reading csv-report Part 2
-          f07 = as.numeric(P2daysummary_tmp$`N valid hours`)
+          f07 = P2daysummary_tmp$`N valid hours`
           # allocate colours
           CLS = c("white", "black")
           CLS_A = rep(CLS[1], length(days_PA))
