@@ -1,5 +1,5 @@
 g.readaccfile = function(filename, blocksize, blocknumber, filequality,
-                         decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
+                         ws, PreviousEndPage = 1, inspectfileobject = c(),
                          PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL,
                          params_rawdata = c(), params_general = c(), ...) {
   #get input variables
@@ -111,6 +111,16 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       on.exit(sink())
       invisible(force(x))
     }
+
+    op <- options(stringsAsFactors = FALSE)
+    on.exit(options(op))
+    options(warn = -1) # turn off warnings
+    suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
+                                                 desiredtz = params_general[["desiredtz"]],
+                                                 rmc.dec = params_rawdata[["rmc.dec"]],
+                                                 loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) # detect dot or comma dataformat
+    options(warn = 0) #turn on warnings
+
     testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
                                                         dec = decn, showProgress = FALSE,
                                                         header = TRUE),
