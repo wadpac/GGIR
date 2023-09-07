@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 2.10-3
+
+- Visualreport: Bug fixed in selecting days to exclude in g.plot5 #879
+
 # CHANGES IN GGIR VERSION 2.10-2
 
 - Part 1: Revision to readability of code (credits: Lena Kushleyeva)
@@ -7,8 +11,6 @@
 - Part 1 + 2: Bug fixed in logging file health of Axivity data
 
 - Part 2: Addresses confusing error message for some users #888
-
-- Visualreport: Bug fixed in selecting days to exclude in g.plot5 #879
 
 # CHANGES IN GGIR VERSION 2.10-1
 
