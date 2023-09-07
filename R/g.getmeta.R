@@ -7,24 +7,23 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   
   #get input variables
   input = list(...)
-  expectedArgs = c("datafile", "params_metrics",
-                   "params_rawdata", "params_general", "params_cleaning",
-                   "daylimit", "offset",
-                   "scale", "tempoffset", "meantempcal",
-                   "myfun", "inspectfileobject", "verbose")
-  if ((length(input) > 0) ||
-      any(!unlist(lapply(expectedArgs, FUN = exists, where=environment())))) {
-    # Extract and check parameters if user provides more arguments than just the parameter arguments
+  if (length(input) > 0 ||
+      length(params_metrics) == 0 || length(params_rawdata) == 0 ||
+      length(params_general) == 0 || length(params_cleaning) == 0) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments,
+    # or if params_[...] aren't specified (so need to be filled with defaults).
     # So, inside GGIR this will not be used, but it is used when g.getmeta is used on its own
     # as if it was still the old g.getmeta function
     params = extract_params(params_metrics = params_metrics,
                             params_rawdata = params_rawdata,
                             params_general = params_general,
+                            params_cleaning = params_cleaning,
                             input = input,
-                            params2check = c("metrics", "rawdata", "general")) # load default parameters
+                            params2check = c("metrics", "rawdata", "general", "cleaning")) # load default parameters
     params_metrics = params$params_metrics
     params_rawdata = params$params_rawdata
     params_general = params$params_general
+    params_cleaning = params$params_cleaning
   }
   #get input variables
   if (length(input) > 0) {
