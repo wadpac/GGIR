@@ -74,12 +74,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
     stop(paste0("\nSample frequency not recognised in ", datafile,
                 " calibration procedure stopped."), call. = FALSE)
   }
-  options(warn = -1) #turn off warnings
-  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
-                                               desiredtz = params_general[["desiredtz"]],
-                                               rmc.dec = params_rawdata[["rmc.dec"]],
-                                               loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
-  options(warn = 0) #turn on warnings
   #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
@@ -118,7 +112,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                            filequality = filequality, decn = decn, ws = ws,
+                            filequality = filequality, ws = ws,
                             PreviousEndPage = PreviousEndPage, inspectfileobject = INFI,
                             params_rawdata = params_rawdata, params_general = params_general)
     P = accread$P

@@ -173,11 +173,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (LD > 1) {
     if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
     header = INFI$header
-    options(warn = -1)
-    decn = g.dotorcomma(datafile, dformat, mon = mon,
-                        desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
-                        loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
-    options(warn = 0)
     ID = hvars$ID
     
     # get now-wear, clip, and blocksize parameters (thresholds)
@@ -236,7 +231,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
     if (!exists("PreviousLastTime")) PreviousLastTime = NULL
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                            filequality = filequality, decn = decn,
+                            filequality = filequality,
                             ws = ws, PreviousEndPage = PreviousEndPage,
                             inspectfileobject = INFI,
                             PreviousLastValue = PreviousLastValue,
