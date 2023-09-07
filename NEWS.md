@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 2.10-3
+
+- Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
+
 # CHANGES IN GGIR VERSION 2.10-2
 
 - Part 1: Revision to readability of code (credits: Lena Kushleyeva)
