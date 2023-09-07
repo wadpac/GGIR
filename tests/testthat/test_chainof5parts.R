@@ -193,13 +193,13 @@ test_that("chainof5parts", {
   # Different variations on part 4:
   #--------------------------------------------
   #--------------------------------------------
-  # part 4 with sleepwindowType = TimeInBed
+  # part 4 with sleepwindowType = TimeInBed and sleepefficiency.metric = 2
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
           excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
           colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
           storefolderstructure = FALSE, overwrite = TRUE,
-          sleepwindowType = "TimeInBed")
+          sleepwindowType = "TimeInBed", sleepefficiency.metric = 2)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -209,13 +209,13 @@ test_that("chainof5parts", {
   expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.951)
   
   #--------------------------------------------
-  # part 4 with sleepwindowType = TimeInBed and relyonguider_SleepEfficiency = TRUE
+  # part 4 with sleepwindowType = TimeInBed and sleepefficiency.metric = 1
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
           excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
           colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
           storefolderstructure = FALSE, overwrite = TRUE,
-          sleepwindowType = "TimeInBed", relyonguider_SleepEfficiency = TRUE)
+          sleepwindowType = "TimeInBed", sleepefficiency.metric = 1)
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])

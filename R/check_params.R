@@ -30,9 +30,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   #-----------------------------------------------------------------------------------------
   if (length(params_sleep) > 0) { # Check class of sleep parameters
     numeric_params = c("anglethreshold", "timethreshold", "longitudinal_axis", "possible_nap_window", "possible_nap_dur",
-                       "colid", "coln1", "def.noc.sleep", "nnights")
+                       "colid", "coln1", "def.noc.sleep", "nnights", "sleepefficiency.metric")
     boolean_params = c("ignorenonwear", "constrain2range", "HASPT.ignore.invalid",
-                       "relyonguider", "sleeplogidnum", "relyonguider_SleepEfficiency")
+                       "relyonguider", "sleeplogidnum")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")

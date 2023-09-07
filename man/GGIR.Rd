@@ -1097,11 +1097,11 @@ GGIR(mode = 1:5,
         used in the context of an explorative nap classification algortihm that
         was trained in 3.5 year olds.}
         
-      \item{relyonguider_SleepEfficiency}{
-        Boolean (default = FALSE).
-        If TRUE, sleep efficiency is calculated as detected nocturnal sleep time divided by
+      \item{sleepefficiency.metric}{
+        Numeric (default = 1).
+        If 1 (default), sleep efficiency is calculated as detected nocturnal sleep time divided by
         log-derived duration in sleep period time (considering user-reported sleep onset and
-        wake times). If FALSE (default), sleep efficiency is calculated as detected nocturnal
+        wake times). If 2, sleep efficiency is calculated as detected nocturnal
         sleep time divided by detected duration in sleep period time plus sleep latency (where
         sleep latency refers to the difference between log-derived sleep onset and 
         accelerometer-detected sleep onset).
