@@ -192,8 +192,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-    if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
-        (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
+    if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
         (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
       temp.available = FALSE
     } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
@@ -267,9 +266,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       
-      if (mon == MONITOR$GENEA && dformat == FORMAT$BIN) {
-        data = P$rawxyz / 1000 #convert mg output to g for genea
-      } else if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
+      if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
         data = P$data.out
       } else if (dformat == FORMAT$CSV) { #csv Actigraph
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
@@ -291,8 +288,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
         }
         data = P
-      } else if (dformat == FORMAT$WAV) {
-        data = P$rawxyz
       } else if (dformat == FORMAT$CWA) {
         if (P$header$hardwareType == "AX6") {
           # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated.
@@ -361,8 +356,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
       
-      if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
-          (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
+      if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
+          (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
           (mon == MONITOR$AD_HOC && use.temp == FALSE)) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
       } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
@@ -439,8 +434,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         
         # Initialization of variables
         data_scaled = FALSE
-        if (mon == MONITOR$GENEA || (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) ||
-            (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV)) {
+        if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
           data = data[, 1:3]
           data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
           data_scaled = TRUE
