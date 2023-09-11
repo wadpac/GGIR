@@ -403,21 +403,37 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   # epoch sizes
   if (length(params_general) > 0) {
     # epoch for time use
-    if (is.na(params_general[["part5_epochSizes"]][1])) params_general[["part5_epochSizes"]][1] = 5
-    if (params_general[["part5_epochSizes"]][1] %% params_metrics[["windowsizes"]][1] != 0) {
-      params_general[["part5_epochSizes"]][1] = params_metrics[["windowsizes"]][1] 
+    # if NA, set to 5
+    if (is.na(params_general[["part5_epochSizes"]][1])) {
+      params_general[["part5_epochSizes"]][1] = 5
+    } 
+    # if lower than windowsizes[1], set to windowsizes[1]
+    if (params_general[["part5_epochSizes"]][1] < params_general[["windowsizes"]][1]) {
+      params_general[["part5_epochSizes"]][1] = params_general[["windowsizes"]][1] 
+    }
+    # if not a multiple of windowsizes[1], set to windowsizes[1] and return a warning
+    if (params_general[["part5_epochSizes"]][1] %% params_general[["windowsizes"]][1] != 0) {
+      params_general[["part5_epochSizes"]][1] = params_general[["windowsizes"]][1] 
       warning("part5_epochSizes[1] set to windowsizes[1] as the user-defined value is not a multiple
               of windowsizes[1]", call. = FALSE)
     }
     # epoch for fragmentation
-    if (is.na(params_general[["part5_epochSizes"]][2])) params_general[["part5_epochSizes"]][2] = 60
-    if (params_general[["part5_epochSizes"]][2] %% params_metrics[["windowsizes"]][1] != 0) {
-      if (60 %% params_metrics[["windowsizes"]][1] == 0) {
+    # if NA, set to 60
+    if (is.na(params_general[["part5_epochSizes"]][2])) {
+      params_general[["part5_epochSizes"]][2] = 60
+    } 
+    # if lower than windowsizes[1], set to windowsizes[1]
+    if (params_general[["part5_epochSizes"]][2] < params_general[["windowsizes"]][1]) {
+      params_general[["part5_epochSizes"]][2] = params_general[["windowsizes"]][1]
+    }
+    # if not a multiple of windowsizes[1], set to 60 or to windowsizes[1] and return a warning
+    if (params_general[["part5_epochSizes"]][2] %% params_general[["windowsizes"]][1] != 0) {
+      if (60 %% params_general[["windowsizes"]][1] == 0) {
         params_general[["part5_epochSizes"]][2] = 60
         warning("part5_epochSizes[2] set to 60 as the user-defined value is not a multiple
               of windowsizes[1]", call. = FALSE)
       } else {
-        params_general[["part5_epochSizes"]][2] = params_metrics[["windowsizes"]][1] 
+        params_general[["part5_epochSizes"]][2] = params_general[["windowsizes"]][1] 
         warning("part5_epochSizes[2] set to windowsizes[1] as the user-defined value is not a multiple
               of windowsizes[1]", call. = FALSE)
       }
