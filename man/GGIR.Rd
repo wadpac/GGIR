@@ -151,6 +151,14 @@ GGIR(mode = 1:5,
       \item{part5_agg2_60seconds}{
         Boolean (default = FALSE).
         Wether to use aggregate epochs to 60 seconds as part of the GGIR \link{g.part5} analysis.}
+        
+      \item{part5_epochSizes}{
+        Numeric of length 2 (default = c(5, 60)).
+        To indicate the epoch length in seconds for part 5 analyses. The first 
+        element of the vector (default = 5) indicates the epoch length for the
+        time use analyses. The second element (default = 60) for the calculation
+        of the fragmentation metrics. All elements in \code{part5_epochsizes} 
+        should be multiple of \code{windowsizes[1]}.}
 
       \item{print.filename}{
         Boolean (default = FALSE).

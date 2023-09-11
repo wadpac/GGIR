@@ -118,7 +118,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder",
-                       "expand_tail_max_hours", "maxRecordingInterval")
+                       "expand_tail_max_hours", "maxRecordingInterval",
+                       "part5_epochSizes")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
                          "dataFormat", "extEpochData_timeformat")
@@ -396,6 +397,30 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
                   "fraction of the day between zero and one, please change."), 
            call. = FALSE)
+    }
+  }
+  
+  # epoch sizes
+  if (length(params_general) > 0) {
+    # epoch for time use
+    if (is.na(params_general[["part5_epochSizes"]][1])) params_general[["part5_epochSizes"]][1] = 5
+    if (params_general[["part5_epochSizes"]][1] %% params_metrics[["windowsizes"]][1] != 0) {
+      params_general[["part5_epochSizes"]][1] = params_metrics[["windowsizes"]][1] 
+      warning("part5_epochSizes[1] set to windowsizes[1] as the user-defined value is not a multiple
+              of windowsizes[1]", call. = FALSE)
+    }
+    # epoch for fragmentation
+    if (is.na(params_general[["part5_epochSizes"]][2])) params_general[["part5_epochSizes"]][2] = 60
+    if (params_general[["part5_epochSizes"]][2] %% params_metrics[["windowsizes"]][1] != 0) {
+      if (60 %% params_metrics[["windowsizes"]][1] == 0) {
+        params_general[["part5_epochSizes"]][2] = 60
+        warning("part5_epochSizes[2] set to 60 as the user-defined value is not a multiple
+              of windowsizes[1]", call. = FALSE)
+      } else {
+        params_general[["part5_epochSizes"]][2] = params_metrics[["windowsizes"]][1] 
+        warning("part5_epochSizes[2] set to windowsizes[1] as the user-defined value is not a multiple
+              of windowsizes[1]", call. = FALSE)
+      }
     }
   }
   
