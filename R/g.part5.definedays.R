@@ -74,7 +74,15 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         }
       }
     } else {
-      qqq = c(NA, NA)
+      if (length(qqq_backup) > 1) {
+        # if there is remaining time after previous day...
+        if (Nts > qqq_backup[2]) {
+          qqq = c(qqq_backup[2] + 1, Nts)
+        }
+      } else {
+        # else, do not analyse this day
+        qqq = c(NA, NA)
+      }
     }
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {

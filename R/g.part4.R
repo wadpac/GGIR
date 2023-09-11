@@ -888,14 +888,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[sumi, 22] = acc_wakeTS
                   #----------------------------------------------
                   nightsummary[sumi, 23] = tmp1  #guider_onset_ts
-                  nightsummary[sumi, 24] = tmp4  #guider_onset_ts
+                  nightsummary[sumi, 24] = tmp4  #guider_wake_ts
                   if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                    # If guider isa sleeplog and if the sleeplog recorded time in bed then
+                    # If guider is a sleeplog and if the sleeplog recorded time in bed then
                     # calculate: sleep latency:
                     nightsummary[sumi, 25] = round(nightsummary[sumi, 3] - nightsummary[sumi, 7],
                                                    digits = 7)  #sleeponset - guider_onset
                     # sleep efficiency:
-                    nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/nightsummary[sumi, 9], digits = 5)  #accumulated nocturnal sleep / guider
+                    if (params_sleep[["sleepefficiency.metric"]] == 1) {
+                      nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/nightsummary[sumi, 9], digits = 5)  #accumulated nocturnal sleep / guider
+                    } else if (params_sleep[["sleepefficiency.metric"]] == 2) {
+                      nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/(nightsummary[sumi, 5] + nightsummary[sumi, 25]), digits = 5)  #accumulated nocturnal sleep / detected spt + latency
+                    }
                   }
                   nightsummary[sumi, 27] = pagei
                   nightsummary[sumi, 28] = daysleeper[j]
