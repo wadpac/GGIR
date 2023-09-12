@@ -1,5 +1,8 @@
 # CHANGES IN GGIR VERSION 2.10-3
 
+- Part 5: Performance an analysis of the overlap between self-reported naps and nonwear
+with sustained inactivity bouts. When Fixes #687
+
 - Visualreport: Bug fixed extracting the numeric value of the days to exclude in g.plot5 #879
 
 - Part 1: Fixed minor bug to keep calibration data in the data quality report after re-running parts 1 and 2 with overwrite = TRUE and backup.cal.coef = "retrieve" #896
