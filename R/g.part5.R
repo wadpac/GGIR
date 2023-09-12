@@ -315,7 +315,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
-            if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
+            if (params_output[["do.sibreport"]]  == TRUE) {
               IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
@@ -329,7 +329,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
                                  sep = params_output[["sep_reports"]])
               # nap/sib/nonwear overlap analysis
-              
               if (length(params_sleep[["nap_model"]]) > 0) {
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
