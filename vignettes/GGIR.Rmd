@@ -982,8 +982,8 @@ vigorous activity:
 | noverl_X | Only created if `do.sibreport = TRUE`. Number of overlapping bouts in a day of X where X can be sib_srnap, sib_srnonw, srnap_sib, or srnonw_sib |
 | frag_mean_dur_X_day | Only created if `do.sibreport = TRUE`. Mean duration of X per day, where X can be sib, srnap or srnonw |
 | dur_day_X_min | Only created if `do.sibreport = TRUE`. Total duration in minutes of X per day, where X can be sib, srnap or srnonw |
-| mdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Mean duration of the overlap between X and Y, which are combinations of be sib, srnap or srnonw |
-| tdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Total duration in minutes of the overlap between X and Y, which are combinations of be sib, srnap or srnonw |
+| mdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Mean duration of the overlap between X and Y, which are combinations of sib, srnap or srnonw |
+| tdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Total duration in minutes of the overlap between X and Y, which are combinations of sib, srnap or srnonw |
 | perc_X_overl_Y | Only created if `do.sibreport = TRUE`. Percentage of overlap between X and Y, which are combinations of sib, srnap or srnonw |
 
 
