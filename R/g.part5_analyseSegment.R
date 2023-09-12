@@ -456,7 +456,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                          ds_names = ds_names, fi = fi, di = si,
                                          time = ts$time[sse[ts$diur[sse] == 0]],
-                                         tz = params_general[["desiredtz"]])
+                                         tz = params_general[["desiredtz"]],
+                                         possible_nap_dur = params_sleep[["possible_nap_dur"]])
       fi = restAnalyses$fi
       si = restAnalyses$di
       dsummary = restAnalyses$dsummary

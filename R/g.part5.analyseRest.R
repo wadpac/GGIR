@@ -1,8 +1,9 @@
 g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL, di = NULL,
-                                time = NULL, tz = NULL) {
-  
-  longboutsi = which(sibreport$type == "sib" | (sibreport$type != "sib" & sibreport$duration >= 15))
+                                time = NULL, tz = NULL, possible_nap_dur = NULL) {
+  # Only consider sib episodes with minimum duration
+  longboutsi = which((sibreport$type == "sib" & sibreport$duration >= possible_nap_dur) |
+                       (sibreport$type != "sib" & sibreport$duration >= 1))
   # for qc purposes:
   dsummary[di,fi] = length(longboutsi)
   ds_names[fi] = "sibreport_n_items"
