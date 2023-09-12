@@ -1,7 +1,7 @@
 # CHANGES IN GGIR VERSION 2.10-3
 
-- Part 5: Performance an analysis of the overlap between self-reported naps and nonwear
-with sustained inactivity bouts. When Fixes #687
+- Part 5: Now able to assess overlap between self-reported naps and nonwear
+with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
 
 - Visualreport: Bug fixed extracting the numeric value of the days to exclude in g.plot5 #879
 
