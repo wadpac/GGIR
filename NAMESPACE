@@ -39,7 +39,8 @@ export(g.analyse, g.calibrate,
        ShellDoc2Vignette, parametersVignette,
        correctOlderMilestoneData,
        convertEpochData, appendRecords, extractID,
-       g.part5_analyseSegment, g.part5_initialise_ts)
+       g.part5_analyseSegment, g.part5_initialise_ts,
+       aggregate_to_epoch)
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",

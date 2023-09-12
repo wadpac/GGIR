@@ -141,13 +141,13 @@ test_that("chainof5parts", {
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
 
   #--------------------------------------------
-  #part 5
+  #part 5 aggregating to 60 seconds
   g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
           strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,
-          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
+          part5_epochSizes = c(60, 60), do.sibreport = TRUE, nap_model = "hip3yr",
           iglevels = 1)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
@@ -162,7 +162,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(4)) # 2023-09-04: changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(160)) # changed because intensity gradient now included in the test
+  expect_that(ncol(output),equals(162)) # 2023-09-12: changed because now part 5 stores epoch for timeuse and fragmentation
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)

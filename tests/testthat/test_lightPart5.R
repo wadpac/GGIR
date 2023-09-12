@@ -6,7 +6,7 @@ test_that("lux_per_segment is correctly calculated", {
   # This test also covers: dayborder != 0 and part5_agg2_60seconds = TRUE
   
   # test data -----
-  create_test_acc_csv(Nmin=1440*2)
+  create_test_acc_csv(Nmin = 1440*2)
   fn = "123A_testaccfile.csv"
   dn = "output_test"
   if (file.exists(dn)) unlink(dn, recursive = TRUE)
@@ -20,7 +20,7 @@ test_that("lux_per_segment is correctly calculated", {
                   "meta_123A_testaccfile.csv.RData", sep = .Platform$file.sep)
   load(meta_fn)
   set.seed(400)
-  M$metalong$lightmean = rnorm(n = nrow(M$metalong),mean=1000,sd=2000)
+  M$metalong$lightmean = rnorm(n = nrow(M$metalong), mean = 1000, sd = 2000)
   M$metalong$lightmean[which(M$metalong$lightmean < 0)] = 0
   M$metalong$lightmean = M$metalong$lightmean / 1000
   M$metalong$lightpeak = M$metalong$lightmean + 0.2
@@ -35,7 +35,7 @@ test_that("lux_per_segment is correctly calculated", {
        LUX_cal_constant = 1, 
        LUX_cal_exponent = 0.2, 
        LUX_day_segments = c(9, 15, 24), 
-       dayborder = 23, part5_agg2_60seconds = TRUE,
+       dayborder = 23, part5_epochSizes = c(60, 60),
        save_ms5rawlevels = TRUE, save_ms5raw_without_invalid = FALSE,
        save_ms5raw_format = "RData")
   
@@ -57,7 +57,7 @@ test_that("lux_per_segment is correctly calculated", {
   # dayborder and ws3 = 60
   p5raw_fn = paste(getwd(), "output_test", "meta", 
                    "ms5.outraw", "40_100_400",
-                   "123a_testaccfile_T5A5.RData",
+                   "123a_testaccfile_T5A5_epoch60s.RData", # 2023-09-12: changed because now part 5 stores epoch length in the filename
                    sep = .Platform$file.sep)
   expect_true(file.exists(p5raw_fn))
   mdat = c()
