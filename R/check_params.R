@@ -440,9 +440,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
     # Return warning if part5_agg2_60seconds is defined
     if (params_general[["part5_agg2_60seconds"]] == TRUE) {
-      warning("Argument part5_agg2_60seconds is deprecated, please use
-              part5_epochSizes to define the epoch length for time use and 
-              for fragmentation metrics in part 5", call. = FALSE)
+      params_general[["part5_epochSizes"]] = c(60, 60)
+      warning("Argument part5_agg2_60seconds has been deprecated, part5_epochSizes 
+              has been set to c(60, 60). Please use part5_epochSizes the next time.", call. = FALSE)
     }
   }
   

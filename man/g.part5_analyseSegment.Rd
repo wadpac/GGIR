@@ -19,7 +19,8 @@
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei)
+                                  foldernamei,
+                                  classifier)
 }
 \arguments{
   \item{indexlog}{
@@ -82,6 +83,10 @@
   }
   \item{foldernamei}{
     Character with folder name in which the data file is stored.
+  }
+  \item{classifier}{
+    Character indicating if "timeuse" and/or "fragmentation" analyses are to
+    be conducted.
   }
 }
 \value{
