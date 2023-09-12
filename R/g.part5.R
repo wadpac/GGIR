@@ -163,7 +163,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       di = 1
       fi = 1
       SPTE_end = c() # if it is not loaded from part3 milestone data then this will be the default
-      if (length(idindex) > 0 & nrow(summarysleep) > 0) { #only attempt to load file if it was processed for sleep
+      # Only attempt to load file if it has at least 1 night of data
+      if (length(idindex) > 0 & nrow(summarysleep) > 0) { 
         summarysleep_tmp = summarysleep
         #======================================================================
         # load output g.part1
