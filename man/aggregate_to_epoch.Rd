@@ -7,8 +7,7 @@
   Function to aggregate time series to different epoch lengths in \link{g.part5}.
 }
 \usage{
-aggregate_to_epoch(ts, to, lightpeak_available, params_general,
-                   tail_expansion_log)
+aggregate_to_epoch(ts, to, lightpeak_available, params_general)
 }
 \arguments{
   \item{ts}{
@@ -22,9 +21,6 @@ aggregate_to_epoch(ts, to, lightpeak_available, params_general,
    Boolean to indicate if light columns should be added to the time series.
   }
   \item{params_general}{
-   See details in \link{GGIR}.
-  }
-  \item{tail_expansion_log}{
    See details in \link{GGIR}.
   }
 }
