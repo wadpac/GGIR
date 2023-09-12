@@ -2,7 +2,7 @@ extract_nightsi = function(ts, dayborder, desiredtz, tail_expansion_log) {
   time_POSIX = iso8601chartime2POSIX(ts$time,tz = desiredtz)
   tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
   if (is.na(tempp$sec[1]) == TRUE) {
-    time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
+    time_POSIX = as.POSIXct(ts$time, tz = desiredtz)
     tempp = as.POSIXlt(time_POSIX)
   }
   sec = tempp$sec
