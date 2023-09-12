@@ -1104,7 +1104,10 @@ GGIR(mode = 1:5,
         wake times). If 2, sleep efficiency is calculated as detected nocturnal
         sleep time divided by detected duration in sleep period time plus sleep latency (where
         sleep latency refers to the difference between log-derived sleep onset and 
-        accelerometer-detected sleep onset).
+        accelerometer-detected sleep onset).}
+        
+      \item{possible_nap_edge_acc}{
+        Minimum acceleration before or after the SIB for the nap to be considered.
       }
     }
   }
@@ -1293,7 +1296,9 @@ GGIR(mode = 1:5,
         In \link{g.part4}: To indicate whether to generate report for the sustained 
         inactivity bouts (SIB). If set to TRUE and when an advanced sleep diary is
         available in part 4 then part 5 will use this to generate summary statistics
-        on the overlap between self-reported nonwear and napping with SIB}
+        on the overlap between self-reported nonwear and napping with SIB. Here,
+        SIB cna be filter based on argument possible_nap_edge_acc and the first value
+        of possible_nap_dur}
 
       \item{do.visual}{
         Boolean (default = TRUE).

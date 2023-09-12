@@ -1,8 +1,16 @@
 g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL, di = NULL,
-                                time = NULL, tz = NULL, possible_nap_dur = NULL) {
+                                time = NULL, tz = NULL, possible_nap_dur = 0,
+                               possible_nap_edge_acc = Inf) {
   # Only consider sib episodes with minimum duration
-  longboutsi = which((sibreport$type == "sib" & sibreport$duration >= possible_nap_dur) |
+  if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
+    sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
+  } else {
+    sibreport$acc_edge = 0
+  }
+  longboutsi = which((sibreport$type == "sib" &
+                        sibreport$duration >= possible_nap_dur[1] &
+                        sibreport$acc_edge <= possible_nap_edge_acc) |
                        (sibreport$type != "sib" & sibreport$duration >= 1))
   # for qc purposes:
   dsummary[di,fi] = length(longboutsi)

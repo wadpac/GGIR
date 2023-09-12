@@ -19,8 +19,7 @@
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei, sibreport = NULL,
-                                  possible_nap_dur = NULL)
+                                  foldernamei, sibreport = NULL)
 }
 \arguments{
   \item{indexlog}{
@@ -86,10 +85,6 @@
   }
   \item{sibreport}{
     Sibreport object as passed on from \link{g.part5}
-  }
-  \item{possible_nap_dur}{
-    Minimum sib duration to be considered. For self-reported naps/nonwear
-    there is a minimum duration of 1 epoch.
   }
 }
 \value{

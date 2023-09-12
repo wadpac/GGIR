@@ -10,7 +10,9 @@
 \usage{
   g.part5.analyseRest(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL,
-                                di = NULL, time = NULL, tz = NULL)
+                                di = NULL, time = NULL, tz = NULL,
+                                possible_nap_dur = 0,
+                                possible_nap_edge_acc = Inf)
 }
 \arguments{
   \item{sibreport}{
@@ -34,6 +36,13 @@
   }
   \item{tz}{
     Timezone database name
+  }
+  \item{possible_nap_dur}{
+    Minimum sib duration to be considered. For self-reported naps/nonwear
+    there is a minimum duration of 1 epoch.
+  }
+  \item{possible_nap_edge_acc}{
+    Maximum acceleration before or after the SIB for it to be considered.
   }
 }
 \value{
