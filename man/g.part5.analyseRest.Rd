@@ -5,7 +5,7 @@
 }
 \description{
   Analyses overlap self-reported napping, non-wear and sib.
-  Internal function not intended for direct use by user.
+  Internal function not intended for direct use by GGIR end-user.
 }
 \usage{
   g.part5.analyseRest(sibreport = NULL, dsummary = NULL,

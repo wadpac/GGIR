@@ -384,6 +384,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   }
                 }
               }
+            } else {
+              sibreport = NULL
             }
             ts$window = 0
             # backup of nightsi outside threshold defintions to avoid
