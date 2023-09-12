@@ -13,8 +13,8 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   cat("\nActigraph .gt3x")
   # actigraph .gt3x
   Igt3x = g.inspectfile(gt3xfile, desiredtz = desiredtz)
-  expect_equal(Igt3x$monc, 3)
-  expect_equal(Igt3x$dformc, 6)
+  expect_equal(Igt3x$monc, MONITOR$ACTIGRAPH)
+  expect_equal(Igt3x$dformc, FORMAT$GT3X)
   expect_equal(Igt3x$sf, 30)
   EHV = g.extractheadervars(Igt3x)
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
@@ -25,8 +25,8 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   cat("\nAxivity .cwa")
   # axivity .cwa
   Icwa = g.inspectfile(cwafile, desiredtz = desiredtz, params_rawdata = params_rawdata)
-  expect_equal(Icwa$monc, 4)
-  expect_equal(Icwa$dformc, 4)
+  expect_equal(Icwa$monc, MONITOR$AXIVITY)
+  expect_equal(Icwa$dformc, FORMAT$CWA)
   expect_equal(Icwa$sf, 100)
   EHV = g.extractheadervars(Icwa)
   expect_equal(EHV$deviceSerialNumber,"39434")
@@ -38,8 +38,8 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   cat("\nGENEActiv .bin")
   # GENEActiv .bin
   IGA = g.inspectfile(GAfile, desiredtz = desiredtz)
-  expect_equal(IGA$monc,2)
-  expect_equal(IGA$dformc,1)
+  expect_equal(IGA$monc, MONITOR$GENEACTIV)
+  expect_equal(IGA$dformc, FORMAT$BIN)
   expect_equal(IGA$sf,85.7)
 
   EHV = g.extractheadervars(IGA)
@@ -50,9 +50,9 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   
   
   # test decimal separator recognition extraction
-  decn =  g.dotorcomma(cwafile,dformat = 4, mon = 4, desiredtz = desiredtz)
+  decn =  g.dotorcomma(cwafile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)
   expect_equal(decn,".")
-  decn =  g.dotorcomma(GAfile, dformat = 1, mon = 2, desiredtz = desiredtz)
+  decn =  g.dotorcomma(GAfile, dformat = FORMAT$BIN, mon = MONITOR$GENEACTIV, desiredtz = desiredtz)
   expect_equal(decn,".")
   filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
   dayborder = 0
@@ -69,7 +69,7 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
   
   # As of R 4.0, an extra header row is extracted, which affects the positioning of the values.
   # expect_equal(as.numeric(as.character(wav_read$P$header$hvalues[7])),17) 
-  expect_equal(round(sum(GA_read$P$data.out[, 2:4]), digits = 2), -467.59)
+  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -467.59)
   # print(GA_read$P$header)
   # expect_equal(as.character(unlist(GA_read$P$header[3, 1])), "216 Hours")
   

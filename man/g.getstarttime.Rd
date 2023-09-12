@@ -9,15 +9,15 @@
   for direct use by package user
 }
 \usage{
-  g.getstarttime(datafile, P, header, mon, dformat, desiredtz,
+  g.getstarttime(datafile, data, header, mon, dformat, desiredtz,
   configtz = NULL)
 }
 \arguments{
   \item{datafile}{
    Full path to data file
   }
-  \item{P}{
-    Object extracted with \link{g.readaccfile}
+  \item{data}{
+    Data extracted with \link{g.readaccfile}
   }
   \item{header}{
     File header extracted with \link{g.inspectfile}

@@ -1,25 +1,21 @@
 \name{get_starttime_weekday_meantemp_truncdata }
 \alias{get_starttime_weekday_meantemp_truncdata}
 \title{
-  Get starttime (adjusted), weekday, mean temp, and adjust data accordingly.
+  Get starttime (adjusted), weekday, and adjust data accordingly.
 }
 \description{
   Function not intended for direct use by user.
   Used inside \link{g.getmeta} as an intermediate step between
   loading the raw data and calibrating it. This step includes extracting
   the starttime and adjusting it to nearest integer number of long epoch window
-  lengths in an hour, truncating the data accordingly, extracting the 
-  corresponding weekday and mean temperature (if temperature is available).
+  lengths in an hour, and truncating the data accordingly.
 }
 \usage{
-  get_starttime_weekday_meantemp_truncdata(temp.available, monc, 
-  dformat, data, P, header, desiredtz, sf, i,
+  get_starttime_weekday_meantemp_truncdata(monc, 
+  dformat, data, header, desiredtz, sf, i,
   datafile, ws2, starttime, wday, weekdays, wdayname, configtz = NULL)
 }
 \arguments{
-  \item{temp.available}{
-    Boolean whether temperate is available.
-  }
   \item{monc}{
     See \link{g.inspectfile}
   }
@@ -28,9 +24,6 @@
   }
   \item{data}{
     Data part of \link{g.readaccfile} output
-  }
-  \item{P}{
-    data loaded from accelerometer file with \link{g.readaccfile}
   }
   \item{header}{
     Header part of \link{g.readaccfile} output

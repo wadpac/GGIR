@@ -1,3 +1,32 @@
+updatepageindexing = function(startpage = c(), deltapage = c(), blocknumber = c(), PreviousEndPage = c(),
+                              mon = c(), dformat = c()) {
+  # This function ensures that startpage is only specified for blocknumber 1.
+  # The next time (blocknumber > 1) the startpage will be derived from the previous
+  # endpage and the blocksize.
+  if (blocknumber != 1 & length(PreviousEndPage) != 0) {
+    # if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$CSV) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
+    if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
+      # only in GENEActiv binary data and for csv format data
+      # page selection is defined from start to end (including end)
+      startpage = PreviousEndPage + 1
+    } else {
+      # for other monitor brands and data formats
+      # page selection is defined from start to end (excluding end itself)
+      # so start page of one block equals the end page of previous block
+      startpage = PreviousEndPage
+    }
+  }
+  endpage = startpage + deltapage
+  return(list(startpage = startpage, endpage = endpage))
+}
+
+quiet <- function(x) {
+  # from https://stackoverflow.com/a/54136863/5311763
+  sink(tempfile())
+  on.exit(sink())
+  invisible(force(x))
+}
+
 g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                          ws, PreviousEndPage = 1, inspectfileobject = c(),
                          PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL,
@@ -31,65 +60,51 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   sf = I$sf
   
   P = c()
-  updatepageindexing = function(startpage = c(), deltapage = c(), blocknumber = c(), PreviousEndPage = c(),
-                                mon = c(), dformat = c()) {
-    # This function ensures that startpage is only specified for blocknumber 1.
-    # The next time (blocknumber > 1) the startpage will be derived from the previous
-    # endpage and the blocksize.
-    if (blocknumber != 1 & length(PreviousEndPage) != 0) {
-      # if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$CSV) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
-      if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-        # only in GENEActiv binary data and for csv format data
-        # page selection is defined from start to end (including end)
-        startpage = PreviousEndPage + 1
-      } else {
-        # for other monitor brands and data formats
-        # page selection is defined from start to end (excluding end itself)
-        # so start page of one block equals the end page of previous block
-        startpage = PreviousEndPage
-      }
-    }
-    endpage = startpage + deltapage
-    return(list(startpage = startpage, endpage = endpage))
-  }
+  P$header = c()
+  P$data = c()
+  P$QClog = c()
+  read_data = c()
+
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
     startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    
-    try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
+
+    try(expr = {read_data = GGIRread::readGENEActiv(filename = filename, start = startpage,
                                             end = endpage, desiredtz = params_general[["desiredtz"]],
                                             configtz = params_general[["configtz"]])}, silent = TRUE)
     
-    if (length(P) > 0) {
-      if (nrow(P$data.out) < (blocksize*300)) {
-        switchoffLD = 1 #last block
-      }
+    if (length(read_data) > 0 && (nrow(read_data$data.out) < blocksize*300)) {
+      switchoffLD = 1 #last block
     }
-    if (length(P) == 0) { #if first block doens't read then probably corrupt
+    if (length(read_data) == 0) { #if first block isn't read then probably corrupt
       if (blocknumber == 1) {
         #try to read without specifying blocks (file too short)
         try(expr = {
-          P = GGIRread::readGENEActiv(filename = filename, desiredtz = params_general[["desiredtz"]],
+          read_data = GGIRread::readGENEActiv(filename = filename, desiredtz = params_general[["desiredtz"]],
                                       configtz = params_general[["configtz"]])
         }, silent = TRUE)
-        if (length(P) == 0) {
+        if (length(read_data) == 0) {
           warning('\nFile possibly corrupt\n')
-          P = c(); switchoffLD = 1
+          read_data = c(); switchoffLD = 1
           filequality$filecorrupt = TRUE
-        } #if not then P is now filled with data
+        } #if not then read_data is now filled with data
       } else {
-        P = c() #just no data in this last block
+        read_data = c() #just no data in this last block
       }
     }
-    if (length(P) > 0) { #check whether there is enough data
-      if (nrow(P$data.out) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c();  switchoffLD = 1
+    if (length(read_data) > 0) { #check whether there is enough data
+      if (blocknumber == 1 && nrow(read_data$data.out) < ((sf * ws * 2) + 1)) {
+        read_data = c()
+        switchoffLD = 1
         filequality$filetooshort = TRUE
       }
     }
+
+    P$header = read_data$header
+    P$data = read_data$data.out
     #===============
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
     headerlength = 10
@@ -100,16 +115,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
     
-    # load rows 11:13  to investigate whether the file has a header
-    # invisible because R complains about poor Actigraph file format,
-    # this is an an ActiGraph problem not a GGIR problem, so we ignore it
-    quiet <- function(x) {
-      # from https://stackoverflow.com/a/54136863/5311763
-      sink(tempfile())
-      on.exit(sink())
-      invisible(force(x))
-    }
-
     op <- options(stringsAsFactors = FALSE)
     on.exit(options(op))
     options(warn = -1) #turn off warnings
@@ -119,11 +124,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                  loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
     options(warn = 0) #turn on warnings
 
-    testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
-                                                        dec = decn, showProgress = FALSE,
-                                                        header = TRUE),
-                                                        stringsAsFactors = FALSE))
-    if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1]))) ==  FALSE) { # it has no header, first value is a number
+    # load rows 11:13  to investigate whether the file has a header
+    # invisible because R complains about poor Actigraph file format,
+    # this is an an ActiGraph problem not a GGIR problem, so we ignore it
+    testheader = quiet(data.table::fread(filename, nrows = 2, skip = 10,
+                                         dec = decn, showProgress = FALSE,
+                                         header = TRUE, data.table = FALSE))
+    if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1]))) == FALSE) { # it has no header, first value is a number
       freadheader = FALSE
     } else { # it has a header, first value is a character
       freadheader = TRUE
@@ -137,25 +144,21 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     
     #--------------
     try(expr = {
-      P = quiet(as.data.frame(
-        data.table::fread(filename, nrows = deltapage,
-                          skip = startpage,
-                          dec = decn, showProgress = FALSE, header = FALSE),  # header should always be FALSE to prevent that acceleration values are taken as header when reading chunks 2 onwards
-        stringsAsFactors = TRUE))
+      P$data = quiet(data.table::fread(filename, nrows = deltapage,
+                                       skip = startpage,
+                                       dec = decn, showProgress = FALSE, header = FALSE, data.table = FALSE))  # header should always be FALSE to prevent that acceleration values are taken as header when reading chunks 2 onwards
     }, silent = TRUE)
-    if (length(P) > 1) {
-      # data.matrix turnes num to char if there are missing values.
-      if (ncol(P) == 3) {
-        P = data.matrix(P)
-      } else {
-        P = data.matrix(P[, 2:ncol(P)]) # avoid timestamp column
-      }
-      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1
+
+    if (length(P$data) > 1) {
+      if (blocknumber == 1 && nrow(P$data) < ((sf * ws * 2) + 1)) {
+        switchoffLD = 1
         filequality$filetooshort = TRUE
+      } else if (ncol(P$data) > 3) {
+        P$data = P$data[, 1:4]
+        colnames(P$data) = c("time", "x", "y", "z")
+      } else {
+        colnames(P$data) = c("x", "y", "z")
       }
-    } else {
-      P = c()
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     if (utils::packageVersion("GGIRread") < "0.3.0") {
@@ -193,17 +196,14 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
+    startpage = UPI$startpage
+    endpage = UPI$endpage
     P = apply_readAxivity(bstart = startpage, bend = endpage)
     if (length(P) > 1) { # data reading succesful
-      if (length(P$data) == 0) { # too short?
-        P = c() ; switchoffLD = 1
+      if (length(P$data) == 0 || nrow(P$data) < ((sf * ws * 2) + 1)) { # too short?
+        P = c() 
+        switchoffLD = 1
         if (blocknumber == 1) filequality$filetooshort = TRUE
-      } else {
-        if (nrow(P$data) < ((sf * ws * 2) + 1)) {
-          P = c() ; switchoffLD = 1
-          if (blocknumber == 1) filequality$filetooshort = TRUE
-        }
       }
     } else { 
       # If data reading is not successful then try following steps to retrieve issue
@@ -229,16 +229,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         # read the entire block:
         P = apply_readAxivity(bstart = startpage, bend = endpage)
         if (length(P) > 1) { # data reading succesful
-          if (length(P$data) == 0) { # if this still does not work then
-            P = c() ; switchoffLD = 1
+          if (length(P$data) == 0 || nrow(P$data) < ((sf * ws * 2) + 1)) { # if this still does not work then
+            P = c()
+            switchoffLD = 1
             if (blocknumber == 1) filequality$filetooshort = TRUE
           } else {
-            if (nrow(P$data) < ((sf * ws * 2) + 1)) {
-              P = c() ; switchoffLD = 1
-              if (blocknumber == 1) filequality$filetooshort = TRUE
-            } else {
-              filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
-            }
+            filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
           }
           # Add replications of Ptest to the beginning of P to achieve same data 
           # length as under normal conditions
@@ -254,90 +250,139 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         if (blocknumber == 1) filequality$filecorrupt = TRUE
       }
     }
+    # rename "temp" column to "temperature", to standardize output names
+    if ("temp" %in% colnames(P$data)) {
+      colnames(P$data)[colnames(P$data) == "temp"] = "temperature"
+    }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
-    freadheader = FALSE
     headerlength = 0
     startpage = (headerlength + (blocksize * 300 * (blocknumber - 1)))
     deltapage = (blocksize*300)
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber,
                              PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {
-      P = as.data.frame(
-        data.table::fread(filename, nrows = deltapage,
-                          skip = startpage,
-                          dec = decn, showProgress = FALSE, header = freadheader),
-        stringsAsFactors = TRUE)
-    }, silent = TRUE)
-    if (length(P) > 1) {
-      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
-        filequality$filetooshort = TRUE
+    startpage = UPI$startpage
+    endpage = UPI$endpage
+
+    options(warn = -1) #turn off warnings
+    suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
+                                                 desiredtz = params_general[["desiredtz"]],
+                                                 rmc.dec = params_rawdata[["rmc.dec"]],
+                                                 loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) #detect dot or comma dataformat
+    options(warn = 0) #turn on warnings
+
+    testheader = quiet(data.table::fread(filename, nrows = 2,
+                                         dec = decn, showProgress = FALSE,
+                                         header = TRUE, data.table = FALSE))
+
+    if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1]))) == FALSE) { # it has no header, first value is a number
+      freadheader = FALSE
+    } else { # it has a header, first value is a character
+      freadheader = TRUE
+      # skip 1 more row only in the case the file has a header, only in the first chunk of data (when the header needs to be skipped)
+      if (blocknumber == 1) {
+        startpage = startpage + 1
+        endpage = endpage + 1
       }
-      if (nrow(P) < (deltapage)) { #last block
-        switchoffLD = 1
-      }
-      # resample the acceleration data, because AX3 data is stored at irregular time points
-      rawTime = vector(mode = "numeric", nrow(P))
-      if (length(params_general[["desiredtz"]]) == 0 & blocknumber == 1) {
-        cat("Forgot to specify argument desiredtz? Now Europe/London assumed")
-        params_general[["desiredtz"]] = "Europe/London"
-      }
-      rawTime = as.numeric(as.POSIXlt(P[,1],tz = params_general[["desiredtz"]]))
-      rawAccel = as.matrix(P[,2:4])
-      step = 1/sf
-      start = rawTime[1]
-      end = rawTime[length(rawTime)]
-      timeRes = seq(start, end, step)
-      nr = length(timeRes) - 1
-      timeRes = as.vector(timeRes[1:nr])
-      accelRes = matrix(0,nrow = nr, ncol = 3, dimnames = list(NULL, c("x", "y", "z")))
-      # at the moment the function is designed for reading the r3 acceleration channels only,
-      # because that is the situation of the use-case we had.
-      rawLast = nrow(rawAccel)
-      accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
-      P = cbind(timeRes,accelRes)
-    } else {
-      P = c()
     }
+
+    try(expr = {
+      read_data = data.table::fread(filename, nrows = deltapage,
+                                    skip = startpage, dec = decn,
+                                    showProgress = FALSE, header = FALSE, data.table = FALSE)
+    }, silent = TRUE)
+    if (length(read_data) > 1) {
+      if (blocknumber == 1 && nrow(read_data) < ((sf * ws * 2) + 1)) {
+        switchoffLD = 1
+        filequality$filetooshort = TRUE
+      } else {
+        if (nrow(read_data) < deltapage) { # last block
+          switchoffLD = 1
+        }
+        # resample the acceleration data, because AX3 data is stored at irregular time points
+        if (length(params_general[["desiredtz"]]) == 0 & blocknumber == 1) {
+          cat("Forgot to specify argument desiredtz? Now Europe/London assumed")
+          params_general[["desiredtz"]] = "Europe/London"
+        }
+        rawTime = as.numeric(as.POSIXlt(read_data[,1],tz = params_general[["desiredtz"]]))
+        rawAccel = as.matrix(read_data[,2:4])
+        step = 1/sf
+        start = rawTime[1]
+        end = rawTime[length(rawTime)]
+        timeRes = seq(start, end, step)
+        nr = length(timeRes) - 1
+        timeRes = as.vector(timeRes[1:nr])
+        # at the moment the function is designed for reading the r3 acceleration channels only,
+        # because that is the situation of the use-case we had.
+        rawLast = nrow(rawAccel)
+        accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
+    
+        P$data = as.data.frame(cbind(timeRes, accelRes))
+        colnames(P$data) = c("time", "x", "y", "z")
+      }
+    }     
   } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$CSV) {
     startpage = blocksize * (blocknumber - 1) + 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
+    startpage = UPI$startpage
+    endpage = UPI$endpage
     file_length = unisensR::getUnisensSignalSampleCount(dirname(filename), "acc.bin")
     if (endpage > file_length) {
       endpage = file_length
       switchoffLD = 1
     }
-    P = unisensR::readUnisensSignalEntry(dirname(filename), "acc.bin",
-                                         startIndex = startpage,
-                                         endIndex = endpage)
-    P = as.matrix(P)
-    if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-      P = c()
+    P$data = unisensR::readUnisensSignalEntry(dirname(filename), "acc.bin",
+                                                 startIndex = startpage,
+                                                 endIndex = endpage)
+    if (blocknumber == 1 && nrow(P$data) < ((sf * ws * 2) + 1)) {
       switchoffLD = 1
       filequality$filetooshort = TRUE
-    }
+    } else {
+      if ("accX" %in% colnames(P$data)) {
+        colnames(P$data)[colnames(P$data) == "accX"] = "x"
+      }
+      if ("accY" %in% colnames(P$data)) {
+        colnames(P$data)[colnames(P$data) == "accY"] = "y"
+      }
+      if ("accZ" %in% colnames(P$data)) {
+        colnames(P$data)[colnames(P$data) == "accZ"] = "z"
+      }
+
+      if (length(params_general[["desiredtz"]]) == 0 & blocknumber == 1) {
+        cat("Forgot to specify argument desiredtz? Now Europe/London assumed")
+        params_general[["desiredtz"]] = "Europe/London"
+      }
+      temperature = g.readtemp_movisens(filename, params_general[["desiredtz"]], startpage, endpage,
+                                 interpolationType = params_rawdata[["interpolationType"]])
+      if(length(temperature) > 0) {
+        P$data = cbind(P$data, temperature)
+      }
+    } 
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
     startpage = blocksize * (blocknumber - 1) + 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
                              blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    P = try(expr = {as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
-                                                       batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
-    if (length(P) == 0 | inherits(P, "try-error") == TRUE) { # too short or not data at all
-      P = c() ; switchoffLD = 1
-      if (blocknumber == 1) filequality$filetooshort = TRUE
-      if (blocknumber == 1) filequality$filecorrupt = TRUE
+    startpage = UPI$startpage
+    endpage = UPI$endpage
+    read_data = try(expr = {as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
+                                                               batch_end = endpage))}, silent = TRUE)
+    if (length(read_data) == 0 || inherits(read_data, "try-error") == TRUE) { # too short or not data at all
+      switchoffLD = 1
+      if (blocknumber == 1) {
+        filequality$filetooshort = TRUE
+        filequality$filecorrupt = TRUE
+      }
     } else {
-      if (nrow(P) < ((sf * ws * 2) + 1)) {
-        P = c() ; switchoffLD = 1
+      if (nrow(read_data) < ((sf * ws * 2) + 1)) {
+        switchoffLD = 1
         if (blocknumber == 1) filequality$filetooshort = TRUE
-      } # If data passes these checks then it is usefull
+      } else { # If data passes these checks then it is usefull
+        P$data = read_data[, 1:4]
+        colnames(P$data) = c("time", "x", "y", "z")
+      }
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
     startpage = (1 + (blocksize * 300 * (blocknumber - 1)))
@@ -346,7 +391,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                              blocknumber = blocknumber,PreviousEndPage = PreviousEndPage,
                              mon = mon, dformat = dformat)
     startpage = UPI$startpage;    endpage = UPI$endpage
-    try(expr = {P = read.myacc.csv(rmc.file = filename,
+    try(expr = {read_data = read.myacc.csv(rmc.file = filename,
                                    rmc.nrow = deltapage, rmc.skip = startpage,
                                    rmc.dec = params_rawdata[["rmc.dec"]],
                                    rmc.firstrow.acc = params_rawdata[["rmc.firstrow.acc"]],
@@ -381,16 +426,34 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    configtz = params_general[["configtz"]])
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
-    if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv
-      # P = as.matrix(P) # turned off 21-5-2019
-      if (nrow(P$data) < ((sf * ws * 2) + 1) & blocknumber == 1) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
+    if (length(read_data) == 4) { # valid data frame returned, containing data, header, PreviousLastValue and PreviousLastTime
+      if (blocknumber == 1 && nrow(read_data$data) < ((sf * ws * 2) + 1)) {
+        switchoffLD = 1
         filequality$filetooshort = TRUE
+      } else {
+        P$header = read_data$header
+        P$PreviousLastValue = read_data$PreviousLastValue
+        P$PreviousLastTime = read_data$PreviousLastTime
+
+        P$data = read_data$data
+
+        if ("timestamp" %in% colnames(P$data)) {
+          colnames(P$data)[colnames(P$data) == "timestamp"] = "time"
+        }
+        if ("accx" %in% colnames(P$data)) {
+          colnames(P$data)[colnames(P$data) == "accx"] = "x"
+        }
+        if ("accy" %in% colnames(P$data)) {
+          colnames(P$data)[colnames(P$data) == "accy"] = "y"
+        }
+        if ("accz" %in% colnames(P$data)) {
+          colnames(P$data)[colnames(P$data) == "accz"] = "z"
+        }
       }
-    } else {
-      P = c()
     }
   }
+
+  if (exists("read_data")) rm(read_data); gc()
   invisible(list(P = P,
                  filequality = filequality,
                  switchoffLD = switchoffLD,
