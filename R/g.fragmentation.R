@@ -26,7 +26,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # xmin is shortest recordable (not necessarily observed) boutlength
   
   TransProb = function(x, a = 1, b = c(2,3)) {
-    # Set default
     TPab = TPba = NA
     Nab = Nba = 0
     totDur_ab = totDur_ba = 0
@@ -41,24 +40,17 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                      frag$value[2:Nsegments] %in% a)
         Nab = length(ab)
         Nba = length(ba)
+        totDur_a = sum(frag$length[which(frag$value %in% a)]) - ifelse(frag$value[Nsegments] %in% a,1,0)
+        totDur_b = sum(frag$length[which(frag$value %in% b)]) - ifelse(frag$value[Nsegments] %in% b,1,0)
+        TPab = (Nab + 1e-7 ) / (totDur_a + 1e-7)
+        TPba = (Nba + 1e-7 ) / (totDur_b + 1e-7)
+        # Round to 6 digits because preceding step introduces bias at 7 decimal places
+        TPab = round(TPab, digits = 6)
+        TPba = round(TPba, digits = 6)
         durations_ab = frag$length[ab]
         durations_ba = frag$length[ba]
         totDur_ab = sum(durations_ab)
         totDur_ba = sum(durations_ba)
-        TPba = (Nba + 1e-7) / (totDur_ba + 1e-7) # Ian's new approach
-        TPba = round(TPba, digits = 6)
-        ux = unique(x)
-        if (all(b %in% ux)) {
-          TPab = (Nab + 1e-7) / (totDur_ab + 1e-7) # Ian's new approach
-          TPab = round(TPab, digits = 6)
-        } else {
-          # Scenario where we have three classes in x
-          # and are interested in the transition probability
-          # between 2 of them
-          totalDur_a = sum(frag$length[which(frag$value %in% a)])
-          meanDur_a = mean(sum(frag$length[which(frag$value %in% a)]))
-          TPab = (totDur_ab / totalDur_a) / meanDur_a # note: 'a' is not a typo
-        }
       } else if (Nsegments == 1) {
         # Scenario where we have only one segment of data
         if (frag$value[1] %in% a) { # Only a
