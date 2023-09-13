@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 2.10-3
 
+- Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation #817
+
 - Part 5: Now able to assess overlap between self-reported naps and nonwear
 with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
 
