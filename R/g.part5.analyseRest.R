@@ -2,6 +2,11 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL, di = NULL,
                                 time = NULL, tz = NULL, possible_nap_dur = 0,
                                possible_nap_edge_acc = Inf) {
+  # transform time to POSIX
+  if (is.ISO8601(time[1])) {
+    time = iso8601chartime2POSIX(time, tz = tz)
+  }
+  
   # Only consider sib episodes with minimum duration
   if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
     sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
