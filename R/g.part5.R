@@ -228,6 +228,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         
         for (sibDef in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
+          
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
             ts = ts_backup
@@ -315,7 +316,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
             # does not depend on bout detection criteria or window definitions.
-            if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
+            if (params_output[["do.sibreport"]]  == TRUE) {
               IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
@@ -325,66 +326,66 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 dir.create(file.path(metadatadir, ms5.sibreport))
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
-              
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
               data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
                                  sep = params_output[["sep_reports"]])
               # nap/sib/nonwear overlap analysis
-              
-              # TO DO
-              
-              # nap detection
-              if (params_general[["acc.metric"]] != "ENMO" |
-                  params_sleep[["HASIB.algo"]] != "vanHees2015") {
-                warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
-              }
-              naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
-                                                  desiredtz = params_general[["desiredtz"]],
-                                                  possible_nap_window = params_sleep[["possible_nap_window"]],
-                                                  possible_nap_dur = params_sleep[["possible_nap_dur"]],
-                                                  nap_model = params_sleep[["nap_model"]],
-                                                  HASIB.algo = params_sleep[["HASIB.algo"]])
-              # store in ts object, such that it is exported in as time series
-              ts$nap1_nonwear2 = 0
-              # napsindices = which(naps_nonwear$probability_nap == 1)
-              # if (length(napsindices) > 0) {
-              if (length(naps_nonwear) > 0) {
-                for (nni in 1:nrow(naps_nonwear)) {
-                  nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                  if (length(nnc_window) > 0) {
-                    if (naps_nonwear$probability_nap[nni] == 1) {
-                      ts$nap1_nonwear2[nnc_window] = 1 # nap
-                    } else if (naps_nonwear$probability_nap[nni] == 0) {
-                      ts$nap1_nonwear2[nnc_window] = 2 # nonwear
-                    }
-                  }
+              if (length(params_sleep[["nap_model"]]) > 0) {
+                # nap detection
+                if (params_general[["acc.metric"]] != "ENMO" |
+                    params_sleep[["HASIB.algo"]] != "vanHees2015") {
+                  warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
                 }
-              }
-              # impute non-naps episodes (non-wear)
-              nonwearindices = which(naps_nonwear$probability_nap == 0)
-              if (length(nonwearindices) > 0) {
-                for (nni in nonwearindices) {
-                  nwwindow_start = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                  if (length(nwwindow_start) > 0) {
-                    Nepochsin24Hours =  (60/ws3new) * 60 * 24
-                    if (nwwindow_start[1] > Nepochsin24Hours) {
-                      nwwindow = nwwindow_start - Nepochsin24Hours # impute time series with preceding day
-                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
-                        # if there is also a lot of overlap with non-wear there then do next day
-                        nwwindow = nwwindow_start + Nepochsin24Hours
-                      }
-                    } else {
-                      nwwindow = nwwindow_start + Nepochsin24Hours # if there is not preceding day use next day
-                    }
-                    if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
-                      # check again that there is not a lot of overlap with non-wear
-                      if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
-                        ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
+                naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
+                                                    desiredtz = params_general[["desiredtz"]],
+                                                    possible_nap_window = params_sleep[["possible_nap_window"]],
+                                                    possible_nap_dur = params_sleep[["possible_nap_dur"]],
+                                                    nap_model = params_sleep[["nap_model"]],
+                                                    HASIB.algo = params_sleep[["HASIB.algo"]])
+                # store in ts object, such that it is exported in as time series
+                ts$nap1_nonwear2 = 0
+                # napsindices = which(naps_nonwear$probability_nap == 1)
+                # if (length(napsindices) > 0) {
+                if (length(naps_nonwear) > 0) {
+                  for (nni in 1:nrow(naps_nonwear)) {
+                    nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                    if (length(nnc_window) > 0) {
+                      if (naps_nonwear$probability_nap[nni] == 1) {
+                        ts$nap1_nonwear2[nnc_window] = 1 # nap
+                      } else if (naps_nonwear$probability_nap[nni] == 0) {
+                        ts$nap1_nonwear2[nnc_window] = 2 # nonwear
                       }
                     }
                   }
                 }
+                # impute non-naps episodes (non-wear)
+                nonwearindices = which(naps_nonwear$probability_nap == 0)
+                if (length(nonwearindices) > 0) {
+                  for (nni in nonwearindices) {
+                    nwwindow_start = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
+                    if (length(nwwindow_start) > 0) {
+                      Nepochsin24Hours =  (60/ws3new) * 60 * 24
+                      if (nwwindow_start[1] > Nepochsin24Hours) {
+                        nwwindow = nwwindow_start - Nepochsin24Hours # impute time series with preceding day
+                        if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
+                          # if there is also a lot of overlap with non-wear there then do next day
+                          nwwindow = nwwindow_start + Nepochsin24Hours
+                        }
+                      } else {
+                        nwwindow = nwwindow_start + Nepochsin24Hours # if there is not preceding day use next day
+                      }
+                      if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
+                        # check again that there is not a lot of overlap with non-wear
+                        if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
+                          ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
+                        }
+                      }
+                    }
+                  }
+                }
               }
+            } else {
+              sibreport = NULL
             }
             ts$window = 0
             # backup of nightsi outside threshold defintions to avoid
@@ -395,7 +396,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 for (TRVi in params_phyact[["threshold.vig"]]) {
                   # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
                   levelList = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
-                                           ws3 = ws3new, params_phyact = params_phyact)
+                                              ws3 = ws3new, params_phyact = params_phyact)
                   LEVELS = levelList$LEVELS
                   OLEVELS = levelList$OLEVELS
                   Lnames = levelList$Lnames
@@ -503,7 +504,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                          fullFilename = fullfilenames[i],
                                                          add_one_day_to_next_date,
                                                          lightpeak_available, tail_expansion_log,
-                                                         foldernamei = foldername[i])
+                                                         foldernamei = foldername[i],
+                                                         sibreport = sibreport)
                             # Extract essential object to be used as input for the next 
                             # segment
                             indexlog = gas$indexlog
@@ -523,6 +525,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             ws3new = timeList$epochSize
                             if (doNext == TRUE) next
                           }
+                          #===============================================
+                          # FOLDER STRUCTURE
+                          if (params_output[["storefolderstructure"]] == TRUE) {
+                            if ("filename_dir" %in% ds_names) fi = which( ds_names == "filename_dir")
+                            dsummary[di,fi] = fullfilenames[i] #full filename structure
+                            ds_names[fi] = "filename_dir"; fi = fi + 1
+                            dsummary[di,fi] = foldername[i] #store the lowest foldername
+                            if ("foldername" %in% ds_names) fi = which( ds_names == "foldername")
+                            ds_names[fi] = "foldername"; fi = fi + 1
+                          }
+                          di = di + 1
                         }
                       }
                       di = di + 1
