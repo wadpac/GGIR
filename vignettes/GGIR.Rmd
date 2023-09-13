@@ -438,7 +438,8 @@ comes with the following changes:
 -   You can add columns relating to self-reported napping time and nonwear time. These
     are not used for the sleep analysis in g.part3 and g.part4, but used
     in g.part5 to facilitate napping analysis, see argument
-    `do.sibreport`. Multiple naps and multiple nonwear periods can be
+    `do.sibreport` and the paragraph on naps. Multiple naps and multiple 
+    nonwear periods can be
     entered per day.
 -   Leave cells for missing values blank.
 -   Column names are critical for the advanced sleeplog format: Date
@@ -830,7 +831,7 @@ data. If either of these applies set argument `sleepwindowType` to
 | guider_guider_inbedStart  | Time of getting in bed   |
 | guider_guider_inbedEnd    | Time of getting out of bed|
 | guider_inbedDuration      | Time in Bed: guider_inbedEnd - guider_inbedStart  |
-| sleepefficiency           | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration |
+| sleepefficiency           | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration or SleepDurationInSpt / (Spt + latency) as defined with  `relyonguider_SleepEfficiency`|
 | sleeplatency  | Sleep latency, calculated as: sleeponset - guider_inbedStart   |
 
 ### Person level summaries
@@ -852,7 +853,7 @@ may not be obvious:
 | `_WE`| Weekend days    |
 | `_WD`| Week days       |
 | sleeplog_used     | Whether a sleeplog was available (TRUE) or not (FALSE)|
-| sleep_efficiency  | Accelerometer detrive sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and acc_SptDuration (denominator). Only available at person level, because at night level the user can calculate this from existing variables. |
+| sleep_efficiency  | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with relyonguider_SleepEfficiency. Only available at person level, because at night level the user can calculate this from existing variables. |
 | n_nights_acc      | Number of nights of accelerometer data   |
 | n_nights_sleeplog | Number of nights of sleeplog data.       |
 | n\_WE_nights_complete        | Number of weekend nights complete which means both accelerometer and estimate from guider. |
@@ -975,6 +976,16 @@ vigorous activity:
 | `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)        |
 | nap_count   | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
 | nap_totalduration       | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf).    |
+| sibreport_n_items	| Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
+| sibreport_n_items_day |	Only created if `do.sibreport = TRUE`. Number of items in the sibreport for this specific day |
+| nbouts_day_X | Only created if `do.sibreport = TRUE`. Number of bouts in a day of X where X can be sib (sustained inactivity bout), srnap (self-reported nap) or srnonw (self-reported nonwear) |
+| noverl_X | Only created if `do.sibreport = TRUE`. Number of overlapping bouts in a day of X where X can be sib_srnap, sib_srnonw, srnap_sib, or srnonw_sib |
+| frag_mean_dur_X_day | Only created if `do.sibreport = TRUE`. Mean duration of X per day, where X can be sib, srnap or srnonw |
+| dur_day_X_min | Only created if `do.sibreport = TRUE`. Total duration in minutes of X per day, where X can be sib, srnap or srnonw |
+| mdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Mean duration of the overlap between X and Y, which are combinations of sib, srnap or srnonw |
+| tdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Total duration in minutes of the overlap between X and Y, which are combinations of sib, srnap or srnonw |
+| perc_X_overl_Y | Only created if `do.sibreport = TRUE`. Percentage of overlap between X and Y, which are combinations of sib, srnap or srnonw |
+
 
 **Special note if you are working on compositional data analysis:**
 
