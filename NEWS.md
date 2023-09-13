@@ -8,6 +8,8 @@
 
 - Part 4: Added parameter sleepefficiency.metric to decide if in-bed time (denominator) should be guider_spt or acc_spt + latency #811
 
+- Part 5: Enhanced functionality to aggregate epoch in part 5 for time-use and for fragmentation analysis #745
+
 # CHANGES IN GGIR VERSION 2.10-2
 
 - Part 1: Revision to readability of code (credits: Lena Kushleyeva)
