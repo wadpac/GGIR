@@ -121,7 +121,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     fi = fi + 3
     # keep track of epoch value
     dsummary[si, fi] = c(ws3new)
-    ds_names[fi] = c("epoch_timeuse")
+    ds_names[fi] = c("epoch_timeuse_s")
     fi = fi + 1
   }
   #==========================
@@ -477,7 +477,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       if (length(params_phyact[["frag.metrics"]]) > 0) {
         # keep track of epoch value
         dsummary[si, fi] = c(ws3new)
-        ds_names[fi] = c("epoch_fragmentation")
+        ds_names[fi] = c("epoch_fragmentation_s")
         fi = fi + 1
         # frag metrics
         frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
