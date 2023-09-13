@@ -3,6 +3,8 @@
 - Part 5: Now able to assess overlap between self-reported naps and nonwear
 with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
 
+- Part 5: Time series now also exported if recording only includes one night, even though this is not sufficient for the main part 5 analyses. #894 Further, the time series now also come with lightpeak (LUX).
+
 - Visualreport: Bug fixed extracting the numeric value of the days to exclude in g.plot5 #879
 
 - Part 1: Fixed minor bug to keep calibration data in the data quality report after re-running parts 1 and 2 with overwrite = TRUE and backup.cal.coef = "retrieve" #896

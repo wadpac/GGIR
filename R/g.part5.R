@@ -163,7 +163,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       di = 1
       fi = 1
       SPTE_end = c() # if it is not loaded from part3 milestone data then this will be the default
-      if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
+      # Only attempt to load file if it has at least 1 night of data
+      if (length(idindex) > 0 & nrow(summarysleep) > 0) { 
         summarysleep_tmp = summarysleep
         #======================================================================
         # load output g.part1
@@ -472,7 +473,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             
                             ##################################################
                             # Analysis per segment:
-                            
                             # Group categories of objects together
                             # to reduce number of individual objects that need to be
                             # passed on to analyseSegment
@@ -559,7 +559,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     } else {
                       napNonwear_col = c()
                     }
-                    g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)],
+                    if (lightpeak_available == TRUE) {
+                      lightpeak_col = "lightpeak"
+                    } else {
+                      lightpeak_col = NULL
+                    }
+                    g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
+                                                       "guider", "window", napNonwear_col,
+                                                       lightpeak_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
@@ -665,13 +672,16 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     } else {
       # pass on functions
       functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout",
+                           "g.sibreport", "extract_params", "load_params", "check_params",
+                           "correctOlderMilestoneData",
                            "g.part5.addfirstwake", "g.part5.addsib",
+                           "g.part5.classifyNaps.R",
                            "g.part5.definedays", "g.part5.fixmissingnight",
-                           "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
-                           "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
-                           "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
-                           "extract_params", "load_params", "check_params",
-                           "correctOlderMilestoneData", "g.part5.classifyNaps")
+                           "g.part5.handle_lux_extremes", "g.part5.lux_persegment",
+                           "g.part5.savetimeseries", "g.part5.wakesleepwindows",
+                           "g.part5.onsetwaketiming", "g.part5_analyseSegment",
+                           "g.part5_initialise_ts",
+                           "g.fragmentation", "g.intensitygradient")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
