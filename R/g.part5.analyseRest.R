@@ -3,7 +3,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                 time = NULL, tz = NULL, possible_nap_dur = 0,
                                possible_nap_edge_acc = Inf) {
   # transform time to POSIX
-  if (is.ISO8601(time[1])) {
+  if (is.ISO8601(as.character(time[1]))) {
     time = iso8601chartime2POSIX(time, tz = tz)
   }
   
