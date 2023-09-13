@@ -42,8 +42,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         Nba = length(ba)
         totDur_a = sum(frag$length[which(frag$value %in% a)]) - ifelse(frag$value[Nsegments] %in% a,1,0)
         totDur_b = sum(frag$length[which(frag$value %in% b)]) - ifelse(frag$value[Nsegments] %in% b,1,0)
-        TPab = (Nab + 1e-7 ) / (totDur_a + 1e-7)
-        TPba = (Nba + 1e-7 ) / (totDur_b + 1e-7)
+        TPab = (Nab + 1e-6 ) / (totDur_a + 1e-6)
+        TPba = (Nba + 1e-6 ) / (totDur_b + 1e-6)
         # Round to 6 digits because preceding step introduces bias at 7 decimal places
         TPab = round(TPab, digits = 6)
         TPba = round(TPba, digits = 6)
