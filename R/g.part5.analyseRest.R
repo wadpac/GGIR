@@ -6,7 +6,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   if (is.ISO8601(time[1])) {
     time = iso8601chartime2POSIX(time, tz = tz)
   }
-  
   # Only consider sib episodes with minimum duration
   if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
     sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
@@ -26,7 +25,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     srep_tmp = sibreport[which(sibreport$start > min(time) &
                                  sibreport$end < max(time)),]
     
-    # account for possibility that some of these categories do not exis
+    # account for possibility that some of these categories do not exist
     #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
     #	calculate for all five categories number, total duration, mean duration
     # for qc purposes:
@@ -49,15 +48,18 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       if (length(sibs) > 0) {
         classes = unique(srep_tmp$type)
         selfreport = which(srep_tmp$type == "nonwear" | srep_tmp$type == "nap")
+        # summarise overlap between selfreported and accelerometer-based SIB
         if (length(selfreport) > 0) {
           for (si in sibs) {
             for (sr in selfreport) {
+              # SIB overlap with selfreported behaviour
               if (srep_tmp$start[si] <= srep_tmp$end[sr] &
                   srep_tmp$end[si] >= srep_tmp$start[sr]) {
                 end_overlap = as.numeric(pmin(srep_tmp$end[si], srep_tmp$end[sr]))
                 start_overlap = as.numeric(pmax(srep_tmp$start[si], srep_tmp$start[sr]))
                 duration_overlap = end_overlap - start_overlap
                 duration_sib = as.numeric(srep_tmp$end[si]) - as.numeric(srep_tmp$start[si])
+                # percentage of overlap
                 perc_overlap = round(100 * (duration_overlap / duration_sib), digits = 1)
                 if (srep_tmp$type[sr] == "nonwear") {
                   srep_tmp$SIBoverlapNonwear[si] = perc_overlap
@@ -65,13 +67,14 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                   srep_tmp$SIBoverlapNap[si] = perc_overlap
                 }
               }
-              
+              # Selfreport behaviour overlap with SIB
               if (srep_tmp$start[sr] <= srep_tmp$end[si] &
                   srep_tmp$end[sr] >= srep_tmp$start[si]) {
                 end_overlap = as.numeric(pmin(srep_tmp$end[si], srep_tmp$end[sr]))
                 start_overlap = as.numeric(pmax(srep_tmp$start[si], srep_tmp$start[sr]))
                 duration_overlap = end_overlap - start_overlap
                 duration_sr = as.numeric(srep_tmp$end[sr]) - as.numeric(srep_tmp$start[sr])
+                # percentage of overlap
                 perc_overlap = round(100 * (duration_overlap / duration_sr), digits = 1)
                 if (srep_tmp$type[sr] == "nonwear") {
                   srep_tmp$NonwearOverlapSIB[sr] = perc_overlap
@@ -84,7 +87,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
           }
         }
       }
-      
       sibs_indices = which(srep_tmp$type == "sib")
       nap_indices = which(srep_tmp$type == "nap")
       nonwear_indices = which(srep_tmp$type == "nonwear")
@@ -99,11 +101,11 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                    length(SIBoverlapNonwear_indices),
                                    length(NapOverlapSIB_indices),
                                    length(NonwearOverlapSIB_indices))
-      
       ds_names[fi:(fi + 6)] = c("nbouts_day_sib", "nbouts_day_srnap", "nbouts_day_srnonw",
                                 "noverl_sib_srnap", "noverl_sib_srnonw",
                                 "noverl_srnap_sib", "noverl_srnonw_sib")
       fi = fi + 7
+      # mean and total duration in sib per day
       if (length(sibs_indices) > 0) {
         dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[sibs_indices]),
                                      sum(srep_tmp$duration[sibs_indices]))
@@ -112,6 +114,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       }
       ds_names[fi:(fi + 1)] = c("frag_mean_dur_sib_day", "dur_day_sib_min")
       fi = fi + 2
+      # mean and total duration in self-reported naps per day
       if (length(nap_indices) > 0) {
         srep_tmp$duration[nap_indices] = (as.numeric(srep_tmp$end[nap_indices]) -
                                             as.numeric(srep_tmp$start[nap_indices])) / 60
@@ -123,7 +126,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       
       ds_names[fi:(fi + 1)] = c("frag_mean_dur_srnap_day", "dur_day_srnap_min")
       fi = fi + 2
-      
+      # mean and total duration in self-reported nonwear per day
       if (length(nonwear_indices) > 0) {
         dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[nonwear_indices]),
                                      sum(srep_tmp$duration[nonwear_indices]))
@@ -147,7 +150,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       }
       ds_names[fi:(fi + 2)] = c("mdur_sib_overl_srnap", "tdur_sib_overl_srnap", "perc_sib_overl_srnap")
       fi = fi + 3
-      
       # Overlap srnap with sib
       calcOverlapPercentage = function(overlap, duration) {
         return(sum(overlap * duration) / sum(duration))
