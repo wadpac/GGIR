@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 2.10-3
 
+- Part 5: Time series now also exported if recording only includes one night, even though this is not sufficient for the main part 5 analyses. #894 Further, the time series now also come with lightpeak (LUX).
+
 - Visualreport: Bug fixed extracting the numeric value of the days to exclude in g.plot5 #879
 
 - Part 1: Fixed minor bug to keep calibration data in the data quality report after re-running parts 1 and 2 with overwrite = TRUE and backup.cal.coef = "retrieve" #896
