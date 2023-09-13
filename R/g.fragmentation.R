@@ -232,10 +232,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       x[PAi] = 1
     }
     out = TransProb(x = x, a = 0, b = 1)
-    output[["Nfrag_spt_IN"]] = out$Nab
-    output[["Nfrag_spt_PA"]] = out$Nba
-    output[["TP_IN2PA_spt"]] = out$TPab
-    output[["TP_PA2IN_spt"]] = out$TPba
+    output[["Nfrag_IN"]] = out$Nab
+    output[["Nfrag_PA"]] = out$Nba
+    output[["TP_IN2PA"]] = out$TPab
+    output[["TP_PA2IN"]] = out$TPba
     # Wake - Sleep transitions during SPT:
     x = rep(0, Nepochs)
     classes.wake = c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
@@ -245,10 +245,10 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       x[wakei] = 1
     }
     out = TransProb(x = x, a = 0, b = 1)
-    output[["Nfrag_spt_sleep"]] = out$Nab
-    output[["Nfrag_spt_wake"]] = out$Nba
-    output[["TP_sleep2wake_spt"]] = out$TPab
-    output[["TP_wake2sleep_spt"]] = out$TPba
+    output[["Nfrag_sleep"]] = out$Nab
+    output[["Nfrag_wake"]] = out$Nba
+    output[["TP_sleep2wake"]] = out$TPab
+    output[["TP_wake2sleep"]] = out$TPba
   }
   return(output)
 }

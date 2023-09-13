@@ -405,15 +405,17 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       fi = fi + 3
     }
     #===============================================
-    # FRAGMENTATION for daytime hours only
+    # FRAGMENTATION
     if (length(params_phyact[["frag.metrics"]]) > 0) {
-      frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
-                                 LEVELS = LEVELS[sse[ts$diur[sse] == 0]],
-                                 Lnames = Lnames, xmin = 60/ws3new)
-      # fragmentation values come with a lot of decimal places
-      dsummary[si, fi:(fi + (length(frag.out) - 1))] = round(as.numeric(frag.out), digits = 5)
-      ds_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_day")
-      fi = fi + length(frag.out)
+      for (fragmode in c("day", "spt")) {
+        frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
+                                   LEVELS = LEVELS[sse[ts$diur[sse] == ifelse(fragmode == "day", 0, 1)]],
+                                   Lnames = Lnames, xmin = 60/ws3new, mode = fragmode)
+        # fragmentation values can come with a lot of decimal places
+        dsummary[si, fi:(fi + (length(frag.out) - 1))] = round(as.numeric(frag.out), digits = 5)
+        ds_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
+        fi = fi + length(frag.out)
+      }
     }
     #===============================================
     # LIGHT, IF AVAILABLE
