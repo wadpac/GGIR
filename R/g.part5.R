@@ -273,30 +273,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 sec = NIGHTSi$sec; min = NIGHTSi$min; hour = NIGHTSi$hour
                 Nts = nrow(ts)
               }
-              ts$sibdetection = round(ts$sibdetection)
-              ts$diur = round(ts$diur)
-              ts$nonwear = round(ts$nonwear)
-              names(ts)[1] = "time"
-              # # convert back to iso8601 format
-              ts$time = as.POSIXct(ts$time, origin = "1970-1-1", tz = params_general[["desiredtz"]])
-              ws3new = 60 # change because below it is used to decide how many epochs are there in
-              # extract nightsi again
-              time_POSIX = ts$time
-              tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
-              if (is.na(tempp$sec[1]) == TRUE) {
-                time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
-                tempp = as.POSIXlt(time_POSIX)
-              }
-              sec = tempp$sec
-              min = tempp$min
-              hour = tempp$hour
-              if (params_general[["dayborder"]] == 0) {
-                nightsi = which(sec == 0 & min == 0 & hour == 0)
-              } else {
-                nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
-              }
-              if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
-              Nts = nrow(ts)
             }
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
