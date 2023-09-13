@@ -5,7 +5,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
   Nsibs = length(sib_starts)
   sibreport = c()
   if (Nsibs > 0) {
-    sibreport = data.frame(ID= rep(ID, Nsibs),
+    sibreport = data.frame(ID = rep(ID, Nsibs),
                            type = rep("sib", Nsibs),
                            start = character(Nsibs),
                            end = character(Nsibs),
@@ -16,13 +16,13 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       sibreport$start[sibi]  = format(ts$time[dayind[sib_starts[sibi]]])
       sibreport$end[sibi] = format(ts$time[dayind[sib_ends[sibi]]])
       if (is.ISO8601(sibreport$start[sibi])) {
-        sibreport$start[sibi]  = format(iso8601chartime2POSIX(sibreport$start[sibi],tz=desiredtz))
-        sibreport$end[sibi]  = format(iso8601chartime2POSIX(sibreport$end[sibi],tz=desiredtz))
+        sibreport$start[sibi] = format(iso8601chartime2POSIX(sibreport$start[sibi], tz = desiredtz))
+        sibreport$end[sibi] = format(iso8601chartime2POSIX(sibreport$end[sibi], tz = desiredtz))
       }
       sibreport$duration[sibi] = ((sib_ends[sibi] - sib_starts[sibi]) + 1) / (60/epochlength)
       boutind = sib_starts[sibi]:sib_ends[sibi]
-      minute_before = (sib_starts[sibi]-(60/epochlength)):(sib_starts[sibi]-1)
-      minute_after = (sib_ends[sibi]+1):(sib_ends[sibi]+(60/epochlength))
+      minute_before = (sib_starts[sibi] - (60/epochlength)):(sib_starts[sibi] - 1)
+      minute_after = (sib_ends[sibi] + 1):(sib_ends[sibi] + (60/epochlength))
       if (min(minute_before) > 1) {
         sibreport$mean_acc_1min_before[sibi]  = round(mean(ts$ACC[dayind[minute_before]]), digits = 3)
       }
@@ -41,15 +41,19 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       logreport = c()
       if (length(log) > 0) {
         relevant_rows = which(log$ID == ID)
+        
         if (length(relevant_rows) > 0) {
           log = log[relevant_rows,] # extract ID
           for (i in 1:nrow(log)) { # loop over lines (days)
+            
             tmp = log[i,] # convert into timestamps
             # only attempt if there are at least 2 timestamps to process
             nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
               date = as.Date(as.character(tmp[1,2]), format = dateformat)
               times = format(unlist(tmp[1,3:ncol(tmp)]))
+              times = grep(pattern = "NA", value = TRUE, invert = TRUE, x = times)
+              times = gsub(pattern = " ", replacement = "", x = times)
               times = times[which(times %in% c("", "NA") == FALSE)]
               # ignore entries without start and/or end time
               t_to_remove = c()
@@ -66,13 +70,17 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
               if (length(times) > 1) {
                 Nevents = floor(length(times) / 2)
                 timestamps = sort(as.POSIXlt(paste0(date, " ", times), tz = desiredtz))
-                logreport_tmp = data.frame(ID= rep(ID, Nevents),
+                logreport_tmp = data.frame(ID = rep(ID, Nevents),
                                            type = rep(logname, Nevents),
                                            start = rep("", Nevents),
-                                           end = rep("", Nevents), stringsAsFactors = FALSE)
+                                           end = rep("", Nevents),
+                                           duration = rep(0, Nevents), stringsAsFactors = FALSE)
                 for (bi in 1:Nevents) {
-                  logreport_tmp$start[bi]  = format(timestamps[(bi*2)-1])
-                  logreport_tmp$end[bi] = format(timestamps[(bi*2)])
+                  tt1 = as.POSIXlt(timestamps[(bi * 2) - 1], tz = desiredtz)
+                  tt2 = as.POSIXlt(timestamps[(bi * 2)], tz = desiredtz)
+                  logreport_tmp$start[bi]  = format(tt1)
+                  logreport_tmp$end[bi] = format(tt2)
+                  logreport_tmp$duration[bi] = abs(as.numeric(difftime(time1 = tt1, time2 = tt2, units = "mins")))
                 }
               }
               if (length(logreport) == 0) {
@@ -86,17 +94,17 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       }
       return(logreport)
     }
-    naplogreport = extract_logs(naplog, ID, logname="nap")
-    nonwearlogreport = extract_logs(nonwearlog, ID, logname="nonwear")
+    naplogreport = extract_logs(naplog, ID, logname = "nap")
+    nonwearlogreport = extract_logs(nonwearlog, ID, logname = "nonwear")
     logreport = sibreport
     # append all together in one output data.frame
     if (length(logreport) > 0 & length(naplogreport) > 0) {
-      logreport = merge(logreport, naplogreport, by=c("ID", "type", "start", "end"), all=TRUE)
+      logreport = merge(logreport, naplogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
     } else if (length(logreport) == 0 & length(naplogreport) > 0) {
       logreport = naplogreport
     }
     if (length(logreport) > 0 & length(nonwearlogreport) > 0) {
-      logreport = merge(logreport, nonwearlogreport, by=c("ID", "type", "start", "end"), all=TRUE)
+      logreport = merge(logreport, nonwearlogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
     } else if (length(logreport) == 0 & length(nonwearlogreport) > 0) {
       logreport = nonwearlogreport
     }
