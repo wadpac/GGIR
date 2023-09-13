@@ -1663,9 +1663,10 @@ header.
 
 When setting input argument as `frag.metrics="all"` GGIR part 5 will
 perform daytime behavioural fragmentation analysis. Do this in
-combination with argument `part5_agg2_60seconds=TRUE` as that will
-aggregate the time series to 1 minute resolution as is common in
-behavioural fragmentation literature.
+combination with argument `part5_epochSizes = c(5, 60)` as that will
+aggregate the time series to 1 minute resolution for the fragmentation analysis
+withou affecting the time-use classification. One-minute resolution is common in
+the behavioural fragmentation literature.
 
 In GGIR, a fragment is a defined as a sequence of epochs that belong to
 one of the four categories:
