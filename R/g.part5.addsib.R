@@ -61,6 +61,7 @@ g.part5.addsib = function(ts, epochSize, part3_output, desiredtz, sibDefinition,
     redo1 = nightsi[1] - ((60/epochSize)*60) # 1 hour before first midnight
     if (redo1 < 1) redo1 = 1
     redo2 = nightsi[1] + (14*(60/epochSize)*60) # 14 hours after first midngiht
+    if (redo2 > Nts) redo2 = Nts
     # Specify defintion of sustained inactivity bout
     anglethreshold = as.numeric(unlist(strsplit(sibDefinition,"A"))[2])
     tempi = unlist(strsplit(unlist(strsplit(sibDefinition,"A"))[1],"T"))

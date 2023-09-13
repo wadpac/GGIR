@@ -163,7 +163,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       di = 1
       fi = 1
       SPTE_end = c() # if it is not loaded from part3 milestone data then this will be the default
-      if (length(idindex) > 0 & nrow(summarysleep) > 1) { #only attempt to load file if it was processed for sleep
+      # Only attempt to load file if it has at least 1 night of data
+      if (length(idindex) > 0 & nrow(summarysleep) > 0) { 
         summarysleep_tmp = summarysleep
         #======================================================================
         # load output g.part1
@@ -272,27 +273,49 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 sec = NIGHTSi$sec; min = NIGHTSi$min; hour = NIGHTSi$hour
                 Nts = nrow(ts)
               }
-              #===============================================
-              # Use sib.report to classify naps, non-wear and integrate these in time series
-              # does not depend on bout detection criteria or window definitions.
-              if (params_output[["do.sibreport"]]  == TRUE & length(params_sleep[["nap_model"]]) > 0) {
-                IDtmp = as.character(ID)
-                sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
-                                        desiredtz = params_general[["desiredtz"]])
-                # store in csv file:
-                ms5.sibreport = "/meta/ms5.outraw/sib.reports"
-                if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
-                  dir.create(file.path(metadatadir, ms5.sibreport))
-                }
-                shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
-                
-                sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
-                data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
-                                   sep = params_output[["sep_reports"]])
-                # nap/sib/nonwear overlap analysis
-                
-                # TO DO
-                
+              ts$sibdetection = round(ts$sibdetection)
+              ts$diur = round(ts$diur)
+              ts$nonwear = round(ts$nonwear)
+              names(ts)[1] = "time"
+              # # convert back to iso8601 format
+              ts$time = as.POSIXct(ts$time, origin = "1970-1-1", tz = params_general[["desiredtz"]])
+              ws3new = 60 # change because below it is used to decide how many epochs are there in
+              # extract nightsi again
+              time_POSIX = ts$time
+              tempp = as.POSIXlt(time_POSIX) #unclass(time_POSIX)
+              if (is.na(tempp$sec[1]) == TRUE) {
+                time_POSIX = as.POSIXct(ts$time, tz = params_general[["desiredtz"]])
+                tempp = as.POSIXlt(time_POSIX)
+              }
+              sec = tempp$sec
+              min = tempp$min
+              hour = tempp$hour
+              if (params_general[["dayborder"]] == 0) {
+                nightsi = which(sec == 0 & min == 0 & hour == 0)
+              } else {
+                nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+              }
+              if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
+              Nts = nrow(ts)
+            }
+            #===============================================
+            # Use sib.report to classify naps, non-wear and integrate these in time series
+            # does not depend on bout detection criteria or window definitions.
+            if (params_output[["do.sibreport"]]  == TRUE) {
+              IDtmp = as.character(ID)
+              sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
+                                      desiredtz = params_general[["desiredtz"]])
+              # store in csv file:
+              ms5.sibreport = "/meta/ms5.outraw/sib.reports"
+              if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
+                dir.create(file.path(metadatadir, ms5.sibreport))
+              }
+              shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
+              sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
+              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
+                                 sep = params_output[["sep_reports"]])
+              # nap/sib/nonwear overlap analysis
+              if (length(params_sleep[["nap_model"]]) > 0) {
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -346,185 +369,195 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   }
                 }
               }
-              ts$window = 0
-              # backup of nightsi outside threshold definitions to avoid
-              # overwriting the backup after the first iteration
-              nightsi_bu = nightsi
-              for (TRLi in params_phyact[["threshold.lig"]]) {
-                for (TRMi in params_phyact[["threshold.mod"]]) {
-                  for (TRVi in params_phyact[["threshold.vig"]]) {
-                    # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
-                    levelList = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
-                                                ws3 = ws3new, params_phyact = params_phyact)
-                    LEVELS = levelList$LEVELS
-                    OLEVELS = levelList$OLEVELS
-                    Lnames = levelList$Lnames
-                    ts = levelList$ts
-                    
-                    #=============================================
-                    # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
-                    # we want there to be one more nights in the accelerometer data than there are nights with sleep results
-                    NNIGHTSSLEEP = length(unique(summarysleep_tmp2$calendar_date)) # nights with sleep results
-                    NNIGHTSACC = length(nightsi) #acc
-                    #-------------------------------
-                    # ignore all nights in 'inights' before the first waking up and after the last waking up
-                    FM = which(diff(ts$diur) == -1)
-                    # now 0.5+6+0.5 midnights and 7 days
-                    for (timewindowi in params_output[["timewindow"]]) {
-                      nightsi = nightsi_bu
-                      ts$guider = "unknown"
-                      if (timewindowi == "WW") {
-                        if (length(FM) > 0) {
-                          # ignore first and last midnight because we did not do sleep detection on it
-                          nightsi = nightsi[nightsi > FM[1] & nightsi < FM[length(FM)]]
-                        }
-                      } else {
-                        # if first night is missing then nights needs to align with diur
-                        startend_sleep = which(abs(diff(ts$diur)) == 1)
-                        Nepochsin12Hours =  (60/ws3new) * 60 * 12
-                        nightsi = nightsi[nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
-                                            nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
+            } else {
+              sibreport = NULL
+            }
+            ts$window = 0
+            # backup of nightsi outside threshold definitions to avoid
+            # overwriting the backup after the first iteration
+            nightsi_bu = nightsi
+            for (TRLi in params_phyact[["threshold.lig"]]) {
+              for (TRMi in params_phyact[["threshold.mod"]]) {
+                for (TRVi in params_phyact[["threshold.vig"]]) {
+                  # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
+                  levelList = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
+                                              ws3 = ws3new, params_phyact = params_phyact)
+                  LEVELS = levelList$LEVELS
+                  OLEVELS = levelList$OLEVELS
+                  Lnames = levelList$Lnames
+                  ts = levelList$ts
+                  
+                  #=============================================
+                  # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
+                  # we want there to be one more nights in the accelerometer data than there are nights with sleep results
+                  NNIGHTSSLEEP = length(unique(summarysleep_tmp2$calendar_date)) # nights with sleep results
+                  NNIGHTSACC = length(nightsi) #acc
+                  #-------------------------------
+                  # ignore all nights in 'inights' before the first waking up and after the last waking up
+                  FM = which(diff(ts$diur) == -1)
+                  # now 0.5+6+0.5 midnights and 7 days
+                  for (timewindowi in params_output[["timewindow"]]) {
+                    nightsi = nightsi_bu
+                    ts$guider = "unknown"
+                    if (timewindowi == "WW") {
+                      if (length(FM) > 0) {
+                        # ignore first and last midnight because we did not do sleep detection on it
+                        nightsi = nightsi[nightsi > FM[1] & nightsi < FM[length(FM)]]
                       }
-                      if (timewindowi == "MM") {
-                        Nwindows = length(nightsi) + 1
-                      } else {
-                        Nwindows = length(which(diff(ts$diur) == -1))
-                      }
-                      indjump = 1
-                      qqq_backup = c()
-                      add_one_day_to_next_date = FALSE
-                      if (is.character(params_247[["qwindow"]])) {
-                        params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                                                params_247[["qwindow_dateformat"]],
-                                                                epochSize = ws3new)
-                        # This will be an object with numeric qwindow values for all individuals and days
-                      }
-                      for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
-                        # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
-                        
-                        defdays = g.part5.definedays(nightsi, wi, indjump,
-                                                     nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
-                                                     timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
-                                                     ID = ID)
-                        qqq = defdays$qqq
-                        qqq_backup = defdays$qqq_backup
-                        segments = defdays$segments
-                        segments_names = defdays$segments_names
-                        if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
-                          if ((qqq[2] - qqq[1]) * ws3new > 900) {
-                            ts$window[qqq[1]:qqq[2]] = wi
-                            if (di == 1) next_si = 1 else next_si = sum(dsummary[,1] != "") + 1
-                            for (si in next_si:(next_si + length(segments) - 1)) {
-                              fi = 1
-                              current_segment_i = si - next_si + 1
-                              segStart = segments[[current_segment_i]][1]
-                              segEnd = segments[[current_segment_i]][2]
-                              if (si > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
-                              if (timewindowi == "MM" & si > 1) { # because first segment is always full window
-                                if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                                ts$segment[segStart:segEnd] = si
-                              }
-                              
-                              # Already store basic information about the file
-                              # in the output matrix: 
-                              if (classifier[1] == "timeuse") {
-                                dsummary[si,fi:(fi + 1)] = c(ID, fnames.ms3[i])
-                                ds_names[fi:(fi + 1)] = c("ID", "filename"); fi = fi + 2
-                              } else  {
-                                # this means timeuse has been derived before and 
-                                # frag metrics should be derived now with different epoch
-                                si = which(dsummary[,5] == wi & dsummary[,6] == timewindowi)
-                                fi = grep("^FRAG", ds_names)[1]
-                                if (is.na(fi)) fi = which(ds_names == "")[1]
-                              } 
-                              ##################################################
-                              # Analysis per segment:
-                              # Group categories of objects together
-                              # to reduce number of individual objects that need to be
-                              # passed on to analyseSegment
-                              indexlog = list(fileIndex = i,
-                                              winType = timewindowi,
-                                              winIndex = wi,
-                                              winStartEnd = qqq,
-                                              segIndex1 = si,
-                                              segIndex2 = current_segment_i,
-                                              segStartEnd = c(segStart, segEnd),
-                                              columnIndex = fi)
-                              timeList = list(ts = ts,
-                                              sec = sec,
-                                              min = min,
-                                              hour = hour,
-                                              time_POSIX = time_POSIX,
-                                              epochSize = ws3new)
-                              gas = g.part5_analyseSegment(indexlog, timeList, levelList,
-                                                           segments,
-                                                           segments_names,
-                                                           dsummary, ds_names,
-                                                           # parameter objects
-                                                           params_general, params_output,
-                                                           params_sleep, params_247,
-                                                           params_phyact,
-                                                           # sleep related
-                                                           sumSleep = summarysleep_tmp2, sibDef,
-                                                           # other arguments
-                                                           fullFilename = fullfilenames[i],
-                                                           add_one_day_to_next_date,
-                                                           lightpeak_available, tail_expansion_log,
-                                                           foldernamei = foldername[i],
-                                                           classifier = classifier)
-                              # Extract essential object to be used as input for the next 
-                              # segment
-                              indexlog = gas$indexlog
-                              ds_names = gas$ds_names
-                              dsummary = gas$dsummary
-                              timeList = gas$timeList
-                              doNext = gas$doNext
-                              # indexlog
-                              qqq = indexlog$winStartEnd
-                              si = indexlog$segIndex1
-                              current_segment_i = indexlog$segIndex2
-                              segStart = indexlog$segStartEnd[1]
-                              segEnd = indexlog$segStartEnd[2]
-                              fi = indexlog$columnIndex
-                              # timeList
-                              ts = timeList$ts
-                              ws3new = timeList$epochSize
-                              if (doNext == TRUE) next
+                    } else {
+                      # if first night is missing then nights needs to align with diur
+                      startend_sleep = which(abs(diff(ts$diur)) == 1)
+                      Nepochsin12Hours =  (60/ws3new) * 60 * 12
+                      nightsi = nightsi[nightsi >= (startend_sleep[1] - Nepochsin12Hours) &
+                                          nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
+                    }
+                    if (timewindowi == "MM") {
+                      Nwindows = length(nightsi) + 1
+                    } else {
+                      Nwindows = length(which(diff(ts$diur) == -1))
+                    }
+                    indjump = 1
+                    qqq_backup = c()
+                    add_one_day_to_next_date = FALSE
+                    if (is.character(params_247[["qwindow"]])) {
+                      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                                              params_247[["qwindow_dateformat"]],
+                                                              epochSize = ws3new)
+                      # This will be an object with numeric qwindow values for all individuals and days
+                    }
+                    for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
+                      # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
+                      
+                      defdays = g.part5.definedays(nightsi, wi, indjump,
+                                                   nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
+                                                   timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
+                                                   ID = ID)
+                      qqq = defdays$qqq
+                      qqq_backup = defdays$qqq_backup
+                      segments = defdays$segments
+                      segments_names = defdays$segments_names
+                      if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
+                        if ((qqq[2] - qqq[1]) * ws3new > 900) {
+                          ts$window[qqq[1]:qqq[2]] = wi
+                          if (di == 1) next_si = 1 else next_si = sum(dsummary[,1] != "") + 1
+                          for (si in next_si:(next_si + length(segments) - 1)) {
+                            fi = 1
+                            current_segment_i = si - next_si + 1
+                            segStart = segments[[current_segment_i]][1]
+                            segEnd = segments[[current_segment_i]][2]
+                            if (si > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
+                            if (timewindowi == "MM" & si > 1) { # because first segment is always full window
+                              if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
+                              ts$segment[segStart:segEnd] = si
                             }
+                            
+                            # Already store basic information about the file
+                            # in the output matrix: 
+                            if (classifier[1] == "timeuse") {
+                              dsummary[si,fi:(fi + 1)] = c(ID, fnames.ms3[i])
+                              ds_names[fi:(fi + 1)] = c("ID", "filename"); fi = fi + 2
+                            } else  {
+                              # this means timeuse has been derived before and 
+                              # frag metrics should be derived now with different epoch
+                              si = which(dsummary[,5] == wi & dsummary[,6] == timewindowi)
+                              fi = grep("^FRAG", ds_names)[1]
+                              if (is.na(fi)) fi = which(ds_names == "")[1]
+                            } 
+                            ##################################################
+                            # Analysis per segment:
+                            # Group categories of objects together
+                            # to reduce number of individual objects that need to be
+                            # passed on to analyseSegment
+                            indexlog = list(fileIndex = i,
+                                            winType = timewindowi,
+                                            winIndex = wi,
+                                            winStartEnd = qqq,
+                                            segIndex1 = si,
+                                            segIndex2 = current_segment_i,
+                                            segStartEnd = c(segStart, segEnd),
+                                            columnIndex = fi)
+                            timeList = list(ts = ts,
+                                            sec = sec,
+                                            min = min,
+                                            hour = hour,
+                                            time_POSIX = time_POSIX,
+                                            epochSize = ws3new)
+                            gas = g.part5_analyseSegment(indexlog, timeList, levelList,
+                                                         segments,
+                                                         segments_names,
+                                                         dsummary, ds_names,
+                                                         # parameter objects
+                                                         params_general, params_output,
+                                                         params_sleep, params_247,
+                                                         params_phyact,
+                                                         # sleep related
+                                                         sumSleep = summarysleep_tmp2, sibDef,
+                                                         # other arguments
+                                                         fullFilename = fullfilenames[i],
+                                                         add_one_day_to_next_date,
+                                                         lightpeak_available, tail_expansion_log,
+                                                         foldernamei = foldername[i],
+                                                         sibreport = sibreport,
+                                                         classifier = classifier)
+                            # Extract essential object to be used as input for the next 
+                            # segment
+                            indexlog = gas$indexlog
+                            ds_names = gas$ds_names
+                            dsummary = gas$dsummary
+                            timeList = gas$timeList
+                            doNext = gas$doNext
+                            # indexlog
+                            qqq = indexlog$winStartEnd
+                            si = indexlog$segIndex1
+                            current_segment_i = indexlog$segIndex2
+                            segStart = indexlog$segStartEnd[1]
+                            segEnd = indexlog$segStartEnd[2]
+                            fi = indexlog$columnIndex
+                            # timeList
+                            ts = timeList$ts
+                            ws3new = timeList$epochSize
+                            if (doNext == TRUE) next
                           }
                         }
-                        di = di + 1
                       }
+                      di = di + 1
                     }
-                    if (params_output[["save_ms5rawlevels"]] == TRUE) {
-                      legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
-                      if (file.exists(legendfile) == FALSE) {
-                        legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                        data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                           sep = params_output[["sep_reports"]])
-                      }
-                      # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
-                      rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
-                                                gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
-                                                     replacement = "", x = tolower(fnames.ms3[i])),
-                                                "_", sibDef, "_epoch", ws3new, "s", 
-                                                ".", params_output[["save_ms5raw_format"]])
-                      # save time series to csv files
-                      if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
-                        napNonwear_col = "nap1_nonwear2"
-                      } else {
-                        napNonwear_col = c()
-                      }
-                      g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear", "guider", "window", napNonwear_col)],
-                                             LEVELS = LEVELS,
-                                             desiredtz = params_general[["desiredtz"]],
-                                             rawlevels_fname = rawlevels_fname,
-                                             save_ms5raw_format = params_output[["save_ms5raw_format"]],
-                                             save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
-                                             DaCleanFile = DaCleanFile,
-                                             includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
-                                             sep_reports = params_output[["sep_reports"]])
+                  }
+                  if (params_output[["save_ms5rawlevels"]] == TRUE) {
+                    legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
+                    if (file.exists(legendfile) == FALSE) {
+                      legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
+                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                         sep = params_output[["sep_reports"]])
                     }
+                    # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
+                    rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
+                                              gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
+                                                   replacement = "", x = tolower(fnames.ms3[i])),
+                                              "_", sibDef, "_epoch", ws3new, "s", 
+                                              ".", params_output[["save_ms5raw_format"]])
+                    # save time series to csv files
+                    if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
+                      napNonwear_col = "nap1_nonwear2"
+                    } else {
+                      napNonwear_col = c()
+                    }
+                    if (lightpeak_available == TRUE) {
+                      lightpeak_col = "lightpeak"
+                    } else {
+                      lightpeak_col = NULL
+                    }
+                    g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
+                                                       "guider", "window", napNonwear_col,
+                                                       lightpeak_col)],
+                                           LEVELS = LEVELS,
+                                           desiredtz = params_general[["desiredtz"]],
+                                           rawlevels_fname = rawlevels_fname,
+                                           save_ms5raw_format = params_output[["save_ms5raw_format"]],
+                                           save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
+                                           DaCleanFile = DaCleanFile,
+                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
+                                           sep_reports = params_output[["sep_reports"]])
                   }
                 }
               }
@@ -622,11 +655,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     } else {
       # pass on functions
       functions2passon = c("is.ISO8601", "iso8601chartime2POSIX", "identify_levels", "g.getbout",
+                           "g.sibreport", "extract_params", "load_params", "check_params",
+                           "correctOlderMilestoneData",
                            "g.part5.addfirstwake", "g.part5.addsib",
+                           "g.part5.classifyNaps.R",
                            "g.part5.definedays", "g.part5.fixmissingnight",
                            "g.part5.onsetwaketiming", "g.part5.wakesleepwindows",
                            "g.part5.savetimeseries", "g.fragmentation", "g.intensitygradient",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment", "g.sibreport",
+                           "g.part5_analyseSegment", "g.part5_initialise_ts",
                            "extract_params", "load_params", "check_params",
                            "correctOlderMilestoneData", "g.part5.classifyNaps",
                            "aggregate_to_epoch", "extract_nightsi")
