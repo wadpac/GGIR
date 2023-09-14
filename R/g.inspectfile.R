@@ -2,8 +2,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                          configtz = c(), ...) {
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("datafile", "desiredtz", "params_rawdata", "configtz")) == FALSE) {
-    # Extract and check parameters if user provides more arguments than just the parameter arguments
+  if (length(input) > 0 || length(params_rawdata) == 0) {
+    # or if params_[...] aren't specified (so need to be filled with defaults).
     # So, inside GGIR this will not be used, but it is used when g.inspectfile is used on its own
     # as if it was still the old g.inspectfile function
     params = extract_params(params_rawdata = params_rawdata,
@@ -14,7 +14,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   }
   
   #get input variables (relevant when read.myacc.csv is used
-  input = list(...)
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste0(names(input)[i], "=", input[i])
