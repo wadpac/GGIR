@@ -200,7 +200,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
                                     rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
                                     rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                                    rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])
+                                    rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                                    desiredtz = desiredtz,
+                                    configtz = configtz)
     if (Pusercsvformat$header == "no header" || is.null(Pusercsvformat$header$sample_rate)) {
       sf = params_rawdata[["rmc.sf"]]
       if (is.null(sf)) {
