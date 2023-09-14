@@ -30,7 +30,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                    " and will be replaced by the existing arguments desiredtz and configtz, respectively.")
     showGeneralWarning = TRUE
     # Check if both types of tz are provided:
-    if (!is.null(desiredtz) & !is.null(rmc.desiredtz)) {
+    if (!is.null(desiredtz) && desiredtz != "" && !is.null(rmc.desiredtz)) {
       if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
         showGeneralWarning = FALSE
         stop(paste0("\n", generalWarning, "Please, specify only desiredtz and set ",
@@ -51,6 +51,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     # Until deprecation still allow rmc. to be used, 
     # so us it to overwrite normal tz in this function:
     if (is.null(desiredtz)) desiredtz = rmc.desiredtz 
+    if (desiredtz == "" && !is.null(rmc.desiredtz)) desiredtz = rmc.desiredtz
     if (is.null(configtz)) configtz = rmc.configtz
    
   }
