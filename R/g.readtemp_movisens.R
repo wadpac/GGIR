@@ -1,5 +1,9 @@
 g.readtemp_movisens = function(datafile, desiredtz = "", from = c(), to = c(), interpolationType=1) {
-    temperature = unisensR::readUnisensSignalEntry(dirname(datafile), "temp.bin")
+    temperature = c()
+    try(expr = {temperature = unisensR::readUnisensSignalEntry(dirname(datafile), "temp.bin")}, silent = TRUE)
+    if (length(temperature) == 0) {
+        return(invisible(c()))
+    }
     temperature = as.data.frame(temperature)
     origin = unisensR::readUnisensStartTime(dirname(datafile))
     temperature$timestamp = seq(origin, origin + nrow(temperature) - 1, by = 1)
