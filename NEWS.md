@@ -1,3 +1,18 @@
+# CHANGES IN GGIR VERSION 2.10-3
+
+- Part 5: Now able to assess overlap between self-reported naps and nonwear
+with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
+
+- Part 5: Time series now also exported if recording only includes one night, even though this is not sufficient for the main part 5 analyses. #894 Further, the time series now also come with lightpeak (LUX).
+
+- Visualreport: Bug fixed extracting the numeric value of the days to exclude in g.plot5 #879
+
+- Part 1: Fixed minor bug to keep calibration data in the data quality report after re-running parts 1 and 2 with overwrite = TRUE and backup.cal.coef = "retrieve" #896
+
+- Part 5: Fix minor bug by which GGIR skipped the last day if measurement finishes before midnight and timewindow = MM #891
+
+- Part 4: Added parameter sleepefficiency.metric to decide if in-bed time (denominator) should be guider_spt or acc_spt + latency #811
+
 # CHANGES IN GGIR VERSION 2.10-2
 
 - Part 1: Revision to readability of code (credits: Lena Kushleyeva)
