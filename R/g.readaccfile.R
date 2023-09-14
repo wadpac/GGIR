@@ -321,7 +321,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         colnames(P$data) = c("time", "x", "y", "z")
       }
     }     
-  } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$CSV) {
+  } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) {
     startpage = blocksize * (blocknumber - 1) + 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
