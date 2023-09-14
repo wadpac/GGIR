@@ -53,8 +53,8 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, "1")
-  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  expect_equal(SUM$summary$`N valid WEdays`, 1)
+  expect_equal(SUM$summary$`N valid WKdays`, 2)
   
   # part 2 with strategy = 5
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -67,8 +67,8 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, "1")
-  expect_equal(SUM$summary$`N valid WKdays`, "2")
+  expect_equal(SUM$summary$`N valid WEdays`, 1)
+  expect_equal(SUM$summary$`N valid WKdays`, 2)
   
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -103,7 +103,7 @@ test_that("chainof5parts", {
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.02911, tolerance = 3)
   expect_that(round(as.numeric(SUM$summary$meas_dur_dys), digits = 5), equals(1.95833))
   expect_that(ncol(SUM$daysummary), equals(34))
-  expect_equal(SUM$daysummary$`p50_ENMO_mg_0-24hr`, c("17.15", "33",  "0"))
+  expect_equal(SUM$daysummary$`p50_ENMO_mg_0-24hr`, c(17.15, 33,  0))
   expect_equal(round(as.numeric(SUM$daysummary$`p90_ENMO_mg_0-24hr`)), c(44, 54, 41), tolerance = 0)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_ENMO_mg_0-24hr`)), 89.26, tolerance = 3)
   expect_equal(mean(as.numeric(SUM$daysummary$`M3_q40_ENMO_mg_0-24hr`)), 37.383, tolerance = 3)
@@ -139,7 +139,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_true(as.logical(nightsummary$sleeplog_used[1]))
-  
+
   #--------------------------------------------
   #part 5
   g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
@@ -161,8 +161,8 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(3)) # changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(160)) # changed because intensity gradient now included in the test
+  expect_that(nrow(output),equals(4)) # 2023-09-04: changed because part5 now gives also first and last day
+  expect_that(ncol(output),equals(187)) # changed because intensity gradient now included in the test
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
@@ -192,13 +192,46 @@ test_that("chainof5parts", {
   #=======================
   # Different variations on part 4:
   #--------------------------------------------
+  #--------------------------------------------
+  # part 4 with sleepwindowType = TimeInBed and sleepefficiency.metric = 2
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
+          storefolderstructure = FALSE, overwrite = TRUE,
+          sleepwindowType = "TimeInBed", sleepefficiency.metric = 2)
+  dirname = "output_test/meta/ms4.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_true("sleeplatency" %in% colnames(nightsummary))
+  expect_true("sleepefficiency" %in% colnames(nightsummary))
+  expect_equal(round(nightsummary$sleeplatency[1], 3), 0.171)
+  expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.951)
+  
+  #--------------------------------------------
+  # part 4 with sleepwindowType = TimeInBed and sleepefficiency.metric = 1
+  g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, loglocation = sleeplog_fn, do.visual = TRUE, outliers.only = FALSE,
+          excludefirstlast = FALSE, criterror = 1, includenightcrit = 0, #nnights = 7,
+          colid = 1, coln1 = 2, relyonguider = FALSE, desiredtz = desiredtz,
+          storefolderstructure = FALSE, overwrite = TRUE,
+          sleepwindowType = "TimeInBed", sleepefficiency.metric = 1)
+  dirname = "output_test/meta/ms4.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_true("sleeplatency" %in% colnames(nightsummary))
+  expect_true("sleepefficiency" %in% colnames(nightsummary))
+  expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.851)
+  
+  #--------------------------------------------
   # part 4 without sleeplog
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, loglocation = c(), do.visual = TRUE, outliers.only = FALSE,
           excludefirstlast = FALSE, criterror = 1, includenightcrit = 0,
           nnights = 7, colid = 1, coln1 = 2,
           relyonguider = FALSE, desiredtz = desiredtz,
-          storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE)
+          storefolderstructure = TRUE, overwrite = TRUE, verbose = FALSE,
+          sleepwindowType = "SPT")
   
   dirname = "output_test/meta/ms4.out/"
   rn = dir(dirname,full.names = TRUE)
