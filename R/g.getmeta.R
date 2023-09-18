@@ -285,7 +285,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       if ((dformat == FORMAT$CSV || dformat == FORMAT$GT3X) && params_rawdata[["imputeTimegaps"]] == TRUE) {
         if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
         if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-        data = g.imputeTimegaps(data, xyzCol = c("x", "y", "z"), timeCol = "time", sf = sf, k = 0.25,
+
+        timeCol = c()
+        if (!is.null(data$time)) {
+          timeCol = "time"
+        }
+
+        data = g.imputeTimegaps(data, xyzCol = c("x", "y", "z"), timeCol = timeCol, sf = sf, k = 0.25,
                                 PreviousLastValue = PreviousLastValue,
                                 PreviousLastTime = PreviousLastTime,
                                 epochsize = c(ws3, ws2))
