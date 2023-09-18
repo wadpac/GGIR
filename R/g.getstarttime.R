@@ -20,10 +20,7 @@ g.getstarttime = function(datafile, data, header, mon, dformat, desiredtz, confi
       starttime = as.POSIXlt(P$data.out$time[1], tz = desiredtz, origin = "1970-01-01")
       starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
     }
-  } else if (dformat == FORMAT$CSV && mon == MONITOR$GENEACTIV) {
-    starttime = format(P[1,1])
-    starttime = as.POSIXlt(starttime)
-  } else if (dformat == FORMAT$CSV && (mon == MONITOR$ACTIGRAPH || mon == MONITOR$AXIVITY || mon == MONITOR$VERISENSE)) {
+  } } else if (dformat == FORMAT$CSV && (mon == MONITOR$ACTIGRAPH || mon == MONITOR$AXIVITY || mon == MONITOR$VERISENSE)) {
     if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE) {
       tmph = read.csv(datafile, nrow = 8, skip = 1)
       tmphi = 1
