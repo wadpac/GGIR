@@ -111,7 +111,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure,
-                        fullfilenames, foldernam, verbose) {
+                        fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
@@ -696,7 +696,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
                                                   extractfilenames, referencefnames, folderstructure,
-                                                  fullfilenames, foldername, verbose)
+                                                  fullfilenames, foldername, ffdone, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -717,7 +717,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                  params_general, ms5.out, ms5.outraw,
                  fnames.ms3, sleeplog, logs_diaries,
                  extractfilenames, referencefnames, folderstructure,
-                 fullfilenames, foldername, verbose)
+                 fullfilenames, foldername, ffdone, verbose)
     }
   }
 }
