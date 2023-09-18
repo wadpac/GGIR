@@ -64,10 +64,6 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
         includedaycrit.part5 = includedaycrit.part5 * 100
       } else if (includedaycrit.part5 > 1 & includedaycrit.part5 <= 25) { # if includedaycrit.part5 is used like includedaycrit as a number of hours
         includedaycrit.part5 = (includedaycrit.part5 / 24) * 100
-      } else if (includedaycrit.part5 < 0 ) {
-        warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
-      } else if (includedaycrit.part5 > 25) {
-        warning("\nIncorrect value of includedaycrit.part5, this should be a fraction of the day between zero and one or the number of hours in a day.")
       }
       maxpernwday = 100 - includedaycrit.part5
       # Exclude days that have 100% nonwear over the full window or 100% over wakinghours

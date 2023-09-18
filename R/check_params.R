@@ -236,6 +236,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
                                                      replacement = "/", x = params_cleaning[["data_cleaning_file"]])
     }
+    if (params_cleaning[["includedaycrit.part5"]] < 0) {
+      warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
+    } else if (params_cleaning[["includedaycrit.part5"]]  > 24) {
+      warning(paste0("\nIncorrect value of includedaycrit.part5, this should be",
+                     " a fraction of the day between zero and one or the number ",
+                     "of hours in a day."))
+    }
   }
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["bout.metric"]]) > 0 |
