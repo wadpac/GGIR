@@ -157,8 +157,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         }
       }
       atik = which(atestlist == max(atestlist))[1]
-      params_cleaning[["hrs.del.start"]] = atik * n_ws_perhour
-      params_cleaning[["maxdur"]] = (atik/n_ws_perday) + params_cleaning[["ndayswindow"]]
+      params_cleaning[["hrs.del.start"]] = (atik * n_ws_perhour) + params_cleaning[["hrs.del.start"]]
+      params_cleaning[["maxdur"]] = ((atik/n_ws_perday) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/n_ws_perday)
       if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
       # now calculate r4
       if (params_cleaning[["hrs.del.start"]] > 0) {
