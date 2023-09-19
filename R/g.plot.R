@@ -127,13 +127,18 @@ g.plot = function(IMP, M, I, durplot) {
   }
   
   MEND = length(timeline)
-  mnights = grep("T00:00:00", M$metalong$timestamp)
-  noons = grep("T12:00:00", M$metalong$timestamp)
-  ticks = sort(c(mnights, noons))
-  if (mnights[1] < noons[1]) {
-    tick_labels = rep(c("00", "12"), length.out = length(ticks))
-  } else if (noons[1] < mnights[1]) {
-    tick_labels = rep(c("12", "00"), length.out = length(ticks))
+  mnights = grep("00:00:00", M$metalong$timestamp)
+  noons = grep("12:00:00", M$metalong$timestamp)
+  if (length(mnights) > 0 & length(noons) > 0) {
+    ticks = sort(c(mnights, noons))
+    if (mnights[1] < noons[1]) {
+      tick_labels = rep(c("00", "12"), length.out = length(ticks))
+    } else if (noons[1] < mnights[1]) {
+      tick_labels = rep(c("12", "00"), length.out = length(ticks))
+    }
+  } else {
+    ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
+    tick_labels = 1:length(ticks)
   }
   # creating plot functions to avoid duplicated code
   plot_acc = function(timeline, Acceleration, durplot, ticks, metricName, tick_labels) {
