@@ -187,13 +187,16 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         if (p1 > length(atest)) break
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
       }
-      atik = which(atestlist == max(atestlist))[1]
+      atik = 1 # intitialise atik as 1, which will be used in case ndayswindow is longer than recording days
+      if (!is.null(atestlist)) atik = which(atestlist == max(atestlist))[1]
       if (firstmidnighti != 1) { #ignore everything before the first midnight plus hrs.del.start
         ignore_until = (midnightsi[atik] - 1) + (params_cleaning[["hrs.del.start"]]*(3600/ws2))
         r4[1:ignore_until] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
       }
       #ignore everything after the last midnight plus hrs.del.end
       ignore_from = midnightsi[atik + params_cleaning[["ndayswindow"]]] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
+      # if ndayswindow is higher than number of midnights, use last midnight
+      if (is.na(ignore_from)) ignore_from = midnightsi[length(midnightsi)] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
       r4[ignore_from:length(r4)] = 1
     }
     starttimei = 1
