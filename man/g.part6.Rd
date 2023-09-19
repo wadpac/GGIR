@@ -9,7 +9,8 @@
 }
 \usage{
 g.part6(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
-                   params_247 = c(), params_phyact = c(), verbose = TRUE, ...)
+                   params_general = c(),
+                   params_phyact = c(), verbose = TRUE, ...)
 }
 \arguments{
   \item{datadir}{
@@ -30,7 +31,7 @@ g.part6(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   \item{f1}{
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
-  \item{params_247}{
+  \item{params_general}{
    See details in \link{GGIR}.
   }
   \item{params_phyact}{

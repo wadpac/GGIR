@@ -11,35 +11,35 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   #==================================================================================
   # Get default values in parameter objects
   if (length(params_sleep) == 0) {
-    params = load_params(group = "sleep")
+    params = load_params(topic = "sleep")
     params_sleep = params$params_sleep
   }
   if (length(params_metrics) == 0) {
-    params = load_params(group = "metrics")
+    params = load_params(topic = "metrics")
     params_metrics = params$params_metrics
   }
   if (length(params_rawdata) == 0) {
-    params = load_params(group = "rawdata")
+    params = load_params(topic = "rawdata")
     params_rawdata = params$params_rawdata
   }
   if (length(params_247) == 0) {
-    params = load_params(group = "247")
+    params = load_params(topic = "247")
     params_247 = params$params_247
   }
   if (length(params_phyact) == 0) {
-    params = load_params(group = "phyact")
+    params = load_params(topic = "phyact")
     params_phyact = params$params_phyact
   }
   if (length(params_cleaning) == 0) {
-    params = load_params(group = "cleaning")
+    params = load_params(topic = "cleaning")
     params_cleaning = params$params_cleaning
   }
   if (length(params_output) == 0) {
-    params = load_params(group = "output")
+    params = load_params(topic = "output")
     params_output = params$params_output
   }
   if (length(params_general) == 0) {
-    params = load_params(group = "general")
+    params = load_params(topic = "general")
     params_general = params$params_general
   }
   #==================================================================================

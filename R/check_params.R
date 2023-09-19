@@ -90,9 +90,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                        "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa",
                        "boutdur.in", "boutdur.lig")
+    character_params = c("frag.metrics", "part6_threshold_combi")
     check_class("phyact", params = params_phyact, parnames = numeric_params, parclass = "numeric")
     # check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
-    check_class("phyact", params = params_phyact, parnames = "frag.metrics", parclass = "character")
+    check_class("phyact", params = params_phyact, parnames = character_params, parclass = "character")
+    
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",

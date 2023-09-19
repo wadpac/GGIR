@@ -959,6 +959,11 @@ GGIR(mode = 1:5,
         Fragmentation metric to exract. Can be "mean", "TP", "Gini",
         "power", or "CoV", "NFragPM", or all the above metrics with "all".
         See package vignette for description of fragmentation metrics.}
+
+      \item{part6_threshold_combi}{
+        Character (default = "40_100_120") to indicate the threshold combination derived in
+        part 5 to be used for part 6
+      }
     }
   }
 
