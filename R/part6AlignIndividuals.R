@@ -128,7 +128,7 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
                      direction = "wide")
       colnames = paste0("ACC.", uMID)
       
-      out2$time_POSIX = as.POSIXlt(out2$timenum, tz = "America/Halifax", origin = "1970-01-01")
+      out2$time_POSIX = as.POSIXct(out2$timenum, tz = "America/Halifax", origin = "1970-01-01")
       
       # Add indicator of valid number of family members per time point
       out2$N_valid_hhmembers = rowSums(out2[,grep(pattern = "validepoch", x = names(out2), value = FALSE)], na.rm = TRUE)

@@ -72,7 +72,7 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
       uMID = gsub(pattern = "ACC.", replacement = "", x = grep(pattern = "ACC", x = colnames(D), value = TRUE))
       #unique pair IDs
       uPID = gsub(pattern = "validpair_", replacement = "", x = grep(pattern = "validpair", x = colnames(D), value = TRUE))
-      D$time_POSIX = as.POSIXlt(D$timenum, tz = desiredtz, origin = "1970-01-01")
+      D$time_POSIX = as.POSIXct(D$timenum, tz = desiredtz, origin = "1970-01-01")
       D$date = as.character(as.Date(D$time_POSIX))
       Npairs = length(uPID)
       pairsum_final = NULL
