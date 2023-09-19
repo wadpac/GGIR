@@ -328,8 +328,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
-    P$timestamp = as.POSIXct(as.numeric(P$timestamp),
+    
+    if (configtz != desiredtz) {
+      P$timestamp = as.POSIXct(as.numeric(P$timestamp),
                              tz = desiredtz, origin = "1970-01-01")
+    }
   }
   return(list(data = P, header = header, 
               PreviousLastValue = PreviousLastValue,
