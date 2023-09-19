@@ -1,5 +1,5 @@
-\name{get_starttime_weekday_meantemp_truncdata }
-\alias{get_starttime_weekday_meantemp_truncdata}
+\name{get_starttime_weekday_truncdata }
+\alias{get_starttime_weekday_truncdata}
 \title{
   Get starttime (adjusted), weekday, and adjust data accordingly.
 }
@@ -11,7 +11,7 @@
   lengths in an hour, and truncating the data accordingly.
 }
 \usage{
-  get_starttime_weekday_meantemp_truncdata(monc, 
+  get_starttime_weekday_truncdata(monc, 
   dformat, data, header, desiredtz, sf, i,
   datafile, ws2, starttime, wday, weekdays, wdayname, configtz = NULL)
 }

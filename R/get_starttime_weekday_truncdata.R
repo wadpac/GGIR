@@ -1,6 +1,6 @@
-get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data, 
-                                                    header, desiredtz, sf, i, datafile,
-                                                    ws2, starttime, wday, weekdays, wdayname, configtz = NULL) {
+get_starttime_weekday_truncdata = function(monc, dformat, data, 
+                                           header, desiredtz, sf, i, datafile,
+                                           ws2, starttime, wday, weekdays, wdayname, configtz = NULL) {
   #ensures that first window starts at logical timepoint relative to its size
   # (15,30,45 or 60 minutes of each hour)
   start_meas = ws2/60 

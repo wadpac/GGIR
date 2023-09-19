@@ -316,11 +316,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
       }
 
-      SWMT = get_starttime_weekday_meantemp_truncdata(mon, dformat,
-                                                      data,
-                                                      header, desiredtz = params_general[["desiredtz"]],
-                                                      sf, i, datafile,  ws2,
-                                                      starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
+      SWMT = get_starttime_weekday_truncdata(mon, dformat,
+                                             data,
+                                             header, desiredtz = params_general[["desiredtz"]],
+                                             sf, i, datafile,  ws2,
+                                             starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
       starttime = SWMT$starttime
       wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
