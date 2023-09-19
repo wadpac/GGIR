@@ -211,11 +211,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_cleaning) > 0) {
-    if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.start"]] != 0) {
+    if (params_cleaning[["strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.start"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (params_cleaning[["strategy"]] != 1 & params_cleaning[["hrs.del.end"]] != 0) {
+    if (params_cleaning[["strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.end"]] != 0) {
       warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
                      params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
