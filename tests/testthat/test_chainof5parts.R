@@ -46,29 +46,62 @@ test_that("chainof5parts", {
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
           strategy = 3, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c())
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
+          verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 11)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 12)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, 1)
   expect_equal(SUM$summary$`N valid WKdays`, 2)
   
-  # part 2 with strategy = 5
+  # part 2 with strategy = 3 and hrs.del.start = 6 and hrs.del.end = 6
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
-          strategy = 5, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
-          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c())
+          strategy = 3, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
+          verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 17) # removed 6 hours from the ndayswindow at the beginning
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 18) # removed 6 hours from the ndayswindow at the end
+  
+  # part 2 with strategy = 5
+  g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
+          strategy = 5, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
+          verbose = FALSE)
+  dirname = "output_test/meta/ms2.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 15)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 8)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, 1)
   expect_equal(SUM$summary$`N valid WKdays`, 2)
+  
+  # part 2 with strategy = 5 and hrs.del.start = 6 and hrs.del.end = 6
+  g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+          idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
+          strategy = 5, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
+          maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
+          verbose = FALSE)
+  dirname = "output_test/meta/ms2.out/"
+  rn = dir(dirname,full.names = TRUE)
+  load(rn[1])
+  expect_equal(nrow(IMP$metashort), 11280)
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 21) # removed 6 hours from the ndayswindow at the beginning
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 14) # removed 6 hours from the ndayswindow at the end
+
   
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
