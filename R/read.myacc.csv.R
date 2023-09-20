@@ -185,7 +185,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
+      P$timestamp = as.POSIXct(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
+      if (configtz != desiredtz) {
+        attr(P$timestamp, "tzone") = desiredtz
+      }
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
         return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
@@ -248,8 +251,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
     } else if (rmc.unit.time == "character") {
       P$timestamp = as.POSIXct(P$timestamp,format = rmc.format.time, tz = configtz)
+      if (configtz != desiredtz) {
+        attr(P$timestamp, "tzone") = desiredtz
+      }
     } else if (rmc.unit.time == "UNIXsec") {
-      P$timestamp = as.POSIXct(P$timestamp, origin = rmc.origin, tz = configtz)
+      P$timestamp = as.POSIXct(P$timestamp, origin = rmc.origin, tz = desiredtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
       rmc.origin = "1899-12-30"
@@ -257,18 +263,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       tmp2 = P$timestamp - round(P$timestamp)
       timecode = ((tmp2 * 10^10) * 8.64) / 1000000
       numerictime = datecode + timecode
-      P$timestamp = as.POSIXct(numerictime, origin = rmc.origin, tz = configtz)
+      P$timestamp = as.POSIXct(numerictime, origin = rmc.origin, tz = desiredtz)
     }
     if (length(which(is.na(P$timestamp) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
     }
   }
-  
-  if (configtz != desiredtz) {
-    P$timestamp = as.POSIXct(as.numeric(P$timestamp),
-                                 tz = desiredtz, origin = "1970-01-01")
-  }
-  
+    
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
     P$accx = P$accx * 1000
@@ -311,7 +312,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   if (rmc.doresample == TRUE) { #resample
     rawTime = vector(mode = "numeric", nrow(P))
-    rawTime = as.numeric(as.POSIXct(P$timestamp,tz = configtz))
+    rawTime = as.numeric(P$timestamp)
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "timestamp"))])
     step = 1/sf
     start = rawTime[1]
@@ -323,16 +324,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     rawLast = nrow(rawAccel)
     accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
-    timeRes = as.POSIXct(timeRes, origin = rmc.origin, tz = configtz)
+    timeRes = as.POSIXct(timeRes, origin = rmc.origin, tz = desiredtz)
     P = as.data.frame(accelRes, stringsAsFactors = TRUE)
     P$timestamp = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
-    
-    if (configtz != desiredtz) {
-      P$timestamp = as.POSIXct(as.numeric(P$timestamp),
-                             tz = desiredtz, origin = "1970-01-01")
-    }
   }
   return(list(data = P, header = header, 
               PreviousLastValue = PreviousLastValue,
