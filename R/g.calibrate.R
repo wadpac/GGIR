@@ -142,9 +142,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = data[1:use,]
           LD = nrow(data) #redefine LD because there is less data
           ##==================================================
-          dur = nrow(data)	#duration of experiment in data points
-          durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
-
           Gx = data$x
           Gy = data$y
           Gz = data$z
