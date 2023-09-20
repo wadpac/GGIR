@@ -13,7 +13,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     # So, inside GGIR this will not be used, but it is used when g.sleep is used on its own
     # as if it was still the old g.sleep function
     params = extract_params(params_sleep = params_sleep,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = "sleep") # load default parameters
     params_sleep = params$params_sleep
   }
   #==============================================================
@@ -196,17 +197,22 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         firstmidnighti = midnightsi[1]
       }
       # if recording started before 4am, then also derive first awakening
-      first4am = grep("04:00:00", time)[1]
-      if (first4am < firstmidnighti) { # this means recording started after midnight and before 4am
-        midn_start = 0
+      first4am = grep("04:00:00", time[1:pmin(nD, (n_ws3_perday + 1))])[1]
+      # only do this if there is a 4am in the recording
+      if (length(first4am) > 0) {
+        if (first4am < firstmidnighti) { # this means recording started after midnight and before 4am
+          midn_start = 0
+        } else {
+          midn_start = 1
+        }
       } else {
-        midn_start = 1
+        midn_start = 0
       }
       sptei = 0
       for (j in midn_start:(countmidn)) { #Looping over the midnight
         if (j == 0) {
           qqq1 = 1 # preceding noon (not available in recording)
-          qqq2 = grep("12:00:00", time)[1] # first noon in recording
+          qqq2 = midnightsi[1] + (twd[1] * (3600 / ws3))# first noon in recording
         } else {
           qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon

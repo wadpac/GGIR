@@ -1113,6 +1113,19 @@ GGIR(mode = 1:5,
         e.g., \code{possible_nap_dur = c(15, 240)}. Currently
         used in the context of an explorative nap classification algortihm that
         was trained in 3.5 year olds.}
+        
+      \item{sleepefficiency.metric}{
+        Numeric (default = 1).
+        If 1 (default), sleep efficiency is calculated as detected nocturnal sleep time divided by
+        log-derived duration in sleep period time (considering user-reported sleep onset and
+        wake times). If 2, sleep efficiency is calculated as detected nocturnal
+        sleep time divided by detected duration in sleep period time plus sleep latency (where
+        sleep latency refers to the difference between log-derived sleep onset and 
+        accelerometer-detected sleep onset).}
+        
+      \item{possible_nap_edge_acc}{
+        Minimum acceleration before or after the SIB for the nap to be considered.
+      }
     }
   }
 
@@ -1304,7 +1317,11 @@ GGIR(mode = 1:5,
       \item{do.sibreport}{
         Boolean (default = FALSE).
         In \link{g.part4}: To indicate whether to generate report for the sustained 
-        inactivity bouts (SIB).}
+        inactivity bouts (SIB). If set to TRUE and when an advanced sleep diary is
+        available in part 4 then part 5 will use this to generate summary statistics
+        on the overlap between self-reported nonwear and napping with SIB. Here,
+        SIB cna be filter based on argument possible_nap_edge_acc and the first value
+        of possible_nap_dur}
 
       \item{do.visual}{
         Boolean (default = TRUE).

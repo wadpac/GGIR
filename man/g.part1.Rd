@@ -18,8 +18,8 @@
   that allows for operating g.part1 and g.part2.
 }
 \usage{
-  g.part1(datadir = c(), outputdir = c(), f0 = 1, f1 = c(),
-          studyname = c(), myfun = c(), params_metrics = c(), params_rawdata = c(),
+  g.part1(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(),
+          myfun = c(), params_metrics = c(), params_rawdata = c(),
           params_cleaning = c(), params_general = c(), verbose = TRUE, ...)
 }
 
@@ -29,7 +29,7 @@
     "C:/mydata", or list of accelerometer filenames and directories, e.g. 
     c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").
   }
-  \item{outputdir}{
+  \item{metadatadir}{
     Directory where the output needs to be stored. Note that this 
     function will attempt to create folders in this directory and uses
     those folder to keep output.
@@ -40,11 +40,6 @@
   }
   \item{f1}{
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
-  }
-  \item{studyname}{
-    If the datadir is a folder, then the study will be given the name of the
-    data directory. If datadir is a list of filenames then the studyname as specified
-    by this input argument will be used as name for the study
   }
   \item{myfun}{
     External function object to be applied to raw data.

@@ -19,7 +19,7 @@
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei)
+                                  foldernamei, sibreport = NULL)
 }
 \arguments{
   \item{indexlog}{
@@ -82,6 +82,9 @@
   }
   \item{foldernamei}{
     Character with folder name in which the data file is stored.
+  }
+  \item{sibreport}{
+    Sibreport object as passed on from \link{g.part5}
   }
 }
 \value{

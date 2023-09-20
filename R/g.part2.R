@@ -228,6 +228,19 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SUM$summary$names_appendedRecordings = names_appendedRecordings
           SUM$summary$overlap_hrs_appendedRecordings = overlap_appendedRecordings
         }
+        # convert daysummary and summary variables to numeric
+        char2num_df = function(df) {
+          # save as numeric columns that can be coerced to numeric
+          df = lapply(df, function(x) tryCatch(as.numeric(as.character(x)), 
+                                               error = function(cond) return(x),
+                                               warning = function(cond) return(x)))
+          # list to data frame
+          df = as.data.frame(df, check.names = FALSE)
+          return(df)
+        }
+        SUM$summary = char2num_df(SUM$summary)
+        SUM$daysummary = char2num_df(SUM$daysummary)
+        # save milestone data
         save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)

@@ -25,9 +25,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
                             params_phyact = params_phyact,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = c("247", "phyact")) # load default parameters
     params_247 = params$params_247
     params_phyact = params$params_phyact
+    rm(params)
   }
 
   startatmidnight = endatmidnight = 0

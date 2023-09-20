@@ -234,12 +234,14 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 # store all summaries in csv files with cleaning criteria
                 validdaysi = getValidDayIndices(x = OF3, window = uwi[j],
                                                 params_cleaning = params_cleaning)
-                data.table::fwrite(
-                  OF3_clean[validdaysi, ],
-                  paste(metadatadir, "/results/part5_daysummary_",
-                        uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
-                        "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
-                  sep = sep_reports)
+                if (length(validdaysi) > 0) {
+                  data.table::fwrite(
+                    OF3_clean[validdaysi, ],
+                    paste(metadatadir, "/results/part5_daysummary_",
+                          uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
+                          "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
+                    sep = sep_reports)
+                }
                 #------------------------------------------------------------------------------------
                 #also compute summary per person
                 agg_plainNweighted = function(df,

@@ -193,15 +193,15 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           lengthnight = summarysleep_tmp$SptDuration #including wake periods
           nocsleepdur = summarysleep_tmp$SleepDurationInSpt
           sleepefficiency = (nocsleepdur / lengthnight) * 100
-          f01 = as.numeric(P2daysummary_tmp[,c45])
-          f02 = as.numeric(P2daysummary_tmp[,MainMetric])
+          f01 = P2daysummary_tmp[,c45]
+          f02 = P2daysummary_tmp[,MainMetric]
           f05 = matrix(NA, nrow = 2, ncol = length(summarysleep_tmp$SptDuration))
           f05[1,] = summarysleep_tmp$SleepDurationInSpt
           f05[2,] = summarysleep_tmp$SptDuration - summarysleep_tmp$SleepDurationInSpt
           f05_2 = summarysleep_tmp$SptDuration
           f06 = sleepefficiency
           # f07 = P2daysummary_tmp$N.valid.hours # Previously needed when reading csv-report Part 2
-          f07 = as.numeric(P2daysummary_tmp$`N valid hours`)
+          f07 = P2daysummary_tmp$`N valid hours`
           # allocate colours
           CLS = c("white", "black")
           CLS_A = rep(CLS[1], length(days_PA))
@@ -452,7 +452,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           xaxislabels = c("noon","2pm", "4pm", "6pm", "8pm", "10pm", "midnight",
                           "2am", "4am", "6am", "8am", "10am", "noon")
         }
-        if (length(nightsi) > 0) {
+        if (length(nightsi) > 0 & nrow(summarysleep_tmp) > 0) {
           # Do not attempt to create a plot when there is no midnight in the data,
           # because calculation of t1 will be complicated.
           nplots = length(nightsi) + 1

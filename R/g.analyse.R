@@ -16,11 +16,13 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                             params_phyact = params_phyact,
                             params_general = params_general,
                             params_cleaning = params_cleaning,
-                            input = input) # load default parameters
+                            input = input,
+                            params2check = c("247", "phyact", "general", "cleaning")) # load default parameters
     params_247 = params$params_247
     params_phyact = params$params_phyact
     params_general = params$params_general
     params_cleaning = params$params_cleaning
+    rm(params)
   }
   params_247[["L5M5window"]] = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
