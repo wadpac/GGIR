@@ -359,6 +359,10 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       if (Ncores2use > 1) {
         cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        parallel::clusterExport(cl = cl, 
+                                unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                envir = as.environment(asNamespace("GGIR"))
+        )
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core
