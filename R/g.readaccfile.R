@@ -102,9 +102,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         filequality$filetooshort = TRUE
       }
     }
-
-    P$header = read_data$header
-    P$data = read_data$data.out
+    if (length(read_data) > 0) {
+      P$header = read_data$header
+      P$data = read_data$data.out
+    }
     #===============
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
     headerlength = 10
@@ -151,6 +152,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
 
     if (length(P$data) > 1) {
       if (blocknumber == 1 && nrow(P$data) < ((sf * ws * 2) + 1)) {
+        P = c()
         switchoffLD = 1
         filequality$filetooshort = TRUE
       } else if (ncol(P$data) > 3) {
@@ -200,10 +202,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     endpage = UPI$endpage
     P = apply_readAxivity(bstart = startpage, bend = endpage)
     if (length(P) > 1) { # data reading succesful
-      if (length(P$data) == 0 || nrow(P$data) < ((sf * ws * 2) + 1)) { # too short?
+      if (blocknumber == 1 && (length(P$data) == 0 || nrow(P$data) < ((sf * ws * 2) + 1))) { # too short?
         P = c() 
         switchoffLD = 1
-        if (blocknumber == 1) filequality$filetooshort = TRUE
+        filequality$filetooshort = TRUE
       }
     } else { 
       # If data reading is not successful then try following steps to retrieve issue
@@ -229,10 +231,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         # read the entire block:
         P = apply_readAxivity(bstart = startpage, bend = endpage)
         if (length(P) > 1) { # data reading succesful
-          if (length(P$data) == 0 || nrow(P$data) < ((sf * ws * 2) + 1)) { # if this still does not work then
+          if (blocknumber == 1 && (length(P$data) == 0 || nrow(P$data) < ((sf * ws * 2) + 1))) { # if this still does not work then
             P = c()
             switchoffLD = 1
-            if (blocknumber == 1) filequality$filetooshort = TRUE
+            filequality$filetooshort = TRUE
           } else {
             filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
           }
@@ -337,6 +339,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                  startIndex = startpage,
                                                  endIndex = endpage)
     if (blocknumber == 1 && nrow(P$data) < ((sf * ws * 2) + 1)) {
+      P = c()
       switchoffLD = 1
       filequality$filetooshort = TRUE
     } else {
@@ -376,9 +379,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         filequality$filecorrupt = TRUE
       }
     } else {
-      if (nrow(read_data) < ((sf * ws * 2) + 1)) {
+      if (blocknumber == 1 && nrow(read_data) < ((sf * ws * 2) + 1)) {
         switchoffLD = 1
-        if (blocknumber == 1) filequality$filetooshort = TRUE
+        filequality$filetooshort = TRUE
       } else { # If data passes these checks then it is usefull
         P$data = read_data[, 1:4]
         colnames(P$data) = c("time", "x", "y", "z")
