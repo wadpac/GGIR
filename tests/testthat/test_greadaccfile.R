@@ -65,11 +65,11 @@ test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly
                                          decn = ".", dayborder = dayborder, ws = 3,
                                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA)
   expect_equal(cwa_read$P$header$blocks, 145)
-  expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 0)
+  expect_equal(round(cwa_read$P$data$battery[200], digits = 4), 0)
   
   # As of R 4.0, an extra header row is extracted, which affects the positioning of the values.
   # expect_equal(as.numeric(as.character(wav_read$P$header$hvalues[7])),17) 
-  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -467.59)
+  expect_equal(round(sum(GA_read$P$data[, c("x", "y", "z")]), digits = 2), -467.59)
   # print(GA_read$P$header)
   # expect_equal(as.character(unlist(GA_read$P$header[3, 1])), "216 Hours")
   
