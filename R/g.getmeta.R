@@ -400,7 +400,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         sfold = sforiginal # keep sf, because temperature is not resampled at the moment
         
         EN = sqrt(data$x^2 + data$y^2 + data$z^2) # Do not delete Used for long epoch calculation
-        accmetrics = g.applymetrics(data = data,
+        accmetrics = g.applymetrics(data = data[, c("x", "y", "z")],
                                     sf = sf, ws3 = ws3,
                                     metrics2do = metrics2do,
                                     n = params_metrics[["n"]],
