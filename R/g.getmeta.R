@@ -372,7 +372,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # rescale data
         use.temp = !is.null(data$temperature)
         if(use.temp) {
-          if (length(meantempcal) == 0) {
+          if (length(meantempcal) > 0) {
             meantemp = meantempcal
           } else {                  
             meantemp = mean(as.numeric(data$temperature),na.rm=TRUE)
