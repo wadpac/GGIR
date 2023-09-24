@@ -1,6 +1,6 @@
 get_starttime_weekday_truncdata = function(monc, dformat, data, 
                                            header, desiredtz, sf, i, datafile,
-                                           ws2, starttime, wday, weekdays, wdayname, configtz = NULL) {
+                                           ws2, starttime, wday, wdayname, configtz = NULL) {
   #ensures that first window starts at logical timepoint relative to its size
   # (15,30,45 or 60 minutes of each hour)
   start_meas = ws2/60 
@@ -106,5 +106,5 @@ get_starttime_weekday_truncdata = function(monc, dformat, data,
     }
   }
   invisible(list(starttime=starttime, wday=wday,
-                 weekdays=weekdays, wdayname=wdayname, desiredtz=desiredtz, data=data))
+                 wdayname=wdayname, desiredtz=desiredtz, data=data))
 }

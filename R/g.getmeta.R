@@ -157,7 +157,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
-  data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
+  data = PreviousEndPage = PreviousStartPage = starttime = wday = wdayname = c()
   metalong = metashort = QClog = c()
 
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
@@ -320,9 +320,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                              data,
                                              header, desiredtz = params_general[["desiredtz"]],
                                              sf, i, datafile,  ws2,
-                                             starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
+                                             starttime, wday, wdayname, configtz = params_general[["configtz"]])
       starttime = SWMT$starttime
-      wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
+      wday = SWMT$wday; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
       if (exists("SWMT")) rm(SWMT)
       
