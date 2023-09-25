@@ -1,9 +1,10 @@
-aggregateEvent = function(metric_name, varnum,
-                          epochsize, anwi_nameindices,
-                          anwi_index, ds_names,
-                          fi, di, daysummary,
-                          metashort, anwindices, myfun = NULL) {
-  
+aggregateEvent = function(metric_name, epochsize,
+                          daysummary,  ds_names, fi, di,
+                          vari, segmentInfo, myfun = NULL) {
+  anwi_nameindices = segmentInfo$anwi_nameindices
+  anwi_index = segmentInfo$anwi_index
+  anwindices = segmentInfo$anwindices
+  vari = vari[anwindices,]
   if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
   if ("clevels" %in% names(myfun) == FALSE) myfun$clevels = c(0, 30)
   if ("qlevels" %in% names(myfun) == FALSE) myfun$qlevels = c(0.25, 0.5, 0.75)
@@ -14,10 +15,10 @@ aggregateEvent = function(metric_name, varnum,
   cadence.thresholds = myfun$clevels
   qlevels = myfun$qlevels
   fi_start = fi
-  cadence = varnum * (60/epochsize) # assumption now that cadence is also relevant if the event detected is not steps
+  cadence = vari[, metric_name] * (60/epochsize) # assumption now that cadence is also relevant if the event detected is not steps
   # aggregate per window total
   varnameevent = paste0("ExtFunEvent_tot_", metric_name, anwi_nameindices[anwi_index])
-  daysummary[di, fi] = sum(varnum)
+  daysummary[di, fi] = sum(vari[, metric_name])
   ds_names[fi] = varnameevent; fi = fi + 1
   
   # cadence
@@ -33,23 +34,24 @@ aggregateEvent = function(metric_name, varnum,
   
   #========================================
   # per acceleration level
-  cn_metashort = colnames(metashort)
-  acc.metrics = cn_metashort[cn_metashort %in% c("timestamp","anglex","angley","anglez", metric_name) == FALSE]
-  # acc.thresholds = c(0, 50, 100) # hard-coded make this a user input arguments myfun
+  cn_vari = colnames(vari)
+  acc.metrics = cn_vari[cn_vari %in% c("timestamp","anglex","angley","anglez", metric_name) == FALSE]
+
   for (ami in 1:length(acc.metrics)) {
+    vari[, acc.metrics[ami]] = as.numeric(vari[, acc.metrics[ami]])
     for (ti in 1:length(acc.thresholds)) {
       # step_count per acceleration level
       if (ti < length(acc.thresholds)) {
         acc_level_name = paste0(acc.thresholds[ti], "-", acc.thresholds[ti + 1], "mg",  "_",  acc.metrics[ami])
-        whereAccLevel = which(metashort[anwindices, acc.metrics[ami]] >= (acc.thresholds[ti]/1000) &
-                                metashort[anwindices, acc.metrics[ami]] < (acc.thresholds[ti + 1]/1000))
+        whereAccLevel = which(vari[, acc.metrics[ami]] >= (acc.thresholds[ti]/1000) &
+                                vari[, acc.metrics[ami]] < (acc.thresholds[ti + 1]/1000))
       } else {
         acc_level_name = paste0("atleast", acc.thresholds[ti], "mg",  "_",  acc.metrics[ami])
-        whereAccLevel = which(metashort[anwindices,acc.metrics[ami]] >= (acc.thresholds[ti]/1000))
+        whereAccLevel = which(vari[,acc.metrics[ami]] >= (acc.thresholds[ti]/1000))
       }
       varnameevent = paste0("ExtFunEvent_tot_", metric_name, "_acc", acc_level_name, anwi_nameindices[anwi_index])
       if (length(whereAccLevel) > 0)  {
-        daysummary[di, fi] = sum(varnum[whereAccLevel], na.rm = TRUE)
+        daysummary[di, fi] = sum(vari[whereAccLevel, metric_name], na.rm = TRUE)
       } else {
         daysummary[di, fi] = 0
       }
@@ -69,7 +71,7 @@ aggregateEvent = function(metric_name, varnum,
   
   #========================================
   # per cadence level
-  acc.metrics = cn_metashort[cn_metashort %in% c("timestamp","anglex","angley","anglez", metric_name) == FALSE]
+  acc.metrics = cn_vari[cn_vari %in% c("timestamp","anglex","angley","anglez", metric_name) == FALSE]
   # cadence.thresholds = c(0, 30, 60) # hard-coded make this a user input arguments myfun
   for (ti in 1:length(cadence.thresholds)) {
     # define cadence level
@@ -94,7 +96,7 @@ aggregateEvent = function(metric_name, varnum,
     varnameevent = paste0("ExtFunEvent_tot_", metric_name, "_cad", 
                           cadence_level_name, anwi_nameindices[anwi_index])
     if (length(whereCadenceLevel) > 0)  {
-      daysummary[di, fi] = sum(varnum[whereCadenceLevel], na.rm = TRUE)
+      daysummary[di, fi] = sum(vari[whereCadenceLevel, metric_name], na.rm = TRUE)
     } else {
       daysummary[di, fi] = 0
     }
@@ -110,7 +112,7 @@ aggregateEvent = function(metric_name, varnum,
       varnameevent = paste0("ExtFunEvent_mn_",  acc.metrics[ami],"_cad",
                             cadence_level_name, anwi_nameindices[anwi_index])
       if (length(whereCadenceLevel) > 0)  {
-        daysummary[di,fi] = mean(metashort[anwindices[whereCadenceLevel], acc.metrics[ami]], na.rm = TRUE) * 1000
+        daysummary[di,fi] = mean(vari[whereCadenceLevel, acc.metrics[ami]], na.rm = TRUE) * 1000
       } else {
         daysummary[di, fi] = 0
       }

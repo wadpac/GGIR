@@ -8,12 +8,12 @@ test_that("Events from external function are correctly aggregated", {
   # minute 2 has no steps and ENMO = 0
   # minute 3 has 60 steps and ENMO = 80
   # minute 4 has 60 steps and ENMO = 120
-  metashort = data.frame(ENMO = c(rep(0, 12), rep(0, 12), rep(0.08, 12), rep(0.12, 12), rep(1, 12)),
+  metashort = data.frame(ENMO = c(rep(0, 24), rep(0.08, 12), rep(0.12, 12), rep(1, 12)),
                          step_count = c(rep(0, 24), rep(5, 36)))
   cn_metashort = colnames(metashort)
-  anwindices = 13:48
+  anwindices = 13:48 # miunte 2 3 and 4 => 180 steps
   anwi_index = 1
-  varnum = metashort$step_count[anwindices]
+  # varnum = metashort$step_count[anwindices]
   ws3 = 5
   anwi_nameindices = "_1234hrs"
   daysummary = matrix("", 1, 25)
@@ -29,12 +29,15 @@ test_that("Events from external function are correctly aggregated", {
                ebout.criter = 0.8,
                ebout.condition = "AND")
   # run function  
-  eventAgg = aggregateEvent(metric_name = "step_count", varnum = varnum,
-                            epochsize = ws3, anwi_nameindices = anwi_nameindices,
-                            anwi_index = anwi_index, ds_names = ds_names,
-                            fi = fi, di = di, daysummary = daysummary,
-                            metashort = metashort,  anwindices = anwindices, myfun)
-  
+  segmentInfo = list(anwi_nameindices = anwi_nameindices,
+                     anwi_index = anwi_index,
+                     anwindices = anwindices)
+  eventAgg = aggregateEvent(metric_name = "step_count",
+                            epochsize = ws3,
+                            daysummary = daysummary,
+                            ds_names = ds_names,
+                            fi = fi, di = di, vari = metashort,
+                            segmentInfo = segmentInfo, myfun)
   
   daysummary = as.data.frame(eventAgg$daysummary)
   names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names
