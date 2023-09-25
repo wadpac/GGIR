@@ -360,7 +360,8 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       if (Ncores2use > 1) {
         cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
         parallel::clusterExport(cl = cl, 
-                                unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                            "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR"))
         )
         doParallel::registerDoParallel(cl)
