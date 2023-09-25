@@ -28,11 +28,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
     pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
     SUMMARY = daySUMMARY = c()
-
+    
     if (length(f0) ==  0) f0 = 1
     if (length(f1) ==  0) f1 = length(fnames)
     if (f1 > length(fnames)) f1 = length(fnames)
-
+    
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
@@ -90,7 +90,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           }
         }
       }
-
+      
       if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports", call. = FALSE)
       }
@@ -181,7 +181,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
         next()
       }
-
+      
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
       if (length(filehealth_cols) > 0) {
         # migrate filehealth columns to QC report, only applicable to Axivity data
@@ -224,7 +224,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
     rm(M); rm(I)
     if (do.part2.pdf == TRUE) dev.off()
-
+    
     #--------------------------------------
     # Store Event reports
     # split daySUMMARY in two files and reoder EventVariable names if they exist
@@ -245,8 +245,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       daySUMMARY = daySUMMARY[,NotEventVars]
       dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
       data.table::fwrite(x = dayEVENTSUMMARY_clean,
-                file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
-                row.names = F, na = "")
+                         file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
+                         row.names = F, na = "")
     }
     # split SUMMARY in two files and reoder EventVariable names if they exist
     s_names = names(SUMMARY)
@@ -254,8 +254,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     NotEventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE, invert = TRUE)
     if (length(EventVars) > 0) {
       EVENTSUMMARY = SUMMARY[ , c("ID", "filename", "start_time",
-                                        "wear_dur_def_proto_day",
-                                        sort(names(SUMMARY[, EventVars])))]
+                                  "wear_dur_def_proto_day",
+                                  sort(names(SUMMARY[, EventVars])))]
       names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
       SUMMARY = SUMMARY[,NotEventVars]
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
@@ -268,7 +268,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
       SUMMARY_clean = tidyup_df(SUMMARY)
       daySUMMARY_clean = tidyup_df(daySUMMARY)
-
+      
       #===============================================================================
       # store final matrices again
       data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F, na = "", sep = sep_reports)

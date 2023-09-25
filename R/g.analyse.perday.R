@@ -9,7 +9,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             ...) {
   #get input variables
   input = list(...)
-
+  
   expectedArgs = c("params_247", "params_phyact",
                    "ndays", "firstmidnighti", "time", "nfeatures",
                    "midnightsi", "metashort", "averageday",
@@ -31,7 +31,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     params_phyact = params$params_phyact
     rm(params)
   }
-
+  
   startatmidnight = endatmidnight = 0
   if (nfulldays >= 1) {
     if (firstmidnighti == 1) {  #if measurement starts at midnight
@@ -45,7 +45,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       cat("measurement ends at midnight or there is no midnight")
     }
   }
-
+  
   daysummary = matrix("",ceiling(ndays),nfeatures)
   ds_names = rep("",nfeatures)
   windowsummary = ws_names = c()
@@ -162,7 +162,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
       } else if (length(qwindow_names) > 2) {
         deltaLengthQwindow = length(qwindow_names) - length(qwindowindices)
-
+        
         for (qwi in 1:(length(qwindowindices) - 1)) {
           startindex = qwindowindices[qwi] * 60 * (60/ws3)
           endindex = qwindowindices[qwi + 1] * 60 * (60/ws3)
@@ -191,8 +191,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     nhours = length(val) / (3600 / ws3) #valid hours per day (or half a day)
     #start collecting information about the day
     fi = 1
-
-
+    
+    
     check_daysummary_size = function(daysummary, ds_names, fi) {
       if (fi > ncol(daysummary) - 1000) {
         expand = fi - (ncol(daysummary) - 1000)
@@ -317,7 +317,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
           new = check_daysummary_size(daysummary, ds_names, fi)
           daysummary = new$daysummary
           ds_names = new$ds_names
-
+          
           L5M5window_name = anwi_nameindices[anwi_index]
           anwindices = anwi_t0[anwi_index]:anwi_t1[anwi_index] # indices of varnum corresponding to a segment
           if (length(anwindices) > 0 & all(diff(anwindices) > 0)) { # negative diff(anwindices) may occur in the first day if a qwindow is not within the recorded hours
@@ -340,7 +340,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # important to account for imbalance in day length, which we do below.
               # In part 5, however, GGIR forces the user to only work with complete
               # days and by that the day length is less of a problem and not accounted for.
-
+              
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               # Note: vari equals the imputed time series (metahsort) data from one day
               varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
@@ -456,7 +456,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       t0_LFMF =  1 #start
                       # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       t1_LFMF = length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60))
-
+                      
                       ML5 = g.getM5L5(varnum, ws3, t0_LFMF, t1_LFMF, params_247[["M5L5res"]], winhr_value, qM5L5 = params_247[["qM5L5"]],
                                       iglevels = params_247[["iglevels"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
                       ML5colna = colnames(ML5)
@@ -588,7 +588,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       getboutout = g.getbout(x = rr1, boutduration = boutduration,
                                              boutcriter = params_phyact[["boutcriter"]], ws3 = ws3)
                       mvpa[4] = length(which(getboutout == 1)) / (60/ws3) #time spent MVPA in minutes
-
+                      
                       # METHOD 5: time spent above threshold 5 minutes
                       boutduration = params_phyact[["mvpadur"]][2] * (60/ws3) #per five minutes
                       rr1 = matrix(0, length(varnum), 1)
@@ -619,8 +619,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     }
                   }
                 }
-
-
+                
+                
                 if (length(ExtFunColsi) > 0) { # If events are detected with external function
                   if (myfun$reporttype == "event") {
                     # Step bout detection
@@ -633,7 +633,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                                   ws3 = ws3,
                                                   boutnameEnding = paste0(cn_metashort[mi],
                                                                           anwi_nameindices[anwi_index]))
-
+                    
                     daysummary = eventBouts$daysummary
                     ds_names = eventBouts$ds_names
                     di = eventBouts$di

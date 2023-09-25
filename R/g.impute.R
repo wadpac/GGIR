@@ -1,6 +1,6 @@
 g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                     dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", ...) {
-
+  
   #get input variables
   input = list(...)
   expectedArgs = c("M", "I", "params_cleaning", "desiredtz",
@@ -16,7 +16,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     params_cleaning = params$params_cleaning
     rm(params)
   }
-
+  
   windowsizes = M$windowsizes #default: c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
@@ -49,7 +49,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   # Generating time variable
   timeline = seq(0, ceiling(nrow(metalong)/n_ws2_perday), by = 1/n_ws2_perday)
   timeline = timeline[1:nrow(metalong)]
-
+  
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
   out = g.weardec(M, wearthreshold, ws2, nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]])
@@ -59,7 +59,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   r4 = matrix(0,length(r3),1) #protocol based decisions on data removal
   LC = out$LC
   LC2 = out$LC2
-
+  
   #========================================================
   # Check whether TimeSegments2Zero exist, because this means that the
   # user wants to ignore specific time windows. This feature is used
@@ -88,7 +88,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r1 = diff(r1longc[round(select)]) / abs(diff(round(select)))
     r1 = round(r1)
   }
-
+  
   #======================================
   # detect first and last midnight and all midnights
   tooshort = 0
@@ -109,7 +109,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         r4[1:length(r4)] = 1
       }
     }
-
+    
     if (LD < 1440) {
       r4 = r4[1:floor(LD/(ws2/60))]
     }
@@ -195,7 +195,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
     starttimei = 1
     endtimei = length(r4)
-
+    
   } else if (params_cleaning[["strategy"]] == 4) { #from first midnight to end of recording
     starttime = firstmidnight
     starttimei = firstmidnighti
@@ -224,7 +224,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   r5long = replace(r5long,1:length(r5long),r5)
   r5long = t(r5long)
   dim(r5long) = c((length(r5)*(ws2/ws3)),1)
-
+  
   #------------------------------
   # detect which features have been calculated in part 1 and in what column they have ended up
   ENi = which(colnames(metashort) == "en")
@@ -235,7 +235,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   }
   wpd = 1440*n_ws3_permin #windows per day
   averageday = matrix(0,wpd,(ncol(metashort) - 1))
-
+  
   for (mi in 2:ncol(metashort)) {# generate 'average' day for each variable
     # The average day is used for imputation and defined relative to the starttime of the measurement
     # irrespective of dayborder as used in other parts of GGIR
@@ -263,7 +263,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         imp3 = rowMeans(imp, na.rm = TRUE)
       }
       dcomplscore = length(which(is.nan(imp3) == F | is.na(imp3) == F)) / length(imp3)
-
+      
       if (length(imp3) < wpd)  {
         dcomplscore = dcomplscore * (length(imp3)/wpd)
       }
@@ -288,7 +288,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
   }
   n_decimal_places = 4
-
+  
   metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
   invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore,
