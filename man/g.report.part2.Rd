@@ -9,7 +9,8 @@
 }
 \usage{
   g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                store.long = FALSE, do.part2.pdf = TRUE, myfun = c(), sep_reports = ",", verbose = TRUE)
+                store.long = FALSE, do.part2.pdf = TRUE, myfun = c(),
+                sep_reports = ",", verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
