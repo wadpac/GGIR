@@ -1,4 +1,10 @@
+# CHANGES IN GGIR VERSION 2.10-4
+
+- Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
+
 # CHANGES IN GGIR VERSION 2.10-3
+
+- Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
 
 - Part 5: Now able to assess overlap between self-reported naps and nonwear
 with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
