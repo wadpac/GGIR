@@ -76,9 +76,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
   }
   # Establish which parts need to be processed:
-  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE
+  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = dopart6 = FALSE
   if (length(which(mode == 0)) > 0) {
-    dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE
+    dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE # intentionally not including dopart6
   } else {
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
@@ -86,6 +86,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 3)) > 0) dopart3 = TRUE
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
+    if (length(which(mode == 6)) > 0) dopart6 = TRUE
   }
 
   if (filelist == TRUE) {
@@ -325,11 +326,20 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_phyact = params_phyact,
             verbose = verbose)
   }
+  if (dopart6 == TRUE) {
+    if (verbose == TRUE) print_console_header("Part 6")
+    if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/ms5.outraw")))
+    g.part6(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
+            params_general = params_general, params_phyact = params_phyact,
+            params_247 = params_247,
+            verbose = verbose)
+  }
+  
   #--------------------------------------------------
   # Store configuration parameters in config file
   LS = ls()
   LS = LS[which(LS %in% c("input", "txt", "dopart1", "dopart2", "dopart3", "LS",
-                          "dopart4", "dopart5", "metadatadir", "ci", "config",
+                          "dopart4", "dopart5", "dopart6", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex",
