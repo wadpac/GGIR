@@ -312,6 +312,24 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
               Nts = nrow(ts)
+            } else {
+              ts$time = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
+              ws3new = ws3 # change because below it is used to decide how many epochs are there in
+              # extract nightsi again
+              tempp = unclass(ts$time)
+              if (is.na(tempp$sec[1]) == TRUE) {
+                tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
+              }
+              sec = tempp$sec
+              min = tempp$min
+              hour = tempp$hour
+              if (params_general[["dayborder"]] == 0) {
+                nightsi = which(sec == 0 & min == 0 & hour == 0)
+              } else {
+                nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+              }
+              if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts) # include last window
+              Nts = nrow(ts)
             }
             #===============================================
             # Use sib.report to classify naps, non-wear and integrate these in time series
@@ -540,7 +558,81 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       }
                       di = di + 1
                     }
+                    
+                    #===============================================================
+                    # Cosinor analyses based on only the data used for GGIR part5
+                    if (params_247[["cosinor"]] == TRUE) {
+                      if ((timewindowi == "MM" & length(backup_cosinor_MM) == 0) |
+                          (timewindowi == "WW" & length(backup_cosinor_WW) == 0)) {
+                        # avoid computing same parameter twice because this part of the code is
+                        # not dependent on the lig, mod, vig thresholds
+                        acc4cos = ts[which(ts$window != 0), c("time", "ACC")]
+                        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
+                        cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
+                                                            qcheck = ts$nonwear[which(ts$window != 0)],
+                                                            midnightsi = nightsi,
+                                                            epochsizes = c(ws3new, ws3new))
+                        rm(acc4cos)
+                        if (timewindowi == "MM") {
+                          backup_cosinor_MM = cosinor_coef
+                        } else if (timewindowi == "WW") {
+                          backup_cosinor_WW = cosinor_coef
+                        }
+                      } else {
+                        if (timewindowi == "MM") {
+                          cosinor_coef = backup_cosinor_MM
+                        } else if (timewindowi == "WW") {
+                          cosinor_coef = backup_cosinor_WW
+                        }
+                      }
+                      if (length(cosinor_coef) > 0) {
+                        # assign same value to all rows to ease creating reports
+                        dsummary[1:di, fi]  = c(cosinor_coef$timeOffsetHours)
+                        ds_names[fi]  = c("cosinor_timeOffsetHours")
+                        fi = fi + 1
+                        try(expr = {dsummary[1:di, fi:(fi + 5)]  = matrix(rep(as.numeric(c(cosinor_coef$coef$params$mes,
+                                                                                           cosinor_coef$coef$params$amp,
+                                                                                           cosinor_coef$coef$params$acr,
+                                                                                           cosinor_coef$coef$params$acrotime,
+                                                                                           cosinor_coef$coef$params$ndays,
+                                                                                           cosinor_coef$coef$params$R2)), times = di), nrow = di, byrow = TRUE)},
+                            silent = TRUE)
+                        
+                        ds_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
+                        fi = fi + 6
+                        try(expr = {dsummary[1:di, fi:(fi + 10)]  = matrix(rep(c(cosinor_coef$coefext$params$minimum,
+                                                                                 cosinor_coef$coefext$params$amp,
+                                                                                 cosinor_coef$coefext$params$alpha,
+                                                                                 cosinor_coef$coefext$params$beta,
+                                                                                 cosinor_coef$coefext$params$acrotime,
+                                                                                 cosinor_coef$coefext$params$UpMesor,
+                                                                                 cosinor_coef$coefext$params$DownMesor,
+                                                                                 cosinor_coef$coefext$params$MESOR,
+                                                                                 cosinor_coef$coefext$params$ndays,
+                                                                                 cosinor_coef$coefext$params$F_pseudo,
+                                                                                 cosinor_coef$coefext$params$R2), times = di), nrow = di, byrow = TRUE)},
+                            silent = TRUE)
+                        ds_names[fi:(fi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                                   "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
+                        fi = fi + 11
+                        dsummary[1:di, fi:(fi + 1)]  = matrix(rep(c(cosinor_coef$IVIS$InterdailyStability,
+                                                                    cosinor_coef$IVIS$IntradailyVariability), times = di), nrow = di)
+                        ds_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
+                        fi = fi + 2
+                      } else {
+                        cosinor_coef = c()
+                        fi = fi + 20
+                      }
+                    } else {
+                      cosinor_coef = c()
+                      fi = fi + 20
+                    }
+                    
                   }
+                  
                   if (params_output[["save_ms5rawlevels"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
@@ -579,7 +671,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 }
               }
             }
+            
+            #===============================================================
           }
+          
         }
         if ("angle" %in% colnames(ts)) {
           ts = ts[, -which(colnames(ts) == "angle")]
@@ -591,7 +686,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
-        
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW

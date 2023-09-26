@@ -295,13 +295,18 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
             if (dotwice == 1) {
               nightsummary.tmp = turn_numeric(x = nightsummary.tmp, varnames = gdn)
             }
+            varnames_tmp = c("SptDuration", "sleeponset",
+                             "wakeup", "WASO", "SleepDurationInSpt",
+                             "number_sib_sleepperiod", "duration_sib_wakinghours",
+                             "number_of_awakenings", "number_sib_wakinghours", 
+                             "duration_sib_wakinghours_atleast15min",
+                             "sleeplatency", "sleepefficiency", "number_of_awakenings",
+                             "guider_inbedDuration", "guider_inbedStart",
+                             "guider_inbedEnd", "guider_SptDuration", "guider_onset",
+                             "guider_wakeup", "SleepRegularityIndex",
+                             "SriFractionValid")
             nightsummary.tmp = turn_numeric(x = nightsummary.tmp, 
-                                            varnames = c("SptDuration", "sleeponset",
-                                                         "wakeup", "WASO", "SleepDurationInSpt", "number_sib_sleepperiod", "duration_sib_wakinghours",
-                                                         "number_of_awakenings", "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
-                                                         "sleeplatency", "sleepefficiency", "number_of_awakenings", "guider_inbedDuration", "guider_inbedStart",
-                                                         "guider_inbedEnd", "guider_SptDuration", "guider_onset", "guider_wakeup", "SleepRegularityIndex",
-                                                         "SriFractionValid"))
+                                            varnames = varnames_tmp)
             weekday = nightsummary.tmp$weekday[this_sleepparam]
             if (dotwice == 1) {
               for (k in 1:3) {
@@ -428,8 +433,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
                                                                    udefn[j], "_mn", sep = ""), paste("average_dur_sib_wakinghours_", TW, "_", udefn[j],
                                                                                                      "_sd", sep = ""))
                   NDAYsibd = length(which(nightsummary.tmp$number_sib_wakinghours[indexUdef] > 0))
-                  if (length(NDAYsibd) == 0)
-                    NDAYsibd = 0
+                  if (length(NDAYsibd) == 0) NDAYsibd = 0
                   personSummary[i, (cnt + 19)] = NDAYsibd
                   personSummarynames = c(personSummarynames, paste("n_days_w_sib_wakinghours_", TW, "_",
                                                                    udefn[j], sep = ""))
