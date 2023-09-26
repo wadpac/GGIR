@@ -459,6 +459,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               }
               if (nrow(sleepdet) == 0) next
               ki = which(sleepdet$definition == k)
+              if (length(ki) == 0) next
               sleepdet.t = sleepdet[ki, ]
               if (loaddaysi == 1) remember_fraction_invalid_day1 = sleepdet.t$fraction.night.invalid[1]
               # now get sleep periods
