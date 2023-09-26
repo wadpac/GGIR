@@ -3,6 +3,11 @@ context("part6")
 
 test_that("Part 6 with household co-analysis", {
   
+  # dirR = dir("D:/Code/GGIR/R", full.names = TRUE)
+  # for (i in dirR) source(i)
+  # library(testthat)
+  
+  
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
   part6_threshold_combi = "40_120_400"
@@ -29,13 +34,16 @@ test_that("Part 6 with household co-analysis", {
   
   # Run household co-analysis  
   # Update parameters to align with datset
-  params_general = load_params()$params_general
+  params_general = load_params(topic = "general")$params_general
   params_general[["desiredtz"]] = "America/Curacao"
-  params_phyact = load_params()$params_phyact
+  params_phyact = load_params(topic = "phyact")$params_phyact
   params_phyact[["part6_threshold_combi"]] = part6_threshold_combi
+  params_247 = load_params(topic = "247")$params_247
+  params_247[["part6CoAnalysis"]] = TRUE
   g.part6(metadatadir = metadatadir,
           params_general = params_general,
-          params_phyact = params_phyact, verbose = FALSE)
+          params_phyact = params_phyact,
+          params_247 = params_247, verbose = FALSE)
   
   # Check aligned time series output file
   path_to_ts = paste0(metadatadir, "/results/household_co_analysis/household_timeseries/timeseries_HID_900.csv")
@@ -58,6 +66,17 @@ test_that("Part 6 with household co-analysis", {
   expect_equal(sum(PC$wakeup_acc_1_before_2), 171.863)
   expect_equal(PC$wakeup_time1[c(1, 8, 16)], c("01:35:00", "02:58:00", "03:39:00"))
   expect_equal(sum(PC$day_Kappa_active), 5.091)
+
+  
+  # Run Circadian rhythm analysis  
+  params_247[["part6CoAnalysis"]] = FALSE
+  params_general[["do.parallel"]] = FALSE
+  params_247[["part6CR"]] = TRUE
+  g.part6(metadatadir = metadatadir,
+          params_general = params_general,
+          params_phyact = params_phyact,
+          params_247 = params_247, verbose = FALSE
+          )
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)

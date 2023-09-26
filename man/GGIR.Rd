@@ -1249,7 +1249,20 @@ GGIR(mode = 1:5,
       \item{cosinor}{
         Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
-
+        
+      \item{part6CR}{
+        Boolean (default = FALSE) to indicate whether circadian rhythm analysis should be run by part 6.
+      }
+      \item{part6CoAnalysis}{
+        Boolean (default = FALSE) to indicate whether CoAnalysis should be run by part 6.
+      }
+      \item{part6Window}{
+        Character vector with length two (default = c("start", "end")) to indicate
+        the start and the end of the time series to be used for circadian rhythm analysis.
+        Alternative values are: "Wx", "Ox", "Hx", where "x" is a number to indicat
+        the xth wakeup, onset or hour of the recording. Negative values for "x"
+        are also possible and will count relative to the end of the recording.
+      }
     }
   }
 
