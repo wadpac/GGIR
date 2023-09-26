@@ -1662,12 +1662,12 @@ header.
 ### Fragmentation metrics
 
 When setting input argument as `frag.metrics="all"` GGIR part 5 will
-perform daytime behavioural fragmentation analysis. Do this in
-combination with argument `part5_agg2_60seconds=TRUE` as that will
+perform behavioural fragmentation analysis for daytime and (separately) for spt.
+Do this in combination with argument `part5_agg2_60seconds=TRUE` as that will
 aggregate the time series to 1 minute resolution as is common in
 behavioural fragmentation literature.
 
-In GGIR, a fragment is a defined as a sequence of epochs that belong to
+In GGIR, a fragment for daytime is a defined as a sequence of epochs that belong to
 one of the four categories:
 
 1.  Inactivity
@@ -1677,8 +1677,18 @@ one of the four categories:
 
 Each of these categories represents the combination of bouted and
 unbouted time in the respective categories. Inactivity and physical
-activity add up to a full day, as well as inactivity, LIPA and MVPA. The
+activity add up to a full day (outside SPT), as well as inactivity, LIPA and MVPA. The
 fragmentation metrics are applied in function `g.fragmentation`.
+
+A fragment of SPT is defined as a sequence of epochs that belong to
+one of the four categories:
+1. Estimated sleep
+2. Estimated wakefulness
+3. Inactivity
+4. Physical activity (can be either LIPA or MVPA)
+
+Note that from the metrics below only fragmentation metrics TP and NFrag are 
+calculated for the SPT fragments.
 
 **Literature about these metrics:**
 
@@ -1740,7 +1750,8 @@ similar to the definition of a fragment, but for blocks we distinguish
 every behavioural class, which includes the subcategories such as bouted
 and unbouted behaviour. This means that variables `Nblock_day_total_IN`
 and `Nblock_day_total_LIG` are identical to `Nfrag_IN_day` and
-`Nfrag_LIPA_day`, respectively.
+`Nfrag_LIPA_day`, respectively. In contrast, for fragments we may group LIPA and MVPA
+together when refering to the fragmentation of PA.
 
 **Differences with R package ActFrag:**
 
@@ -1752,7 +1763,7 @@ in [Junrui Di et al.
 However, we made a couple of a different decisions that may affect
 comparability:
 
--   GGIR derives fragmentation metrics for day. This allows us to avoid
+-   GGIR derives fragmentation metrics per day. This allows us to avoid
     the issue of gaps between days that need to be dealt with. Further, it allows us to
     test for behavioural differences between days of the week. It is
     well known that human behaviour can be driven by weekly rhythms,
@@ -1760,6 +1771,8 @@ comparability:
     the week allows us to study and account for such possible variation.
     As with all other GGIR variables we also report recording level
     aggregates of the daily estimates.
+-   Transition probability is according
+    to [Lim et al. 2011](https://doi.org/10.5665/sleep.1400)
 -   Power law alpha exponent metrics were calculated according to
     [Chastin et al.
     2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)

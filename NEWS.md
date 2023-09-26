@@ -2,6 +2,8 @@
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
 
+- Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation #817
+
 # CHANGES IN GGIR VERSION 2.10-3
 
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
