@@ -22,7 +22,7 @@
     Indices for midnights in the time series
   }
   \item{epochsizes}{
-    Epoch seiz for ts and qcheck respectively
+    Epoch size for ts and qcheck respectively
   }
 }
 \author{
