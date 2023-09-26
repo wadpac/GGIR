@@ -10,7 +10,7 @@ accounted for before the data enters the function.
 }
 \usage{
   g.fragmentation(frag.metrics = c("mean", "TP", "Gini", "power",
-        "CoV", "NFragPM", "all"), LEVELS = c(), Lnames=c(), xmin=1)
+        "CoV", "NFragPM", "all"), LEVELS = c(), Lnames=c(), xmin=1, mode = "day")
 }
 \arguments{
    \item{frag.metrics}{
@@ -27,6 +27,10 @@ accounted for before the data enters the function.
     Numeric scalar to indicate the minimum recordable fragment length. In \link{g.part5}
     this is derived from the epoch length.
   }
+  \item{mode}{
+    Character to indicate whether input data is daytime ("day") or sleep period time ("spt").
+  }
+  
 }
 \value{
 List with Character object showing how decimals are separated
