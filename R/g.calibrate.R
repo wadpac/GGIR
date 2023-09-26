@@ -174,8 +174,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = as.matrix(data[1:use,])
           LD = nrow(data) #redefine LD because there is less data
           ##==================================================
-          dur = nrow(data)	#duration of experiment in data points
-          durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
           # Initialization of variables
           if (dformat != FORMAT$AD_HOC_CSV) {
             suppressWarnings(storage.mode(data) <- "numeric")
