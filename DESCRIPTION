@@ -32,3 +32,4 @@ Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, ActCR, GGIRread, rea
 Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr
 Depends: stats, utils, R (>= 3.5)
 VignetteBuilder: knitr
+LazyData: true
