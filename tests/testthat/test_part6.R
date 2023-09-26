@@ -17,18 +17,18 @@ test_that("Part 6 with household co-analysis", {
   if (!dir.exists(dn2)) dir.create(path = dn2, recursive = TRUE)
   
   data(data.metalong)
-  save(M, file = paste0(dn2, "/meta_800-900-001_left wrist.bin.RData"))
-  save(M, file = paste0(dn2, "/meta_800-900-002_left wrist.bin.RData"))
-  save(M, file = paste0(dn2, "/meta_800-900-003_left wrist.bin.RData"))
+  save(data.metalong, file = paste0(dn2, "/meta_800-900-001_left wrist.bin.RData"))
+  save(data.metalong, file = paste0(dn2, "/meta_800-900-002_left wrist.bin.RData"))
+  save(data.metalong, file = paste0(dn2, "/meta_800-900-003_left wrist.bin.RData"))
   
   # Use time shifts to simulate three household members
   data(data.ts)
-  mdat$timenum = mdat$timenum - (5 * 60) 
-  save(mdat, file = paste0(dn, "/800-900-001_left wrist.RData"))
-  mdat$timenum = mdat$timenum + (7 * 60)
-  save(mdat, file = paste0(dn, "/800-900-002_left wrist.RData"))
-  mdat$timenum = mdat$timenum + (14 * 60)
-  save(mdat, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  data.ts$timenum = data.ts$timenum - (5 * 60) 
+  save(data.ts, file = paste0(dn, "/800-900-001_left wrist.RData"))
+  data.ts$timenum = data.ts$timenum + (7 * 60)
+  save(data.ts, file = paste0(dn, "/800-900-002_left wrist.RData"))
+  data.ts$timenum = data.ts$timenum + (14 * 60)
+  save(data.ts, file = paste0(dn, "/800-900-003_left wrist.RData"))
   
   # Run household co-analysis  
   # Update parameters to align with datset
