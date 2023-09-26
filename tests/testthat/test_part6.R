@@ -15,14 +15,11 @@ test_that("Part 6 with household co-analysis", {
   if (!dir.exists(dn)) dir.create(path = dn, recursive = TRUE)
   dn2 = paste0(metadatadir, "/meta/basic")
   if (!dir.exists(dn2)) dir.create(path = dn2, recursive = TRUE)
-  F2 = system.file("testfiles/part6_metalong.RData", package = "GGIR")[1]
-  load(F2)
+  data(data.metalong)
   save(M, file = paste0(dn2, "/meta_800-900-001_left wrist.bin.RData"))
   save(M, file = paste0(dn2, "/meta_800-900-002_left wrist.bin.RData"))
   save(M, file = paste0(dn2, "/meta_800-900-003_left wrist.bin.RData"))
-  
-  F1 = system.file("testfiles/part6_ts.RData", package = "GGIR")[1]
-  load(F1)
+  data(data.ts)
   
   # Use time shifts to simulate three household members
   mdat$timenum = mdat$timenum - (5 * 60) 
