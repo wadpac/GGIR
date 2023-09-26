@@ -4,6 +4,10 @@
 
 - Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation #817
 
+- Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
+
+- Part2: Expand cosinor analysis with R2
+
 # CHANGES IN GGIR VERSION 2.10-3
 
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
