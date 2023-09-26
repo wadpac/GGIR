@@ -1,5 +1,5 @@
 library(GGIR)
-context("part6")
+context("g.part6")
 
 test_that("Part 6 with household co-analysis", {
   
@@ -15,13 +15,14 @@ test_that("Part 6 with household co-analysis", {
   if (!dir.exists(dn)) dir.create(path = dn, recursive = TRUE)
   dn2 = paste0(metadatadir, "/meta/basic")
   if (!dir.exists(dn2)) dir.create(path = dn2, recursive = TRUE)
-  # Note M is provided by GGIR via lazyload
+  
+  data(data.metalong)
   save(M, file = paste0(dn2, "/meta_800-900-001_left wrist.bin.RData"))
   save(M, file = paste0(dn2, "/meta_800-900-002_left wrist.bin.RData"))
   save(M, file = paste0(dn2, "/meta_800-900-003_left wrist.bin.RData"))
   
   # Use time shifts to simulate three household members
-  # Note mdat isprovided by GGIR via lazyload
+  data(data.ts)
   mdat$timenum = mdat$timenum - (5 * 60) 
   save(mdat, file = paste0(dn, "/800-900-001_left wrist.RData"))
   mdat$timenum = mdat$timenum + (7 * 60)
