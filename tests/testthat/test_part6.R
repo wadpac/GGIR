@@ -6,7 +6,7 @@ test_that("Part 6 with household co-analysis", {
   # dirR = dir("D:/Code/GGIR/R", full.names = TRUE)
   # for (i in dirR) source(i)
   # library(testthat)
-  
+
   
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
@@ -71,12 +71,24 @@ test_that("Part 6 with household co-analysis", {
   # Run Circadian rhythm analysis  
   params_247[["part6CoAnalysis"]] = FALSE
   params_general[["do.parallel"]] = FALSE
+  params_general[["overwrite"]] = TRUE
+  params_247[["cosinor"]] = TRUE
   params_247[["part6CR"]] = TRUE
   g.part6(metadatadir = metadatadir,
           params_general = params_general,
           params_phyact = params_phyact,
-          params_247 = params_247, verbose = FALSE
-  )
+          params_247 = params_247,
+          verbose = FALSE)
+  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-001_left wrist.RData")
+  
+  expect_true(file.exists(path_to_ms6))
+  
+  load(path_to_ms6)
+  expect_equal(ncol(output), 20)
+  expect_equal(output$cosinor_mes, 2.451769, tolerance = 0.00001)
+  expect_equal(output$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
+  expect_equal(output$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
+  expect_equal(sum(output), 320.5916, tolerance = 0.0001)
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)

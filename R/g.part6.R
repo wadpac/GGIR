@@ -37,7 +37,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       if (length(subDirs) > 0) {
         expected_ts_path = paste0(expected_ms5raw_path, "/", subDirs[1])
         warning(paste0("\nThreshold combi ", params_phyact[["part6_threshold_combi"]],
-                " in time series ouput. Instead now using", subDirs[1]), call. = FALSE)
+                       " in time series ouput. Instead now using", subDirs[1]), call. = FALSE)
       } else {
         stop(paste0("\nNo subfolders found inside ", expected_ms5raw_path), call. = FALSE)
       }
@@ -91,8 +91,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                              verbose = verbose)
   }
   
-
-  
   #=========================================================
   # Declare recording level functionality, which at the end of this g.part6 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -108,18 +106,22 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-
+    
     if (skip == 0) {
       # Load time series:
-      
       if (EXT == "rdata") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
+        mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {
         mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/",
-                           params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]))
+                                               params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]))
         stop("THIS PART OF THE FUNCTIONALITY HAS NOT BEEN COMPLETED YET")
       }
+      nfeatures = 20
+      summary = matrix(NA, nfeatures)
+      s_names = rep("", nfeatures)
+      fi = 1
       epochSize = diff(mdat$timenum[1:2])
       # Select relevant section of the time series
       wakeuptimes = which(diff(c(1, mdat$SleepPeriodTime)) == -1)
@@ -156,14 +158,89 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       t0 = getIndex(params_247[["part6Window"]][1], ts = mdat, wakeuptimes, onsettimes, epochSize)
       t1 = getIndex(params_247[["part6Window"]][2], ts = mdat, wakeuptimes, onsettimes, epochSize)
       
-      mdat = mdat[t0:t1, ]
-
-      # Perform analysis
-
-
-      # Summarise results
-
+      ts = mdat[t0:t1, ]
+      rm(mdat)
+      
+      # Following code needed for cosinor analysis?
+      
+      # extract nightsi again
+      tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
+      sec = tempp$sec
+      min = tempp$min
+      hour = tempp$hour
+      if (params_general[["dayborder"]] == 0) {
+        nightsi = which(sec == 0 & min == 0 & hour == 0)
+      } else {
+        nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+      }
+      Nts = nrow(ts)
+      
+      backup_cosinor = NULL
+      if (params_247[["cosinor"]] == TRUE) {
+        # avoid computing same parameter twice because this part of the code is
+        # not dependent on the lig, mod, vig thresholds
+        acc4cos = ts[which(ts$window != 0), c("time", "ACC")]
+        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
+        cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
+                                            qcheck = ts$nonwear[which(ts$window != 0)],
+                                            midnightsi = nightsi,
+                                            epochsizes = rep(epochSize, 2))
+        rm(acc4cos)
+        backup_cosinor = cosinor_coef
+      } else {
+        cosinor_coef = backup_cosinor
+      }
+      if (length(cosinor_coef) > 0) {
+        # assign same value to all rows to ease creating reports
+        summary[fi] = cosinor_coef$timeOffsetHours
+        s_names[fi] = "cosinor_timeOffsetHours"
+        fi = fi + 1
+        try(expr = {summary[fi:(fi + 5)] = c(cosinor_coef$coef$params$mes,
+                                             cosinor_coef$coef$params$amp,
+                                             cosinor_coef$coef$params$acr,
+                                             cosinor_coef$coef$params$acrotime,
+                                             cosinor_coef$coef$params$ndays,
+                                             cosinor_coef$coef$params$R2)},
+            silent = TRUE)
+        
+        s_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                                 "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
+        fi = fi + 6
+        try(expr = {summary[fi:(fi + 10)] = c(cosinor_coef$coefext$params$minimum,
+                                              cosinor_coef$coefext$params$amp,
+                                              cosinor_coef$coefext$params$alpha,
+                                              cosinor_coef$coefext$params$beta,
+                                              cosinor_coef$coefext$params$acrotime,
+                                              cosinor_coef$coefext$params$UpMesor,
+                                              cosinor_coef$coefext$params$DownMesor,
+                                              cosinor_coef$coefext$params$MESOR,
+                                              cosinor_coef$coefext$params$ndays,
+                                              cosinor_coef$coefext$params$F_pseudo,
+                                              cosinor_coef$coefext$params$R2)},
+            silent = TRUE)
+        s_names[fi:(fi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                  "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                  "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                  "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
+        fi = fi + 11
+        summary[fi:(fi + 1)] = c(cosinor_coef$IVIS$InterdailyStability,
+                                 cosinor_coef$IVIS$IntradailyVariability)
+        s_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
+        fi = fi + 2
+      } else {
+        cosinor_coef = c()
+        fi = fi + 20
+      }
+      
+      #=============================================
       # Store results in milestone data
+      output = data.frame(t(summary),stringsAsFactors = FALSE)
+      names(output) = s_names
+      if (length(output) > 0) {
+        save(output, file = paste(metadatadir,
+                                  ms6.out, "/", fnames.ms5raw[i], sep = ""))
+      }
+      rm(output, summary)
     }
     # Function has no output because ideally all relevant output
     # is store in milestone data by now
@@ -202,7 +279,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         errhand = 'pass'
       } else {
         # pass on functions
-        functions2passon = c()
+        functions2passon = c("cosinorAnalyses", "applyCosinorAnalyses", "g.IVIS")
         errhand = 'stop'
       }
       i = 0 # declare i because foreach uses it, without declaring it
