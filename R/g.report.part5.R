@@ -215,16 +215,14 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 if (uwi[j] != "Segments") {
                   delcol = c(delcol, which(colnames(outputfinal2) == "window"))
                 }
-                
                 outputfinal2 = outputfinal2[,-delcol]
                 OF3 = outputfinal2[seluwi,]
                 OF3 = as.data.frame(OF3, stringsAsFactors = TRUE)
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 OF3_clean = tidyup_df(OF3)
-                colsWithoutCosinor = grep(pattern = "cosinor", x = colnames(OF3_clean), invert = TRUE)
                 data.table::fwrite(
-                  OF3_clean[, colsWithoutCosinor],
+                  OF3_clean,
                   paste(
                     metadatadir,
                     "/results/QC/part5_daysummary_full_",
@@ -253,9 +251,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   
                   ignorevar = c("daysleeper", "cleaningcode", "night_number", "sleeplog_used",
                                 "ID", "acc_available", "window_number",
-                                "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric",
-                                grep(pattern = "cosinor", x = names(df), ignore.case = TRUE, value = TRUE)) # skip cosinor variables
-                  # print(ignorevar)
+                                "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric") # skip cosinor variables
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
@@ -295,7 +291,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   AggregateWDWE = aggregate.data.frame(df, by = by, plain_mean)
                   AggregateWDWE = AggregateWDWE[, -grep("^Group", colnames(AggregateWDWE))]
                   # Add counted number of days for Gini, Cov, alpha Fragmentation variables, because 
-                  
                   # days are dropped if there are not enough fragments:
                   vars_with_mininum_Nfrag = c("FRAG_Gini_dur_PA_day", "FRAG_CoV_dur_PA_day",
                                               "FRAG_alpha_dur_PA_day", "FRAG_Gini_dur_IN_day",
@@ -333,6 +328,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
                                                                            names(AggregateWDWE) == filename)])
                   }
+                  
                   options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
                   if (window == "Segments") {
@@ -547,7 +543,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                               namenew = namenew, 
                               cval = 1, 
                               window = uwi[j]) # create variable from it
-                  
                   # do the same for daysleeper,cleaningcode, sleeplog_used, acc_available:
                   OF3tmp$validdays = 1
                   # redefine by considering only valid days
@@ -626,7 +621,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
-                                                     
                                                      uwi[j],"_L",uTRLi[h1],"M",
                                                      uTRMi[h2], "V", uTRVi[h3], "_",
                                                      usleepparam[h4], ".csv", sep = ""), 

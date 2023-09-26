@@ -541,7 +541,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       di = di + 1
                     }
                   }
-                  
                   if (params_output[["save_ms5rawlevels"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
@@ -592,6 +591,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         }
         output = data.frame(dsummary,stringsAsFactors = FALSE)
         names(output) = ds_names
+        
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
         whoareWW = which(output$window == "WW") # look up WW
