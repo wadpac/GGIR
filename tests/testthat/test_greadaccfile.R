@@ -1,8 +1,17 @@
 library(GGIR)
 context("g.readaccfile")
-test_that("g.readaccfile and g.inspectfile can read gt3x and cwa files correctly", {
+test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv files correctly", {
   skip_on_cran()
   
+  cat("\nActigraph .csv")
+  for (filename in c("ActiGraph13.csv", "ActiGraph61.csv")) {
+    csvfile = system.file(paste0("testfiles/", filename), package = "GGIR")[1]
+
+    Icsv = g.inspectfile(csvfile, desiredtz = "Europe/London")
+    expect_equal(Icsv$monc, MONITOR$ACTIGRAPH)
+    expect_equal(Icsv$dformc, FORMAT$CSV)
+  }
+
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
