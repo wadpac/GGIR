@@ -4,12 +4,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   
   #get input variables
   input = list(...)
-  expectedArgs = c("I", "C", "M", "IMP", "params_247", "params_phyact", 
-                   "params_general", "params_cleaning", "quantiletype",
-                    "myfun")
-  if (any(names(input) %in% expectedArgs == FALSE) |
-      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
-    # Extract and check parameters if user provides more arguments than just the parameter arguments
+  if (length(input) > 0 ||
+      length(params_247) == 0 || length(params_phyact) == 0 ||
+      length(params_general) == 0 || length(params_cleaning) == 0) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments,
+    # or if params_[...] aren't specified (so need to be filled with defaults).
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
