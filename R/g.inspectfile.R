@@ -51,18 +51,21 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                  }
       },
       "csv" = { dformat = FORMAT$CSV
-
-                testcsv = read.csv(datafile, nrow = 10, skip = 10)
-                testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
-
-                if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
-                  mon = MONITOR$GENEACTIV
-                } else if (ncol(testcsv) >= 3 && ncol(testcsvtopline) < 4) {
+                testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
+                
+                if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
                   mon = MONITOR$ACTIGRAPH
-                } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
-                  mon = MONITOR$AXIVITY
                 } else {
-                  stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
+                  testcsv = read.csv(datafile, nrow = 10, skip = 10)
+                  testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
+
+                  if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
+                    mon = MONITOR$GENEACTIV
+                  } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
+                    mon = MONITOR$AXIVITY
+                  } else {
+                    stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
+                  }
                 }
       },
       "wav" = { stop(paste0("\nError processing ", filename, ": GENEA .wav file format is no longer supported.\n")) },

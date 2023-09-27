@@ -10,6 +10,8 @@
 
 - Part 1: Fixed issue #914 relating to specifying timezone for processing ad-hoc csv format raw data.
 
+- Part 1: Improved recognition of ActiGraph csv that occassionally confused for Axivity csv #918
+
 # CHANGES IN GGIR VERSION 2.10-3
 
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
