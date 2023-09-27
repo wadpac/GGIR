@@ -196,12 +196,15 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
                                     rmc.origin = params_rawdata[["rmc.origin"]],
                                     rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                                    rmc.configtz = params_rawdata[["rmc.configtz"]],
                                     rmc.sf = params_rawdata[["rmc.sf"]],
                                     rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
                                     rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
                                     rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
                                     rmc.header.structure = params_rawdata[["rmc.header.structure"]],
-                                    rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]])
+                                    rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                                    desiredtz = desiredtz,
+                                    configtz = configtz)
     if (Pusercsvformat$header == "no header") {
       sf = params_rawdata[["rmc.sf"]]
     } else {
