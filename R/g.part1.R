@@ -116,11 +116,9 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     }
     #=============================================================
     # Inspect file (and store output later on)
-    options(warn = -1) #turn off warnings
     I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
                         params_rawdata = params_rawdata,
                         configtz = params_general[["configtz"]])
-    options(warn = 0) #turn on warnings
     if (verbose == TRUE) cat(paste0("\nP1 file ",i))
     turn.do.cal.back.on = FALSE
     if (params_rawdata[["do.cal"]] == TRUE & I$dformc == FORMAT$WAV) { # do not do the auto-calibration for wav files (because already done in pre-processign)

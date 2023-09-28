@@ -10,7 +10,7 @@
 }
 \usage{
   g.readaccfile(filename, blocksize, blocknumber, filequality,
-                           decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
+                           ws, PreviousEndPage = 1, inspectfileobject = c(),
                            PreviousLastValue = c(0,0,1), PreviousLastTime = NULL,
                            params_rawdata = c(), params_general = c(), ...)
 }
@@ -27,11 +27,6 @@
   \item{filequality}{
     Single row dataframe with columns: filetooshort, filecorrupt,
     and filedoesnotholdday. All with the value TRUE or FALSE
-  }
-  \item{decn}{
-    Character with a dot or a comma, used for interpretting
-    samplefrequency in the file header. decn is derived with
-    \link{g.dotorcomma}
   }
   \item{ws}{
     Larger windowsize for non-detection, see documentation \link{g.part2}
@@ -80,7 +75,7 @@
     output = g.readaccfile(filename = "C:/myfile.bin", 
     blocksize = 20000, blocknumber = 1,
     selectdaysfile = c(), filequality = filequality,
-    decn = ".", dayborder = 0, PreviousEndPage = c()) 
+    dayborder = 0, PreviousEndPage = c()) 
   }
 }
 \keyword{internal}
