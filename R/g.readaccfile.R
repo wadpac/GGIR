@@ -1,15 +1,13 @@
 g.readaccfile = function(filename, blocksize, blocknumber, filequality,
-                         decn, ws, PreviousEndPage = 1, inspectfileobject = c(),
+                         ws, PreviousEndPage = 1, inspectfileobject = c(),
                          PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL,
                          params_rawdata = c(), params_general = c(), ...) {
   #get input variables
   input = list(...)
-  if (any(names(input) %in% c("filename", "blocksize", "blocknumber",
-                              "filequality",
-                              "decn", "ws", "PreviousEndPage",
-                              "inspectfileobject", "params_rawdata",
-                              "params_general")) == FALSE) {
-    # Extract and check parameters if user provides more arguments than just the parameter arguments
+  if (length(input) > 0 ||
+      length(params_rawdata) == 0 || length(params_general) == 0) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments,
+    # or if params_[...] aren't specified (so need to be filled with defaults).
     # So, inside GGIR this will not be used, but it is used when g.getmeta is used on its own
     # as if it was still the old g.getmeta function
     params = extract_params(params_rawdata = params_rawdata,
@@ -111,6 +109,16 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       on.exit(sink())
       invisible(force(x))
     }
+
+    op <- options(stringsAsFactors = FALSE)
+    on.exit(options(op))
+    options(warn = -1) # turn off warnings
+    suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
+                                                 desiredtz = params_general[["desiredtz"]],
+                                                 rmc.dec = params_rawdata[["rmc.dec"]],
+                                                 loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) # detect dot or comma dataformat
+    options(warn = 0) #turn on warnings
+
     testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
                                                         dec = decn, showProgress = FALSE,
                                                         header = TRUE),
@@ -293,7 +301,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     } else {
       P = c()
     }
-  } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$CSV) {
+  } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) {
     startpage = blocksize * (blocknumber - 1) + 1
     deltapage = blocksize
     UPI = updatepageindexing(startpage = startpage, deltapage = deltapage,
@@ -355,8 +363,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]],
                                    rmc.unsignedbit = params_rawdata[["rmc.unsignedbit"]],
                                    rmc.origin = params_rawdata[["rmc.origin"]],
-                                   rmc.desiredtz = params_general[["rmc.desiredtz"]],
-                                   rmc.configtz = params_general[["rmc.configtz"]],
+                                   rmc.desiredtz = params_rawdata[["rmc.desiredtz"]],
+                                   rmc.configtz = params_rawdata[["rmc.configtz"]],
                                    rmc.sf = params_rawdata[["rmc.sf"]],
                                    rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
                                    rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
