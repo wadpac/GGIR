@@ -68,7 +68,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                   }
                 }
       },
-      "wav" = { stop(paste0("\nError processing ", filename, ": GENEA .wav file format is no longer supported.\n")) },
+      "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
       { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
     
@@ -207,8 +207,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
                                     desiredtz = desiredtz,
                                     configtz = configtz)
-    if (Pusercsvformat$header == "no header") {
+    if (Pusercsvformat$header == "no header" || is.null(Pusercsvformat$header$sample_rate)) {
       sf = params_rawdata[["rmc.sf"]]
+      if (is.null(sf)) {
+        stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)
+      }
     } else {
       sf = Pusercsvformat$header$sample_rate
     }
