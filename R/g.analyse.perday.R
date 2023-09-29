@@ -659,8 +659,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (myfun$reporttype == "event") { # For the event report type we take the sum
                   
                   segmentInfo = list(anwi_nameindices = anwi_nameindices,
-                                     anwi_index = anwi_index,
-                                     anwindices = anwindices)
+                                     anwi_index = anwi_index)
                   eventAgg = aggregateEvent(metric_name = cn_metashort[mi],
                                             epochsize = ws3, 
                                             daysummary = daysummary,

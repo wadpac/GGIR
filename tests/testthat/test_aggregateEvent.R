@@ -11,7 +11,6 @@ test_that("Events from external function are correctly aggregated", {
   metashort = data.frame(ENMO = c(rep(0, 24), rep(0.08, 12), rep(0.12, 12), rep(1, 12)),
                          step_count = c(rep(0, 24), rep(5, 36)))
   cn_metashort = colnames(metashort)
-  anwindices = 13:48 # miunte 2 3 and 4 => 180 steps
   anwi_index = 1
   # varnum = metashort$step_count[anwindices]
   ws3 = 5
@@ -30,8 +29,7 @@ test_that("Events from external function are correctly aggregated", {
                ebout.condition = "AND")
   # run function  
   segmentInfo = list(anwi_nameindices = anwi_nameindices,
-                     anwi_index = anwi_index,
-                     anwindices = anwindices)
+                     anwi_index = anwi_index)
   eventAgg = aggregateEvent(metric_name = "step_count",
                             epochsize = ws3,
                             daysummary = daysummary,
@@ -43,10 +41,10 @@ test_that("Events from external function are correctly aggregated", {
   names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names
   
   # total steps
-  expect_equal(daysummary$ExtFunEvent_tot_step_count_1234hrs, "120")
+  expect_equal(daysummary$ExtFunEvent_tot_step_count_1234hrs, "180")
   
   #mean cadence
-  expect_equal(daysummary$ExtFunEvent_mn_cad_1234hrs, "40")
+  expect_equal(daysummary$ExtFunEvent_mn_cad_1234hrs, "36")
   
   # Percentiles of cadence
   expect_equal(daysummary$ExtFunEvent_cad_p25_1234hrs, "0")
@@ -56,7 +54,7 @@ test_that("Events from external function are correctly aggregated", {
   #total steps per acc range
   expect_equal(daysummary$`ExtFunEvent_tot_step_count_acc0-50mg_ENMO_1234hrs`, "0")
   expect_equal(daysummary$`ExtFunEvent_tot_step_count_acc50-100mg_ENMO_1234hrs`, "60")
-  expect_equal(daysummary$ExtFunEvent_tot_step_count_accatleast100mg_ENMO_1234hrs, "60")
+  expect_equal(daysummary$ExtFunEvent_tot_step_count_accatleast100mg_ENMO_1234hrs, "120")
   
   #mean cadence per acc range
   expect_equal(daysummary$`ExtFunEvent_mn_cad_acc0-50mg_ENMO_1234hrs`, "0")
@@ -71,15 +69,15 @@ test_that("Events from external function are correctly aggregated", {
   #total steps per cadence range
   expect_equal(daysummary$`ExtFunEvent_tot_step_count_cad0-30spm_1234hrs`, "0")
   expect_equal(daysummary$`ExtFunEvent_tot_step_count_cad30-50spm_1234hrs`, "0")
-  expect_equal(daysummary$ExtFunEvent_tot_step_count_cadatleast50spm_1234hrs, "120")
+  expect_equal(daysummary$ExtFunEvent_tot_step_count_cadatleast50spm_1234hrs, "180")
   
   # mean acc per cadence range
   expect_equal(daysummary$`ExtFunEvent_mn_ENMO_cad0-30spm_1234hrs`, "0")
   expect_equal(daysummary$`ExtFunEvent_mn_ENMO_cad30-50spm_1234hrs`, "0")
-  expect_equal(daysummary$ExtFunEvent_mn_ENMO_cadatleast50spm_1234hrs, "100")
+  expect_equal(daysummary$ExtFunEvent_mn_ENMO_cadatleast50spm_1234hrs, "400")
   
   # time per cadence range
-  expect_equal(daysummary$`ExtFunEvent_dur_cad0-30spm_1234hrs`, "1")
+  expect_equal(daysummary$`ExtFunEvent_dur_cad0-30spm_1234hrs`, "2")
   expect_equal(daysummary$`ExtFunEvent_dur_cad30-50spm_1234hrs`, "0")
-  expect_equal(daysummary$ExtFunEvent_dur_cadatleast50spm_1234hrs, "2")
+  expect_equal(daysummary$ExtFunEvent_dur_cadatleast50spm_1234hrs, "3")
 })
