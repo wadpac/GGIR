@@ -49,7 +49,7 @@ importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
 importFrom("utils", "read.csv", "sessionInfo", "write.csv",
            "installed.packages", "setTxtProgressBar",
            "txtProgressBar", "write.table", "head",
-           "memory.limit", "memory.size", "tail", "unzip")
+           "memory.limit", "memory.size", "tail", "unzip", "lsf.str")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed", "na.pass",
