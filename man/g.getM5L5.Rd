@@ -9,14 +9,14 @@
   for further clarification on functionalities
 }
 \usage{
-  g.getM5L5(varnum,ws3,t0_LFMF,t1_LFMF,M5L5res,winhr,qM5L5=c(), 
-  iglevels=c(), MX.ig.min.dur=10)	
+  g.getM5L5(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr, qM5L5 = c(), 
+            iglevels = c(), MX.ig.min.dur = 10)	
 }
 \arguments{
   \item{varnum}{
     Numeric vector of epoch values
   }
-  \item{ws3}{
+  \item{epochSize}{
     Small epoch size in seconds
   }
   \item{t0_LFMF}{

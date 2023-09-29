@@ -377,7 +377,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
             }
             #===
-            
             for (mi in 1:ncol(vari)) { #run through metrics (for features based on single metrics)
               #=======================================
               # Motivation on the code below:
@@ -468,9 +467,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       t0_LFMF =  1 #start
                       # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       t1_LFMF = length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60))
-                      
-                      ML5 = g.getM5L5(varnum, ws3, t0_LFMF, t1_LFMF, params_247[["M5L5res"]], winhr_value, qM5L5 = params_247[["qM5L5"]],
-                                      iglevels = params_247[["iglevels"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+                      ML5 = g.getM5L5(varnum, epochSize = ws3, t0_LFMF, t1_LFMF,
+                                      params_247[["M5L5res"]], winhr_value,
+                                      qM5L5 = params_247[["qM5L5"]],
+                                      iglevels = params_247[["iglevels"]],
+                                      MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
                       ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
                       if (anwi_index > 1) {
