@@ -203,7 +203,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           midn_start = 1
         }
       } else {
-        midn_start = 0
+        # since there's no 4am in the recording, then even if there is a midnight, skip this midnight. 
+        # (basically treat this midnight like any other midnight without a preceding 4am)
+        midn_start = countmidn
       }
       sptei = 0
       for (j in midn_start:(countmidn)) { #Looping over the midnight
