@@ -3,8 +3,6 @@ aggregateEvent = function(metric_name, epochsize,
                           vari, segmentInfo, myfun = NULL) {
   anwi_nameindices = segmentInfo$anwi_nameindices
   anwi_index = segmentInfo$anwi_index
-  anwindices = segmentInfo$anwindices
-  vari = vari[anwindices,]
   if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
   if ("clevels" %in% names(myfun) == FALSE) myfun$clevels = c(0, 30)
   if ("qlevels" %in% names(myfun) == FALSE) myfun$qlevels = c(0.25, 0.5, 0.75)
