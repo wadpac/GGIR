@@ -28,7 +28,7 @@ The sections below outline the steps in each case.
 3. if needed, fork the repository to your own Github profile and create your own feature branch off of the latest master commit. While working on your feature branch, make sure to stay up to date with the master branch by pulling in changes, possibly from the 'upstream' repository (follow the instructions [here](https://help.github.com/articles/configuring-a-remote-for-a-fork/) and [here](https://help.github.com/articles/syncing-a-fork/));
 4. make sure the existing tests still work by running the test suite from RStudio;
 5. add your own tests (if necessary);
-6. update or expand the documentation;
+6. update or expand the documentation, see [package documentation guidelines](#package-documentation);
 7. make sure the release notes in `inst/NEWS.Rd` are updated;
 8. add your name to the contributors lists in the `DESCRIPTION` and `CITATION.cff` files;
 9. push your feature branch to (your fork of) the GGIR repository on GitHub;
@@ -50,6 +50,42 @@ Some general guidelines that we try to adhere to:
 
 If you are a first time contributor, don't worry about coding style too much.
 We will help you get things in shape.
+
+### Package documentation
+
+We currently have two sources for documenting the package:
+
+- The reference manual, including package basic information and the functions documentation files.
+- The package vignettes.
+
+Now we are implementing a github.io website for package documentation to which we will
+migrate in a near future (built with the `pkgdown` package). Note that the github.io
+currently
+
+For updating or adding information to the github.io website, we need to interact
+with [the pkgdown configuration file](_pkgdown.yml) that can be found in the GGIR 
+source directory in GitHub. 
+
+#### To edit information in an existing chapter
+
+1. Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) file for the chapter and its vignette path (href).
+2. Make your changes in the vignette.
+3. Run the `pkgdown::build_site()` function.
+
+#### To add a new chapter
+
+1. Create a new html vignette with the new chapter information.
+2. Open the [_pkgdown.yml](_pkgdown.yml) file and fill up the name and reference of the
+new chapter under menu. Make sure to follow the coding and structure of the rest of chapters.
+3. Run the `pkgdown::build_site()` function.
+
+#### Committing the changes to the master branch
+
+The last step would be committing your changes to the master branch and making a
+pull request as with any other contribution to the package. Note that running the 
+`pkgdown::build_site()` function will edit the files within the docs folder, and 
+probably add some new files. It is important that these changes to the files in the
+docs folder are also part of the pull request.s
 
 ## New release
 

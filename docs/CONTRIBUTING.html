@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@
 <li>if needed, fork the repository to your own Github profile and create your own feature branch off of the latest master commit. While working on your feature branch, make sure to stay up to date with the master branch by pulling in changes, possibly from the ‘upstream’ repository (follow the instructions <a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" class="external-link">here</a> and <a href="https://help.github.com/articles/syncing-a-fork/" class="external-link">here</a>);</li>
 <li>make sure the existing tests still work by running the test suite from RStudio;</li>
 <li>add your own tests (if necessary);</li>
-<li>update or expand the documentation;</li>
+<li>update or expand the documentation, see <a href="#package-documentation">package documentation guidelines</a>;</li>
 <li>make sure the release notes in <code>inst/NEWS.Rd</code> are updated;</li>
 <li>add your name to the contributors lists in the <code>DESCRIPTION</code> and <code>CITATION.cff</code> files;</li>
 <li>push your feature branch to (your fork of) the GGIR repository on GitHub;</li>
@@ -119,6 +119,28 @@
 <li>Keep loops to a minimum.</li>
 <li>Don’t make lines too long.</li>
 </ul><p>If you are a first time contributor, don’t worry about coding style too much. We will help you get things in shape.</p>
+</div>
+<div class="section level3">
+<h3 id="package-documentation">Package documentation<a class="anchor" aria-label="anchor" href="#package-documentation"></a></h3>
+<p>We currently have two sources for documenting the package:</p>
+<ul><li>The reference manual, including package basic information and the functions documentation files.</li>
+<li>The package vignettes.</li>
+</ul><p>Now we are implementing a github.io website for package documentation to which we will migrate in a near future (built with the <code>pkgdown</code> package). Note that the github.io currently</p>
+<p>For updating or adding information to the github.io website, we need to interact with <a href="_pkgdown.yml">the pkgdown configuration file</a> that can be found in the GGIR source directory in GitHub.</p>
+<div class="section level4">
+<h4 id="to-edit-information-in-an-existing-chapter">To edit information in an existing chapter<a class="anchor" aria-label="anchor" href="#to-edit-information-in-an-existing-chapter"></a></h4>
+<ol style="list-style-type: decimal"><li>Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) file for the chapter and its vignette path (href).</li>
+<li>Make your changes in the vignette.</li>
+<li>Run the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function.</li>
+<li>Commit your changes to the master branch and make a pull request.</li>
+</ol></div>
+<div class="section level4">
+<h4 id="to-add-a-new-chapter">To add a new chapter<a class="anchor" aria-label="anchor" href="#to-add-a-new-chapter"></a></h4>
+<ol style="list-style-type: decimal"><li>Create a new html vignette with the new chapter information.</li>
+<li>Open the <a href="_pkgdown.yml">_pkgdown.yml</a> file and fill up the name and reference of the new chapter under menu. Make sure to follow the coding and structure of the rest of chapters.</li>
+<li>Run the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function.</li>
+<li>Commit your changes to the master branch and make a pull request.</li>
+</ol></div>
 </div>
 </div>
 <div class="section level2">

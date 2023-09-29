@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,8 +85,8 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.wakesleepwindows</span><span class="op">(</span><span class="va">ts</span>, <span class="va">summarysleep_tmp2</span>, <span class="va">desiredtz</span>,</span>
-<span>  <span class="va">nightsi</span>, <span class="va">sleeplog</span>, <span class="va">ws3new</span>, <span class="va">Nts</span>, <span class="va">ID</span>, <span class="va">Nepochsinhour</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.wakesleepwindows</span><span class="op">(</span><span class="va">ts</span>, <span class="va">part4_output</span>, <span class="va">desiredtz</span>,</span>
+<span>                    <span class="va">nightsi</span>, <span class="va">sleeplog</span>, <span class="va">epochSize</span>,<span class="va">ID</span>, <span class="va">Nepochsinhour</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -94,29 +94,26 @@
     <dl><dt>ts</dt>
 <dd><p>data.frame with time series</p></dd>
 
-  <dt>summarysleep_tmp2</dt>
+  <dt>part4_output</dt>
 <dd><p>cleaned output from part 4</p></dd>
 
   <dt>desiredtz</dt>
-<dd><p></p></dd>
+<dd><p><a href="GGIR.html">GGIR</a></p></dd>
 
   <dt>nightsi</dt>
-<dd><p></p></dd>
+<dd><p>vector with indices for the midnights</p></dd>
 
   <dt>sleeplog</dt>
-<dd><p></p></dd>
+<dd><p>Data.frame with sleeplog information as loaded by <a href="g.loadlog.html">g.loadlog</a></p></dd>
 
-  <dt>ws3new</dt>
-<dd><p></p></dd>
-
-  <dt>Nts</dt>
-<dd><p></p></dd>
+  <dt>epochSize</dt>
+<dd><p>Short epochsize in seconds</p></dd>
 
   <dt>ID</dt>
-<dd><p></p></dd>
+<dd><p>ID of the participant</p></dd>
 
   <dt>Nepochsinhour</dt>
-<dd><p></p></dd>
+<dd><p>Number of epochs in an hour</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -841,16 +841,6 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="odd">
-<td>nnights</td>
-<td>4</td>
-<td>params_sleep</td>
-</tr>
-<tr class="even">
-<td>sleeplogidnum</td>
-<td>4, 5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="odd">
 <td>possible_nap_window</td>
 <td>5</td>
 <td>params_sleep</td>
@@ -896,27 +886,27 @@ arguments.</p>
 <td>not in parameter objects</td>
 </tr>
 <tr class="even">
-<td>def.noc.sleep</td>
+<td>relyonguider_SleepEfficiency</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
 <tr class="odd">
+<td>def.noc.sleep</td>
+<td>4</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
 <td>data_cleaning_file</td>
 <td>4, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirst.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
-<td>excludelast.part4</td>
-<td>4</td>
-<td>params_cleaning</td>
-</tr>
 <tr class="even">
-<td>sleeplogsep</td>
+<td>excludelast.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
@@ -1585,6 +1575,16 @@ sample should be imputed. Currently only used for .gt3x data and
 ActiGraph .csv format, where timegaps can be expected as a result of
 Actigraph’s idle sleep.mode configuration.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="frequency_tol">frequency_tol<a class="anchor" aria-label="anchor" href="#frequency_tol"></a>
+</h4>
+<p>Number (default = 0.1) as passed on to readAxivity from the GGIRread
+package. Represents the frequency tolerance as fraction between 0 and 1.
+When the relative bias per data block is larger than this fraction then
+the data block will be imputed by lack of movement with gravitational
+oriationed guessed from most recent valid data block. Only applicable to
+Axivity .cwa data.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="metrics-parameters">Metrics Parameters<a class="anchor" aria-label="anchor" href="#metrics-parameters"></a>
@@ -2132,10 +2132,7 @@ where the onset of the first night starts.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="nnights">nnights<a class="anchor" aria-label="anchor" href="#nnights"></a>
 </h4>
-<p>Numeric (default = NULL). Number of nights for which sleep log
-information should be available. It assumes that this is constant within
-a study. If sleep log information is missing for certain nights then
-leave these blank.</p>
+<p>Numeric (default = NULL). This argument has been deprecated.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="relyonguider">relyonguider<a class="anchor" aria-label="anchor" href="#relyonguider"></a>
@@ -2195,6 +2192,23 @@ algortihm that was trained in 3.5 year olds.</p>
 <p>Character (default = NULL). To specify classification model.
 Currently the only option is “hip3yr”, which corresponds to a model
 trained with hip data in 3-3.5 olds trained with parent diary data.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="sleepefficiency-metric">sleepefficiency.metric<a class="anchor" aria-label="anchor" href="#sleepefficiency-metric"></a>
+</h4>
+<p>Numeric (default = 1). If 1 (default), sleep efficiency is calculated
+as detected nocturnal sleep time divided by log-derived duration in
+sleep period time (considering user-reported sleep onset and wake
+times). If 2, sleep efficiency is calculated as detected nocturnal sleep
+time divided by detected duration in sleep period time plus sleep
+latency (where sleep latency refers to the difference between
+log-derived sleep onset and accelerometer-detected sleep onset).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="possible_nap_edge_acc">possible_nap_edge_acc<a class="anchor" aria-label="anchor" href="#possible_nap_edge_acc"></a>
+</h4>
+<p>Minimum acceleration before or after the SIB for the nap to be
+considered.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2607,7 +2621,12 @@ mistakes.</p>
 <h4 class="unnumbered" id="do-sibreport">do.sibreport<a class="anchor" aria-label="anchor" href="#do-sibreport"></a>
 </h4>
 <p>Boolean (default = FALSE). In g.part4: To indicate whether to
-generate report for the sustained inactivity bouts (SIB).</p>
+generate report for the sustained inactivity bouts (SIB). If set to TRUE
+and when an advanced sleep diary is available in part 4 then part 5 will
+use this to generate summary statistics on the overlap between
+self-reported nonwear and napping with SIB. Here, SIB cna be filter
+based on argument possible_nap_edge_acc and the first value of
+possible_nap_dur</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="do-part2-pdf">do.part2.pdf<a class="anchor" aria-label="anchor" href="#do-part2-pdf"></a>
