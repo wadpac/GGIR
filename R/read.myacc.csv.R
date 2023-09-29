@@ -186,7 +186,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
+      cat("\nprint P$timestamp inside read.my.acc\n")
+      cat(format(P$timestamp[1]))
+      P$timestamp = as.POSIXct(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
+      cat(format(P$timestamp[1]))
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
         return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
@@ -248,8 +251,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         }
       }
     } else if (rmc.unit.time == "character") {
+      cat("\nA")
       P$timestamp = as.POSIXct(P$timestamp,format = rmc.format.time, tz = configtz)
     } else if (rmc.unit.time == "UNIXsec") {
+      cat("\nB")
       P$timestamp = as.POSIXct(P$timestamp, origin = rmc.origin, tz = configtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
@@ -266,6 +271,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   
   if (configtz != desiredtz) {
+    cat("\nC")
     P$timestamp = as.POSIXct(as.numeric(P$timestamp),
                                  tz = desiredtz, origin = "1970-01-01")
   }
@@ -317,6 +323,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   if (rmc.doresample == TRUE) { #resample
     rawTime = vector(mode = "numeric", nrow(P))
+    cat("\nD")
     rawTime = as.numeric(as.POSIXct(P$timestamp,tz = configtz))
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "timestamp"))])
     step = 1/sf

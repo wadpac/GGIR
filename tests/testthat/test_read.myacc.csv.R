@@ -10,6 +10,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   t0 = as.POSIXct(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
   timeseq = t0 + ((0:(N - 1))/sf)
   time = as.POSIXct(timeseq, origin = "1970-1-1", tz = "Europe/London")
+  cat("\nprint time at start:")
+  cat(format(time[1:5]))
   testfile = matrix("", 4, 1)
   set.seed(100)
   accx = rnorm(N)
@@ -112,6 +114,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   # Evaluate with decimal places in seconds
   expect_equal(nrow(D1$data), 20)
   expect_equal(ncol(D1$data), 5)
+  cat("\n print timestamps:\n")
+  cat(format(D1$data$time[1:5]))
   expect_equal(strftime(D1$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
                         tz = "Europe/London"), 
                c("2022-11-02 13:01:16.00",
