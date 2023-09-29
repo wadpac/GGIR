@@ -107,6 +107,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
               # checking whether date exists in sleeplog
               ind = which(Sdates_correct == as.Date(expected_dates[ni], tz = desiredtz))
               if (length(ind) > 0) {
+                if (length(ind) > 1) {
+                  duplicatedDate = unique(as.character(S[i, datecols[ind]]))
+                  stop(paste0("\n", ID, " has duplicate dates in the diary, please fix ", duplicatedDate), call. = FALSE)
+                }
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
                 if (is.na(nextdatecol)) nextdatecol = ncol(S) + 1
