@@ -484,6 +484,12 @@ GGIR(mode = 1:5,
         Noise level of acceleration signal in m\emph{g}-units, used when working ad-hoc .csv data formats
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
+        
+      \item{rmc.scalefactor.acc}{
+        Numeric value (default 1) to scale the acceleration signals via multiplication.
+        For example, if data is provided in m/s2 then by setting this to 1/9.81
+        we would derive gravitational units.
+      }
 
       \item{frequency_tol}{
         Number (default = 0.1) as passed on to readAxivity from the GGIRread package.
@@ -492,6 +498,7 @@ GGIR(mode = 1:5,
         by lack of movement with gravitational oriationed guessed from most recent
         valid data block. Only applicable to Axivity .cwa data.
       }
+      
     }
   }
 
