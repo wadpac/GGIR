@@ -28,23 +28,8 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
     if (length(P$timestamp) == 0) starttime = format(P$hvalues[which(P$hnames == "Start")])
   } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-    if ("page.timestamps" %in% names(P)) { # GENEAread
-      if (length(desiredtz) > 0) {
-        starttime = POSIXtime2iso8601(P$page.timestamps[1], tz = desiredtz)
-        if (length(unlist(strsplit(format(starttime),":"))) < 2) {
-          #needed for MaM study where first timestamp does not have clock time in it
-          starttime = POSIXtime2iso8601(P$page.timestamps[2], tz = desiredtz)
-        }
-      } else {
-        starttime = P$page.timestamps[1]
-      }
-    } else {
-      starttime = as.POSIXlt(P$data.out$time[1], tz = desiredtz, origin = "1970-01-01")
-      starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
-    }
-  } else if (dformat == FORMAT$CSV && mon == MONITOR$GENEACTIV) {
-    starttime = format(P[1,1])
-    starttime = as.POSIXlt(starttime)
+    starttime = as.POSIXlt(P$data.out$time[1], tz = desiredtz, origin = "1970-01-01")
+    starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
   } else if (dformat == FORMAT$CSV && (mon == MONITOR$ACTIGRAPH || mon == MONITOR$AXIVITY || mon == MONITOR$VERISENSE)) {
     if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE) {
       tmph = read.csv(datafile, nrow = 8, skip = 1)

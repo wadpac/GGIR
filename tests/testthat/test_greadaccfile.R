@@ -67,12 +67,12 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
   dayborder = 0
   
   cwa_read = g.readaccfile(cwafile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           decn = ".", dayborder,ws = 3, desiredtz = desiredtz, 
+                           dayborder,ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = Icwa,
                            params_rawdata = params_rawdata)
   GA_read = g.readaccfile(GAfile, blocksize = 2, blocknumber = 1, filequality = filequality,
-                                         decn = ".", dayborder = dayborder, ws = 3,
-                                         desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA)
+                          dayborder = dayborder, ws = 3,
+                          desiredtz = desiredtz, PreviousEndPage = 1, inspectfileobject = IGA)
   expect_equal(cwa_read$P$header$blocks, 145)
   expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 0)
   

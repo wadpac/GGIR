@@ -47,7 +47,7 @@ create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c(),
   #==================================
   
   if (length(storagelocation) == 0) storagelocation = getwd()
-  if (Nmin < 2000) Nmin = 2000 # only make this file for tests with at least 2k minutes of data
+  if (Nmin < 1000) Nmin = 1000 # only make this file for tests with at least 1k minutes of data
   if (starts_at_midnight) {
     start_time = "00:00:00"
   } else {
