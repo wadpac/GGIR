@@ -24,7 +24,7 @@ aggregateEvent = function(metric_name, epochsize,
   daysummary[di, fi] = mean(cadence, na.rm = TRUE)
   ds_names[fi] = varnameevent; fi = fi + 1
   
-  # cadence precentiles
+  # cadence percentiles
   cadence_quantiles = quantile(cadence, probs = qlevels)
   varnameevent = paste0("ExtFunEvent_cad_p", qlevels * 100, anwi_nameindices[anwi_index])
   daysummary[di, fi:(fi + length(qlevels) - 1)] = as.numeric(cadence_quantiles)
@@ -33,7 +33,7 @@ aggregateEvent = function(metric_name, epochsize,
   #========================================
   # per acceleration level
   cn_vari = colnames(vari)
-  acc.metrics = cn_vari[cn_vari %in% c("timestamp","anglex","angley","anglez", metric_name) == FALSE]
+  acc.metrics = cn_vari[cn_vari %in% c("timestamp", "anglex", "angley", "anglez", metric_name) == FALSE]
 
   for (ami in 1:length(acc.metrics)) {
     vari[, acc.metrics[ami]] = as.numeric(vari[, acc.metrics[ami]])
@@ -54,7 +54,7 @@ aggregateEvent = function(metric_name, epochsize,
         daysummary[di, fi] = 0
       }
       ds_names[fi] = varnameevent; fi = fi + 1
-      
+
       # cadence per acceleration level
       varnameevent = paste0("ExtFunEvent_mn_cad_acc", 
                             acc_level_name, anwi_nameindices[anwi_index])
@@ -69,8 +69,6 @@ aggregateEvent = function(metric_name, epochsize,
   
   #========================================
   # per cadence level
-  acc.metrics = cn_vari[cn_vari %in% c("timestamp","anglex","angley","anglez", metric_name) == FALSE]
-  # cadence.thresholds = c(0, 30, 60) # hard-coded make this a user input arguments myfun
   for (ti in 1:length(cadence.thresholds)) {
     # define cadence level
     if (ti < length(cadence.thresholds)) {
@@ -117,7 +115,5 @@ aggregateEvent = function(metric_name, epochsize,
       ds_names[fi] = varnameevent; fi = fi + 1
     }
   }
-
-  
   invisible(list(ds_names = ds_names, daysummary = daysummary, fi = fi))
 }
