@@ -7,7 +7,14 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   N = 30
   sf = 30
   options(digits.secs = 4)
-  t0 = as.POSIXct(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam")
+  
+  
+  # cat(format(as.POSIXct(as.POSIXct(x = "2022-11-02 14:00:00.00", tz = "Europe/Amsterdam"), origin = "1970-1-1", tz = "Europe/London")))
+  
+  # format(as.POSIXlt(as.POSIXct(x = "2022-11-02 14:00:00.00", tz = "Europe/Amsterdam"), origin = "1970-1-1", tz = "Europe/London"))
+  # format(as.POSIXct(as.POSIXct(x = "2022-11-02 14:00:00.00", tz = "Europe/Amsterdam"), origin = "1970-1-1", tz = "Europe/London"))
+  # 
+  t0 = as.POSIXlt(x = "2022-11-02 14:01:16.00", tz = "Europe/Amsterdam") # NOTE THIS NEEDS TO BE POSIXlt for older R releases
   timeseq = t0 + ((0:(N - 1))/sf)
   time = as.POSIXct(timeseq, origin = "1970-1-1", tz = "Europe/London")
   cat("\nprint time at start:")
