@@ -161,15 +161,15 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(4)) # 2023-09-04: changed because part5 now gives also first and last day
-  expect_that(ncol(output),equals(187)) # changed because intensity gradient now included in the test
+  expect_that(nrow(output),equals(4))
+  expect_that(ncol(output),equals(197))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(1150))
-  expect_equal(ncol(TSFILE), 11) # 11 columns now because of nap_nonwear classification
+  expect_equal(ncol(TSFILE), 11)
   expect_equal(length(unique(TSFILE$class_id)), 10)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
