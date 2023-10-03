@@ -10,6 +10,8 @@
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
 
+- Part 2: strategy = 3 and strategy = 5 now can interact with hrs.del.start and hrs.del.end #905
+
 # CHANGES IN GGIR VERSION 2.10-3
 
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
