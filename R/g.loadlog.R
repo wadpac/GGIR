@@ -78,6 +78,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                                "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz)
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat, tz = desiredtz)
+            if (length(which(diff(which(is.na(Sdates))) > 1)) > 0) {
+              stop(paste0("\nSleeplog for ID: ", ID, " has missing date(s)"), call. = FALSE)
+            }
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
               deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
               if (is.na(deltadate) == FALSE) {
