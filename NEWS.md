@@ -12,7 +12,7 @@
 
 - Vignette: Expanded with paragraph on minimum recording duration #835
 
-- Part 4: More informative error message when advanced sleep log has duplicate dates #925
+- Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
 
