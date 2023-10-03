@@ -79,7 +79,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
-    boolean_params = c("cosinor", "part6CR", "part6CoAnalysis")
+    boolean_params = c("cosinor", "part6CR", "part6HCA")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
     check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
@@ -278,6 +278,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
+    }
+    if (params_247[["part6HCA"]] == TRUE) {
+      # Add RData because part 6 will need it
+      params_247[["save_ms5raw_format"]] = unique(c(params_247[["save_ms5raw_format"]], "RData"))
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {

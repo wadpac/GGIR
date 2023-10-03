@@ -1253,8 +1253,9 @@ GGIR(mode = 1:5,
       \item{part6CR}{
         Boolean (default = FALSE) to indicate whether circadian rhythm analysis should be run by part 6.
       }
-      \item{part6CoAnalysis}{
-        Boolean (default = FALSE) to indicate whether CoAnalysis should be run by part 6.
+      \item{part6HCA}{
+        Boolean (default = FALSE) to indicate whether Household Co Analysis should 
+        be run by part 6.
       }
       \item{part6Window}{
         Character vector with length two (default = c("start", "end")) to indicate

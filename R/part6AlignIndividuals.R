@@ -1,23 +1,23 @@
 part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
                                  path_ggirms = NULL, desiredtz = "", verbose = TRUE) {
   if (verbose == TRUE) {
-    cat("\n===================================")
-    cat("\nAlign individuals:")
+    # cat("\n===================================")
+    cat("\n  Align individuals:")
   }
   # TO DO:
-  # Insert additional information about time spent with second household
+  # Insert additional information about time spent with second houdeshold
   
   
   #======================================================================
-  # identify households and IDs based on filenames and put these in table
+  # identify houdesholds and IDs based on filenames and put these in table
   path_timeseries = GGIR_ts_dir
-  path_results = paste0(outputdir, "/household_co_analysis")
+  path_results = paste0(outputdir, "/part6HouseholdCoAnalysis")
   if (!dir.exists(path_results)) dir.create(path = path_results, recursive = TRUE)
   
-  path_results_ts = paste0(path_results, "/household_timeseries")
+  path_results_ts = paste0(path_results, "/alignedTimeseries")
   if (!dir.exists(path_results_ts)) dir.create(path = path_results_ts, recursive = TRUE)
   
-  fns = dir(path_timeseries)
+  fns = dir(path_timeseries, pattern = "RData")
   getIDs = function(x) {
     tmp = unlist(strsplit(x, "-|_"))
     return(data.frame(HID = tmp[2], MID = tmp[3], filename = x))
@@ -31,25 +31,25 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
     fileOverview$houshold_size[rowi] = S[i] 
   }
   
-  # remove all households with less than two individuals:
+  # remove all houdesholds with less than two individuals:
   fileOverview = fileOverview[which(fileOverview$houshold_size > 1),]
   uHID = unique(fileOverview$HID)
   
-  pdf(file = paste0(path_results, "/household_timeseries_exploration.pdf"))
+  pdf(file = paste0(path_results, "/timeseriesPlot.pdf"))
   #======================================================================
-  # Loop over households and IDs to check and merge the data
+  # Loop over houdesholds and IDs to check and merge the data
   
   
   mdat = NULL
-  # Loop over Household IDS
+  # Loop over houdeshold IDS
   for (h in 1:length(uHID)) {
-    if (verbose == TRUE) cat(paste0("\n  Household ", uHID[h],": "))
+    if (verbose == TRUE) cat(paste0("\n    Houdeshold ", uHID[h],": "))
     uMID = fileOverview$MID[which(fileOverview$HID == uHID[h])]
     uFilename = fileOverview$filename[which(fileOverview$HID == uHID[h])]
     out = NULL
-    # Loop over Household members
+    # Loop over Houdeshold members
     for (p in 1:length(uMID)) {
-      if (verbose == TRUE) cat(paste0("\n", uMID[p], " ")) #, uFilename[p]))
+      if (verbose == TRUE) cat(paste0(uMID[p], " ")) #, uFilename[p]))
       # load data
       load(file = paste0(path_timeseries, "/", uFilename[p]))
       D = mdat
@@ -116,7 +116,7 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
     }
     
     out$validepoch = (-out$invalidepoch) + 1
-    # only continue if there are at least 2 household members left
+    # only continue if there are at least 2 Houdeshold members left
     if (length(unique(out$MID)) > 1) {
       uMID = unique(out$MID)
       out = out[order(out$timenum),]
@@ -190,7 +190,7 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
       }
       rm(currentColorPalette)
       # Store data
-      write.csv(x = out2, file = paste0(path_results, "/household_timeseries/timeseries_HID_",uHID[h],".csv"), row.names = FALSE)
+      write.csv(x = out2, file = paste0(path_results, "/alignedTimeseries/timeseries_HID_",uHID[h],".csv"), row.names = FALSE)
     }
     
   }

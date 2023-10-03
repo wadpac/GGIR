@@ -78,10 +78,11 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                                               no = 0)))))
     mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns
-    if (save_ms5raw_format == "csv") {
+    if ("csv" %in% save_ms5raw_format) {
       # save to csv file
       data.table::fwrite(mdat, rawlevels_fname, row.names = F, sep = sep_reports)
-    } else if (save_ms5raw_format == "RData") {
+    }
+    if ("RData" %in% save_ms5raw_format) {
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
       mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz) 

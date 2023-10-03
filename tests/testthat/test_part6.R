@@ -39,14 +39,14 @@ test_that("Part 6 with household co-analysis", {
   params_phyact = load_params(topic = "phyact")$params_phyact
   params_phyact[["part6_threshold_combi"]] = part6_threshold_combi
   params_247 = load_params(topic = "247")$params_247
-  params_247[["part6CoAnalysis"]] = TRUE
+  params_247[["part6HCA"]] = TRUE
   g.part6(metadatadir = metadatadir,
           params_general = params_general,
           params_phyact = params_phyact,
           params_247 = params_247, verbose = FALSE)
   
   # Check aligned time series output file
-  path_to_ts = paste0(metadatadir, "/results/household_co_analysis/household_timeseries/timeseries_HID_900.csv")
+  path_to_ts = paste0(metadatadir, "/results/part6HouseholdCoAnalysis/alignedTimeseries/timeseries_HID_900.csv")
   expect_true(file.exists(path_to_ts))
   TS = read.csv(path_to_ts)
   expect_equal(nrow(TS), 10032)
@@ -57,7 +57,7 @@ test_that("Part 6 with household co-analysis", {
   expect_equal(sum(TS$lightmean.002[2000:2300]), 2223.294, tolerance = 0.002)
   
   # Check pairwise comparisons
-  path_to_pairwisecomp = paste0(metadatadir, "/results/household_co_analysis/summary_pairs/pairwise_summary_all_housholds.csv")
+  path_to_pairwisecomp = paste0(metadatadir, "/results/part6HouseholdCoAnalysis/pairwise_summary_all_housholds.csv")
   expect_true(file.exists(path_to_pairwisecomp))
   PC = read.csv(path_to_pairwisecomp)
   expect_equal(nrow(PC), 18)
@@ -69,7 +69,7 @@ test_that("Part 6 with household co-analysis", {
   
   
   # Run Circadian rhythm analysis  
-  params_247[["part6CoAnalysis"]] = FALSE
+  params_247[["part6HCA"]] = FALSE
   params_general[["do.parallel"]] = FALSE
   params_general[["overwrite"]] = TRUE
   params_247[["cosinor"]] = TRUE

@@ -79,7 +79,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   #=========================================================
   # Recording-group (e.g. household members) level co-analysis,
   # which at the end of this g.part6 is either
-  if (params_247[["part6CoAnalysis"]] == TRUE) {
+  if (params_247[["part6HCA"]] == TRUE) {
     part6AlignIndividuals(GGIR_ts_dir = expected_ts_path,
                           outputdir = resultsdir,
                           path_ggirms = paste0(metadatadir , "/meta"),

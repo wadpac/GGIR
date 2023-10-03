@@ -47,7 +47,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       
       stop("\nDirectory specified by argument datadir does not exist")
     }
-    if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
+    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
       stop(paste0('\nError: The file path specified by argument outputdir should ',
                   'NOT equal or be a subdirectory of the path specified by argument datadir'))
     }
@@ -68,7 +68,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (is.null(f0) || f0 < 1) { # What file to start with?
     f0 = 1
   }
-  if (is.null(f1) || f1 < 1) {  # What file to end with?
+  if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
     if (filelist == FALSE) {
       f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {

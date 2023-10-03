@@ -74,7 +74,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000),
                       LUX_cal_constant = c(), LUX_cal_exponent = c(), LUX_day_segments = c(),
                       window.summary.size = 10, L5M5window = c(0, 24), cosinor = FALSE,
-                      part6CR = FALSE, part6CoAnalysis = FALSE,
+                      part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"))
   }
   if ("phyact" %in% topic) {

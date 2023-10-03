@@ -49,15 +49,14 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
   #----------------------------------------------------------
   
   if (verbose == TRUE) {
-    cat("\n===================================")
-    cat("\nAggregate per pair:")
+    # cat("\n===================================")
+    cat("\n  Aggregate per pair:")
   }
-  path_hh_ts = paste0(outputdir, "/household_co_analysis/household_timeseries")
+  path_hh_ts = paste0(outputdir, "/part6HouseholdCoAnalysis/alignedTimeseries")
   if (!dir.exists(path_hh_ts)) stop("first process data with function align_individuals")
   
-  compfolder =  paste0(outputdir, "/household_co_analysis/summary_pairs")
-  if (!dir.exists(compfolder)) dir.create(compfolder)
-  
+  compfolder =  paste0(outputdir, "/part6HouseholdCoAnalysis")
+
   fns = dir(path = path_hh_ts, full.names = TRUE)
   
   # loop over households
@@ -67,7 +66,7 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
       # load entire data for household
       D = read.csv(file = fns[i])
       uHID = unique(D$HID)
-      if (verbose == TRUE) cat(paste0("\n  Household: ", uHID))
+      if (verbose == TRUE) cat(paste0("\n    Household: ", uHID))
       #unique member IDs
       uMID = gsub(pattern = "ACC.", replacement = "", x = grep(pattern = "ACC", x = colnames(D), value = TRUE))
       #unique pair IDs
