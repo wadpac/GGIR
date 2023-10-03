@@ -4,7 +4,6 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
   if (monc == MONITOR$GENEA) blocksize = round(21467 * (sf/80)  * chunksize)
   if (monc == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) blocksize = round(blocksize)#round(blocksize/5)
   if (monc == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) blocksize = (24 * 3600) * chunksize
-  if (monc == MONITOR$AXIVITY && dformat == FORMAT$WAV) blocksize = round(1440 * chunksize)
   if (monc == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     if (utils::packageVersion("GGIRread") >= "0.3.1") {
       # 24-hour block.

@@ -116,11 +116,9 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     }
     #=============================================================
     # Inspect file (and store output later on)
-    options(warn = -1) #turn off warnings
     I = g.inspectfile(datafile, desiredtz = params_general[["desiredtz"]],
                         params_rawdata = params_rawdata,
                         configtz = params_general[["configtz"]])
-    options(warn = 0) #turn on warnings
     if (verbose == TRUE) cat(paste0("\nP1 file ",i))
     turn.do.cal.back.on = FALSE
     if (params_rawdata[["do.cal"]] == TRUE & I$dformc == FORMAT$WAV) { # do not do the auto-calibration for wav files (because already done in pre-processign)
@@ -359,6 +357,11 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       if (Ncores2use > 1) {
         cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        parallel::clusterExport(cl = cl, 
+                                varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                            "MONITOR", "FORMAT"),
+                                envir = as.environment(asNamespace("GGIR"))
+        )
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core

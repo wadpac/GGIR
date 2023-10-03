@@ -1,3 +1,15 @@
+# CHANGES IN GGIR VERSION 2.10-4
+
+- Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
+
+- Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation #817
+
+- Part 1: Fixed issue #914 relating to specifying timezone for processing ad-hoc csv format raw data.
+
+- Part 1: Improved recognition of ActiGraph csv that occassionally confused for Axivity csv #918
+
+- Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
+
 # CHANGES IN GGIR VERSION 2.10-3
 
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897

@@ -1,11 +1,11 @@
 library(GGIR)
 context("g.part3")
-test_that("Part 3 identifies 1-night scenario", {
+test_that("Part 3 runs fine on a short file not containing a night", {
   skip_on_cran()
   #=======================
-  # Create a test file for a bit over a day worth of data.
-  # Nmin=2000 is currently the default, but hardcoding it here in case the default changes.
-  create_test_acc_csv(Nmin=2000)
+  # Create a test file that doesn't contain a night.
+  # More specifically, it should not contan a 4am, since it's a magic time used in g.sib.det
+  create_test_acc_csv(Nmin=1000, starts_at_midnight = FALSE)
   fn = "123A_testaccfile.csv"
   dn = "output_test"
   if (file.exists(dn)) unlink(dn, recursive = TRUE)
@@ -16,13 +16,7 @@ test_that("Part 3 identifies 1-night scenario", {
   
   out.file.path = paste0(dn, "/meta/ms3.out/", fn, ".RData")
   expect_true(file.exists(out.file.path))
-  load(out.file.path)
 
-  # check that the data file had only one night. The 'night' column should contain only 1s
-  for (i in 1:nrow(sib.cla.sum)) {
-    expect_that(sib.cla.sum$night[i],equals(1))
-  }
-   
   if (file.exists(fn)) file.remove(fn)
   if (file.exists(dn)) unlink(dn, recursive = TRUE)
 })

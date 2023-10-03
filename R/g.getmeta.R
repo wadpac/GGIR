@@ -7,24 +7,23 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   
   #get input variables
   input = list(...)
-  expectedArgs = c("datafile", "params_metrics",
-                   "params_rawdata", "params_general",
-                   "daylimit", "offset",
-                   "scale", "tempoffset", "meantempcal",
-                   "myfun")
-  if (any(names(input) %in% expectedArgs == FALSE) |
-      any(!unlist(lapply(expectedArgs, FUN = exists)))) {
-    # Extract and check parameters if user provides more arguments than just the parameter arguments
+  if (length(input) > 0 ||
+      length(params_metrics) == 0 || length(params_rawdata) == 0 ||
+      length(params_general) == 0 || length(params_cleaning) == 0) {
+    # Extract and check parameters if user provides more arguments than just the parameter arguments,
+    # or if params_[...] aren't specified (so need to be filled with defaults).
     # So, inside GGIR this will not be used, but it is used when g.getmeta is used on its own
     # as if it was still the old g.getmeta function
     params = extract_params(params_metrics = params_metrics,
                             params_rawdata = params_rawdata,
                             params_general = params_general,
+                            params_cleaning = params_cleaning,
                             input = input,
-                            params2check = c("metrics", "rawdata", "general")) # load default parameters
+                            params2check = c("metrics", "rawdata", "general", "cleaning")) # load default parameters
     params_metrics = params$params_metrics
     params_rawdata = params$params_rawdata
     params_general = params$params_general
+    params_cleaning = params$params_cleaning
   }
   #get input variables
   if (length(input) > 0) {
@@ -123,7 +122,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
-  data = PreviousEndPage = PreviousStartPage = starttime = wday = weekdays = wdayname = c()
+  data = PreviousEndPage = PreviousStartPage = starttime = wday = wdayname = c()
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -174,11 +173,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (LD > 1) {
     if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
     header = INFI$header
-    options(warn = -1)
-    decn = g.dotorcomma(datafile, dformat, mon = mon,
-                        desiredtz = params_general[["desiredtz"]], rmc.dec = params_rawdata[["rmc.dec"]],
-                        loadGENEActiv  = params_rawdata[["loadGENEActiv"]])
-    options(warn = 0)
     ID = hvars$ID
     
     # get now-wear, clip, and blocksize parameters (thresholds)
@@ -198,8 +192,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-    if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
-        (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
+    if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
         (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
       temp.available = FALSE
     } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
@@ -237,7 +230,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
     if (!exists("PreviousLastTime")) PreviousLastTime = NULL
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                            filequality = filequality, decn = decn,
+                            filequality = filequality,
                             ws = ws, PreviousEndPage = PreviousEndPage,
                             inspectfileobject = INFI,
                             PreviousLastValue = PreviousLastValue,
@@ -273,9 +266,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       
-      if (mon == MONITOR$GENEA && dformat == FORMAT$BIN) {
-        data = P$rawxyz / 1000 #convert mg output to g for genea
-      } else if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
+      if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
         data = P$data.out
       } else if (dformat == FORMAT$CSV) { #csv Actigraph
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
@@ -297,8 +288,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
         }
         data = P
-      } else if (dformat == FORMAT$WAV) {
-        data = P$rawxyz
       } else if (dformat == FORMAT$CWA) {
         if (P$header$hardwareType == "AX6") {
           # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated.
@@ -360,15 +349,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                                       data,
                                                       P, header, desiredtz = params_general[["desiredtz"]],
                                                       sf, i, datafile,  ws2,
-                                                      starttime, wday, weekdays, wdayname, configtz = params_general[["configtz"]])
+                                                      starttime, wday, wdayname, configtz = params_general[["configtz"]])
       starttime = SWMT$starttime
       meantemp = SWMT$meantemp
       use.temp = SWMT$use.temp
-      wday = SWMT$wday; weekdays = SWMT$SWMT$weekdays; wdayname = SWMT$wdayname
+      wday = SWMT$wday; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
       
-      if (mon == MONITOR$GENEA || mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
-          (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV) || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
+      if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
+          (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
           (mon == MONITOR$AD_HOC && use.temp == FALSE)) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
       } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
@@ -445,8 +434,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         
         # Initialization of variables
         data_scaled = FALSE
-        if (mon == MONITOR$GENEA || (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) ||
-            (mon == MONITOR$AXIVITY && dformat == FORMAT$WAV)) {
+        if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
           data = data[, 1:3]
           data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
           data_scaled = TRUE
