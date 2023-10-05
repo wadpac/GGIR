@@ -776,6 +776,12 @@ Part 4 generates the following output:
 -   part4_nightsummary_sleep_cleaned.csv
 -   QC/part4_nightsummary_sleep_full.csv
 
+The latter with '_full' in the name is intended to aid
+clarifying why some nights (if any) are excluded from the cleaned summary report.
+Although, nights where the accelerometer was not worn at all are excluded from this. So,
+if you have a 30 day recording where the accelerometer was not worn from day 7 onward then
+you will not find the last 22 nights in either csv-report.
+
 The csv. files contain the variables as shown below.
 
 | (Part of) variable name    | Description         |
