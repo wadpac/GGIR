@@ -78,6 +78,9 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                                "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz)
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat, tz = desiredtz)
+            if (length(which(diff(which(is.na(Sdates))) > 1)) > 0) {
+              stop(paste0("\nSleeplog for ID: ", ID, " has missing date(s)"), call. = FALSE)
+            }
             if (is.na(startdate_sleeplog_tmp) == FALSE) {
               deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
               if (is.na(deltadate) == FALSE) {
@@ -107,6 +110,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
               # checking whether date exists in sleeplog
               ind = which(Sdates_correct == as.Date(expected_dates[ni], tz = desiredtz))
               if (length(ind) > 0) {
+                if (length(ind) > 1) {
+                  duplicatedDate = unique(as.character(S[i, datecols[ind]]))
+                  stop(paste0("\n", ID, " has duplicate dates in the diary, please fix ", duplicatedDate), call. = FALSE)
+                }
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
                 if (is.na(nextdatecol)) nextdatecol = ncol(S) + 1
