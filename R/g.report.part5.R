@@ -45,7 +45,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       }
       # Note: Below we intentionally only sets a criteria on daytime, because for
       # the night time we only need start and end of the SPT window.
-      if (window == "WW") {
+      if (window == "WW" | window == "OO") {
         indices = which(x$nonwear_perc_day <= maxpernwday &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 & include_window == TRUE)
       } else if (window == "MM") {
@@ -153,8 +153,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     # split results to different spreadsheets in order to minimize individual
     # filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
-    if (!all(uwi %in% c("MM", "WW"))) {
-      uwi = c(uwi[uwi %in% c("MM", "WW")], "Segments")
+    if (!all(uwi %in% c("MM", "WW", "OO"))) {
+      uwi = c(uwi[uwi %in% c("MM", "WW", "OO")], "Segments")
     }
     uTRLi = as.character(unique(outputfinal$TRLi))
     uTRMi = as.character(unique(outputfinal$TRMi))
@@ -197,7 +197,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                            "-", uTRVi[h3], "-", usleepparam[h4]))
               }
               select_window = as.character(outputfinal$window) == uwi[j]
-              if (!(uwi[j] %in% c("MM", "WW"))) select_window = !(as.character(outputfinal$window) %in% c("MM", "WW"))
+              if (!(uwi[j] %in% c("MM", "WW", "OO"))) select_window = !(as.character(outputfinal$window) %in% c("MM", "WW", "OO"))
               seluwi = which(select_window &
                                as.character(outputfinal$TRLi) == uTRLi[h1] &
                                as.character(outputfinal$TRMi) == uTRMi[h2] &

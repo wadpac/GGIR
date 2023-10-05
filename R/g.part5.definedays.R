@@ -156,6 +156,25 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       names(segments) = paste(start, end, sep = "-")
       segments_names = "WW"
     }
+  } else if (timewindowi == "OO") {
+    if (wi <= (Nwindows - 1)) { # all full wake to wake days
+      qqq[1] = which(diff(ts$diur) == 1)[wi] + 1
+      qqq[2] = which(diff(ts$diur) == 1)[wi + 1]
+    } else {
+      # time after last reliable waking up (this can be more than 24 hours)
+      # ignore this day, because if the night was ignored for sleep analysis
+      # then the description of the day in part 5 including that night is
+      # not informative.
+      qqq = c(NA, NA)
+    }
+    # build up segments
+    if (!is.na(qqq[1]) & !is.na(qqq[2])) {
+      segments = list(qqq)
+      start = substr(ts$time[qqq[1]], 12, 19)
+      end = substr(ts$time[qqq[2]], 12, 19)
+      names(segments) = paste(start, end, sep = "-")
+      segments_names = "OO"
+    }
   }
   return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, 
                         segments = segments, segments_names = segments_names)))
