@@ -77,6 +77,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       f1 = length(datadir) #modified
     }
   }
+  if (is.null(f1)) {
+    f1 = 0
+  }
   # Establish which parts need to be processed:
   dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE
   if (length(which(mode == 0)) > 0) {
@@ -178,36 +181,37 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       stop("If you want to derive circadian rhythm indicators, please install package: ActCR.", call. = FALSE)
     }
   }
-
-  checkFormat = TRUE
-  if (all(dir.exists(datadir)) == TRUE) {
-    rawaccfiles = dir(datadir, full.names = TRUE)[f0:f1]
-  } else if (all(file.exists(datadir))) {
-    rawaccfiles = datadir[f0:f1]
-  } else {
-    checkFormat = FALSE
-  }
-
-  if (checkFormat == TRUE) {
-    is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
-    is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
-    # skip this check if GGIRread and read.gt3x are both available
-    if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
-      getExt = function(x) {
-        tmp = unlist(strsplit(x, "[.]"))
-        return(tmp[length(tmp)])
-      }
-      rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
-      # axivity (cwa, wav), geneactive (bin), genea (bin):
-      if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
-        if (is_GGIRread_installed == FALSE) {
-          stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
+  if (1 %in% mode) {
+    checkFormat = TRUE
+    if (all(dir.exists(datadir)) == TRUE) {
+      rawaccfiles = dir(datadir, full.names = TRUE)[f0:f1]
+    } else if (all(file.exists(datadir))) {
+      rawaccfiles = datadir[f0:f1]
+    } else {
+      checkFormat = FALSE
+    }
+    
+    if (checkFormat == TRUE) {
+      is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
+      is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
+      # skip this check if GGIRread and read.gt3x are both available
+      if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
+        getExt = function(x) {
+          tmp = unlist(strsplit(x, "[.]"))
+          return(tmp[length(tmp)])
         }
-      }
-      # actigraph (gt3x)
-      if (any(grepl("gt3x", rawaccfiles_formats))) {
-        if (is_read.gt3x_installed == FALSE) {
-          stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
+        rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
+        # axivity (cwa, wav), geneactive (bin), genea (bin):
+        if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
+          if (is_GGIRread_installed == FALSE) {
+            stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
+          }
+        }
+        # actigraph (gt3x)
+        if (any(grepl("gt3x", rawaccfiles_formats))) {
+          if (is_read.gt3x_installed == FALSE) {
+            stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
+          }
         }
       }
     }
