@@ -30,7 +30,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
     extension = unlist(strsplit(filename,"[.]"))[2]
     
-    switch (extension,
+    switch(extension,
             "bin" = { dformat = FORMAT$BIN },
             "cwa" = ,
             "CWA" = { mon = MONITOR$AXIVITY
@@ -108,7 +108,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
             if (length(sf_r) > 0 && !is.na(sf_r)) {
               if (sf_r != sf && abs(sf_r - sf) > 5) { # use pageheader sample frequency if it is not the same as header sample frequency
                 sf = sf_r
-                cat(paste("sample frequency used from page header: ", sf, " Hz", sep = ""))
+                warning(paste0("sample frequency used from page header: ", sf, " Hz"))
               }
             }
           }
