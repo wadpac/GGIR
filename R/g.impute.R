@@ -154,6 +154,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
           atestlist[ati] = 0
         }
       }
+      # atik is the index where the most active ndayswindow starts
       atik = which(atestlist == max(atestlist))[1]
       params_cleaning[["hrs.del.start"]] = (atik * n_ws_perhour) + params_cleaning[["hrs.del.start"]]
       params_cleaning[["maxdur"]] = ((atik/n_ws_perday) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/n_ws_perday)
@@ -185,6 +186,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         if (p1 > length(atest)) break
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
       }
+      # atik is the index where the most active ndayswindow starts
       atik = 1 # intitialise atik as 1, which will be used in case ndayswindow is longer than recording days
       if (!is.null(atestlist)) atik = which(atestlist == max(atestlist))[1]
       if (firstmidnighti != 1) { #ignore everything before the first midnight plus hrs.del.start
