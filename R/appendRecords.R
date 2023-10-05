@@ -138,7 +138,6 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
               # Note that we also keep copy of I and C for each of the original recordings
               # this to retain this information for reporting in part 2
               Nappended = cnt
-              print(k:(cnt + 1))
               C_list = Clist[c(k:(cnt + 1))]
               I_list = Ilist[c(k:(cnt + 1))]
               save(M, C, I, C_list, I_list,
