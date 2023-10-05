@@ -53,26 +53,43 @@ We will help you get things in shape.
 
 ### Package documentation
 
-We currently have two sources for documenting the package:
+We currently have three sources for documenting the package:
 
 - The reference manual, including package basic information and the functions documentation files.
 - The package vignettes.
+- The github.io website (built with the `pkgdown` package).
 
-Now we are implementing a github.io website for package documentation to which we will
-migrate in a near future (built with the `pkgdown` package). Note that the github.io
-currently
+#### Reference manual
+
+The reference manual gets the information from the .Rd documents within the man
+folder in the package repository. Therefore, updating the information in those
+files will automatically update the reference manual. Note that most of the GGIR
+functions are not intended for direct interaction witht he user, as such, the
+documentation of all the parameters of GGIR are centralized in the .Rd file for
+the GGIR function.
+
+#### Package vignettes
+
+The folder vignettes in the GGIR package repository contains the traditional 
+vignettes for the GGIR package and the chapter vignettes that are used only for
+the github.io website (see [next section](#github.io-website)). Access those 
+files to edit an existing vignette, or use the structure of any of the vignettes
+to build up a new one.
+
+#### github.io website
 
 For updating or adding information to the github.io website, we need to interact
 with [the pkgdown configuration file](_pkgdown.yml) that can be found in the GGIR 
-source directory in GitHub. 
+source directory in GitHub, as well as with the chapter vignettes that can be 
+found in the vignettes directory (i.e., all the Rmd files starting by "chapter").
 
-#### To edit information in an existing chapter
+**To edit information in an existing chapter**
 
 1. Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) file for the chapter and its vignette path (href).
 2. Make your changes in the vignette.
 3. Run the `pkgdown::build_site()` function.
 
-#### To add a new chapter
+**To add a new chapter**
 
 1. Create a new html vignette with the new chapter information.
 2. Open the [_pkgdown.yml](_pkgdown.yml) file and fill up the name and reference of the
@@ -81,11 +98,13 @@ new chapter under menu. Make sure to follow the coding and structure of the rest
 
 #### Committing the changes to the master branch
 
-The last step would be committing your changes to the master branch and making a
-pull request as with any other contribution to the package. Note that running the 
+The last step would be committing and pushin your changes to github and making a
+pull request as with any other contribution to the package. Note that, running the 
 `pkgdown::build_site()` function will edit the files within the docs folder, and 
-probably add some new files. It is important that these changes to the files in the
-docs folder are also part of the pull request.s
+probably add some new files. This only applies when editing information from the 
+github.io website. It is important that these changes to the files in the
+docs folder are also part of the pull requests, as otherwise the website would not 
+be updated.
 
 ## New release
 
