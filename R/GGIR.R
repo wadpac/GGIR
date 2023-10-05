@@ -359,7 +359,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
       if (length(f0) == 0) f0 = 1
       if (f1 == 0) f1 = N.files.ms2.out
-      if (length(params_247[["qwindow"]]) > 2 | is.character(params_247[["qwindow"]])) {
+      if (length(params_247[["qwindow"]]) > 2 |
+          is.character(params_247[["qwindow"]]) |
+        (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
         store.long = TRUE
       } else {
         store.long = FALSE
