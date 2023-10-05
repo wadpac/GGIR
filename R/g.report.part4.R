@@ -27,7 +27,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
     # accelerometer datafiles and merge with sleep log data
     fnames = dir(meta.sleep.folder)
     if (f1 > length(fnames)) {
-      print(paste("f1 changed from, ", f1, " to ", length(fnames), sep = ""))
+      if (verbose == TRUE) cat(paste0("\nf1 changed from, ", f1, " to ", length(fnames)))
       f1 = length(fnames)
     }
     if (length(f1) == 0 | f1 > length(fnames))
@@ -155,7 +155,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
       ##################################################### COLLAPSING nightsummary TO A ONELINE
       ##################################################### personsummary PER PARTICIPANT
       if (nrow(nightsummary) == 0) {
-        print("report not stored, because no results available")
+        if (verbose == TRUE) cat("report not stored, because no results available")
       } else {
         nightsummary_clean = tidyup_df(nightsummary)
         data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
@@ -511,7 +511,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
         }
         #######################################################
         if (nrow(nightsummary) == 0) {
-          print("report not stored, because no results available")
+          if (verbose == TRUE) cat("\nreport not stored, because no results available")
         } else {
           nightsummary_clean = tidyup_df(nightsummary)
           personSummary_clean = tidyup_df(personSummary)
