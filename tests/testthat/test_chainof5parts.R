@@ -148,7 +148,7 @@ test_that("chainof5parts", {
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
-          iglevels = 1)
+          iglevels = 1, timewindow = c("MM", "WW", "OO"))
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
@@ -161,9 +161,11 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(4))
+  expect_that(nrow(output),equals(5)) # changed because OO window is exported
   expect_that(ncol(output),equals(197))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
+  expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
+  expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
@@ -187,6 +189,9 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
+  expect_true(file.exists("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"))
+  expect_true(file.exists("output_test/results/part5_daysummary_WW_L40M100V400_T5A5.csv"))
+  expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))
   dn = "output_test"
   
   #=======================
