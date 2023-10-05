@@ -1837,7 +1837,7 @@ also the intensity gradient. If argument `winhr` is a vector then
 descriptive values for LX and MX are derived per value in `winhr`.
 Within GGIR part 2 MXLX is calculated per calendar day and, if argument
 `qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX
-is calculated per window, and if used in combination with the GENEActiv
+is calculated per window, and if used in combination with the GENEActiv or Axivity
 accelerometer brand LUX estimates per LX and MX are included.
 
 The MX metric describe here should not be confused by the MX metrics as proposed
@@ -2034,6 +2034,27 @@ for midnight. If midnight is not found the sleep detection is skipped.
 
 - Ideally two valid consecutive nights and the waking hours in between.
 
+
+## LUX sensor data processing
+
+Although GGIR focuses on accelerometer data a few brands come with LUX data.
+
+In part 1 GGIR calculates the peak lux per long epoch at a default resolution of 15 minutes,
+which can be modified with argument windowsizes. Peak light offers a more reliable 
+estimate of light exposure per time window compared with taking the average. Further,
+LUX is used in the auto-calibration.
+
+In GGIR part 2 we visualise the LUX values in the qc plot. In part 3 and 4 LUX is 
+not used for sleep classification because relation between light exposure and sleep is weak.
+
+In part 5 we calculate the mean and maximum of the peak LUX per epoch across all
+waking hours of the day. Here, the mean (peak per epoch) LUX would then indicate
+average light exposure per time segment, while max peak would indicate the maximum
+light exposure per day. Further, we calculate the max and mean peak LUX per most 
+active consecutive X hour of the day. This is intended to offer an alternative to LUX
+exposure during waking hours which relies on correct sleep classification. LUX
+exposure during M10 may be seen as an alternative if you are unsure whether you 
+can trust the sleep classification in your data set.
 
 # Other Resources
 
