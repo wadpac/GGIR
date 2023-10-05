@@ -10,6 +10,8 @@
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
 
+- Part 5: Implemented sleep onset to sleep onset timewindow ("OO") #931
+
 # CHANGES IN GGIR VERSION 2.10-3
 
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
