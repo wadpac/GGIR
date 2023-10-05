@@ -44,7 +44,7 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     if (dformat == 1) { #not sure whether this is required for csv-format (2)
       if (length(which(timezone == "GMT")) > 0) {
         if (length(desiredtz) == 0) {
-          print("desiredtz not specified, local timezoneused as default")
+          warning("desiredtz not specified, local timezoneused as default", call. = FALSE)
           desiredtz = ""
         }
         starttime = as.POSIXlt(starttime[1],tz=desiredtz)
@@ -104,7 +104,7 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     starttime3 = paste(temp[1]," ",start_hr,":",newmin,":",newsec,sep="")
     #create timestamp from string (now desiredtz is added)
     if (length(desiredtz) == 0) {
-      print("desiredtz not specified, local timezone used as default")
+      warning("desiredtz not specified, local timezone used as default", call. = FALSE)
       desiredtz = ""
     }
     starttime_a = as.POSIXct(starttime3,format="%d/%m/%Y %H:%M:%S",tz=desiredtz) #,origin="1970-01-01"
