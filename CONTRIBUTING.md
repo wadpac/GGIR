@@ -64,24 +64,26 @@ We currently have three sources for documenting the package:
 The reference manual gets the information from the .Rd documents within the man
 folder in the package repository. Therefore, updating the information in those
 files will automatically update the reference manual. Note that most of the GGIR
-functions are not intended for direct interaction witht he user, as such, the
-documentation of all the parameters of GGIR are centralized in the .Rd file for
-the GGIR function.
+functions are not intended for direct interaction with the user, as such, the
+documentation of most arguments is centralized in the details section of man/GGIR.Rd. 
+If you for example want to add an extra parameter to `params_247` then this should
+be documented there. Further, you should not forget to include the new argument in
+functions \link{load_params} and \link{check_params}.
 
 #### Package vignettes
 
-The folder vignettes in the GGIR package repository contains the traditional 
-vignettes for the GGIR package and the chapter vignettes that are used only for
-the github.io website (see [next section](#github.io-website)). Access those 
-files to edit an existing vignette, or use the structure of any of the vignettes
-to build up a new one.
+The folder vignettes in the GGIR repository contains the .Rmd files. The .Rmd files
+that do not start with the word 'chapter' are used for the traditional package vignettes
+as hosted by CRAN. Use these files to edit an existing vignette, or use the structure
+of any of the vignettes to build up a new one. All .Rmd files which name 
+starts with the word 'chapter' are ignored. These chapter-vignetes are used only for
+the github.io website (see [next section](#github.io-website)).
 
 #### github.io website
 
-For updating or adding information to the github.io website, we need to interact
-with [the pkgdown configuration file](_pkgdown.yml) that can be found in the GGIR 
-source directory in GitHub, as well as with the chapter vignettes that can be 
-found in the vignettes directory (i.e., all the Rmd files starting by "chapter").
+For updating or adding information to the github.io website, we need to use
+[the pkgdown configuration file](_pkgdown.yml) that can be found in the repositories 
+root directory, as well as with the chapter vignettes discussed above.
 
 **To edit information in an existing chapter**
 
@@ -96,7 +98,7 @@ found in the vignettes directory (i.e., all the Rmd files starting by "chapter")
 new chapter under menu. Make sure to follow the coding and structure of the rest of chapters.
 3. Run the `pkgdown::build_site()` function.
 
-#### Committing the changes to the master branch
+#### Adding the changes to the master branch
 
 The last step would be committing and pushing your changes to github and making a
 pull request as with any other contribution to the package. Note that, running the 
