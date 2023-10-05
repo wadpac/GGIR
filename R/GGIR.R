@@ -68,7 +68,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (is.null(f0) || f0 < 1) { # What file to start with?
     f0 = 1
   }
-  if (is.null(f1) || f1 < 1) {  # What file to end with?
+  if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
+    # Do not modify f1 here when not attempting to process GGIR part 1
+    # we only expect datadir to exist when running part 1
     if (filelist == FALSE) {
       f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
